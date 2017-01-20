@@ -25,10 +25,10 @@
                 android:src="@drawable/nav_tab_back_selector" />
 
             <TextView
+                android:layout_toRightOf="@id/iv_mine_share_to_relative_friend_back"
                 android:gravity="center_vertical"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y48"
-                android:layout_marginLeft="@dimen/x48"
                 android:text="@string/Tap3_ShareDevice_Friends"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp18" />

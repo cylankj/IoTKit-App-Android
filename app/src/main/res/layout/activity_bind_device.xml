@@ -17,30 +17,36 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <FrameLayout
                 android:id="@+id/fLayout_top_bar_container"
+                android:background="@color/color_0ba8cf"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/color_0ba8cf">
+                android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/imgV_top_bar_left"
-                    style="@style/ripple_background_borderless"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:padding="@dimen/x15"
-                    android:src="@drawable/nav_tab_back_selector" />
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
 
-                <TextView
-                    android:layout_toRightOf="@id/imgV_top_bar_left"
-                    android:id="@+id/imgV_top_bar_center"
-                    style="@style/text_base_singleLine"
-                    android:layout_centerVertical="true"
-                    android:text="@string/DEVICES_TITLE"
-                    android:textColor="@color/color_white"
-                    android:textSize="@dimen/sp16" />
-            </RelativeLayout>
+                    <ImageView
+                        android:id="@+id/imgV_top_bar_left"
+                        style="@style/ripple_background_borderless"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/x15"
+                        android:src="@drawable/nav_tab_back_selector" />
 
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_toRightOf="@id/imgV_top_bar_left"
+                        android:id="@+id/imgV_top_bar_center"
+                        android:layout_centerVertical="true"
+                        android:text="@string/DEVICES_TITLE"
+                        android:textColor="@color/color_white"
+                        android:textSize="@dimen/sp16" />
+                </RelativeLayout>
+
+            </FrameLayout>
             <View
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y10"

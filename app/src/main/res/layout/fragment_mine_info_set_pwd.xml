@@ -26,8 +26,8 @@
                 android:src="@drawable/nav_tab_back_selector" />
 
             <TextView
+                android:layout_toRightOf="@id/iv_mine_set_newpwd_back"
                 android:id="@+id/tv_top_title"
-                android:layout_marginLeft="@dimen/x48"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y48"
                 android:text="@string/SET_PWD"

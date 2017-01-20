@@ -35,7 +35,7 @@ import rx.schedulers.Schedulers;
  */
 public class MineFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View {
 
-    @BindView(R.id.iv_home_mine_relativesandfriends_scan_add_back)
+    @BindView(R.id.iv_home_mine_friends_scan_add_back)
     ImageView ivHomeMineRelativesandfriendsScanAddBack;
     @BindView(R.id.zxV_scan_add_relativesandfriend)
     ZXingScannerView zxVScanAddRelativesandfriend;
@@ -92,10 +92,10 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         this.presenter = presenter;
     }
 
-    @OnClick(R.id.iv_home_mine_relativesandfriends_scan_add_back)
+    @OnClick(R.id.iv_home_mine_friends_scan_add_back)
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_home_mine_relativesandfriends_scan_add_back:
+            case R.id.iv_home_mine_friends_scan_add_back:
                 getFragmentManager().popBackStack();
                 break;
         }

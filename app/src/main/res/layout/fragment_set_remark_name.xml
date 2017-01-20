@@ -26,7 +26,7 @@
                 android:src="@drawable/nav_tab_back_selector" />
 
             <TextView
-                android:layout_marginLeft="@dimen/x48"
+                android:layout_toRightOf="@id/iv_top_bar_left_back"
                 android:layout_width="wrap_content"
                 android:gravity="center_vertical"
                 android:layout_height="@dimen/y48"

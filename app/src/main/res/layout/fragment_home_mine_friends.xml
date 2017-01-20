@@ -26,9 +26,9 @@
                 android:src="@drawable/nav_tab_back_selector" />
 
             <TextView
+                android:layout_toRightOf="@id/iv_home_mine_relativesandfriends_back"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y48"
-                android:layout_marginLeft="@dimen/x48"
                 android:text="@string/Tap3_Friends"
                 android:gravity="center_vertical"
                 android:textColor="@color/color_white"

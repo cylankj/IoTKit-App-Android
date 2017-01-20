@@ -30,7 +30,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     @BindView(R.id.imgV_top_bar_center)
     TextView tvTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
-    RelativeLayout fLayoutTopBarContainer;
+    FrameLayout fLayoutTopBarContainer;
     private WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
 
     @Override

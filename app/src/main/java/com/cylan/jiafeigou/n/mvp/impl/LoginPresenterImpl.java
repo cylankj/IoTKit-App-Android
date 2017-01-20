@@ -60,6 +60,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     private TencentInstance tencentInstance;
     private QQAuthrizeListener qqAuthrizeListener;
     private boolean isLoginSucc;
+    private boolean isRegSms;
 
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
@@ -167,6 +168,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
                     @Override
                     public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
+                        if (isRegSms)
                         getView().verifyCodeResult(resultVerifyCode.code);
                     }
                 }, new Action1<Throwable>() {
@@ -292,6 +294,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     public void call(Object o) {
                         try {
                             JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
+                            isRegSms = true;
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

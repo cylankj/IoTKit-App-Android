@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -39,7 +40,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     @BindView(R.id.et_mine_add_contact_mesg)
     EditText etMineAddContactMesg;
     @BindView(R.id.rl_tab_bar_container)
-    RelativeLayout rlTabBarContainer;
+    FrameLayout rlTabBarContainer;
 
     private MineAddFromContactContract.Presenter presenter;
     private String contactItem;
