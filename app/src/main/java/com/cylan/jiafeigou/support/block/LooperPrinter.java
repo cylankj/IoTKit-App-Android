@@ -17,7 +17,7 @@ import android.os.SystemClock;
 import android.util.Printer;
 
 /**
- * LooperPrinter, uses message dispatch time to do monitoring.
+ * LooperPrinter, uses message dispatch startTime to do monitoring.
  * <p/>
  * Created by markzhai on 2015/9/25.
  */

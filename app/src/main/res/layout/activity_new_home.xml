@@ -27,7 +27,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/y1"
+            android:layout_marginTop="1dp"
             android:orientation="horizontal">
 
             <RadioButton
@@ -35,72 +35,37 @@
                 style="@style/home_bottom_radio_style"
                 android:checked="true"
                 android:drawableTop="@drawable/icon_bottom_clever_dog_selector"
-                android:paddingBottom="@dimen/y3"
-                android:text="@string/Tap1_TitleName"/>
+                android:paddingBottom="3dp"
+                android:text="@string/app_name"/>
 
             <RadioButton
                 android:id="@+id/btn_home_wonderful"
                 style="@style/home_bottom_radio_style"
                 android:drawableTop="@drawable/icon_bottom_wonderful_selector"
-                android:paddingBottom="@dimen/y3"
+                android:paddingBottom="3dp"
                 android:text="@string/Tap2_TitleName"/>
 
             <RadioButton
                 android:id="@+id/btn_home_mine"
                 style="@style/home_bottom_radio_style"
                 android:drawableTop="@drawable/icon_bottom_mine_selector"
-                android:paddingBottom="@dimen/y3"
+                android:paddingBottom="3dp"
                 android:text="@string/Tap3_TitleName"/>
         </RadioGroup>
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
+            android:layout_height="1dp"
             android:background="@color/color_d2d2d2"/>
 
-        <com.cylan.jiafeigou.widget.wheel.TimeWheelView
-            android:id="@+id/wv_wonderful_timeline"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y49"
-            android:background="@color/color_f6f9fa"
-            android:visibility="gone"
-            app:monthText_font="Medium"
-            />
 
     </FrameLayout>
 
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/fLayout_wonderful_timeline"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="@dimen/y55"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:visibility="gone">-->
+    <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
+        android:id="@+id/act_main_wonder_indicator_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:visibility="gone"/>
 
-
-    <!--<RelativeLayout-->
-    <!--android:id="@+id/rLayout_time_line_hot"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="match_parent"-->
-    <!--android:layout_below="@+id/tv_time_line_pop"-->
-    <!--android:layout_marginTop="@dimen/y5"-->
-    <!--android:background="@color/color_f6f9fa">-->
-
-    <!--<View-->
-    <!--android:id="@+id/v_simple_38line"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="@dimen/y1"-->
-    <!--android:background="@color/color_d2d2d2"/>-->
-
-
-    <!--<com.cylan.jiafeigou.widget.wheel.WheelView-->
-    <!--android:id="@+id/wv_wonderful_timeline"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="@dimen/y55"-->
-    <!--android:layout_alignParentBottom="true"-->
-    <!--android:layout_below="@+id/v_simple_38line"-->
-    <!--android:layout_marginTop="@dimen/y5"/>-->
-
-
-    <!--</RelativeLayout>-->
-    <!--</RelativeLayout>-->
 </RelativeLayout>

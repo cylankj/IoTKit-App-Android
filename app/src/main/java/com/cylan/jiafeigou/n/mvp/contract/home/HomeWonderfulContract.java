@@ -21,8 +21,6 @@ public interface HomeWonderfulContract {
 
         void onHeadBackgroundChang(int daytime);
 
-        void onTimeLineDataUpdate(List<Long> wheelViewDataSet);
-
         /**
          * @param dayTime：0白天 1黑夜
          */
@@ -36,6 +34,8 @@ public interface HomeWonderfulContract {
         void onWechatCheckRsp(boolean installed);
 
         void chooseEmptyView(int type);//type:0:empty:1:guide:-1:hide
+
+        void onTimeLineRsp(long dayStartTime, boolean init);
     }
 
     interface Presenter extends JFGPresenter {
@@ -50,6 +50,8 @@ public interface HomeWonderfulContract {
         void removeGuideAnymore();
 
         void loadSpecificDay(long timeStamp);
+
+        void queryTimeLine(long start);
 
     }
 

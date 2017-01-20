@@ -667,6 +667,10 @@ public class RxEvent {
         public boolean changed;
     }
 
+    public static class ParseResponseCompleted {
+        public long seq;
+    }
+
     public static class DeviceSyncRsp {
         public DeviceSyncRsp setUuid(String uuid) {
             this.uuid = uuid;

@@ -419,7 +419,7 @@ public class DeviceUtils {
                 int rootViewHeight = activityRootView.getRootView().getHeight();
                 int viewHeight = activityRootView.getHeight();
                 int heightDiff = rootViewHeight - viewHeight;
-                if (heightDiff > 100) { // 99% of the time the height diff will be due to a keyboard.
+                if (heightDiff > 100) { // 99% of the startTime the height diff will be due to a keyboard.
                     isSoftkey[0] = true;
                 }
             }

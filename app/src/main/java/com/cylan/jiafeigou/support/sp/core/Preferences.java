@@ -192,7 +192,7 @@ public abstract class Preferences<T, S extends PreferenceStorage<T>>
     }
 
     /**
-     * Called when this Preference is created for the first time. This is where the initial
+     * Called when this Preference is created for the first startTime. This is where the initial
      * migration from other data source should happen.
      *
      * @param initialVersion the version set in the constructor, always &gt; 0
@@ -218,7 +218,7 @@ public abstract class Preferences<T, S extends PreferenceStorage<T>>
 
     /**
      * Called when the Preference needs to be upgraded. Use this to migrate data in this Preference
-     * over time.
+     * over startTime.
      * <p>
      * Once the version in the constructor is increased the next constructor call to this
      * Preference

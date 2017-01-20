@@ -163,7 +163,7 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
      */
     @Override
     public T getItem(int position) {
-        if (position >= mList.size())
+        if (position >= mList.size() || position < 0)
             return null;
         return mList.get(position);
     }

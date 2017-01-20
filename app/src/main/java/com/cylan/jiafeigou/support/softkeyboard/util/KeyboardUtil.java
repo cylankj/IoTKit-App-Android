@@ -425,7 +425,7 @@ public class KeyboardUtil {
          * Keyboard showing state callback method.
          * <p>
          * This method is invoked in {@link ViewTreeObserver.OnGlobalLayoutListener#onGlobalLayout()} which is one of the
-         * ViewTree lifecycle callback methods. So deprecating those time-consuming operation(I/O, complex calculation,
+         * ViewTree lifecycle callback methods. So deprecating those startTime-consuming operation(I/O, complex calculation,
          * alloc objects, etc.) here from blocking main ui thread is recommended.
          * </p>
          *

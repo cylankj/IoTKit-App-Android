@@ -17,18 +17,6 @@ import javax.lang.model.element.Modifier;
 
 public class JFGAccountGenerator extends JFGDeviceInstanceGenerator {
 
-
-    private String phone;
-    private String token;
-    private String alias;
-    private int enablePush;
-    private int enableSound;
-    private String email;
-    private int enableVibrate;
-    private int photo;
-    private String photoUrl;
-    private String account;
-
     @Override
     protected TypeSpec.Builder getClassBuilder(String clazzName, String parentName) {
         TypeSpec.Builder builder = super.getClassBuilder(clazzName, parentName);

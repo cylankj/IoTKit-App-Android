@@ -238,4 +238,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
         }
     }
 
+    public void setOnBackPreseedListener() {
+
+    }
 }

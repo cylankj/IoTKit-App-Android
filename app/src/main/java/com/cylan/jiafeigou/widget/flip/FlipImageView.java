@@ -287,7 +287,7 @@ public class FlipImageView extends ImageView implements View.OnClickListener,
 
         @Override
         protected void applyTransformation(float interpolatedTime, Transformation t) {
-            // Angle around the y-axis of the rotation at the given time. It is
+            // Angle around the y-axis of the rotation at the given startTime. It is
             // calculated both in radians and in the equivalent degrees.
             final double radians = Math.PI * interpolatedTime;
             float degrees = (float) (180.0 * radians / Math.PI);

@@ -15,7 +15,7 @@ import java.util.Locale;
  * Created by hunt on 16-4-6.
  */
 public class CustomBlockEvent implements OnBlockEventInterceptor {
-    private static final String TAG = "[DEBUG]: cost much time ";
+    private static final String TAG = "[DEBUG]: cost much startTime ";
     //需要对应的
     /**
      * {@link com.cylan.jiafeigou.support.block.log.Block#timeStart}的格式

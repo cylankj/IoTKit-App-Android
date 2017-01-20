@@ -50,7 +50,7 @@ public class SystemUiHider {
             // Delayed removal of status and navigation bar
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
-            // at compile-time and do nothing on earlier devices.
+            // at compile-startTime and do nothing on earlier devices.
             if (weakReference == null || weakReference.get() == null)
                 return;
             weakReference.get().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE

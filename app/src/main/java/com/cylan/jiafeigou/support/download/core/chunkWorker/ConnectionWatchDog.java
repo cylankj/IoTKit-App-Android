@@ -25,13 +25,13 @@ public class ConnectionWatchDog extends Thread {
     /**
      * Creates a timer of a specified length
      *
-     * @param length Length of time before timeout occurs
+     * @param length Length of startTime before timeout occurs
      */
     public ConnectionWatchDog(int length, AsyncWorker thread) {
         // Assign to member variable
         m_length = length;
 
-        // Set time elapsed
+        // Set startTime elapsed
         m_elapsed = 0;
 
         // set under control thread
@@ -61,10 +61,10 @@ public class ConnectionWatchDog extends Thread {
 
             // Use 'synchronized' to prevent conflicts
             synchronized (this) {
-                // Increment time remaining
+                // Increment startTime remaining
                 m_elapsed += m_rate;
 
-                // Check to see if the time has been exceeded
+                // Check to see if the startTime has been exceeded
                 if (m_elapsed > m_length) {
                     // Trigger a timeout
                     timeout();

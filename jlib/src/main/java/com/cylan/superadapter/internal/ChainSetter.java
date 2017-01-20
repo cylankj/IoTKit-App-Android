@@ -72,4 +72,6 @@ interface ChainSetter<VH> {
 
     VH setOnTouchListener(int viewId, View.OnTouchListener listener);
 
+    VH setSelected(int viewId, boolean selected);
+
 }

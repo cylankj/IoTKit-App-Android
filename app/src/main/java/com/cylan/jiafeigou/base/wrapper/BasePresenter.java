@@ -69,7 +69,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     @CallSuper
     protected void onRegisterSubscription() {
-        registerSubscription(getDeviceSyncSub(), getLoginStateSub(), getQueryDataRspSub());
+        registerSubscription(getDeviceSyncSub(), getLoginStateSub(), getQueryDataRspSub(), getParseResponseCompletedSub());
     }
 
     @CallSuper
@@ -110,7 +110,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.LoginRsp.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onLoginStateChanged, Throwable::printStackTrace);
+                .subscribe(this::onLoginStateChanged, e -> {
+                    e.printStackTrace();
+                    registerSubscription(getLoginStateSub());//出现异常了要重现注册
+                });
     }
 
     /**
@@ -126,7 +129,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                         ((PropertyView) mView).onShowProperty(mSourceManager.getJFGDevice(mUUID));
                     }
                     onDeviceSync();
-                }, Throwable::printStackTrace);
+                }, e -> {
+                    e.printStackTrace();//打印错误日志以便排错
+                    registerSubscription(getDeviceSyncSub());//基类不能崩,否则一些功能异常
+                });
     }
 
     protected void onDeviceSync() {
@@ -153,9 +159,27 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                                 }
                             }
                         }
-                        , Throwable::printStackTrace);
+                        , e -> {
+                            e.printStackTrace();//打印出错误消息以便排错
+                            registerSubscription(getQueryDataRspSub());//基类不能崩
+                        });
     }
 
+    private Subscription getParseResponseCompletedSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(parseResponseCompleted -> {
+                    onParseResponseCompleted(parseResponseCompleted.seq);
+                }, e -> {
+                    e.printStackTrace();
+                    registerSubscription(getParseResponseCompletedSub());//基类不能崩
+                });
+    }
+
+    protected void onParseResponseCompleted(long seq) {
+
+    }
 
     public boolean hasReadyForExit() {
         return true;
@@ -244,15 +268,20 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     /**
      * 不在主线程中请求数据,因为可能卡住
      */
-    protected void robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) {
+    protected void robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs, long[] rs) {
         post(() -> {
             try {
                 long seq = JfgCmdInsurance.getCmd().robotGetData(peer, queryDps, limit, asc, timeoutMs);
                 mRequestSeqs.add(seq);
+                if (rs != null) rs[0] = seq;
             } catch (JfgException e) {
                 e.printStackTrace();
             }
         });
+    }
+
+    protected void robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) {
+        robotGetData(peer, queryDps, limit, asc, timeoutMs, null);
     }
 
     protected void robotDelData(String peer, ArrayList<JFGDPMsg> dps, int timeoutMs) {

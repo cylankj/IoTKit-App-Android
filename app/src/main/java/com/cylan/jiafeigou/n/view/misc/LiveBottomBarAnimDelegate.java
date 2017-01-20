@@ -106,15 +106,15 @@
 //     * 更新播放时间
 //     *
 //     * @param state 直播|历史录像|空闲  1:直播 2:录像
-//     * @param time
+//     * @param startTime
 //     */
-//    public void setLiveTime(int state, long time) {
+//    public void setLiveTime(int state, long startTime) {
 //        if (!check() || state == 0)
 //            return;
 //        String content = String.format(vLiveTime.getContext().getString(
 //                state == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-//                + "|%s", state == 1 ? dateFormat.format(new Date(time)) :
-//                TimeUtils.simpleDateFormat0.format(new Date(time)));
+//                + "|%s", state == 1 ? dateFormat.format(new Date(startTime)) :
+//                TimeUtils.simpleDateFormat0.format(new Date(startTime)));
 //        if (!vLiveTime.isShown()) vLiveTime.setVisibility(View.VISIBLE);
 //        vLiveTime.setText(content);
 //    }

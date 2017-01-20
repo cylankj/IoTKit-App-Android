@@ -838,6 +838,8 @@
     <string name="delay_record_hint_information_3">正在合成视频</string>
   <string name="Tap1_Setting_Opened">已开启</string>
   <string name="Tips_Call_Answer_In_Other">通话已在其他设备处理</string>
+  <string name="loading">加载中</string>
+  <string name="nomore">没有更多了</string>
 
 
 </resources>
