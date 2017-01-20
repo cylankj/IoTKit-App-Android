@@ -110,7 +110,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.LoginRsp.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onLoginStateChanged, Throwable::printStackTrace);
+                .subscribe(this::onLoginStateChanged, e -> {
+                    e.printStackTrace();
+                    registerSubscription(getLoginStateSub());//出现异常了要重现注册
+                });
     }
 
     /**
@@ -126,7 +129,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                         ((PropertyView) mView).onShowProperty(mSourceManager.getJFGDevice(mUUID));
                     }
                     onDeviceSync();
-                }, Throwable::printStackTrace);
+                }, e -> {
+                    e.printStackTrace();//打印错误日志以便排错
+                    registerSubscription(getDeviceSyncSub());//基类不能崩,否则一些功能异常
+                });
     }
 
     protected void onDeviceSync() {
@@ -153,7 +159,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                                 }
                             }
                         }
-                        , Throwable::printStackTrace);
+                        , e -> {
+                            e.printStackTrace();//打印出错误消息以便排错
+                            registerSubscription(getQueryDataRspSub());//基类不能崩
+                        });
     }
 
     private Subscription getParseResponseCompletedSub() {
@@ -162,7 +171,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(parseResponseCompleted -> {
                     onParseResponseCompleted(parseResponseCompleted.seq);
-                }, Throwable::printStackTrace);
+                }, e -> {
+                    e.printStackTrace();
+                    registerSubscription(getParseResponseCompletedSub());//基类不能崩
+                });
     }
 
     protected void onParseResponseCompleted(long seq) {

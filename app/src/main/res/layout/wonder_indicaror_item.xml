@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/wonder_indicator_item_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_marginRight="9dp"
     android:paddingBottom="13dp"
     android:paddingLeft="9dp"
+    android:paddingRight="9dp"
     android:paddingTop="13dp">
 
     <TextView
@@ -15,6 +16,7 @@
         android:background="@drawable/wonder_indicator_selector"
         android:gravity="center"
         android:text="11"
+        android:textStyle="bold"
         android:textColor="@color/color_wonder_indicator"
         android:textSize="14sp"/>
 </FrameLayout>

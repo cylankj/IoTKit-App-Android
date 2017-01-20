@@ -5,21 +5,18 @@ import android.content.pm.PackageManager;
 import android.support.v4.util.LongSparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,11 +38,6 @@ import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View
 public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContract.View>
         implements HomeWonderfulContract.Presenter {
     private LongSparseArray<TreeSet<DpMsgDefine.DPWonderItem>> mWonderDaySource = new LongSparseArray<>();
-
-    private ArrayList<Long> mQuerySeq = new ArrayList<>();
-    private ArrayList<WonderIndicatorWheelView.Item> mItems;
-    private static final long DAY_TIME = 24 * 60 * 60 * 1000L;
-
     private long mPositionDayStart = 0;
     private long mPositionDayEnd = 0;
 
@@ -87,24 +79,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 });
     }
 
-    /**
-     * 组装timeLine的数据
-     *
-     * @param list
-     * @return
-     */
-    private List<Long> assembleTimeLineData(List<DpMsgDefine.DPWonderItem> list) {
-        ArrayList<Long> result = new ArrayList<>(1024);
-        for (DpMsgDefine.DPWonderItem bean : list) {
-            result.add((long) bean.time * 1000);
-        }
-        return result;
-    }
-
     @Override
     public void startRefresh() {
         TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.get(mPositionDayStart);
-        load(items == null || items.size() == 0 ? 0 : items.first().version, items != null);
+        load(items == null || items.size() == 0 ? mPositionDayStart : items.first().version, items != null && items.size() > 0);
     }
 
     private void load(long version, boolean asc) {
@@ -114,27 +92,6 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         AppLogger.e("version=" + version);
         robotGetData("", params, 21, asc, 0);//多请求一条数据,用来判断是否是一天最后一条
     }
-
-    @Override
-    protected void onParseResponseCompleted(long seq) {
-        if (mQuerySeq.remove(seq)) {
-            DpMsgDefine.DPSet<DpMsgDefine.DPWonderItem> value = mSourceManager.getValue(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, seq);
-            if (value != null && value.value != null && value.value.size() > 0) {
-                DpMsgDefine.DPWonderItem first = value.value.first();
-                long time = TimeUtils.getSpecificDayEndTime(first.time * 1000L);
-                for (WonderIndicatorWheelView.Item item : mItems) {
-                    if (item.endTime == time) {
-                        item.hasData = true;
-                    }
-                }
-            }
-            if (mQuerySeq.isEmpty()) {
-                mView.onTimeLineDataUpdate(mItems);
-            }
-        }
-
-    }
-
 
     @Override
     public void startLoadMore() {
@@ -171,37 +128,22 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     public void loadSpecificDay(long timeStamp) {
         mPositionDayStart = TimeUtils.getSpecificDayStartTime(timeStamp);
         mPositionDayEnd = TimeUtils.getSpecificDayEndTime(timeStamp);
-        load(mPositionDayEnd, false);
+        TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.get(mPositionDayStart);
+        if (items != null) {
+            mView.chooseEmptyView(items.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
+            mView.onMediaListRsp(new ArrayList<>(items));
+        } else {
+            load(mPositionDayEnd, false);
+        }
     }
 
     @Override
     public void queryTimeLine(long start) {
-        ArrayList<ArrayList<JFGDPMsg>> querys = new ArrayList<>();
-        mItems = new ArrayList<>();
-        mQuerySeq.clear();
-        ArrayList<JFGDPMsg> params;
-        for (int i = 6; i >= 0; i--) {
-            params = new ArrayList<>();
-            WonderIndicatorWheelView.Item item = new WonderIndicatorWheelView.Item();
-            item.startTime = TimeUtils.getSpecificDayStartTime(start - i * DAY_TIME);
-            item.endTime = TimeUtils.getSpecificDayEndTime(start - i * DAY_TIME);
-            item.hasData = false;
-            mItems.add(item);
-            JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, item.endTime);
-            params.add(msg);
-            querys.add(params);
-        }
-        AppLogger.e("开始查询时间轴数据" + start);
-        for (ArrayList<JFGDPMsg> query : querys) {
-            post(() -> {
-                try {
-                    long seq = JfgCmdInsurance.getCmd().robotGetData("", query, 1, false, 0);
-                    mQuerySeq.add(seq);
-                } catch (JfgException e) {
-                    e.printStackTrace();
-                }
-            });
-        }
+        long startTime = TimeUtils.getSpecificDayStartTime(start);
+        JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, startTime);
+        ArrayList<JFGDPMsg> params = new ArrayList<>();
+        params.add(msg);
+        robotGetData("", params, 1, true, 0);
     }
 
     @Override
@@ -211,16 +153,18 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private void onWonderfulAccountRsp(DataPoint... values) {
+        DpMsgDefine.DPWonderItem item = (DpMsgDefine.DPWonderItem) values[0];
+        mView.onTimeLineRsp(TimeUtils.getSpecificDayStartTime(item.time * 1000L), mWonderDaySource.size() == 0);
         List<DpMsgDefine.DPWonderItem> results = filter(values);
         TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.get(mPositionDayStart);
         if (items == null) {
             items = new TreeSet<>();
             mWonderDaySource.put(mPositionDayStart, items);
-            queryTimeLine(results.get(0).time * 1000L);
         }
         items.addAll(results);
         mView.chooseEmptyView(items.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
         mView.onMediaListRsp(results);
+
     }
 
     private List<DpMsgDefine.DPWonderItem> filter(DataPoint... values) {

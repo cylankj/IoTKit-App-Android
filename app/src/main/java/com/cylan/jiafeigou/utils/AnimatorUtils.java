@@ -140,7 +140,6 @@ public class AnimatorUtils {
         set.start();
     }
 
-
     public interface OnEndListener {
         void onAnimationEnd(boolean gone);
 

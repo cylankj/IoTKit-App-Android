@@ -3,9 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,8 +21,6 @@ public interface HomeWonderfulContract {
 
         void onHeadBackgroundChang(int daytime);
 
-        void onTimeLineDataUpdate(ArrayList<WonderIndicatorWheelView.Item> wheelViewDataSet);
-
         /**
          * @param dayTime：0白天 1黑夜
          */
@@ -38,6 +34,8 @@ public interface HomeWonderfulContract {
         void onWechatCheckRsp(boolean installed);
 
         void chooseEmptyView(int type);//type:0:empty:1:guide:-1:hide
+
+        void onTimeLineRsp(long dayStartTime, boolean init);
     }
 
     interface Presenter extends JFGPresenter {

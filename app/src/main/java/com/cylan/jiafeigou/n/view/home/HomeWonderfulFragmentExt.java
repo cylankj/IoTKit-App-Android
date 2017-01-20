@@ -51,7 +51,6 @@ import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 import com.cylan.superadapter.internal.SuperViewHolder;
-import com.cylan.utils.ListUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -210,6 +209,31 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
 
+    private void showWheelView() {
+        if (!getWheelView().isShown()) {
+            tvDateItemHeadWonder.setTimeLineShow(!getWheelView().isShown());
+            tvDateItemHeadWonder.setBackgroundToRight();
+            AnimatorUtils.slide(getWheelView(), new AnimatorUtils.OnEndListener() {
+                @Override
+                public void onAnimationEnd(boolean gone) {
+                    getWheelView().scrollPositionToCenter();
+                }
+
+                @Override
+                public void onAnimationStart(boolean gone) {
+                }
+            });
+        }
+    }
+
+    private void hideWheelView() {
+        if (getWheelView().isShown()) {
+            tvDateItemHeadWonder.setTimeLineShow(!getWheelView().isShown());
+            tvDateItemHeadWonder.setBackgroundToRight();
+            AnimatorUtils.slide(getWheelView());
+        }
+    }
+
     private void initView() {
         //添加Handler
         srLayoutMainContentHolder.setOnRefreshListener(this);
@@ -224,19 +248,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 int totalItemCount = mLinearLayoutManager.getItemCount();
                 if (dy > 0) { //check for scroll down
                     if ((visibleItemCount + pastVisibleItems) >= totalItemCount && !mShouldLoadMore) {
-                        if (!getWheelView().isShown()) {
-                            isScrollShow = true;
-                            tvDateItemHeadWonder.setTimeLineShow(!getWheelView().isShown());
-                            tvDateItemHeadWonder.setBackgroundToRight();
-                            AnimatorUtils.slide(getWheelView());
-                        }
+                        isScrollShow = true;
+                        showWheelView();
                     }
                 } else {
-                    if (isScrollShow && getWheelView().isShown()) {
+                    if (isScrollShow) {
                         isScrollShow = false;
-                        tvDateItemHeadWonder.setTimeLineShow(!getWheelView().isShown());
-                        tvDateItemHeadWonder.setBackgroundToRight();
-                        AnimatorUtils.slide(getWheelView());
+                        hideWheelView();
                     }
                 }
             }
@@ -284,11 +302,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     @Override
-    public void onTimeLineDataUpdate(ArrayList<WonderIndicatorWheelView.Item> wheelViewDataSet) {
-        View view = getWheelView();
-        if (view == null)
-            return;
-        getWheelView().setTimeLineItems(wheelViewDataSet);
+    public void onTimeLineRsp(long dayStartTime, boolean init) {
+        WonderIndicatorWheelView wheelView = getWheelView();
+        if (wheelView != null) {
+            if (init) wheelView.init(dayStartTime);
+            else wheelView.notify(dayStartTime, true);
+        }
     }
 
     @SuppressWarnings("deprecation")
@@ -467,14 +486,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @OnClick(R.id.fLayout_date_head_wonder)
     public void onClick() {
         final WonderIndicatorWheelView view = getWheelView();
-        if (view != null && !ListUtils.isEmpty(homeWonderAdapter.getList())) {
-            if (!view.isShown()) {
-                int position = mLinearLayoutManager.findFirstCompletelyVisibleItemPosition();
-                long time = homeWonderAdapter.getItem(position).time;
+        if (view != null && view.hasInit()) {
+            if (view.isShown()) {
+                hideWheelView();
+            } else {
+                showWheelView();
             }
-            tvDateItemHeadWonder.setTimeLineShow(!getWheelView().isShown());
-            tvDateItemHeadWonder.setBackgroundToRight();
-            AnimatorUtils.slide(view);
         }
     }
 
@@ -489,12 +506,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             if (getActivity() != null) {
                 WonderIndicatorWheelView wheelView = (WonderIndicatorWheelView) getActivity().findViewById(R.id.act_main_wonder_indicator_view);
                 wheelView.setListener(time -> {
+                    tvDateItemHeadWonder.setText(TimeUtils.getDayString(time * 1000L));
                     homeWonderAdapter.clear();
                     mPresenter.loadSpecificDay(time);
                 });
-                wheelView.setLoadMoreListener(time -> {
+                wheelView.setItemQueryListener(time -> {
                     mPresenter.queryTimeLine(time);
-                    AppLogger.e("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ");
+                    AppLogger.e("QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ" + time);
                 });
                 wheelViewWeakReference = new WeakReference<>(wheelView);
             }

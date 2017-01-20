@@ -53,7 +53,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
 
         DpMsgDefine.DPWonderItem item1 = getItem(getCount() - 1);
         if (item1.msgType != DpMsgDefine.DPWonderItem.TYPE_LOAD) {
-            if (layoutPosition == getCount() - 1 && layoutPosition > 1) {
+            if (layoutPosition == getCount() - 1 && layoutPosition > 0) {
                 holder.setVisibility(R.id.tv_wonderful_item_footer, View.VISIBLE);
             }
         }
