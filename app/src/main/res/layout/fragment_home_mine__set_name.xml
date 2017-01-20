@@ -6,43 +6,47 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <FrameLayout
+        android:background="@color/color_0ba8cf"
+        android:id="@+id/rl_tab_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y73"
-        android:background="@color/color_0ba8cf">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/iv_top_bar_left_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:clickable="true"
-            android:padding="@dimen/x15"
-            android:src="@drawable/nav_tab_back_selector" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_save_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/y12"
-            android:layout_marginLeft="@dimen/x48"
-            android:text="@string/ALIAS"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp18" />
+            <ImageView
+                android:id="@+id/iv_top_bar_left_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:padding="@dimen/x15"
+                android:src="@drawable/nav_tab_back_selector" />
 
-        <ImageView
-            android:id="@+id/iv_mine_personal_setname_bind"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_marginBottom="@dimen/y2"
-            android:clickable="true"
-            android:padding="@dimen/x15"
-            android:src="@drawable/icon_finish"
-            android:visibility="visible" />
-    </RelativeLayout>
+            <TextView
+                android:layout_toRightOf="@id/iv_top_bar_left_back"
+                android:id="@+id/tv_save_username"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y48"
+                android:gravity="center_vertical"
+                android:text="@string/ALIAS"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp18" />
+
+            <ImageView
+                android:id="@+id/iv_mine_personal_setname_bind"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:clickable="true"
+                android:padding="@dimen/x15"
+                android:src="@drawable/icon_finish"
+                android:visibility="visible" />
+        </RelativeLayout>
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -7,45 +7,35 @@
     android:clickable="true"
     android:orientation="vertical">
 
-
-    <RelativeLayout
-        android:id="@+id/rLayout_mine_help_top_bar"
+    <FrameLayout
+        android:id="@+id/fLayout_top_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y73"
-        android:background="#0BA8CF">
-
-        <ImageView
-            android:id="@+id/iv_home_mine_help_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:clickable="true"
-            android:padding="@dimen/x15"
-            android:src="@drawable/nav_tab_back_selector" />
+        android:layout_height="wrap_content"
+        android:background="@color/color_0ba8cf">
 
         <TextView
+            android:id="@+id/iv_home_mine_message_back"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/y12"
-            android:layout_marginLeft="@dimen/x48"
+            android:layout_height="@dimen/y48"
+            android:drawablePadding="@dimen/x15"
+            android:drawableLeft="@drawable/nav_tab_back_selector"
+            android:paddingLeft="@dimen/x15"
+            android:gravity="center_vertical"
             android:text="@string/Tap3_Feedback"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp18" />
-
 
         <TextView
             android:id="@+id/tv_mine_help_suggestion"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
+            android:layout_gravity="end|center_vertical"
             android:clickable="true"
             android:padding="@dimen/x15"
             android:text="@string/FEEDBACK"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp14" />
-    </RelativeLayout>
+    </FrameLayout>
 
     <ProgressBar
         android:id="@+id/pb_mine_help"

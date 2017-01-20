@@ -24,6 +24,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -95,6 +96,8 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     TextView btnHomeMinePersonalInformation;
     @BindView(R.id.ll_container)
     LinearLayout llContainer;
+    @BindView(R.id.fLayout_top_bar_container)
+    FrameLayout fLayoutTopBarContainer;
 
     private HomeMineInfoMailBoxFragment mailBoxFragment;
     private MineInfoBindPhoneFragment bindPhoneFragment;
@@ -150,6 +153,12 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         initView();
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+    }
+
     /**
      * 判断是否大陆用户显示绑定手机号码一栏
      */
@@ -186,7 +195,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
             R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic,
             R.id.RLayout_home_mine_personal_phone, R.id.user_ImageHead,
-            R.id.rLayout_home_mine_personal_name, R.id.rl_change_password,R.id.rl_my_QRCode})
+            R.id.rLayout_home_mine_personal_name, R.id.rl_change_password, R.id.rl_my_QRCode})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击回退到Mine的fragment
@@ -244,13 +253,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      * 弹出我的二维码对话框
      */
     private void showMyQrcodeDialog() {
-        if (myQrcodeDialog == null || myQrcodeDialog.get() == null){
+        if (myQrcodeDialog == null || myQrcodeDialog.get() == null) {
             Bundle bundle = new Bundle();
-            bundle.putSerializable("jfgaccount",argumentData);
+            bundle.putSerializable("jfgaccount", argumentData);
             myQrcodeDialog = new WeakReference<>(MyQRCodeDialog.newInstance(bundle));
         }
         MyQRCodeDialog qRCodeDialog = myQrcodeDialog.get();
-        qRCodeDialog.show(getFragmentManager(),"myqrcode");
+        qRCodeDialog.show(getFragmentManager(), "myqrcode");
     }
 
     /**

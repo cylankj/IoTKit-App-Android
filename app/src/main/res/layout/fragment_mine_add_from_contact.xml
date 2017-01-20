@@ -6,55 +6,57 @@
     android:layout_height="match_parent"
     android:background="@color/color_white">
 
-
-    <RelativeLayout
+    <FrameLayout
+        android:background="@color/color_0ba8cf"
+        android:id="@+id/rl_tab_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y73"
-        android:background="@color/color_0ba8cf">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/iv_mine_add_from_contact_back"
-            android:clickable="true"
-            android:layout_alignParentBottom="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/x15"
-            android:src="@drawable/nav_tab_back_selector" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_marginBottom="@dimen/y12"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="@dimen/x48"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="发送请求"
-            android:textSize="@dimen/sp18"
-            android:textColor="@color/color_white" />
+            <ImageView
+                android:id="@+id/iv_mine_add_from_contact_back"
+                android:clickable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/x15"
+                android:layout_centerVertical="true"
+                android:src="@drawable/nav_tab_back_selector" />
 
-        <ImageView
-            android:visibility="visible"
-            android:id="@+id/iv_mine_add_from_contact_send"
-            android:layout_marginBottom="@dimen/y2"
-            android:padding="@dimen/x15"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_finish" />
+            <TextView
+                android:layout_toRightOf="@id/iv_mine_add_from_contact_back"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y48"
+                android:gravity="center_vertical"
+                android:text="发送请求"
+                android:textSize="@dimen/sp18"
+                android:textColor="@color/color_white" />
 
-        <ImageView
-            android:visibility="gone"
-            android:id="@+id/iv_mine_add_from_contact_send_disable"
-            android:layout_marginBottom="@dimen/y2"
-            android:padding="@dimen/x15"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_finish_disable" />
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_mine_add_from_contact_send"
+                android:padding="@dimen/x15"
+                android:clickable="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_finish" />
+
+            <ImageView
+                android:visibility="gone"
+                android:id="@+id/iv_mine_add_from_contact_send_disable"
+                android:padding="@dimen/x15"
+                android:clickable="true"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/icon_finish_disable" />
+        </RelativeLayout>
+
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"

@@ -8,17 +8,17 @@
     <FrameLayout
         android:id="@+id/rl_home_mine_suggestion"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y73"
+        android:layout_height="wrap_content"
         android:background="#0BA8CF">
 
         <TextView
             android:drawableLeft="@drawable/nav_tab_back_selector"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/y48"
             android:text="@string/FEEDBACK"
-            android:layout_gravity="bottom"
             android:drawablePadding="@dimen/x15"
-            android:padding="@dimen/x15"
+            android:paddingLeft="@dimen/x15"
+            android:gravity="center_vertical"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp18" />
 
@@ -26,8 +26,8 @@
             android:id="@+id/tv_mine_help_suggestion_clear"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="right|bottom"
             android:clickable="true"
+            android:layout_gravity="end|center_vertical"
             android:padding="@dimen/x15"
             android:text="@string/Tap3_Feedback_Clear"
             android:textColor="@color/color_white"

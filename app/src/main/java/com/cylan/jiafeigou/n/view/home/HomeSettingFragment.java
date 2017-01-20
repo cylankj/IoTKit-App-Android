@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -50,6 +51,12 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     SwitchButton btnItemSwitchVoide;
     @BindView(R.id.btn_item_switch_shake)
     SwitchButton btnItemSwitchShake;
+    @BindView(R.id.rl_sound_container)
+    RelativeLayout rlSoundContainer;
+    @BindView(R.id.rl_vibrate_container)
+    RelativeLayout rlVibrateContainer;
+    @BindView(R.id.rl_title_bar)
+    FrameLayout rlTitleBar;
 
     private HomeSettingContract.Presenter presenter;
 
@@ -73,6 +80,12 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         initPresenter();
         presenter.calculateCacheSize();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTitleBar);
     }
 
     private void initPresenter() {
@@ -154,6 +167,10 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         btnItemSwitchAccessMes.setChecked(userInfo.jfgAccount.isEnablePush());
         btnItemSwitchVoide.setChecked(userInfo.jfgAccount.isEnableSound());
         btnItemSwitchShake.setChecked(userInfo.jfgAccount.isEnableVibrate());
+        if (!userInfo.jfgAccount.isEnablePush()) {
+            rlSoundContainer.setVisibility(View.GONE);
+            rlVibrateContainer.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -182,6 +199,13 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         switch (buttonView.getId()) {
             case R.id.btn_item_switch_accessMes:
                 presenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
+                if (!isChecked) {
+                    rlSoundContainer.setVisibility(View.GONE);
+                    rlVibrateContainer.setVisibility(View.GONE);
+                } else {
+                    rlSoundContainer.setVisibility(View.VISIBLE);
+                    rlVibrateContainer.setVisibility(View.VISIBLE);
+                }
                 break;
 
             case R.id.btn_item_switch_voide:

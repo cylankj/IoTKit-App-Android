@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -24,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineBindPhonePresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
@@ -54,6 +56,8 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     TextView tvTitle;
     @BindView(R.id.fLayout_verification_code_input_box)
     FrameLayout fLayoutVerificationCodeInputBox;
+    @BindView(R.id.rl_tab_bar_container)
+    FrameLayout rlTabBarContainer;
     private JFGAccount userinfo;
     private boolean isBindOrChange;
     private MineBindPhoneContract.Presenter presenter;
@@ -68,6 +72,12 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         initPresenter();
         initCountDownTime();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     /**

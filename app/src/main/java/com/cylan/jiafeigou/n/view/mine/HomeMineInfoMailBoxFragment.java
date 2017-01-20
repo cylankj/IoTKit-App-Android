@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoBineMailPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
@@ -34,7 +36,7 @@ import butterknife.OnTextChanged;
  * 创建者     谢坤
  * 创建时间   2016/8/10 15:37
  * 描述	      ${TODO}
- * <p/>
+ * <p>
  * 更新者     $Author$
  * 更新时间   $Date$
  * 更新描述   ${TODO}
@@ -53,6 +55,8 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     ImageView mIvMailBoxBindDisable;
     @BindView(R.id.tv_top_title)
     TextView tvTopTitle;
+    @BindView(R.id.fLayout_top_bar_container)
+    FrameLayout fLayoutTopBarContainer;
 
 
     private String mailBox;
@@ -168,6 +172,12 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+    }
+
     private void initPresenter() {
         presenter = new MineInfoBineMailPresenterImp(this);
     }
@@ -208,11 +218,11 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         });
     }
 
-    @OnClick({R.id.iv_mine_personal_mailbox_back, R.id.iv_mine_personal_mailbox_bind})
+    @OnClick({R.id.tv_top_title, R.id.iv_mine_personal_mailbox_bind})
     public void onClick(View v) {
         switch (v.getId()) {
             //返回上一个fragment
-            case R.id.iv_mine_personal_mailbox_back:
+            case R.id.tv_top_title:
                 IMEUtils.hide((Activity) getContext());
                 getFragmentManager().popBackStack();
                 break;

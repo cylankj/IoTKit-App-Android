@@ -5,9 +5,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.ViewUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -31,7 +33,7 @@ import butterknife.OnClick;
  * 创建者     谢坤
  * 创建时间   2016/7/26 15:51
  * 描述	      ${TODO}
- * <p/>
+ * <p>
  * 更新者     $Author$
  * 更新时间   $Date$
  * 更新描述   ${TODO}
@@ -46,6 +48,8 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
     TextView tvClearMagOpenRecord;
     @BindView(R.id.iv_msglive_back)
     ImageView ivMsgliveBack;
+    @BindView(R.id.fl_container)
+    FrameLayout flContainer;
 
     private WeakReference<MagLiveInformationFragment> informationWeakReference;
     private HomeMagLiveContract.Presenter presenter;
@@ -74,6 +78,12 @@ public class MagLiveFragment extends Fragment implements HomeMagLiveContract.Vie
         initPresenter();
         initMagDoorStateNotify();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        com.cylan.jiafeigou.utils.ViewUtils.setViewPaddingStatusBar(flContainer);
     }
 
     private void initPresenter() {

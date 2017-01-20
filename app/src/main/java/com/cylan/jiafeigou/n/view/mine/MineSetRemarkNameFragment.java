@@ -8,7 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
@@ -17,6 +19,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineSetRemarkNamePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
@@ -41,6 +44,8 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     View viewMinePersonalSetRemarknameNewNameLine;
     @BindView(R.id.iv_mine_personal_set_remarkname_clear)
     ImageView ivMinePersonalSetRemarknameClear;
+    @BindView(R.id.rl_tab_bar_container)
+    FrameLayout rlTabBarContainer;
 
 
     private MineSetRemarkNameContract.Presenter presenter;
@@ -70,6 +75,12 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
         initPresenter();
         initViewShow();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     @Override

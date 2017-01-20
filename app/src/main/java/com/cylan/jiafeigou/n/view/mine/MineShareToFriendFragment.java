@@ -11,8 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -23,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
@@ -49,6 +52,8 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     RecyclerView rcyMineShareToRelativeAndFriendList;
     @BindView(R.id.ll_no_friend)
     LinearLayout llNoFriend;
+    @BindView(R.id.rl_mine_share_to_relative_friend)
+    FrameLayout rlMineShareToRelativeFriend;
 
     private MineShareToFriendContract.Presenter presenter;
     private ShareToFriendsAdapter shareToFriendsAdapter;
@@ -84,6 +89,12 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         getArgumentData();
         initPresenter();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlMineShareToRelativeFriend);
     }
 
     /**

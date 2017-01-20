@@ -9,8 +9,10 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -21,6 +23,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ChooseShareDeviceAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -49,6 +52,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     LinearLayout llNoDevice;
     @BindView(R.id.tv_choose_device_title)
     TextView tvChooseDeviceTitle;
+    @BindView(R.id.rl_tab_bar_container)
+    FrameLayout rlTabBarContainer;
 
     private MineFriendListShareDevicesToContract.Presenter presenter;
     private RelAndFriendBean shareDeviceBean;
@@ -84,6 +89,12 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     private void getArgumentData() {
         Bundle arguments = getArguments();
         shareDeviceBean = arguments.getParcelable("shareDeviceBean");
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     @Override

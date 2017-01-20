@@ -8,30 +8,25 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <FrameLayout
+        android:id="@+id/fLayout_top_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y72"
+        android:layout_height="wrap_content"
         android:background="@color/color_0ba8cf">
 
-        <ImageView
-            android:id="@+id/iv_home_mine_personal_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:clickable="true"
-            android:padding="@dimen/x15"
-            android:src="@drawable/nav_tab_back_selector" />
-
         <TextView
+            android:id="@+id/iv_home_mine_personal_back"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/y12"
-            android:layout_marginLeft="@dimen/x48"
+            android:layout_height="@dimen/y48"
+            android:drawablePadding="@dimen/x15"
+            android:drawableLeft="@drawable/nav_tab_back_selector"
+            android:paddingLeft="@dimen/x15"
+            android:gravity="center_vertical"
             android:text="@string/Tap3_Friends_UserInfo"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp18" />
-    </RelativeLayout>
+
+    </FrameLayout>
 
     <ScrollView
         android:layout_width="match_parent"
