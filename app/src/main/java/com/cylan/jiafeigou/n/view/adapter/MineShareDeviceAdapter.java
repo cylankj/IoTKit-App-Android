@@ -12,7 +12,9 @@ import com.cylan.superadapter.IMulItemViewType;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 作者：zsl
@@ -22,6 +24,30 @@ import java.util.List;
 public class MineShareDeviceAdapter extends SuperAdapter<DeviceBean> {
 
     private OnShareClickListener listener;
+    private static Map<Integer, Integer> resMap = new HashMap<>();
+
+    static {
+        //bell
+        resMap.put(JConstant.OS_DOOR_BELL, R.drawable.me_icon_head_ring);
+        //camera
+        resMap.put(JConstant.OS_CAMARA_ANDROID_SERVICE, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_ANDROID, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_ANDROID_4G, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_CC3200, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_PANORAMA_GUOKE, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_PANORAMA_HAISI, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_PANORAMA_QIAOAN, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.me_icon_head_camera);
+
+        resMap.put(JConstant.OS_CAMERA_3G, R.drawable.me_icon_head_camera);
+
+        //MAG
+        resMap.put(JConstant.OS_MAGNET, R.drawable.me_icon_head_magnetometer);
+        //E_FAMILY
+        resMap.put(JConstant.OS_EFAML, R.drawable.me_icon_head_album);
+    }
 
     public interface OnShareClickListener {
         void onShare(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item);
@@ -38,7 +64,7 @@ public class MineShareDeviceAdapter extends SuperAdapter<DeviceBean> {
     @Override
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final DeviceBean item) {
         final int deviceType = item.pid;
-        int iconRes = JConstant.onLineIconMap.get(deviceType);
+        int iconRes = resMap.get(deviceType);
         //昵称
         holder.setText(R.id.tv_share_device_name, TextUtils.isEmpty(item.alias) ? item.uuid : item.alias);
         //图标

@@ -12,7 +12,7 @@
         <ImageView
             android:layout_centerVertical="true"
             android:id="@+id/iv_share_device_icon"
-            android:src="@drawable/icon_home_album_online"
+            android:src="@drawable/me_icon_head_album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

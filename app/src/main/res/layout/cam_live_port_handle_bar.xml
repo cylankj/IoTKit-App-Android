@@ -2,6 +2,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/fLayout_live_port_bottom_control_bar"
     android:layout_width="match_parent"
+    android:background="@drawable/camera_sahdow"
     android:layout_height="@dimen/y39"
     android:layout_gravity="bottom">
 
