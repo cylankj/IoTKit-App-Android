@@ -157,7 +157,7 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
 
     private void setAnswerState(final int state, TextView textView) {
         textView.setText(state == 0 ? "未接听" : "已接听");
-        ViewUtils.setDrawablePadding(textView, state == 0 ? R.drawable.icon_bell_dismiss : R.drawable.icon_bell_answer, 0);
+        ViewUtils.setDrawablePadding(textView, state == 0 ? R.drawable.doorbell_icon_not_connected : R.drawable.doorbell_icon_connect, 0);
     }
 
     private SimpleLongClickListener simpleLongClickListener;
