@@ -42,7 +42,7 @@
                 android:layout_centerVertical="true"
                 android:clickable="true"
                 android:padding="@dimen/x15"
-                android:src="@drawable/icon_finish"
+                android:src="@drawable/me_icon_finish_normal"
                 android:visibility="visible" />
         </RelativeLayout>
     </FrameLayout>
