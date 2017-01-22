@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
@@ -17,6 +20,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineSetRemarkNamePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
@@ -41,6 +45,8 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     View viewMinePersonalSetRemarknameNewNameLine;
     @BindView(R.id.iv_mine_personal_set_remarkname_clear)
     ImageView ivMinePersonalSetRemarknameClear;
+    @BindView(R.id.rl_tab_bar_container)
+    FrameLayout rlTabBarContainer;
 
 
     private MineSetRemarkNameContract.Presenter presenter;
@@ -73,6 +79,12 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         if (presenter != null) presenter.start();
@@ -100,10 +112,12 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMineSetRemarknameBind.setEnabled(false);
             ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
+            viewMinePersonalSetRemarknameNewNameLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         } else {
             ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMineSetRemarknameBind.setEnabled(true);
             ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
+            viewMinePersonalSetRemarknameNewNameLine.setBackgroundColor(Color.parseColor("#36bdff"));
         }
     }
 

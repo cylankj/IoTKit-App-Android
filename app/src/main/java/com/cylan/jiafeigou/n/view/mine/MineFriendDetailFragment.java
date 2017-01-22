@@ -7,11 +7,13 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -30,6 +32,8 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import com.cylan.utils.NetUtils;
 
@@ -58,6 +62,8 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     RelativeLayout rlDeleteRelativeandfriend;
     @BindView(R.id.tv_share_device)
     TextView tvShareDevice;
+    @BindView(R.id.rl_title_bar)
+    FrameLayout rlTitleBar;
 
     private MineFriendsListShareDevicesFragment mineShareDeviceFragment;
     private MineSetRemarkNameFragment mineSetRemarkNameFragment;
@@ -103,6 +109,12 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTitleBar);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         if (presenter != null) presenter.start();
@@ -114,8 +126,14 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     private void initData() {
         Bundle bundle = getArguments();
         frienditembean = (RelAndFriendBean) bundle.getParcelable("frienditembean");
-        tvRelativeAndFriendName.setText(frienditembean.markName);
-        tvRelativeAndFriendLikeName.setText(frienditembean.alias);
+        if (TextUtils.isEmpty(frienditembean.markName)){
+            tvRelativeAndFriendName.setVisibility(View.GONE);
+        }else {
+            tvRelativeAndFriendName.setVisibility(View.VISIBLE);
+            tvRelativeAndFriendName.setText(frienditembean.markName);
+        }
+
+        tvRelativeAndFriendLikeName.setText(getString(R.string.ALIAS)+": "+frienditembean.alias);
         //头像显示
         Glide.with(getContext()).load(frienditembean.iconUrl)
                 .asBitmap()
@@ -169,7 +187,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rl_delete_relativeandfriend));
                 AppLogger.e("rl_delete_relativeandfriend");
-                showDelFriendDialog(view, frienditembean);
+                showDelFriendDialog(frienditembean);
                 break;
             case R.id.tv_share_device:
                 if (getView() != null)
@@ -184,6 +202,26 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 jump2LookBigImageFragment();
                 break;
         }
+    }
+
+
+    /**
+     * 删除亲友对话框
+     *
+     * @param bean
+     */
+    public void showDelFriendDialog(RelAndFriendBean bean) {
+        Bundle bundle = new Bundle();
+        bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap3_Friends_DeleteFriends));
+        SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
+        simpleDialogFragment.setAction((int id, Object value) -> {
+            if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
+                return;
+            }
+            presenter.sendDeleteFriendReq(bean.account);
+        });
+        simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
     }
 
     /**

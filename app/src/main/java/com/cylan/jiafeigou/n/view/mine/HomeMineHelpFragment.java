@@ -7,8 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -23,24 +23,23 @@ import butterknife.OnClick;
  * 创建者     谢坤
  * 创建时间   2016/8/8 11:26
  * 描述	      ${TODO}
- * <p/>
+ * <p>
  * 更新者     $Author$
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
 public class HomeMineHelpFragment extends Fragment {
 
-    @BindView(R.id.rLayout_mine_help_top_bar)
-    RelativeLayout rLayoutTopBar;
-
     @BindView(R.id.tv_mine_help_suggestion)
     TextView mTvHelpSuggestion;
-
     @BindView(R.id.wv_mine_help)
     WebView mWvHelp;
-
     @BindView(R.id.pb_mine_help)
     ProgressBar mPbHelp;
+    @BindView(R.id.iv_home_mine_message_back)
+    TextView ivHomeMineMessageBack;
+    @BindView(R.id.fLayout_top_bar_container)
+    FrameLayout fLayoutTopBarContainer;
 
     private HomeMineHelpSuggestionFragment homeMineHelpSuggestionFragment;
 
@@ -65,6 +64,12 @@ public class HomeMineHelpFragment extends Fragment {
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+    }
+
     /**
      * 当进度条加载完成的时候显示该webView
      */
@@ -77,11 +82,11 @@ public class HomeMineHelpFragment extends Fragment {
         mWvHelp.loadUrl("http://test.jfgou.com/help/zh-rCN.html");
     }
 
-    @OnClick({R.id.iv_home_mine_help_back, R.id.tv_mine_help_suggestion})
+    @OnClick({R.id.iv_home_mine_message_back, R.id.tv_mine_help_suggestion})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击退回home_mine的fragment
-            case R.id.iv_home_mine_help_back:
+            case R.id.iv_home_mine_message_back:
                 getFragmentManager().popBackStack();
                 break;
             //点击进入意见反馈的页面

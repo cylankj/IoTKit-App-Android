@@ -469,7 +469,7 @@ public class DpMsgDefine {
         @Override
         public String toString() {
             return "DPAlarm{" +
-                    "time=" + time +
+                    "startTime=" + time +
                     ", isRecording=" + isRecording +
                     ", fileIndex=" + fileIndex +
                     ", type=" + type +
@@ -746,7 +746,7 @@ public class DpMsgDefine {
         public String toString() {
             return "DPBellCallRecord{" +
                     "state=" + isOK +
-                    ", time=" + time +
+                    ", startTime=" + time +
                     ", duration=" + duration +
                     ", type=" + type +
                     '}';

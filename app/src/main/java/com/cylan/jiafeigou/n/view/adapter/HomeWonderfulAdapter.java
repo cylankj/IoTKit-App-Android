@@ -26,12 +26,8 @@ import java.util.List;
 
 
 public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem> {
-
-
     private WonderfulItemClickListener deviceItemClickListener;
     private WonderfulItemLongClickListener deviceItemLongClickListener;
-
-    private LoadMediaListener loadMediaListener;
 
     public HomeWonderfulAdapter(Context context, List<DpMsgDefine.DPWonderItem> items,
                                 IMulItemViewType<DpMsgDefine.DPWonderItem> mulItemViewType) {
@@ -47,15 +43,19 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
         this.deviceItemLongClickListener = deviceItemLongClickListener;
     }
 
-    public void setLoadMediaListener(LoadMediaListener loadMediaListener) {
-        this.loadMediaListener = loadMediaListener;
-    }
-
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, DpMsgDefine.DPWonderItem item) {
         if (viewType != DpMsgDefine.DPWonderItem.TYPE_LOAD) {
+            holder.setVisibility(R.id.tv_wonderful_item_footer, View.INVISIBLE);
             initClickListener(holder, layoutPosition);
             handleState(holder, item);
+        }
+
+        DpMsgDefine.DPWonderItem item1 = getItem(getCount() - 1);
+        if (item1.msgType != DpMsgDefine.DPWonderItem.TYPE_LOAD) {
+            if (layoutPosition == getCount() - 1 && layoutPosition > 0) {
+                holder.setVisibility(R.id.tv_wonderful_item_footer, View.VISIBLE);
+            }
         }
     }
 
@@ -70,7 +70,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
 
     private void handleState(SuperViewHolder holder, DpMsgDefine.DPWonderItem bean) {
         //时间
-        holder.setText(R.id.tv_wonderful_item_date, TimeUtils.getHH_MM(bean.time * 1000));
+        holder.setText(R.id.tv_wonderful_item_date, TimeUtils.getHH_MM(bean.time * 1000L));
         //来自摄像头
         if (TextUtils.isEmpty(bean.place)) {
             holder.setVisibility(R.id.tv_wonderful_item_device_name, View.GONE);
@@ -89,6 +89,8 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
         }
+
+
     }
 
     @Override
@@ -106,9 +108,16 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
 
             @Override
             public int getLayoutId(int viewType) {
-                return viewType == DpMsgDefine.DPWonderItem.TYPE_PIC ?
-                        R.layout.layout_item_picture_wonderful :
-                        R.layout.layout_item_vedio_wonderful;
+                switch (viewType) {
+                    case 0:
+                        return R.layout.layout_item_picture_wonderful;
+                    case 1:
+                        return R.layout.layout_item_vedio_wonderful;
+                    case 2:
+                        return R.layout.layout_item_loading_wonderful;
+                    default:
+                        return R.layout.layout_item_vedio_wonderful;
+                }
             }
         };
     }
@@ -121,7 +130,8 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
 
     }
 
-    public interface LoadMediaListener {
-        void loadMedia(DpMsgDefine.DPWonderItem bean, ImageView imageView);
+    public interface WonderfulLoadMoreListener {
+        void loadMore(int position, DpMsgDefine.DPWonderItem item);
     }
+
 }

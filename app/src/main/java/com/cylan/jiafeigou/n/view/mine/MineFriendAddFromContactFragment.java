@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
@@ -23,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddFromContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.FriendAddFromContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.superadapter.OnItemClickListener;
 
@@ -48,6 +50,8 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     RecyclerView rcyContactList;
     @BindView(R.id.ll_no_contact)
     LinearLayout llNoContact;
+    @BindView(R.id.rl_home_mine_relativesandfriends_scan_add)
+    RelativeLayout rlHomeMineRelativesandfriendsScanAdd;
 
     private MineFriendAddFromContactContract.Presenter presenter;
     private MineAddFromContactFragment mineAddFromContactFragment;
@@ -80,6 +84,12 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         ButterKnife.bind(this, view);
         initPresenter();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriendsScanAdd);
     }
 
     @OnTextChanged(R.id.et_add_phone_number)

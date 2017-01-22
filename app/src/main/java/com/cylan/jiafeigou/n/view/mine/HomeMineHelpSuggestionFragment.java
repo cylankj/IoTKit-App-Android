@@ -27,9 +27,11 @@ import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
+import com.cylan.jiafeigou.support.softkeyboard.util.ViewUtil;
 import com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.internal.SuperViewHolder;
 import com.cylan.utils.NetUtils;
 
@@ -44,7 +46,7 @@ import butterknife.OnClick;
  * 创建者     谢坤
  * 创建时间   2016/8/8 14:37
  * 描述	      ${TODO}
- * <p/>
+ * <p>
  * 更新者     $Author$
  * 更新时间   $Date$
  * 更新描述   ${TODO}
@@ -65,6 +67,8 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     ImageView ivLoadingRotate;
     @BindView(R.id.fl_loading_container)
     FrameLayout flLoadingContainer;
+    @BindView(R.id.rl_home_mine_suggestion)
+    FrameLayout rlHomeMineSuggestion;
 
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
     private String suggestion;
@@ -86,6 +90,12 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         initKeyBoard();
         initPresenter();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlHomeMineSuggestion);
     }
 
     private void initPresenter() {

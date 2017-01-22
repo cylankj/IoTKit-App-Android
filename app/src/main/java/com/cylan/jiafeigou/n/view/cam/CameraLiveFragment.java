@@ -465,7 +465,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
             case JError.ErrorVideoPeerNotExist:
-                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
+//                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case JError.ErrorVideoPeerInConnect:

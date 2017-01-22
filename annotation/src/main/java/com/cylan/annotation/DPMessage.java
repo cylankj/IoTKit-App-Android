@@ -16,9 +16,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.CLASS)
 public @interface DPMessage {
-    String name();
+    String name() default "";
 
-    Class<?> primaryType();
+    Class<?> type();
 
     DPType dpType() default DPType.TYPE_FIELD;
 

@@ -12,6 +12,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -55,18 +56,29 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     TextView tvAddAsRelativeAndFriend;
     @BindView(R.id.rl_add_request_mesg)
     RelativeLayout rlAddRequestMesg;
+    @BindView(R.id.rl_title_bar)
+    FrameLayout rlTitleBar;
 
     private MineLookBigImageFragment lookBigImageFragment;
     private MineFriendAddReqDetailContract.Presenter presenter;
     private MineAddReqBean addRequestItems;
     private MineAddFromContactFragment addReqFragment;
 
+    private OnAcceptAddListener addListener;
+
+    public interface OnAcceptAddListener {
+        void onAccept(MineAddReqBean backbean);
+    }
+
+    public void setOnAcceptAddListener(OnAcceptAddListener addListener) {
+        this.addListener = addListener;
+    }
+
     public static MineFriendAddReqDetailFragment newInstance(Bundle bundle) {
         MineFriendAddReqDetailFragment fragment = new MineFriendAddReqDetailFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
-
 
     @Nullable
     @Override
@@ -77,6 +89,12 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         initMegHight();
         initData();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTitleBar);
     }
 
     private void initPresenter() {
@@ -214,6 +232,9 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     public void showAddedReult(boolean flag) {
         if (flag) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
+            if (addListener != null) {
+                addListener.onAccept(addRequestItems);
+            }
             getFragmentManager().popBackStack();
         } else {
             ToastUtil.showNegativeToast(getString(R.string.ADD_FAILED));

@@ -88,7 +88,7 @@ public class SimpleDialogFragment extends BaseDialog {
         dismiss();
         switch (view.getId()) {
             case R.id.tv_dialog_btn_left:
-                if (action != null) action.onDialogAction(R.id.tv_dialog_btn_right, cache);
+                if (action != null) action.onDialogAction(R.id.tv_dialog_btn_left, cache);
                 break;
             case R.id.tv_dialog_btn_right:
                 break;

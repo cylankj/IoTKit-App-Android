@@ -150,7 +150,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
         return fragment;
     }
 
-
     @Nullable
     @Override
     public android.view.View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -532,7 +531,9 @@ public class LoginFragment extends android.support.v4.app.Fragment
         if (!isVisible())
             return;
         Toast.makeText(getActivity(), code == 0 ? "good" : "无效验证码", Toast.LENGTH_SHORT).show();
-        if (code != 0) {
+        if (code == 0) {
+            jump2NextPage();
+        }else {
             if (verificationCodeLogic != null)
                 verificationCodeLogic.initTimer();
         }
@@ -699,7 +700,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
     @Override
     public void jump2NextPage() {
         clearSomeThing();
-        verifyCode();
         //to set up pwd
         Bundle bundle = getArguments();
         if (getActivity() != null && bundle != null) {
@@ -761,7 +761,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
                     return;
                 }
                 if (validCode && validPhoneNum) {
-                    jump2NextPage();
+                    verifyCode();
                     return;
                 } else {
                     Toast.makeText(getActivity(), getString(R.string.CODE_ERR), Toast.LENGTH_SHORT).show();
@@ -827,7 +827,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 if (verificationCodeLogic != null)
                     verificationCodeLogic.start();
                 if (presenter != null)
-
                     presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
                 break;
             case R.id.tv_register_submit:

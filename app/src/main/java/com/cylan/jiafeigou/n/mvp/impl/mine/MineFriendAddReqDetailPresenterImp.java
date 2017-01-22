@@ -25,6 +25,8 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
 
     private CompositeSubscription compositeSubscription;
 
+    private boolean isAddReqBack;   //请求添加过时 回加好友
+
     public MineFriendAddReqDetailPresenterImp(MineFriendAddReqDetailContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -108,6 +110,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                     public void call(MineAddReqBean mineAddReqBean) {
                         try {
                             JfgCmdInsurance.getCmd().addFriend(mineAddReqBean.account, "");
+                            isAddReqBack = true;
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -178,7 +181,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 .subscribe(new Action1<RxEvent.AddFriendBack>() {
                     @Override
                     public void call(RxEvent.AddFriendBack addFriendBack) {
-                        if (addFriendBack != null && addFriendBack instanceof RxEvent.AddFriendBack) {
+                        if (isAddReqBack && addFriendBack != null && addFriendBack instanceof RxEvent.AddFriendBack) {
                             getView().showSendAddReqResult(addFriendBack.jfgResult.code == 0 ? true : false);
                         }
                     }

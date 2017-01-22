@@ -6,43 +6,47 @@
     android:layout_height="match_parent"
     android:background="@color/color_white">
 
-    <RelativeLayout
+    <FrameLayout
+        android:background="@color/color_0ba8cf"
+        android:id="@+id/rl_tab_bar_container"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y73"
-        android:background="@color/color_0ba8cf">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/iv_mine_bind_phone_back"
-            android:clickable="true"
-            android:layout_alignParentBottom="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/x15"
-            android:src="@drawable/nav_tab_back_selector" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_marginBottom="@dimen/y12"
-            android:layout_alignParentBottom="true"
-            android:layout_marginLeft="@dimen/x48"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/Tap0_BindPhoneNo"
-            android:textSize="@dimen/sp18"
-            android:textColor="@color/color_white" />
+            <ImageView
+                android:id="@+id/iv_mine_bind_phone_back"
+                android:clickable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/x15"
+                android:layout_centerVertical="true"
+                android:src="@drawable/nav_tab_back_selector" />
 
-        <ImageView
-            android:visibility="visible"
-            android:id="@+id/iv_mine_info_bind_phone"
-            android:layout_marginBottom="@dimen/y2"
-            android:padding="@dimen/x15"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@drawable/icon_finish_disable" />
-    </RelativeLayout>
+            <TextView
+                android:layout_toRightOf="@id/iv_mine_bind_phone_back"
+                android:id="@+id/tv_title"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y48"
+                android:text="@string/Tap0_BindPhoneNo"
+                android:textSize="@dimen/sp18"
+                android:gravity="center_vertical"
+                android:textColor="@color/color_white" />
+
+            <ImageView
+                android:visibility="visible"
+                android:id="@+id/iv_mine_info_bind_phone"
+                android:padding="@dimen/x15"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:src="@drawable/icon_finish_disable" />
+        </RelativeLayout>
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -131,9 +135,11 @@
                     android:textColor="@color/common_btn_color_state" />
 
                 <View
+                    android:id="@+id/vertify_code_line"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y1"
                     android:layout_gravity="bottom"
+                    android:layout_marginBottom="@dimen/y8"
                     android:layout_marginLeft="@dimen/x20"
                     android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />

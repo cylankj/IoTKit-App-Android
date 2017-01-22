@@ -112,7 +112,8 @@ public class FateLineView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        setMeasuredDimension(measure(widthMeasureSpec, true), measure(heightMeasureSpec, false));
+        setMeasuredDimension(measure(widthMeasureSpec, true), MeasureSpec.getSize(heightMeasureSpec));
+//        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }
 
     private int measure(int measureSpec, boolean isWidth) {
@@ -147,6 +148,15 @@ public class FateLineView extends View {
         dashPath.moveTo(getMeasuredWidth() / 2, rectTop);
         dashPath.lineTo(getMeasuredWidth() / 2, rectBottom);
         canvas.drawPath(dashPath, dashLinePaint);
+        //外圆
+        circlePaint.setStyle(Paint.Style.STROKE);
+        circlePaint.setStrokeWidth(outerCircleStrokeWidth);
+        circlePaint.setColor(Color.WHITE);
+        canvas.drawCircle(getMeasuredWidth() / 2,
+                circleTop,
+                innerCircleRadius + outerCircleStrokeWidth - 0.5f,
+                circlePaint);
+
         //外圆
         circlePaint.setStyle(Paint.Style.STROKE);
         circlePaint.setStrokeWidth(outerCircleStrokeWidth);

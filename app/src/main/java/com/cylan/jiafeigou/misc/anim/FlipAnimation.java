@@ -52,7 +52,7 @@ public class FlipAnimation extends Animation {
 
     @Override
     protected void applyTransformation(float interpolatedTime, Transformation t) {
-        // Angle around the y-axis of the rotation at the given time
+        // Angle around the y-axis of the rotation at the given startTime
         // calculated both in radians and degrees.
         final double radians = Math.PI * interpolatedTime;
         float degrees = (float) (180.0 * radians / Math.PI);

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +25,7 @@ import butterknife.ButterKnife;
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BaseFragment<P extends JFGPresenter> extends Fragment implements JFGView {
+public abstract class BaseFragment<P extends JFGPresenter> extends Fragment implements JFGView, View.OnKeyListener {
     protected P mPresenter;
 
     protected String mUUID;
@@ -81,6 +82,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        view.setFocusableInTouchMode(true);
+        view.requestFocus();
+        view.setOnKeyListener(this);
         initViewAndListener();
     }
 
@@ -181,7 +185,8 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     }
 
-    protected void onBackPressed() {
+    protected boolean onBackPressed() {
+        return false;
     }
 
     protected CallBack callBack;
@@ -193,6 +198,11 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     protected void onEnterAnimationFinished() {
 
+    }
+
+    @Override
+    public boolean onKey(View v, int keyCode, KeyEvent event) {
+        return keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN && onBackPressed();
     }
 
 

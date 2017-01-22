@@ -23,7 +23,7 @@ import android.os.SystemClock;
 /**
  * 解决系统的CountDownTimer cancel失效问题 <br/>
  * <p>
- * Schedule a countdown until a time in the future, with
+ * Schedule a countdown until a startTime in the future, with
  * regular notifications on intervals along the way.
  * <p>
  * Example of showing a 30 second countdown in a text field:
@@ -44,7 +44,7 @@ import android.os.SystemClock;
  * The calls to {@link #onTick(long)} are synchronized to this object so that
  * one call to {@link #onTick(long)} won't ever occur before the previous
  * callback is complete.  This is only relevant when the implementation of
- * {@link #onTick(long)} takes an amount of time to execute that is significant
+ * {@link #onTick(long)} takes an amount of startTime to execute that is significant
  * compared to the countdown interval.
  */
 public abstract class CountDownTimer {
@@ -79,7 +79,7 @@ public abstract class CountDownTimer {
                     long lastTickStart = SystemClock.elapsedRealtime();
                     onTick(millisLeft);
 
-                    // take into account user's onTick taking time to execute
+                    // take into account user's onTick taking startTime to execute
                     long delay = lastTickStart + mCountdownInterval - SystemClock.elapsedRealtime();
 
                     // special case: user's onTick took more than interval to
@@ -129,12 +129,12 @@ public abstract class CountDownTimer {
     /**
      * Callback fired on regular interval.
      *
-     * @param millisUntilFinished The amount of time until finished.
+     * @param millisUntilFinished The amount of startTime until finished.
      */
     public abstract void onTick(long millisUntilFinished);
 
     /**
-     * Callback fired when the time is up.
+     * Callback fired when the startTime is up.
      */
     public abstract void onFinish();
 }

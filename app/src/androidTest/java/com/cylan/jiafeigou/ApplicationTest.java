@@ -31,7 +31,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 //            record = new DpMsgDefine.DPBellCallRecord();
 //            record.duration = random.nextInt(1000);
 //            record.isOK = random.nextInt(2);
-//            record.time = random.nextInt(1000000);
+//            record.startTime = random.nextInt(1000000);
 //            record.type = random.nextInt(5);
 //            byte[] pack = DpUtils.pack(record);
 //            msg.id = 401;

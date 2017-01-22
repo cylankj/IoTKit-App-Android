@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -199,6 +200,10 @@ public class DataSourceManager implements JFGSourceManager {
             response.msgId = entry.getKey();
             RxBus.getCacheInstance().post(response);
         }
+        AppLogger.e("DataSourceManager:Completed");
+        RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
+        completed.seq = dataRsp.seq;
+        RxBus.getCacheInstance().post(completed);
         if (changed) {
             long version = System.currentTimeMillis();
             if (device != null) device.version = version;

@@ -47,18 +47,18 @@
 //    }
 //
 //    public void setupHistoryData(IData dataStack) {
-//        final long time = System.currentTimeMillis();
+//        final long startTime = System.currentTimeMillis();
 //        swCamLiveWheel.setDataProvider(dataStack);
-//        Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - time));
+//        Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - startTime));
 //    }
 //
 //    @Override
-//    public void onTimeUpdate(final long time, int state) {
+//    public void onTimeUpdate(final long startTime, int state) {
 //        if (tvCamLiveLandDatePop != null) {
 //            tvCamLiveLandDatePop.post(new Runnable() {
 //                @Override
 //                public void run() {
-//                    tvCamLiveLandDatePop.setText(simpleDateFormat.format(new Date(time)));
+//                    tvCamLiveLandDatePop.setText(simpleDateFormat.format(new Date(startTime)));
 //                }
 //            });
 //        }

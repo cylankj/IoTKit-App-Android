@@ -16,8 +16,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -28,6 +30,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -56,6 +59,8 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     TextView tvTopTitle;
     @BindView(R.id.et_search_contact)
     EditText etSearchContact;
+    @BindView(R.id.rl_mine_share_to_contact)
+    FrameLayout rlMineShareToContact;
 
 
     private MineShareToContactContract.Presenter presenter;
@@ -87,6 +92,12 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         Bundle arguments = getArguments();
         deviceinfo = arguments.getParcelable("deviceinfo");
         hasSharefriend = arguments.getParcelableArrayList("sharefriend");
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlMineShareToContact);
     }
 
     @Override

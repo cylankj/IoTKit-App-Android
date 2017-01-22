@@ -6,43 +6,47 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
+    <FrameLayout
         android:id="@+id/rl_home_mine_relativesandfriends"
+        android:background="#0BA8CF"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y73"
-        android:background="#0BA8CF">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/iv_home_mine_relativesandfriends_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:padding="@dimen/x15"
-            android:clickable="true"
-            android:src="@drawable/nav_tab_back_selector" />
-
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/y12"
-            android:layout_marginLeft="@dimen/x48"
-            android:text="@string/Tap3_Friends"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp18" />
+            android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_home_mine_relativesandfriends_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:clickable="true"
-            android:padding="@dimen/x15"
-            android:text="@string/Tap3_FriendsAdd"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp14" />
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_home_mine_relativesandfriends_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/x15"
+                android:clickable="true"
+                android:layout_centerVertical="true"
+                android:src="@drawable/nav_tab_back_selector" />
+
+            <TextView
+                android:layout_toRightOf="@id/iv_home_mine_relativesandfriends_back"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:text="@string/Tap3_Friends"
+                android:gravity="center_vertical"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp18" />
+
+            <TextView
+                android:id="@+id/tv_home_mine_relativesandfriends_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:clickable="true"
+                android:padding="@dimen/x15"
+                android:text="@string/Tap3_FriendsAdd"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp14" />
+        </RelativeLayout>
+
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -67,6 +71,7 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_request_add"
+                android:overScrollMode="never"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </android.support.v7.widget.RecyclerView>
@@ -86,6 +91,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_relativesandfriends_list"
                 android:scrollbars="vertical"
+                android:overScrollMode="never"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
             </android.support.v7.widget.RecyclerView>

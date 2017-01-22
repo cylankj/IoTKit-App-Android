@@ -113,9 +113,7 @@
                 android:button="@null"
                 android:checked="false" />
 
-
         </LinearLayout>
-
 
         <View
             android:layout_width="match_parent"
@@ -126,7 +124,6 @@
             android:background="@color/color_f2f2f2" />
 
     </FrameLayout>
-
 
     <com.cylan.jiafeigou.widget.LoginButton
         android:id="@+id/lb_login_commit"
@@ -142,7 +139,6 @@
         android:textColor="@color/common_btn_color_state"
         android:textSize="@dimen/sp17"
         tim:lb_stroke_color="@color/color_d8d8d8" />
-
 
     <TextView
         android:id="@+id/tv_login_forget_pwd"
@@ -164,7 +160,6 @@
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/y24"
         android:orientation="horizontal">
-
 
         <TextView
             android:id="@+id/tv_qqLogin_commit"

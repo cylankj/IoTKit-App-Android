@@ -9,14 +9,14 @@
     <RelativeLayout
         android:id="@+id/rl_home_mine_relativesandfriends_scan_add"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y73"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
         android:background="#0BA8CF">
 
         <ImageView
             android:id="@+id/iv_home_mine_relativesandfriends_add_from_contact_back"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
             android:padding="@dimen/x15"
             android:clickable="true"
             android:src="@drawable/nav_tab_back_selector" />
@@ -24,9 +24,7 @@
         <EditText
             android:id="@+id/et_add_phone_number"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/y12"
+            android:layout_height="@dimen/y48"
             android:layout_marginLeft="@dimen/x48"
             android:textCursorDrawable="@drawable/search_friend_cursor_color"
             android:hint="@string/Search"
@@ -42,6 +40,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcy_contact_list"
+            android:overScrollMode="never"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>

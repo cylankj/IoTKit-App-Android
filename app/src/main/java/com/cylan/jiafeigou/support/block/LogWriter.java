@@ -107,7 +107,7 @@ public class LogWriter {
 
             writer = new BufferedWriter(out);
             writer.write("\r\n**********************\r\n");
-            writer.write(TIME_FORMATTER.format(time) + "(write log time)");
+            writer.write(TIME_FORMATTER.format(time) + "(write log startTime)");
             writer.write("\r\n");
             writer.write("\r\n");
             writer.write(str);

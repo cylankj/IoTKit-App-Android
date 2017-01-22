@@ -487,7 +487,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
             ToastUtil.showToast(getString(R.string.INVALID_CODE));
         } else if (code == 0) {
             if (!PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT, "").equals(etForgetUsername.getText().toString().trim())) {
-                ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
+                ToastUtil.showToast(getContext().getResources().getString(R.string.Tap0_wrongcode));
                 return;
             }
             preparePhoneView();
@@ -505,6 +505,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
             ToastUtil.showToast("重置密码失败");
             return;
         }
+
         ToastUtil.showToast(getString(R.string.PWD_OK));
         if (getView() != null) {
             getView().postDelayed(new Runnable() {

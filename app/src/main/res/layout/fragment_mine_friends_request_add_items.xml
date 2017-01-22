@@ -56,7 +56,7 @@
             android:gravity="center"
             android:layout_centerVertical="true"
             android:layout_alignParentRight="true"
-            android:background="@drawable/bg_screenshot"
+            android:background="@drawable/btn_accept_add_request_shape"
             android:text="@string/Tap3_FriendsAdd_Agree"
             android:textSize="@dimen/sp13"
             android:textColor="@color/color_4b9fd5"

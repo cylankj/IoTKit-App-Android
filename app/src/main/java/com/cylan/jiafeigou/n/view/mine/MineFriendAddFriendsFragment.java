@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -43,6 +44,8 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     TextView tvAddFromContract;
     @BindView(R.id.fragment_container)
     FrameLayout fragmentContainer;
+    @BindView(R.id.rl_home_mine_relativesandfriends)
+    FrameLayout rlHomeMineRelativesandfriends;
 
     private MineFriendScanAddFragment scanAddFragment;
     private MineFriendAddFromContactFragment addFromContactFragment;
@@ -73,6 +76,12 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
         ButterKnife.bind(this, view);
         initPresenter();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriends);
     }
 
     private void initPresenter() {

@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
@@ -24,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineBindPhonePresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
@@ -54,6 +56,12 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     TextView tvTitle;
     @BindView(R.id.fLayout_verification_code_input_box)
     FrameLayout fLayoutVerificationCodeInputBox;
+    @BindView(R.id.rl_tab_bar_container)
+    FrameLayout rlTabBarContainer;
+    @BindView(R.id.view_mine_personal_information_mailbox)
+    View viewMinePersonalInformationMailbox;
+    @BindView(R.id.vertify_code_line)
+    View vertifyCodeLine;
     private JFGAccount userinfo;
     private boolean isBindOrChange;
     private MineBindPhoneContract.Presenter presenter;
@@ -70,6 +78,12 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         return view;
     }
 
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
+    }
+
     /**
      * 验证码输入框变化监听
      */
@@ -78,9 +92,11 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         if (TextUtils.isEmpty(s)) {
             ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMineInfoBindPhone.setEnabled(false);
+            vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         } else {
             ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMineInfoBindPhone.setEnabled(true);
+            vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
         }
     }
 
@@ -108,9 +124,11 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         if (s.length() == 0) {
             tvMeterGetCode.setEnabled(false);
             ivMineBindPhoneClear.setVisibility(View.INVISIBLE);
+            viewMinePersonalInformationMailbox.setBackgroundColor(Color.parseColor("#f2f2f2"));
         } else {
             tvMeterGetCode.setEnabled(true);
             ivMineBindPhoneClear.setVisibility(View.VISIBLE);
+            viewMinePersonalInformationMailbox.setBackgroundColor(Color.parseColor("#36bdff"));
         }
     }
 

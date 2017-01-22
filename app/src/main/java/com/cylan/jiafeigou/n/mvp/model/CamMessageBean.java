@@ -25,7 +25,7 @@ public class CamMessageBean {
                 "id=" + id +
                 ", alarmMsgs=" + alarmMsg +
                 ", content=" + content +
-                ", time=" + time +
+                ", startTime=" + time +
                 ", version=" + version +
                 '}';
     }

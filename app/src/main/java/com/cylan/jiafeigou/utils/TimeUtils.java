@@ -115,6 +115,13 @@ public class TimeUtils {
                 .format(new Date(time));
     }
 
+    public static String getDayInMonth(long time) {
+        Calendar instance = Calendar.getInstance();
+        instance.setTimeInMillis(time);
+        int i = instance.get(Calendar.DAY_OF_MONTH);
+        return i + "";
+    }
+
     public static String getMM_DD(long time) {
         return new SimpleDateFormat("MM月dd日", Locale.getDefault())
                 .format(new Date(time));
@@ -198,5 +205,11 @@ public class TimeUtils {
 
     public static void main(String[] args) {
 
+    }
+
+    public static String getMonthInYear(long time) {
+        Calendar instance = Calendar.getInstance();
+        instance.setTimeInMillis(time);
+        return instance.get(Calendar.MONTH) + 1 + "月";
     }
 }

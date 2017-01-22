@@ -113,7 +113,7 @@ public class BlockCanaryCore {
     /**
      * Because postDelayed maybe cause more delay than MonitorEnv.get().getConfigBlockThreshold()
      * it maybe cause can not get Thread Task info when notify block event.
-     * So, is it be better to make delay time < MonitorEnv.get().getConfigBlockThreshold(),
+     * So, is it be better to make delay startTime < MonitorEnv.get().getConfigBlockThreshold(),
      * such as MonitorEnv.get().getConfigBlockThreshold() * 0.8f OR MonitorEnv.get().getConfigBlockThreshold() - 20 ?
      *
      * @return sample delay

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              android:id="@+id/wonder_item_container"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="#F7F8FA"
+              android:gravity="center_horizontal"
+              android:orientation="vertical"
+    >
+
+    <TextView
+        android:id="@+id/wonder_item_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="13dp"
+        android:text="五月"
+        android:textColor="#333333"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/wonder_item_indicator_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="0dp">
+
+    </android.support.v7.widget.RecyclerView>
+</LinearLayout>

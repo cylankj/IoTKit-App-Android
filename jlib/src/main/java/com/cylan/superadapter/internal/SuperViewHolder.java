@@ -241,4 +241,11 @@ public class SuperViewHolder extends RecyclerView.ViewHolder implements ChainSet
         return this;
     }
 
+    @Override
+    public SuperViewHolder setSelected(int viewId, boolean selected) {
+        View view = getView(viewId);
+        if (view != null) view.setSelected(selected);
+        return this;
+    }
+
 }

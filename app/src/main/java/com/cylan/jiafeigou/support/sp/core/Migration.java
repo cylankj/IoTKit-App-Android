@@ -67,7 +67,7 @@ public interface Migration<T> {
      * migrated is available. If not, return true if you want to cancel the import.
      * <p>
      * This check is very important, because the migration data should be deleted in {@link
-     * #onPostMigrate(Object)}. When starting this migration a second time this method should
+     * #onPostMigrate(Object)}. When starting this migration a second startTime this method should
      * return {@code true}, to skip the migration, or the previous written data will be overridden
      * with the value from {@link #getData()} which should be {@code null} after the first
      * migration

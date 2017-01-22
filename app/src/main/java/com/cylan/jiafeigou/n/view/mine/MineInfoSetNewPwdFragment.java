@@ -9,7 +9,9 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -45,6 +47,8 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     ImageView ivMineNewPwdClear;
     @BindView(R.id.cb_new_pwd_show)
     CheckBox cbNewPwdShow;
+    @BindView(R.id.rl_tab_bar_container)
+    FrameLayout rlTabBarContainer;
     private MineInfoSetNewPwdContract.Presenter presenter;
     private String useraccount;
     private String token;
@@ -70,6 +74,12 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
         ButterKnife.bind(this, view);
         initPresenter();
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     private void initPresenter() {

@@ -6,31 +6,35 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <RelativeLayout
+    <FrameLayout
+        android:background="#0BA8CF"
         android:id="@+id/rl_home_mine_suggestion"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y73"
-        android:background="#0BA8CF">
+        android:layout_height="wrap_content">
 
-        <ImageView
-            android:id="@+id/iv_home_mine_sharedevices_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:padding="@dimen/x15"
-            android:src="@drawable/nav_tab_back_selector" />
-
-        <TextView
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/y12"
-            android:layout_marginLeft="@dimen/x48"
-            android:text="@string/Tap3_ShareDevice"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp18" />
+            android:layout_height="wrap_content">
 
-    </RelativeLayout>
+            <ImageView
+                android:id="@+id/iv_home_mine_sharedevices_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/x15"
+                android:src="@drawable/nav_tab_back_selector" />
+
+            <TextView
+                android:layout_toRightOf="@id/iv_home_mine_sharedevices_back"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:gravity="center_vertical"
+                android:text="@string/Tap3_ShareDevice"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp18" />
+
+        </RelativeLayout>
+    </FrameLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -38,6 +42,7 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycle_share_device_list"
+            android:overScrollMode="never"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
         </android.support.v7.widget.RecyclerView>

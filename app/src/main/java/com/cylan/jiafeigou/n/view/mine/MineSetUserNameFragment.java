@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,7 +9,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
@@ -17,6 +20,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNamePresenterImpl;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
@@ -41,6 +45,8 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     View viewMinePersonalInformationNewNameLine;
     @BindView(R.id.iv_mine_personal_information_new_name_clear)
     ImageView ivMinePersonalInformationNewNameClear;
+    @BindView(R.id.rl_tab_bar_container)
+    FrameLayout rlTabBarContainer;
 
 
     private MineInfoSetNameContract.Presenter presenter;
@@ -74,6 +80,12 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     }
 
     @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
+    }
+
+    @Override
     public void onStart() {
         super.onStart();
         if (presenter != null) presenter.start();
@@ -93,9 +105,13 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
         if (isEmpty) {
             ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMinePersonalSetnameBind.setEnabled(false);
+            viewMinePersonalInformationNewNameLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
+            ivMinePersonalInformationNewNameClear.setVisibility(View.GONE);
         } else {
             ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMinePersonalSetnameBind.setEnabled(true);
+            viewMinePersonalInformationNewNameLine.setBackgroundColor(Color.parseColor("#36bdff"));
+            ivMinePersonalInformationNewNameClear.setVisibility(View.VISIBLE);
         }
     }
 

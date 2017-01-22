@@ -281,6 +281,11 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             return;
         }
         bellCallRecordListAdapter.reverseItemSelectedState(position);
+        int count = bellCallRecordListAdapter.getSelectedList().size();
+        if (count == 0) {
+            bellCallRecordListAdapter.setMode(0);
+            showEditBar(false);
+        }
     }
 
     @OnClick({R.id.tv_bell_home_list_cancel, R.id.tv_bell_home_list_select_all, R.id.tv_bell_home_list_delete})
