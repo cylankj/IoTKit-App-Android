@@ -18,7 +18,7 @@ import javax.lang.model.element.TypeElement;
  */
 
 @AutoService(Processor.class)
-public class TestProcessor extends AbstractProcessor {
+public class MapProcessor extends AbstractProcessor {
 
     @Override
     public Set<String> getSupportedAnnotationTypes() {

@@ -37,8 +37,7 @@
         android:textSize="@dimen/sp10"
         android:textColor="#F26B6B"
         android:layout_alignTop="@+id/et_input_box"
-        android:layout_alignLeft="@+id/tv_information_name"
-        android:layout_alignStart="@+id/tv_information_name" />
+        android:layout_alignStart="@+id/tv_mag_information_name" />
 
     <LinearLayout
         android:layout_marginLeft="@dimen/x141"

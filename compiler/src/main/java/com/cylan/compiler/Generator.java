@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou;
+package com.cylan.compiler;
 
 import com.cylan.annotation.DPTarget;
 import com.squareup.javapoet.JavaFile;
