@@ -39,6 +39,11 @@ public class LoadingDialog extends BaseDialog {
         loadingDialog.show(fragmentManager, "LoadingDialog");
     }
 
+    public static boolean isShowing(FragmentManager fragmentManager) {
+        Fragment dialog = fragmentManager.findFragmentByTag("LoadingDialog");
+        return dialog != null && dialog.isVisible();
+    }
+
     public static void showLoading(FragmentManager fragmentManager, String content) {
         showLoading(fragmentManager, content, false);
     }

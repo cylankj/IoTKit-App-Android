@@ -71,8 +71,10 @@ public class SimpleDialogFragment extends BaseDialog {
         final String lContent = bundle.getString(KEY_LEFT_CONTENT);
         final String rContent = bundle.getString(KEY_RIGHT_CONTENT);
         final String content = bundle.getString(KEY_CONTENT_CONTENT);
-        if (!TextUtils.isEmpty(title))
+        if (!TextUtils.isEmpty(title)) {
+            tvDialogTitle.setVisibility(View.VISIBLE);
             tvDialogTitle.setText(title);
+        }
         if (!TextUtils.isEmpty(lContent))
             tvDialogBtnLeft.setText(lContent);
         if (!TextUtils.isEmpty(rContent))

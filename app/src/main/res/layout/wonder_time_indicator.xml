@@ -19,12 +19,18 @@
         android:textSize="16sp"
         android:textStyle="bold"/>
 
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/wonder_item_indicator_list"
+    <FrameLayout
+        android:id="@+id/wonder_indicator_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="0dp">
+        android:background="#0F0">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/wonder_item_indicator_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F00"
+            android:overScrollMode="never"
+            android:padding="0dp"/>
+    </FrameLayout>
 </LinearLayout>

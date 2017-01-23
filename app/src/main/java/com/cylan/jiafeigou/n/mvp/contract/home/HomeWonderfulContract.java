@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.util.List;
 
@@ -35,7 +36,9 @@ public interface HomeWonderfulContract {
 
         void chooseEmptyView(int type);//type:0:empty:1:guide:-1:hide
 
-        void onTimeLineRsp(long dayStartTime, boolean init);
+        void onTimeLineRsp(long dayStartTime);
+
+        void onTimeLineInit(List<WonderIndicatorWheelView.WheelItem> list);
     }
 
     interface Presenter extends JFGPresenter {

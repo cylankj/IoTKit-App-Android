@@ -293,6 +293,8 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                 }
                 DpMsgDefine.DPSet<DataPoint> result = new DpMsgDefine.DPSet<>();
                 result.value = origin;
+                result.id = msgId;
+                result.seq = seq;
                 if (origin.size() > 0) {
                     DataPoint first = origin.first();
                     result.seq = first.seq;

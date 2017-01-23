@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.support.v4.util.LongSparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -17,6 +18,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +42,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     private LongSparseArray<TreeSet<DpMsgDefine.DPWonderItem>> mWonderDaySource = new LongSparseArray<>();
     private long mPositionDayStart = 0;
     private long mPositionDayEnd = 0;
+
+    private static final int MAX_DAY_COUNT = 40;
+    private static final long DAY_TIME = 24 * 60 * 60 * 1000L;
+    private List<Long> mTimeLineSeq = new ArrayList<>();
 
     @Override
     protected void onRegisterSubscription() {
@@ -81,8 +87,13 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startRefresh() {
-        TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.get(mPositionDayStart);
-        load(items == null || items.size() == 0 ? mPositionDayStart : items.first().version, items != null && items.size() > 0);
+        if (DataSourceManager.getInstance().isOnline()) {
+            TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.get(mPositionDayStart);
+            load(items == null || items.size() == 0 ? mPositionDayStart : items.first().version, items != null && items.size() > 0);
+        } else {
+            mView.onLoginStateChanged(false);
+        }
+
     }
 
     private void load(long version, boolean asc) {
@@ -103,7 +114,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void deleteTimeline(long time) {
-
+        ArrayList<JFGDPMsg> params = new ArrayList<>();
+        JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, time);
+        params.add(msg);
+        robotDelData("", params, 0);
     }
 
     @Override
@@ -143,7 +157,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, startTime);
         ArrayList<JFGDPMsg> params = new ArrayList<>();
         params.add(msg);
-        robotGetData("", params, 1, true, 0);
+        long[] seq = new long[1];
+        mTimeLineSeq.add(seq[0]);
+        robotGetData("", params, 1, true, 0, seq);
     }
 
     @Override
@@ -152,22 +168,58 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         registerResponseParser(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, this::onWonderfulAccountRsp);
     }
 
-    private void onWonderfulAccountRsp(DataPoint... values) {
-        DpMsgDefine.DPWonderItem item = (DpMsgDefine.DPWonderItem) values[0];
-        mView.onTimeLineRsp(TimeUtils.getSpecificDayStartTime(item.time * 1000L), mWonderDaySource.size() == 0);
-        List<DpMsgDefine.DPWonderItem> results = filter(values);
-        TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.get(mPositionDayStart);
-        if (items == null) {
-            items = new TreeSet<>();
-            mWonderDaySource.put(mPositionDayStart, items);
-        }
-        items.addAll(results);
-        mView.chooseEmptyView(items.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
-        mView.onMediaListRsp(results);
+    private Runnable mRetryAction = new Runnable() {
+        @Override
+        public void run() {
 
+        }
+    };
+
+    private void onWonderfulAccountRsp(DataPoint... values) {
+        boolean init = mWonderDaySource.size() == 0 || mWonderDaySource.valueAt(0).size() == 0;
+        TreeSet<DpMsgDefine.DPWonderItem> wonderItems = mWonderDaySource.get(mPositionDayStart);
+        List<DpMsgDefine.DPWonderItem> results = filter(values);
+        if (wonderItems == null) {
+            wonderItems = new TreeSet<>();
+            mWonderDaySource.put(mPositionDayStart, wonderItems);
+        }
+        wonderItems.addAll(results);
+        mView.chooseEmptyView(wonderItems.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
+        mView.onMediaListRsp(results);
+        if (values != null && values.length > 0) {
+            if (init) {//init
+                DpMsgDefine.DPWonderItem item = (DpMsgDefine.DPWonderItem) values[0];
+                List<WonderIndicatorWheelView.WheelItem> list = getInitWheelList(TimeUtils.getSpecificDayStartTime(item.time * 1000L));
+                mView.onTimeLineInit(list);
+                mTimeLineSeq.clear();
+                removeCallback(mRetryAction);
+                for (WonderIndicatorWheelView.WheelItem wheelItem : list) {
+                    queryTimeLine(wheelItem.time);
+                }
+                postDelay(mRetryAction, 5000);
+            } else {
+                DpMsgDefine.DPWonderItem item = (DpMsgDefine.DPWonderItem) values[0];
+                mView.onTimeLineRsp(TimeUtils.getSpecificDayStartTime(item.time * 1000L));
+            }
+        }
+    }
+
+    private List<WonderIndicatorWheelView.WheelItem> getInitWheelList(long end) {
+        List<WonderIndicatorWheelView.WheelItem> result = new ArrayList<>(MAX_DAY_COUNT);
+        long start = TimeUtils.getSpecificDayStartTime(end) - (MAX_DAY_COUNT - 5) * DAY_TIME;
+        WonderIndicatorWheelView.WheelItem item;
+        for (int i = 0; i < MAX_DAY_COUNT; i++) {
+            item = new WonderIndicatorWheelView.WheelItem();
+            item.time = start + DAY_TIME * i;
+            result.add(item);
+        }
+        result.get(MAX_DAY_COUNT - 5).wonderful = true;
+        result.get(MAX_DAY_COUNT - 5).selected = true;
+        return result;
     }
 
     private List<DpMsgDefine.DPWonderItem> filter(DataPoint... values) {
+        if (values == null) return null;
         List<DpMsgDefine.DPWonderItem> result = new ArrayList<>(21);
         DpMsgDefine.DPWonderItem wonderItem;
         for (DataPoint value : values) {

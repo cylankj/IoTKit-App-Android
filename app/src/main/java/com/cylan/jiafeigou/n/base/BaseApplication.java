@@ -13,7 +13,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -24,7 +23,6 @@ import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.SuperSpUtils;
 import com.cylan.utils.HandlerThreadUtils;
@@ -118,7 +116,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
                 Log.d(TAG, "onTrimMemory: " + level);
 //                shouldKillBellCallProcess();
                 RxBus.getCacheInstance().post(new RxEvent.AppHideEvent());
-                JfgCmdInsurance.getCmd().closeDataBase();
+//                JfgCmdInsurance.getCmd().closeDataBase();
                 break;
         }
     }

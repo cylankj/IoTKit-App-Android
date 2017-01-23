@@ -223,7 +223,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotGetDataTimeout(long l) {
-        AppLogger.d("OnLocalMessage :");
+        AppLogger.d("OnRobotGetDataTimeout :");
     }
 
     @Override
@@ -319,6 +319,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotDelDataRsp(long l, String s, int i) {
         AppLogger.d("OnRobotDelDataRsp :" + l + " uuid:" + s + " i:" + i);
+        RxBus.getCacheInstance().post(new RxEvent.DeleteDataRsp(l,s,i));
     }
 
     @Override

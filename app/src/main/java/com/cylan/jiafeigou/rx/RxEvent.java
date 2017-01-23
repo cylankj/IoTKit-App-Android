@@ -15,7 +15,6 @@ import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DataPointManager;
-import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -641,7 +640,7 @@ public class RxEvent {
     /**
      * 检测是否已注册回调
      */
-    public static final class CheckRegsiterBack{
+    public static final class CheckRegsiterBack {
         public JFGResult jfgResult;
 
         public CheckRegsiterBack(JFGResult jfgResult) {
@@ -680,4 +679,15 @@ public class RxEvent {
         public String uuid;
     }
 
+    public static class DeleteDataRsp {
+        public long seq;
+        public String peer;
+        public int resultCode;
+
+        public DeleteDataRsp(long l, String s, int i) {
+            this.seq = l;
+            this.peer = s;
+            this.resultCode = i;
+        }
+    }
 }

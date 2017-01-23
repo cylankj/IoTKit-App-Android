@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.BellTopBackgroundView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
@@ -78,6 +79,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private boolean mIsLastLoadFinish = true;
     private boolean isFirst = true;
 
+
     @Override
     protected void initViewAndListener() {
         initAdapter();
@@ -100,6 +102,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 && lBatteryWarnDialog.get() != null
                 && lBatteryWarnDialog.get().isResumed())
             lBatteryWarnDialog.get().dismiss();
+        imgVTopBarCenter.removeCallbacks(mLoadAction);
     }
 
     @Override
@@ -143,10 +146,18 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         });
     }
 
+    private Runnable mLoadAction = () -> {
+        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            ToastUtil.showNegativeToast(getString(R.string.request_time_out));
+        }
+    };
+
     private void startLoadData(boolean asc, long version) {
-        LoadingDialog.showLoading(getSupportFragmentManager(), "加载中...", true);
+        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.loading), true);
         mIsLastLoadFinish = false;
         mPresenter.fetchBellRecordsList(asc, version);
+        imgVTopBarCenter.postDelayed(mLoadAction, 10000);
     }
 
     private void initToolbar() {
@@ -212,9 +223,9 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onLoginStateChanged(boolean online) {
+        super.onLoginStateChanged(online);
         if (!online) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
-            Toast.makeText(this, "还未登录", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -234,6 +245,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList) {
+        imgVTopBarCenter.removeCallbacks(mLoadAction);
         LoadingDialog.dismissLoading(getSupportFragmentManager());
         if (beanArrayList != null && beanArrayList.size() < 20) endlessLoading = true;
         bellCallRecordListAdapter.addAll(beanArrayList);

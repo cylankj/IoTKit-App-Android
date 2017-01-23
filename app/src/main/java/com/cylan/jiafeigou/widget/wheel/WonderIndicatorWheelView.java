@@ -1,11 +1,17 @@
 package com.cylan.jiafeigou.widget.wheel;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.PointF;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -15,30 +21,24 @@ import com.cylan.superadapter.OnItemClickListener;
 import com.cylan.superadapter.SuperAdapter;
 import com.cylan.superadapter.internal.SuperViewHolder;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by yzd on 17-1-17.
  */
 
-public class WonderIndicatorWheelView extends LinearLayout implements OnItemClickListener {
+public class WonderIndicatorWheelView extends LinearLayout implements OnItemClickListener, ValueAnimator.AnimatorUpdateListener {
 
     private TextView mTitle;
     private RecyclerView mIndicatorList;
     private OnDayChangedListener mListener;
-    private List<WheelItem> mWheelItems = new ArrayList<>(MAX_DAY_COUNT);
-    private WheelItemQueryListener mItemQueryListener;
-    private OnDayChangedListener mLoadMoreListener;
     private int mLastPosition = -1;
     private SuperAdapter<WheelItem> mAdapter;
     private WheelLayoutManager mManager;
-    private boolean mShouldLoadMore = true;
-    private boolean mHasLoadCompleted = true;
-
-    private boolean hasInit = false;
-    private static final int MAX_DAY_COUNT = 40;
-    private static final long DAY_TIME = 24 * 60 * 60 * 1000L;
+    private ValueAnimator mAnimator;
+    private FrameLayout mWonderItemsContainer;
+    private float mFactor = 2.0F;
+    private int mViewWidth;
 
     public WonderIndicatorWheelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -50,31 +50,78 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         super.onFinishInflate();
         mTitle = (TextView) findViewById(R.id.wonder_item_title);
         mIndicatorList = (RecyclerView) findViewById(R.id.wonder_item_indicator_list);
+        mWonderItemsContainer = (FrameLayout) findViewById(R.id.wonder_indicator_container);
         initView();
+    }
+
+    private int mRestoreX = 0;
+    private int mMaxPullDistance;
+
+    public float getInterpolation(float input) {
+        float result;
+        if (mFactor == 1.0f) {
+            result = (float) (1.0f - (1.0f - input) * (1.0f - input));
+        } else {
+            result = (float) (1.0f - Math.pow((1.0f - input), 2 * mFactor));
+        }
+        return result;
+    }
+
+    @Override
+    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
+        super.onSizeChanged(w, h, oldw, oldh);
+        mMaxPullDistance = w / 8;
+        mViewWidth = w;
+    }
+
+    private boolean mParentScrollFinished = false;
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        int x = (int) ev.getX();
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mLastX = x;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                int distance = mLastX - x;
+                mLastX = x;
+                if ((distance > 0 && mManager.findLastCompletelyVisibleItemPosition() == mAdapter.getCount() - 1) ||
+                        (distance < 0 && mManager.findFirstCompletelyVisibleItemPosition() == 0)) {
+                    if (mRestoreX == 0) mRestoreX = x;
+                    int max = distance > 0 ? mRestoreX : mViewWidth - mRestoreX;
+                    int distanceX = (int) (mMaxPullDistance * getInterpolation(Math.abs(mRestoreX - x) / (float) max));
+                    distanceX = distance > 0 ? distanceX : -distanceX;
+                    mWonderItemsContainer.scrollTo(distanceX, 0);
+                    return true;
+                }
+                break;
+            case MotionEvent.ACTION_UP:
+                if (mRestoreX > 0) {
+                    View view = mManager.getChildAt(mManager.getChildCount() - 1);
+                    if (view == null) view = mManager.getChildAt(0);
+                    mAnimator.setIntValues(mWonderItemsContainer.getScrollX(), 0, mWonderItemsContainer.getScrollX() > 0 ? -view.getWidth() / 2 : view.getWidth() / 2);
+                    mScrolledX = 0;
+                    mAnimator.start();
+                }
+
+        }
+        return mAnimator.isRunning() || super.dispatchTouchEvent(ev);
     }
 
     public void setListener(OnDayChangedListener listener) {
         mListener = listener;
     }
 
-    public void setLoadMoreListener(OnDayChangedListener loadMoreListener) {
-        mLoadMoreListener = loadMoreListener;
-    }
-
-    public void setItemQueryListener(WheelItemQueryListener itemQueryListener) {
-        mItemQueryListener = itemQueryListener;
-    }
-
     private void initView() {
+        mAnimator = new ValueAnimator();
+        mAnimator.setDuration(300);
+        mAnimator.setInterpolator(new OvershootInterpolator(10F));
+        mAnimator.addUpdateListener(this);
         mManager = new WheelLayoutManager(getContext());
         mManager.setOrientation(HORIZONTAL);
         mIndicatorList.setLayoutManager(mManager);
-        WheelItem item;
-        for (int i = 0; i < MAX_DAY_COUNT; i++) {
-            item = new WheelItem();
-            mWheelItems.add(item);
-        }
-        mAdapter = new SuperAdapter<WheelItem>(getContext(), mWheelItems, R.layout.wonder_indicaror_item) {
+        mAdapter = new SuperAdapter<WheelItem>(getContext(), null, R.layout.wonder_indicaror_item) {
             @Override
             public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, WheelItem item) {
                 holder.setEnabled(R.id.wonder_indicator_item_container, item.wonderful);
@@ -89,13 +136,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         mAdapter.setOnItemClickListener(this);
     }
 
-    public boolean hasInit() {
-        return hasInit;
-    }
-
-    public interface WheelItemQueryListener {
-        void onQueryItem(long time);
-    }
+    private int mLastX;
 
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
@@ -103,11 +144,34 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         if (mLastPosition != position) {
             mAdapter.getItem(mLastPosition).selected = false;
             c.selected = true;
-            mManager.scrollPositionToCenter(position);
-            mAdapter.notifyItemChanged(mLastPosition);
-            mAdapter.notifyItemChanged(position);
+            SuperViewHolder holder;
+            holder = (SuperViewHolder) mIndicatorList.findViewHolderForAdapterPosition(mLastPosition);
+            if (holder == null) {
+                mAdapter.notifyItemChanged(mLastPosition);
+            } else {
+                holder.setSelected(R.id.wonder_indicator_item, false);
+            }
+            itemView.findViewById(R.id.wonder_indicator_item).setSelected(true);
+            mIndicatorList.smoothScrollToPosition(position);
             mLastPosition = position;
             if (mListener != null) mListener.onChanged(c.time);
+        }
+    }
+
+    private int mScrolledX;
+
+    @Override
+    public void onAnimationUpdate(ValueAnimator animation) {
+        mParentScrollFinished = mWonderItemsContainer.getScrollX() == 0;
+        if (!mParentScrollFinished) {
+            mWonderItemsContainer.scrollTo((Integer) animation.getAnimatedValue(), 0);
+        } else {
+            int scrollX = (int) animation.getAnimatedValue() - mScrolledX;
+            mIndicatorList.scrollBy(scrollX, 0);
+            mScrolledX = (int) animation.getAnimatedValue();
+        }
+        if (animation.getAnimatedFraction() >= 1) {
+            mRestoreX = 0;
         }
     }
 
@@ -122,47 +186,80 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         public boolean selected = false;//是否被选中
     }
 
-    public void notify(long time, boolean wonderful) {
-        long startTime = TimeUtils.getSpecificDayStartTime(time);
-        int position = (int) ((startTime - mWheelItems.get(0).time) / DAY_TIME);
-        mWheelItems.get(position).wonderful = wonderful;
+    public void init(List<WheelItem> items) {
+        mAdapter.addAll(items);
+        WheelItem item;
+        for (int i = 0; i < mAdapter.getList().size(); i++) {
+            item = mAdapter.getItem(i);
+            if (item.selected) mLastPosition = i;
+        }
     }
 
-    public void init(long end) {
-        long start = TimeUtils.getSpecificDayStartTime(end) - (MAX_DAY_COUNT - 5) * DAY_TIME;
-        for (int i = 0; i < MAX_DAY_COUNT; i++) {
-            mWheelItems.get(i).time = start + DAY_TIME * i;
+    public void notify(long time) {
+        long startTime = TimeUtils.getSpecificDayStartTime(time);
+        WheelItem item;
+        for (int i = 0; i < mAdapter.getList().size(); i++) {
+            item = mAdapter.getItem(i);
+            if (item.time == startTime) {
+                item.wonderful = true;
+                mAdapter.notifyItemChanged(i);
+                return;
+            }
         }
-        mLastPosition = MAX_DAY_COUNT - 5;
-        mWheelItems.get(mLastPosition).wonderful = true;
-        mWheelItems.get(mLastPosition).selected = true;
-        for (WheelItem item : mWheelItems) {
-            mItemQueryListener.onQueryItem(item.time);
-        }
-        hasInit = true;
     }
 
     public void scrollPositionToCenter() {
-        if (mManager != null) {
-            mManager.scrollPositionToCenter(mLastPosition);
-        }
+        mIndicatorList.smoothScrollToPosition(mLastPosition);
+    }
+
+    public boolean hasInit() {
+        return mAdapter.getList() != null && mAdapter.getList().size() > 0;
     }
 
     private static class WheelLayoutManager extends LinearLayoutManager {
-
-        private int mCenterPositionOffset = -1;
 
         public WheelLayoutManager(Context context) {
             super(context);
         }
 
-        public void scrollPositionToCenter(int position) {
-            if (mCenterPositionOffset == -1) {
-                int width = getChildAt(0).getWidth();
-                int width1 = getWidth();
-                mCenterPositionOffset = (width1 - width) / 2;
+        @Override
+        public void smoothScrollToPosition(RecyclerView recyclerView, RecyclerView.State state, int position) {
+            LinearSmoothScroller linearSmoothScroller = new SmoothToCenterScroller(recyclerView.getContext());
+            linearSmoothScroller.setTargetPosition(position);
+            startSmoothScroll(linearSmoothScroller);
+        }
+
+        private class SmoothToCenterScroller extends LinearSmoothScroller {
+            public static final int SNAP_TO_CENTER = 2;
+
+            public SmoothToCenterScroller(Context context) {
+                super(context);
             }
-            scrollToPositionWithOffset(position, mCenterPositionOffset);
+
+            @Override
+            public PointF computeScrollVectorForPosition(int targetPosition) {
+                return WheelLayoutManager.this
+                        .computeScrollVectorForPosition(targetPosition);
+            }
+
+            @Override
+            public int calculateDtToFit(int viewStart, int viewEnd, int boxStart, int boxEnd, int snapPreference) {
+                if (snapPreference == SNAP_TO_CENTER) {
+                    return (boxEnd - boxStart) / 2 - viewStart - (viewEnd - viewStart) / 2;
+                }
+                return super.calculateDtToFit(viewStart, viewEnd, boxStart, boxEnd, snapPreference);
+            }
+
+
+            @Override
+            protected int calculateTimeForScrolling(int dx) {
+                return Math.max(200, super.calculateTimeForScrolling(dx) * 3);
+            }
+
+            @Override
+            protected int getHorizontalSnapPreference() {
+                return SNAP_TO_CENTER;
+            }
         }
     }
 }

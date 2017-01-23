@@ -11,7 +11,6 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -177,11 +176,6 @@ public class DataSourceManager implements JFGSourceManager {
         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
             if (entry.getValue() == null) continue;
             changed = false;
-
-            if (entry.getValue().size() == 0) {//说明没有数据
-
-            }
-
             for (JFGDPMsg dp : entry.getValue()) {
                 if (device != null) {//优先尝试写入device中
                     changed |= device.setValue(dp, dataRsp.seq);
@@ -200,7 +194,7 @@ public class DataSourceManager implements JFGSourceManager {
             response.msgId = entry.getKey();
             RxBus.getCacheInstance().post(response);
         }
-        AppLogger.e("DataSourceManager:Completed");
+
         RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
         completed.seq = dataRsp.seq;
         RxBus.getCacheInstance().post(completed);

@@ -69,7 +69,13 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     @CallSuper
     protected void onRegisterSubscription() {
-        registerSubscription(getDeviceSyncSub(), getLoginStateSub(), getQueryDataRspSub(), getParseResponseCompletedSub());
+        registerSubscription(
+                getDeviceSyncSub(),
+                getLoginStateSub(),
+                getQueryDataRspSub(),
+                getParseResponseCompletedSub(),
+                getDeleteDataRspSub()
+        );
     }
 
     @CallSuper
@@ -165,6 +171,18 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                         });
     }
 
+    private Subscription getDeleteDataRspSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(deleteDataRsp -> {
+
+                }, e -> {
+                    e.printStackTrace();
+                    registerSubscription(getDeleteDataRspSub());
+                });
+    }
+
     private Subscription getParseResponseCompletedSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
                 .subscribeOn(Schedulers.io())
@@ -239,6 +257,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         HandlerThreadUtils.postDelay(action, delay);
     }
 
+    protected void removeCallback(Runnable callback) {
+        HandlerThreadUtils.mHandler.removeCallbacks(callback);
+    }
+
     protected void registerResponseParser(int msg, ResponseParser parser) {
         mResponseParserMap.put(msg, parser);
     }
@@ -289,7 +311,5 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
             long seq = JfgCmdInsurance.getCmd().robotDelData(peer, dps, timeoutMs);
             mRequestSeqs.add(seq);
         });
-
     }
-
 }
