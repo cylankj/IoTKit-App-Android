@@ -22,9 +22,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-        maven {
-            url 'https://dl.bintray.com/eastern/maven/'
-        }
+//        maven {
+//              审核通过之后,可以注释掉
+//            url 'https://dl.bintray.com/eastern/maven/'
+//        }
     }
 }
 
