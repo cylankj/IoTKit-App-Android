@@ -5,7 +5,7 @@ import android.os.Parcelable;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.annotation.DpBase;
+import com.cylan.ext.annotations.DpBase;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.n.mvp.model.BaseBean;
 import com.cylan.jiafeigou.utils.ParcelableUtils;

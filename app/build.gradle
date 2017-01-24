@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+//apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 
@@ -322,12 +323,13 @@ dependencies {
     compile(name: rootProject.ext.cySdk, ext: 'aar')
     //自己写的 apt
 //    compile project(':annotation')
-    compile project(':compiler')
+//    compile project(':compiler')
 
     compile 'com.danikula:videocache:2.6.4'
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
-//    compile 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
+    compile 'com.cylan.ext:annotations:0.0.2'
+    annotationProcessor 'com.cylan.ext:processor:0.0.2'
 }
 

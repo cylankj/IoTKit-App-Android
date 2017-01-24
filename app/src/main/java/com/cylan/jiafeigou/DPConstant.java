@@ -1,16 +1,17 @@
 package com.cylan.jiafeigou;
 
-import com.cylan.annotation.DPMessage;
+import com.cylan.ext.annotations.DPMessage;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
-import static com.cylan.annotation.DPTarget.ACCOUNT;
-import static com.cylan.annotation.DPTarget.CAMERA;
-import static com.cylan.annotation.DPTarget.DEVICE;
-import static com.cylan.annotation.DPTarget.DOORBELL;
-import static com.cylan.annotation.DPTarget.EFAMILY;
-import static com.cylan.annotation.DPTarget.MAGNETOMETER;
-import static com.cylan.annotation.DPType.TYPE_PRIMARY;
-import static com.cylan.annotation.DPType.TYPE_SET;
+import static com.cylan.ext.annotations.DPTarget.ACCOUNT;
+import static com.cylan.ext.annotations.DPTarget.CAMERA;
+import static com.cylan.ext.annotations.DPTarget.DEVICE;
+import static com.cylan.ext.annotations.DPTarget.DOORBELL;
+import static com.cylan.ext.annotations.DPTarget.EFAMILY;
+import static com.cylan.ext.annotations.DPTarget.MAGNETOMETER;
+import static com.cylan.ext.annotations.DPType.TYPE_PRIMARY;
+import static com.cylan.ext.annotations.DPType.TYPE_SET;
+
 
 /**
  * Created by yzd on 17-1-14.

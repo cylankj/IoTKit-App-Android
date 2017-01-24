@@ -3,12 +3,9 @@ package com.cylan.jiafeigou.n.mvp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
-import android.util.Pair;
 
-import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,11 +20,6 @@ public class DeviceBean implements Parcelable {
     public int isChooseFlag;
     public int hasShareCount;
 
-    /**
-     * 未读消息数量,时间戳
-     */
-    public Pair<Integer, BaseValue> msgCountPair;
-    public List<DpMsgDefine.DpMsg> dataList;
 
     public DeviceBean() {
     }
@@ -53,7 +45,7 @@ public class DeviceBean implements Parcelable {
         this.sn = baseDpMsg.sn;
         this.shareAccount = baseDpMsg.shareAccount;
         this.alias = baseDpMsg.alias;
-        this.dataList = list;
+//        this.dataList = list;
     }
 
     @Override
@@ -65,7 +57,6 @@ public class DeviceBean implements Parcelable {
                 ", shareAccount='" + shareAccount + '\'' +
                 ", pid=" + pid +
                 ", isChooseFlag=" + isChooseFlag +
-                ", dataList=" + dataList +
                 '}';
     }
 
@@ -83,7 +74,6 @@ public class DeviceBean implements Parcelable {
         dest.writeInt(this.pid);
         dest.writeInt(this.isChooseFlag);
         dest.writeInt(this.hasShareCount);
-        dest.writeList(this.dataList);
     }
 
     protected DeviceBean(Parcel in) {
@@ -94,8 +84,6 @@ public class DeviceBean implements Parcelable {
         this.pid = in.readInt();
         this.isChooseFlag = in.readInt();
         this.hasShareCount = in.readInt();
-        this.dataList = new ArrayList<DpMsgDefine.DpMsg>();
-        in.readList(this.dataList, DpMsgDefine.DpMsg.class.getClassLoader());
     }
 
     public static final Creator<DeviceBean> CREATOR = new Creator<DeviceBean>() {
