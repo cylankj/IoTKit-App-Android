@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
 
 
@@ -288,10 +287,10 @@ dependencies {
     compile rootProject.ext.appCardview
     /////////////////android///////////////////////
     compile rootProject.ext.butterknife
-    apt rootProject.ext.butterknifeApt
+    annotationProcessor rootProject.ext.butterknifeApt
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.permis
-    apt rootProject.ext.permisApt
+    annotationProcessor rootProject.ext.permisApt
     compile project(':jlib')
     compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
     compile files('libs/gson-2.2.4.jar')
