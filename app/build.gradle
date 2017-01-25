@@ -76,15 +76,13 @@ android {
         applicationId "com.cylan.jiafeigou"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
-                                MAT_VALUE          : getMtaAppKey("yun"),
-                                AUTHORITY          : "com.cylan.jiafeigou",
-                                QQ_APP_KEY         : "1103156296",
-                                weChat_APP_ID      : "wx3081bcdae8a842cf",
-                                VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
-                                VID                : "003J",
-                                NICELY_SINA_APP_KEY: "1315129656"]
-        customVersionCode
+//        manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
+//                                MAT_VALUE          : getMtaAppKey("yun"),
+//                                QQ_APP_KEY         : "1103156296",
+//                                weChat_APP_ID      : "wx3081bcdae8a842cf",
+//                                VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
+//                                VID                : "003J",
+//                                NICELY_SINA_APP_KEY: "1315129656"]
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -138,11 +136,7 @@ android {
     }
     buildTypes {
         debug {
-            minifyEnabled false
-            minifyEnabled false
-            zipAlignEnabled false
-            shrinkResources false
-            signingConfig signingConfigs.debug
+//            signingConfig signingConfigs.debug
 
             applicationVariants.all { variant ->
                 //调整包名
@@ -161,7 +155,6 @@ android {
                                     "-debug.apk"
                             output.outputFile = new File(outputFile.parent, fileName)
                         }
-                        println("hunt...name: " + outputFile.name)
                     }
                 }
             }
@@ -206,7 +199,6 @@ android {
             applicationIdSuffix ".test1"
             manifestPlaceholders = [NICELY_VALUE       : "test1.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("test1"),
-                                    AUTHORITY          : ".test1",
                                     QQ_APP_KEY         : "xxx",
                                     weChat_APP_ID      : "xxx",
                                     VKEY               : "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9",
@@ -218,7 +210,6 @@ android {
             //官方运营
             manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("yun"),
-                                    AUTHORITY          : "",
                                     QQ_APP_KEY         : "1103156296",
                                     weChat_APP_ID      : "wx3081bcdae8a842cf",
                                     VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
@@ -229,7 +220,6 @@ android {
             applicationIdSuffix ".yf"
             manifestPlaceholders = [NICELY_VALUE       : "yf.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("yf"),
-                                    AUTHORITY          : ".yf",
                                     VKEY               : "DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz",
                                     VID                : "003H",
                                     QQ_APP_KEY         : "1103156296",
@@ -241,7 +231,6 @@ android {
             applicationIdSuffix ".zhongxing"
             manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
                                     MAT_VALUE          : getMtaAppKey("zhongxing"),
-                                    AUTHORITY          : ".zhongxing",
                                     QQ_APP_KEY         : "xxx",
                                     weChat_APP_ID      : "wx382033a16e5cc4a5",
                                     VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
