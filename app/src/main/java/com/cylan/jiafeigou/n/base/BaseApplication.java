@@ -24,9 +24,7 @@ import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
-import com.cylan.jiafeigou.utils.SuperSpUtils;
 import com.cylan.utils.HandlerThreadUtils;
 import com.cylan.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -123,19 +121,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
         }
     }
 
-    /**
-     * 进入后台，应该杀掉呼叫页面的进程
-     */
-    private void shouldKillBellCallProcess() {
-        final int processId = SuperSpUtils.getInstance(getApplicationContext())
-                .getAppPreferences().getInt(JConstant.KEY_BELL_CALL_PROCESS_ID, JConstant.INVALID_PROCESS);
-        final int isForeground = SuperSpUtils.getInstance(getApplicationContext())
-                .getAppPreferences().getInt(JConstant.KEY_BELL_CALL_PROCESS_IS_FOREGROUND, 0);
-        if (processId != JConstant.INVALID_PROCESS && isForeground == 0) {
-            AppLogger.d("kill processId: " + processId);
-            android.os.Process.killProcess(processId);
-        }
-    }
 
     @Override
     public void onLowMemory() {

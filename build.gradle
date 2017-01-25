@@ -22,10 +22,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
-//        maven {
+        maven {
 //              审核通过之后,可以注释掉
-//            url 'https://dl.bintray.com/eastern/maven/'
-//        }
+            url 'https://dl.bintray.com/cylan/maven/'
+        }
     }
 }
 
@@ -69,7 +69,5 @@ ext {
     leakcanaryAndroid = 'com.squareup.leakcanary:leakcanary-android:1.5'
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    //多进程文件共享方案
-    multiProcessSp = 'net.grandcentrix.tray:tray:0.10.0'
     cySdk = 'JFGLibrary-release'
 }

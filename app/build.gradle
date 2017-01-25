@@ -171,7 +171,7 @@ android {
                 shrinkResources true
                 minifyEnabled true
                 zipAlignEnabled true
-//                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
                 signingConfig signingConfigs.release
                 applicationVariants.all { variant ->
                     //调整包名
@@ -316,8 +316,6 @@ dependencies {
     compile files('src/main/jniLibs/zbar.jar')
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
-    //多进程文件共享方案
-    //    compile rootProject.ext.multiProcessSp
     //glide
     compile rootProject.ext.glide
     compile(name: rootProject.ext.cySdk, ext: 'aar')
@@ -330,7 +328,7 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
 //    https://github.com/cylankj/JFGAndroid-Ext.git
-    compile 'com.cylan.ext:annotations:0.0.2'
-    annotationProcessor 'com.cylan.ext:processor:0.0.2'
+    compile 'com.cylan.ext:annotations:0.0.3'
+    annotationProcessor 'com.cylan.ext:processor:0.0.3'
 }
 
