@@ -71,6 +71,18 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
+        <!-- server address -->
+        <meta-data
+            android:name="ServerAddress"
+            android:value="${NICELY_VALUE}"/>
+
+        <!-- your vid getString must "\ " -->
+        <meta-data
+            android:name="vid"
+            android:value="${VID}"/>
+        <meta-data
+            android:name="vkey"
+            android:value="${VKEY}"/>
         <activity
             android:name=".SmartcallActivity"
             android:configChanges="locale|orientation|keyboardHidden"
