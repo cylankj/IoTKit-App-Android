@@ -7,6 +7,8 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.utils.PackageUtils;
@@ -40,7 +42,7 @@ public class WechatShare {
      */
     public WechatShare(Activity activity) {
         WeakReference<Activity> weakReference = new WeakReference<>(activity);
-        String appId = PackageUtils.getMetaString(ContextUtils.getContext(), "weChatAppId");
+        String appId = Security.getWeChatKey(JFGRules.getTrimPackageName());
         if (TextUtils.isEmpty(appId)) {
             AppLogger.i("wechat app id is null");
         }
