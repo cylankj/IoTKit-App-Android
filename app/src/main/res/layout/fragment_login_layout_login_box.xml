@@ -16,7 +16,6 @@
 
 
         <EditText
-            android:text="18503060168"
             android:id="@+id/et_login_username"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -65,7 +64,6 @@
         android:layout_marginTop="@dimen/y29">
 
         <EditText
-            android:text="111111"
             android:id="@+id/et_login_pwd"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
