@@ -143,7 +143,10 @@ public class GreatDragView extends FrameLayout {
 
             }
         });
-        animator.start();
+        try {
+            animator.start();
+        } catch (Exception e) {
+        }
     }
 
     /**
