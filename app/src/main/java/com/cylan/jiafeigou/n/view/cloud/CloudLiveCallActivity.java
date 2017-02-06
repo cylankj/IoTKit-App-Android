@@ -387,7 +387,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
         } else {
 //            JfgCmdInsurance.getCmd().enableCamera(true,true);
             JfgCmdInsurance.getCmd().enableRenderLocalView(true, mLocalSurfaceView);
-            JfgCmdInsurance.getCmd().enableRenderRemoteView(true, mRenderSurfaceView);
+            JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, mRenderSurfaceView);
             hideLoadingView();
         }
     }
@@ -398,7 +398,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
             try {
 //                JfgCmdInsurance.getCmd().enableCamera(true,true);
                 JfgCmdInsurance.getCmd().enableRenderLocalView(true, mLocalSurfaceView);
-                JfgCmdInsurance.getCmd().enableRenderRemoteView(true, mRenderSurfaceView);
+                JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, mRenderSurfaceView);
                 hideLoadingView();
             } catch (JfgException e) {
                 e.printStackTrace();

@@ -223,7 +223,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         initVideoView();
-        JfgCmdInsurance.getCmd().enableRenderRemoteView(true, mSurfaceView);
+        JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, mSurfaceView);
         mBellLiveVideoPicture.setVisibility(View.GONE);
     }
 

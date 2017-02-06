@@ -29,10 +29,6 @@ def int getCustomVersionCode() {
     return versionCode
 }
 
-def boolean getReleaseCondition(String variantName) {
-    return variantName.equals("_yunRelease") || variantName.equals("_zhongxingRelease")
-}
-
 def getVariantShortName(String name) {
     return name.replace("Release", "").replace("_", "-").replace("Debug", "")
 }
@@ -192,33 +188,18 @@ android {
     productFlavors {
         _test1 {
             applicationIdSuffix ".test1"
-            manifestPlaceholders = [NICELY_VALUE: "test1.jfgou.com:443",
-                                    VKEY        : "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9",
-                                    VID         : "0H7A",
-            ]
+            //vid vkey已经搬到Security.java
         }
 
         _yun {
             //官方运营
-            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:443",
-                                    VKEY        : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
-                                    VID         : "\\ 0001",
-            ]
         }
         _yf {
             applicationIdSuffix ".yf"
-            manifestPlaceholders = [NICELY_VALUE: "yf.jfgou.com:443",
-                                    VKEY        : "DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz",
-                                    VID         : "003H",
-            ]
         }
         //中性包
         _zhongxing {
             applicationIdSuffix ".zhongxing"
-            manifestPlaceholders = [NICELY_VALUE: "yun.jfgou.com:443",
-                                    VKEY        : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
-                                    VID         : "003J",
-            ]
         }
     }
 }

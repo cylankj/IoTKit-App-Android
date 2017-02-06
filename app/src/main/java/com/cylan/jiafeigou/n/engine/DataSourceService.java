@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.Process;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -35,11 +36,13 @@ import com.cylan.jiafeigou.cache.CacheParser;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.efamily.MsgpackMsg;
 import com.cylan.jiafeigou.n.view.cloud.CloudLiveCallActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -47,6 +50,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 //import com.cylan.jiafeigou.cache.JCache;
 
@@ -96,8 +100,8 @@ public class DataSourceService extends Service implements AppCallBack {
             public void run() {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
                 try {
-                    JfgAppCmd.initJfgAppCmd(getApplicationContext(), DataSourceService.this,
-                            JConstant.LOG_PATH);
+                    JfgAppCmd.initJfgAppCmd(getApplicationContext(), DataSourceService.this);
+                    JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
                 } catch (PackageManager.NameNotFoundException e) {
                     AppLogger.d("let's go err:" + e.getLocalizedMessage());
                 } catch (JfgException e) {
@@ -452,6 +456,20 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnNotifyStorageType(int i) {
 
+    }
+
+    @Override
+    public HashMap<String, String> getAppParameter() {
+        String trimPackageName = JFGRules.getTrimPackageName();
+        String serverAddress = Security.getServerPrefix(trimPackageName);
+        String vid = Security.getVId(trimPackageName);
+        String vKey = Security.getVKey(trimPackageName);
+        HashMap<String, String> map = new HashMap<>();
+        map.put("vid", vid);
+        map.put("vkey", vKey);
+        map.put("ServerAddress", serverAddress);
+        Log.d("getAppParameter", "getAppParameter:" + map);
+        return map;
     }
 
 }
