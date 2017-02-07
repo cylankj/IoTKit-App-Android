@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.home;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -239,7 +240,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         rVDevicesList.post(new Runnable() {
             @Override
             public void run() {
-                srLayoutMainContentHolder.setColorSchemeColors(R.color.color_36BDFF);
+                srLayoutMainContentHolder.setColorSchemeColors(Color.parseColor("#36BDFF"));
             }
         });
     }

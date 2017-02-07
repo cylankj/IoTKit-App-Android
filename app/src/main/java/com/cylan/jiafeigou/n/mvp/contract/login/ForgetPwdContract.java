@@ -33,6 +33,11 @@ public interface ForgetPwdContract {
          */
         void resetPwdResult(int code);
 
+        /**
+         * 检测是否注册的结果
+         */
+        void checkIsRegReuslt(int code);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -70,6 +75,18 @@ public interface ForgetPwdContract {
          * @return
          */
         Subscription resetPwdBack();
+
+        /**
+         * 检测是否已注册
+         * @param account
+         */
+        void checkIsReg(String account);
+
+        /**
+         * 检测是否已注册回调
+         * @return
+         */
+        Subscription checkIsRegBack();
 
     }
 }
