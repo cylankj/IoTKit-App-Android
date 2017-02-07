@@ -3,8 +3,8 @@ vCode=""
 vName=""
 #定义输出目录名称
 packageDir=`date '+%Y%m%d%H%M'`
-mkdir -p ~/tesst/package/$packageDir/channel
-outputDir=~/tesst/package/
+mkdir -p $1/$packageDir/channel
+outputDir=$1
 #!/bin/bash
 while IFS='' read -r line || [[ -n "$line" ]]; do
 #提取versionCode
@@ -20,7 +20,7 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
 done <version.properties
 
 
-gradle -Pmarket=markets.txt clean assemble_yf
+./gradlew -Pmarket=markets.txt clean assemble_yf
 mv app/build/outputs/apk/app-_yf-release.apk "$outputDir"$packageDir/com.cylan.jiafeigou.yf_release_v$vName-$vCode.apk
 mv app/build/outputs/apk/app-_yf-debug.apk "$outputDir"$packageDir/com.cylan.jiafeigou.yf_debug_v$vName-$vCode.apk
 
