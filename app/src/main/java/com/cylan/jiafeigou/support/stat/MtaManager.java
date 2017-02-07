@@ -5,6 +5,9 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.util.Log;
 
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.support.Security;
+import com.mcxiaoke.packer.helper.PackerNg;
 import com.tencent.stat.StatConfig;
 import com.tencent.stat.StatService;
 
@@ -19,7 +22,14 @@ public class MtaManager {
 
     public static void init(Context context, boolean debug) {
         MtaManager.debug = debug;
-        Log.d("MtaManager", "MtaManager: " + StatConfig.getAppKey(context));
+        StatConfig.setAppKey(context, Security.getMtaKey(JFGRules.getTrimPackageName()));
+        String channel = "cylan";
+        try {
+            channel = PackerNg.getMarket(context, "cylan");
+            Log.d("MtaManager", "MtaManager: " + channel);
+        } catch (Exception e) {
+        }
+        StatConfig.setInstallChannel(context, channel);
     }
 
     /**

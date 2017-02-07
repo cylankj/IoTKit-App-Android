@@ -12,17 +12,21 @@ import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.ext.opt.DebugOptionsImpl;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.DebugOptionsImpl;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
+import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.utils.HandlerThreadUtils;
@@ -42,6 +46,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onCreate() {
         super.onCreate();
         enableDebugOptions();
+        MtaManager.init(getApplicationContext(), BuildConfig.DEBUG);
         //每一个新的进程启动时，都会调用onCreate方法。
         if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
             Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
@@ -101,10 +106,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
     }
 
     private void enableDebugOptions() {
-        DebugOptionsImpl options = new DebugOptionsImpl("test");
-        options.enableCrashHandler(this, PathGetter.createPath(JConstant.CRASH_PATH));
+        DebugOptionsImpl.enableCrashHandler(this, PathGetter.createPath(JConstant.CRASH_PATH));
 
-        options.enableStrictMode();
+        DebugOptionsImpl.enableStrictMode();
     }
 
     @Override

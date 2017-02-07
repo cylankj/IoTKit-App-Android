@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.engine;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Environment;
 import android.os.IBinder;
 import android.os.Process;
 import android.text.TextUtils;
@@ -29,6 +30,7 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -48,6 +50,10 @@ import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.google.gson.Gson;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -461,7 +467,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public HashMap<String, String> getAppParameter() {
         String trimPackageName = JFGRules.getTrimPackageName();
-        String serverAddress = Security.getServerPrefix(trimPackageName);
+        String extra = DebugOptionsImpl.getServer();
+        String serverAddress = TextUtils.isEmpty(extra) ? Security.getServerPrefix(trimPackageName) + ".jfgou.com:443" : extra;
         String vid = Security.getVId(trimPackageName);
         String vKey = Security.getVKey(trimPackageName);
         HashMap<String, String> map = new HashMap<>();
@@ -471,5 +478,4 @@ public class DataSourceService extends Service implements AppCallBack {
         Log.d("getAppParameter", "getAppParameter:" + map);
         return map;
     }
-
 }
