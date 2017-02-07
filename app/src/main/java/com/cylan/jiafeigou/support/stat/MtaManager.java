@@ -19,17 +19,24 @@ import java.util.Properties;
 public class MtaManager {
 
     private static boolean debug = false;
+    private static boolean isInit;
 
     public static void init(Context context, boolean debug) {
-        MtaManager.debug = debug;
-        StatConfig.setAppKey(context, Security.getMtaKey(JFGRules.getTrimPackageName()));
-        String channel = "cylan";
-        try {
-            channel = PackerNg.getMarket(context, "cylan");
-            Log.d("MtaManager", "MtaManager: " + channel);
-        } catch (Exception e) {
-        }
-        StatConfig.setInstallChannel(context, channel);
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                MtaManager.debug = debug;
+                StatConfig.setAppKey(context, Security.getMtaKey(JFGRules.getTrimPackageName()));
+                String channel = "cylan";
+                try {
+                    channel = PackerNg.getMarket(context, "cylan");
+                    Log.d("MtaManager", "MtaManager: " + channel);
+                } catch (Exception e) {
+                }
+                StatConfig.setInstallChannel(context, channel);
+                isInit = true;
+            }
+        }).start();
     }
 
     /**
@@ -38,10 +45,12 @@ public class MtaManager {
      * @param context
      */
     public static void onResume(Context context) {
+        if (!isInit) return;
         StatService.onResume(context);
     }
 
     public static void onPause(Context context) {
+        if(!isInit)return;
         StatService.onPause(context);
     }
 
@@ -56,9 +65,11 @@ public class MtaManager {
     public static void eventClick(final Context context, final String eventId, final String value) {
         if (debug)
             return;
+        if(!isInit)return;
         sendEvent(new Runnable() {
             @Override
             public void run() {
+
                 Properties properties = new Properties();
                 properties.setProperty(eventId, value);
                 StatService.trackCustomKVEvent(context, eventId, properties);
@@ -69,12 +80,14 @@ public class MtaManager {
     public static void eventClick(Context context, String eventId) {
         if (debug)
             return;
+        if(!isInit)return;
         eventClick(context, eventId, "");
     }
 
     public static void customEvent(final Context context, final String eventId, final String value) {
         if (debug)
             return;
+        if(!isInit)return;
         sendEvent(new Runnable() {
             @Override
             public void run() {
@@ -87,6 +100,7 @@ public class MtaManager {
     public static void customEvent(Context context, String eventId) {
         if (debug)
             return;
+        if(!isInit)return;
         customEvent(context, eventId, "");
     }
 

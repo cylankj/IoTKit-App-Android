@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.engine;
 import android.app.Service;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.os.Environment;
 import android.os.IBinder;
 import android.os.Process;
 import android.text.TextUtils;
@@ -50,15 +49,9 @@ import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.google.gson.Gson;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-
-//import com.cylan.jiafeigou.cache.JCache;
 
 
 public class DataSourceService extends Service implements AppCallBack {
@@ -467,8 +460,11 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public HashMap<String, String> getAppParameter() {
         String trimPackageName = JFGRules.getTrimPackageName();
+        //读取Smarthome/log/config.txt的内容
         String extra = DebugOptionsImpl.getServer();
-        String serverAddress = TextUtils.isEmpty(extra) ? Security.getServerPrefix(trimPackageName) + ".jfgou.com:443" : extra;
+        //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
+        String serverAddress = (TextUtils.equals(trimPackageName, "yf") && !TextUtils.isEmpty(extra))
+                ? extra : Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
         String vid = Security.getVId(trimPackageName);
         String vKey = Security.getVKey(trimPackageName);
         HashMap<String, String> map = new HashMap<>();
