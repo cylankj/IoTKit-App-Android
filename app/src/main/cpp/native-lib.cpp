@@ -77,23 +77,24 @@ extern "C" jstring JNICALL native_getVKey(JNIEnv *env, jclass clazz, jstring con
     if (content == NULL) {
         return NULL;
     }
+    LOGD("JNICALL", "native_getVKey:%s", content);
     std::string result = "";
-    if (strcmp(content, "test1")) {
+    if (strcmp(content, "test1") == 0) {
         result = "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
-    if (strcmp(content, "")) {
+    if (strcmp(content, "") == 0) {
         result = "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
-    if (strcmp(content, "yf")) {
+    if (strcmp(content, "yf") == 0) {
         result = "DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
-    if (strcmp(content, "zhongxing")) {
+    if (strcmp(content, "zhongxing") == 0) {
         result = "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
