@@ -82,6 +82,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     @Override
     public void start() {
         compositeSubscription = new CompositeSubscription();
+        compositeSubscription.add(checkIsRegBack());
         compositeSubscription.add(getForgetPwdByMailSub());
         compositeSubscription.add(getSmsCodeResultSub());
         compositeSubscription.add(checkSmsCodeBack());
@@ -179,6 +180,41 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         if (resetPwdBack != null && resetPwdBack instanceof RxEvent.ResetPwdBack) {
                             getView().resetPwdResult(resetPwdBack.jfgResult.code);
                         }
+                    }
+                });
+    }
+
+    @Override
+    public void checkIsReg(String account) {
+        rx.Observable.just(account)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        try {
+                            JfgCmdInsurance.getCmd().checkAccountRegState(s);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e(throwable.getLocalizedMessage());
+                    }
+                });
+
+    }
+
+    @Override
+    public Subscription checkIsRegBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegsiterBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<RxEvent.CheckRegsiterBack>() {
+                    @Override
+                    public void call(RxEvent.CheckRegsiterBack checkRegsiterBack) {
+                        if (checkRegsiterBack != null && getView()!= null)
+                            getView().checkIsRegReuslt(checkRegsiterBack.jfgResult.code);
                     }
                 });
     }

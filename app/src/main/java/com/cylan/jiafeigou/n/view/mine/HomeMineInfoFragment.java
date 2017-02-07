@@ -255,6 +255,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void showMyQrcodeDialog() {
         if (myQrcodeDialog == null || myQrcodeDialog.get() == null) {
             Bundle bundle = new Bundle();
+            bundle.putBoolean("isopenlogin",presenter.checkOpenLogin());
             bundle.putSerializable("jfgaccount", argumentData);
             myQrcodeDialog = new WeakReference<>(MyQRCodeDialog.newInstance(bundle));
         }

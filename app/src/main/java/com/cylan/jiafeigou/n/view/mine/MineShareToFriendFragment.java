@@ -185,6 +185,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     public void showShareAllSuccess() {
         //TODO 完善
         ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
+        getFragmentManager().popBackStack();
     }
 
     @Override

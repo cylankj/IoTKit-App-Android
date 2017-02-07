@@ -37,29 +37,16 @@
             android:textSize="@dimen/sp14" />
     </FrameLayout>
 
-    <ProgressBar
-        android:id="@+id/pb_mine_help"
-        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:max="200"
-        android:progress="30"
-        android:progressDrawable="@drawable/progressbar"
-        android:text="热门问题"
-        android:visibility="gone" />
-
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <com.cylan.jiafeigou.widget.HomeMineItemView
+        <WebView
+            android:id="@+id/wv_mine_help"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y48"
-            android:clickable="true"
-            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="设备离线，或连接中"
-            hunt:textColor="@color/color_333333"
-            hunt:textSize="@dimen/sp16" />
+            android:layout_height="match_parent"
+            android:visibility="visible">
+        </WebView>
 
         <View
             android:layout_width="match_parent"
@@ -68,50 +55,11 @@
 
     </FrameLayout>
 
-    <com.cylan.jiafeigou.widget.HomeMineItemView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y48"
-        android:clickable="true"
-        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-        hunt:text="添加设备，提示“找不到设备”"
-        hunt:textColor="@color/color_333333"
-        hunt:textSize="@dimen/sp16" />
-
-    <com.cylan.jiafeigou.widget.HomeMineItemView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y48"
-        android:clickable="true"
-        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-        hunt:text="Android系统：连接设备的WiFi和密码是什么"
-        hunt:textColor="@color/color_333333"
-        hunt:textSize="@dimen/sp16" />
-
-    <com.cylan.jiafeigou.widget.HomeMineItemView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y48"
-        android:clickable="true"
-        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-        hunt:text="一个设备可以在多个客户端上使用吗"
-        hunt:textColor="@color/color_333333"
-        hunt:textSize="@dimen/sp16" />
-
-    <com.cylan.jiafeigou.widget.HomeMineItemView
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y48"
-        android:clickable="true"
-        hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-        hunt:text="查看直播，宽带最低需要多少"
-        hunt:textColor="@color/color_333333"
-        hunt:textSize="@dimen/sp16" />
 
 
 
-    <WebView
-        android:id="@+id/wv_mine_help"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="visible">
-    </WebView>
+
+
 
 
 </LinearLayout>
