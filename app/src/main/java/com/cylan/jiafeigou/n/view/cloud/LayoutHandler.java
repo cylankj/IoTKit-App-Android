@@ -106,10 +106,10 @@ public class LayoutHandler {
 
                 if (callOutvideoBean.isHasConnet()) {
                     holder.setText(R.id.tv_voideo_talk_length, String.format(ContextUtils.getContext().getString(R.string.Tap1_iHome_CallDuration), callOutvideoBean.getVideoLength()));
-                    holder.setImageDrawable(R.id.iv_call_out_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_call));
+                    holder.setImageDrawable(R.id.iv_call_out_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.album_icon_call));
                 } else {
                     holder.setText(R.id.tv_voideo_talk_length, "未接通");
-                    holder.setImageDrawable(R.id.iv_call_out_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_missed_call));
+                    holder.setImageDrawable(R.id.iv_call_out_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.album_icon_missed_call));
                 }
                 break;
 
@@ -119,10 +119,10 @@ public class LayoutHandler {
 
                 if (callInvideoBean.isHasConnet()) {
                     holder.setText(R.id.tv_call_in_talk_length, String.format(ContextUtils.getContext().getString(R.string.Tap1_iHome_CallDuration), callInvideoBean.getVideoLength()));
-                    holder.setImageDrawable(R.id.iv_call_in_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_incoming_call));
+                    holder.setImageDrawable(R.id.iv_call_in_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.album_icon_incoming_call));
                 } else {
                     holder.setText(R.id.tv_call_in_talk_length, ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL));
-                    holder.setImageDrawable(R.id.iv_call_in_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.icon_missed_call));
+                    holder.setImageDrawable(R.id.iv_call_in_icon, ContextUtils.getContext().getResources().getDrawable(R.drawable.album_icon_missed_call));
                 }
 
                 break;

@@ -64,10 +64,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawablePadding="5dp"
-            android:drawableRight="@drawable/icon_date_downtag_wonderful"
+            android:drawablePadding="@dimen/x5"
+            android:drawableRight="@drawable/wonderful_arrow_down"
             android:gravity="center"
-            android:text="2016.05.02"
             android:textColor="@color/color_788291"
             android:textSize="14sp"/>
     </FrameLayout>

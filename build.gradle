@@ -7,13 +7,15 @@ buildscript {
     dependencies {
 //        classpath 'com.android.tools.build:gradle:2.2.0-alpha1'
         //要对应java1.8，2.2.0才能使用unit测试。idea/misc.xml
+        //gradle 2.2.0+之后,已经官方支持annotationProcessor,所以不需要neenbedankt插件了
         classpath 'com.android.tools.build:gradle:2.2.0'
-        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+//        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
         classpath 'com.mcxiaoke.gradle:packer-ng:1.0.7'
         classpath 'me.tatarka:gradle-retrolambda:3.4.0'
-
+        //多渠道包
+        classpath 'com.mcxiaoke.gradle:packer-ng:1.0.8'
     }
 }
 
@@ -21,6 +23,10 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        maven {
+//              审核通过之后,可以注释掉
+            url 'https://dl.bintray.com/cylan/maven/'
+        }
     }
 }
 
@@ -64,7 +70,5 @@ ext {
     leakcanaryAndroid = 'com.squareup.leakcanary:leakcanary-android:1.5'
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    //多进程文件共享方案
-    multiProcessSp = 'net.grandcentrix.tray:tray:0.10.0'
     cySdk = 'JFGLibrary-release'
 }

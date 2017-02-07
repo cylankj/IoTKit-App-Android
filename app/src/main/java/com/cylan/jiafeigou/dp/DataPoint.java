@@ -4,8 +4,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.util.LongSparseArray;
 
-import com.cylan.annotation.DPProperty;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.ext.annotations.DPProperty;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import org.msgpack.MessagePack;

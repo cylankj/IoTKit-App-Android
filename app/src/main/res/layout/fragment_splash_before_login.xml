@@ -14,7 +14,7 @@
         android:layout_gravity="center"
         android:layout_marginBottom="@dimen/y90"
         android:layout_marginTop="@dimen/y170"
-        android:src="@drawable/pci_sign_in" />
+        android:src="@drawable/pic_sign_in" />
 
     <TextView
         android:id="@+id/btn_to_login"

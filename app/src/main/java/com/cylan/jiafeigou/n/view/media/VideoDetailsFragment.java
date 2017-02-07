@@ -227,9 +227,9 @@ public class VideoDetailsFragment extends PicDetailsFragment implements SeekBar.
 
     private void updatePausePlay() {
         if (mMediaPlayer.isPlaying()) {
-            vvPlay.setImageResource(R.drawable.icon_suspend);
+            vvPlay.setImageResource(R.drawable.wonderful__video_suspend);
         } else {
-            vvPlay.setImageResource(R.drawable.icon_play);
+            vvPlay.setImageResource(R.drawable.wonderful_icon_video_play);
         }
     }
 
@@ -274,7 +274,7 @@ public class VideoDetailsFragment extends PicDetailsFragment implements SeekBar.
         vvSeekBar.setProgress((int) iMediaPlayer.getCurrentPosition());
         String totalTime = stringForTime((int) iMediaPlayer.getDuration());
         vvTotalTime.setText(totalTime);
-        vvPlay.setImageResource(R.drawable.icon_suspend);
+        vvPlay.setImageResource(R.drawable.wonderful__video_suspend);
         updateTime();
     }
 

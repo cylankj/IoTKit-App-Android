@@ -2,7 +2,7 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/icon_cam_landscape_screenshot_disable" android:state_enabled="false" />
-    <item android:drawable="@drawable/icon_cam_landscape_screenshot_pressed" android:state_pressed="true" />
-    <item android:drawable="@drawable/icon_cam_landscape_screenshot_normal" />
+    <item android:drawable="@drawable/camera_icon_landscape_screenshot_disable" android:state_enabled="false" />
+    <item android:drawable="@drawable/camera_icon_landscape_screenshot_pressed" android:state_pressed="true" />
+    <item android:drawable="@drawable/camera_icon_landscape_screenshot_normal" />
 </selector>

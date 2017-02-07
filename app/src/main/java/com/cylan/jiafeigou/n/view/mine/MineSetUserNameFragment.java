@@ -108,7 +108,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
             viewMinePersonalInformationNewNameLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
             ivMinePersonalInformationNewNameClear.setVisibility(View.GONE);
         } else {
-            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMinePersonalSetnameBind.setEnabled(true);
             viewMinePersonalInformationNewNameLine.setBackgroundColor(Color.parseColor("#36bdff"));
             ivMinePersonalInformationNewNameClear.setVisibility(View.VISIBLE);
@@ -200,7 +200,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
             ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMinePersonalSetnameBind.setEnabled(false);
         } else {
-            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMinePersonalSetnameBind.setEnabled(true);
         }
     }

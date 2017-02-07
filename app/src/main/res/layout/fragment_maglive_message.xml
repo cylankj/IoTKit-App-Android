@@ -70,7 +70,7 @@
                     android:layout_toLeftOf="@id/tv_device_alias"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:src="@drawable/icon_setting_information" />
+                    android:src="@drawable/setting_icon_information" />
 
                 <LinearLayout
                     android:layout_marginLeft="@dimen/x10"
@@ -118,7 +118,7 @@
                 android:layout_alignParentLeft="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icom_switch" />
+                android:src="@drawable/setting_icon_switch" />
 
             <TextView
                 android:textColor="#000000"

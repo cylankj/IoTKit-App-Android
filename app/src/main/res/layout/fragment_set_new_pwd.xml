@@ -44,7 +44,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
                 android:padding="@dimen/x10"
-                android:src="@drawable/btn_login_clear_text"
+                android:src="@drawable/icon_clear_text"
                 android:visibility="gone" />
 
             <CheckBox

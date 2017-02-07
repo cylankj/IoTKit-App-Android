@@ -35,7 +35,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|center_vertical"
         android:layout_marginEnd="@dimen/x10"
-        android:src="@drawable/icon_check" />
+        android:src="@drawable/doorbell_icon_check" />
 
     <View
         android:layout_width="match_parent"

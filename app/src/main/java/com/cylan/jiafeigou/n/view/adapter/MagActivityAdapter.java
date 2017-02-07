@@ -78,9 +78,9 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
         ImageView view = (ImageView) holder.getView(R.id.iv_mag_live);
         if (bean.isFirst) {
             if (currentState) {
-                view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.pic_magnetometer_dot_red));
+                view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.magnetometer_pic_dot_red));
             } else {
-                view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.pic_magnetometer_dot_blue));
+                view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.magnetometer_pic_dot_blue));
             }
         } else {
             view.setImageDrawable(getContext().getResources().getDrawable(R.drawable.icon_dot_gary));

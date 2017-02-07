@@ -58,7 +58,7 @@
                 android:layout_height="@dimen/y28"
                 android:layout_marginLeft="@dimen/x9"
                 android:layout_marginRight="@dimen/x14"
-                android:src="@drawable/icon_suspend"/>
+                android:src="@drawable/wonderful__video_suspend"/>
 
             <TextView
                 android:id="@+id/vv_play_time"
@@ -90,14 +90,14 @@
                 android:layout_height="@dimen/y28"
                 android:layout_marginLeft="@dimen/x14"
                 android:layout_marginRight="@dimen/x13"
-                android:src="@drawable/icon_full_screen"/>
+                android:src="@drawable/wonderful_icon_video_full_screen"/>
 
             <ImageView
                 android:id="@+id/vv_more"
                 android:layout_width="@dimen/x28"
                 android:layout_height="@dimen/y28"
                 android:layout_marginRight="@dimen/x9"
-                android:src="@drawable/icon_more"/>
+                android:src="@drawable/wonderful_icon_video_more"/>
 
         </LinearLayout>
     </FrameLayout>

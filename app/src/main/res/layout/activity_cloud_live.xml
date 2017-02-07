@@ -53,7 +53,7 @@
             android:id="@+id/iv_cloud_share_pic"
             android:paddingStart="@dimen/x42"
             android:paddingEnd="@dimen/x42"
-            android:src="@drawable/icon_album_bottom_share_pic"
+            android:src="@drawable/album_icon_bottom_share_pic"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 
@@ -63,7 +63,7 @@
             android:layout_centerHorizontal="true"
             android:paddingStart="@dimen/x42"
             android:paddingEnd="@dimen/x42"
-            android:src="@drawable/icon_album_bottom_videochat"
+            android:src="@drawable/album_icon_bottom_videochat"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
 
@@ -73,7 +73,7 @@
             android:layout_alignParentRight="true"
             android:paddingStart="@dimen/x42"
             android:paddingEnd="@dimen/x42"
-            android:src="@drawable/icon_album_bottom_talk"
+            android:src="@drawable/album_icon_bottom_talk"
             android:layout_width="wrap_content"
             android:layout_height="match_parent" />
     </RelativeLayout>
@@ -99,7 +99,7 @@
 
             <ImageView
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/icon_no_message"
+                android:src="@drawable/pic_no_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

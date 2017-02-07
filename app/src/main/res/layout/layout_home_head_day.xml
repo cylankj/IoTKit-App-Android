@@ -3,6 +3,6 @@
     android:id="@+id/rLayout_home_header_day_bg"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/bg_home_title_daytime">
+    android:background="@drawable/home_bg_tittle_daytime">
 
 </RelativeLayout>

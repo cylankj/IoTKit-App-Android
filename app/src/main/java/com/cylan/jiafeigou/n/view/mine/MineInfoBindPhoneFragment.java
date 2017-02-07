@@ -94,7 +94,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             ivMineInfoBindPhone.setEnabled(false);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         } else {
-            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMineInfoBindPhone.setEnabled(true);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
         }

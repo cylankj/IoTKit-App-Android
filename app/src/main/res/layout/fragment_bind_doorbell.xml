@@ -45,7 +45,7 @@
             android:id="@+id/fLayout_flip_before"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ico_bind_doorbell_anim_0">
+            android:background="@drawable/add_image_ring">
 
             <ImageView
                 android:id="@+id/imgV_wifi_light_red_dot_left"
@@ -54,7 +54,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/x10"
                 android:layout_marginRight="@dimen/x10"
-                android:src="@drawable/image_red_dot"
+                android:src="@drawable/add_image_red_dot"
                 android:visibility="invisible" />
 
             <ImageView
@@ -64,7 +64,7 @@
                 android:layout_gravity="center_vertical|end"
                 android:layout_marginLeft="@dimen/x10"
                 android:layout_marginRight="@dimen/x10"
-                android:src="@drawable/image_red_dot"
+                android:src="@drawable/add_image_red_dot"
                 android:visibility="invisible" />
 
             <ImageView
@@ -90,7 +90,7 @@
             android:id="@+id/fLayout_flip_after"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/ico_bind_doorbell_anim_1"
+            android:background="@drawable/add_image_ring1"
             android:visibility="gone">
 
             <ImageView

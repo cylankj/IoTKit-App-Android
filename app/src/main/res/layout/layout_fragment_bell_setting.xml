@@ -58,7 +58,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_image_src="@drawable/setting_icon_information"
             hunt:sv_sub_title="@string/EQUIPMENT_INFO"
             hunt:sv_title="@string/EQUIPMENT_INFO"
             hunt:sv_v_divider="false" />
@@ -79,7 +79,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_image_src="@drawable/setting_icon_information"
             hunt:sv_title="@string/WIFI"
             hunt:sv_v_divider="true" />
 

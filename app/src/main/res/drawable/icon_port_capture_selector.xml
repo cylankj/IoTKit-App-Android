@@ -2,7 +2,7 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <item android:drawable="@drawable/icon_cam_port_screenshot_disable" android:state_enabled="false" />
-    <item android:drawable="@drawable/icon_cam_port_screenshot_pressed" android:state_pressed="true" />
-    <item android:drawable="@drawable/icon_cam_port_screenshot_normal" />
+    <item android:drawable="@drawable/camera_icon_screenshot_disabled" android:state_enabled="false" />
+    <item android:drawable="@drawable/camera_icon_screenshot_pressed" android:state_pressed="true" />
+    <item android:drawable="@drawable/camera_icon_screenshot_normal" />
 </selector>

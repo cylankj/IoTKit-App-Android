@@ -3,7 +3,8 @@ package com.cylan.jiafeigou.n.mvp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.cylan.annotation.DeviceBase;
+import com.cylan.ext.annotations.DeviceBase;
+
 
 /**
  * Created by hunt on 16-5-14.

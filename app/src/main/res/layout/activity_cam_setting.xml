@@ -63,7 +63,7 @@
                     android:id="@+id/sv_setting_device_detail"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/icon_setting_information"
+                    hunt:sv_image_src="@drawable/setting_icon_information"
                     hunt:sv_sub_title="@string/EQUIPMENT_INFO"
                     hunt:sv_title="@string/EQUIPMENT_INFO"
                     hunt:sv_v_divider="false" />
@@ -80,7 +80,7 @@
                     android:id="@+id/sv_setting_device_wifi"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/icon_setting_wifi"
+                    hunt:sv_image_src="@drawable/setting_icon_wifi"
                     hunt:sv_sub_title="cylan608"
                     hunt:sv_title="@string/WIFI"
                     hunt:sv_v_divider="true" />
@@ -89,7 +89,7 @@
                     android:id="@+id/sv_setting_device_mobile_network"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y54"
-                    hunt:sv_image_src="@drawable/icon_setting_3g"
+                    hunt:sv_image_src="@drawable/setting_icon_3g"
                     hunt:sv_title="@string/MOBILE_DATA"
                     hunt:sv_v_divider="false" />
 
@@ -105,7 +105,7 @@
                     android:id="@+id/sv_setting_safe_protection"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/icon_setting_safe"
+                    hunt:sv_image_src="@drawable/setting_icon_safe"
                     hunt:sv_title="@string/SECURE"
                     hunt:sv_v_divider="true" />
 
@@ -114,7 +114,7 @@
                     android:id="@+id/sv_setting_device_auto_record"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/icon_setting_videotape"
+                    hunt:sv_image_src="@drawable/setting_icon_videotape"
                     hunt:sv_title="@string/SETTING_RECORD"
                     hunt:sv_v_divider="true" />
 
@@ -123,7 +123,7 @@
                     android:id="@+id/sv_setting_device_delay_capture"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/icon_setting_filming"
+                    hunt:sv_image_src="@drawable/setting_icon_filming"
                     hunt:sv_sub_title="@string/Tap1_CameraFun_Timelapse_NotStart"
                     hunt:sv_title="@string/Tap2_Timelapse_title"
                     hunt:sv_v_divider="true" />
@@ -133,7 +133,7 @@
                     android:id="@+id/sv_setting_device_standby_mode"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y54"
-                    hunt:sv_image_src="@drawable/icon_setting_standby"
+                    hunt:sv_image_src="@drawable/setting_icon_standby"
                     hunt:sv_sub_title="000d0d0d"
                     hunt:sv_title="@string/Tap1_CameraFun_Standby"
                     hunt:sv_v_divider="true" />
@@ -143,7 +143,7 @@
                     android:id="@+id/sv_setting_device_indicator"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y54"
-                    hunt:sv_image_src="@drawable/icon_setting_3g"
+                    hunt:sv_image_src="@drawable/setting_icon_3g"
                     hunt:sv_title="@string/LED"
                     hunt:sv_v_divider="true" />
 
@@ -152,7 +152,7 @@
                     android:id="@+id/sv_setting_device_rotatable"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y54"
-                    hunt:sv_image_src="@drawable/icon_setting_rotate_pic"
+                    hunt:sv_image_src="@drawable/setting_icon_rotate_pic"
                     hunt:sv_title="@string/Tap1_CameraFun_VideoDirection"
                     hunt:sv_v_divider="true" />
 

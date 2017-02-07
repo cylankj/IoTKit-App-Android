@@ -19,14 +19,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:src="@drawable/icon_bell_hang_up"/>
+        android:src="@drawable/doorbell_btn_hang_up"/>
 
     <ImageView
         android:id="@+id/imgv_bell_live_speaker"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical|end"
-        android:src="@drawable/icon_mic_on"/>
+        android:src="@drawable/doorbell_icon_talk"/>
 
 
 </FrameLayout>

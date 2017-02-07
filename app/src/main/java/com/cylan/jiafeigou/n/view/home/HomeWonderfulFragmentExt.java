@@ -301,7 +301,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onHeadBackgroundChang(int daytime) {
-        imgWonderfulTopBg.setBackgroundResource(daytime == 0 ? R.drawable.bg_wonderful_daytime : R.drawable.bg_wonderful_night);
+        imgWonderfulTopBg.setBackgroundResource(daytime == 0 ? R.drawable.bg_wonderful_daytime : R.drawable.wonderful_bg_top_night);
     }
 
     @Override
@@ -320,7 +320,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
-                ? R.drawable.bg_wonderful_daytime : R.drawable.bg_wonderful_night;
+                ? R.drawable.bg_wonderful_daytime : R.drawable.wonderful_bg_top_night;
         Glide.with(this)
                 .load(drawableId)
                 .asBitmap()

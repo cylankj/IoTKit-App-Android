@@ -47,7 +47,7 @@
         <ImageView
             android:id="@+id/iv_voice_delete"
             android:layout_centerInParent="true"
-            android:src="@drawable/icon_restart_recorder"
+            android:src="@drawable/album_icon_delete"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 

@@ -2,9 +2,9 @@
 <animation-list xmlns:android="http://schemas.android.com/apk/res/android"
     android:oneshot="false">
     <item
-        android:drawable="@drawable/ico_bind_doorbell_wifi_light_flash_0"
+        android:drawable="@drawable/add_image_ringlinght"
         android:duration="300" />
     <item
-        android:drawable="@drawable/ico_bind_doorbell_wifi_light_flash_1"
+        android:drawable="@drawable/add_image_ringlinght1"
         android:duration="300" />
 </animation-list>

@@ -1,0 +1,8 @@
+Tencent_market#应用宝
+360_market#360手机助手
+huawei_market#华为应用市场
+baidu_market#百度手机助手
+wandoujia_market#豌豆荚
+anzhi_market#安智
+xiaomi#小米
+Google_Market #Google_Market

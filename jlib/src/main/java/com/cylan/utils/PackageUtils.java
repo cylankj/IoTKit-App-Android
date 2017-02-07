@@ -417,38 +417,38 @@ public class PackageUtils {
         return false;
     }
 
-    /**
-     * whether the app whost package's name is packageName is on the top of the stack
-     * <ul>
-     * <strong>Attentions:</strong>
-     * <li>You should add <strong>android.permission.GET_TASKS</strong> in manifest</li>
-     * </ul>
-     *
-     * @param context
-     * @param packageName
-     * @return if params error or task stack is null, return null, otherwise retun whether the app is on the top of
-     * stack
-     */
-    @Deprecated
-    public static boolean isTopActivity(Context context, String packageName) {
-        if (context == null || TextUtils.isEmpty(packageName)) {
-            return false;
-        }
-
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
-//        List<RunningTaskInfo> tasksInfo = activityManager
-//                .getRunningTasks(1);
-        List<RunningTaskInfo> tasksInfo = null;
-        if (tasksInfo == null || tasksInfo.size() == 0) {
-            return false;
-        }
-        try {
-            return packageName.equals(tasksInfo.get(0).topActivity.getPackageName());
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
+//    /**
+//     * whether the app whost package's name is packageName is on the top of the stack
+//     * <ul>
+//     * <strong>Attentions:</strong>
+//     * <li>You should add <strong>android.permission.GET_TASKS</strong> in manifest</li>
+//     * </ul>
+//     *
+//     * @param context
+//     * @param packageName
+//     * @return if params error or task stack is null, return null, otherwise retun whether the app is on the top of
+//     * stack
+//     */
+//    @Deprecated
+//    public static boolean isTopActivity(Context context, String packageName) {
+//        if (context == null || TextUtils.isEmpty(packageName)) {
+//            return false;
+//        }
+//
+//        ActivityManager activityManager = (ActivityManager) context.getSystemService(Context.ACTIVITY_SERVICE);
+////        List<RunningTaskInfo> tasksInfo = activityManager
+////                .getRunningTasks(1);
+//        List<RunningTaskInfo> tasksInfo = null;
+//        if (tasksInfo == null || tasksInfo.size() == 0) {
+//            return false;
+//        }
+//        try {
+//            return packageName.equals(tasksInfo.get(0).topActivity.getPackageName());
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
 
     /**
      * @param context

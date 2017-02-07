@@ -80,7 +80,7 @@
         <item name="android:padding">5dp</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:background">@drawable/btn_login_clear_text</item>
+        <item name="android:background">@drawable/icon_clear_text</item>
     </style>
 
     <!--显示密码-->
@@ -248,7 +248,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">14dp</item>
         <item name="android:layout_marginRight">13dp</item>
-        <item name="android:src">@drawable/icon_full_screen</item>
+        <item name="android:src">@drawable/wonderful_icon_video_full_screen</item>
     </style>
 
     <style name="video_opt_seek_bar">
@@ -281,7 +281,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginRight">9dp</item>
-        <item name="android:src">@drawable/icon_more</item>
+        <item name="android:src">@drawable/wonderful_icon_video_more</item>
         <item name="android:visibility">visible</item>
     </style>
 
@@ -408,8 +408,8 @@
         <item name="android:gravity">center_vertical</item>
     </style>
 
-    <item name="video_opt_play_drawable" type="drawable">@drawable/icon_play</item>
-    <item name="video_opt_pause_drawable" type="drawable">@drawable/icon_suspend</item>
+    <item name="video_opt_play_drawable" type="drawable">@drawable/wonderful_icon_video_play</item>
+    <item name="video_opt_pause_drawable" type="drawable">@drawable/wonderful__video_suspend</item>
 
     <!--头像选择弹窗动画-->
     <style name="PopupWindow">

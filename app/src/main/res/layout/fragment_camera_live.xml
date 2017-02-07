@@ -8,7 +8,7 @@
         android:id="@+id/fLayout_cam_live_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y100"
-        android:background="@drawable/default_cam_preview">
+        android:background="@drawable/default_diagram_mask">
 
         <!--<FrameLayout-->
             <!--android:id="@+id/fLayout_live_view_container"-->

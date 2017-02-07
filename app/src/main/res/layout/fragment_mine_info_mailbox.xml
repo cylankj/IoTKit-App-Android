@@ -31,7 +31,7 @@
             android:layout_gravity="end|center_vertical"
             android:clickable="true"
             android:padding="@dimen/x15"
-            android:src="@drawable/icon_finish"
+            android:src="@drawable/me_icon_finish_normal"
             android:visibility="visible" />
 
         <ImageView
@@ -85,7 +85,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/x20"
-                android:src="@drawable/btn_login_clear_text"
+                android:src="@drawable/icon_clear_text"
                 android:visibility="gone" />
         </RelativeLayout>
 

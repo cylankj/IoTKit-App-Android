@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.neenbedankt.android-apt'
 apply plugin: 'me.tatarka.retrolambda'
-
+//多渠道包
+apply plugin: 'packer'
 
 def releaseTime() {
     return new Date().format("yyyyMMddHHmm")
@@ -10,38 +10,15 @@ def releaseTime() {
 def getPackageName() {
     return "JiafeigouPlayer"
 }
-//腾讯mtakey
-def getMtaAppKey(String variantName) {
-    if (variantName.equals("zhongxing"))
-        return "ATQ1JV694AKT"
-    return "Aqc1103156296"
-}
 //从version.properties中读取versionName
-def getCustomVersionName() {
-    Properties properties = new Properties()
-    File localProperties = project.rootProject.file('version.properties')
-    if (localProperties.exists())
-        properties.load(localProperties.newDataInputStream())
-    return properties.getProperty('versionName')
-}
-
-//从version.properties中读取versionCode
-def int getCustomVersionCode() {
-    Properties properties = new Properties()
-    File localProperties = project.rootProject.file('version.properties')
-    if (localProperties.exists())
-        properties.load(localProperties.newDataInputStream())
-    def versionCode = properties.getProperty('versionCode').toInteger()
-    return versionCode
-}
-
-def boolean getReleaseCondition(String variantName) {
-    return variantName.equals("_yunRelease") || variantName.equals("_zhongxingRelease")
-}
-
-def getVariantShortName(String name) {
-    return name.replace("Release", "").replace("_", "-").replace("Debug", "")
-}
+def vCode
+def vName
+Properties p = new Properties()
+File lp = project.rootProject.file('version.properties')
+if (lp.exists())
+    p.load(lp.newDataInputStream())
+vName = p.getProperty('versionName')
+vCode = p.getProperty('versionCode').toString().toInteger()//要转化成int
 
 def boolean hasSignKey() {
     Properties properties = new Properties()
@@ -53,17 +30,9 @@ def boolean hasSignKey() {
     }
     return false
 }
-//目前只有中性release版，包名
-def getPackageSuffix(String variantName) {
-    if (variantName.contains("zhongxing"))
-        return "zhongxing"
-    return ""
-}
 
 
 android {
-    def vCode = getCustomVersionCode()
-    def vName = getCustomVersionName()
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -76,25 +45,24 @@ android {
         applicationId "com.cylan.jiafeigou"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
-                                MAT_VALUE          : getMtaAppKey("yun"),
-                                AUTHORITY          : "com.cylan.jiafeigou",
-                                QQ_APP_KEY         : "1103156296",
-                                weChat_APP_ID      : "wx3081bcdae8a842cf",
-                                VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
-                                VID                : "003J",
-                                NICELY_SINA_APP_KEY: "1315129656"]
-        customVersionCode
         versionName "1.0"
         multiDexEnabled true
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         ndk {
             // 设置支持的SO库架构
-            abiFilters 'armeabi-v7a', 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+            abiFilters 'armeabi-v7a'//, 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
 
     }
-
+    externalNativeBuild {
+        cmake {
+            path 'CMakeLists.txt'
+        }
+    }
+    sourceSets.main {
+        jniLibs.srcDir 'src/main/libs' //set .so files location to libs instead of jniLibs
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
     lintOptions {
         abortOnError false
     }
@@ -116,9 +84,14 @@ android {
 
     signingConfigs {
         debug {
-
+            v2SigningEnabled false
         }
         release {
+            // 满足下面两个条件时需要此配置
+            // 1. Gradle版本 >= 2.14.1
+            // 2. Android Gradle Plugin 版本 >= 2.2.0
+            // 作用是只使用旧版签名，禁用V2版签名模式
+            v2SigningEnabled false
             Properties properties = new Properties()
             File localProperties = project.rootProject.file('local.properties')
             if (localProperties.exists()) {
@@ -138,115 +111,37 @@ android {
     }
     buildTypes {
         debug {
-            minifyEnabled false
-            minifyEnabled false
-            zipAlignEnabled false
-            shrinkResources false
-            signingConfig signingConfigs.debug
-
-            applicationVariants.all { variant ->
-                //调整包名
-                applicationIdSuffix = getPackageSuffix(variant.name)
-                variant.outputs.each { output ->
-                    def outputFile = output.outputFile
-                    if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                        def shortName = getVariantShortName(variant.name)
-                        def fileName = "${getPackageName()}" +
-                                "-${vName}" +
-                                ".${vCode}" +
-//                                "-${releaseTime()}" +
-                                shortName
-                        if (outputFile.name.contains("debug")) {
-                            fileName = fileName +
-                                    "-debug.apk"
-                            output.outputFile = new File(outputFile.parent, fileName)
-                        }
-                        println("hunt...name: " + outputFile.name)
-                    }
-                }
-            }
         }
         release {
             if (hasSignKey()) {
                 shrinkResources true
                 minifyEnabled true
                 zipAlignEnabled true
-//                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
                 signingConfig signingConfigs.release
-                applicationVariants.all { variant ->
-                    //调整包名
-                    applicationIdSuffix = getPackageSuffix(variant.name)
-                    variant.outputs.each { output ->
-                        def outputFile = output.outputFile
-                        if (outputFile != null && outputFile.name.endsWith('.apk')) {
-                            def shortName = getVariantShortName(variant.name)
-                            def fileName = "${getPackageName()}" +
-                                    "-${vName}" +
-                                    ".${vCode}" +
-                                    "-${releaseTime()}" +
-                                    shortName
-                            //需要release包的variant
-//                        boolean condition = getReleaseCondition(variant.name)
-                            if (outputFile.name.contains("release")) {
-                                fileName = fileName +
-                                        "-release.apk"
-                                output.outputFile = new File(outputFile.parent, fileName)
-                            }
-
-                        }
-                    }
-                }
             }
         }
     }
 
 
     productFlavors {
-        _test1 {
-            applicationIdSuffix ".test1"
-            manifestPlaceholders = [NICELY_VALUE       : "test1.jfgou.com:443",
-                                    MAT_VALUE          : getMtaAppKey("test1"),
-                                    AUTHORITY          : ".test1",
-                                    QQ_APP_KEY         : "xxx",
-                                    weChat_APP_ID      : "xxx",
-                                    VKEY               : "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9",
-                                    VID                : "0H7A",
-                                    NICELY_SINA_APP_KEY: "xxx"]
-        }
 
         _yun {
+            //vid vkey已经搬到Security.java
             //官方运营
-            manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
-                                    MAT_VALUE          : getMtaAppKey("yun"),
-                                    AUTHORITY          : "",
-                                    QQ_APP_KEY         : "1103156296",
-                                    weChat_APP_ID      : "wx3081bcdae8a842cf",
-                                    VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
-                                    VID                : "\\ 0001",
-                                    NICELY_SINA_APP_KEY: "1315129656"]
+            versionName vName
+            versionCode vCode
         }
         _yf {
             applicationIdSuffix ".yf"
-            manifestPlaceholders = [NICELY_VALUE       : "yf.jfgou.com:443",
-                                    MAT_VALUE          : getMtaAppKey("yf"),
-                                    AUTHORITY          : ".yf",
-                                    VKEY               : "DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz",
-                                    VID                : "003H",
-                                    QQ_APP_KEY         : "1103156296",
-                                    weChat_APP_ID      : "wx3081bcdae8a842cf",
-                                    NICELY_SINA_APP_KEY: "xxx"]
+            versionName vName
+            versionCode vCode
         }
         //中性包
         _zhongxing {
             applicationIdSuffix ".zhongxing"
-            manifestPlaceholders = [NICELY_VALUE       : "yun.jfgou.com:443",
-                                    MAT_VALUE          : getMtaAppKey("zhongxing"),
-                                    AUTHORITY          : ".zhongxing",
-                                    QQ_APP_KEY         : "xxx",
-                                    weChat_APP_ID      : "wx382033a16e5cc4a5",
-                                    VKEY               : "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3",
-                                    VID                : "003J",
-                                    NICELY_SINA_APP_KEY: "xxx"]
+            versionName vName
+            versionCode vCode
         }
     }
 }
@@ -288,10 +183,10 @@ dependencies {
     compile rootProject.ext.appCardview
     /////////////////android///////////////////////
     compile rootProject.ext.butterknife
-    apt rootProject.ext.butterknifeApt
+    annotationProcessor rootProject.ext.butterknifeApt
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.permis
-    apt rootProject.ext.permisApt
+    annotationProcessor rootProject.ext.permisApt
     compile project(':jlib')
     compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
     compile files('libs/gson-2.2.4.jar')
@@ -303,8 +198,7 @@ dependencies {
     compile files('libs/open_sdk_r5756.jar')
     compile files('libs/weiboSDKCore_3.1.4.jar')
     compile files('libs/zxing.jar')
-    debugCompile files('src/main/jniLibs/jfg-debug-support.jar')
-    releaseCompile files('src/main/jniLibs/jfg-release-support.jar')
+    compile files('libs/zbar.jar')
     compile files('libs/libammsdk-3.1.1.jar')
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
     compile rootProject.ext.buglySdk
@@ -313,22 +207,26 @@ dependencies {
     debugCompile rootProject.ext.leakcanaryAndroid
     releaseCompile rootProject.ext.leakcanaryAndroidNoOp
     testCompile rootProject.ext.leakcanaryAndroidNoOp
-    compile files('src/main/jniLibs/zbar.jar')
     //add by hunt 2016-08-01
     compile rootProject.ext.switchButton
-    //多进程文件共享方案
-    //    compile rootProject.ext.multiProcessSp
     //glide
     compile rootProject.ext.glide
     compile(name: rootProject.ext.cySdk, ext: 'aar')
     //自己写的 apt
 //    compile project(':annotation')
-    compile project(':compiler')
+//    compile project(':compiler')
 
     compile 'com.danikula:videocache:2.6.4'
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
-//    compile 'cn.aigestudio.wheelpicker:WheelPicker:1.1.2'
+//    https://github.com/cylankj/JFGAndroid-Ext.git
+    compile 'com.cylan.ext:annotations:0.1.0'
+    annotationProcessor 'com.cylan.ext:processor:0.1.0'
+    //
+    debugCompile 'com.cylan.ext:optdebug:0.0.1'
+    releaseCompile 'com.cylan.ext:optrelease:0.0.1'
+    //渠道包
+    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
 }
 

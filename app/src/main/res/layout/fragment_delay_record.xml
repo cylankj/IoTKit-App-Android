@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/delay_record_bg"
+    android:background="@drawable/delay_bg_time_lapse_photography"
     android:gravity="center_horizontal"
     android:orientation="vertical">
 
@@ -121,7 +121,7 @@
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/x52"
-            android:src="@drawable/delay_ico_photography" />
+            android:src="@drawable/delay_icon_photography" />
 
     </RelativeLayout>
 

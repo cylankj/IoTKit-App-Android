@@ -59,7 +59,7 @@
             android:layout_marginRight="@dimen/x10"
             android:paddingLeft="@dimen/x10"
             android:paddingRight="@dimen/x10"
-            android:src="@drawable/btn_login_clear_text" />
+            android:src="@drawable/icon_clear_text" />
 
         <View
             android:layout_width="match_parent"

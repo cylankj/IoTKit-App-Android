@@ -40,6 +40,14 @@
 -dontwarn okio.**
 -dontwarn javax.annotation.**
 
+-dontnote android.net.http.*
+-dontnote org.apache.commons.codec.**
+-dontnote org.apache.http.**
+
+-keep public class com.cylan.ext.opt.DebugOptionsImpl{
+    public <methods>;
+}
+
 -keep public class java.nio.ByteBuffer
 -keep public class * extends java.nio.ByteBuffer
 -keep  class java.nio.** { *; }

@@ -11,7 +11,7 @@
         android:id="@+id/rLayout_mag_live_top_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y181"
-        android:background="@drawable/bg_magnetometer_top_close">
+        android:background="@drawable/magnetometer_bg_top_close">
 
         <ImageView
             android:id="@+id/imgV_msg_title_top_back"
@@ -38,7 +38,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/y12"
             android:layout_marginTop="@dimen/y62"
-            android:src="@drawable/icon_magnetometer_top_close" />
+            android:src="@drawable/magnetometer_icon_top_close" />
 
         <ImageView
             android:id="@+id/imgV_msg_title_top_setting"
@@ -73,7 +73,7 @@
 
             <ImageView
                 android:layout_gravity="center_horizontal"
-                android:src="@drawable/icon_no_message"
+                android:src="@drawable/pic_no_message"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

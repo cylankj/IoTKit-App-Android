@@ -1,8 +1,9 @@
 package com.cylan.jiafeigou.dp;
 
-import com.cylan.annotation.Device;
-import com.cylan.annotation.DpAnnotation;
-import com.cylan.annotation.ForDevice;
+
+import com.cylan.ext.annotations.Device;
+import com.cylan.ext.annotations.DpAnnotation;
+import com.cylan.ext.annotations.ForDevice;
 
 /**
  * Created by cylan-hunt on 16-11-8.

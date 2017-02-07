@@ -223,7 +223,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         initVideoView();
-        JfgCmdInsurance.getCmd().enableRenderRemoteView(true, mSurfaceView);
+        JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, mSurfaceView);
         mBellLiveVideoPicture.setVisibility(View.GONE);
     }
 
@@ -263,8 +263,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onSpeaker(boolean on) {
         if (mLandBellLiveSpeaker != null)
-            mLandBellLiveSpeaker.setImageResource(on ? R.drawable.icon_mic_on : R.drawable.icon_mic_off);
-        imgvBellLiveSpeaker.setImageResource(on ? R.drawable.icon_mic_on : R.drawable.icon_mic_off);
+            mLandBellLiveSpeaker.setImageResource(on ? R.drawable.doorbell_icon_talk : R.drawable.doorbell_icon_no_talk);
+        imgvBellLiveSpeaker.setImageResource(on ? R.drawable.doorbell_icon_talk : R.drawable.doorbell_icon_no_talk);
     }
 
     @Override

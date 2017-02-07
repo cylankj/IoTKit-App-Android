@@ -16,7 +16,6 @@
 
 
         <EditText
-            android:text="18503060168"
             android:id="@+id/et_login_username"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -45,7 +44,7 @@
             android:layout_marginRight="@dimen/x10"
             android:paddingLeft="@dimen/x10"
             android:paddingRight="@dimen/x10"
-            android:src="@drawable/btn_login_clear_text"
+            android:src="@drawable/icon_clear_text"
             android:visibility="gone" />
 
         <View
@@ -65,7 +64,6 @@
         android:layout_marginTop="@dimen/y29">
 
         <EditText
-            android:text="111111"
             android:id="@+id/et_login_pwd"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -99,7 +97,7 @@
                 android:layout_gravity="center_vertical"
                 android:paddingLeft="@dimen/x15"
                 android:paddingRight="@dimen/x7"
-                android:src="@drawable/btn_login_clear_text"
+                android:src="@drawable/icon_clear_text"
                 android:visibility="gone" />
 
             <CheckBox
@@ -166,7 +164,7 @@
             style="@style/third_party_login_style"
             android:layout_marginRight="@dimen/x14"
             android:layout_toLeftOf="@+id/view_third_party_center"
-            android:drawableLeft="@drawable/icon_login_qq"
+            android:drawableLeft="@drawable/icon_qq"
             android:padding="@dimen/x10"
             android:text="@string/LOGIN_QQ" />
 
@@ -182,7 +180,7 @@
             style="@style/third_party_login_style"
             android:layout_marginLeft="@dimen/x14"
             android:layout_toRightOf="@+id/view_third_party_center"
-            android:drawableLeft="@drawable/icon_login_weibo"
+            android:drawableLeft="@drawable/ico_weibo"
             android:padding="@dimen/x10"
             android:text="@string/LOGIN_WEIBO" />
     </RelativeLayout>

@@ -13,7 +13,7 @@
         android:layout_gravity="center_vertical"
         android:layout_marginBottom="@dimen/y16"
         android:layout_marginLeft="@dimen/x15"
-        android:drawableLeft="@drawable/icon_mine_friend"
+        android:drawableLeft="@drawable/me_icon_friend"
         android:drawablePadding="@dimen/x16"
         android:gravity="center_vertical"
         android:textColor="#333333"
@@ -26,7 +26,7 @@
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
         android:layout_marginRight="@dimen/x19"
-        android:src="@drawable/icon_mine_friend" />
+        android:src="@drawable/me_icon_friend" />
 
     <View
         android:layout_width="match_parent"

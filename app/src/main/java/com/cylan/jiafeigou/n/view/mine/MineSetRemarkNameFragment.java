@@ -114,7 +114,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
             viewMinePersonalSetRemarknameNewNameLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         } else {
-            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMineSetRemarknameBind.setEnabled(true);
             ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
             viewMinePersonalSetRemarknameNewNameLine.setBackgroundColor(Color.parseColor("#36bdff"));
@@ -207,7 +207,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
             ivMineSetRemarknameBind.setEnabled(false);
             ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
         } else {
-            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMineSetRemarknameBind.setEnabled(true);
             ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
         }

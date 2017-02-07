@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:clickable="true"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white">
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:orientation="vertical">
 
     <FrameLayout
         android:id="@+id/rl_tab_bar_container"
-        android:background="@color/color_0ba8cf"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:background="@color/color_0ba8cf">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -18,32 +18,32 @@
 
             <ImageView
                 android:id="@+id/iv_top_bar_left_back"
-                android:clickable="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:clickable="true"
                 android:padding="@dimen/x15"
                 android:src="@drawable/nav_tab_back_selector" />
 
             <TextView
-                android:layout_toRightOf="@id/iv_top_bar_left_back"
                 android:layout_width="wrap_content"
-                android:gravity="center_vertical"
                 android:layout_height="@dimen/y48"
+                android:layout_toRightOf="@id/iv_top_bar_left_back"
+                android:gravity="center_vertical"
                 android:text="@string/Tap3_Friends_UserInfo_ModName"
-                android:textSize="@dimen/sp18"
-                android:textColor="@color/color_white" />
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp18" />
 
             <ImageView
-                android:visibility="visible"
                 android:id="@+id/iv_mine_set_remarkname_bind"
-                android:padding="@dimen/x15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:clickable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/icon_finish" />
+                android:padding="@dimen/x15"
+                android:src="@drawable/me_icon_finish_normal"
+                android:visibility="visible" />
         </RelativeLayout>
     </FrameLayout>
 
@@ -52,42 +52,42 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:layout_marginTop="@dimen/y8"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y54">
+            android:layout_height="@dimen/y54"
+            android:layout_marginTop="@dimen/y8">
 
             <EditText
                 android:id="@+id/et_mine_set_remarkname_new_name"
-                android:textColor="@color/color_333333"
-                android:textSize="@dimen/sp16"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
+                android:background="@null"
                 android:hint="@string/Tap3_Friends_UserInfo_Name"
                 android:maxLength="12"
-                android:background="@null"
-                android:layout_marginRight="@dimen/x20"
-                android:layout_marginLeft="@dimen/x20"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16" />
 
             <View
                 android:id="@+id/view_mine_personal_set_remarkname_new_name_line"
-                android:layout_marginBottom="@dimen/y8"
-                android:layout_alignParentBottom="true"
-                android:layout_marginRight="@dimen/x20"
-                android:layout_marginLeft="@dimen/x20"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y1"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/y8"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
                 android:background="@color/color_f2f2f2" />
 
             <ImageView
                 android:id="@+id/iv_mine_personal_set_remarkname_clear"
-                android:visibility="gone"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/x20"
-                android:layout_alignParentRight="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/btn_login_clear_text" />
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/x20"
+                android:src="@drawable/icon_clear_text"
+                android:visibility="gone" />
 
         </RelativeLayout>
 

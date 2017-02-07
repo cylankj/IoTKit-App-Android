@@ -191,9 +191,9 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                     try {
                         AppLogger.i("stopPlayVideo:" + s);
                         JfgCmdInsurance.getCmd().stopPlay(s);
-                        JfgCmdInsurance.getCmd().enableCamera(false, false);
+//                        JfgCmdInsurance.getCmd().enableCamera(false, false);
                         JfgCmdInsurance.getCmd().enableRenderLocalView(false, null);
-                        JfgCmdInsurance.getCmd().enableRenderRemoteView(false, null);
+//                        JfgCmdInsurance.getCmd().enableRenderRemoteView(false, null);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }

@@ -5,7 +5,7 @@
 
     <RelativeLayout
         android:id="@+id/rl_call_in_container"
-        android:background="@drawable/bg_call_in"
+        android:background="@drawable/album_bg_call_in"
         android:clickable="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent">

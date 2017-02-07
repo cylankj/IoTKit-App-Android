@@ -64,10 +64,10 @@ public class BellTopBackgroundView extends FrameLayout {
             }
             if (state == 1) {
                 tvStartCalling.setVisibility(VISIBLE);
-                fLayoutBellTopPre.setBackground(getResources().getDrawable(R.drawable.bg_bell_home_online));
+                fLayoutBellTopPre.setBackground(getResources().getDrawable(R.drawable.doorbell_bg_top_online));
             } else {
                 tvStartCalling.setVisibility(GONE);
-                fLayoutBellTopPre.setBackground(getResources().getDrawable(R.drawable.bg_bell_home_offline));
+                fLayoutBellTopPre.setBackground(getResources().getDrawable(R.drawable.doorbell_bg_top_offline));
             }
         } else {
             if (vsBellHomeTop.getCurrentView() != fLayoutBellTopNext) {

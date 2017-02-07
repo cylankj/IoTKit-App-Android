@@ -95,7 +95,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     public void onNewPwdChance(CharSequence s, int start, int before, int count) {
         boolean isEmpty = TextUtils.isEmpty(s);
         ivMineNewPwdClear.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-        ivMineInfoSetNewpwdAble.setImageDrawable(isEmpty ? getResources().getDrawable(R.drawable.icon_finish_disable) : getResources().getDrawable(R.drawable.icon_finish));
+        ivMineInfoSetNewpwdAble.setImageDrawable(isEmpty ? getResources().getDrawable(R.drawable.icon_finish_disable) : getResources().getDrawable(R.drawable.me_icon_finish_normal));
         ivMineInfoSetNewpwdAble.setEnabled(isEmpty ? false : true);
     }
 

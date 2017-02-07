@@ -9,11 +9,11 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
-import com.cylan.utils.PackageUtils;
 import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
@@ -190,46 +190,47 @@ public class SimpleBindFlow extends AFullBind {
      * @param udpDevicePortrait
      */
     private void setServerLanguage(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
-        AppLogger.i(BIND_TAG + udpDevicePortrait);
-        final String[] serverDetails = PackageUtils.getMetaString(ContextUtils.getContext(),
-                "ServerAddress").split(":");
-        String address = serverDetails[0];
-        int port = Integer.parseInt(serverDetails[1]);
-        //设置语言
-        JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
-                udpDevicePortrait.uuid,
-                udpDevicePortrait.mac,
-                JFGRules.getLanguageType(ContextUtils.getContext()));
-        //设置服务器
-        JfgUdpMsg.SetServer setServer =
-                new JfgUdpMsg.SetServer(udpDevicePortrait.uuid,
-                        udpDevicePortrait.mac,
-                        address,
-                        port,
-                        80);
-        AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
-        AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
-        //增加绑定随机数.
-        bindCode = GlobalDataProxy.getInstance().getJfgAccount().getAccount() + System.currentTimeMillis();
-        JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
-                udpDevicePortrait.uuid, udpDevicePortrait.mac, bindCode);
         try {
-            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes());
-        } catch (JfgException e) {
-            AppLogger.e("e: " + e.getLocalizedMessage());
+            AppLogger.i(BIND_TAG + udpDevicePortrait);
+            String address = Security.getServerPrefix(JFGRules.getTrimPackageName())+".jfgou.com";
+            int port = Security.getServerPort(JFGRules.getTrimPackageName());
+            //设置语言
+            JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
+                    udpDevicePortrait.uuid,
+                    udpDevicePortrait.mac,
+                    JFGRules.getLanguageType(ContextUtils.getContext()));
+            //设置服务器
+            JfgUdpMsg.SetServer setServer =
+                    new JfgUdpMsg.SetServer(udpDevicePortrait.uuid,
+                            udpDevicePortrait.mac,
+                            address,
+                            port,
+                            80);
+            AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
+            AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
+            //增加绑定随机数.
+            bindCode = GlobalDataProxy.getInstance().getJfgAccount().getAccount() + System.currentTimeMillis();
+            JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
+                    udpDevicePortrait.uuid, udpDevicePortrait.mac, bindCode);
+            try {
+                JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes());
+            } catch (JfgException e) {
+                AppLogger.e("e: " + e.getLocalizedMessage());
+            }
+            try {
+                JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                        UdpConstant.PORT,
+                        setServer.toBytes());
+                //
+                JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                        UdpConstant.PORT,
+                        setLanguage.toBytes());
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            AppLogger.e("err: " + e.getLocalizedMessage());
         }
-        try {
-            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                    UdpConstant.PORT,
-                    setServer.toBytes());
-            //
-            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
-                    UdpConstant.PORT,
-                    setLanguage.toBytes());
-        } catch (JfgException e) {
-            e.printStackTrace();
-        }
-
     }
 
     /**

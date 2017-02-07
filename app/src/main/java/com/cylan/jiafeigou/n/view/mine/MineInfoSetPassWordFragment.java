@@ -109,7 +109,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             ivMinePersonalSetpasswordBind.setEnabled(false);
             ivMinePersonalSetpasswordBind.setClickable(false);
         } else {
-            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMinePersonalSetpasswordBind.setEnabled(true);
             ivMinePersonalSetpasswordBind.setClickable(true);
         }
@@ -125,7 +125,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             ivMinePersonalSetpasswordBind.setClickable(false);
             ivMinePersonalSetpasswordBind.setEnabled(false);
         } else {
-            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMinePersonalSetpasswordBind.setClickable(true);
             ivMinePersonalSetpasswordBind.setEnabled(true);
         }
@@ -139,7 +139,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
         if (TextUtils.isEmpty(getNewPassword()) || TextUtils.isEmpty(getOldPassword())) {
             ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
         } else {
-            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish));
+            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
         }
     }
 

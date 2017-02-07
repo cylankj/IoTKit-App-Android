@@ -7,7 +7,7 @@
         android:id="@+id/tv_bell_live_land_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/icon_nav_back_white"
+        android:drawableLeft="@drawable/nav_icon_back_white"
         android:drawablePadding="@dimen/x20"
         android:padding="@dimen/x15"
         android:text="房间"
@@ -29,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/x10"
-            android:src="@drawable/btn_bell_land_capture" />
+            android:src="@drawable/doorbell_icon_landscape_screenshot" />
 
         <ImageView
             android:id="@+id/imgv_bell_live_land_hangup"
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:padding="@dimen/x10"
-            android:src="@drawable/btn_bell_land_hang_up" />
+            android:src="@drawable/doorbell_btn_bg_top_full_screen_hang_up" />
 
         <ImageView
             android:id="@+id/imgv_bell_live_land_mic"

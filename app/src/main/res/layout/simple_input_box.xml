@@ -37,7 +37,7 @@
             android:layout_gravity="center_vertical"
             android:paddingLeft="@dimen/x15"
             android:paddingRight="@dimen/x7"
-            android:src="@drawable/btn_login_clear_text"
+            android:src="@drawable/icon_clear_text"
             android:visibility="gone" />
 
         <CheckBox

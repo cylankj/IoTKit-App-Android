@@ -47,7 +47,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_image_src="@drawable/setting_icon_information"
             hunt:sv_sub_title="@string/EQUIPMENT_INFO"
             hunt:sv_title="@string/EQUIPMENT_INFO"
             hunt:sv_v_divider="true"
@@ -59,7 +59,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_image_src="@drawable/setting_icon_information"
             hunt:sv_title="@string/Tap1_Setting_Cid"
             hunt:sv_v_divider="true"
             hunt:sv_v_image_show="false" />
@@ -70,7 +70,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_image_src="@drawable/setting_icon_information"
             hunt:sv_title="@string/device_Wi_Fi"
             hunt:sv_v_divider="true"
             hunt:sv_v_image_show="false" />
@@ -81,7 +81,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_image_src="@drawable/setting_icon_information"
             hunt:sv_title="@string/MAC"
             hunt:sv_v_divider="true"
             hunt:sv_v_image_show="false" />
@@ -92,7 +92,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_image_src="@drawable/setting_icon_information"
             hunt:sv_title="@string/SYSTME_VERSION"
             hunt:sv_v_divider="true"
             hunt:sv_v_image_show="false" />
@@ -103,7 +103,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_image_src="@drawable/setting_icon_information"
             hunt:sv_title="@string/SOFTWARE_VERSION"
             hunt:sv_v_divider="true"
             hunt:sv_v_image_show="false" />
@@ -114,7 +114,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/icon_setting_information"
+            hunt:sv_image_src="@drawable/setting_icon_information"
             hunt:sv_title="@string/BATTERY_LEVEL"
             hunt:sv_v_divider="true"
             hunt:sv_v_image_show="false" />

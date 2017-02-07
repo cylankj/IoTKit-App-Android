@@ -13,26 +13,6 @@ import java.util.ArrayList;
 
 public class Converter {
 
-//    public static BeanCamInfo convert(DeviceBean bean) {
-//        BaseBean baseBean = new BaseBean();
-//        baseBean.alias = bean.alias;
-//        baseBean.shareAccount = bean.shareAccount;
-//        baseBean.sn = bean.sn;
-//        baseBean.uuid = bean.uuid;
-//        baseBean.pid = bean.pid;
-//        BeanCamInfo info = new BeanCamInfo();
-//        info.convert(baseBean, bean.dataList);
-//        return info;
-//    }
-
-    public static DpMsgDefine.DpMsg convert(Object o, int msgId, long version) {
-        DpMsgDefine.DpMsg base = new DpMsgDefine.DpMsg();
-        base.version = version;
-        base.msgId = msgId;
-        base.o = o;
-        return base;
-    }
-
     public static ArrayList<CamMessageBean> convert(String uuid, ArrayList<BaseValue> baseValueList) {
         ArrayList<CamMessageBean> beanArrayList = new ArrayList<>();
         if (baseValueList == null)

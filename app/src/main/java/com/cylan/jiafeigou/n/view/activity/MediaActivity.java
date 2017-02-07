@@ -372,7 +372,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         params.rightMargin = (int) resources.getDimension(R.dimen.video_option_full_screen_margin_right);
         mVideoFullScreen.setLayoutParams(params);
 
-        mVideoFullScreen.setImageResource(R.drawable.icon_full_screen);
+        mVideoFullScreen.setImageResource(R.drawable.wonderful_icon_video_full_screen);
         mHeaderBack.setImageResource(R.drawable.btn_close);
         mVideoMore.setVisibility(View.VISIBLE);
         mMediaPager.setLocked(false);
@@ -414,7 +414,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mVideoFullScreen.setLayoutParams(params);
 
         mVideoFullScreen.setImageResource(R.drawable.landscape_icon_screen);
-        mHeaderBack.setImageResource(R.drawable.icon_nav_back_white);
+        mHeaderBack.setImageResource(R.drawable.nav_icon_back_white);
         mVideoMore.setVisibility(View.GONE);
         mMediaPager.setLocked(true);
         updatePlayState();

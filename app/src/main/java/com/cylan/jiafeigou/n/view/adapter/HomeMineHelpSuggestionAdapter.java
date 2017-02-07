@@ -94,7 +94,7 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
             } else if (item.pro_falag == 1) {
                 //显示发送失败
-                holder.setImageDrawable(R.id.iv_send_pro, getContext().getResources().getDrawable(R.drawable.icon_caution));
+                holder.setImageDrawable(R.id.iv_send_pro, getContext().getResources().getDrawable(R.drawable.album_icon_caution));
             } else {
                 //显示发送成功
                 holder.setVisibility(R.id.iv_send_pro, View.GONE);

@@ -74,7 +74,7 @@ public class AgreementFragment extends Fragment {
             }
         });
         webview.loadUrl(agreementUrl);
-        ivTopBarLeft.setImageResource(R.drawable.icon_nav_back_gray);
+        ivTopBarLeft.setImageResource(R.drawable.nav_icon_back_gary);
         tvTopBarCenter.setText("用户协议");
     }
 

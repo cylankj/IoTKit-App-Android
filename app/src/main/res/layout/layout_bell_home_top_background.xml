@@ -10,14 +10,14 @@
         android:id="@+id/fLayout_bell_top_pre"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_bell_home_online">
+        android:background="@drawable/doorbell_bg_top_online">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|bottom"
             android:layout_marginBottom="@dimen/y24"
-            android:src="@drawable/bell_home_online_icon" />
+            android:src="@drawable/doorbell_bg_top_bell" />
 
         <TextView
             android:id="@+id/tv_start_calling"
@@ -35,14 +35,14 @@
         android:id="@+id/fLayout_bell_top_next"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_bell_home_offline">
+        android:background="@drawable/doorbell_bg_top_offline">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:drawablePadding="@dimen/x12"
-            android:drawableTop="@drawable/bg_bell_home_offline_icon"
+            android:drawableTop="@drawable/doorbell_pic_top_no_network"
             android:text="@string/OFFLINE_ERR_1"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp14" />
