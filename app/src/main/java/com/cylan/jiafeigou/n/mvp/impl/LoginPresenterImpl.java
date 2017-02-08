@@ -61,6 +61,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     private QQAuthrizeListener qqAuthrizeListener;
     private boolean isLoginSucc;
     private boolean isRegSms;
+    private boolean isReg;
 
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
@@ -492,6 +493,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public void call(String s) {
                         try {
+                            isReg = true;
                             JfgCmdInsurance.getCmd().checkAccountRegState(s);
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -509,6 +511,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(new Action1<RxEvent.CheckRegsiterBack>() {
                     @Override
                     public void call(RxEvent.CheckRegsiterBack checkRegsiterBack) {
+                        if (isReg)
                         getView().checkAccountResult(checkRegsiterBack);
                     }
                 });

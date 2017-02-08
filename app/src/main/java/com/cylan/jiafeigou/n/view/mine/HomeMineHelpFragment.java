@@ -6,14 +6,20 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,8 +40,6 @@ public class HomeMineHelpFragment extends Fragment {
     TextView mTvHelpSuggestion;
     @BindView(R.id.wv_mine_help)
     WebView mWvHelp;
-    @BindView(R.id.pb_mine_help)
-    ProgressBar mPbHelp;
     @BindView(R.id.iv_home_mine_message_back)
     TextView ivHomeMineMessageBack;
     @BindView(R.id.fLayout_top_bar_container)
@@ -55,7 +59,6 @@ public class HomeMineHelpFragment extends Fragment {
         homeMineHelpSuggestionFragment = HomeMineHelpSuggestionFragment.newInstance(new Bundle());
     }
 
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -68,18 +71,55 @@ public class HomeMineHelpFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+        showWebView();
     }
 
     /**
      * 当进度条加载完成的时候显示该webView
      */
     private void showWebView() {
-        mWvHelp.getSettings().setJavaScriptEnabled(true);
-        mWvHelp.getSettings().setSavePassword(false);
+        String agreementUrl;
+        Locale locale = getContext().getResources().getConfiguration().locale;
+        final String c = locale.toString();
+
+        if (c.contains("zh")) {
+            if ((c.contains("TW") || c.contains("HK"))) {
+                agreementUrl = "http://yun.jfgou.com/help/zh-hk.html";
+            } else {
+                agreementUrl = "http://yun.jfgou.com/help/zh-rCN.html";
+            }
+        }else if (c.contains("ja")){
+            agreementUrl = "http://yun.jfgou.com/help/ja.html";
+        }else if(c.contains("fr")){
+            agreementUrl = "http://yun.jfgou.com/help/fr.html";
+        }else if (c.contains("de")){
+            agreementUrl = "http://yun.jfgou.com/help/de.html";
+        }else if (c.contains("ru")){
+            agreementUrl = "http://yun.jfgou.com/help/ru.html";
+        }else if (c.contains("es")){
+            agreementUrl = "http://yun.jfgou.com/help/es.html";
+        }else if (c.contains("pt")){
+            agreementUrl = "http://yun.jfgou.com/help/pt.html";
+        }else {
+            agreementUrl = "http://yun.jfgou.com/help/en.html";
+        }
+
+        WebSettings settings = mWvHelp.getSettings();
+        settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
+        settings.setLoadWithOverviewMode(true);
+        settings.setJavaScriptEnabled(true);
+        settings.setSavePassword(false);
         mWvHelp.removeJavascriptInterface("searchBoxJavaBridge_");
         mWvHelp.removeJavascriptInterface("accessibilityTraversal");
         mWvHelp.removeJavascriptInterface("accessibility");
-        mWvHelp.loadUrl("http://test.jfgou.com/help/zh-rCN.html");
+        mWvHelp.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+        });
+        mWvHelp.loadUrl(agreementUrl);
     }
 
     @OnClick({R.id.iv_home_mine_message_back, R.id.tv_mine_help_suggestion})

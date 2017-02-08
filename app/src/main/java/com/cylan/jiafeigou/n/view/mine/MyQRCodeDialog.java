@@ -16,9 +16,13 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,6 +44,7 @@ public class MyQRCodeDialog extends BaseDialog {
     @BindView(R.id.iv_close_dialog)
     ImageView ivCloseDialog;
     private JFGAccount jfgaccount;
+    private boolean isopenlogin;
 
     public static MyQRCodeDialog newInstance(Bundle bundle) {
         MyQRCodeDialog dialog = new MyQRCodeDialog();
@@ -53,6 +58,7 @@ public class MyQRCodeDialog extends BaseDialog {
         setCancelable(false);
         Bundle arguments = getArguments();
         jfgaccount = (JFGAccount) arguments.getSerializable("jfgaccount");
+        isopenlogin = (boolean) arguments.getSerializable("isopenlogin");
     }
 
     @Nullable
@@ -76,6 +82,26 @@ public class MyQRCodeDialog extends BaseDialog {
     }
 
     private void initView() {
+        if (isopenlogin){
+            tvUserAlias.setText(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
+            Glide.with(getContext()).load(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON))
+                    .asBitmap()
+                    .centerCrop()
+                    .placeholder(R.drawable.icon_mine_head_normal)
+                    .error(R.drawable.icon_mine_head_normal)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .into(new BitmapImageViewTarget(ivUserIcon) {
+                        @Override
+                        protected void setResource(Bitmap resource) {
+                            RoundedBitmapDrawable circularBitmapDrawable =
+                                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+                            circularBitmapDrawable.setCircular(true);
+                            ivUserIcon.setImageDrawable(circularBitmapDrawable);
+                        }
+
+                    });
+            return;
+        }
         tvUserAlias.setText(jfgaccount.getAlias());
         Glide.with(getContext()).load(jfgaccount.getPhotoUrl())
                 .asBitmap()
@@ -91,7 +117,6 @@ public class MyQRCodeDialog extends BaseDialog {
                         circularBitmapDrawable.setCircular(true);
                         ivUserIcon.setImageDrawable(circularBitmapDrawable);
                     }
-
                 });
     }
 
