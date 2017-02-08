@@ -95,11 +95,8 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.Tap1_AddDevice_tips))
                 .setNegativeButton(getString(R.string.CANCEL), null)
-                .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        popAllFragmentStack();
-                    }
+                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    popAllFragmentStack();
                 }).show();
 
 //        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {

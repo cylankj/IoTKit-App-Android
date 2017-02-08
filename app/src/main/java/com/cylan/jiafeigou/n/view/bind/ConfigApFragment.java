@@ -132,7 +132,6 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void onPause() {
         super.onPause();
-        JConstant.ConfigApStep = 3;
         if (basePresenter != null) {
             basePresenter.unregisterNetworkMonitor();
         }
@@ -242,7 +241,7 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
         final int count = resultList == null ? 0 : resultList.size();
         if (count == 0) {
             if (Build.VERSION.SDK_INT >= 23) {
-                ToastUtil.showNegativeToast("请确认是否已经开启位置信息权限");
+                ToastUtil.showNegativeToast(getString(R.string.turn_on_gps));
             } else {
                 ToastUtil.showNegativeToast("请尝试手动开关wifi");
             }

@@ -61,7 +61,6 @@ public class SubmitBindingInfoContractImpl extends
         return new Subscription[]{
                 robotSyncDataSub(),
                 bindResultSub(),
-                monitorBulkDeviceList()
         };
     }
 
@@ -94,15 +93,6 @@ public class SubmitBindingInfoContractImpl extends
                 })
                 .retry(new RxHelper.RxException<>("bindResultSub"))
                 .subscribe();
-    }
-
-    /**
-     * 客户端登陆成功后,会批量查询设备.
-     *
-     * @return
-     */
-    private Subscription monitorBulkDeviceList() {
-        return null;
     }
 
 
