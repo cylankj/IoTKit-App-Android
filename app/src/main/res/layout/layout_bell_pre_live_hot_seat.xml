@@ -3,34 +3,36 @@
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dLayout_bell_hot_seat"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    hunt:ll_big_outer_radius="@dimen/x10">
+    android:layout_height="wrap_content"
+    hunt:ll_big_outer_radius="@dimen/y10">
 
 
     <com.cylan.jiafeigou.widget.bell.LLView
-        android:layout_width="@dimen/x100"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/y50"
         android:layout_gravity="center_vertical"
         hunt:ll_big_inner_color="@color/color_FF1744"
         hunt:ll_big_inner_radius="@dimen/x5"
         hunt:ll_big_outer_color="@color/color_33FF1744"
         hunt:ll_big_outer_radius="@dimen/x10"
+        android:layout_marginStart="@dimen/y51"
         hunt:ll_small_color="@color/color_33FF1744"
-        hunt:ll_small_interval="@dimen/x10"
-        hunt:ll_small_radius="@dimen/x3" />
+        hunt:ll_small_interval="@dimen/y10"
+        hunt:ll_small_radius="@dimen/y2" />
 
     <com.cylan.jiafeigou.widget.bell.LLView
-        android:layout_width="@dimen/x100"
+        android:layout_width="wrap_content"
         android:layout_height="@dimen/y50"
         android:layout_gravity="center_vertical|end"
         hunt:ll_big_inner_color="@color/color_41B56A"
-        hunt:ll_big_inner_radius="@dimen/x5"
+        hunt:ll_big_inner_radius="@dimen/y5"
         hunt:ll_big_outer_color="@color/color_3341B56A"
-        hunt:ll_big_outer_radius="@dimen/x10"
+        hunt:ll_big_outer_radius="@dimen/y10"
+        android:layout_marginEnd="@dimen/y51"
         hunt:ll_reverse="true"
         hunt:ll_small_color="@color/color_3341B56A"
         hunt:ll_small_interval="@dimen/x10"
-        hunt:ll_small_radius="@dimen/x3" />
+        hunt:ll_small_radius="@dimen/y2" />
 
     <ImageView
         android:layout_width="wrap_content"

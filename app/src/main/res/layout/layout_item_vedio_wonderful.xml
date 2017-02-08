@@ -14,8 +14,8 @@
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/tv_wonderful_item_footer"
         android:layout_alignTop="@+id/rLayout_wonderful_item_wonder"
-        android:layout_marginLeft="8dp"
-        android:paddingRight="2dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="2dp"
         hunt:dashLineColor="@color/color_e8e8e8"
         hunt:dashLineWidth="2dp"
         hunt:innerCircleColor="@color/color_white"
@@ -29,8 +29,8 @@
         android:id="@+id/rLayout_wonderful_item_wonder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="4dp"
-        android:layout_toRightOf="@+id/fl_wonderful_item_time_line"
+        android:layout_marginStart="4dp"
+        android:layout_toEndOf="@+id/fl_wonderful_item_time_line"
         android:paddingBottom="8dp">
 
         <TextView
@@ -85,11 +85,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="10dp"
+                    android:paddingStart="12dp"
+                    android:paddingEnd="10dp"
                     android:text="@string/DELETE"
                     android:textColor="@color/color_4b9fd5"
-                    android:textSize="11sp"/>
+                    android:textSize="@dimen/sp11"/>
 
                 <View
                     android:layout_width="1dp"
@@ -108,7 +108,7 @@
                     android:paddingRight="10dp"
                     android:text="@string/Tap2_Index_DemoVideo"
                     android:textColor="@color/color_909090"
-                    android:textSize="11sp"/>
+                    android:textSize="@dimen/sp11"/>
 
                 <TextView
                     android:id="@+id/tv_wonderful_item_share"
@@ -148,7 +148,8 @@
 
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
-        android:text="这是底线"
+        android:text="@string/MSG_BOTTOM_LINE"
+        android:visibility="gone"
         android:textColor="#333333"
-        android:textSize="14sp"/>
+        android:textSize="@dimen/sp14"/>
 </RelativeLayout>

@@ -108,7 +108,7 @@
     <string name="DOOR_ANSWERING">Connecting&#8230;</string>
     <string name="DOOR_BELL">My doorbell</string>
     <string name="DOOR_BELL_LOOK">View</string>
-    <string name="DOOR_BETTERYMESG">Suggest using 5V/ 1A charger, \nState light is solid green while charging and it will be off when charge done.</string>
+    <string name="DOOR_BETTERYMESG">Suggest using 5V/ 1A charger,State light is solid green while charging and it will be off when charge done.</string>
     <string name="DOOR_BIND">Added successfully</string>
     <string name="DOOR_BLINKING">Light\'s red steady</string>
     <string name="DOOR_BLUE_BLINKING">Status indicator light should be red constantly, if not, pls restart device,then hold wifi button 3 seconds and wait the light turn red.</string>
@@ -838,4 +838,8 @@
     <string name="nomore">没有更多了</string>
     <string name="not_login">还未登陆</string>
     <string name="request_time_out">请求数据超时</string>
+    <string name="MSG_BOTTOM_LINE">这是底线</string>
+    <string name="SHARE_ERROR">分享失败！</string>
+    <string name="CALL_NOT_ANSWER">未接听</string>
+    <string name="CALL_ANSWERD">已接听</string>
 </resources>

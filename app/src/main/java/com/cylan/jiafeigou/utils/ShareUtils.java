@@ -9,6 +9,7 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.wechat.WechatShare;
 
@@ -43,6 +44,7 @@ public class ShareUtils {
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        ToastUtil.showNegativeToast(activity.getString(R.string.SHARE_ERROR));
                         AppLogger.e("fxxx,load image failed: ");
                     }
                 });

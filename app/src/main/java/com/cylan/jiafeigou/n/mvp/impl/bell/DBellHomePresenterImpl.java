@@ -54,22 +54,13 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             callRecord.answerState = bell.isOK;
             callRecord.timeInLong = bell.time * 1000L;
             callRecord.timeStr = TimeUtils.getHH_MM(bell.time * 1000L);
-            callRecord.date = getDate(bell.time * 1000L);
+            callRecord.date = TimeUtils.getBellRecordTime(bell.time * 1000L);
             callRecord.type = bell.type;
             callRecord.version = value.version;
             result.add(callRecord);
         }
         mView.onRecordsListRsp(result);
     }
-
-    private static final SimpleDateFormat getSimpleDateFormat
-            = new SimpleDateFormat("MM月dd日", Locale.getDefault());
-
-    private String getDate(long time) {
-        return time >= todayInMidNight ? "今天"
-                : (time < todayInMidNight && time > yesterdayInMidNight ? "昨天" : getSimpleDateFormat.format(new Date(time)));
-    }
-
 
     @Override
     public void fetchBellRecordsList(boolean asc, long time) {

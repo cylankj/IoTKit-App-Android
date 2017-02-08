@@ -9,7 +9,7 @@
 
     <Button
         android:id="@+id/item_wonderful_to_start"
-        android:layout_width="@dimen/x173"
+        android:layout_width="@dimen/y173"
         android:layout_height="@dimen/y42"
         android:layout_marginTop="@dimen/y60"
         android:background="@drawable/un_bind_device_btn_seletor"

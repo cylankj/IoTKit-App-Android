@@ -108,7 +108,7 @@
     <string name="DOOR_ANSWERING">连接中&#8230;</string>
     <string name="DOOR_BELL">我家门铃</string>
     <string name="DOOR_BELL_LOOK">查看</string>
-    <string name="DOOR_BETTERYMESG">建议使用5V/1A的充电器； \n充电过程中指示灯绿色常亮，充满电后会自动熄灭</string>
+    <string name="DOOR_BETTERYMESG">建议使用5V/1A的充电器,充电过程中指示灯绿色常亮，充满电后会自动熄灭</string>
     <string name="DOOR_BIND">恭喜你！添加成功~\n现在可以随时了解门外的情况啦</string>
     <string name="DOOR_BLINKING">红灯已常亮</string>
     <string name="DOOR_BLUE_BLINKING">设备指示灯没有“红色常亮”时，请重新开机，再长按WiFi键约3秒，等待红色常亮</string>
@@ -842,6 +842,10 @@
     <string name="nomore">没有更多了</string>
     <string name="not_login">还未登陆</string>
     <string name="request_time_out">请求数据超时</string>
+    <string name="MSG_BOTTOM_LINE">这是底线</string>
+    <string name="SHARE_ERROR">分享失败！</string>
+    <string name="CALL_NOT_ANSWER">未接听</string>
+    <string name="CALL_ANSWERD">已接听</string>
 
 
 </resources>

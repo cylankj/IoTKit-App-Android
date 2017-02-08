@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.cylan.jiafeigou.R;
 
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -203,13 +204,32 @@ public class TimeUtils {
         return getSimpleDateFormatYYYYHHMM.get().format(new Date(time));
     }
 
-    public static void main(String[] args) {
-
-    }
-
     public static String getMonthInYear(long time) {
         Calendar instance = Calendar.getInstance();
         instance.setTimeInMillis(time);
         return instance.get(Calendar.MONTH) + 1 + "月";
+    }
+
+    public static String getBellRecordTime(long time) {
+        Date today = new Date();
+        Date provide = new Date(time);
+        SimpleDateFormat format = (SimpleDateFormat) SimpleDateFormat.getInstance();
+        if (today.getYear() > provide.getYear()) {//说明不是今年，则按照其他显示年.月.日显示
+            format.applyPattern("yyyy.MM.dd");
+            return format.format(provide);
+        }
+        if (today.getMonth()==provide.getMonth()){
+            if (today.getDay()==provide.getDay()){//说明是在同一天，则按照今天 时:分显示
+                format.applyPattern("今天 HH:mm");
+                return format.format(provide);
+            }
+            if (today.getDay()-provide.getDay()==1){//说明是在昨天，则按照昨天 时:分显示
+                format.applyPattern("昨天 HH:mm");
+                return format.format(provide);
+            }
+        }
+        //按照月.日 时：分显示
+        format.applyPattern("MM.dd HH:mm");
+        return format.format(provide);
     }
 }

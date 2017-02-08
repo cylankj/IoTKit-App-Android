@@ -82,8 +82,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     protected void initViewAndListener() {
+        ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
         initAdapter();
-        initToolbar();
     }
 
     @Override
@@ -160,11 +160,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         imgVTopBarCenter.postDelayed(mLoadAction, 10000);
     }
 
-    private void initToolbar() {
-        imgVTopBarCenter.setText("");
-        ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
-    }
-
     @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right})
     public void onElementClick(View v) {
         switch (v.getId()) {
@@ -231,7 +226,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onBellBatteryDrainOut() {
-        if (true) return;
         initBatteryDialog();
         LBatteryWarnDialog dialog = lBatteryWarnDialog.get();
         dialog.dismiss();
@@ -372,11 +366,13 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onShowProperty(JFGDoorBellDevice device) {
         int battery = device.battery.value;
         if (battery < 20) {
+            isFirst=false;
             onBellBatteryDrainOut();
         } else if (battery < 80 && isFirst) {
             onBellBatteryDrainOut();
             isFirst = false;
         }
+        imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias)?device.uuid:device.alias);
         cvBellHomeBackground.setState(device.net.$().net);
         cvBellHomeBackground.setActionInterface(this);
     }

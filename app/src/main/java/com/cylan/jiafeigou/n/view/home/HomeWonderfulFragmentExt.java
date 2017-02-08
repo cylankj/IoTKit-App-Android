@@ -379,7 +379,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @OnClick(R.id.tv_wonderful_item_delete)
     public void removeAnymore() {
-        mPresenter.removeGuideAnymore();
+       deleteItem(-1);
     }
 
     @Override
@@ -547,6 +547,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             long time = homeWonderAdapter.getItem(position).version;
             mPresenter.deleteTimeline(time);
             homeWonderAdapter.remove((Integer) value);
+        }else if (position ==-1){
+            mPresenter.removeGuideAnymore();
         }
     }
 

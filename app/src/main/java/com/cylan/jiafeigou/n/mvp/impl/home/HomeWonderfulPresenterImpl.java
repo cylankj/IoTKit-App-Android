@@ -61,7 +61,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private boolean showGuidePage() {
-        return PreferencesUtils.getBoolean(JConstant.KEY_DELAY_RECORD_GUIDE, true);
+        return PreferencesUtils.getBoolean(JConstant.KEY_WONDERFUL_GUIDE, true);
     }
 
 

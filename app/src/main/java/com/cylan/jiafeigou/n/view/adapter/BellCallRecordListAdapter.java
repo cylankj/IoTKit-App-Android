@@ -136,7 +136,7 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
                        final int layoutPosition, BellCallRecordBean item) {
         holder.setText(R.id.tv_bell_list_item_date, item.date);
         holder.setText(R.id.tv_bell_list_item_time, item.timeStr);
-        setAnswerState(item.answerState, (TextView) holder.getView(R.id.tv_bell_list_item_answer_state));
+        setAnswerState(item.answerState, holder.getView(R.id.tv_bell_list_item_answer_state));
         if (simpleLongClickListener != null) {
             holder.setOnLongClickListener(R.id.cv_bell_call_item, simpleLongClickListener);
         }
@@ -145,7 +145,7 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
         }
         setSelectState(holder, item);
         if (loadImageListener != null)
-            loadImageListener.loadMedia(item, (ImageView) holder.getView(R.id.imgv_bell_call_item_thumbnail));
+            loadImageListener.loadMedia(item, holder.getView(R.id.imgv_bell_call_item_thumbnail));
     }
 
     private void setSelectState(SuperViewHolder holder, BellCallRecordBean item) {
@@ -156,7 +156,7 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
     }
 
     private void setAnswerState(final int state, TextView textView) {
-        textView.setText(state == 0 ? "未接听" : "已接听");
+        textView.setText(state == 0 ? mContext.getString(R.string.CALL_NOT_ANSWER) : mContext.getString(R.string.CALL_ANSWERD));
         ViewUtils.setDrawablePadding(textView, state == 0 ? R.drawable.doorbell_icon_not_connected : R.drawable.doorbell_icon_connect, 0);
     }
 
