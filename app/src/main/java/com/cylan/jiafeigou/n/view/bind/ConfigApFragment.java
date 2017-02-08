@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -92,7 +93,7 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initFragment();
-        JConstant.ConfigApState = 1;
+        JConstant.ConfigApStep = 2;
         this.basePresenter = new ConfigApPresenterImpl(this);
         basePresenter.clearConnection();
     }
@@ -131,7 +132,7 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void onPause() {
         super.onPause();
-        JConstant.ConfigApState = 0;
+        JConstant.ConfigApStep = 3;
         if (basePresenter != null) {
             basePresenter.unregisterNetworkMonitor();
         }
@@ -273,7 +274,8 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     public void lossDogConnection() {
         if (ActivityUtils.isFragmentInTop(getActivity(), R.id.fLayout_submit_bind_info))
             return;
-        ToastUtil.showNegativeToast("狗丢了....");
+//        ToastUtil.showNegativeToast("狗丢了....");
+        AppLogger.i("狗丢了");
     }
 
 

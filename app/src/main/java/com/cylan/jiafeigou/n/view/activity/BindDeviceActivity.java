@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,17 +16,10 @@ import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
-import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_LEFT_CONTENT;
-import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_RIGHT_CONTENT;
 
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
 
@@ -34,7 +29,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     TextView tvTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
     FrameLayout fLayoutTopBarContainer;
-    private WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
+//    private WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,11 +67,11 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (simpleDialogFragmentWeakReference != null
-                && simpleDialogFragmentWeakReference.get() != null
-                && simpleDialogFragmentWeakReference.get().isResumed()) {
-            simpleDialogFragmentWeakReference.get().dismiss();
-        }
+//        if (simpleDialogFragmentWeakReference != null
+//                && simpleDialogFragmentWeakReference.get() != null
+//                && simpleDialogFragmentWeakReference.get().isResumed()) {
+//            simpleDialogFragmentWeakReference.get().dismiss();
+//        }
     }
 
     @Override
@@ -95,21 +90,32 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
 
 
     private boolean shouldNotifyBackForeword() {
-        if (JConstant.ConfigApState == 0)
+        if (JConstant.ConfigApStep == 2)
             return false;
-        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
-            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(new Bundle()));
-            simpleDialogFragmentWeakReference.get().setAction(this);
-        }
+        new AlertDialog.Builder(this)
+                .setMessage(getString(R.string.Tap1_AddDevice_tips))
+                .setNegativeButton(getString(R.string.CANCEL), null)
+                .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        popAllFragmentStack();
+                    }
+                }).show();
 
-        SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
-        Bundle bundle = new Bundle();
-        bundle.putString(KEY_TITLE, getString(R.string.Tap1_AddDevice_tips));
-        bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-        bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
-        if (fragment == null || fragment.isResumed())
-            return true;
-        fragment.show(getSupportFragmentManager(), "SimpleDialogFragment");
+//        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
+//            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(new Bundle()));
+//            simpleDialogFragmentWeakReference.get().setAction(this);
+//        }
+//
+//        SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
+//        if (fragment == null || fragment.isResumed())
+//            return true;
+//        Bundle bundle = new Bundle();
+//        bundle.putString(KEY_CONTENT_CONTENT, getString(R.string.Tap1_AddDevice_tips));
+//        bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+//        bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
+//        fragment.setArguments(bundle);
+//        fragment.show(getSupportFragmentManager(), "SimpleDialogFragment");
         return true;
     }
 
