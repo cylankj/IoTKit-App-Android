@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -22,6 +21,10 @@ import java.lang.ref.WeakReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
+import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_LEFT_CONTENT;
+import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_RIGHT_CONTENT;
 
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
 
@@ -100,7 +103,10 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         }
 
         SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
-
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TITLE, getString(R.string.Tap1_AddDevice_tips));
+        bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+        bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
         if (fragment == null || fragment.isResumed())
             return true;
         fragment.show(getSupportFragmentManager(), "SimpleDialogFragment");

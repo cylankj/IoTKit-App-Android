@@ -22,7 +22,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -111,7 +111,7 @@ public class BindGuideFragment extends BaseTitleFragment {
             return;
         }
         ConfigApFragment fragment = ConfigApFragment.newInstance(getArguments());
-        boolean result = ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+        boolean result = ActivityUtils.addFragmentSlideInFromLeft(getActivity().getSupportFragmentManager(),
                 fragment, android.R.id.content);
         if (result) {
             //add a new one

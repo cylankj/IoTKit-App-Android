@@ -4,7 +4,7 @@ package com.cylan.jiafeigou.support.download.report;
 import com.cylan.jiafeigou.support.download.core.enums.TaskStates;
 import com.cylan.jiafeigou.support.download.database.elements.Chunk;
 import com.cylan.jiafeigou.support.download.database.elements.Task;
-import com.cylan.utils.FileUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;

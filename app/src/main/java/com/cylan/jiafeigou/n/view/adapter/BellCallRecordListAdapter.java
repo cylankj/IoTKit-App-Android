@@ -10,8 +10,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.superadapter.SuperAdapter;
-import com.cylan.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;

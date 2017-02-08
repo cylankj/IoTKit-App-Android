@@ -21,10 +21,10 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.superadapter.IMulItemViewType;
-import com.cylan.superadapter.SuperAdapter;
-import com.cylan.superadapter.internal.SuperViewHolder;
-import com.cylan.utils.DensityUtils;
+import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
+import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.DensityUtils;
 
 import java.io.File;
 import java.net.MalformedURLException;

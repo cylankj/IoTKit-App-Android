@@ -17,7 +17,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.utils.HandlerThreadUtils;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 
 import java.util.ArrayList;
 

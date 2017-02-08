@@ -11,8 +11,8 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
-import com.cylan.utils.BitmapUtil;
 
 import java.io.File;
 
@@ -38,7 +38,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                 .subscribeOn(Schedulers.newThread())
                 .map((Bitmap bMap) -> {
                     String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
-                    return BitmapUtil.saveBitmap2file(bMap, filePath);
+                    return BitmapUtils.saveBitmap2file(bMap, filePath);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Boolean aBoolean) -> {

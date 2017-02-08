@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.utils;
 
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.utils.PackageUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;

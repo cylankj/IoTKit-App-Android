@@ -8,9 +8,9 @@ import android.widget.RadioButton;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
-import com.cylan.superadapter.SuperAdapter;
-import com.cylan.superadapter.internal.SuperViewHolder;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 /**
  * Created by cylan-hunt on 16-7-6.

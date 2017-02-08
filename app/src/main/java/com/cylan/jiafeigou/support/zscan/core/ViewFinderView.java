@@ -16,7 +16,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
 
-import com.cylan.utils.DensityUtils;
+import com.cylan.jiafeigou.utils.DensityUtils;
 
 
 public class ViewFinderView extends View implements IViewFinder {

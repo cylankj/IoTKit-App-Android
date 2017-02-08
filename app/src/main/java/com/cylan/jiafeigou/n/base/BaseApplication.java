@@ -29,8 +29,8 @@ import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
-import com.cylan.utils.HandlerThreadUtils;
-import com.cylan.utils.ProcessUtils;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
+import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.squareup.leakcanary.LeakCanary;
 
@@ -120,7 +120,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
                 Log.d(TAG, "onTrimMemory: " + level);
 //                shouldKillBellCallProcess();
                 RxBus.getCacheInstance().post(new RxEvent.AppHideEvent());
-                JfgCmdInsurance.getCmd().closeDataBase();
+//                JfgCmdInsurance.getCmd().closeDataBase();
                 break;
         }
     }

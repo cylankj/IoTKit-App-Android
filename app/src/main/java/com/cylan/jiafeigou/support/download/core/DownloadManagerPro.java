@@ -23,7 +23,7 @@ import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListe
 import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListenerModerator;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
 import com.cylan.jiafeigou.support.download.utils.L;
-import com.cylan.utils.FileUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 
 import java.io.File;
 import java.io.IOException;

@@ -20,7 +20,7 @@ import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.utils.ListUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.nineoldandroids.animation.Animator;
 
 import java.util.List;

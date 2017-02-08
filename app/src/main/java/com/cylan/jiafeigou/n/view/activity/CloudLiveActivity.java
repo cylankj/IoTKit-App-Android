@@ -52,7 +52,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.superadapter.OnItemClickListener;
+import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 
 import java.io.Serializable;
 import java.util.List;

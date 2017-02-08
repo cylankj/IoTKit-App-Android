@@ -48,7 +48,7 @@ import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
-import com.cylan.utils.DensityUtils;
+import com.cylan.jiafeigou.utils.DensityUtils;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;

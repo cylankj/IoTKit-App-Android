@@ -23,8 +23,8 @@ import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.widget.LazyFragment;
-import com.cylan.photoview.PhotoView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

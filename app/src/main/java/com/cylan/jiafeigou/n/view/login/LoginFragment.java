@@ -44,13 +44,13 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.cylan.utils.NetUtils;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.tencent.connect.common.Constants;
 
@@ -533,7 +533,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
         Toast.makeText(getActivity(), code == 0 ? "good" : "无效验证码", Toast.LENGTH_SHORT).show();
         if (code == 0) {
             jump2NextPage();
-        }else {
+        } else {
             if (verificationCodeLogic != null)
                 verificationCodeLogic.initTimer();
         }
@@ -558,7 +558,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
             } else if (code == 162) {
                 ToastUtil.showNegativeToast("登录失败：accend_token_error");
-            } else if (code == JError.ErrorConnect ){
+            } else if (code == JError.ErrorConnect) {
                 ToastUtil.showNegativeToast("登录超时");
             }
         }
@@ -717,24 +717,26 @@ public class LoginFragment extends android.support.v4.app.Fragment
 
     /**
      * 是否已注册结果
+     *
      * @param callback
      */
     @Override
     public void checkAccountResult(RxEvent.CheckRegsiterBack callback) {
-        if (callback.jfgResult.code != 0 ){
+        if (callback.jfgResult.code != 0) {
             presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
             //显示验证码输入框
             handleVerificationCodeBox(true);
             tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
             tvRegisterSubmit.setEnabled(false);
             lLayoutAgreement.setVisibility(View.GONE);
-        }else {
+        } else {
             ToastUtil.showToast(getString(R.string.RET_EREGISTER_PHONE_EXIST));
         }
     }
 
     /**
      * 验证码输入框
+     *
      * @param show
      */
     private void handleVerificationCodeBox(boolean show) {
@@ -774,7 +776,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
             IMEUtils.hide(getActivity());
             //获取验证码
             if (presenter != null)
-            presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
+                presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
 
         } else {
             final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();

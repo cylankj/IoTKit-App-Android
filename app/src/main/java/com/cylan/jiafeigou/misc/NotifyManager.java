@@ -17,7 +17,7 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.utils.RandomUtils;
+import com.cylan.jiafeigou.utils.RandomUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;

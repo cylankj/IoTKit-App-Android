@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.support.download.database.elements.Task;
 import com.cylan.jiafeigou.support.download.report.ReportStructure;
 import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListenerModerator;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
-import com.cylan.utils.FileUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 
 import java.util.HashMap;
 import java.util.List;

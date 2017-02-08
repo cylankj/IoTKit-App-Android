@@ -38,7 +38,7 @@ import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.List;
 

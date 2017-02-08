@@ -4,7 +4,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
 

@@ -9,9 +9,9 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
-import com.cylan.superadapter.IMulItemViewType;
-import com.cylan.superadapter.SuperAdapter;
-import com.cylan.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
+import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 
 import java.util.List;
 

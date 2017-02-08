@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.model;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.MyTestRunner;
-import com.cylan.utils.RandomUtils;
+import com.cylan.jiafeigou.utils.RandomUtils;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;

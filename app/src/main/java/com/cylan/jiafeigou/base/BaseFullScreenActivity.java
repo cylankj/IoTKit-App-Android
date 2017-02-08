@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
-import com.cylan.utils.ListUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

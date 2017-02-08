@@ -28,11 +28,11 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
-import com.cylan.utils.BitmapUtil;
-import com.cylan.utils.NetUtils;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -325,9 +325,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((Object o) -> {
                     byte[] data = JfgCmdInsurance.getCmd().screenshot(false);
-                    Bitmap bitmap = BitmapUtil.byte2bitmap(videoResolution[0], videoResolution[1], data);
+                    Bitmap bitmap = BitmapUtils.byte2bitmap(videoResolution[0], videoResolution[1], data);
                     String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
-                    BitmapUtil.saveBitmap2file(bitmap, filePath);
+                    BitmapUtils.saveBitmap2file(bitmap, filePath);
                     snapshotResult(bitmap);
                 }, (Throwable throwable) -> {
                     AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage());

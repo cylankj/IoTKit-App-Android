@@ -21,8 +21,8 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
-import com.cylan.utils.CloseUtils;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.utils.CloseUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -82,6 +82,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void start() {
+        super.start();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         } else {
@@ -92,7 +93,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
 
     @Override
     public void stop() {
-
+        super.stop();
         if (checkDeviceOnLineSub != null) {
             checkDeviceOnLineSub.unsubscribe();
         }

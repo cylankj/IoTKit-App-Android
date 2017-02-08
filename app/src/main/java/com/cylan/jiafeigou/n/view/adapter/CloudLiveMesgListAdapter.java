@@ -6,9 +6,9 @@ import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
 import com.cylan.jiafeigou.n.view.cloud.LayoutHandler;
 import com.cylan.jiafeigou.n.view.cloud.LayoutIdMapCache;
 import com.cylan.jiafeigou.n.view.cloud.ViewTypeMapCache;
-import com.cylan.superadapter.IMulItemViewType;
-import com.cylan.superadapter.SuperAdapter;
-import com.cylan.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
+import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 
 import java.util.List;
 

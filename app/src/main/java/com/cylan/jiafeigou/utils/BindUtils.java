@@ -7,7 +7,7 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.udpMsgPack.JfgUdpMsg;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n;
 
-import android.app.Activity;
-import android.app.ActivityGroup;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,8 +15,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
-import com.cylan.utils.ListUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

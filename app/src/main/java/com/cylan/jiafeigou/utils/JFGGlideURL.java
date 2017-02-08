@@ -4,7 +4,7 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.utils.PackageUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;

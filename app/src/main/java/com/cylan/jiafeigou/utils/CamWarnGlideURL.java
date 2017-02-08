@@ -9,7 +9,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.utils.PackageUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;

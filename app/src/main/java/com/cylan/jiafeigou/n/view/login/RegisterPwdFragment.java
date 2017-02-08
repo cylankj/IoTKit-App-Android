@@ -22,7 +22,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 
 /**

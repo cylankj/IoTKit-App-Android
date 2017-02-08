@@ -32,7 +32,7 @@ import com.cylan.jiafeigou.widget.flip.ISafeStateSetter;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;

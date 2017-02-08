@@ -27,7 +27,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 
 import java.util.ArrayList;
 import java.util.Iterator;

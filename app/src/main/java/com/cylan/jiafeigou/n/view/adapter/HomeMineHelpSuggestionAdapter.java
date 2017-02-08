@@ -16,10 +16,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
+import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
+import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.superadapter.IMulItemViewType;
-import com.cylan.superadapter.SuperAdapter;
-import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
