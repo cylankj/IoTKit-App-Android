@@ -252,9 +252,8 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
                 return;
             case JConstant.TYPE_PHONE:
                 if (fLayoutVerificationCodeInputBox.getVisibility() == View.GONE) {
-                    start2HandleVerificationCode();
                     if (presenter != null) {
-                        presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
+                        presenter.checkIsReg(ViewUtils.getTextViewContent(etForgetUsername));
                     }
                 } else {
                     final String code = ViewUtils.getTextViewContent(etVerificationInput);
@@ -283,7 +282,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
             case JConstant.TYPE_EMAIL:
                 enableEditTextCursor(false);
                 if (presenter != null)
-                    presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
+                    presenter.checkIsReg(ViewUtils.getTextViewContent(etForgetUsername));
                 break;
         }
         IMEUtils.hide(getActivity());
@@ -515,6 +514,16 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
                     ActivityUtils.justPop(getActivity());
                 }
             }, 500);
+        }
+    }
+
+    @Override
+    public void checkIsRegReuslt(int code) {
+        if (code == 0){
+            start2HandleVerificationCode();
+            presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
+        }else {
+            ToastUtil.showNegativeToast(getString(R.string.INVALID_ACCOUNT));
         }
     }
 

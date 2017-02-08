@@ -724,7 +724,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
         if (callback.jfgResult.code != 0 ){
             presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
             //显示验证码输入框
-            Toast.makeText(getActivity(), getString(R.string.GET_CODE), Toast.LENGTH_SHORT).show();
             handleVerificationCodeBox(true);
             tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
             tvRegisterSubmit.setEnabled(false);
