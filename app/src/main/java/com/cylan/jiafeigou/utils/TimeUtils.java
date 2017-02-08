@@ -4,7 +4,6 @@ import android.content.Context;
 
 import com.cylan.jiafeigou.R;
 
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -220,16 +219,15 @@ public class TimeUtils {
         }
         if (today.getMonth()==provide.getMonth()){
             if (today.getDay()==provide.getDay()){//说明是在同一天，则按照今天 时:分显示
-                format.applyPattern("今天 HH:mm");
-                return format.format(provide);
+//                format.applyPattern("今天");
+                return "今天";
             }
             if (today.getDay()-provide.getDay()==1){//说明是在昨天，则按照昨天 时:分显示
-                format.applyPattern("昨天 HH:mm");
-                return format.format(provide);
+                return "昨天";
             }
         }
         //按照月.日 时：分显示
-        format.applyPattern("MM.dd HH:mm");
+        format.applyPattern("MM.dd");
         return format.format(provide);
     }
 }

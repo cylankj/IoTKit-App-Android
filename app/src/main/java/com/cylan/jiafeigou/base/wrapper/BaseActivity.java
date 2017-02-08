@@ -226,4 +226,10 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         }
         return way;
     }
+
+    @Override
+    public void startActivity(Intent intent) {
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID,mUUID);
+        super.startActivity(intent);
+    }
 }

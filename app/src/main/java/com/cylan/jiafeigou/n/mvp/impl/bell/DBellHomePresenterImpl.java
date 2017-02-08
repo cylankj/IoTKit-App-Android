@@ -9,11 +9,8 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -25,12 +22,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
      */
     private static final long todayInMidNight = TimeUtils.getTodayStartTime();
     private static final long yesterdayInMidNight = todayInMidNight - 24 * 60 * 60 * 1000L;
-
-    @Override
-    public void onSetContentView() {
-        super.onSetContentView();
-        mView.onShowProperty(mSourceManager.getJFGDevice(mUUID));
-    }
 
     @Override
     protected void onRegisterResponseParser() {

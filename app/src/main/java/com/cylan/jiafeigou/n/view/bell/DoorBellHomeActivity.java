@@ -228,7 +228,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onBellBatteryDrainOut() {
         initBatteryDialog();
         LBatteryWarnDialog dialog = lBatteryWarnDialog.get();
-        dialog.dismiss();
         dialog.show(getSupportFragmentManager(), "lBattery");
     }
 
@@ -281,16 +280,17 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             AppLogger.d("position is invalid");
             return;
         }
-        //
-        if (bellCallRecordListAdapter.getMode() == 0) {
-            AppLogger.d("normal mode");
-            return;
-        }
-        bellCallRecordListAdapter.reverseItemSelectedState(position);
-        int count = bellCallRecordListAdapter.getSelectedList().size();
-        if (count == 0) {
-            bellCallRecordListAdapter.setMode(0);
-            showEditBar(false);
+        if (bellCallRecordListAdapter.getMode() == 1) {//编辑模式下的点击事件
+            bellCallRecordListAdapter.reverseItemSelectedState(position);
+            int count = bellCallRecordListAdapter.getSelectedList().size();
+            if (count == 0) {
+                bellCallRecordListAdapter.setMode(0);
+                showEditBar(false);
+            }
+        } else {//普通模式下的点击事件,即查看大图模式
+            Intent intent = new Intent(this, BellRecordDetailActivity.class);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bellCallRecordListAdapter.getItem(position));
+            startActivity(intent);
         }
     }
 
@@ -364,16 +364,13 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onShowProperty(JFGDoorBellDevice device) {
-        int battery = device.battery.value;
-        if (battery < 20) {
-            isFirst=false;
-            onBellBatteryDrainOut();
-        } else if (battery < 80 && isFirst) {
-            onBellBatteryDrainOut();
+        if (device.battery.$() < 20 || (device.battery.$() < 80 && isFirst)) {
             isFirst = false;
+            onBellBatteryDrainOut();
         }
-        imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias)?device.uuid:device.alias);
+        imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         cvBellHomeBackground.setState(device.net.$().net);
         cvBellHomeBackground.setActionInterface(this);
     }
+
 }

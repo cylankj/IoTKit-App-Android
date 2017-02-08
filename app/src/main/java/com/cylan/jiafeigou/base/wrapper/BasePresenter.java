@@ -131,9 +131,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 .filter(rsp -> accept(rsp.uuid))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
-                    if (mView != null && mView instanceof PropertyView) {
-                        ((PropertyView) mView).onShowProperty(mSourceManager.getJFGDevice(mUUID));
-                    }
                     onDeviceSync();
                 }, e -> {
                     e.printStackTrace();//打印错误日志以便排错
