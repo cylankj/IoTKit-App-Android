@@ -3,6 +3,12 @@ apply plugin: 'me.tatarka.retrolambda'
 //多渠道包
 apply plugin: 'packer'
 
+apply plugin: 'io.fabric'
+
+repositories {
+    maven { url 'https://maven.fabric.io/public' }
+}
+
 def releaseTime() {
     return new Date().format("yyyyMMddHHmm")
 }
@@ -212,6 +218,7 @@ dependencies {
     //glide
     compile rootProject.ext.glide
     compile(name: rootProject.ext.cySdk, ext: 'aar')
+    compile(name:rootProject.ext.facebookSDK,ext:'aar')
     //自己写的 apt
 //    compile project(':annotation')
 //    compile project(':compiler')
@@ -228,5 +235,9 @@ dependencies {
     releaseCompile 'com.cylan.ext:optrelease:0.0.1'
     //渠道包
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
+
+    compile('com.twitter.sdk.android:twitter:2.3.1@aar') {
+        transitive = true;
+    }
 }
 

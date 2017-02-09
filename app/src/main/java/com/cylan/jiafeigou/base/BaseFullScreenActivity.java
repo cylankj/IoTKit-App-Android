@@ -71,7 +71,7 @@ public abstract class BaseFullScreenActivity<P extends JFGPresenter> extends Bas
         }
     }
 
-    private void showSystemBar(boolean show, final long delayTime) {
+    protected void showSystemBar(boolean show, final long delayTime) {
         systemUiHiderWeakReference.get().setSupportAutoHide(!show);
         if (show) {
             systemUiHiderWeakReference.get().show();

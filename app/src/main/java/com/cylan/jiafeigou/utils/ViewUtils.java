@@ -96,6 +96,14 @@ public class ViewUtils {
         increaseMargins(v, 0, -height, 0, 0);
     }
 
+    public static void setViewPaddingTop(View view, int dp_padding) {
+        view.setPadding(view.getPaddingLeft(), dp2px(dp_padding), view.getPaddingRight(), view.getPaddingBottom());
+    }
+
+    public static void setViewMarginTop(View view,int dp_margin){
+
+    }
+
     public static void setViewPaddingStatusBar(View v) {
         final int height = getCompatStatusBarHeight(v.getContext());
         v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + height, v.getPaddingRight(), v.getPaddingBottom());

@@ -18,12 +18,15 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
@@ -42,7 +45,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @BindView(R.id.fLayout_bell_live_holder)
     FrameLayout fLayoutBellLiveHolder;
     @BindView(R.id.tv_bell_live_flow)
-    TextView tvBellLiveFlow;
+    TextView mBellFlow;
     @BindView(R.id.imgv_bell_live_switch_to_land)
     ImageView imgvBellLiveSwitchToLand;
     @BindView(R.id.dLayout_bell_hot_seat)
@@ -60,6 +63,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @BindView(R.id.act_bell_live_video_view_container)
     FrameLayout mVideoViewContainer;
 
+    @BindView(R.id.act_bell_live_back)
+    TextView mBellLiveBack;
+
     private ImageView mLandBellLiveSpeaker;
     /**
      * 水平方向的view
@@ -71,6 +77,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private String mNewCallHandle;
 
+    private String mLiveTitle = "宝宝的房间";
+
+    private boolean isLandMode = false;
+
+
     @Override
     protected int getContentViewID() {
         return R.layout.activity_bell_live;
@@ -78,10 +89,83 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     protected void initViewAndListener() {
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+        if (device != null) {
+            mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+        }
         ViewUtils.updateViewHeight(fLayoutBellLiveHolder, 0.75f);
-        ViewUtils.setViewMarginStatusBar(tvBellLiveFlow);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
+        fLayoutBellLiveHolder.setOnClickListener(view -> {
+            if (isLandMode) {
+                handleLandClick();
+            } else {
+                handlePortClick();
+            }
+        });
         newCall();
+        //三秒后隐藏状态栏
+        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
+        mVideoViewContainer.removeCallbacks(mHideBellTitleAction);
+        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
+    }
+
+    private void handleLandClick() {
+        mBellLiveBack.removeCallbacks(mHideBellTitleAction);
+        if (mBellLiveBack.isShown()) {
+            AnimatorUtils.slideOut(mBellLiveBack, true);
+        } else {
+            AnimatorUtils.slideIn(mBellLiveBack, true);
+            mBellLiveBack.postDelayed(mHideBellTitleAction, 3000);
+        }
+    }
+
+    private void handlePortClick() {
+        int visibility = mVideoViewContainer.getSystemUiVisibility();
+        if (visibility != View.SYSTEM_UI_FLAG_VISIBLE) {//说明状态栏被隐藏了,则显示三秒后隐藏
+            setNormalBackMargin();
+            mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+            mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
+            mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
+        } else {//说明状态栏没有隐藏,则直接隐藏
+            hideStatusBar();
+        }
+    }
+
+    private Runnable mHideStatusBarAction = this::hideStatusBar;
+    private Runnable mHideBellTitleAction = () -> AnimatorUtils.slideOut(mBellLiveBack, true);
+
+    public void hideStatusBar() {
+        mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+
+        mVideoViewContainer.postDelayed(this::setHideBackMargin, 200);
+    }
+
+    private void setNormalBackMargin() {
+        mBellLiveBack.setVisibility(View.VISIBLE);
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
+        int margin = (int) getResources().getDimension(R.dimen.y40);
+        params.topMargin = margin;
+        mBellLiveBack.setLayoutParams(params);
+        params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
+        params.topMargin = margin;
+        mBellFlow.setLayoutParams(params);
+    }
+
+    private void setHideBackMargin() {
+        mBellLiveBack.setVisibility(View.VISIBLE);
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
+        int margin = (int) getResources().getDimension(R.dimen.y19);
+        params.topMargin = margin;
+        mBellLiveBack.setLayoutParams(params);
+        margin = (int) getResources().getDimension(R.dimen.y20);
+        params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
+        params.topMargin = margin;
+        mBellFlow.setLayoutParams(params);
     }
 
     @Override
@@ -121,6 +205,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onScreenRotationChanged(boolean land) {
+        isLandMode = land;
+
         handleScreenUpdate(!land);
         getWindow().getDecorView().post(() -> handleSystemBar(!land, 100));
     }
@@ -133,20 +219,30 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     private void handleScreenUpdate(final boolean port) {
+        mBellLiveBack.removeCallbacks(mHideBellTitleAction);
+        mBellLiveBack.postDelayed(mHideBellTitleAction, 3000);
         initLandView();
         fLayoutLandHolderRef.get()
                 .setVisibility(port ? View.GONE : View.VISIBLE);
         if (port) {
+            mBellLiveBack.removeCallbacks(mHideBellTitleAction);
+            mBellLiveBack.removeCallbacks(mHideStatusBarAction);
+            hideStatusBar();
+            setHideBackMargin();
             ViewUtils.updateViewHeight(fLayoutBellLiveHolder, 0.75f);
-            ViewUtils.setViewMarginStatusBar(tvBellLiveFlow);
+            mBellLiveBack.setText(null);
             imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
         } else {
+            setHideBackMargin();
             ViewUtils.updateViewMatchScreenHeight(fLayoutBellLiveHolder);
-            ViewUtils.clearViewMarginStatusBar(tvBellLiveFlow);
-            tvBellLiveFlow.bringToFront();
+            mBellLiveBack.setText(mLiveTitle);
             imgvBellLiveSwitchToLand.setVisibility(View.GONE);
         }
+    }
 
+    @OnClick(R.id.act_bell_live_back)
+    public void bellBack() {
+        super.onBackPressed();
     }
 
 
@@ -165,7 +261,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                         .setOnClickListener(this);
                 mLandBellLiveSpeaker = (ImageView) view.findViewById(R.id.imgv_bell_live_land_mic);
                 mLandBellLiveSpeaker.setOnClickListener(this);
-                view.findViewById(R.id.tv_bell_live_land_back).setOnClickListener(this);
             }
         }
         View v = fLayoutBellLiveHolder.findViewById(R.id.fLayout_bell_live_land_layer);
@@ -215,8 +310,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 ViewUtils.setRequestedOrientation(this,
                         ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
                 break;
-            case R.id.tv_bell_live_land_back:
-                super.onBackPressed();
         }
     }
 
@@ -229,10 +322,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onFlowSpeed(int speed) {
-        if (tvBellLiveFlow.getVisibility() != View.VISIBLE) {
-            tvBellLiveFlow.setVisibility(View.VISIBLE);
+        if (mBellFlow.getVisibility() != View.VISIBLE) {
+            mBellFlow.setVisibility(View.VISIBLE);
         }
-        tvBellLiveFlow.setText(String.format(Locale.getDefault(), "%sKb/s", speed));
+        mBellFlow.setText(String.format(Locale.getDefault(), "%sKb/s", speed));
     }
 
     @Override

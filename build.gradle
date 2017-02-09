@@ -3,6 +3,7 @@
 buildscript {
     repositories {
         jcenter()
+        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
 //        classpath 'com.android.tools.build:gradle:2.2.0-alpha1'
@@ -16,9 +17,9 @@ buildscript {
         classpath 'me.tatarka:gradle-retrolambda:3.4.0'
         //多渠道包
         classpath 'com.mcxiaoke.gradle:packer-ng:1.0.8'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
-
 
 allprojects {
     repositories {
@@ -71,4 +72,5 @@ ext {
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     cySdk = 'JFGLibrary-release'
+    facebookSDK='facebook-android-sdk-4.19.0'
 }

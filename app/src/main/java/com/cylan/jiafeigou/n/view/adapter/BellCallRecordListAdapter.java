@@ -179,8 +179,6 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
             if (bean.selected) {
                 mRemovedList.add(bean);
             }
-            remove(i);
-
         }
         return mRemovedList;
     }
