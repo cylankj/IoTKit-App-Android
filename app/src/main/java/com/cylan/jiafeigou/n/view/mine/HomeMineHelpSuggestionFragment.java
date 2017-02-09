@@ -34,6 +34,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.superadapter.internal.SuperViewHolder;
 import com.cylan.utils.NetUtils;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.util.ArrayList;
 
@@ -233,6 +234,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         suggestionAdapter.add(suggestionBean);
         suggestionAdapter.notifyDataSetHasChanged();
         presenter.sendFeedBack(suggestionBean);
+//        presenter.sendLogToCloud(presenter.getSaveLogCloudUrl(),presenter.getLocalLogUrl());
     }
 
     @Override
@@ -250,7 +252,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
 
     /**
      * 系统的回复
-     *
      * @param time
      * @param content
      */

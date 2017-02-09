@@ -43,6 +43,8 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
+import com.cylan.jiafeigou.utils.AESUtil;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -522,6 +524,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      * 跳转到登录页
      */
     private void jump2LoginFragment() {
+        //账号和密码
+        try {
+            String hex = AESUtil.encrypt(argumentData.getAccount()+"|"+"");
+            FileUtils.saveDataToFile(getView().getContext(),hex);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         //进入登陆页 login page
         getActivity().startActivity(new Intent(getContext(), SmartcallActivity.class));
         getActivity().finish();

@@ -17,8 +17,10 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
+import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
 import com.cylan.utils.ListUtils;
+import com.sina.weibo.sdk.utils.LogUtil;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -158,9 +160,21 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends Fra
 
     @Override
     public void onBackPressed() {
+
+        if (isBeforLog()){
+            if (System.currentTimeMillis() - time < 1500) {
+                finish();
+            } else {
+                time = System.currentTimeMillis();
+                Toast.makeText(getApplicationContext(), String.format(getString(R.string.click_back_again_exit),
+                        getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
+            }
+            return;
+        }
+
         if (checkExtraChildFragment()) {
             return;
-        } else if (checkExtraFragment())
+        }else if (checkExtraFragment())
             return;
         if (theLastActivity()) {
             if (System.currentTimeMillis() - time < 1500) {
@@ -211,6 +225,21 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends Fra
             getSupportFragmentManager().popBackStack();
             return true;
         } else return false;
+    }
+
+    protected boolean isBeforLog(){
+        FragmentManager fm = getSupportFragmentManager();
+        List<Fragment> list = fm.getFragments();
+
+        if (list == null){
+            return false;
+        }
+
+        if (list.size() == 1 && list.get(0) instanceof BeforeLoginFragment){
+            return true;
+        }else {
+            return false;
+        }
     }
 
     /**
