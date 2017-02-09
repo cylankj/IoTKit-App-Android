@@ -138,5 +138,23 @@ public interface HomeMineHelpSuggestionContract {
          */
         Subscription isOpenLogin();
 
+        /**
+         * 获取日志存储路径
+         * @return
+         */
+        String getSaveLogCloudUrl();
+
+        /**
+         * 获取本地日志Url
+         * @return
+         */
+        String getLocalLogUrl();
+
+        /**
+         * 上传日志到云存储
+         * @param localUrl
+         */
+        void sendLogToCloud(String remoteUrl,String localUrl);
+
     }
 }
