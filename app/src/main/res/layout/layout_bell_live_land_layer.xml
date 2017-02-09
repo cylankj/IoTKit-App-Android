@@ -8,8 +8,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:drawableLeft="@drawable/nav_icon_back_white"
-        android:drawablePadding="@dimen/x20"
-        android:padding="@dimen/x15"
+        android:drawablePadding="@dimen/y20"
+        android:padding="@dimen/y15"
         android:text="房间"
         android:textColor="@color/color_white"
         android:textSize="@dimen/sp16" />
@@ -19,8 +19,8 @@
         android:layout_height="match_parent"
         android:layout_gravity="end"
         android:layout_marginBottom="@dimen/y57"
-        android:layout_marginLeft="@dimen/x9"
-        android:layout_marginRight="@dimen/x9"
+        android:layout_marginLeft="@dimen/y9"
+        android:layout_marginRight="@dimen/y9"
         android:layout_marginTop="@dimen/y86"
         android:orientation="vertical">
 
@@ -28,7 +28,7 @@
             android:id="@+id/imgv_bell_live_land_capture"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="@dimen/x10"
+            android:padding="@dimen/y10"
             android:src="@drawable/doorbell_icon_landscape_screenshot" />
 
         <ImageView
@@ -36,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:padding="@dimen/x10"
+            android:padding="@dimen/y10"
             android:src="@drawable/doorbell_btn_bg_top_full_screen_hang_up" />
 
         <ImageView
@@ -44,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:padding="@dimen/x10"
+            android:padding="@dimen/y10"
             android:src="@drawable/btn_bell_land_speaker" />
     </FrameLayout>
 

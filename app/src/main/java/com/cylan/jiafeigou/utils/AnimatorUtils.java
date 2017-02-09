@@ -458,6 +458,11 @@ public class AnimatorUtils {
             public void onAnimationStart(Animator animator) {
                 if (!view.isShown()) view.setVisibility(View.VISIBLE);
             }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (view.isShown()) view.setVisibility(View.INVISIBLE);
+            }
         });
         view.setTag(objectAnimator);
         objectAnimator.start();

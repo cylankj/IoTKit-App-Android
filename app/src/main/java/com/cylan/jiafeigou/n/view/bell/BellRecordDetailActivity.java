@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -22,12 +23,14 @@ import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
+import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.photoview.PhotoView;
+import com.cylan.photoview.PhotoViewAttacher;
 
 import java.io.File;
 
@@ -73,9 +76,22 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
-        ViewUtils.setViewMarginStatusBar(mHeadContainer);
+        ViewUtils.setViewPaddingStatusBar(mHeadContainer);
+        mBellDetail.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
         mCallRecord = getIntent().getParcelableExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE);
         mTitle.setText(TimeUtils.getMediaVideoTimeInString(mCallRecord.timeInLong));
+        mPictureDetail.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+            @Override
+            public void onPhotoTap(View view, float x, float y) {
+                  slide();
+            }
+
+            @Override
+            public void onOutsidePhotoTap() {
+                 slide();
+            }
+        });
+
         Glide.with(this)
                 .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID))
                 .into(mPictureDetail);
@@ -83,6 +99,17 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 //        Glide.with(this)
 //                .load("http://c.hiphotos.baidu.com/image/pic/item/0dd7912397dda1449fad6f63b6b7d0a20df486be.jpg")
 //                .into(mPictureDetail);
+    }
+
+
+    private void slide(){
+        if (mHeadContainer.isShown()){
+            AnimatorUtils.slideOut(mHeadContainer,true);
+            AnimatorUtils.slideOut(mBellContainer,false);
+        }else{
+            AnimatorUtils.slideIn(mHeadContainer,true);
+            AnimatorUtils.slideIn(mBellContainer,false);
+        }
     }
 
 

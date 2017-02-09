@@ -369,7 +369,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             onBellBatteryDrainOut();
         }
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
-        cvBellHomeBackground.setState(device.net.$().net);
+//        cvBellHomeBackground.setState(device.net.$().net);
+        cvBellHomeBackground.setState(1);
         cvBellHomeBackground.setActionInterface(this);
     }
 

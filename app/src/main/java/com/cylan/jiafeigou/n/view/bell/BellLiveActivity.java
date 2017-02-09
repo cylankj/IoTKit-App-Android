@@ -263,7 +263,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onSpeaker(boolean on) {
         if (mLandBellLiveSpeaker != null)
-            mLandBellLiveSpeaker.setImageResource(on ? R.drawable.doorbell_icon_talk : R.drawable.doorbell_icon_no_talk);
+            mLandBellLiveSpeaker.setImageResource(on ? R.drawable.doorbell_icon_landscape_talk : R.drawable.doorbell_icon_landscape_no_talk);
         imgvBellLiveSpeaker.setImageResource(on ? R.drawable.doorbell_icon_talk : R.drawable.doorbell_icon_no_talk);
     }
 

@@ -2,10 +2,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
              android:id="@+id/fLayout_bell_after_live"
              android:layout_width="match_parent"
-             android:layout_height="match_parent"
+             android:layout_height="wrap_content"
              android:layout_marginLeft="@dimen/x51"
              android:layout_marginRight="@dimen/x51"
-             android:visibility="gone">
+             android:visibility="visible">
 
     <ImageView
         android:id="@+id/imgv_bell_live_capture"
