@@ -127,7 +127,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 smsCodeResultSub(),
                 switchBoxSub(),
                 loginPopBackSub(),
-                resultRegisterSub(),
+//                resultRegisterSub(),
                 checkAccountBack()
         };
     }

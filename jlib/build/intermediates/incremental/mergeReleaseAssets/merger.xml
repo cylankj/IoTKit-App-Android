@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger version="3"><dataSet config="main"><source path="C:\Users\zsl\Desktop\JFD\JFGAndroid\jlib\src\main\assets"/><source path="C:\Users\zsl\Desktop\JFD\JFGAndroid\jlib\build\generated\assets\shaders\release"/></dataSet><dataSet config="release"><source path="C:\Users\zsl\Desktop\JFD\JFGAndroid\jlib\src\release\assets"/></dataSet></merger>

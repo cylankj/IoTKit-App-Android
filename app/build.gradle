@@ -1,5 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+
+//apply plugin: 'io.fabric'
+
 //多渠道包
 apply plugin: 'packer'
 
@@ -148,6 +151,7 @@ android {
 
 
 repositories {
+    maven { url 'https://maven.fabric.io/public' }
     flatDir {
         dirs 'libs'
     }
@@ -228,5 +232,12 @@ dependencies {
     releaseCompile 'com.cylan.ext:optrelease:0.0.1'
     //渠道包
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
+
+    // twitter
+//    testCompile 'junit:junit:4.12'
+//    compile fileTree(dir: 'libs', include: ['*.jar'])
+//    compile('com.twitter.sdk.android:twitter:2.3.1@aar') {
+//        transitive = true;
+//    }
 }
 
