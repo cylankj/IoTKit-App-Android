@@ -63,9 +63,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cam_media);
         ButterKnife.bind(this);
-        basePresenter = new CamMediaPresenterImpl(this);
-        alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
         uuid = getIntent().getStringExtra(KEY_UUID);
+        basePresenter = new CamMediaPresenterImpl(this, uuid);
+        alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
         customAdapter.setContents(alarmMsg);
         vpContainer.setAdapter(customAdapter);
@@ -105,7 +105,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.imgV_big_pic_collect:
-                if (basePresenter != null) basePresenter.collect(alarmMsg.time);
+                if (basePresenter != null)
+                    basePresenter.collect(currentIndex, alarmMsg, new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
                 break;
             case R.id.tv_big_pic_close:
                 onBackPressed();

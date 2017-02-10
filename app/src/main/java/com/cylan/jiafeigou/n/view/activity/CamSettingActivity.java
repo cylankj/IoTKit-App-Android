@@ -1,10 +1,13 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -32,7 +35,9 @@ import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -293,20 +298,33 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             case R.id.sv_setting_device_wifi:
                 if (device != null && JFGRules.isFreeCam(device.pid)) {
+                    Intent intent = new Intent(this, BindDeviceActivity.class);
+                    intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
+                    startActivity(intent);
+                } else {
                     DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
                     if (!JFGRules.isDeviceOnline(net)) {
                         //设备离线
                         Intent intent = new Intent(this, BindDeviceActivity.class);
-                        intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND_CAM, JConstant.KEY_AUTO_SHOW_BIND_CAM);
+                        intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
                         startActivity(intent);
                     } else {
                         //设备在线
-
+                        String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+                        String remoteSSid = net.ssid;
+                        if (!TextUtils.equals(localSSid, remoteSSid)) {
+                            new AlertDialog.Builder(this)
+                                    .setMessage(getString(R.string.setwifi_check, remoteSSid))
+                                    .setNegativeButton(getString(R.string.CANCEL), null)
+                                    .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                                    })
+                                    .show();
+                        } else {
+                            //显示列表
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        }
                     }
-                } else {
-                    Intent intent = new Intent(this, BindDeviceActivity.class);
-                    intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND_CAM, JConstant.KEY_AUTO_SHOW_BIND_CAM);
-                    startActivity(intent);
                 }
                 break;
         }
@@ -330,6 +348,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 continue;
             }
             if (view.getId() == R.id.sv_setting_device_detail) {
+                continue;
+            }
+            if (view.getId() == R.id.sv_setting_device_wifi) {
                 continue;
             }
             if (view.getId() == R.id.sv_setting_safe_protection) {

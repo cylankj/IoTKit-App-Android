@@ -221,7 +221,7 @@ public class GlobalDataProxy implements IDataProxy {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getValue(String uuid, long id, T defaultValue) {
+    public synchronized <T> T getValue(String uuid, long id, T defaultValue) {
         if (isSetType(id)) {
             throw new IllegalArgumentException(String.format("id:%s is an array type in the map", id));
         }

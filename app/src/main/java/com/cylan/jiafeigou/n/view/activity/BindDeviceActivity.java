@@ -2,7 +2,9 @@ package com.cylan.jiafeigou.n.view.activity;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -21,6 +23,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.misc.JConstant.KEY_AUTO_SHOW_BIND;
+
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
 
     @BindView(R.id.imgV_top_bar_left)
@@ -36,6 +40,14 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         setContentView(R.layout.activity_bind_device);
         ButterKnife.bind(this);
         initTopBar();
+        checkShouldJump();
+    }
+
+    private void checkShouldJump() {
+        Intent intent = getIntent();
+        if (intent != null && !TextUtils.isEmpty(intent.getStringExtra(KEY_AUTO_SHOW_BIND))) {
+            jump2Cam();
+        }
     }
 
     private void initTopBar() {
@@ -71,11 +83,21 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     public void onBackPressed() {
         if (shouldNotifyBackForeword())
             return;
+        if (checkFinish()) {
+            finishExt();
+        }
         if (popAllFragmentStack())
             return;
         finishExt();
     }
 
+    private boolean checkFinish() {
+        Intent intent = getIntent();
+        if (intent != null && !TextUtils.isEmpty(intent.getStringExtra(KEY_AUTO_SHOW_BIND))) {
+            return true;
+        }
+        return false;
+    }
 
     private boolean shouldNotifyBackForeword() {
         if (JConstant.ConfigApStep == 2) {
@@ -113,16 +135,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 break;
             }
             case R.id.v_to_bind_camera: {
-                ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_camera));
-                Bundle bundle = new Bundle();
-                BindCameraFragment fragment = BindCameraFragment.newInstance(bundle);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, fragment)
-                        .addToBackStack("BindCameraFragment")
-                        .commit();
+                jump2Cam();
                 break;
             }
             case R.id.v_to_bind_doorbell: {
@@ -151,5 +164,18 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .commit();
                 break;
         }
+    }
+
+    private void jump2Cam() {
+        ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_camera));
+        Bundle bundle = new Bundle();
+        BindCameraFragment fragment = BindCameraFragment.newInstance(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, fragment)
+                .addToBackStack("BindCameraFragment")
+                .commit();
     }
 }

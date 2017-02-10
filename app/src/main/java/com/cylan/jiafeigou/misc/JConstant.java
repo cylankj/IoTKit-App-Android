@@ -304,5 +304,5 @@ public class JConstant {
     public static final int CLOUD_OUT_CONNECT_OK = 3;
     public static final int CLOUD_OUT_CONNECT_FAILED = 4;
 
-    public static final String KEY_AUTO_SHOW_BIND_CAM = "auto_jump2_bind_cam";
+    public static final String KEY_AUTO_SHOW_BIND = "auto_jump2_bind";
 }

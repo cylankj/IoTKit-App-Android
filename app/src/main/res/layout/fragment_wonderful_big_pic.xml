@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context=".n.view.media.BigPicFragment">
 
-    <com.cylan.photoview.PhotoView
+    <com.cylan.jiafeigou.support.photoview.PhotoView
         android:id="@+id/imgV_show_pic"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
