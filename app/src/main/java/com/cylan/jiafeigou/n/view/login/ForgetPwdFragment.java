@@ -280,7 +280,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
                 }
                 break;
             case JConstant.TYPE_EMAIL:
-                enableEditTextCursor(false);
+                enableEditTextCursor(true);
                 if (presenter != null)
                     presenter.checkIsReg(ViewUtils.getTextViewContent(etForgetUsername));
                 break;
@@ -495,7 +495,6 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
     /**
      * 重置密码的结果
-     *
      * @param code
      */
     @Override
@@ -520,7 +519,9 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
     @Override
     public void checkIsRegReuslt(int code) {
         if (code == 0){
-            start2HandleVerificationCode();
+            if(!Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etForgetUsername)).find()){
+                start2HandleVerificationCode();
+            }
             presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
         }else {
             ToastUtil.showNegativeToast(getString(R.string.INVALID_ACCOUNT));

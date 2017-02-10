@@ -17,12 +17,94 @@
         android:id="@+id/rLayout_login_top"
         layout="@layout/layout_top_bar_item" />
 
-    <include layout="@layout/simple_input_box" />
+    <!--<include layout="@layout/simple_input_box" />-->
 
-    <TextView
-        android:id="@+id/tv_register_pwd_submit"
-        style="@style/login_model_commit_style"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/y37"
-        android:text="@string/CARRY_ON" />
+    <ViewSwitcher
+        android:inAnimation="@anim/slide_in_right_overshoot"
+        android:outAnimation="@anim/slide_out_left"
+        android:id="@+id/vs_set_account_pwd"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/x19"
+        android:layout_marginRight="@dimen/x19">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <FrameLayout
+                android:id="@+id/fl_input_container"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:layout_marginTop="@dimen/y29">
+
+                <EditText
+                    android:id="@+id/et_input_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/y5"
+                    android:layout_marginTop="@dimen/y5"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center"
+                    android:inputType="textPassword"
+                    android:maxLength="12"
+                    android:paddingLeft="@dimen/x40"
+                    android:paddingRight="@dimen/x40"
+                    android:textColor="@color/color_666666"
+                    android:textColorHint="@color/color_cecece"
+                    android:textCursorDrawable="@drawable/bg_common_cursor"
+                    android:textSize="@dimen/sp15" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end|center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/iv_input_box_clear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:paddingLeft="@dimen/x15"
+                        android:paddingRight="@dimen/x7"
+                        android:src="@drawable/icon_clear_text"
+                        android:visibility="gone" />
+
+                    <CheckBox
+                        android:id="@+id/cb_show_input_box"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:background="@drawable/icon_common_show_pwd_selector"
+                        android:button="@null"
+                        android:checked="false"
+                        android:paddingLeft="@dimen/x7" />
+                </LinearLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y1"
+                    android:layout_gravity="bottom"
+                    android:background="@color/color_f2f2f2" />
+
+            </FrameLayout>
+
+            <TextView
+                android:id="@+id/tv_register_pwd_submit"
+                style="@style/login_model_commit_style"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y37"
+                android:text="@string/CARRY_ON" />
+
+        </LinearLayout>
+
+
+
+    </ViewSwitcher>
+
 </LinearLayout>

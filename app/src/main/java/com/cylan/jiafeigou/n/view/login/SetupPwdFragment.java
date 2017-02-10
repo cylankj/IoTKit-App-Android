@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.CheckBox;
@@ -14,6 +15,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -51,6 +53,12 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     @BindView(R.id.iv_top_bar_left)
     ImageView ivLoginTopLeft;
     protected SetupPwdContract.Presenter pwdPresenter;
+    @BindView(R.id.vs_set_account_pwd)
+    ViewSwitcher vsSetAccountPwd;
+    @BindView(R.id.fl_input_container)
+    FrameLayout flInputContainer;
+    @BindView(R.id.tv_top_bar_center)
+    TextView tvTopBarCenter;
 
     public SetupPwdFragment() {
         // Required empty public constructor
@@ -77,16 +85,16 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     }
 
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                          Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        android.view.View view = inflater.inflate(R.layout.fragment_setup_pwd, container, false);
+        View view = inflater.inflate(R.layout.fragment_setup_pwd, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
 
     @Override
-    public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         setupInputBox();
         initTitleBar();
         setupButton();
@@ -98,7 +106,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
 
     private void initTitleBar() {
         FrameLayout layout = (FrameLayout) getView().findViewById(R.id.rLayout_login_top);
-        layout.findViewById(R.id.tv_top_bar_right).setVisibility(android.view.View.GONE);
+        layout.findViewById(R.id.tv_top_bar_right).setVisibility(View.GONE);
         TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
         tvTitle.setText(getString(R.string.PASSWORD));
         ivLoginTopLeft.setImageResource(R.drawable.nav_icon_back_gary);
@@ -106,9 +114,9 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     }
 
     protected void initNavigateBack() {
-        ivLoginTopLeft.setOnClickListener(new android.view.View.OnClickListener() {
+        ivLoginTopLeft.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(android.view.View v) {
+            public void onClick(View v) {
                 ActivityUtils.justPop(getActivity());
             }
         });
@@ -126,7 +134,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     @OnTextChanged(R.id.et_input_box)
     public void onInputBoxTextChanged(CharSequence s, int start, int before, int count) {
         final boolean validPws = !TextUtils.isEmpty(s);
-        ivInputBoxClear.setVisibility(validPws ? android.view.View.VISIBLE : android.view.View.GONE);
+        ivInputBoxClear.setVisibility(validPws ? View.VISIBLE : View.GONE);
         tvRegisterPwdSubmit.setEnabled(validPws);
     }
 
@@ -138,7 +146,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
 
     @OnClick({R.id.iv_input_box_clear, R.id.cb_show_input_box,
             R.id.tv_register_pwd_submit})
-    public void onClick(android.view.View view) {
+    public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_input_box_clear:
                 etInputBox.setText("");

@@ -42,7 +42,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -68,7 +67,7 @@ import butterknife.OnTextChanged;
 /**
  * 登陆主界面
  */
-public class LoginFragment extends android.support.v4.app.Fragment
+public class LoginFragment extends Fragment
         implements LoginContract.View,
         BaseDialog.BaseDialogAction {
     private static final String TAG = "Fragment";
@@ -118,7 +117,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
     @BindView(R.id.rLayout_pwd_input_box)
     FrameLayout rLayoutPwdInputBox;
     @BindView(R.id.view_third_party_center)
-    android.view.View viewThirdPartyCenter;
+    View viewThirdPartyCenter;
     @BindView(R.id.et_register_input_box)
     EditText etRegisterInputBox;
     @BindView(R.id.iv_register_username_clear)
@@ -140,6 +139,14 @@ public class LoginFragment extends android.support.v4.app.Fragment
     TextView tvAgreement;
     @BindView(R.id.tv_before_agreement)
     TextView before_tvAgreement;
+    @BindView(R.id.tv_twitterLogin_commit)
+    TextView tvTwitterLoginCommit;
+    @BindView(R.id.tv_facebookLogin_commit)
+    TextView tvFacebookLoginCommit;
+    @BindView(R.id.rLayout_login_third_party_abroad)
+    RelativeLayout rLayoutLoginThirdPartyAbroad;
+    @BindView(R.id.rLayout_register_box)
+    FrameLayout rLayoutRegisterBox;
 
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
@@ -153,8 +160,8 @@ public class LoginFragment extends android.support.v4.app.Fragment
 
     @Nullable
     @Override
-    public android.view.View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        android.view.View view = inflater.inflate(R.layout.fragment_login_layout, container, false);
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        View view = inflater.inflate(R.layout.fragment_login_layout, container, false);
         ButterKnife.bind(this, view);
         addOnTouchListener(view);
         showLayout();
@@ -166,10 +173,10 @@ public class LoginFragment extends android.support.v4.app.Fragment
      *
      * @param view
      */
-    public void addOnTouchListener(android.view.View view) {
-        view.setOnTouchListener(new android.view.View.OnTouchListener() {
+    public void addOnTouchListener(View view) {
+        view.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(android.view.View v, MotionEvent event) {
+            public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     IMEUtils.hide(getActivity());
                 }
@@ -179,11 +186,11 @@ public class LoginFragment extends android.support.v4.app.Fragment
     }
 
     @Override
-    public void onViewCreated(android.view.View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (BuildConfig.DEBUG) {
-            ivLoginClearPwd.setVisibility(android.view.View.GONE);
-            ivLoginClearUsername.setVisibility(android.view.View.GONE);
+            ivLoginClearPwd.setVisibility(View.GONE);
+            ivLoginClearUsername.setVisibility(View.GONE);
         }
         decideRegisterWay();
         initView();
@@ -251,7 +258,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
     private void decideRegisterWay() {
         int way = LocaleUtils.getLanguageType(getActivity());
         if (way == JConstant.LOCALE_SIMPLE_CN) {
-            tvRegisterWayContent.setVisibility(android.view.View.VISIBLE);
+            tvRegisterWayContent.setVisibility(View.VISIBLE);
             registerWay = JConstant.REGISTER_BY_PHONE;
         }
         registerWay = way == JConstant.LOCALE_SIMPLE_CN ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
@@ -268,17 +275,17 @@ public class LoginFragment extends android.support.v4.app.Fragment
     }
 
     @OnFocusChange(R.id.et_login_username)
-    public void onUserNameLoseFocus(android.view.View view, boolean focus) {
+    public void onUserNameLoseFocus(View view, boolean focus) {
         Log.d(TAG, "onUserNameLoseFocus: " + focus);
         final boolean visibility = !TextUtils.isEmpty(etLoginUsername.getText()) && focus;
-        ivLoginClearUsername.setVisibility(visibility ? android.view.View.VISIBLE : android.view.View.INVISIBLE);
+        ivLoginClearUsername.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
     }
 
     @OnFocusChange(R.id.et_login_pwd)
-    public void onPwdLoseFocus(android.view.View view, boolean focus) {
+    public void onPwdLoseFocus(View view, boolean focus) {
         Log.d(TAG, "onPwdLoseFocus: " + focus);
         final boolean visibility = !TextUtils.isEmpty(etLoginPwd.getText()) && focus;
-        ivLoginClearPwd.setVisibility(visibility ? android.view.View.VISIBLE : android.view.View.INVISIBLE);
+        ivLoginClearPwd.setVisibility(visibility ? View.VISIBLE : View.INVISIBLE);
     }
 
     /**
@@ -309,15 +316,16 @@ public class LoginFragment extends android.support.v4.app.Fragment
         ViewUtils.setChineseExclude(etLoginPwd, JConstant.PWD_LEN_MAX);
         //大陆用户显示 第三方登陆
         rLayoutLoginThirdParty.setVisibility(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? View.VISIBLE : View.GONE);
+        rLayoutLoginThirdPartyAbroad.setVisibility(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? View.GONE : View.VISIBLE);
         etLoginUsername.setHint(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN
                 ? getString(R.string.SHARE_E_MAIL) : getString(R.string.EMAIL));
 
         //回显
         String tempAccPwd = presenter.getTempAccPwd();
-        if (!TextUtils.isEmpty(tempAccPwd)){
+        if (!TextUtils.isEmpty(tempAccPwd)) {
             int i = tempAccPwd.indexOf("|");
-            etLoginUsername.setText(tempAccPwd.substring(0,i));
-            etLoginPwd.setText(tempAccPwd.substring(i+1));
+            etLoginUsername.setText(tempAccPwd.substring(0, i));
+            etLoginPwd.setText(tempAccPwd.substring(i + 1));
         }
 
         if (!TextUtils.isEmpty(etLoginUsername.getText().toString().trim()) && !TextUtils.isEmpty(etLoginPwd.getText().toString().trim())) {
@@ -348,7 +356,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
     @OnTextChanged(R.id.et_login_pwd)
     public void onPwdChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        ivLoginClearPwd.setVisibility(flag ? android.view.View.INVISIBLE : android.view.View.VISIBLE);
+        ivLoginClearPwd.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
         if (flag || s.length() < 6) {
             lbLogin.setEnabled(false);
         } else if (!TextUtils.isEmpty(ViewUtils.getTextViewContent(etLoginUsername))) {
@@ -367,7 +375,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
     @OnTextChanged(R.id.et_login_username)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        ivLoginClearUsername.setVisibility(flag ? android.view.View.GONE : android.view.View.VISIBLE);
+        ivLoginClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
         final String pwd = ViewUtils.getTextViewContent(etLoginPwd);
         if (flag) {
             lbLogin.setEnabled(false);
@@ -386,7 +394,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
             R.id.tv_top_bar_right,
             R.id.tv_agreement
     })
-    public void onClick(android.view.View view) {
+    public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_login_clear_pwd:
                 etLoginPwd.getText().clear();
@@ -462,7 +470,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
     }
 
     @OnClick(R.id.lb_login_commit)
-    public void login(android.view.View view) {
+    public void login(View view) {
         IMEUtils.hide(getActivity());
         lbLogin.viewZoomSmall();
         AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
@@ -543,7 +551,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
         Toast.makeText(getActivity(), code == 0 ? "good" : "无效验证码", Toast.LENGTH_SHORT).show();
         if (code == 0) {
             jump2NextPage();
-        }else {
+        } else {
             if (verificationCodeLogic != null)
                 verificationCodeLogic.initTimer();
         }
@@ -568,7 +576,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
             } else if (code == 162) {
                 ToastUtil.showNegativeToast("登录失败：accend_token_error");
-            } else if (code == JError.ErrorConnect ){
+            } else if (code == JError.ErrorConnect) {
                 ToastUtil.showNegativeToast("登录超时");
             }
         }
@@ -674,7 +682,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
         } else {
             result = Patterns.EMAIL_ADDRESS.matcher(s).find();
         }
-        ivRegisterUserNameClear.setVisibility(!TextUtils.isEmpty(s) ? android.view.View.VISIBLE : android.view.View.GONE);
+        ivRegisterUserNameClear.setVisibility(!TextUtils.isEmpty(s) ? View.VISIBLE : View.GONE);
         tvRegisterSubmit.setEnabled(result);
     }
 
@@ -731,24 +739,31 @@ public class LoginFragment extends android.support.v4.app.Fragment
      */
     @Override
     public void checkAccountResult(RxEvent.CheckRegsiterBack callback) {
-        if (callback.jfgResult.code != 0 ){
+        if (callback.jfgResult.code != 0) {
+            final boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
+            registerWay = validPhoneNum ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
+            if (registerWay == JConstant.REGISTER_BY_EMAIL){
+                jump2NextPage();
+                return;
+            }
             presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
             //显示验证码输入框
             handleVerificationCodeBox(true);
             tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
             tvRegisterSubmit.setEnabled(false);
             lLayoutAgreement.setVisibility(View.GONE);
-        }else {
+        } else {
             ToastUtil.showToast(getString(R.string.RET_EREGISTER_PHONE_EXIST));
         }
     }
 
     /**
      * 验证码输入框
+     *
      * @param show
      */
     private void handleVerificationCodeBox(boolean show) {
-        fLayoutVerificationCodeInputBox.setVisibility(show ? android.view.View.VISIBLE : android.view.View.GONE);
+        fLayoutVerificationCodeInputBox.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -784,7 +799,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
             IMEUtils.hide(getActivity());
             //获取验证码
             if (presenter != null)
-            presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
+                presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
 
         } else {
             final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
@@ -792,7 +807,9 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 Toast.makeText(getActivity(), getString(R.string.EMAIL_2), Toast.LENGTH_SHORT).show();
                 return;
             }
-            jump2NextPage();
+            //获取验证码
+            if (presenter != null)
+                presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
         }
     }
 
@@ -830,7 +847,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
             R.id.tv_register_submit,
             R.id.tv_register_way_content,
             R.id.iv_register_username_clear})
-    public void onClickRegister(android.view.View view) {
+    public void onClickRegister(View view) {
         switch (view.getId()) {
             case R.id.tv_meter_get_code:
                 if (verificationCodeLogic != null)
@@ -955,7 +972,6 @@ public class LoginFragment extends android.support.v4.app.Fragment
                 requestCode == Constants.REQUEST_APPBAR) {
             presenter.onActivityResultData(requestCode, resultCode, data);
         }
-
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

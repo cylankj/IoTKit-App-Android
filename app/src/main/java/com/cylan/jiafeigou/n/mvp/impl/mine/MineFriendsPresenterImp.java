@@ -12,6 +12,7 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -19,6 +20,7 @@ import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
@@ -88,7 +90,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.time = jfgFriendRequest.time;
             try {
                 emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, jfgFriendRequest.account + ".jpg", "",
-                        PackageUtils.getMetaString(ContextUtils.getContext(), "vid"));
+                        Security.getVId(JFGRules.getTrimPackageName()));
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -107,7 +109,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.account = account.account;
             emMessage.alias = account.alias;
             try {
-                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, account.account + ".jpg", "", PackageUtils.getMetaString(ContextUtils.getContext(), "vid"));
+                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, account.account + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
             } catch (JfgException e) {
                 e.printStackTrace();
             }

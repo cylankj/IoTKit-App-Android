@@ -137,7 +137,6 @@ public class DataSourceService extends Service implements AppCallBack {
         if (jfgDevices != null) {
             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(Arrays.asList(jfgDevices)));
         }
-
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
     }
 
