@@ -192,7 +192,7 @@ public class SimpleBindFlow extends AFullBind {
     private void setServerLanguage(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
         try {
             AppLogger.i(BIND_TAG + udpDevicePortrait);
-            String address = Security.getServerPrefix(JFGRules.getTrimPackageName())+".jfgou.com";
+            String address = Security.getServerPrefix(JFGRules.getTrimPackageName()) + ".jfgou.com";
             int port = Security.getServerPort(JFGRules.getTrimPackageName());
             //设置语言
             JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
@@ -306,7 +306,6 @@ public class SimpleBindFlow extends AFullBind {
                             e.printStackTrace();
                         }
 
-
                         //此时,设备还没恢复连接,需要加入队列
                         int key = ("JfgCmdInsurance.getCmd().bindDevice" + devicePortrait.uuid).hashCode();
                         OfflineTaskQueue.getInstance().enqueue(key, new Runnable() {
@@ -327,18 +326,12 @@ public class SimpleBindFlow extends AFullBind {
                     }
                 })
                 .delay(500, TimeUnit.MILLISECONDS)
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        //恢复wifi
-                        iBindResult.onLocalFlowFinish();
-                        AppLogger.i(BIND_TAG + "onLocalFlowFinish");
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e(BIND_TAG + throwable.getLocalizedMessage());
-                    }
+                .subscribe((Object o) -> {
+                    //恢复wifi
+                    iBindResult.onLocalFlowFinish();
+                    AppLogger.i(BIND_TAG + "onLocalFlowFinish");
+                }, (Throwable throwable) -> {
+                    AppLogger.e(BIND_TAG + throwable.getLocalizedMessage());
                 });
 
     }

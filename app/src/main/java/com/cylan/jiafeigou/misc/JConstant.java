@@ -99,7 +99,7 @@ public class JConstant {
     public static final String KEY_WONDERFUL_GUIDE = "KEY_WONDERFUL_GUIDE";
     public static final String VIEW_CALL_WAY_TIME = "VIEW_CALL_WAY_TIME";
 
-    public static int ConfigApState = 0;
+    public static int ConfigApStep = 0;
 
 
     public static final int REQ_CODE_ACTIVITY = 1;
@@ -177,9 +177,9 @@ public class JConstant {
     public static final int OS_DOOR_BELL_V2 = 15; //wifi狗主板
     public static final int OS_CAMERA_ANDROID_4G = 16;  //DOG_82
     public static final int OS_CAMERA_CC3200 = 17;    //乐视狗使用门铃包DOG-CAM-CC3200
-    public static final int OS_CAMERA_PANORAMA_HAISI = 18;    //海思全景摄像头
-    public static final int OS_CAMERA_PANORAMA_QIAOAN = 19;    //乔安全景摄像头
-    public static final int OS_CAMERA_PANORAMA_GUOKE = 20;    //国科全景摄像头
+    public static final int OS_CAMERA_PANORAMA_HAISI = 18;    //海思全景摄像头  2W
+    public static final int OS_CAMERA_PANORAMA_QIAOAN = 19;    //乔安全景摄像头  3W
+    public static final int OS_CAMERA_PANORAMA_GUOKE = 20;    //国科全景摄像头   4W
     public static final int OS_CAMERA_3G = 1071;    //3g狗
 
     public static final int OS_MAX_COUNT = OS_CAMERA_PANORAMA_GUOKE;
@@ -304,4 +304,5 @@ public class JConstant {
     public static final int CLOUD_OUT_CONNECT_OK = 3;
     public static final int CLOUD_OUT_CONNECT_FAILED = 4;
 
+    public static final String KEY_AUTO_SHOW_BIND_CAM = "auto_jump2_bind_cam";
 }

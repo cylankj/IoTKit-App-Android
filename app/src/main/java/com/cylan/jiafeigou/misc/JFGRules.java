@@ -95,6 +95,37 @@ public class JFGRules {
         return LANGUAGE_TYPE_ENGLISH;
     }
 
+    public static boolean isWifiCam(int pid) {
+        return pid == JConstant.OS_CAMERA_UCOS ||
+                pid == JConstant.OS_CAMERA_UCOS_V2 ||
+                pid == JConstant.OS_CAMERA_UCOS_V3;
+    }
+
+    public static boolean isPanoramicCam(int pid) {
+        return pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
+                pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
+                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
+    }
+
+    public static boolean isMobileNet(int net) {
+        return net >= 3;
+    }
+
+    public static boolean is3GCam(int pid) {
+        return pid == JConstant.OS_CAMERA_3G;
+    }
+
+    public static boolean isFreeCam(int pid) {
+        return pid == JConstant.OS_CAMERA_CC3200;
+    }
+
+    public static boolean showLedIndicator(int pid) {
+        return pid == JConstant.OS_CAMERA_3G ||
+                pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
+                pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
+                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
+    }
+
     public static boolean isCamera(int pid) {
         switch (pid) {
             case JConstant.OS_CAMERA_ANDROID:

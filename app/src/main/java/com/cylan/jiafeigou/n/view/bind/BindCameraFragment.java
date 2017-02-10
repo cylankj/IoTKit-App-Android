@@ -129,30 +129,6 @@ public class BindCameraFragment extends BaseTitleFragment<BindDeviceContract.Pre
             Toast.makeText(getContext(), "没发现设备", Toast.LENGTH_SHORT).show();
             return;
         }
-//        initDeviceListFragment();
-//
-//        if (listFragmentWeakReference.get().isResumed()) {
-//            listFragmentWeakReference.get().updateList((ArrayList<ScanResult>) resultList);
-//            Log.d("simple", "what the hell.....");
-//            return;
-//        }
-//        if (getActivity().getSupportFragmentManager().findFragmentByTag("BindDeviceListFragment") != null)
-//            return;
-//        Bundle bundle = getArguments();
-//        if (bundle == null) {
-//            bundle = new Bundle();
-//        }
-//        Log.d("simple", "what the hell");
-//        bundle.putInt(KEY_SUB_FRAGMENT_ID, R.id.fLayout_bind_device_list_fragment_container);
-//        bundle.putParcelableArrayList(KEY_DEVICE_LIST, (ArrayList<? extends Parcelable>) resultList);
-//        getActivity().getSupportFragmentManager()
-//                .beginTransaction()
-//                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-//                        , R.anim.slide_in_left, R.anim.slide_out_right)
-//                .add(android.R.id.content, listFragmentWeakReference.get(), "BindDeviceListFragment")
-//                .addToBackStack("BindDeviceListFragment")
-//                .commit();
-//        cancelAnimation();
     }
 
     private void cancelAnimation() {

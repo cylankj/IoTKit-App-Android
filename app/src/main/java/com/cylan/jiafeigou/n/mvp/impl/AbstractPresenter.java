@@ -47,7 +47,8 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         Subscription[] subs = register();
         if (subs != null) {
             for (Subscription s : subs)
-                compositeSubscription.add(s);
+                if (s != null)
+                    compositeSubscription.add(s);
         }
     }
 
@@ -60,6 +61,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     @Override
     public void stop() {
         unSubscribe(compositeSubscription);
+        mView = null;
     }
 
     protected Subscription[] register() {

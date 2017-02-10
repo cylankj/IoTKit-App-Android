@@ -158,7 +158,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         imgVCamTriggerMic.setOnClickListener(this);
         imgVCamTriggerCapture.setOnClickListener(this);
         fLayoutCamLiveView.setOnClickListener(this);
-        camLiveController = new CamLiveController(getContext(), uuid);
+        if (camLiveController == null)
+            camLiveController = new CamLiveController(getContext(), uuid);
         camLiveController.setPresenterRef(basePresenter);
         camLiveController.setLiveAction((ILiveControl) vs_control.inflate());
         camLiveController.setCamLiveControlLayer(swCamLiveControlLayer);
@@ -303,7 +304,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         Gravity.END);
                 textView.setGravity(Gravity.CENTER);
-                lp.setMargins(10, DensityUtils.px2dip(14), DensityUtils.px2dip(14), 10);
+                lp.setMargins(20, DensityUtils.px2dip(14), DensityUtils.px2dip(14), 20);
                 fLayoutCamLiveView.addView(textView, lp);
                 tvFlowRef = new WeakReference<>(textView);
             }

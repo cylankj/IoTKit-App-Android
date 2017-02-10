@@ -47,7 +47,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
@@ -293,11 +292,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     return null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        getView().onLiveStop(playType, stopReason);
-                    }
+                .subscribe((Object o) -> {
+                    getView().onLiveStop(playType, stopReason);
+                }, (Throwable throwable) -> {
+                    AppLogger.e("" + throwable.getLocalizedMessage());
                 });
     }
 

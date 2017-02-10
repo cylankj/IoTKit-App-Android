@@ -549,7 +549,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         int i = ColorUtils.blendARGB(Color.WHITE, Color.parseColor("#788291"), ratio);
         tvDateItemHeadWonder.setTextColor(i);
         tvDateItemHeadWonder.setTitleHeadIsTop(ratio < 0.1);
-        tvDateItemHeadWonder.setBackgroundToRight();
+//        tvDateItemHeadWonder.setBackgroundToRight();
     }
 
 

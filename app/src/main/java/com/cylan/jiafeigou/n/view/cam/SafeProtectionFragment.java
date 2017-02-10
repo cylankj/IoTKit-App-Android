@@ -16,11 +16,13 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
@@ -111,6 +113,11 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
+        if (device != null && JFGRules.isFreeCam(device.pid)) {
+            view.findViewById(R.id.fLayout_protection_warn_effect).setVisibility(View.GONE);
+        }
+
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
         boolean alarm = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch)).setChecked(alarm);
@@ -129,7 +136,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                                 })
                                 .setNegativeButton(getString(R.string.CANCEL), null)
                                 .show();
-                    }else {
+                    } else {
                         basePresenter.updateInfoReq(true, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                         showDetail(true);
                         updateDetails();

@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.pool;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -227,8 +228,10 @@ public class GlobalDataProxy implements IDataProxy {
         try {
             if (dataPointManager == null) return null;
             BaseValue base = dataPointManager.fetchLocal(uuid, id);
-            return base == null || base.getValue() == null ? defaultValue : (T) base.getValue();
-        } catch (ClassCastException c) {
+            Log.d("getValue", "getValue:" + id + " base:" + base);
+            return base == null || base.getValue() == null ? defaultValue : base.getValue();
+        } catch (Exception c) {
+            Log.e("getValue", "getValue:" + id + " base:" + c.getLocalizedMessage());
             return null;
         }
     }

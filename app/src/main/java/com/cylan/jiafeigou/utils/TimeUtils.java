@@ -115,6 +115,14 @@ public class TimeUtils {
                 .format(new Date(time));
     }
 
+    public static String getUptime(String format, long time) {
+        time = System.currentTimeMillis() / 1000 - time;
+        int day = (int) (time / 3600);
+        int minutes = (int) (time / 60);
+        int seconds = (int) (time - day * 3600 - minutes * 60);
+        return String.format(format, day, minutes, seconds);
+    }
+
     public static String getDayInMonth(long time) {
         Calendar instance = Calendar.getInstance();
         instance.setTimeInMillis(time);

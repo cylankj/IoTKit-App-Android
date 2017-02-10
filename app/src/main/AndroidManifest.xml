@@ -59,7 +59,8 @@
     <!--<uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS"/>-->
     <!--闪光灯-->
     <uses-permission android:name="android.permission.FLASHLIGHT" />
-    <!--<uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>-->
+    <!--位置信息-->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <!--允许程序唤醒机器-->
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
@@ -87,16 +88,16 @@
         android:theme="@style/AppTheme">
         <!-- server address -->
         <!--<meta-data-->
-            <!--android:name="ServerAddress"-->
-            <!--android:value="${NICELY_VALUE}" />-->
+        <!--android:name="ServerAddress"-->
+        <!--android:value="${NICELY_VALUE}" />-->
 
         <!--&lt;!&ndash; your vid getString must "\ " &ndash;&gt;-->
         <!--<meta-data-->
-            <!--android:name="vid"-->
-            <!--android:value="${VID}" />-->
+        <!--android:name="vid"-->
+        <!--android:value="${VID}" />-->
         <!--<meta-data-->
-            <!--android:name="vkey"-->
-            <!--android:value="${VKEY}" />-->
+        <!--android:name="vkey"-->
+        <!--android:value="${VKEY}" />-->
 
         <activity
             android:name=".SmartcallActivity"
