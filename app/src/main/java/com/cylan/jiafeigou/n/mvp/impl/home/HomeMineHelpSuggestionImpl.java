@@ -1,8 +1,13 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
+import android.os.Environment;
+
+import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
@@ -10,9 +15,12 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.ArrayList;
@@ -45,6 +53,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     private DbManager dbManager;
     private JFGAccount userInfomation;
     private boolean isOpenLogin;
+    private String saveLogCloudUrl = "";
 
     public HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view) {
         super(view);
@@ -53,6 +62,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
@@ -66,6 +76,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     @Override
     public void stop() {
+        super.stop();
         unSubscribe(compositeSubscription);
     }
 
@@ -299,6 +310,64 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     @Override
                     public void call(Boolean aBoolean) {
                         isOpenLogin = aBoolean;
+                    }
+                });
+    }
+
+    @Override
+    public String getSaveLogCloudUrl() {
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<Object, String>() {
+                    @Override
+                    public String call(Object o) {
+                        try {
+                            return JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.FEEDBACK_LOG, 0, System.currentTimeMillis() / 1000 + ".zip", "", Security.getVId(JFGRules.getTrimPackageName()));
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                            return "";
+                        }
+                    }
+                })
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        saveLogCloudUrl = s;
+                    }
+                });
+        return saveLogCloudUrl;
+    }
+
+    @Override
+    public String getLocalLogUrl() {
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+            return "";
+        } else {
+            return Environment.getExternalStorageDirectory().toString() + "/Smarthome";
+        }
+    }
+
+    /**
+     * @param localUrl
+     */
+    @Override
+    public void sendLogToCloud(String remoteUrl, String localUrl) {
+        rx.Observable.just(localUrl)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        try {
+                            JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, localUrl);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e(throwable.getLocalizedMessage());
                     }
                 });
     }

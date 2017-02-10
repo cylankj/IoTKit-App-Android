@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
-import com.cylan.jiafeigou.support.softkeyboard.util.ViewUtil;
 import com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -233,6 +232,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         suggestionAdapter.add(suggestionBean);
         suggestionAdapter.notifyDataSetHasChanged();
         presenter.sendFeedBack(suggestionBean);
+//        presenter.sendLogToCloud(presenter.getSaveLogCloudUrl(),presenter.getLocalLogUrl());
     }
 
     @Override

@@ -22,6 +22,8 @@ import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
+import com.cylan.jiafeigou.utils.AESUtil;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
@@ -85,6 +87,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     return o;
                 })
                 .subscribe();
+
+        //账号和密码
+        try {
+            String hex = AESUtil.encrypt(login.userName+"|"+login.pwd);
+            FileUtils.saveDataToFile(getView().getContext(),hex);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -530,6 +540,21 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     if (getView() != null && !isLoginSucc)
                         getView().loginResult(JError.ErrorConnect);
                 });
+    }
+
+    @Override
+    public String getTempAccPwd() {
+        String decrypt = "";
+        String dataFromFile = FileUtils.getDataFromFile(getView().getContext());
+        if (TextUtils.isEmpty(dataFromFile)){
+            return "";
+        }
+        try {
+            decrypt = AESUtil.decrypt(dataFromFile);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return decrypt;
     }
 
 }

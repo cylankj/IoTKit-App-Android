@@ -3,7 +3,9 @@ package com.cylan.jiafeigou.utils;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.utils.PackageUtils;
 
 import java.net.MalformedURLException;
@@ -38,7 +40,7 @@ public class JFGGlideURL extends GlideUrl {
         String url = "";
         try {
             url = JfgCmdInsurance.getCmd().getCloudUrlByType(mType, mFlag, mFile, mPath,
-                    PackageUtils.getMetaString(ContextUtils.getContext(), "vid"));
+                    Security.getVId(JFGRules.getTrimPackageName()));
         } catch (JfgException e) {
             e.printStackTrace();
         }

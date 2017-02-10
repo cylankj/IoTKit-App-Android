@@ -42,6 +42,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -301,6 +302,7 @@ public class LoginFragment extends android.support.v4.app.Fragment
      * 初始化view
      */
     private void initView() {
+
         tvAgreement.setText("《" + getString(R.string.TERM_OF_USE) + "》");
         if (getView() != null)
             getView().findViewById(R.id.tv_top_bar_right).setVisibility(View.VISIBLE);
@@ -309,6 +311,14 @@ public class LoginFragment extends android.support.v4.app.Fragment
         rLayoutLoginThirdParty.setVisibility(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? View.VISIBLE : View.GONE);
         etLoginUsername.setHint(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN
                 ? getString(R.string.SHARE_E_MAIL) : getString(R.string.EMAIL));
+
+        //回显
+        String tempAccPwd = presenter.getTempAccPwd();
+        if (!TextUtils.isEmpty(tempAccPwd)){
+            int i = tempAccPwd.indexOf("|");
+            etLoginUsername.setText(tempAccPwd.substring(0,i));
+            etLoginPwd.setText(tempAccPwd.substring(i+1));
+        }
 
         if (!TextUtils.isEmpty(etLoginUsername.getText().toString().trim()) && !TextUtils.isEmpty(etLoginPwd.getText().toString().trim())) {
             lbLogin.setEnabled(true);
