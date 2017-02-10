@@ -61,7 +61,6 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     @Override
     public void stop() {
         unSubscribe(compositeSubscription);
-        mView = null;
     }
 
     protected Subscription[] register() {

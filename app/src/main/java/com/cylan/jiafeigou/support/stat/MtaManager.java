@@ -26,6 +26,7 @@ public class MtaManager {
             @Override
             public void run() {
                 MtaManager.debug = debug;
+                StatConfig.setDebugEnable(debug);
                 StatConfig.setAppKey(context, Security.getMtaKey(JFGRules.getTrimPackageName()));
                 String channel = "cylan";
                 try {
@@ -50,7 +51,7 @@ public class MtaManager {
     }
 
     public static void onPause(Context context) {
-        if(!isInit)return;
+        if (!isInit) return;
         StatService.onPause(context);
     }
 
@@ -65,7 +66,7 @@ public class MtaManager {
     public static void eventClick(final Context context, final String eventId, final String value) {
         if (debug)
             return;
-        if(!isInit)return;
+        if (!isInit) return;
         sendEvent(new Runnable() {
             @Override
             public void run() {
@@ -80,14 +81,14 @@ public class MtaManager {
     public static void eventClick(Context context, String eventId) {
         if (debug)
             return;
-        if(!isInit)return;
+        if (!isInit) return;
         eventClick(context, eventId, "");
     }
 
     public static void customEvent(final Context context, final String eventId, final String value) {
         if (debug)
             return;
-        if(!isInit)return;
+        if (!isInit) return;
         sendEvent(new Runnable() {
             @Override
             public void run() {
@@ -100,7 +101,7 @@ public class MtaManager {
     public static void customEvent(Context context, String eventId) {
         if (debug)
             return;
-        if(!isInit)return;
+        if (!isInit) return;
         customEvent(context, eventId, "");
     }
 

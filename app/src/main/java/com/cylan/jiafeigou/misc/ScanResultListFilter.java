@@ -18,8 +18,8 @@ public class ScanResultListFilter {
      * @param list
      * @return
      */
-    public static List<ScanResult> extractPretty(List<ScanResult> list) {
-        List<ScanResult> results = new ArrayList<>();
+    public static ArrayList<ScanResult> extractPretty(List<ScanResult> list) {
+        ArrayList<ScanResult> results = new ArrayList<>();
         if (list == null) {
             return results;
         }
@@ -33,11 +33,11 @@ public class ScanResultListFilter {
         return results;
     }
 
-    public static List<ScanResult> extractPretty(List<ScanResult> list, boolean withDog) {
+    public static ArrayList<ScanResult> extractPretty(List<ScanResult> list, boolean withDog) {
         if (withDog) {
             return extractPretty(list);
         }
-        List<ScanResult> results = new ArrayList<>();
+        ArrayList<ScanResult> results = new ArrayList<>();
         if (list == null) {
             return results;
         }
