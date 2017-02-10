@@ -150,40 +150,75 @@
         android:textColor="@color/color_999999"
         android:textSize="@dimen/sp12" />
 
-    <RelativeLayout
-        android:id="@+id/rLayout_login_third_party"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+    <FrameLayout
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
         android:layout_marginBottom="@dimen/y24"
-        android:orientation="horizontal">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_qqLogin_commit"
-            style="@style/third_party_login_style"
-            android:layout_marginRight="@dimen/x14"
-            android:layout_toLeftOf="@+id/view_third_party_center"
-            android:drawableLeft="@drawable/icon_qq"
-            android:padding="@dimen/x10"
-            android:text="@string/LOGIN_QQ" />
+        <RelativeLayout
+            android:id="@+id/rLayout_login_third_party"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_qqLogin_commit"
+                style="@style/third_party_login_style"
+                android:layout_marginRight="@dimen/x14"
+                android:layout_toLeftOf="@+id/view_third_party_center"
+                android:drawableLeft="@drawable/icon_qq"
+                android:padding="@dimen/x10"
+                android:text="@string/LOGIN_QQ" />
 
-        <View
-            android:id="@+id/view_third_party_center"
-            android:layout_width="@dimen/x1"
-            android:layout_height="@dimen/y13"
-            android:layout_centerInParent="true"
-            android:background="@color/color_9e9e9e" />
+            <View
+                android:id="@+id/view_third_party_center"
+                android:layout_width="@dimen/x1"
+                android:layout_height="@dimen/y13"
+                android:layout_centerInParent="true"
+                android:background="@color/color_9e9e9e" />
 
-        <TextView
-            android:id="@+id/tv_xlLogin_commit"
-            style="@style/third_party_login_style"
-            android:layout_marginLeft="@dimen/x14"
-            android:layout_toRightOf="@+id/view_third_party_center"
-            android:drawableLeft="@drawable/ico_weibo"
-            android:padding="@dimen/x10"
-            android:text="@string/LOGIN_WEIBO" />
-    </RelativeLayout>
-</RelativeLayout><!--</LinearLayout>-->
+            <TextView
+                android:id="@+id/tv_xlLogin_commit"
+                style="@style/third_party_login_style"
+                android:layout_marginLeft="@dimen/x14"
+                android:layout_toRightOf="@+id/view_third_party_center"
+                android:drawableLeft="@drawable/ico_weibo"
+                android:padding="@dimen/x10"
+                android:text="@string/LOGIN_WEIBO" />
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:visibility="gone"
+            android:id="@+id/rLayout_login_third_party_abroad"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tv_twitterLogin_commit"
+                style="@style/third_party_login_style"
+                android:layout_marginRight="@dimen/x14"
+                android:layout_toLeftOf="@+id/view_third_party_abroad_center"
+                android:drawableLeft="@drawable/icon_twitter"
+                android:padding="@dimen/x10"
+                android:text="twitter" />
+
+            <View
+                android:id="@+id/view_third_party_abroad_center"
+                android:layout_width="@dimen/x1"
+                android:layout_height="@dimen/y13"
+                android:layout_centerInParent="true"
+                android:background="@color/color_9e9e9e" />
+
+            <TextView
+                android:id="@+id/tv_facebookLogin_commit"
+                style="@style/third_party_login_style"
+                android:layout_marginLeft="@dimen/x14"
+                android:layout_toRightOf="@+id/view_third_party_abroad_center"
+                android:drawableLeft="@drawable/icon_facebook"
+                android:padding="@dimen/x10"
+                android:text="facebook" />
+        </RelativeLayout>
+    </FrameLayout>
+
+</RelativeLayout>
 
 

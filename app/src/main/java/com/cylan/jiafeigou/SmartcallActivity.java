@@ -19,6 +19,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -29,6 +31,7 @@ import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -149,9 +152,17 @@ public class SmartcallActivity extends NeedLoginActivity
                     login.userName = tempAccPwd.substring(0, i);
                     login.pwd = tempAccPwd.substring(i + 1);
                 }
+                if (!(TextUtils.isEmpty(login.userName) || TextUtils.isEmpty(login.pwd))){
+                    if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+                        JFGAccount jfgAccount = new JFGAccount();
+                        GlobalDataProxy.getInstance().setJfgAccount(jfgAccount);
+                        RxBus.getCacheInstance().postSticky(jfgAccount);
+                        RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
 
-                if (!(TextUtils.isEmpty(login.userName) || TextUtils.isEmpty(login.pwd))) {
-                    if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                        //TODO 赋值
+
+                        DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
+
                         //进去主页 home page
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                             startActivity(new Intent(this, NewHomeActivity.class),

@@ -27,3 +27,4 @@
 /annotation/build/
 /compiler/build/
 /compiler/build/classes/
+/gradle.properties
