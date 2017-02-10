@@ -3,21 +3,40 @@
     xmlns:card_view="http://schemas.android.com/apk/res-auto"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/cv_bell_call_item"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="@dimen/y148"
+    android:layout_height="@dimen/y248"
+    card_view:cardCornerRadius="@dimen/y5"
     card_view:cardBackgroundColor="@android:color/white">
 
+    <FrameLayout
+        android:id="@+id/imgv_bell_call_item_cover"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible">
+
+        <View
+            android:background="@color/color_7FFFFFFF"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:padding="@dimen/y10"
+            android:src="@drawable/doorbell_icon_check" />
+    </>
+
     <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="@dimen/x22"
         android:orientation="vertical">
 
         <TextView
             android:id="@+id/tv_bell_list_item_date"
+            android:layout_marginTop="@dimen/y22"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/y18"
             android:layout_gravity="center_horizontal"
             android:text="几天"
             android:textColor="@color/color_65CAE4"
@@ -26,7 +45,7 @@
         <TextView
             android:id="@+id/tv_bell_list_item_time"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/y18"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/y6"
             android:text="06:30 am"
@@ -34,7 +53,7 @@
             android:textSize="@dimen/sp15" />
 
         <View
-            android:layout_width="@dimen/x40"
+            android:layout_width="@dimen/y40"
             android:layout_height="@dimen/y1"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/y12"
@@ -42,17 +61,17 @@
 
         <com.cylan.jiafeigou.widget.ImageViewTip
             android:id="@+id/imgv_bell_call_item_thumbnail"
-            android:layout_width="@dimen/x80"
+            android:layout_width="@dimen/y80"
             android:layout_height="@dimen/y80"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/y17"
             android:src="@drawable/icon_home_doorbell_online"
             hunt:t_border_color="@color/color_white"
-            hunt:t_border_width="@dimen/x1"
+            hunt:t_border_width="@dimen/y1"
             hunt:t_enable_border="true"
             hunt:t_ignore="true"
             hunt:t_point_color="@color/color_red_dot_f43531"
-            hunt:t_radius="@dimen/x4"
+            hunt:t_radius="@dimen/y4"
             hunt:t_round_image="true"
             hunt:t_show_point="true" />
 
@@ -62,26 +81,11 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/y22"
+            android:layout_marginTop="@dimen/y24"
             android:drawableLeft="@drawable/doorbell_icon_connect"
-            android:drawablePadding="@dimen/x10"
-            android:text="已通话"
+            android:drawablePadding="@dimen/y10"
+            android:text="@string/CALL_ANSWERD"
             android:textColor="@color/color_CBCFD0"
             android:textSize="@dimen/sp13" />
     </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/imgv_bell_call_item_cover"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/card_view_alpha_cover"
-        android:visibility="gone">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:padding="@dimen/x10"
-            android:src="@drawable/doorbell_icon_check" />
-    </FrameLayout>
 </android.support.v7.widget.CardView>

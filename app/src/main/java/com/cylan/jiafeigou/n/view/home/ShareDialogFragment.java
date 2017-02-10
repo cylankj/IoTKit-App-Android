@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.home;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ShareUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
@@ -34,9 +36,8 @@ public class ShareDialogFragment extends BaseDialog {
     @BindView(R.id.tv_share_to_wechat_friends)
     TextView tvShareToWechat;
 
-//    private DPWonderItem mMediaBean;
-
     private GlideUrl glideUrl;
+    private String mVideoURL;
 
     public static ShareDialogFragment newInstance(Bundle bundle) {
         ShareDialogFragment fragment = new ShareDialogFragment();
@@ -48,9 +49,14 @@ public class ShareDialogFragment extends BaseDialog {
         return new ShareDialogFragment();
     }
 
-    public void setGlideUrl(GlideUrl glideUrl) {
+    public void setPictureURL(GlideUrl glideUrl) {
         this.glideUrl = glideUrl;
     }
+
+    public void setVideoURL(String url) {
+        this.mVideoURL = url;
+    }
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -70,10 +76,40 @@ public class ShareDialogFragment extends BaseDialog {
         dismiss();
         switch (view.getId()) {
             case R.id.tv_share_to_timeline:
-                ShareUtils.shareToWechat(getActivity(), glideUrl, WXSceneTimeline);
+                if (glideUrl != null) {
+                    ShareUtils.sharePictureToWechat(getActivity(), glideUrl, WXSceneTimeline);
+                } else if (!TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneSession);
+                }else{
+                    ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
+                }
                 break;
             case R.id.tv_share_to_wechat_friends:
-                ShareUtils.shareToWechat(getActivity(), glideUrl, WXSceneSession);
+                if (glideUrl != null) {
+                    ShareUtils.sharePictureToWechat(getActivity(), glideUrl, WXSceneSession);
+                } else if (!TextUtils.isEmpty(mVideoURL)){
+                    ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneSession);
+                }else{
+                    ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
+                }
+                break;
+            case R.id.tv_share_to_twitter_friends:
+                if (glideUrl!=null) {
+                    ShareUtils.sharePictureToTwitter();
+                }else if (!TextUtils.isEmpty(mVideoURL)){
+                    ShareUtils.shareVideoToTwitter();
+                }else{
+                    ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
+                }
+                break;
+            case R.id.tv_share_to_facebook_friends:
+                if (glideUrl!=null) {
+                    ShareUtils.shareToFacebook(getActivity(), glideUrl);
+                }else if (!TextUtils.isEmpty(mVideoURL)){
+                    ShareUtils.shareVideoToFacebook();
+                }else{
+                    ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
+                }
                 break;
         }
     }

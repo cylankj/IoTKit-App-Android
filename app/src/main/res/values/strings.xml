@@ -842,4 +842,8 @@
     <string name="SHARE_ERROR">分享失败！</string>
     <string name="CALL_NOT_ANSWER">未接听</string>
     <string name="CALL_ANSWERD">已接听</string>
+    <string name="facebook">Facebook</string>
+    <string name="twitter">Twitter</string>
+    <string name="wechat">微信</string>
+    <string name="we_friends">朋友圈</string>
 </resources>

@@ -26,7 +26,6 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
@@ -96,28 +95,24 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         ViewUtils.updateViewHeight(fLayoutBellLiveHolder, 0.75f);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
         fLayoutBellLiveHolder.setOnClickListener(view -> {
-            if (isLandMode) {
-                handleLandClick();
-            } else {
+            if (!isLandMode) {
                 handlePortClick();
             }
         });
         newCall();
         //三秒后隐藏状态栏
         mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
-        mVideoViewContainer.removeCallbacks(mHideBellTitleAction);
         mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
     }
 
-    private void handleLandClick() {
-        mBellLiveBack.removeCallbacks(mHideBellTitleAction);
-        if (mBellLiveBack.isShown()) {
-            AnimatorUtils.slideOut(mBellLiveBack, true);
-        } else {
-            AnimatorUtils.slideIn(mBellLiveBack, true);
-            mBellLiveBack.postDelayed(mHideBellTitleAction, 3000);
-        }
-    }
+//    private void handleLandClick() {
+//
+//        if (mBellLiveBack.isShown()) {
+//            AnimatorUtils.slideOut(mBellLiveBack, true);
+//        } else {
+//            AnimatorUtils.slideIn(mBellLiveBack, true);
+//        }
+//    }
 
     private void handlePortClick() {
         int visibility = mVideoViewContainer.getSystemUiVisibility();
@@ -132,7 +127,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     private Runnable mHideStatusBarAction = this::hideStatusBar;
-    private Runnable mHideBellTitleAction = () -> AnimatorUtils.slideOut(mBellLiveBack, true);
 
     public void hideStatusBar() {
         mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
@@ -146,26 +140,30 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     private void setNormalBackMargin() {
-        mBellLiveBack.setVisibility(View.VISIBLE);
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
-        int margin = (int) getResources().getDimension(R.dimen.y40);
-        params.topMargin = margin;
-        mBellLiveBack.setLayoutParams(params);
-        params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
-        params.topMargin = margin;
-        mBellFlow.setLayoutParams(params);
+//        mBellLiveBack.setVisibility(View.VISIBLE);
+//        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
+//        int margin = (int) getResources().getDimension(R.dimen.y40);
+//        params.topMargin = margin;
+//        mBellLiveBack.setLayoutParams(params);
+//        params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
+//        params.topMargin = margin;
+//        mBellFlow.setLayoutParams(params);
+        mBellLiveBack.scrollTo(0, 0);
+        mBellFlow.scrollTo(0, 0);
     }
 
     private void setHideBackMargin() {
-        mBellLiveBack.setVisibility(View.VISIBLE);
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
-        int margin = (int) getResources().getDimension(R.dimen.y19);
-        params.topMargin = margin;
-        mBellLiveBack.setLayoutParams(params);
-        margin = (int) getResources().getDimension(R.dimen.y20);
-        params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
-        params.topMargin = margin;
-        mBellFlow.setLayoutParams(params);
+//        mBellLiveBack.setVisibility(View.VISIBLE);
+//        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
+//        int margin = (int) getResources().getDimension(R.dimen.y19);
+//        params.topMargin = margin;
+//        mBellLiveBack.setLayoutParams(params);
+//        margin = (int) getResources().getDimension(R.dimen.y20);
+//        params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
+//        params.topMargin = margin;
+//        mBellFlow.setLayoutParams(params);
+        mBellLiveBack.scrollTo(0, (int) getResources().getDimension(R.dimen.y19));
+        mBellFlow.scrollTo(0, (int) getResources().getDimension(R.dimen.y20));
     }
 
     @Override
@@ -219,13 +217,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     private void handleScreenUpdate(final boolean port) {
-        mBellLiveBack.removeCallbacks(mHideBellTitleAction);
-        mBellLiveBack.postDelayed(mHideBellTitleAction, 3000);
         initLandView();
         fLayoutLandHolderRef.get()
                 .setVisibility(port ? View.GONE : View.VISIBLE);
         if (port) {
-            mBellLiveBack.removeCallbacks(mHideBellTitleAction);
             mBellLiveBack.removeCallbacks(mHideStatusBarAction);
             hideStatusBar();
             setHideBackMargin();
@@ -390,6 +385,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onPickup() {
         dLayoutBellHotSeat.setVisibility(View.GONE);
         fLayoutBellAfterLive.setVisibility(View.VISIBLE);
+
     }
 
     @Override

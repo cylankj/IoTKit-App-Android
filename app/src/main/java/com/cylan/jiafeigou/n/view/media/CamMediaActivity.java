@@ -101,7 +101,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 break;
             case R.id.imgV_big_pic_share:
                 ShareDialogFragment fragment = initShareDialog();
-                fragment.setGlideUrl(new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
+                fragment.setPictureURL(new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
                 fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.imgV_big_pic_collect:

@@ -130,7 +130,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         if (mShareDialog == null) {
             mShareDialog = ShareDialogFragment.newInstance();
         }
-        mShareDialog.setGlideUrl(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID));
+        mShareDialog.setPictureURL(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID));
         mShareDialog.show(getSupportFragmentManager(), ShareDialogFragment.class.getName());
     }
 
