@@ -123,7 +123,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         }
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
         return device != null && TextUtils.isEmpty(device.alias) ?
-                device.uuid : device.alias;
+                device.uuid : (device != null ? device.alias : "");
     }
 
     @Override

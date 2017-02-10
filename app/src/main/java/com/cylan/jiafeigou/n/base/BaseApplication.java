@@ -48,14 +48,14 @@ public class BaseApplication extends MultiDexApplication implements Application.
         enableDebugOptions();
         MtaManager.init(getApplicationContext(), BuildConfig.DEBUG);
         //每一个新的进程启动时，都会调用onCreate方法。
-        if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
-            Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
-            startService(new Intent(getApplicationContext(), DaemonService.class));
-            startService(new Intent(getApplicationContext(), DataSourceService.class));
-            initBlockCanary();
-            initBugMonitor();
-            registerBootComplete();
-        }
+//        if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
+        Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
+        startService(new Intent(getApplicationContext(), DaemonService.class));
+        startService(new Intent(getApplicationContext(), DataSourceService.class));
+        initBlockCanary();
+        initBugMonitor();
+        registerBootComplete();
+//        }
         initLeakCanary();
         registerActivityLifecycleCallbacks(this);
     }

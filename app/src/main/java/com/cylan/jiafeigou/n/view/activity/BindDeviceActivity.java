@@ -29,7 +29,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     TextView tvTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
     FrameLayout fLayoutTopBarContainer;
-//    private WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     @Override
     protected void onPause() {
         super.onPause();
-
     }
 
     @Override
@@ -67,11 +65,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     @Override
     protected void onDestroy() {
         super.onDestroy();
-//        if (simpleDialogFragmentWeakReference != null
-//                && simpleDialogFragmentWeakReference.get() != null
-//                && simpleDialogFragmentWeakReference.get().isResumed()) {
-//            simpleDialogFragmentWeakReference.get().dismiss();
-//        }
     }
 
     @Override
@@ -80,40 +73,21 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             return;
         if (popAllFragmentStack())
             return;
-//        if (checkExtraChildFragment()) {
-//            return;
-//        } else if (checkExtraFragment())
-//            return;
-
         finishExt();
     }
 
 
     private boolean shouldNotifyBackForeword() {
-        if (JConstant.ConfigApStep == 2)
-            return false;
-        new AlertDialog.Builder(this)
-                .setMessage(getString(R.string.Tap1_AddDevice_tips))
-                .setNegativeButton(getString(R.string.CANCEL), null)
-                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    popAllFragmentStack();
-                }).show();
-
-//        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
-//            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(new Bundle()));
-//            simpleDialogFragmentWeakReference.get().setAction(this);
-//        }
-//
-//        SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
-//        if (fragment == null || fragment.isResumed())
-//            return true;
-//        Bundle bundle = new Bundle();
-//        bundle.putString(KEY_CONTENT_CONTENT, getString(R.string.Tap1_AddDevice_tips));
-//        bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-//        bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
-//        fragment.setArguments(bundle);
-//        fragment.show(getSupportFragmentManager(), "SimpleDialogFragment");
-        return true;
+        if (JConstant.ConfigApStep == 2) {
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.Tap1_AddDevice_tips))
+                    .setNegativeButton(getString(R.string.CANCEL), null)
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        popAllFragmentStack();
+                    }).show();
+            return true;
+        }
+        return false;
     }
 
     @Override

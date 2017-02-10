@@ -4,10 +4,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.dp.DpMsgDefine;
-
-import java.util.List;
-
 /**
  * Created by hunt on 16-5-14.
  */
@@ -39,14 +35,6 @@ public class DeviceBean implements Parcelable {
         return uuid != null ? uuid.hashCode() : 0;
     }
 
-    public void fillData(BaseBean baseDpMsg, List<DpMsgDefine.DpMsg> list) {
-        this.uuid = baseDpMsg.uuid;
-        this.pid = baseDpMsg.pid;
-        this.sn = baseDpMsg.sn;
-        this.shareAccount = baseDpMsg.shareAccount;
-        this.alias = baseDpMsg.alias;
-//        this.dataList = list;
-    }
 
     @Override
     public String toString() {

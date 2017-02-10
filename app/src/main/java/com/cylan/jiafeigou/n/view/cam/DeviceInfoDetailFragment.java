@@ -16,16 +16,17 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
-import java.text.DecimalFormat;
 import java.util.List;
 import java.util.Locale;
 
@@ -70,12 +71,12 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     TextView tvDeviceMac;
     @BindView(R.id.tv_device_system_version)
     TextView tvDeviceSystemVersion;
-    @BindView(R.id.tv_device_soft_version)
-    TextView tvDeviceSoftVersion;
     @BindView(R.id.tv_device_battery_level)
     TextView tvDeviceBatteryLevel;
-    @BindView(R.id.tv_device_storage)
-    TextView tvDeviceStorage;
+    @BindView(R.id.lLayout_device_battery)
+    LinearLayout lLayoutDeviceBattery;
+    @BindView(R.id.tv_device_uptime)
+    TextView tvDeviceUptime;
     private String uuid;
     private EditFragmentDialog editDialogFragment;
 
@@ -110,6 +111,11 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(view.findViewById(R.id.fLayout_top_bar_container));
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
+        //仅3G摄像头、FreeCam显示此栏
+        if (device != null && (JFGRules.isFreeCam(device.pid) || JFGRules.is3GCam(device.pid))) {
+            lLayoutDeviceBattery.setVisibility(View.VISIBLE);
+        }
     }
 
     @Override
@@ -141,24 +147,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceMac.setText(mac);
         int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);
         tvDeviceBatteryLevel.setText(String.format(Locale.getDefault(), "%s", battery));
-        String version = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, "");
-        tvDeviceSoftVersion.setText(version);
         String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION, "");
         tvDeviceSystemVersion.setText(sVersion);
-        if (status == null || !status.hasSdcard) {
-            tvDeviceStorage.setText(getString(R.string.SD_NO));
-        } else {
-            if (status.err != 0) {
-                //未初始化
-                tvDeviceStorage.setText(getString(R.string.SD_NO));
-            } else {
-                if (status.total != 0) {
-                    String content = new DecimalFormat("#0.00").format(((float) status.used / status.total));
-                    tvDeviceStorage.setText(
-                            String.format(getString(R.string.REMAIN_SPACE), content));
-                }
-            }
-        }
+        int uptime = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_210_UP_TIME, 0);
+        tvDeviceUptime.setText(TimeUtils.getUptime(getString(R.string.STANBY_TIME), uptime));
     }
 
     private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {
