@@ -153,6 +153,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private void onWonderfulAccountRsp(DataPoint... values) {
+        if (values == null) return;//NP
         DpMsgDefine.DPWonderItem item = (DpMsgDefine.DPWonderItem) values[0];
         mView.onTimeLineRsp(TimeUtils.getSpecificDayStartTime(item.time * 1000L), mWonderDaySource.size() == 0);
         List<DpMsgDefine.DPWonderItem> results = filter(values);

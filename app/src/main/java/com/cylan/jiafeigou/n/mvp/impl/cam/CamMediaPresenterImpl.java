@@ -89,9 +89,9 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                     item.cid = uuid;
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                     item.place = alias;
-                    item.fileName = alarm.version + "_" + index + ".jpg";
+                    item.fileName = alarm.time + "_" + index + ".jpg";
                     ArrayList<JFGDPMsg> jfgdpMsgs = new ArrayList<>(1);
-                    JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, alarm.version);
+                    JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, alarm.time);
                     msg.packValue = item.toBytes();
                     jfgdpMsgs.add(msg);
                     try {
