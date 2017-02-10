@@ -129,7 +129,7 @@
   <string name="DOOR_SLIDE_TIP">Geser untuk menjawab</string>
   <string name="DOOR_STOPPED">Putuskan</string>
   <string name="DOOR_TALK">Speaker</string>
-  <string name="DOOR_TODAY">Hari ini</string>
+  <string name="TODAY">Hari ini</string>
   <string name="DOOR_UNBIND">Sudah menghapus perangkat</string>
   <string name="DOOR_UNCALL">Terjawab</string>
   <string name="DOOR_VOICE">Suara</string>
@@ -137,7 +137,7 @@
   <string name="EDIT_IMAGE">Ubah</string>
   <string name="EDIT_THEME">Ubah</string>
   <string name="EFAMILY_BIND_SUCC">Berhasil ditambahkan</string>
-  <string name="EFAMILY_CALL_ANSWER">Jawab</string>
+  <string name="ANSWER">Jawab</string>
   <string name="EFAMILY_CALL_BUSY">Sibuk</string>
   <string name="EFAMILY_CALL_CANCEL">Dibatalkan</string>
   <string name="EFAMILY_CALL_DURATION">Durasi</string>
@@ -147,7 +147,7 @@
   <string name="EFAMILY_CANCEL_RECORD">Pindahkan ke atas untuk membatalkan</string>
   <string name="EFAMILY_CANCEL_SEND">Lepas untuk membatalkan</string>
   <string name="EFAMILY_CLEAR_MSGLIST">Hapus daftar pesan</string>
-  <string name="EFAMILY_IGNORE">Abaikan</string>
+  <string name="IGNORE">Abaikan</string>
   <string name="EFAMILY_INVALID_DEVICE">Kode QR tidak valid</string>
   <string name="EFAMILY_LOOK">Lihat</string>
   <string name="EFAMILY_MENU_PHOTO">Foto&#8211;foto</string>
@@ -208,7 +208,7 @@
   <string name="HOUR">Jam</string>
   <string name="HOURS">24 jam</string>
   <string name="HZ_VOTE">Daya Listrik 110V</string>
-  <string name="IGNORE">Mengabaikan</string>
+
   <string name="IMAGE_ERR">Upload gagal, gambar terlalu besar</string>
   <string name="INVALID_ACCOUNT">Akun salah</string>
   <string name="INVALID_CODE">Kode salah</string>

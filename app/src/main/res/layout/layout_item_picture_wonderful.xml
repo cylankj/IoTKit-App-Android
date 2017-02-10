@@ -80,11 +80,11 @@
                     android:id="@+id/tv_wonderful_item_delete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="12dp"
-                    android:paddingRight="10dp"
-                    android:text="删除"
+                    android:paddingStart="@dimen/y12"
+                    android:paddingEnd="@dimen/y10"
+                    android:text="@string/DELETE"
                     android:textColor="@color/color_4b9fd5"
-                    android:textSize="11sp"/>
+                    android:textSize="@dimen/sp11"/>
 
                 <View
                     android:layout_width="1dp"
@@ -100,24 +100,21 @@
                     android:maxLength="8"
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"
-                    android:text="摄像头水电费三点多"
                     android:textColor="@color/color_909090"
-                    android:textSize="11sp"/>
+                    android:textSize="@dimen/sp11"/>
 
                 <TextView
                     android:id="@+id/tv_wonderful_item_share"
                     style="@style/ripple_background_borderless"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-
-                    android:layout_marginRight="12dp"
-                    android:drawableLeft="@drawable/icon_share_item_wonderful_selector"
+                    android:layout_marginEnd="12dp"
                     android:drawablePadding="4dp"
                     android:drawableStart="@drawable/icon_share_item_wonderful_selector"
                     android:gravity="center"
-                    android:text="分享"
+                    android:text="@string/Tap3_ShareDevice_Button"
                     android:textColor="@color/color_909090"
-                    android:textSize="11sp"/>
+                    android:textSize="@dimen/sp11"/>
             </LinearLayout>
 
 
@@ -139,9 +136,9 @@
         android:layout_alignBottom="@+id/rLayout_wonderful_item_wonder"
         android:layout_centerHorizontal="true"
         android:background="@android:color/white"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:text="这是底线"
+        android:paddingLeft="@dimen/y5"
+        android:paddingRight="@dimen/y5"
+        android:text="@string/MSG_BOTTOM_LINE"
         android:textColor="#333333"
-        android:textSize="14sp"/>
+        android:textSize="@dimen/sp14"/>
 </RelativeLayout>

@@ -21,7 +21,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
@@ -44,6 +43,7 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.ShadowFrameLayout;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -416,7 +416,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         @Override
         public void run() {
             if (srLayoutMainContentHolder.isRefreshing()) {
-                ToastUtil.showNegativeToast(getString(R.string.request_time_out));
+                ToastUtil.showNegativeToast(getString(R.string.REQUEST_TIME_OUT));
                 srLayoutMainContentHolder.setRefreshing(false);
             }
         }
@@ -442,13 +442,14 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         boolean installed = false;
         installed = mPresenter.checkWechat();
         if (!installed) {
-            Toast.makeText(getActivity(), "微信没有安装", Toast.LENGTH_SHORT).show();
+            ToastUtil.showNegativeToast(getString(R.string.WeChat_Not_Installed));
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(ShareDialogFragment.KEY_MEDIA_CONTENT, bean);
+
         ShareDialogFragment fragment = initShareDialog();
-        fragment.setArguments(bundle);
+        if (bean.msgType==DPWonderItem.TYPE_PIC){
+            fragment.setPictureURL(new WonderGlideURL(bean));
+        }
         fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
     }
 

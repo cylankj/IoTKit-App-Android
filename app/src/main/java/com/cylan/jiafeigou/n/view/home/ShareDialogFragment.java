@@ -71,7 +71,7 @@ public class ShareDialogFragment extends BaseDialog {
         return view;
     }
 
-    @OnClick({R.id.tv_share_to_timeline, R.id.tv_share_to_wechat_friends})
+    @OnClick({R.id.tv_share_to_timeline, R.id.tv_share_to_wechat_friends,R.id.tv_share_to_facebook_friends,R.id.tv_share_to_twitter_friends})
     public void onClick(View view) {
         dismiss();
         switch (view.getId()) {

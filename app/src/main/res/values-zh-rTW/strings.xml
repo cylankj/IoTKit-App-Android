@@ -129,7 +129,7 @@
   <string name="DOOR_SLIDE_TIP">右滑通話</string>
   <string name="DOOR_STOPPED">切斷連線</string>
   <string name="DOOR_TALK">對講</string>
-  <string name="DOOR_TODAY">今天</string>
+  <string name="TODAY">今天</string>
   <string name="DOOR_UNBIND">設備已刪除</string>
   <string name="DOOR_UNCALL">未接聽</string>
   <string name="DOOR_VOICE">聲音</string>
@@ -137,7 +137,7 @@
   <string name="EDIT_IMAGE">圖片編輯</string>
   <string name="EDIT_THEME">編輯</string>
   <string name="EFAMILY_BIND_SUCC">新增成功</string>
-  <string name="EFAMILY_CALL_ANSWER">接聽</string>
+  <string name="ANSWER">接聽</string>
   <string name="EFAMILY_CALL_BUSY">對方忙碌</string>
   <string name="EFAMILY_CALL_CANCEL">呼叫已取消</string>
   <string name="EFAMILY_CALL_DURATION">通話</string>
@@ -147,7 +147,7 @@
   <string name="EFAMILY_CANCEL_RECORD">手指上滑，取消發送</string>
   <string name="EFAMILY_CANCEL_SEND">鬆開, 取消發送</string>
   <string name="EFAMILY_CLEAR_MSGLIST">清空訊息列表</string>
-  <string name="EFAMILY_IGNORE">忽略</string>
+  <string name="IGNORE">忽略</string>
   <string name="EFAMILY_INVALID_DEVICE">無效的二維碼</string>
   <string name="EFAMILY_LOOK">立即查看</string>
   <string name="EFAMILY_MENU_PHOTO">分享照片</string>
@@ -208,7 +208,6 @@
   <string name="HOUR">時</string>
   <string name="HOURS">全天提示</string>
   <string name="HZ_VOTE">支援110V電壓</string>
-  <string name="IGNORE">忽略未讀</string>
   <string name="IMAGE_ERR">圖片太大，請重新選擇</string>
   <string name="INVALID_ACCOUNT">此帳號尚未註冊</string>
   <string name="INVALID_CODE">驗證碼已過期</string>

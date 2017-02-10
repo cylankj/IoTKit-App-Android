@@ -88,7 +88,7 @@ public class MagActivityAdapter extends SuperAdapter<MagBean> {
 
         if (layoutPosition == 1) {
             if (checkIsToday(bean.getMagTime())) {
-                holder.setText(R.id.tv_mag_live_day, ContextUtils.getContext().getString(R.string.DOOR_TODAY));
+                holder.setText(R.id.tv_mag_live_day, ContextUtils.getContext().getString(R.string.TODAY));
             } else {
                 holder.setText(R.id.tv_mag_live_day, converStr(getDate(bean.magTime) + ContextUtils.getContext().getString(R.string.MONTHS)));
             }

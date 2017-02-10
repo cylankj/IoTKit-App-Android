@@ -129,7 +129,7 @@
   <string name="DOOR_SLIDE_TIP">Glisser à droite pour répondre</string>
   <string name="DOOR_STOPPED">Déconnecter</string>
   <string name="DOOR_TALK">Intercom</string>
-  <string name="DOOR_TODAY">Aujourd\'hui</string>
+  <string name="TODAY">Aujourd\'hui</string>
   <string name="DOOR_UNBIND">Ont supprimé le dispositif</string>
   <string name="DOOR_UNCALL">Manqué</string>
   <string name="DOOR_VOICE">Voix</string>
@@ -137,7 +137,7 @@
   <string name="EDIT_IMAGE">Modifier</string>
   <string name="EDIT_THEME">Modifier</string>
   <string name="EFAMILY_BIND_SUCC">Ajout réussi</string>
-  <string name="EFAMILY_CALL_ANSWER">Répondre</string>
+  <string name="ANSWER">Répondre</string>
   <string name="EFAMILY_CALL_BUSY">Occupé</string>
   <string name="EFAMILY_CALL_CANCEL">Annulé</string>
   <string name="EFAMILY_CALL_DURATION">Durée</string>
@@ -147,7 +147,7 @@
   <string name="EFAMILY_CANCEL_RECORD">Glisser vers le haut pour annuler</string>
   <string name="EFAMILY_CANCEL_SEND">Relâcher pour annuler</string>
   <string name="EFAMILY_CLEAR_MSGLIST">Effacer la liste des messages</string>
-  <string name="EFAMILY_IGNORE">Ignorer</string>
+
   <string name="EFAMILY_INVALID_DEVICE">QR Code non valide</string>
   <string name="EFAMILY_LOOK">Détails</string>
   <string name="EFAMILY_MENU_PHOTO">Photos</string>

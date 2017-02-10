@@ -140,30 +140,58 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     private void setNormalBackMargin() {
-//        mBellLiveBack.setVisibility(View.VISIBLE);
-//        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
-//        int margin = (int) getResources().getDimension(R.dimen.y40);
-//        params.topMargin = margin;
-//        mBellLiveBack.setLayoutParams(params);
-//        params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
-//        params.topMargin = margin;
-//        mBellFlow.setLayoutParams(params);
-        mBellLiveBack.scrollTo(0, 0);
-        mBellFlow.scrollTo(0, 0);
+        mBellLiveBack.setVisibility(View.VISIBLE);
+        mBellLiveBack.animate().setDuration(200).translationY(0);
+        mBellFlow.animate().setDuration(200).translationY(0);
+//        int bellStart= (int) getResources().getDimension(R.dimen.y19);
+//        int bellEnd= (int) getResources().getDimension(R.dimen.y40);
+//        int flowStart= (int) getResources().getDimension(R.dimen.y20);
+//        int flowEnd= (int) getResources().getDimension(R.dimen.y40);
+//
+//        ValueAnimator bellAnim=ValueAnimator.ofInt(bellStart,bellEnd);
+//        ValueAnimator flowAnim=ValueAnimator.ofInt(flowStart,flowEnd);
+//        bellAnim.setDuration(200);
+//        flowAnim.setDuration(200);
+//        bellAnim.addUpdateListener(animation -> {
+//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
+//            params.topMargin = (int) animation.getAnimatedValue();
+//            mBellLiveBack.setLayoutParams(params);
+//        });
+//        flowAnim.addUpdateListener(animation -> {
+//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
+//            params.topMargin = (int) animation.getAnimatedValue();
+//            mBellFlow.setLayoutParams(params);
+//        });
+//        bellAnim.start();
+//        flowAnim.start();
     }
 
     private void setHideBackMargin() {
-//        mBellLiveBack.setVisibility(View.VISIBLE);
-//        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
-//        int margin = (int) getResources().getDimension(R.dimen.y19);
-//        params.topMargin = margin;
-//        mBellLiveBack.setLayoutParams(params);
-//        margin = (int) getResources().getDimension(R.dimen.y20);
-//        params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
-//        params.topMargin = margin;
-//        mBellFlow.setLayoutParams(params);
-        mBellLiveBack.scrollTo(0, (int) getResources().getDimension(R.dimen.y19));
-        mBellFlow.scrollTo(0, (int) getResources().getDimension(R.dimen.y20));
+        mBellLiveBack.setVisibility(View.VISIBLE);
+
+        mBellLiveBack.animate().setDuration(200).translationY(-getResources().getDimension(R.dimen.y21));
+        mBellFlow.animate().setDuration(200).translationY(-getResources().getDimension(R.dimen.y20));
+//        int bellStart= (int) getResources().getDimension(R.dimen.y40);
+//        int bellEnd= (int) getResources().getDimension(R.dimen.y19);
+//        int flowStart= (int) getResources().getDimension(R.dimen.y40);
+//        int flowEnd= (int) getResources().getDimension(R.dimen.y20);
+//
+//        ValueAnimator bellAnim=ValueAnimator.ofInt(bellStart,bellEnd);
+//        ValueAnimator flowAnim=ValueAnimator.ofInt(flowStart,flowEnd);
+//        bellAnim.setDuration(200);
+//        flowAnim.setDuration(200);
+//        bellAnim.addUpdateListener(animation -> {
+//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
+//            params.topMargin = (int) animation.getAnimatedValue();
+//            mBellLiveBack.setLayoutParams(params);
+//        });
+//        flowAnim.addUpdateListener(animation -> {
+//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
+//            params.topMargin = (int) animation.getAnimatedValue();
+//            mBellFlow.setLayoutParams(params);
+//        });
+//        bellAnim.start();
+//        flowAnim.start();
     }
 
     @Override
@@ -179,6 +207,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     private void newCall() {
+        if (true) return;//hock to Test
         String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
         long time = getIntent().getLongExtra(JConstant.VIEW_CALL_WAY_TIME, System.currentTimeMillis());
         CallablePresenter.Caller caller = new CallablePresenter.Caller();
@@ -401,7 +430,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onNewCallWhenInLive(String person) {
-        mNewCallHandle = showAlert(getString(R.string.Tips_New_Call_Coming), getString(R.string.Tips_New_Call_Come_Listen, person), getString(R.string.listen), getString(R.string.ignore));
+        mNewCallHandle = showAlert(getString(R.string.Tips_New_Call_Coming), getString(R.string.Tips_New_Call_Come_Listen, person), getString(R.string.ANSWER), getString(R.string.IGNORE));
     }
 
     @Override

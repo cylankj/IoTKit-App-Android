@@ -12,9 +12,9 @@
         android:layout_height="@dimen/y50"
         android:layout_gravity="center_vertical"
         hunt:ll_big_inner_color="@color/color_FF1744"
-        hunt:ll_big_inner_radius="@dimen/x5"
+        hunt:ll_big_inner_radius="@dimen/y5"
         hunt:ll_big_outer_color="@color/color_33FF1744"
-        hunt:ll_big_outer_radius="@dimen/x10"
+        hunt:ll_big_outer_radius="@dimen/y10"
         android:layout_marginStart="@dimen/y51"
         hunt:ll_small_color="@color/color_33FF1744"
         hunt:ll_small_interval="@dimen/y10"
@@ -31,7 +31,7 @@
         android:layout_marginEnd="@dimen/y51"
         hunt:ll_reverse="true"
         hunt:ll_small_color="@color/color_3341B56A"
-        hunt:ll_small_interval="@dimen/x10"
+        hunt:ll_small_interval="@dimen/y10"
         hunt:ll_small_radius="@dimen/y2" />
 
     <ImageView

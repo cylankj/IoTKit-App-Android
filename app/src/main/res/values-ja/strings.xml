@@ -129,7 +129,7 @@
   <string name="DOOR_SLIDE_TIP">右にスライドして通話</string>
   <string name="DOOR_STOPPED">切断</string>
   <string name="DOOR_TALK">通話</string>
-  <string name="DOOR_TODAY">今日</string>
+  <string name="TODAY">今日</string>
   <string name="DOOR_UNBIND">デバイスを削除しました</string>
   <string name="DOOR_UNCALL">回答なし</string>
   <string name="DOOR_VOICE">ボイス</string>
@@ -137,7 +137,7 @@
   <string name="EDIT_IMAGE">画像編集</string>
   <string name="EDIT_THEME">編集する</string>
   <string name="EFAMILY_BIND_SUCC">バインディング完了</string>
-  <string name="EFAMILY_CALL_ANSWER">応答</string>
+  <string name="ANSWER">応答</string>
   <string name="EFAMILY_CALL_BUSY">相手先が電話を出ることができません</string>
   <string name="EFAMILY_CALL_CANCEL">キャンセル</string>
   <string name="EFAMILY_CALL_DURATION">通話時間</string>
@@ -147,7 +147,6 @@
   <string name="EFAMILY_CANCEL_RECORD">上にスライドすると送信を取り消す</string>
   <string name="EFAMILY_CANCEL_SEND">緩め、送信の取り消し</string>
   <string name="EFAMILY_CLEAR_MSGLIST">メッセージリストを空にする</string>
-  <string name="EFAMILY_IGNORE">無視</string>
   <string name="EFAMILY_INVALID_DEVICE">無効なQRコード</string>
   <string name="EFAMILY_LOOK">今チェックする</string>
   <string name="EFAMILY_MENU_PHOTO">写真シェア</string>

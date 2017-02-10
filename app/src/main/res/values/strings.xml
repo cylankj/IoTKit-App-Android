@@ -129,7 +129,7 @@
     <string name="DOOR_SLIDE_TIP">Slide to answer</string>
     <string name="DOOR_STOPPED">Disconnect</string>
     <string name="DOOR_TALK">Talkback</string>
-    <string name="DOOR_TODAY">Today</string>
+    <string name="TODAY">Today</string>
     <string name="DOOR_UNBIND">Device deleted</string>
     <string name="DOOR_UNCALL">Missed</string>
     <string name="DOOR_VOICE">Voice</string>
@@ -137,7 +137,7 @@
     <string name="EDIT_IMAGE">Edit</string>
     <string name="EDIT_THEME">Edit</string>
     <string name="EFAMILY_BIND_SUCC">Added successfully</string>
-    <string name="EFAMILY_CALL_ANSWER">Answer</string>
+    <string name="ANSWER">Answer</string>
     <string name="EFAMILY_CALL_BUSY">Busy</string>
     <string name="EFAMILY_CALL_CANCEL">Cancelled</string>
     <string name="EFAMILY_CALL_DURATION">Duration</string>
@@ -147,7 +147,6 @@
     <string name="EFAMILY_CANCEL_RECORD">Upglide to cancel</string>
     <string name="EFAMILY_CANCEL_SEND">Release to cancel</string>
     <string name="EFAMILY_CLEAR_MSGLIST">Clear message list</string>
-    <string name="EFAMILY_IGNORE">Ignore</string>
     <string name="EFAMILY_INVALID_DEVICE">Invalid QR code</string>
     <string name="EFAMILY_LOOK">View</string>
     <string name="EFAMILY_MENU_PHOTO">Share photos</string>
@@ -208,7 +207,7 @@
     <string name="HOUR">H</string>
     <string name="HOURS">24 hours</string>
     <string name="HZ_VOTE">110V electricity power</string>
-    <string name="IGNORE">Ignore the unread</string>
+    <string name="IGNORE">Ignore</string>
     <string name="IMAGE_ERR">Upload to failed,the picture is too big</string>
     <string name="INVALID_ACCOUNT">Invalid account</string>
     <string name="INVALID_CODE">Invalid code</string>
@@ -828,22 +827,11 @@
     <string name="web">http://www.cleverdog.com.cn/</string>
     <string name="wifi_authentication">Verify %s WiFi connection</string>
     <string name="wifi_hasnot">Not find this WIFI</string>
-    <string name="Tap1_Setting_Opened">已开启</string>
-    <string name="Tips_Call_Answer_In_Other">通话已在其他设备处理</string>
-    <string name="Tips_New_Call_Coming">有新朋友来访</string>
-    <string name="Tips_New_Call_Come_Listen">有新的朋友 $1%s:来访,是否接听?</string>
-    <string name="listen">接听</string>
-    <string name="ignore">忽略</string>
-    <string name="loading">加载中</string>
-    <string name="nomore">没有更多了</string>
-    <string name="not_login">还未登陆</string>
-    <string name="request_time_out">请求数据超时</string>
-    <string name="MSG_BOTTOM_LINE">这是底线</string>
-    <string name="SHARE_ERROR">分享失败！</string>
-    <string name="CALL_NOT_ANSWER">未接听</string>
-    <string name="CALL_ANSWERD">已接听</string>
-    <string name="facebook">Facebook</string>
-    <string name="twitter">Twitter</string>
-    <string name="wechat">微信</string>
-    <string name="we_friends">朋友圈</string>
+    <string name="FACEBOOK">Facebook</string>
+    <string name="TWITTER">Twitter</string>
+    <string name="facebook_app_id">1866682200216878</string>
+    <string name="TOMORROW" >Tomorrow</string>
+    <string name="WE_CHAT">WeChat</string>
+    <string name="WE_FRIENDS">Circle of friends</string>
+    <string name="UNLOGIN">Not logged</string>
 </resources>

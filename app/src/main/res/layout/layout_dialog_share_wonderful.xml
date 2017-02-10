@@ -23,7 +23,7 @@
             android:gravity="center_vertical"
             android:paddingStart="@dimen/y20"
             android:paddingEnd="@dimen/y20"
-            android:text="@string/we_friends" />
+            android:text="@string/WE_FRIENDS" />
 
         <TextView
             android:clickable="true"
@@ -35,7 +35,7 @@
             android:gravity="center_vertical"
             android:paddingStart="@dimen/y20"
             android:paddingEnd="@dimen/y20"
-            android:text="@string/wechat" />
+            android:text="@string/WE_CHAT" />
 
         <TextView
             android:clickable="true"
@@ -47,7 +47,7 @@
             android:gravity="center_vertical"
             android:paddingStart="@dimen/y20"
             android:paddingEnd="@dimen/y20"
-            android:text="@string/twitter" />
+            android:text="@string/TWITTER" />
 
         <TextView
             android:clickable="true"
@@ -59,6 +59,6 @@
             android:gravity="center_vertical"
             android:paddingStart="@dimen/x20"
             android:paddingEnd="@dimen/x20"
-            android:text="@string/facebook" />
+            android:text="@string/FACEBOOK" />
     </LinearLayout>
 </android.support.v7.widget.CardView>

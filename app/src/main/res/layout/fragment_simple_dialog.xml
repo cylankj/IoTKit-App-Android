@@ -14,8 +14,8 @@
             android:id="@+id/tv_dialog_title"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y48"
-            android:layout_marginLeft="@dimen/x25"
-            android:layout_marginRight="@dimen/x25"
+            android:layout_marginStart="@dimen/y25"
+            android:layout_marginEnd="@dimen/y25"
             android:gravity="center"
             android:textColor="@color/color_979797"
             android:textSize="@dimen/sp16"
@@ -25,15 +25,14 @@
             android:id="@+id/tv_dialog_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/x25"
-            android:layout_marginRight="@dimen/x25"
-            android:text="是否删除"/>
+            android:layout_marginStart="@dimen/y25"
+            android:layout_marginEnd="@dimen/y25" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y36"
             android:layout_gravity="bottom|end"
-            android:layout_margin="@dimen/x16"
+            android:layout_margin="@dimen/y16"
             android:orientation="horizontal">
 
             <TextView
@@ -42,8 +41,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/x10"
-                android:text="确定"
+                android:padding="@dimen/y10"
+                android:text="@string/OK"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="@dimen/sp14"/>
 
@@ -53,8 +52,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:padding="@dimen/x10"
-                android:text="取消"
+                android:padding="@dimen/y10"
+                android:text="@string/CANCEL"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="@dimen/sp14"/>
         </LinearLayout>

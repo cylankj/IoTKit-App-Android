@@ -26,8 +26,7 @@
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/y15"
                 android:padding="@dimen/y15"
-                android:drawableLeft="@drawable/nav_tab_back_selector"
-                android:text="智能门铃"
+                android:drawableStart="@drawable/nav_tab_back_selector"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp16" />
 
@@ -36,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end"
-                android:padding="@dimen/x14"
+                android:padding="@dimen/y14"
                 android:src="@drawable/icon_setting" />
         </FrameLayout>
     </FrameLayout>
@@ -71,9 +70,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingLeft="@dimen/x30"
-                android:paddingRight="@dimen/x30"
-                android:text="取消" />
+                android:paddingStart="@dimen/y30"
+                android:paddingEnd="@dimen/y30"
+                android:text="@string/CANCEL" />
 
             <TextView
                 android:id="@+id/tv_bell_home_list_select_all"
@@ -81,8 +80,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:paddingLeft="@dimen/x30"
-                android:paddingRight="@dimen/x30"
+                android:paddingStart="@dimen/y30"
+                android:paddingEnd="@dimen/y30"
                 android:text="@string/SELECT_ALL"
                 android:textColor="@color/color_4b9fd5" />
 
@@ -92,9 +91,9 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:gravity="center"
-                android:paddingLeft="@dimen/x30"
-                android:paddingRight="@dimen/x30"
-                android:text="删除"
+                android:paddingStart="@dimen/y30"
+                android:paddingEnd="@dimen/y30"
+                android:text="@string/DELETE"
                 android:textColor="@color/color_4b9fd5" />
         </FrameLayout>
     </FrameLayout>

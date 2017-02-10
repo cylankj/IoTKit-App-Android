@@ -129,7 +129,7 @@
   <string name="DOOR_SLIDE_TIP">Schieber nach rechts</string>
   <string name="DOOR_STOPPED">Abgebrochen</string>
   <string name="DOOR_TALK">Walkie&#8211;Talkie</string>
-  <string name="DOOR_TODAY">Heute</string>
+  <string name="TODAY">Heute</string>
   <string name="DOOR_UNBIND">Sie haben Gerät gelöscht</string>
   <string name="DOOR_UNCALL">Verfehlt</string>
   <string name="DOOR_VOICE">Stimme</string>
@@ -137,7 +137,7 @@
   <string name="EDIT_IMAGE">Editor</string>
   <string name="EDIT_THEME">Bearbeiten</string>
   <string name="EFAMILY_BIND_SUCC">Erfolgreich verbunden</string>
-  <string name="EFAMILY_CALL_ANSWER">Antworten</string>
+  <string name="ANSWER">Antworten</string>
   <string name="EFAMILY_CALL_BUSY">Anderen Beschäftigt</string>
   <string name="EFAMILY_CALL_CANCEL">Abgebrochen</string>
   <string name="EFAMILY_CALL_DURATION">Dauer</string>
@@ -147,7 +147,7 @@
   <string name="EFAMILY_CANCEL_RECORD">Nach oben ziehen und abbrechen</string>
   <string name="EFAMILY_CANCEL_SEND">Lass los, Abbrechen Senden</string>
   <string name="EFAMILY_CLEAR_MSGLIST">Datensatz löschen</string>
-  <string name="EFAMILY_IGNORE">Auflegen</string>
+
   <string name="EFAMILY_INVALID_DEVICE">Ungültiger QR&#8211;Code</string>
   <string name="EFAMILY_LOOK">Sofort lesen</string>
   <string name="EFAMILY_MENU_PHOTO">Fotos</string>

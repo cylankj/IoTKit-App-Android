@@ -129,7 +129,7 @@
   <string name="DOOR_SLIDE_TIP">Kéo để trả lời</string>
   <string name="DOOR_STOPPED">Ngắt kết nối, hãy làm lại</string>
   <string name="DOOR_TALK">Loa</string>
-  <string name="DOOR_TODAY">Hôm nay</string>
+  <string name="TODAY">Hôm nay</string>
   <string name="DOOR_UNBIND">Đã xoá thiết bị</string>
   <string name="DOOR_UNCALL">nhỡ</string>
   <string name="DOOR_VOICE">Giọng nói</string>
@@ -137,7 +137,7 @@
   <string name="EDIT_IMAGE">Sửa</string>
   <string name="EDIT_THEME">Sửa</string>
   <string name="EFAMILY_BIND_SUCC">Thêm thành công</string>
-  <string name="EFAMILY_CALL_ANSWER">Trả lời</string>
+  <string name="ANSWER">Trả lời</string>
   <string name="EFAMILY_CALL_BUSY">Bận</string>
   <string name="EFAMILY_CALL_CANCEL">Huỷ</string>
   <string name="EFAMILY_CALL_DURATION">Thời hạn</string>
@@ -147,7 +147,6 @@
   <string name="EFAMILY_CANCEL_RECORD">Di chuyển lên để huỷ</string>
   <string name="EFAMILY_CANCEL_SEND">Bỏ ra để huỷ</string>
   <string name="EFAMILY_CLEAR_MSGLIST">Xoá danh sách tin nhắn</string>
-  <string name="EFAMILY_IGNORE">Bỏ qua</string>
   <string name="EFAMILY_INVALID_DEVICE">Không có mã QR</string>
   <string name="EFAMILY_LOOK">Xem</string>
   <string name="EFAMILY_MENU_PHOTO">Hình ảnh báo động</string>

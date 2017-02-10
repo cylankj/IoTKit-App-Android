@@ -149,12 +149,12 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private Runnable mLoadAction = () -> {
         if (LoadingDialog.isShowing(getSupportFragmentManager())) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
-            ToastUtil.showNegativeToast(getString(R.string.request_time_out));
+            ToastUtil.showNegativeToast(getString(R.string.REQUEST_TIME_OUT));
         }
     };
 
     private void startLoadData(boolean asc, long version) {
-        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.loading), true);
+        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), true);
         mIsLastLoadFinish = false;
         mPresenter.fetchBellRecordsList(asc, version);
         imgVTopBarCenter.postDelayed(mLoadAction, 10000);

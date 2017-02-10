@@ -129,7 +129,7 @@
   <string name="DOOR_SLIDE_TIP">Cevaplamak için kaydırın</string>
   <string name="DOOR_STOPPED">Bağlantıyı kopar</string>
   <string name="DOOR_TALK">Hoparlör</string>
-  <string name="DOOR_TODAY">Bugün</string>
+  <string name="TODAY">Bugün</string>
   <string name="DOOR_UNBIND">Cihazı sildiniz</string>
   <string name="DOOR_UNCALL">Cevapsız</string>
   <string name="DOOR_VOICE">Ses</string>
@@ -137,7 +137,7 @@
   <string name="EDIT_IMAGE">Düzenle</string>
   <string name="EDIT_THEME">Düzenle</string>
   <string name="EFAMILY_BIND_SUCC">Başarılı bir şekilde ekle</string>
-  <string name="EFAMILY_CALL_ANSWER">Cevapla</string>
+  <string name="ANSWER">Cevapla</string>
   <string name="EFAMILY_CALL_BUSY">Meşgul</string>
   <string name="EFAMILY_CALL_CANCEL">İptal edildi</string>
   <string name="EFAMILY_CALL_DURATION">Süreç</string>
@@ -147,7 +147,6 @@
   <string name="EFAMILY_CANCEL_RECORD">İptal için yukarı taşı</string>
   <string name="EFAMILY_CANCEL_SEND">İptal için serbest bırak</string>
   <string name="EFAMILY_CLEAR_MSGLIST">Mesaj listesini sil</string>
-  <string name="EFAMILY_IGNORE">Yok say</string>
   <string name="EFAMILY_INVALID_DEVICE">Geçersiz QR kod</string>
   <string name="EFAMILY_LOOK">Görüntüle</string>
   <string name="EFAMILY_MENU_PHOTO">Fotoğraflar</string>

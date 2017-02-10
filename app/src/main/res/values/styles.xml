@@ -289,8 +289,7 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:background">#000000</item>
-        <item name="android:alpha">0.5</item>
+
     </style>
 
     <style name="video_header_back">

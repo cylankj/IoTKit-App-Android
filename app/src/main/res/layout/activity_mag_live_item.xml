@@ -15,7 +15,7 @@
             android:layout_width="@dimen/x117"
             android:layout_height="wrap_content"
             android:gravity="top|end"
-            android:text="@string/DOOR_TODAY"
+            android:text="@string/TODAY"
             android:textColor="@color/color_333333"
             android:textSize="@dimen/sp17" />
 

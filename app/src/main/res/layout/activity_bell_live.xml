@@ -48,7 +48,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/y15"
-                android:drawableLeft="@drawable/nav_icon_back_white"
+                android:drawableStart="@drawable/nav_icon_back_white"
                 android:drawablePadding="@dimen/y20"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp16" />

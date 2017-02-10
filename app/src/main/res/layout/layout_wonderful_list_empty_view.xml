@@ -9,7 +9,7 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y0"
+        android:layout_height="0dp"
         android:layout_weight="1"/>
 
     <ImageView
@@ -25,7 +25,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/y20"
-        android:text="暂无消息"
+        android:text="@string/NO_CONTENTS_1"
         android:textColor="@color/color_888888"
         android:textSize="@dimen/sp16"/>
 

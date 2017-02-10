@@ -5,8 +5,9 @@ import com.bumptech.glide.load.model.Headers;
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.utils.PackageUtils;
+import com.cylan.jiafeigou.support.Security;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -36,7 +37,7 @@ public class WonderGlideURL extends GlideUrl {
         String url = "";
         try {
             url = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.WONDER, flag, mBean.fileName, mBean.cid,
-                    PackageUtils.getMetaString(ContextUtils.getContext(), "vid"));
+                    Security.getVId(JFGRules.getTrimPackageName()));
         } catch (JfgException e) {
             e.printStackTrace();
         }

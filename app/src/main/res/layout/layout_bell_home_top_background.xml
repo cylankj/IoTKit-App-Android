@@ -26,7 +26,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:background="@drawable/btn_bell_make_call_selector"
             android:gravity="center"
-            android:text="查看"
+            android:text="@string/DOOR_BELL_LOOK"
             android:textColor="@color/color_788291"
             android:textSize="@dimen/sp14" />
     </FrameLayout>
@@ -41,7 +41,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:drawablePadding="@dimen/x12"
+            android:drawablePadding="@dimen/y12"
             android:drawableTop="@drawable/doorbell_pic_top_no_network"
             android:text="@string/OFFLINE_ERR_1"
             android:textColor="@color/color_white"

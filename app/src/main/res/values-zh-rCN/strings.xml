@@ -129,7 +129,7 @@
     <string name="DOOR_SLIDE_TIP">右滑通话</string>
     <string name="DOOR_STOPPED">断开</string>
     <string name="DOOR_TALK">对讲</string>
-    <string name="DOOR_TODAY">今天</string>
+    <string name="TODAY">今天</string>
     <string name="DOOR_UNBIND">设备已删除</string>
     <string name="DOOR_UNCALL">未接听</string>
     <string name="DOOR_VOICE">声音</string>
@@ -137,7 +137,7 @@
     <string name="EDIT_IMAGE">图片编辑</string>
     <string name="EDIT_THEME">编辑</string>
     <string name="EFAMILY_BIND_SUCC">添加成功</string>
-    <string name="EFAMILY_CALL_ANSWER">接听</string>
+    <string name="ANSWER">接听</string>
     <string name="EFAMILY_CALL_BUSY">对方忙碌</string>
     <string name="EFAMILY_CALL_CANCEL">呼叫已取消</string>
     <string name="EFAMILY_CALL_DURATION">通话</string>
@@ -147,7 +147,7 @@
     <string name="EFAMILY_CANCEL_RECORD">手指上滑，取消发送</string>
     <string name="EFAMILY_CANCEL_SEND">松手，取消发送</string>
     <string name="EFAMILY_CLEAR_MSGLIST">清空消息列表</string>
-    <string name="EFAMILY_IGNORE">忽略</string>
+    <string name="IGNORE">忽略</string>
     <string name="EFAMILY_INVALID_DEVICE">无效的二维码</string>
     <string name="EFAMILY_LOOK">立即查看</string>
     <string name="EFAMILY_MENU_PHOTO">分享照片</string>
@@ -208,7 +208,7 @@
     <string name="HOUR">时</string>
     <string name="HOURS">全天提示</string>
     <string name="HZ_VOTE">支持110V市电</string>
-    <string name="IGNORE">忽略未读</string>
+    <string name="IGNORE_UNREAD">忽略未读</string>
     <string name="IMAGE_ERR">图片太大，请重新选择</string>
     <string name="INVALID_ACCOUNT">此账号还没有注册</string>
     <string name="INVALID_CODE">验证码已过期</string>
@@ -838,18 +838,19 @@
     <string name="delay_record_hint_information_3">正在合成视频</string>
     <string name="Tap1_Setting_Opened">已开启</string>
     <string name="Tips_Call_Answer_In_Other">通话已在其他设备处理</string>
-    <string name="loading">加载中</string>
-    <string name="nomore">没有更多了</string>
-    <string name="not_login">还未登陆</string>
-    <string name="request_time_out">请求数据超时</string>
+    <string name="NOMORE">没有更多了</string>
+    <string name="UNLOGIN">还未登陆</string>
+    <string name="REQUEST_TIME_OUT">请求数据超时</string>
     <string name="MSG_BOTTOM_LINE">这是底线</string>
     <string name="SHARE_ERROR">分享失败！</string>
     <string name="CALL_NOT_ANSWER">未接听</string>
     <string name="CALL_ANSWERD">已接听</string>
-    <string name="facebook">Facebook</string>
-    <string name="twitter">Twitter</string>
-    <string name="wechat">微信</string>
-    <string name="we_friends">朋友圈</string>
-
-
+    <string name="FACEBOOK">Facebook</string>
+    <string name="TWITTER">Twitter</string>
+    <string name="WE_CHAT">微信</string>
+    <string name="WE_FRIENDS">朋友圈</string>
+    <string name="WeChat_Not_Installed">微信没有安装</string>
+    <string name="Tips_New_Call_Coming">有新朋友来访</string>
+    <string name="Tips_New_Call_Come_Listen">有新的朋友 $1%s:来访,是否接听?</string>
+    <string name="TOMORROW">明天</string>
 </resources>

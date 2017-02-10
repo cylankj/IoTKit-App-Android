@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.utils;
 
 import android.app.Activity;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
@@ -11,8 +12,8 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.wechat.WechatShare;
+import com.facebook.FacebookSdk;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
@@ -49,7 +50,6 @@ public class ShareUtils {
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         ToastUtil.showNegativeToast(activity.getString(R.string.SHARE_ERROR));
-                        AppLogger.e("fxxx,load image failed: ");
                     }
                 });
     }
@@ -58,9 +58,28 @@ public class ShareUtils {
 
     }
 
+    public static boolean isFacebookInstalled(){
+        try {
+           return ContextUtils.getContext()
+            .getPackageManager()
+            .getPackageInfo("com.facebook.katana", PackageManager.GET_SIGNATURES) != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     public static void shareToFacebook(FragmentActivity activity, GlideUrl glideUrl) {
+        if (!FacebookSdk.isInitialized()){
+            FacebookSdk.sdkInitialize(activity.getApplicationContext());
+        }
+        if (!isFacebookInstalled()){
+            ToastUtil.showNegativeToast("分享图片到Facebook需要先安装Facebook7.0+客户端");
+            return;
+        }
+
         Glide.with(ContextUtils.getContext())
-                .load(glideUrl)
+                .load("http://i.zeze.com/attachment/forum/201605/06/214516ariq1t91bllcozml.jpg")
                 .asBitmap()
                 .format(DecodeFormat.DEFAULT)
                 .into(new SimpleTarget<Bitmap>(150, 150) {

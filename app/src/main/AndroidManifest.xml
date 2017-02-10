@@ -86,7 +86,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value=""/>
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
 
         <meta-data
             android:name="com.crashlytics.ApiKey"
@@ -198,7 +198,14 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateHidden" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+        </activity>
         <activity
             android:name=".n.view.activity.CloudLiveActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
@@ -217,7 +224,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/MediaActivityTransition"
+            android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <service
@@ -298,7 +305,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden"
             />
 
-        <provider android:authorities="com.facebook.app.FacebookContentProvider1234"
+        <provider android:authorities="com.facebook.app.FacebookContentProvider1866682200216878"
             android:name="com.facebook.FacebookContentProvider"
             android:exported="true" />
     </application>

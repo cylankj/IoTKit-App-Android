@@ -129,7 +129,7 @@
   <string name="DOOR_SLIDE_TIP">Diapositiva a derecha</string>
   <string name="DOOR_STOPPED">Desconectar</string>
   <string name="DOOR_TALK">Comunicación</string>
-  <string name="DOOR_TODAY">Hoy</string>
+  <string name="TODAY">Hoy</string>
   <string name="DOOR_UNBIND">Ha eliminado el dispositivo de</string>
   <string name="DOOR_UNCALL">perdidas</string>
   <string name="DOOR_VOICE">Sonido</string>
@@ -137,7 +137,7 @@
   <string name="EDIT_IMAGE">Editar</string>
   <string name="EDIT_THEME">Editar</string>
   <string name="EFAMILY_BIND_SUCC">Enlace hecho</string>
-  <string name="EFAMILY_CALL_ANSWER">Contestar</string>
+  <string name="ANSWER">Contestar</string>
   <string name="EFAMILY_CALL_BUSY">Otros ocupada</string>
   <string name="EFAMILY_CALL_CANCEL">Cancelado</string>
   <string name="EFAMILY_CALL_DURATION">Duración</string>
@@ -147,7 +147,7 @@
   <string name="EFAMILY_CANCEL_RECORD">Subir para eliminar el envío</string>
   <string name="EFAMILY_CANCEL_SEND">Suelta, Cancelar Enviar</string>
   <string name="EFAMILY_CLEAR_MSGLIST">Borrar registro de mensaje</string>
-  <string name="EFAMILY_IGNORE">Cuelga</string>
+
   <string name="EFAMILY_INVALID_DEVICE">Código QR no válido</string>
   <string name="EFAMILY_LOOK">Revisar ahora</string>
   <string name="EFAMILY_MENU_PHOTO">Fotos</string>

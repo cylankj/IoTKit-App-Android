@@ -15,7 +15,7 @@
             android:id="@+id/fLayoutHomeWonderfulHeaderContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="64dp"
+            android:minHeight="@dimen/y64"
             app:layout_scrollFlags="scroll|exitUntilCollapsed|enterAlways"
             app:statusBarScrim="@android:color/transparent">
 
@@ -35,10 +35,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="18dp"
-                    android:text="每日精彩"
+                    android:layout_marginTop="@dimen/y18"
+                    android:text="@string/Tap2_TitleName"
                     android:textColor="@color/color_white"
-                    android:textSize="22sp"/>
+                    android:textSize="@dimen/sp22"/>
 
                 <TextView
                     android:id="@+id/tv_sec_title_head_wonder"
@@ -46,10 +46,10 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@id/tv_title_head_wonder"
                     android:layout_centerHorizontal="true"
-                    android:layout_marginTop="8dp"
-                    android:text="每一天的生活，都值得被记录"
+                    android:layout_marginTop="@dimen/y8"
+                    android:text="@string/Tap2_Index_Greetings"
                     android:textColor="@color/color_white"
-                    android:textSize="15sp"/>
+                    android:textSize="@dimen/sp15"/>
             </RelativeLayout>
 
             <ImageView
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginTop="30dp"
+                android:layout_marginTop="@dimen/y30"
                 android:descendantFocusability="blocksDescendants">
 
                 <FrameLayout
@@ -80,12 +80,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:drawablePadding="5dp"
-                    android:drawableRight="@drawable/wonderful_arrow_down"
+                    android:drawablePadding="@dimen/y5"
+                    android:drawableEnd="@drawable/wonderful_arrow_down"
                     android:gravity="center"
-                    android:text="2016.05.02"
                     android:textColor="@color/color_788291"
-                    android:textSize="14sp"/>
+                    android:textSize="@dimen/sp14"/>
             </FrameLayout>
         </FrameLayout>
 

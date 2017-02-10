@@ -129,7 +129,7 @@
   <string name="DOOR_SLIDE_TIP">Слайд&#8211;направо</string>
   <string name="DOOR_STOPPED">Отключить</string>
   <string name="DOOR_TALK">Беседа</string>
-  <string name="DOOR_TODAY">Сегодня</string>
+  <string name="TODAY">Сегодня</string>
   <string name="DOOR_UNBIND">Оборудование было удалено </string>
   <string name="DOOR_UNCALL">Пропущенный</string>
   <string name="DOOR_VOICE">Голос</string>
@@ -137,7 +137,7 @@
   <string name="EDIT_IMAGE">Редактировать</string>
   <string name="EDIT_THEME">Редактировать</string>
   <string name="EFAMILY_BIND_SUCC">Успешно добавлено</string>
-  <string name="EFAMILY_CALL_ANSWER">Ответить</string>
+  <string name="ANSWER">Ответить</string>
   <string name="EFAMILY_CALL_BUSY">Занято</string>
   <string name="EFAMILY_CALL_CANCEL">Отменен</string>
   <string name="EFAMILY_CALL_DURATION">Звонок</string>
@@ -147,7 +147,7 @@
   <string name="EFAMILY_CANCEL_RECORD">Отменить отправку</string>
   <string name="EFAMILY_CANCEL_SEND">Отпустите, чтобы отменить</string>
   <string name="EFAMILY_CLEAR_MSGLIST">Очистить список сообщений</string>
-  <string name="EFAMILY_IGNORE">Игнорировать</string>
+
   <string name="EFAMILY_INVALID_DEVICE">Недействительный QR код</string>
   <string name="EFAMILY_LOOK">Смотреть</string>
   <string name="EFAMILY_MENU_PHOTO">Поделиться фото</string>

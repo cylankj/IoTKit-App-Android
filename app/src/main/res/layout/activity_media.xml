@@ -16,9 +16,11 @@
         android:id="@+id/act_media_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#7F000000"
         android:clickable="true">
 
-        <RelativeLayout style="@style/video_header_container">
+        <RelativeLayout
+            style="@style/video_header_container">
 
             <ImageView
                 android:id="@+id/act_media_header_back"

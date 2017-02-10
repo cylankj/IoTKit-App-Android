@@ -25,6 +25,13 @@ public class TimeUtils {
         }
     };
 
+    private static final ThreadLocal<SimpleDateFormat> sSimpleDateFormatter = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat();
+        }
+    };
+
     private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormatVideo = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
@@ -204,9 +211,9 @@ public class TimeUtils {
     }
 
     public static String getMonthInYear(long time) {
-        Calendar instance = Calendar.getInstance();
-        instance.setTimeInMillis(time);
-        return instance.get(Calendar.MONTH) + 1 + "月";
+        SimpleDateFormat format = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.FULL, SimpleDateFormat.FULL);
+        format.applyPattern("MMMM");
+        return format.format(new Date(time));
     }
 
     public static String getBellRecordTime(long time) {
@@ -217,13 +224,13 @@ public class TimeUtils {
             format.applyPattern("yyyy.MM.dd");
             return format.format(provide);
         }
-        if (today.getMonth()==provide.getMonth()){
-            if (today.getDay()==provide.getDay()){//说明是在同一天，则按照今天 时:分显示
+        if (today.getMonth() == provide.getMonth()) {
+            if (today.getDay() == provide.getDay()) {//说明是在同一天，则按照今天 时:分显示
 //                format.applyPattern("今天");
-                return "今天";
+                return ContextUtils.getContext().getString(R.string.TODAY);
             }
-            if (today.getDay()-provide.getDay()==1){//说明是在昨天，则按照昨天 时:分显示
-                return "昨天";
+            if (today.getDay() - provide.getDay() == 1) {//说明是在昨天，则按照昨天 时:分显示
+                return ContextUtils.getContext().getString(R.string.TOMORROW);
             }
         }
         //按照月.日 时：分显示

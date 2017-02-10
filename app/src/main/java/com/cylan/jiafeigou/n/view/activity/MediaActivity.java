@@ -42,9 +42,11 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
+import com.cylan.photoview.PhotoViewAttacher;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -64,7 +66,7 @@ import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem;
 
 
-public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnInfoListener, IMediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener, IMediaPlayer.OnErrorListener, IMediaPlayer.OnVideoSizeChangedListener {
+public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnInfoListener, IMediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener, IMediaPlayer.OnErrorListener, IMediaPlayer.OnVideoSizeChangedListener, PhotoViewAttacher.OnPhotoTapListener {
 
 
     private static final int PLAY_STATE_RESET = 0;
@@ -203,6 +205,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     private void initViewAndListener() {
+        ViewUtils.setViewPaddingStatusBar(mHeaderContainer);
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
@@ -231,6 +234,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
             }
         };
+        mAdapter.setPhotoTapListener(this);
         mMediaPager.setPageMargin((int) getResources().getDimension(R.dimen.video_pager_page_margin));
         mAdapter.setOnInitFinishListener(() -> {
             if (mEnterAnimationFinished) {
@@ -718,11 +722,12 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         int type = mCurrentMediaBean.msgType;
         boolean change = type != mCurrentViewType;
         mCurrentViewType = type;
-        if (change) {
-            animateHeaderAndFooter(true, true);
-        } else {
+        if (!change && mHeaderContainer.isShown() && mFooterContainer.isShown()) {
             setHeaderContent();
             setFooterContent();
+
+        } else {
+            animateHeaderAndFooter(true, true);
         }
     }
 
@@ -779,5 +784,24 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 //            transform.setScale(height / videoWidth, width / videoHeight);
 //            mVideoView.setTransform(transform);
 //        }
+    }
+
+    @Override
+    public void onPhotoTap(View view, float x, float y) {
+        animateHeaderAndFooter();
+    }
+
+    private void animateHeaderAndFooter() {
+        if (mHeaderContainer.isShown() || mFooterContainer.isShown()) {
+            animateHeaderAndFooter(false, false);
+        } else {
+            animateHeaderAndFooter(true, true);
+        }
+    }
+
+
+    @Override
+    public void onOutsidePhotoTap() {
+        animateHeaderAndFooter();
     }
 }

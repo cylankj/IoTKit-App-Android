@@ -16,7 +16,7 @@ android:orientation="horizontal">
         android:layout_width="@dimen/x117"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:text="@string/DOOR_TODAY"
+        android:text="@string/TODAY"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp17" />
 

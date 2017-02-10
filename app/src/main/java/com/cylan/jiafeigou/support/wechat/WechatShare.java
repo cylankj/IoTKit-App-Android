@@ -10,8 +10,6 @@ import android.util.Log;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.utils.PackageUtils;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
@@ -44,9 +42,9 @@ public class WechatShare {
         WeakReference<Activity> weakReference = new WeakReference<>(activity);
         String appId = Security.getWeChatKey(JFGRules.getTrimPackageName());
         if (TextUtils.isEmpty(appId)) {
-            AppLogger.i("wechat app id is null");
+            AppLogger.e("wechat app id is null");
         }
-        Log.d("WechatShare", "WechatShare: " + appId);
+        Log.e("WechatShare", "WechatShare: " + appId);
         // 第三个参数作用:checkSignature
         //这个context 必须是Activity，或者Service
         wxApi = WXAPIFactory.createWXAPI(weakReference.get(), appId, true);
