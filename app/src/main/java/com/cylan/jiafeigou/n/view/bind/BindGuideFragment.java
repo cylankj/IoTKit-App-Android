@@ -48,6 +48,8 @@ public class BindGuideFragment extends BaseTitleFragment {
     FrameLayout fLayoutTopBar;
     @BindView(R.id.tv_bind_guide_next)
     TextView tvBindGuideNext;
+    @BindView(R.id.tv_guide_sub_content)
+    TextView tvGuideSubContent;
     // TODO: Rename parameter arguments, choose names that match
 
     public BindGuideFragment() {
@@ -85,6 +87,7 @@ public class BindGuideFragment extends BaseTitleFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        tvGuideSubContent.setText(getString(R.string.WIFI_SET_4, getString(R.string.app_name)));
         GlideDrawableImageViewTarget imageViewTarget =
                 new GlideDrawableImageViewTarget(imvBindGuide);
         Glide.with(this).load(R.raw.bind_guide).into(imageViewTarget);

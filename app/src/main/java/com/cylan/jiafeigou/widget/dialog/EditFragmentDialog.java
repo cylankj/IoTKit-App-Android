@@ -34,6 +34,7 @@ public class EditFragmentDialog extends BaseDialog {
     public static final String KEY_TITLE = "key_title";
     public static final String KEY_LEFT_CONTENT = "key_left";
     public static final String KEY_RIGHT_CONTENT = "key_right";
+    public static final String KEY_SHOW_EDIT = "key_show_edit";
     public static final String KEY_TOUCH_OUT_SIDE_DISMISS = "key_touch_outside";
     @BindView(R.id.et_input_box)
     EditText etInputBox;
@@ -80,6 +81,9 @@ public class EditFragmentDialog extends BaseDialog {
             tvConfirm.setText(lContent);
         if (!TextUtils.isEmpty(rContent))
             tvCancel.setText(rContent);
+        if (!bundle.getBoolean(KEY_SHOW_EDIT, false)) {
+            view.findViewById(R.id.lLayout_input_box).setVisibility(View.GONE);
+        }
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
     }
 
