@@ -483,14 +483,14 @@ public class LoginFragment extends Fragment
                 presenter.executeLogin(login);
                 presenter.loginCountTime();
             } else {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        resetView();
-                        ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
-                    }
-                }, 1000);
-                return;
+//                new Handler().postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        resetView();
+//                        ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
+//                    }
+//                }, 1000);
+//                return;
             }
         }
         enableEditTextCursor(false);

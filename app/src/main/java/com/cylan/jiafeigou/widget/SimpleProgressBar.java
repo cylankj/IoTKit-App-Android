@@ -119,7 +119,7 @@ public class SimpleProgressBar
 
     @Override
     public void run() {
-        degree += 5;
+        degree += 7;
         invalidate();
     }
 

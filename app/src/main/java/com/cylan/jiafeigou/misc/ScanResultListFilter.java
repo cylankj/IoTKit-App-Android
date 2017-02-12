@@ -2,6 +2,9 @@ package com.cylan.jiafeigou.misc;
 
 import android.net.wifi.ScanResult;
 import android.text.TextUtils;
+import android.util.Log;
+
+import com.cylan.jiafeigou.support.download.database.constants.TABLES;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +55,7 @@ public class ScanResultListFilter {
             if (result.frequency > 4900 && result.frequency < 5900)
                 continue;
             results.add(result);
+            Log.d("TABLES", "TABLES:" + ssid);
         }
         return results;
 

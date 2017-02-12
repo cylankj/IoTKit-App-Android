@@ -132,6 +132,7 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void onPause() {
         super.onPause();
+        JConstant.ConfigApStep = 3;
         if (basePresenter != null) {
             basePresenter.unregisterNetworkMonitor();
         }
