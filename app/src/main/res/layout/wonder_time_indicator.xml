@@ -22,14 +22,12 @@
     <FrameLayout
         android:id="@+id/wonder_indicator_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#0F0">
+        android:layout_height="wrap_content">
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/wonder_item_indicator_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#F00"
             android:overScrollMode="never"
             android:padding="0dp"/>
     </FrameLayout>

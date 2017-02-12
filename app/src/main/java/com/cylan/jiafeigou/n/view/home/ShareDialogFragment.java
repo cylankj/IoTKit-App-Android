@@ -76,37 +76,37 @@ public class ShareDialogFragment extends BaseDialog {
         dismiss();
         switch (view.getId()) {
             case R.id.tv_share_to_timeline:
-                if (glideUrl != null) {
+                if (glideUrl != null&&!TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.sharePictureToWechat(getActivity(), glideUrl, WXSceneTimeline);
-                } else if (!TextUtils.isEmpty(mVideoURL)) {
-                    ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneSession);
+                } else if (glideUrl!=null) {
+                    ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneSession,glideUrl);
                 }else{
                     ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
                 }
                 break;
             case R.id.tv_share_to_wechat_friends:
-                if (glideUrl != null) {
+                if (glideUrl != null&&!TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneSession,glideUrl);
+                } else if (glideUrl!=null){
                     ShareUtils.sharePictureToWechat(getActivity(), glideUrl, WXSceneSession);
-                } else if (!TextUtils.isEmpty(mVideoURL)){
-                    ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneSession);
                 }else{
                     ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
                 }
                 break;
             case R.id.tv_share_to_twitter_friends:
-                if (glideUrl!=null) {
-                    ShareUtils.sharePictureToTwitter();
-                }else if (!TextUtils.isEmpty(mVideoURL)){
-                    ShareUtils.shareVideoToTwitter();
+                if (glideUrl!=null&&!TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.sharePictureToTwitter(getActivity(),glideUrl);
+                }else if (glideUrl!=null){
+                    ShareUtils.shareVideoToTwitter(getActivity(),mVideoURL,glideUrl);
                 }else{
                     ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
                 }
                 break;
             case R.id.tv_share_to_facebook_friends:
-                if (glideUrl!=null) {
+                if (glideUrl!=null&&!TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.shareVideoToFacebook(getActivity(),mVideoURL,glideUrl);
+                }else if (glideUrl!=null){
                     ShareUtils.shareToFacebook(getActivity(), glideUrl);
-                }else if (!TextUtils.isEmpty(mVideoURL)){
-                    ShareUtils.shareVideoToFacebook();
                 }else{
                     ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
                 }

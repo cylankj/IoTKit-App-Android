@@ -853,4 +853,6 @@
     <string name="Tips_New_Call_Coming">有新朋友来访</string>
     <string name="Tips_New_Call_Come_Listen">有新的朋友 $1%s:来访,是否接听?</string>
     <string name="TOMORROW">明天</string>
+    <string name="ERROR_TWITTER_NOT_INSTALLED">检测到未安装 Twitter 客户端,将以网页的形式分享,图片将会被忽略</string>
+    <string name="ERROR_FACEBOOK_NOT_INSTALLED">分享图片到Facebook需要先安装Facebook7.0+客户端</string>
 </resources>

@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -60,7 +61,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     public float getInterpolation(float input) {
         float result;
         if (mFactor == 1.0f) {
-            result = (float) (1.0f - (1.0f - input) * (1.0f - input));
+            result = 1.0f - (1.0f - input) * (1.0f - input);
         } else {
             result = (float) (1.0f - Math.pow((1.0f - input), 2 * mFactor));
         }
@@ -74,7 +75,6 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         mViewWidth = w;
     }
 
-    private boolean mParentScrollFinished = false;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -115,8 +115,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
 
     private void initView() {
         mAnimator = new ValueAnimator();
-        mAnimator.setDuration(300);
-        mAnimator.setInterpolator(new OvershootInterpolator(10F));
+        mAnimator.setDuration(200);
         mAnimator.addUpdateListener(this);
         mManager = new WheelLayoutManager(getContext());
         mManager.setOrientation(HORIZONTAL);
@@ -162,11 +161,17 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
 
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        mParentScrollFinished = mWonderItemsContainer.getScrollX() == 0;
-        if (!mParentScrollFinished) {
-            mWonderItemsContainer.scrollTo((Integer) animation.getAnimatedValue(), 0);
-        } else {
-            int scrollX = (int) animation.getAnimatedValue() - mScrolledX;
+        int value = (int) animation.getAnimatedValue();
+        int containerX= mWonderItemsContainer.getScrollX();
+        if ((containerX >0 && value<=0)||(containerX < 0 && value >= 0)) {
+            mWonderItemsContainer.scrollTo(0, 0);
+            int scrollX = value - mScrolledX;
+            mIndicatorList.scrollBy(scrollX, 0);
+            mScrolledX = value;
+        }else if ((containerX>0&&value>=0) ||(containerX<0&&value<=0)){
+         mWonderItemsContainer.scrollTo(value,0);
+        }else {
+            int scrollX = value - mScrolledX;
             mIndicatorList.scrollBy(scrollX, 0);
             mScrolledX = (int) animation.getAnimatedValue();
         }
@@ -253,7 +258,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
 
             @Override
             protected int calculateTimeForScrolling(int dx) {
-                return Math.max(200, super.calculateTimeForScrolling(dx) * 3);
+                return Math.max(500, super.calculateTimeForScrolling(dx) * 3);
             }
 
             @Override

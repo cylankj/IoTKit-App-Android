@@ -14,6 +14,7 @@ import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
 import com.tencent.mm.sdk.modelmsg.WXTextObject;
+import com.tencent.mm.sdk.modelmsg.WXVideoObject;
 import com.tencent.mm.sdk.modelmsg.WXWebpageObject;
 import com.tencent.mm.sdk.openapi.IWXAPI;
 import com.tencent.mm.sdk.openapi.WXAPIFactory;
@@ -27,6 +28,7 @@ import java.lang.ref.WeakReference;
 public class WechatShare {
 
     private static final int TIMELINE_SUPPORTED_VERSION = 0x21020001;
+
 
     private IWXAPI wxApi;
 
@@ -82,6 +84,11 @@ public class WechatShare {
      * 链接
      */
     public static final int WEIXIN_SHARE_CONTENT_WEBPAGE = 3;
+
+    /**
+     * Video
+     * */
+    public static final int WEIXIN_SHARE_CONTENT_VIDEO = 4;
     /**
      * 会话
      */
@@ -109,7 +116,28 @@ public class WechatShare {
             case WEIXIN_SHARE_CONTENT_WEBPAGE:
                 shareWebPage(shareContent.getShareScene(), shareContent);
                 break;
+            case WEIXIN_SHARE_CONTENT_VIDEO:
+                shareVideo(shareContent.getShareScene(),shareContent);
         }
+    }
+
+    private void shareVideo(int shareScene, ShareContent shareContent) {
+        WXVideoObject video = new WXVideoObject();
+        video.videoUrl=shareContent.getShareURL();
+
+        WXMediaMessage msg= new WXMediaMessage(video);
+        msg.title =shareContent.getTitle();
+        msg.description = shareContent.getContent();
+        Bitmap thumbBmp = Bitmap.createScaledBitmap(shareContent.getPicResource(), THUMB_SIZE, THUMB_SIZE, true);
+        msg.thumbData = WechatUtils.bmpToByteArray(thumbBmp, true);  //设置缩略图
+
+        SendMessageToWX.Req req = new SendMessageToWX.Req();
+        req.transaction = buildTransaction("video");
+        req.message = msg;
+        req.scene =shareScene;
+
+        wxApi.sendReq(req);
+
     }
 
     public boolean isWeChatInstalled(Context context) {
