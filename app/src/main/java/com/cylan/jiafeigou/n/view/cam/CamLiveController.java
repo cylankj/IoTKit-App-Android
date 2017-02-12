@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.view.adapter.CamLandHistoryDateAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -32,7 +33,6 @@ import com.cylan.jiafeigou.widget.flip.ISafeStateSetter;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
-import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -43,7 +43,10 @@ import java.util.Set;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.widget.live.ILiveControl.STATE_IDLE;
+import static com.cylan.jiafeigou.widget.live.ILiveControl.STATE_PLAYING;
+import static com.cylan.jiafeigou.widget.live.ILiveControl.STATE_STOP;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_ADSORB;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_DRAGGING;
 import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
@@ -116,12 +119,12 @@ public class CamLiveController implements
             public void clickImage(int curState) {
                 switch (curState) {
                     case ILiveControl.STATE_LOADING_FAILED:
-                    case ILiveControl.STATE_STOP:
+                    case STATE_STOP:
                         //下一步playing
                         if (presenterRef != null && presenterRef.get() != null)
                             presenterRef.get().startPlayVideo(presenterRef.get().getPlayType());
                         break;
-                    case ILiveControl.STATE_PLAYING:
+                    case STATE_PLAYING:
                         //下一步stop
                         if (presenterRef != null && presenterRef.get() != null) {
                             presenterRef.get().setStopReason(JError.STOP_MAUNALLY);
@@ -196,6 +199,11 @@ public class CamLiveController implements
      * @param content
      */
     public void setLoadingState(int state, String content) {
+        int playType = presenterRef.get().getPlayType();
+        if (playType == TYPE_LIVE) {
+            if (state == STATE_PLAYING || state == STATE_STOP)
+                state = STATE_IDLE;//根据原型,直播没有暂停
+        }
         if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null)
             iLiveActionViewRef.get().setState(state, content);
     }
@@ -207,7 +215,7 @@ public class CamLiveController implements
      */
     public void setLiveType(int liveType) {
         camLiveControlLayer.getTvCamLivePortLive().setText(context.getResources()
-                .getString(liveType == CamLiveContract.TYPE_LIVE ? R.string.Tap1_Camera_VideoLive : R.string.BACK));
+                .getString(liveType == TYPE_LIVE ? R.string.Tap1_Camera_VideoLive : R.string.BACK));
     }
 
     /**
@@ -268,16 +276,11 @@ public class CamLiveController implements
                 slideLandDatePickView();
             } else {
                 //某些限制条件,不需要显示
-                int loadingVisibility = ((View) iLiveActionViewRef.get()).getVisibility();
                 if (presenterRef.get().needShowHistoryWheelView()) {
-                    camLiveControlLayer.setVisibility(loadingVisibility != View.VISIBLE ? View.VISIBLE : View.INVISIBLE);
+                    camLiveControlLayer.setVisibility(camLiveControlLayer.isShown() ? View.INVISIBLE : View.VISIBLE);
                     camLiveControlLayer.showHistoryWheel(true);
                 }
-                int playState = presenterRef.get().getPlayState();
-                if (playState == PLAY_STATE_PLAYING)
-                    setLoadingState(PLAY_STATE_PLAYING, null);
-                else
-                    setLoadingState(iLiveActionViewRef.get().getState(), null);
+                setLoadingState(iLiveActionViewRef.get().getState(), null);
             }
         }
         AppLogger.i("tap: " + (iLiveActionViewRef == null || iLiveActionViewRef.get() == null));
@@ -340,13 +343,13 @@ public class CamLiveController implements
                 if (liveTimeSetterLand != null)
                     liveTimeSetterLand.setVisibility(show);
                 if (liveTimeSetterLand != null) liveTimeSetterLand.setContent(playType,
-                        playType == CamLiveContract.TYPE_LIVE ? System.currentTimeMillis() : time);
+                        playType == TYPE_LIVE ? System.currentTimeMillis() : time);
             } else {
                 if (liveTimeSetterPort != null)
                     liveTimeSetterPort.setVisibility(show);
                 if (liveTimeSetterPort != null)
                     liveTimeSetterPort.setContent(playType,
-                            playType == CamLiveContract.TYPE_LIVE ? System.currentTimeMillis() : time);
+                            playType == TYPE_LIVE ? System.currentTimeMillis() : time);
             }
         }
         AppLogger.i("playState: " + presenterRef.get().getPlayState());
@@ -420,7 +423,7 @@ public class CamLiveController implements
                 break;
             case R.id.imgV_cam_live_land_play:
                 if (presenterRef != null && presenterRef.get() != null) {
-                    if (presenterRef.get().getPlayType() == CamLiveContract.TYPE_LIVE) {
+                    if (presenterRef.get().getPlayType() == TYPE_LIVE) {
                         presenterRef.get().startPlayVideo(presenterRef.get().getPlayType());
                         AppLogger.i(String.format("land play history: %s", "live"));
                     } else {
