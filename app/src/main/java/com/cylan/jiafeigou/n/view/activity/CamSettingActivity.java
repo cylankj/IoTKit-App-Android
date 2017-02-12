@@ -124,7 +124,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private void initDelayRecordBtn() {
-        if (device != null && JFGRules.is3GCam(device.pid)) {
+        if (device != null && JFGRules.showDelayRecordBtn(device.pid)) {
             svSettingDeviceDelayCapture.setEnabled(true);
         } else {
             svSettingDeviceDelayCapture.setVisibility(View.GONE);

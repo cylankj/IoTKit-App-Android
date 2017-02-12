@@ -126,6 +126,17 @@ public class JFGRules {
                 pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
     }
 
+
+    /**
+     * 显示延时摄影
+     *
+     * @param pid
+     * @return
+     */
+    public static boolean showDelayRecordBtn(int pid) {
+        return pid == JConstant.OS_CAMERA_3G;
+    }
+
     public static boolean isCamera(int pid) {
         switch (pid) {
             case JConstant.OS_CAMERA_ANDROID:
