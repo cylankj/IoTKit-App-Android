@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/y20"
-        android:text="还没有设备哦"
+        android:text="@string/Tap1_Index_NoDevice"
         android:textColor="@color/color_33333"
         android:textSize="@dimen/sp16" />
 
@@ -28,7 +28,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/y13"
-        android:text="快点点击右上角 “+” 添加设备吧"
+        android:text="@string/Tap1_AddDeviceTips"
         android:textColor="@color/color_888888"
         android:textSize="@dimen/sp14" />
 </LinearLayout>

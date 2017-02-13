@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
@@ -77,6 +78,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     LinearLayout lLayoutDeviceBattery;
     @BindView(R.id.tv_device_uptime)
     TextView tvDeviceUptime;
+    @BindView(R.id.ll_SDcard_item)
+    LinearLayout llSDcardItem;
+    @BindView(R.id.rl_hardware_update)
+    RelativeLayout rlHardwareUpdate;
     private String uuid;
     private EditFragmentDialog editDialogFragment;
 
@@ -167,7 +172,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         return sdStatus != null ? getString(R.string.SD_NORMAL) : "";
     }
 
-    @OnClick({R.id.imgV_top_bar_center, R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone})
+    @OnClick({R.id.imgV_top_bar_center, R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone, R.id.ll_SDcard_item,R.id.rl_hardware_update})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgV_top_bar_center:
@@ -179,7 +184,36 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             case R.id.lLayout_information_facility_timezone:
                 toEditTimezone();
                 break;
+            case R.id.ll_SDcard_item:
+                jump2SdcardDetailFragment();
+                break;
+
+            case R.id.rl_hardware_update:
+                jump2HardwareUpdateFragment();
+                break;
         }
+    }
+
+    /**
+     * 固件升级
+     */
+    private void jump2HardwareUpdateFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                hardwareUpdateFragment, android.R.id.content);
+    }
+
+    /**
+     * 显示Sd卡的详情
+     */
+    private void jump2SdcardDetailFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                sdcardDetailFragment, android.R.id.content);
     }
 
     /**

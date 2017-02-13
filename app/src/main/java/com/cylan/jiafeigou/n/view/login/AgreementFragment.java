@@ -55,8 +55,8 @@ public class AgreementFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         final String agreementUrl = LocaleUtils.getLanguageType(getContext()) == JConstant.LOCALE_SIMPLE_CN ?
-                "http://www.jfgou.com" :
-                "http://www.cleverdog.com.cn/";
+                "http://www.jfgou.com/app/treaty_cn.html" :
+                "http://www.jfgou.com/app/treaty_en.html";
         WebSettings settings = webview.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         settings.setLoadWithOverviewMode(true);
@@ -68,14 +68,13 @@ public class AgreementFragment extends Fragment {
         webview.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
-
                 view.loadUrl(url);
                 return true;
             }
         });
         webview.loadUrl(agreementUrl);
         ivTopBarLeft.setImageResource(R.drawable.nav_icon_back_gary);
-        tvTopBarCenter.setText("用户协议");
+        tvTopBarCenter.setText(getString(R.string.TERM_OF_USE));
     }
 
     @OnClick(R.id.iv_top_bar_left)
