@@ -474,7 +474,9 @@
     <string name="SOFTWARE_VERSION">软件版本</string>
     <string name="SOUNDS">设备提示音</string>
     <string name="STANBY">连续运行</string>
-    <string name="STANBY_TIME">%1$d天%2$d小时%3$d分</string>
+    <string name="STANBY_TIME_D_H_M">%1$d天%2$d小时%3$d分</string>
+    <string name="STANBY_TIME_H_M">%1$d小时%2$d分</string>
+    <string name="STANBY_TIME_M">%1$d分</string>
     <string name="STANDARD">正常模式</string>
     <string name="SUBMIT_FAIL">提交失败</string>
     <string name="SUBMIT_LOG">提交错误日志</string>

@@ -29,6 +29,8 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
+import com.cylan.jiafeigou.widget.live.ILiveControl;
+import com.cylan.jiafeigou.widget.live.LivePlayControlView;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.lang.ref.WeakReference;
@@ -39,7 +41,7 @@ import butterknife.OnClick;
 
 public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Presenter>
         implements DragLayout.OnDragReleaseListener, View.OnClickListener
-        , BellLiveContract.View {
+        , BellLiveContract.View, ILiveControl.Action {
 
     @BindView(R.id.fLayout_bell_live_holder)
     FrameLayout fLayoutBellLiveHolder;
@@ -61,7 +63,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     ImageView mBellLiveVideoPicture;
     @BindView(R.id.act_bell_live_video_view_container)
     FrameLayout mVideoViewContainer;
-
+    @BindView(R.id.act_bell_live_video_play_controller)
+    ILiveControl mVideoPlayController;
     @BindView(R.id.act_bell_live_back)
     TextView mBellLiveBack;
 
@@ -94,6 +97,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         }
         ViewUtils.updateViewHeight(fLayoutBellLiveHolder, 0.75f);
         dLayoutBellHotSeat.setOnDragReleaseListener(this);
+        mVideoPlayController.setAction(this);
         fLayoutBellLiveHolder.setOnClickListener(view -> {
             if (!isLandMode) {
                 handlePortClick();
@@ -104,15 +108,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
         mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
     }
-
-//    private void handleLandClick() {
-//
-//        if (mBellLiveBack.isShown()) {
-//            AnimatorUtils.slideOut(mBellLiveBack, true);
-//        } else {
-//            AnimatorUtils.slideIn(mBellLiveBack, true);
-//        }
-//    }
 
     private void handlePortClick() {
         int visibility = mVideoViewContainer.getSystemUiVisibility();
@@ -143,55 +138,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         mBellLiveBack.setVisibility(View.VISIBLE);
         mBellLiveBack.animate().setDuration(200).translationY(0);
         mBellFlow.animate().setDuration(200).translationY(0);
-//        int bellStart= (int) getResources().getDimension(R.dimen.y19);
-//        int bellEnd= (int) getResources().getDimension(R.dimen.y40);
-//        int flowStart= (int) getResources().getDimension(R.dimen.y20);
-//        int flowEnd= (int) getResources().getDimension(R.dimen.y40);
-//
-//        ValueAnimator bellAnim=ValueAnimator.ofInt(bellStart,bellEnd);
-//        ValueAnimator flowAnim=ValueAnimator.ofInt(flowStart,flowEnd);
-//        bellAnim.setDuration(200);
-//        flowAnim.setDuration(200);
-//        bellAnim.addUpdateListener(animation -> {
-//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
-//            params.topMargin = (int) animation.getAnimatedValue();
-//            mBellLiveBack.setLayoutParams(params);
-//        });
-//        flowAnim.addUpdateListener(animation -> {
-//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
-//            params.topMargin = (int) animation.getAnimatedValue();
-//            mBellFlow.setLayoutParams(params);
-//        });
-//        bellAnim.start();
-//        flowAnim.start();
     }
 
     private void setHideBackMargin() {
         mBellLiveBack.setVisibility(View.VISIBLE);
-
         mBellLiveBack.animate().setDuration(200).translationY(-getResources().getDimension(R.dimen.y21));
         mBellFlow.animate().setDuration(200).translationY(-getResources().getDimension(R.dimen.y20));
-//        int bellStart= (int) getResources().getDimension(R.dimen.y40);
-//        int bellEnd= (int) getResources().getDimension(R.dimen.y19);
-//        int flowStart= (int) getResources().getDimension(R.dimen.y40);
-//        int flowEnd= (int) getResources().getDimension(R.dimen.y20);
-//
-//        ValueAnimator bellAnim=ValueAnimator.ofInt(bellStart,bellEnd);
-//        ValueAnimator flowAnim=ValueAnimator.ofInt(flowStart,flowEnd);
-//        bellAnim.setDuration(200);
-//        flowAnim.setDuration(200);
-//        bellAnim.addUpdateListener(animation -> {
-//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellLiveBack.getLayoutParams();
-//            params.topMargin = (int) animation.getAnimatedValue();
-//            mBellLiveBack.setLayoutParams(params);
-//        });
-//        flowAnim.addUpdateListener(animation -> {
-//            FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) mBellFlow.getLayoutParams();
-//            params.topMargin = (int) animation.getAnimatedValue();
-//            mBellFlow.setLayoutParams(params);
-//        });
-//        bellAnim.start();
-//        flowAnim.start();
     }
 
     @Override
@@ -207,7 +159,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     private void newCall() {
-        if (true) return;//hock to Test
+        mVideoPlayController.setState(LivePlayControlView.STATE_LOADING, null);
         String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
         long time = getIntent().getLongExtra(JConstant.VIEW_CALL_WAY_TIME, System.currentTimeMillis());
         CallablePresenter.Caller caller = new CallablePresenter.Caller();
@@ -374,6 +326,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onViewer() {
         dLayoutBellHotSeat.setVisibility(View.GONE);
         fLayoutBellAfterLive.setVisibility(View.VISIBLE);
+        mVideoPlayController.setState(ILiveControl.STATE_IDLE, null);
     }
 
 
@@ -444,5 +397,18 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                     break;
             }
         }
+    }
+
+    @Override
+    public void clickImage(int state) {
+        switch (state) {
+            case ILiveControl.STATE_LOADING_FAILED:
+                mPresenter.pickup();
+                break;
+        }
+    }
+
+    @Override
+    public void clickText() {
     }
 }

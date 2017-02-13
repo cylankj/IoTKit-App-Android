@@ -14,12 +14,17 @@ import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
+import com.cylan.udpMsgPack.JfgUdpMsg;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -39,6 +44,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     private CompositeSubscription mSubscriptions;
     private LongSparseArray<ResponseParser> mResponseParserMap = new LongSparseArray<>(32);
+    private Map<String, LocalUDPMessageParser> mLocalMessageParserMap = new HashMap<>(32);
 
     protected V mView;
     private ArrayList<Long> mRequestSeqs = new ArrayList<>(32);
@@ -74,7 +80,8 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 getLoginStateSub(),
                 getQueryDataRspSub(),
                 getParseResponseCompletedSub(),
-                getDeleteDataRspSub()
+                getDeleteDataRspSub(),
+                getLocalUDPMessageSub()
         );
     }
 
@@ -119,6 +126,26 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 .subscribe(this::onLoginStateChanged, e -> {
                     e.printStackTrace();
                     registerSubscription(getLoginStateSub());//出现异常了要重现注册
+                });
+    }
+
+    protected Subscription getLocalUDPMessageSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(msg -> {
+                    try {
+                        JfgUdpMsg.UdpHeader header = DpUtils.unpackData(msg.data, JfgUdpMsg.UdpHeader.class);
+                        LocalUDPMessageParser parser;
+                        if (header != null && (parser = mLocalMessageParserMap.get(header.cmd)) != null) {
+                            parser.onParseLocalUDPMsg(msg);
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }, throwable -> {
+                    registerSubscription(getLocalUDPMessageSub());
+                    throwable.printStackTrace();
                 });
     }
 
@@ -262,11 +289,19 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         mResponseParserMap.put(msg, parser);
     }
 
+    protected void registerLocalUDPMessageParser(String cmd,LocalUDPMessageParser parser){
+        mLocalMessageParserMap.put(cmd,parser);
+    }
+
     public interface ResponseParser {
         /**
          * @param response 可能为BaseValue或者HashSet<BaseValue> 取决于消息类型,需要自己强转
          */
         void onParseResponse(DataPoint... response);
+    }
+
+    public interface LocalUDPMessageParser {
+        void onParseLocalUDPMsg(RxEvent.LocalUdpMsg msg);
     }
 
     protected void registerSubscription(Subscription... subscriptions) {

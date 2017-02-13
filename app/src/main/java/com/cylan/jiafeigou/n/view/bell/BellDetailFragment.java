@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
@@ -50,6 +51,8 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     SettingItemView0 svSettingDeviceVersion;
     @BindView(R.id.sv_setting_device_battery)
     SettingItemView0 svSettingDeviceBattery;
+    @BindView(R.id.sv_setting_device_uptime)
+    SettingItemView0 svSettingDeviceUptime;
     @BindView(R.id.lLayout_setting_container)
     LinearLayout lLayoutSettingContainer;
 
@@ -81,13 +84,6 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     @Override
     public void onDialogAction(int id, Object value) {
 
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-//        if (callBack != null)
-//            callBack.callBack(null);
     }
 
     private EditFragmentDialog editDialogFragment;
@@ -139,5 +135,6 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         svSettingDeviceBattery.setTvSubTitle(device.battery.$() + "");
         String ssid = TextUtils.isEmpty(device.net.$().ssid) ? getString(R.string.OFF_LINE) : device.net.$().ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);
+        svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(device.up_time.$()));
     }
 }

@@ -524,6 +524,8 @@ public class RxEvent {
     public static final class BellCallEvent {
 
         public final JFGDoorBellCaller caller;
+        public boolean isFromLocal=false;
+        public LocalUdpMsg msg;
 
         public BellCallEvent(JFGDoorBellCaller jfgDoorBellCaller) {
             this.caller = jfgDoorBellCaller;

@@ -205,7 +205,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     private void initViewAndListener() {
-        ViewUtils.setViewPaddingStatusBar(mHeaderContainer);
+        setPortraitLayout();
         mFormatBuilder = new StringBuilder();
         mFormatter = new Formatter(mFormatBuilder, Locale.getDefault());
 
@@ -356,7 +356,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     private void setPortraitLayout() {
         setStatusBarProperty();
-
+        ViewUtils.setViewPaddingStatusBar(mHeaderContainer);
         mHeaderOptContainer.setVisibility(View.GONE);
 
         Resources resources = getResources();
@@ -399,6 +399,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     private void setLandScapeLayout() {
         setStatusBarProperty();
+        ViewUtils.clearViewPaddingStatusBar(mHeaderContainer);
         mHeaderOptContainer.setVisibility(View.VISIBLE);
         Resources resources = getResources();
 

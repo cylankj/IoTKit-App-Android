@@ -238,16 +238,16 @@
     <style name="video_opt_play">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">9dp</item>
-        <item name="android:layout_marginRight">14dp</item>
+        <item name="android:layout_marginLeft">@dimen/y9</item>
+        <item name="android:layout_marginRight">@dimen/y14</item>
         <item name="android:src">@drawable/video_opt_pause_drawable</item>
     </style>
 
     <style name="video_opt_full_screen">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">14dp</item>
-        <item name="android:layout_marginRight">13dp</item>
+        <item name="android:layout_marginLeft">@dimen/y14</item>
+        <item name="android:layout_marginRight">@dimen/y13</item>
         <item name="android:src">@drawable/wonderful_icon_video_full_screen</item>
     </style>
 
@@ -260,9 +260,9 @@
     <style name="video_opt_play_time">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textSize">@dimen/sp11</item>
         <item name="android:textColor">#CCCCCC</item>
-        <item name="android:layout_marginRight">9dp</item>
+        <item name="android:layout_marginRight">@dimen/y9</item>
         <item name="android:enabled">false</item>
         <item name="android:clickable">false</item>
     </style>
@@ -270,9 +270,9 @@
     <style name="video_opt_total_time">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textSize">@dimen/sp11</item>
         <item name="android:textColor">#CCCCCC</item>
-        <item name="android:layout_marginLeft">9dp</item>
+        <item name="android:layout_marginLeft">@dimen/y9</item>
         <item name="android:enabled">false</item>
         <item name="android:clickable">false</item>
     </style>
@@ -280,7 +280,7 @@
     <style name="video_opt_more">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginRight">9dp</item>
+        <item name="android:layout_marginRight">@dimen/y9</item>
         <item name="android:src">@drawable/wonderful_icon_video_more</item>
         <item name="android:visibility">visible</item>
     </style>
@@ -296,45 +296,45 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/btn_login_nav_close</item>
-        <item name="android:padding">15dp</item>
+        <item name="android:padding">@dimen/y15</item>
         <item name="android:layout_centerVertical">true</item>
 
     </style>
 
     <style name="video_header_opt_container">
         <item name="android:layout_width">wrap_content</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_alignParentRight">true</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:visibility">gone</item>
+        <item name="android:visibility">visible</item>
     </style>
 
     <style name="video_header_opt_delete">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/landscape_icon_delete</item>
-        <item name="android:layout_marginRight">27dp</item>
+        <item name="android:layout_marginRight">@dimen/y27</item>
     </style>
 
     <style name="video_header_opt_download">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/landscape_icon_down</item>
-        <item name="android:layout_marginRight">27dp</item>
+        <item name="android:layout_marginRight">@dimen/y27</item>
     </style>
 
     <style name="video_header_opt_share">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/landscape_icon_share</item>
-        <item name="android:layout_marginRight">18dp</item>
+        <item name="android:layout_marginRight">@dimen/y18</item>
     </style>
 
     <style name="video_header_title">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">@dimen/sp18</item>
         <item name="android:textColor">#FFFFFF</item>
     </style>
 
@@ -342,7 +342,7 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_gravity">left|center_vertical</item>
-        <item name="android:layout_marginLeft">40dp</item>
+        <item name="android:layout_marginLeft">@dimen/y40</item>
         <item name="android:src">@drawable/icon_download</item>
     </style>
 
@@ -351,8 +351,8 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/icon_share</item>
         <item name="android:layout_gravity">center|center_vertical</item>
-        <item name="android:layout_marginLeft">101dp</item>
-        <item name="android:layout_marginRight">101dp</item>
+        <item name="android:layout_marginLeft">@dimen/y101</item>
+        <item name="android:layout_marginRight">@dimen/y101</item>
     </style>
 
     <style name="picture_opt_collection">
@@ -360,22 +360,22 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:src">@drawable/icon_collection</item>
         <item name="android:layout_gravity">right|center_vertical</item>
-        <item name="android:layout_marginRight">40dp</item>
+        <item name="android:layout_marginRight">@dimen/y40</item>
     </style>
 
     <style name="video_opt_play_land">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">21dp</item>
-        <item name="android:layout_marginRight">30dp</item>
+        <item name="android:layout_marginLeft">@dimen/y21</item>
+        <item name="android:layout_marginRight">@dimen/y30</item>
         <item name="android:src">@drawable/landscape_btn_pause</item>
     </style>
 
     <style name="video_opt_full_screen_land">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_marginLeft">30dp</item>
-        <item name="android:layout_marginRight">21dp</item>
+        <item name="android:layout_marginLeft">@dimen/y30</item>
+        <item name="android:layout_marginRight">@dimen/y21</item>
         <item name="android:src">@drawable/landscape_icon_screen</item>
     </style>
 
@@ -388,22 +388,22 @@
     <style name="video_opt_play_time_land">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textSize">@dimen/sp11</item>
         <item name="android:textColor">#CCCCCC</item>
-        <item name="android:layout_marginRight">9dp</item>
+        <item name="android:layout_marginRight">@dimen/y9</item>
     </style>
 
     <style name="video_opt_total_time_land">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">11sp</item>
+        <item name="android:textSize">@dimen/sp11</item>
         <item name="android:textColor">#CCCCCC</item>
-        <item name="android:layout_marginLeft">9dp</item>
+        <item name="android:layout_marginLeft">@dimen/y9</item>
     </style>
 
     <style name="video_opt_container_land">
         <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">48dp</item>
+        <item name="android:layout_height">@dimen/y48</item>
         <item name="android:gravity">center_vertical</item>
     </style>
 

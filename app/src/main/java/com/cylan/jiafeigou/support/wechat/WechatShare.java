@@ -87,7 +87,7 @@ public class WechatShare {
 
     /**
      * Video
-     * */
+     */
     public static final int WEIXIN_SHARE_CONTENT_VIDEO = 4;
     /**
      * 会话
@@ -117,24 +117,27 @@ public class WechatShare {
                 shareWebPage(shareContent.getShareScene(), shareContent);
                 break;
             case WEIXIN_SHARE_CONTENT_VIDEO:
-                shareVideo(shareContent.getShareScene(),shareContent);
+                shareVideo(shareContent.getShareScene(), shareContent);
         }
     }
 
     private void shareVideo(int shareScene, ShareContent shareContent) {
         WXVideoObject video = new WXVideoObject();
-        video.videoUrl=shareContent.getShareURL();
+        video.videoUrl = shareContent.getShareURL();
 
-        WXMediaMessage msg= new WXMediaMessage(video);
-        msg.title =shareContent.getTitle();
+        WXMediaMessage msg = new WXMediaMessage(video);
+        msg.title = shareContent.getTitle();
         msg.description = shareContent.getContent();
-        Bitmap thumbBmp = Bitmap.createScaledBitmap(shareContent.getPicResource(), THUMB_SIZE, THUMB_SIZE, true);
-        msg.thumbData = WechatUtils.bmpToByteArray(thumbBmp, true);  //设置缩略图
+
+        if (shareContent.getPicResource() != null) {
+            Bitmap thumbBmp = Bitmap.createScaledBitmap(shareContent.getPicResource(), THUMB_SIZE, THUMB_SIZE, true);
+            msg.thumbData = WechatUtils.bmpToByteArray(thumbBmp, true);  //设置缩略图
+        }
 
         SendMessageToWX.Req req = new SendMessageToWX.Req();
         req.transaction = buildTransaction("video");
         req.message = msg;
-        req.scene =shareScene;
+        req.scene = shareScene;
 
         wxApi.sendReq(req);
 

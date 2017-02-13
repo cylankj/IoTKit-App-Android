@@ -119,7 +119,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         popAllFragmentStack();
     }
 
-    @OnClick({R.id.v_to_scan_qrcode, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell, R.id.v_to_bind_cloud_album})
+    @OnClick({R.id.v_to_scan_qrcode, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.v_to_scan_qrcode: {
@@ -151,18 +151,18 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .commit();
                 break;
             }
-            case R.id.v_to_bind_cloud_album:
-                ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_cloud_album));
-                Bundle bundle = new Bundle();
-                BindScanFragment fragment = BindScanFragment.newInstance(bundle);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(0, R.anim.slide_down_out
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .replace(android.R.id.content, fragment)
-                        .addToBackStack("BindScanFragment")
-                        .commit();
-                break;
+//            case R.id.v_to_bind_cloud_album:
+//                ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_cloud_album));
+//                Bundle bundle = new Bundle();
+//                BindScanFragment fragment = BindScanFragment.newInstance(bundle);
+//                getSupportFragmentManager()
+//                        .beginTransaction()
+//                        .setCustomAnimations(0, R.anim.slide_down_out
+//                                , R.anim.slide_in_left, R.anim.slide_out_right)
+//                        .replace(android.R.id.content, fragment)
+//                        .addToBackStack("BindScanFragment")
+//                        .commit();
+//                break;
         }
     }
 

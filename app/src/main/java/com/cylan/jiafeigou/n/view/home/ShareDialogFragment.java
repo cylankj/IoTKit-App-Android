@@ -79,7 +79,7 @@ public class ShareDialogFragment extends BaseDialog {
                 if (glideUrl != null&&!TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.shareVideoToWechat(getActivity(),mVideoURL, WXSceneTimeline, glideUrl);
                 } else if (glideUrl!=null) {
-                    ShareUtils.sharePictureToWechat(getActivity(), glideUrl, WXSceneSession);
+                    ShareUtils.sharePictureToWechat(getActivity(), glideUrl, WXSceneTimeline);
                 }else{
                     ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
                 }

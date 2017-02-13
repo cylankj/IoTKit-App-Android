@@ -16,107 +16,124 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/color_0ba8cf">
+
             <TextView
                 android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y48"
                 android:drawableLeft="@drawable/nav_tab_back_selector"
                 android:drawablePadding="@dimen/x15"
-                android:paddingLeft="@dimen/x15"
                 android:gravity="center_vertical"
+                android:paddingLeft="@dimen/x15"
                 android:text="@string/SETTINGS_1"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp18" />
         </FrameLayout>
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/lLayout_setting_container"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <View
+        <LinearLayout
+            android:id="@+id/lLayout_setting_container"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-        <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/sv_setting_device_alias"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y72"
-            android:layout_marginLeft="@dimen/x20"
-            android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/setting_icon_information"
-            hunt:sv_sub_title="@string/EQUIPMENT_INFO"
-            hunt:sv_title="@string/EQUIPMENT_INFO"
-            hunt:sv_v_divider="true"
-            hunt:sv_v_image_show="false" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y10"
+                android:background="@drawable/little_shape" />
 
-        <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/sv_setting_device_cid"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y72"
-            android:layout_marginLeft="@dimen/x20"
-            android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/setting_icon_information"
-            hunt:sv_title="@string/Tap1_Setting_Cid"
-            hunt:sv_v_divider="true"
-            hunt:sv_v_image_show="false" />
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_alias"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_sub_title="@string/EQUIPMENT_INFO"
+                hunt:sv_title="@string/EQUIPMENT_INFO"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="false" />
 
-        <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/sv_setting_device_wifi"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y72"
-            android:layout_marginLeft="@dimen/x20"
-            android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/setting_icon_information"
-            hunt:sv_title="@string/device_Wi_Fi"
-            hunt:sv_v_divider="true"
-            hunt:sv_v_image_show="false" />
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_cid"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_title="@string/Tap1_Setting_Cid"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="false" />
 
-        <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/sv_setting_device_mac"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y72"
-            android:layout_marginLeft="@dimen/x20"
-            android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/setting_icon_information"
-            hunt:sv_title="@string/MAC"
-            hunt:sv_v_divider="true"
-            hunt:sv_v_image_show="false" />
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_wifi"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_title="@string/device_Wi_Fi"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="false" />
 
-        <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/sv_setting_device_sys_version"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y72"
-            android:layout_marginLeft="@dimen/x20"
-            android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/setting_icon_information"
-            hunt:sv_title="@string/SYSTME_VERSION"
-            hunt:sv_v_divider="true"
-            hunt:sv_v_image_show="false" />
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_mac"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_title="@string/MAC"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="false" />
 
-        <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/sv_setting_device_version"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y72"
-            android:layout_marginLeft="@dimen/x20"
-            android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/setting_icon_information"
-            hunt:sv_title="@string/SOFTWARE_VERSION"
-            hunt:sv_v_divider="true"
-            hunt:sv_v_image_show="false" />
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_sys_version"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_title="@string/SYSTME_VERSION"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="false" />
 
-        <com.cylan.jiafeigou.widget.SettingItemView0
-            android:id="@+id/sv_setting_device_battery"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y72"
-            android:layout_marginLeft="@dimen/x20"
-            android:layout_marginRight="@dimen/x20"
-            hunt:sv_image_src="@drawable/setting_icon_information"
-            hunt:sv_title="@string/BATTERY_LEVEL"
-            hunt:sv_v_divider="true"
-            hunt:sv_v_image_show="false" />
-    </LinearLayout>
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_version"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_title="@string/SOFTWARE_VERSION"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="false" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_battery"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginEnd="@dimen/y20"
+                android:layout_marginStart="@dimen/y20"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_title="@string/BATTERY_LEVEL"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="false" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_uptime"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginEnd="@dimen/y20"
+                android:layout_marginStart="@dimen/y20"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_title="@string/STANBY"
+                hunt:sv_v_divider="true"
+                hunt:sv_v_image_show="false" />
+        </LinearLayout>
+    </ScrollView>
 </LinearLayout>
