@@ -204,8 +204,6 @@ dependencies {
     compile files('libs/zxing.jar')
     compile files('libs/zbar.jar')
     compile files('libs/libammsdk-3.1.1.jar')
-    //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
-    compile rootProject.ext.buglySdk
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
     debugCompile rootProject.ext.leakcanaryAndroid
@@ -243,8 +241,6 @@ dependencies {
     compile(name:'twitter-core-2.3.0', ext:'aar')
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
-
-    //facebook
-    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+    compile(name: rootProject.ext.facebookSDK, ext:'aar')
 }
 
