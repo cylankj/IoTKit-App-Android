@@ -2,8 +2,8 @@ package com.cylan.jiafeigou.widget.wheel.ex;
 
 import android.util.Log;
 
-import com.cylan.BuildConfig;
 import com.cylan.entity.jniCall.JFGVideo;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;

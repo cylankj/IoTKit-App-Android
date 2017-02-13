@@ -17,12 +17,13 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -69,6 +70,7 @@ public class BindGuideFragment extends BaseTitleFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        JConstant.ConfigApStep = 0;
     }
 
 
@@ -102,6 +104,7 @@ public class BindGuideFragment extends BaseTitleFragment {
     @OnClick(R.id.tv_bind_guide_next)
     public void onClick() {
         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+        JConstant.ConfigApStep = 1;
     }
 
     private void tryLoadConfigApFragment() {
@@ -111,8 +114,14 @@ public class BindGuideFragment extends BaseTitleFragment {
             return;
         }
         ConfigApFragment fragment = ConfigApFragment.newInstance(getArguments());
-        boolean result = ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                fragment, android.R.id.content);
+
+        boolean result =
+                JConstant.ConfigApStep == 1 ?
+                        ActivityUtils.addFragmentSlideInFromLeft(getActivity().getSupportFragmentManager(),
+                                fragment, android.R.id.content) :
+                        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                                fragment, android.R.id.content);
+
         if (result) {
             //add a new one
             new ConfigApPresenterImpl(fragment);

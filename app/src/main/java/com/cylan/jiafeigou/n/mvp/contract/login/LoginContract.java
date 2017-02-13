@@ -150,6 +150,12 @@ public interface LoginContract {
          * 登录计时
          */
         void loginCountTime();
+
+        /**
+         * 账号回显
+         * @return
+         */
+        String getTempAccPwd();
     }
 
 }

@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.block.IBlockCanaryContext;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.io.File;
 

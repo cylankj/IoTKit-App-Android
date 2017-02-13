@@ -20,7 +20,7 @@ import com.cylan.jiafeigou.n.view.adapter.CamLandHistoryDateAdapter;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
-import com.cylan.utils.DensityUtils;
+import com.cylan.jiafeigou.utils.DensityUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

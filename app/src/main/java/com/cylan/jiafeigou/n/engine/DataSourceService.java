@@ -47,6 +47,7 @@ import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -136,7 +137,6 @@ public class DataSourceService extends Service implements AppCallBack {
         if (jfgDevices != null) {
             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(Arrays.asList(jfgDevices)));
         }
-
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
     }
 
@@ -455,7 +455,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnNotifyStorageType(int i) {
-
+        ToastUtil.showToast("biaozhi"+i);
     }
 
     @Override

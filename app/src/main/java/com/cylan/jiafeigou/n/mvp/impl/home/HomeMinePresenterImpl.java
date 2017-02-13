@@ -18,9 +18,9 @@ import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.utils.BitmapUtil;
-import com.cylan.utils.FastBlurUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,6 +58,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     @Override
     public void start() {
+        super.start();
 /*        onRefreshSubscription = Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .delay(3000, TimeUnit.MILLISECONDS)
@@ -80,6 +81,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     @Override
     public void stop() {
+        super.stop();
         unSubscribe(subscription);
         unSubscribe(onRefreshSubscription);
         unSubscribe(onLoadUserHeadSubscribtion);
@@ -95,7 +97,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         if (getView() == null) {
                             return null;
                         }
-                        Bitmap b = BitmapUtil.zoomBitmap(bm, 160, 160);
+                        Bitmap b = BitmapUtils.zoomBitmap(bm, 160, 160);
                         return FastBlurUtil.blur(b, 20, 2);
                     }
                 })

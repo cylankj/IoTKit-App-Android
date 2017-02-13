@@ -19,15 +19,23 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.text.SimpleDateFormat;
@@ -136,11 +144,47 @@ public class SmartcallActivity extends NeedLoginActivity
             }
             finish();
         } else {
-            //进入登陆页 login page
-            getSupportFragmentManager().beginTransaction()
-                    .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
-                    .addToBackStack(BeforeLoginFragment.class.getSimpleName())
-                    .commitAllowingStateLoss();
+            if (presenter != null) {
+                String tempAccPwd = presenter.getTempAccPwd();
+                LoginAccountBean login = new LoginAccountBean();
+                if (!TextUtils.isEmpty(tempAccPwd)) {
+                    int i = tempAccPwd.indexOf("|");
+                    login.userName = tempAccPwd.substring(0, i);
+                    login.pwd = tempAccPwd.substring(i + 1);
+                }
+                if (!(TextUtils.isEmpty(login.userName) || TextUtils.isEmpty(login.pwd))){
+                    if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+                        JFGAccount jfgAccount = new JFGAccount();
+                        GlobalDataProxy.getInstance().setJfgAccount(jfgAccount);
+                        RxBus.getCacheInstance().postSticky(jfgAccount);
+                        RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
+
+                        //TODO 赋值
+
+                        DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
+
+                        //进去主页 home page
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                            startActivity(new Intent(this, NewHomeActivity.class),
+                                    ActivityOptionsCompat.makeCustomAnimation(this, R.anim.alpha_in, R.anim.alpha_out).toBundle());
+                        } else {
+                            startActivity(new Intent(this, NewHomeActivity.class));
+                        }
+                        finish();
+                    } else {
+                        presenter.autoLogin(login);
+                    }
+                    //非三方登录的标记
+                    RxBus.getCacheInstance().postSticky(false);
+                    return;
+                }
+
+                //进入登陆页 login page
+                getSupportFragmentManager().beginTransaction()
+                        .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
+                        .addToBackStack(BeforeLoginFragment.class.getSimpleName())
+                        .commitAllowingStateLoss();
+            }
         }
     }
 
@@ -167,6 +211,16 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     public void finishDelayed() {
 //        StateMaintainer.getAppManager().finishAllActivity();
+    }
+
+    @Override
+    public void loginResult(int code) {
+        if (code == JError.ErrorOK) {
+            startActivity(new Intent(this, NewHomeActivity.class));
+        } else {
+            startActivity(new Intent(this, NewHomeActivity.class));
+        }
+        finish();
     }
 
 

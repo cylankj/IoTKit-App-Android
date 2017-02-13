@@ -26,8 +26,8 @@ import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
-import com.cylan.utils.HandlerThreadUtils;
-import com.cylan.utils.ProcessUtils;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
+import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.squareup.leakcanary.LeakCanary;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -51,16 +51,16 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onCreate() {
         super.onCreate();
         enableDebugOptions();
-        MtaManager.init(getApplicationContext(), BuildConfig.DEBUG);
+        MtaManager.init(getApplicationContext(), true);
         //每一个新的进程启动时，都会调用onCreate方法。
-        if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
-            Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
-            startService(new Intent(getApplicationContext(), DaemonService.class));
-            startService(new Intent(getApplicationContext(), DataSourceService.class));
-            initBlockCanary();
-            initBugMonitor();
-            registerBootComplete();
-        }
+//        if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
+        Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
+        startService(new Intent(getApplicationContext(), DaemonService.class));
+        startService(new Intent(getApplicationContext(), DataSourceService.class));
+        initBlockCanary();
+        initBugMonitor();
+        registerBootComplete();
+//        }
         initLeakCanary();
         registerActivityLifecycleCallbacks(this);
         initFabric();

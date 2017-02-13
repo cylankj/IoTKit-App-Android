@@ -22,6 +22,6 @@
         android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/y37"
-        android:text="确认" />
+        android:text="@string/Button_Sure" />
 
 </RelativeLayout>

@@ -6,8 +6,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.NewHomeActivity;
@@ -15,14 +17,19 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.AESUtil;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 
 /**
@@ -89,7 +96,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
             ((SimpleDialogFragment) f).dismiss();
         }
         if (id == R.id.tv_dialog_btn_left) {
-
+            getActivity().getSupportFragmentManager().popBackStack();
         } else {
 //            Toast.makeText(getContext(), "去登录", Toast.LENGTH_SHORT).show();
             //dismiss the dialog
@@ -123,7 +130,6 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 showSimpleDialog(getString(R.string.INVALID_CODE), "", getString(R.string.I_KNOW), false);
                 break;
             case JError.ErrorOK:
-                ToastUtil.showToast(getString(R.string.RIGN_SUC));
                 autoLogin();
                 break;
         }
@@ -137,13 +143,58 @@ public class RegisterPwdFragment extends SetupPwdFragment
         LoginAccountBean login = new LoginAccountBean();
         login.userName = PreferencesUtils.getString(JConstant.AUTO_LOGIN_ACCOUNT);
         login.pwd = PreferencesUtils.getString(JConstant.AUTO_LOGIN_PWD);
+        boolean validEmailNum = JConstant.EMAIL_REG.matcher(login.userName).find();
+        if (validEmailNum){
+            // TODO 发送验证邮件
+            afterSendMailView(login.userName);
+            return;
+        }
+
         if (!TextUtils.isEmpty(login.userName) || !TextUtils.isEmpty(login.pwd)) {
             if (NetUtils.getNetType(ContextUtils.getContext()) != -1) {
+                ToastUtil.showToast(getString(R.string.RIGN_SUC));
                 pwdPresenter.executeLogin(login);
+                //账号和密码
+                try {
+                    String hex = AESUtil.encrypt(login.userName+"|"+login.pwd);
+                    FileUtils.saveDataToFile(getView().getContext(),hex);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
             }
         }
+    }
+
+    /**
+     * 发送验证邮件后view
+     */
+    private void afterSendMailView(String account) {
+        tvTopBarCenter.setText("邮箱验证");
+        flInputContainer.setVisibility(View.GONE);
+        View mailView = LayoutInflater.from(getActivity())
+                .inflate(R.layout.fragment_forget_pwd_by_email, null);
+        if (mailView == null) {
+            return;
+        }
+        final String content = String.format(getString(R.string.EMAIL_RESET_PWD),
+                account);
+        ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(content);
+        TextView btn = (TextView) mailView.findViewById(R.id.tv_email_confirm);
+        btn.setText("去登录");
+        btn.setEnabled(true);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+//                getActivity().getSupportFragmentManager().popBackStack();
+                // TODO 去登录
+                RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(account));
+                ActivityUtils.justPop(getActivity());
+            }
+        });
+        vsSetAccountPwd.addView(mailView);
+        vsSetAccountPwd.showNext();
     }
 
     /**

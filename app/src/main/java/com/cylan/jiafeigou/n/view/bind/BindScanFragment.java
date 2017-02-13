@@ -147,10 +147,10 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                 return;
             Bundle bundle = new Bundle();
             bundle.putString(BaseDialog.KEY_TITLE, "");
-            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
-            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
             bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT,
-                    this.getString(R.string.Tips_SureDelete));
+                    this.getString(R.string.RET_EISBIND_BYOTHER));
             rebindDialog = SimpleDialogFragment.newInstance(bundle);
             rebindDialog.setAction((int id, Object value) -> {
                 bindBundle.putInt("bindWay", 1);

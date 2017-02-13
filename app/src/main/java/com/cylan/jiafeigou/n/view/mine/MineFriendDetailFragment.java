@@ -29,13 +29,13 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
-import com.cylan.utils.NetUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -126,14 +126,14 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     private void initData() {
         Bundle bundle = getArguments();
         frienditembean = (RelAndFriendBean) bundle.getParcelable("frienditembean");
-        if (TextUtils.isEmpty(frienditembean.markName)){
+        if (TextUtils.isEmpty(frienditembean.markName)) {
             tvRelativeAndFriendName.setVisibility(View.GONE);
-        }else {
+        } else {
             tvRelativeAndFriendName.setVisibility(View.VISIBLE);
             tvRelativeAndFriendName.setText(frienditembean.markName);
         }
 
-        tvRelativeAndFriendLikeName.setText(getString(R.string.ALIAS)+": "+frienditembean.alias);
+        tvRelativeAndFriendLikeName.setText(getString(R.string.ALIAS) + ": " + frienditembean.alias);
         //头像显示
         Glide.with(getContext()).load(frienditembean.iconUrl)
                 .asBitmap()

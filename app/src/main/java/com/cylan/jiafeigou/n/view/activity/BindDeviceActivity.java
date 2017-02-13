@@ -1,10 +1,13 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -15,13 +18,12 @@ import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_AUTO_SHOW_BIND;
 
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
 
@@ -31,7 +33,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     TextView tvTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
     FrameLayout fLayoutTopBarContainer;
-    private WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +40,14 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         setContentView(R.layout.activity_bind_device);
         ButterKnife.bind(this);
         initTopBar();
+        checkShouldJump();
+    }
+
+    private void checkShouldJump() {
+        Intent intent = getIntent();
+        if (intent != null && !TextUtils.isEmpty(intent.getStringExtra(KEY_AUTO_SHOW_BIND))) {
+            jump2Cam();
+        }
     }
 
     private void initTopBar() {
@@ -58,7 +67,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     @Override
     protected void onPause() {
         super.onPause();
-
     }
 
     @Override
@@ -69,42 +77,39 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (simpleDialogFragmentWeakReference != null
-                && simpleDialogFragmentWeakReference.get() != null
-                && simpleDialogFragmentWeakReference.get().isResumed()) {
-            simpleDialogFragmentWeakReference.get().dismiss();
-        }
     }
 
     @Override
     public void onBackPressed() {
         if (shouldNotifyBackForeword())
             return;
+        if (checkFinish()) {
+            finishExt();
+        }
         if (popAllFragmentStack())
             return;
-//        if (checkExtraChildFragment()) {
-//            return;
-//        } else if (checkExtraFragment())
-//            return;
-
         finishExt();
     }
 
+    private boolean checkFinish() {
+        Intent intent = getIntent();
+        if (intent != null && !TextUtils.isEmpty(intent.getStringExtra(KEY_AUTO_SHOW_BIND))) {
+            return true;
+        }
+        return false;
+    }
 
     private boolean shouldNotifyBackForeword() {
-        if (JConstant.ConfigApState == 0)
-            return false;
-        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
-            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(new Bundle()));
-            simpleDialogFragmentWeakReference.get().setAction(this);
-        }
-
-        SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
-
-        if (fragment == null || fragment.isResumed())
+        if (JConstant.ConfigApStep == 2) {
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.Tap1_AddDevice_tips))
+                    .setNegativeButton(getString(R.string.CANCEL), null)
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        popAllFragmentStack();
+                    }).show();
             return true;
-        fragment.show(getSupportFragmentManager(), "SimpleDialogFragment");
-        return true;
+        }
+        return false;
     }
 
     @Override
@@ -130,16 +135,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 break;
             }
             case R.id.v_to_bind_camera: {
-                ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_camera));
-                Bundle bundle = new Bundle();
-                BindCameraFragment fragment = BindCameraFragment.newInstance(bundle);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, fragment)
-                        .addToBackStack("BindCameraFragment")
-                        .commit();
+                jump2Cam();
                 break;
             }
             case R.id.v_to_bind_doorbell: {
@@ -168,5 +164,18 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .commit();
                 break;
         }
+    }
+
+    private void jump2Cam() {
+        ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_camera));
+        Bundle bundle = new Bundle();
+        BindCameraFragment fragment = BindCameraFragment.newInstance(bundle);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, fragment)
+                .addToBackStack("BindCameraFragment")
+                .commit();
     }
 }

@@ -39,6 +39,7 @@ import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -50,7 +51,6 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
-import com.cylan.superadapter.internal.SuperViewHolder;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -565,7 +565,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         int i = ColorUtils.blendARGB(Color.WHITE, Color.parseColor("#788291"), ratio);
         tvDateItemHeadWonder.setTextColor(i);
         tvDateItemHeadWonder.setTitleHeadIsTop(ratio < 0.1);
-        tvDateItemHeadWonder.setBackgroundToRight();
+//        tvDateItemHeadWonder.setBackgroundToRight();
     }
 
 

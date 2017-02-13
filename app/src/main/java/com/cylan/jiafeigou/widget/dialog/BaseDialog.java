@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.utils.DensityUtils;
+import com.cylan.jiafeigou.utils.DensityUtils;
 
 /**
  * Created by cylan-hunt on 16-7-26.

@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -14,11 +16,13 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
@@ -109,14 +113,34 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
+        if (device != null && JFGRules.isFreeCam(device.pid)) {
+            view.findViewById(R.id.fLayout_protection_warn_effect).setVisibility(View.GONE);
+        }
+
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
         boolean alarm = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch)).setChecked(alarm);
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch))
                 .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                    basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-                    showDetail(isChecked);
-                    updateDetails();
+                    if (!isChecked) {
+                        new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
+                                .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
+                                .setPositiveButton(getString(R.string.CARRY_ON), new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        basePresenter.updateInfoReq(false, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                                        showDetail(false);
+                                        updateDetails();
+                                    }
+                                })
+                                .setNegativeButton(getString(R.string.CANCEL), null)
+                                .show();
+                    } else {
+                        basePresenter.updateInfoReq(true, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                        showDetail(true);
+                        updateDetails();
+                    }
                 });
         showDetail(alarm);
         if (alarm)

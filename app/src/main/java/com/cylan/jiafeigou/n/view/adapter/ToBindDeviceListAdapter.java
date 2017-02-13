@@ -5,8 +5,8 @@ import android.net.wifi.ScanResult;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.superadapter.SuperAdapter;
-import com.cylan.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 
 /**
  * Created by cylan-hunt on 16-7-6.

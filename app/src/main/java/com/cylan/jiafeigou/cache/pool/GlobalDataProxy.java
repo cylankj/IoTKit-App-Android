@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.pool;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -220,15 +221,17 @@ public class GlobalDataProxy implements IDataProxy {
     }
 
     @SuppressWarnings("unchecked")
-    public <T> T getValue(String uuid, long id, T defaultValue) {
+    public synchronized <T> T getValue(String uuid, long id, T defaultValue) {
         if (isSetType(id)) {
             throw new IllegalArgumentException(String.format("id:%s is an array type in the map", id));
         }
         try {
             if (dataPointManager == null) return null;
             BaseValue base = dataPointManager.fetchLocal(uuid, id);
-            return base == null || base.getValue() == null ? defaultValue : (T) base.getValue();
-        } catch (ClassCastException c) {
+            Log.d("getValue", "getValue:" + id + " base:" + base);
+            return base == null || base.getValue() == null ? defaultValue : base.getValue();
+        } catch (Exception c) {
+            Log.e("getValue", "getValue:" + id + " base:" + c.getLocalizedMessage());
             return null;
         }
     }

@@ -26,7 +26,7 @@ import com.cylan.jiafeigou.n.view.adapter.FriendAddFromContactAdapter;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.superadapter.OnItemClickListener;
+import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 
 import java.util.ArrayList;
 

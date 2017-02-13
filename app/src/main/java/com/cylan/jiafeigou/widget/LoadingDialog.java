@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.utils.DensityUtils;
+import com.cylan.jiafeigou.utils.DensityUtils;
 
 import butterknife.ButterKnife;
 

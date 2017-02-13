@@ -16,9 +16,9 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.CloseUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.utils.CloseUtils;
-import com.cylan.utils.NetUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
@@ -79,7 +79,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
             subscription.unsubscribe();
         }
 
-        if (delaySub != null && !delaySub.isUnsubscribed()){
+        if (delaySub != null && !delaySub.isUnsubscribed()) {
             delaySub.unsubscribe();
         }
     }

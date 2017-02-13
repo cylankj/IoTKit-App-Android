@@ -31,7 +31,6 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -147,12 +146,13 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void start() {
-        checkDeviceState();
+        super.start();
         registerNetworkMonitor();
     }
 
     @Override
     public void stop() {
+        super.stop();
         unregisterNetworkMonitor();
     }
 
@@ -165,25 +165,14 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 //别那么频繁
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
-                .filter(new Func1<List<ScanResult>, Boolean>() {
-                    @Override
-                    public Boolean call(List<ScanResult> scanResults) {
-                        //非空返回,如果空,下面的map是不会有结果.
-                        return getView() != null;
-                    }
+                .filter((List<ScanResult> s) -> {
+                    //非空返回,如果空,下面的map是不会有结果.
+                    return getView() != null;
                 })
-                .map(new Func1<List<ScanResult>, List<ScanResult>>() {
-                    @Override
-                    public List<ScanResult> call(List<ScanResult> scanResults) {
-                        return ScanResultListFilter.extractPretty(scanResults, false);
-                    }
-                })
+                .map((List<ScanResult> s) -> ScanResultListFilter.extractPretty(scanResults, false))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<List<ScanResult>>() {
-                    @Override
-                    public void call(List<ScanResult> scanResults) {
-                        getView().onWiFiResult(scanResults);
-                    }
+                .subscribe((List<ScanResult> s) -> {
+                    getView().onWiFiResult(scanResults);
                 }, new RxHelper.EmptyException("resultList call"));
     }
 
@@ -192,62 +181,42 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
      */
     private void updateConnectivityStatus(int network) {
         Observable.just(network)
-                .filter(new Func1<Integer, Boolean>() {
-                    @Override
-                    public Boolean call(Integer integer) {
-                        return getView() != null;
-                    }
-                })
+                .filter((Integer integer) -> getView() != null)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        getView().onNetStateChanged(integer);
-                    }
+                .subscribe((Integer integer) -> {
+                    getView().onNetStateChanged(integer);
                 });
     }
 
     /**
      * 可能连上其他非 'DOG-xxx'
      *
-     * @param info
+     * @param networkInfo
      */
-    private void updateConnectInfo(NetworkInfo info) {
-        Observable.just(info)
-                .filter(new Func1<NetworkInfo, Boolean>() {
-                    @Override
-                    public Boolean call(NetworkInfo info) {
-                        //连上其他ap
-                        final String ssid = info.getExtraInfo().replace("\"", "");
-                        return getView() != null
-                                && info.getState() == NetworkInfo.State.CONNECTED
-                                && !JFGRules.isCylanDevice(ssid);
-                    }
+    private void updateConnectInfo(NetworkInfo networkInfo) {
+        Observable.just(networkInfo)
+                .filter((NetworkInfo info) -> {
+                    //连上其他ap
+                    final String ssid = info.getExtraInfo().replace("\"", "");
+                    return getView() != null
+                            && info.getState() == NetworkInfo.State.CONNECTED
+                            && !JFGRules.isCylanDevice(ssid);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<NetworkInfo>() {
-                    @Override
-                    public void call(NetworkInfo info) {
-                        getView().lossDogConnection();
-                    }
+                .subscribe((NetworkInfo info) -> {
+                    getView().lossDogConnection();
                 });
     }
 
     @Override
     public void pingFPingFailed() {
         Observable.just(null)
-                .filter(new Func1<Object, Boolean>() {
-                    @Override
-                    public Boolean call(Object o) {
-                        return getView() != null;
-                    }
+                .filter((Object o) -> {
+                    return getView() != null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        getView().lossDogConnection();
-                    }
+                .subscribe((Object o) -> {
+                    getView().lossDogConnection();
                 });
     }
 
@@ -255,18 +224,12 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     public void isMobileNet() {
         //马上跳转
         Observable.just(null)
-                .filter(new Func1<Object, Boolean>() {
-                    @Override
-                    public Boolean call(Object o) {
-                        return getView() != null;
-                    }
+                .filter((Object o) -> {
+                    return getView() != null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        getView().onSetWifiFinished(aFullBind.getDevicePortrait());
-                    }
+                .subscribe((Object o) -> {
+                    getView().onSetWifiFinished(aFullBind.getDevicePortrait());
                 });
     }
 
@@ -282,18 +245,12 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                         return Observable.just(view);
                     }
                 })
-                .filter(new Func1<ConfigApContract.View, Boolean>() {
-                    @Override
-                    public Boolean call(ConfigApContract.View view) {
-                        return view != null;
-                    }
+                .filter((ConfigApContract.View view) -> {
+                    return view != null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ConfigApContract.View>() {
-                    @Override
-                    public void call(ConfigApContract.View view) {
-                        view.upgradeDogState(0);
-                    }
+                .subscribe((ConfigApContract.View view) -> {
+                    view.upgradeDogState(0);
                 });
     }
 
@@ -318,36 +275,33 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         Observable.just(null)
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<Object, Object>() {
-                    @Override
-                    public Object call(Object o) {
-                        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
-                        List<WifiConfiguration> list =
-                                wifiManager.getConfiguredNetworks();
-                        if (list != null) {
-                            int highPriority = -1;
-                            int index = -1;
-                            for (int i = 0; i < list.size(); i++) {
-                                String ssid = list.get(i).SSID.replace("\"", "");
-                                if (JFGRules.isCylanDevice(ssid)) {
-                                    //找到这个狗,清空他的信息
-                                    wifiManager.removeNetwork(list.get(i).networkId);
-                                    AppLogger.i(TAG + "clean dog like ssid: " + ssid);
-                                } else {
-                                    //恢复之前连接过的wifi
-                                    if (highPriority < list.get(i).priority) {
-                                        highPriority = list.get(i).priority;
-                                        index = i;
-                                    }
+                .map((Object o) -> {
+                    WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+                    List<WifiConfiguration> list =
+                            wifiManager.getConfiguredNetworks();
+                    if (list != null) {
+                        int highPriority = -1;
+                        int index = -1;
+                        for (int i = 0; i < list.size(); i++) {
+                            String ssid = list.get(i).SSID.replace("\"", "");
+                            if (JFGRules.isCylanDevice(ssid)) {
+                                //找到这个狗,清空他的信息
+                                wifiManager.removeNetwork(list.get(i).networkId);
+                                AppLogger.i(TAG + "clean dog like ssid: " + ssid);
+                            } else {
+                                //恢复之前连接过的wifi
+                                if (highPriority < list.get(i).priority) {
+                                    highPriority = list.get(i).priority;
+                                    index = i;
                                 }
                             }
-                            if (index != -1) {
-                                AppLogger.i("re enable ssid: " + list.get(index).SSID);
-                                wifiManager.enableNetwork(list.get(index).networkId, false);
-                            }
                         }
-                        return null;
+                        if (index != -1) {
+                            AppLogger.i("re enable ssid: " + list.get(index).SSID);
+                            wifiManager.enableNetwork(list.get(index).networkId, false);
+                        }
                     }
+                    return null;
                 }).subscribe();
     }
 
