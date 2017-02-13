@@ -77,9 +77,9 @@ public class ShareDialogFragment extends BaseDialog {
         switch (view.getId()) {
             case R.id.tv_share_to_timeline:
                 if (glideUrl != null&&!TextUtils.isEmpty(mVideoURL)) {
-                    ShareUtils.sharePictureToWechat(getActivity(), glideUrl, WXSceneTimeline);
+                    ShareUtils.shareVideoToWechat(getActivity(),mVideoURL, WXSceneTimeline, glideUrl);
                 } else if (glideUrl!=null) {
-                    ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneSession,glideUrl);
+                    ShareUtils.sharePictureToWechat(getActivity(), glideUrl, WXSceneSession);
                 }else{
                     ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
                 }
@@ -95,9 +95,9 @@ public class ShareDialogFragment extends BaseDialog {
                 break;
             case R.id.tv_share_to_twitter_friends:
                 if (glideUrl!=null&&!TextUtils.isEmpty(mVideoURL)) {
-                    ShareUtils.sharePictureToTwitter(getActivity(),glideUrl);
-                }else if (glideUrl!=null){
                     ShareUtils.shareVideoToTwitter(getActivity(),mVideoURL,glideUrl);
+                }else if (glideUrl!=null){
+                    ShareUtils.sharePictureToTwitter(getActivity(),glideUrl);
                 }else{
                     ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
                 }
