@@ -286,7 +286,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onItemsInsert(List<String> resultList) {
         srLayoutMainContentHolder.setRefreshing(false);
-        homePageListAdapter.addAll(filter(resultList));
+        List<String> filter = filter(resultList);
+        homePageListAdapter.addAll(filter);
+        if (filter==null||filter.size()==0){
+            homePageListAdapter.notifyDataSetChanged();
+        }
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount()>0);
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
