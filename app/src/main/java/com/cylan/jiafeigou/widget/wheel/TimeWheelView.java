@@ -29,8 +29,6 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
-import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
-
 /*
  *  @项目名：  TimeLinePicker 
  *  @包名：    com.yzd.timelinepicker
@@ -195,7 +193,7 @@ public class TimeWheelView extends View implements ValueAnimator.AnimatorUpdateL
         final ViewConfiguration configuration = ViewConfiguration.get(getContext());
         mMinimumFlingVelocity = configuration.getScaledMinimumFlingVelocity();
         mMaximumFlingVelocity = configuration.getScaledMaximumFlingVelocity();
-        mPpi = context.getResources().getDisplayMetrics().density * 160.0f;
+        mPpi = getContext().getResources().getDisplayMetrics().density * 160.0f;
         mVelocityTracker = VelocityTracker.obtain();
         mScroller = new Scroller(getContext());
         mPhysicalCoeff = computeDeceleration(0.84f); // look and feel tuning

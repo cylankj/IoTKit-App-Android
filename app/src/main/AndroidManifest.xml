@@ -292,6 +292,8 @@
             android:name="com.facebook.FacebookActivity"
             android:exported="true"
             android:label="@string/app_name"
+            xmlns:tools="http://schemas.android.com/tools"
+            tools:replace="android:theme"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <meta-data android:name="io.fabric.ApiKey" android:value="kCEeFDWzz5xHi8Ej9Wx6FWqRL"/>
