@@ -7,7 +7,9 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.facebook.CallbackManager;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 import rx.Subscription;
 
@@ -87,6 +89,8 @@ public interface LoginContract {
          * @param callback
          */
         void checkAccountResult(RxEvent.CheckRegsiterBack callback);
+
+
     }
 
     interface Presenter extends BasePresenter {
@@ -112,6 +116,18 @@ public interface LoginContract {
          */
         void startSinaAuthorize(Activity activity);
 
+        /**
+         * 获取twiiter的授权
+         * @param activity
+         */
+        void getTwitterAuthorize(Activity activity);
+
+        /**
+         * 获取Facebook的授权
+         * @param activity
+         */
+        void getFaceBookAuthorize(Activity activity);
+
         void registerByPhone(String phone, String verificationCode);
 
         void getCodeByPhone(String phone);
@@ -135,6 +151,12 @@ public interface LoginContract {
         void onActivityResultData(int requestCode, int resultCode, Intent data);
 
         /**
+         * 获取Twitter的回调对象
+         * @return
+         */
+        TwitterAuthClient getTwitterBack();
+
+        /**
          * 检测账号是否已经注册
          * @param account
          */
@@ -156,6 +178,17 @@ public interface LoginContract {
          * @return
          */
         String getTempAccPwd();
+
+        /**
+         * fackBook授权回调结果
+         */
+        void fackBookCallBack();
+
+        /**
+         * 获取facebook回调的对象
+         * @return
+         */
+        CallbackManager getFaceBookBackObj();
     }
 
 }

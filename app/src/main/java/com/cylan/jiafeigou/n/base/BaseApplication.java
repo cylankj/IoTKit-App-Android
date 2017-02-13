@@ -31,8 +31,15 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.facebook.FacebookSdk;
 import com.squareup.leakcanary.LeakCanary;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.tweetcomposer.TweetComposer;
+
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by hunt on 16-5-14.
@@ -41,6 +48,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     private static final String TAG = "BaseApplication";
     private HttpProxyCacheServer proxy;
+
+    private static final String TWITTER_KEY = "kCEeFDWzz5xHi8Ej9Wx6FWqRL";
+    private static final String TWITTER_SECRET = "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5";
 
     @Override
     public void onCreate() {
@@ -58,6 +68,22 @@ public class BaseApplication extends MultiDexApplication implements Application.
 //        }
         initLeakCanary();
         registerActivityLifecycleCallbacks(this);
+
+        initFaceBook();
+        initTwitter();
+    }
+
+    private void initFaceBook() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
+    }
+
+    private void initTwitter() {
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new TwitterCore(authConfig),new TweetComposer());
+        boolean initialized = Fabric.isInitialized();
+        if (initialized) {
+            ToastUtil.showNegativeToast("twitter init failed");
+        }
     }
 
 

@@ -51,8 +51,20 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.tencent.connect.common.Constants;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.lang.ref.WeakReference;
 
@@ -152,6 +164,7 @@ public class LoginFragment extends Fragment
     private int registerWay = JConstant.REGISTER_BY_PHONE;
     private LoginContract.Presenter presenter;
 
+
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
         fragment.setArguments(bundle);
@@ -202,6 +215,7 @@ public class LoginFragment extends Fragment
         super.onStart();
         if (presenter != null) {
             presenter.start();
+            presenter.fackBookCallBack();
         }
     }
 
@@ -324,7 +338,7 @@ public class LoginFragment extends Fragment
         String tempAccPwd = presenter.getTempAccPwd();
         if (!TextUtils.isEmpty(tempAccPwd)) {
             int i = tempAccPwd.indexOf("|");
-            etLoginUsername.setText(tempAccPwd.substring(0, i));
+            etLoginUsername.setText(tempAccPwd.substring(0,i));
             etLoginPwd.setText(tempAccPwd.substring(i + 1));
         }
 
@@ -392,8 +406,9 @@ public class LoginFragment extends Fragment
             R.id.tv_login_forget_pwd,
             R.id.iv_top_bar_left,
             R.id.tv_top_bar_right,
-            R.id.tv_agreement
-    })
+            R.id.tv_agreement,
+            R.id.tv_twitterLogin_commit,
+            R.id.tv_facebookLogin_commit})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_login_clear_pwd:
@@ -432,6 +447,14 @@ public class LoginFragment extends Fragment
                         fragment, android.R.id.content);
             }
             break;
+
+            case R.id.tv_twitterLogin_commit:
+                presenter.getTwitterAuthorize(getActivity());
+                break;
+
+            case R.id.tv_facebookLogin_commit:
+                presenter.getFaceBookAuthorize(getActivity());
+                break;
         }
     }
 
@@ -758,6 +781,8 @@ public class LoginFragment extends Fragment
         }
     }
 
+
+
     /**
      * 验证码输入框
      *
@@ -961,6 +986,7 @@ public class LoginFragment extends Fragment
         }
     }
 
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -973,6 +999,17 @@ public class LoginFragment extends Fragment
                 requestCode == Constants.REQUEST_APPBAR) {
             presenter.onActivityResultData(requestCode, resultCode, data);
         }
+
+        CallbackManager callbackManager = presenter.getFaceBookBackObj();
+        if (callbackManager != null){
+            callbackManager.onActivityResult(requestCode,resultCode,data);
+        }
+
+        TwitterAuthClient twitterBack = presenter.getTwitterBack();
+        if (twitterBack != null){
+            twitterBack.onActivityResult(requestCode,resultCode,data);
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

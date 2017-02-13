@@ -836,6 +836,7 @@
     <string name="ignore">忽略</string>
     <string name="loading">加载中</string>
     <string name="nomore">没有更多了</string>
+    <string name="facebook_app_id">1866682200216878</string>
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
