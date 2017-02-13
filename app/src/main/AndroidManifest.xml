@@ -287,6 +287,7 @@
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTop"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
     </application>
 
 </manifest>
