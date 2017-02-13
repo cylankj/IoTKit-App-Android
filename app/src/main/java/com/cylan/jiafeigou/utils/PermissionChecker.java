@@ -122,4 +122,8 @@ public class PermissionChecker {
         if (cursor != null) cursor.close();
         return findResults;
     }
+
+    public static boolean isFineLocationPermissionGrant() {
+        return false;
+    }
 }
