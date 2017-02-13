@@ -335,12 +335,12 @@ public class LoginFragment extends Fragment
                 ? getString(R.string.SHARE_E_MAIL) : getString(R.string.EMAIL));
 
         //回显
-//        String tempAccPwd = presenter.getTempAccPwd();
-//        if (!TextUtils.isEmpty(tempAccPwd)) {
-//            int i = tempAccPwd.indexOf("|");
-//            etLoginUsername.setText(tempAccPwd.substring(0,i));
-//            etLoginPwd.setText(tempAccPwd.substring(i + 1));
-//        }
+        String tempAccPwd = presenter.getTempAccPwd();
+        if (!TextUtils.isEmpty(tempAccPwd)) {
+            int i = tempAccPwd.indexOf("|");
+            etLoginUsername.setText(tempAccPwd.substring(0,i));
+            etLoginPwd.setText(tempAccPwd.substring(i + 1));
+        }
 
         if (!TextUtils.isEmpty(etLoginUsername.getText().toString().trim()) && !TextUtils.isEmpty(etLoginPwd.getText().toString().trim())) {
             lbLogin.setEnabled(true);

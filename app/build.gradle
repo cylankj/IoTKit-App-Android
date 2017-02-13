@@ -1,0 +1,247 @@
+apply plugin: 'com.android.application'
+apply plugin: 'me.tatarka.retrolambda'
+
+//多渠道包
+apply plugin: 'packer'
+
+def releaseTime() {
+    return new Date().format("yyyyMMddHHmm")
+}
+
+def getPackageName() {
+    return "JiafeigouPlayer"
+}
+//从version.properties中读取versionName
+def vCode
+def vName
+Properties p = new Properties()
+File lp = project.rootProject.file('version.properties')
+if (lp.exists())
+    p.load(lp.newDataInputStream())
+vName = p.getProperty('versionName')
+vCode = p.getProperty('versionCode').toString().toInteger()//要转化成int
+
+def boolean hasSignKey() {
+    Properties properties = new Properties()
+    File localProperties = project.rootProject.file('local.properties')
+    if (localProperties.exists()) {
+        properties.load(localProperties.newDataInputStream())
+        def store_file = properties.getProperty('store_file')
+        return store_file != null
+    }
+    return false
+}
+
+
+android {
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    defaultConfig {
+        applicationId "com.cylan.jiafeigou"
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+        versionName "1.0"
+        multiDexEnabled true
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        ndk {
+            // 设置支持的SO库架构
+            abiFilters 'armeabi-v7a'//, 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
+        }
+
+    }
+    externalNativeBuild {
+        cmake {
+            path 'CMakeLists.txt'
+        }
+    }
+    sourceSets.main {
+        jniLibs.srcDir 'src/main/libs' //set .so files location to libs instead of jniLibs
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
+    lintOptions {
+        abortOnError false
+    }
+
+    dexOptions {
+        jumboMode = true
+//        incremental true
+        javaMaxHeapSize "4g"
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ['libs']
+            aidl.srcDirs = ['src/main/aidl']
+        }
+    }
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
+
+    signingConfigs {
+        debug {
+            v2SigningEnabled false
+        }
+        release {
+            // 满足下面两个条件时需要此配置
+            // 1. Gradle版本 >= 2.14.1
+            // 2. Android Gradle Plugin 版本 >= 2.2.0
+            // 作用是只使用旧版签名，禁用V2版签名模式
+            v2SigningEnabled false
+            Properties properties = new Properties()
+            File localProperties = project.rootProject.file('local.properties')
+            if (localProperties.exists()) {
+                properties.load(localProperties.newDataInputStream())
+                def store_file = properties.getProperty('store_file')
+                if (store_file != null) {
+                    def store_pwd = properties.getProperty('store_pwd')
+                    def store_alias = properties.getProperty('store_alias')
+                    def store_alias_pwd = properties.getProperty('store_alias_pwd')
+                    storeFile file(store_file)
+                    storePassword store_pwd
+                    keyAlias store_alias
+                    keyPassword store_alias_pwd
+                }
+            }
+        }
+    }
+    buildTypes {
+        debug {
+        }
+        release {
+            if (hasSignKey()) {
+                shrinkResources true
+                minifyEnabled true
+                zipAlignEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                signingConfig signingConfigs.release
+            }
+        }
+    }
+
+
+    productFlavors {
+
+        _yun {
+            //vid vkey已经搬到Security.java
+            //官方运营
+            versionName vName
+            versionCode vCode
+        }
+        _yf {
+            applicationIdSuffix ".yf"
+            versionName vName
+            versionCode vCode
+        }
+        //中性包
+        _zhongxing {
+            applicationIdSuffix ".zhongxing"
+            versionName vName
+            versionCode vCode
+        }
+    }
+}
+
+
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    //这种方式可以解决:Warning:Conflict with dependency 'com.google.guava:guava'. Resolved versions for app (18.0) and test app (19.0) differ. See http://g.co/androidstudio/app-test-app-conflict for details.
+    configurations.all {
+        resolutionStrategy.force 'com.google.guava:guava:19.0', 'com.android.support:support-annotations:23.3.0'
+    }
+
+    //////////////test///////////////////////
+    //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
+    //前者在test/，后者在androidTest
+    testCompile rootProject.ext.testRobolectric
+    testCompile rootProject.ext.testAssertj
+    testCompile rootProject.ext.testJunit4
+    testCompile rootProject.ext.annotation
+    testCompile rootProject.ext.testMockio
+    androidTestCompile rootProject.ext.testRules
+    androidTestCompile rootProject.ext.testRunner
+    //强制使用高版本，引用rootProject.ext.annotation，无效
+//    androidTestCompile 'com.android.support:support-annotations:23.3.0'
+    androidTestCompile(rootProject.ext.testEspresso, {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    /////////////////android///////////////////////
+    compile rootProject.ext.appcompat
+    compile rootProject.ext.appSupport
+    compile rootProject.ext.recyclerView
+    compile rootProject.ext.appDesign
+    compile rootProject.ext.appCardview
+    /////////////////android///////////////////////
+    compile rootProject.ext.butterknife
+    annotationProcessor rootProject.ext.butterknifeApt
+    compile rootProject.ext.rxAndroid
+    compile rootProject.ext.permis
+    annotationProcessor rootProject.ext.permisApt
+//    compile project(':jlib')
+    compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
+//    compile files('libs/gson-2.2.4.jar')
+    compile files('libs/mid-sdk-2.3.jar')
+    compile files('libs/mta-android-stat-sdk-2.2.0.jar')
+    compile files('libs/nineoldandroids-2.4.0.jar')
+//    compile files('libs/okhttp-3.2.0.jar')
+//    compile files('libs/okio-1.6.0.jar')
+    compile files('libs/open_sdk_r5756.jar')
+    compile files('libs/weiboSDKCore_3.1.4.jar')
+    compile files('libs/zxing.jar')
+    compile files('libs/zbar.jar')
+    compile files('libs/libammsdk-3.1.1.jar')
+    //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.1.5
+    compile rootProject.ext.buglySdk
+    //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
+    compile rootProject.ext.buglyNdk
+    debugCompile rootProject.ext.leakcanaryAndroid
+    releaseCompile rootProject.ext.leakcanaryAndroidNoOp
+    testCompile rootProject.ext.leakcanaryAndroidNoOp
+    //add by hunt 2016-08-01
+    compile rootProject.ext.switchButton
+    //glide
+    compile rootProject.ext.glide
+    compile(name: rootProject.ext.cySdk, ext: 'aar')
+    //自己写的 apt
+//    compile project(':annotation')
+//    compile project(':compiler')
+
+    compile 'com.danikula:videocache:2.6.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
+//    https://github.com/cylankj/JFGAndroid-Ext.git
+    compile 'com.cylan.ext:annotations:0.1.0'
+    annotationProcessor 'com.cylan.ext:processor:0.1.0'
+    //
+    debugCompile 'com.cylan.ext:optdebug:0.0.1'
+    releaseCompile 'com.cylan.ext:optrelease:0.0.1'
+    //渠道包
+    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
+
+    // twitter
+    compile(name:'fabric-1.3.14', ext:'aar')
+    compile(name:'tweet-composer-2.3.1', ext:'aar')
+    compile(name:'tweet-ui-2.3.1', ext:'aar')
+    compile(name:'twitter-2.3.1', ext:'aar')
+    compile(name:'twitter-core-2.3.0', ext:'aar')
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
+
+    //facebook
+    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+
+}
+

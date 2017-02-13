@@ -453,12 +453,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         @Override
         public void onComplete(Bundle values) {
             Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(values);
-            UsersAPI usersAPI = new UsersAPI(accessToken,ContextUtils.getContext());
+            UsersAPI usersAPI = new UsersAPI(accessToken,getView().getContext());
             Long uid = Long.parseLong(accessToken.getUid());
             usersAPI.show(uid, sinaRequestListener);
             if (accessToken != null && accessToken.isSessionValid()) {
                 executeOpenLogin(accessToken.getToken(), 4);
-                AccessTokenKeeper.writeAccessToken(ContextUtils.getContext(), accessToken);
+                AccessTokenKeeper.writeAccessToken(getView().getContext(), accessToken);
             } else {
                 String code = values.getString("code", "");
                 AppLogger.d("sina_code" + code);
