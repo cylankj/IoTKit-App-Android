@@ -855,4 +855,9 @@
     <string name="TOMORROW">明天</string>
     <string name="ERROR_TWITTER_NOT_INSTALLED">检测到未安装 Twitter 客户端,将以网页的形式分享,图片将会被忽略</string>
     <string name="ERROR_FACEBOOK_NOT_INSTALLED">分享图片到Facebook需要先安装Facebook7.0+客户端</string>
+    <string name="FILE_DOWNLOADED">文件已下载</string>
+    <string name="DOWNLOAD_COMPLETED">下载完成</string>
+    <string name="DOWNLOAD_START">开始下载</string>
+    <string name="DOWNLOAD_FAILD">下载失败</string>
+    <string name="DOWNLOAD_NEED_PERMISSION">下载文件需要权限,请手动开启</string>
 </resources>

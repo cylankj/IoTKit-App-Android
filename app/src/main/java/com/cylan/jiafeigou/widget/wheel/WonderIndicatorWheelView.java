@@ -7,11 +7,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.animation.OvershootInterpolator;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -258,7 +256,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
 
             @Override
             protected int calculateTimeForScrolling(int dx) {
-                return Math.max(500, super.calculateTimeForScrolling(dx) * 3);
+                return Math.max(200, super.calculateTimeForScrolling(dx) * 3);
             }
 
             @Override

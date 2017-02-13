@@ -23,14 +23,14 @@ import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
+import com.cylan.jiafeigou.support.photoview.PhotoView;
+import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.photoview.PhotoView;
-import com.cylan.photoview.PhotoViewAttacher;
 
 import java.io.File;
 
@@ -119,7 +119,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             downloadFile();//已经获得了授权
         } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             //需要重新提示用户授权
-            ToastUtil.showNegativeToast("下载文件需要权限,请手动开启");
+            ToastUtil.showNegativeToast(getString(R.string.DOWNLOAD_NEED_PERMISSION));
         } else {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_DOWNLOAD);
         }
@@ -156,7 +156,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR,mCallRecord.timeInLong/1000+".jpg");
 
         if (mDownloadFile.exists()) {
-            ToastUtil.showPositiveToast("文件已下载");
+            ToastUtil.showPositiveToast(getString(R.string.FILE_DOWNLOADED));
             return;
         }
 
@@ -164,19 +164,19 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        ToastUtil.showPositiveToast("下载完成");
+                        ToastUtil.showPositiveToast(getString(R.string.DOWNLOAD_COMPLETED));
                         FileUtils.copyFile(resource, mDownloadFile);
                         mDownloadFile = null;
                     }
 
                     @Override
                     public void onLoadStarted(Drawable placeholder) {
-                        ToastUtil.showPositiveToast("开始下载");
+                        ToastUtil.showPositiveToast(getString(R.string.DOWNLOAD_START));
                     }
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        ToastUtil.showNegativeToast("下载失败");
+                        ToastUtil.showNegativeToast(getString(R.string.DOWNLOAD_FAILD));
                         mDownloadFile = null;
                     }
                 });

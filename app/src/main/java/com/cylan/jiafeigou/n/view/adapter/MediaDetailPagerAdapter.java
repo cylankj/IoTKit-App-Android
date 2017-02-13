@@ -14,10 +14,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.support.photoview.PhotoView;
+import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.WonderGlideVideoThumbURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
-import com.cylan.photoview.PhotoView;
-import com.cylan.photoview.PhotoViewAttacher;
 
 import java.util.List;
 
