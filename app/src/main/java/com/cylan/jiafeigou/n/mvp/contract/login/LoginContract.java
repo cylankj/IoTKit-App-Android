@@ -89,8 +89,6 @@ public interface LoginContract {
          * @param callback
          */
         void checkAccountResult(RxEvent.CheckRegsiterBack callback);
-
-
     }
 
     interface Presenter extends BasePresenter {
@@ -116,18 +114,6 @@ public interface LoginContract {
          */
         void startSinaAuthorize(Activity activity);
 
-        /**
-         * 获取twiiter的授权
-         * @param activity
-         */
-        void getTwitterAuthorize(Activity activity);
-
-        /**
-         * 获取Facebook的授权
-         * @param activity
-         */
-        void getFaceBookAuthorize(Activity activity);
-
         void registerByPhone(String phone, String verificationCode);
 
         void getCodeByPhone(String phone);
@@ -149,12 +135,6 @@ public interface LoginContract {
          * @param data
          */
         void onActivityResultData(int requestCode, int resultCode, Intent data);
-
-        /**
-         * 获取Twitter的回调对象
-         * @return
-         */
-        TwitterAuthClient getTwitterBack();
 
         /**
          * 检测账号是否已经注册
@@ -179,6 +159,25 @@ public interface LoginContract {
          */
         String getTempAccPwd();
 
+
+        /**
+         * 获取twiiter的授权
+         * @param activity
+         */
+        void getTwitterAuthorize(Activity activity);
+
+        /**
+         * 获取Twitter的回调对象
+         * @return
+         */
+        TwitterAuthClient getTwitterBack();
+
+        /**
+         * 获取Facebook的授权
+         * @param activity
+         */
+        void getFaceBookAuthorize(Activity activity);
+
         /**
          * fackBook授权回调结果
          */
@@ -189,6 +188,8 @@ public interface LoginContract {
          * @return
          */
         CallbackManager getFaceBookBackObj();
+
+
     }
 
 }

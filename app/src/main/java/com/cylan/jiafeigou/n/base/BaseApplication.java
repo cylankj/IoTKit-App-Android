@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.facebook.FacebookSdk;
 import com.squareup.leakcanary.LeakCanary;
@@ -69,8 +68,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
         initLeakCanary();
         registerActivityLifecycleCallbacks(this);
 
-        initFaceBook();
         initTwitter();
+        initFaceBook();
     }
 
     private void initFaceBook() {
@@ -80,10 +79,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private void initTwitter() {
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new TwitterCore(authConfig),new TweetComposer());
-        boolean initialized = Fabric.isInitialized();
-        if (initialized) {
-            ToastUtil.showNegativeToast("twitter init failed");
-        }
     }
 
 

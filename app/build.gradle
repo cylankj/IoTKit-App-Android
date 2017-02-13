@@ -1,6 +1,8 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 
+//apply plugin: 'io.fabric'
+
 //多渠道包
 apply plugin: 'packer'
 
@@ -34,7 +36,6 @@ def boolean hasSignKey() {
 
 
 android {
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -150,6 +151,7 @@ android {
 
 
 repositories {
+    maven { url 'https://maven.fabric.io/public' }
     flatDir {
         dirs 'libs'
     }
@@ -244,6 +246,5 @@ dependencies {
 
     //facebook
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
-
 }
 

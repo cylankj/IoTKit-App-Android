@@ -294,9 +294,8 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
         <meta-data android:name="io.fabric.ApiKey" android:value="kCEeFDWzz5xHi8Ej9Wx6FWqRL"/>
-
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
     </application>
 
 </manifest>

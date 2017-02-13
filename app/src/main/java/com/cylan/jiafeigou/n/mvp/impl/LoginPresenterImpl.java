@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.utils.AESUtil;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -41,7 +40,6 @@ import com.sina.weibo.sdk.auth.WeiboAuthListener;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
-import com.sina.weibo.sdk.utils.LogUtil;
 import com.tencent.connect.UserInfo;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
@@ -78,17 +76,18 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         implements LoginContract.Presenter {
 
     private static final String DEFAULT_REQUEST_VALUE = "default_request_value";
+
     private Context ctx;
     //    private CompositeSubscription subscription;
     private SinaLogin sinaUtil;
     private TencentInstance tencentInstance;
     private QQAuthrizeListener qqAuthrizeListener;
-    private TwitterAuthClient twitterAuthClient;
-    private CallbackManager callbackManager;
-
     private boolean isLoginSucc;
     private boolean isRegSms;
     private boolean isReg;
+
+    private TwitterAuthClient twitterAuthClient;
+    private CallbackManager callbackManager;
 
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
@@ -168,7 +167,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         if (resultLogin.code == 0){
                             isLoginSucc = true;
                         }
-                   }
+                    }
                 }, (Throwable throwable) -> {
                     AppLogger.e("" + throwable);
                 });
@@ -205,7 +204,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
                         if (isRegSms)
-                        getView().verifyCodeResult(resultVerifyCode.code);
+                            getView().verifyCodeResult(resultVerifyCode.code);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -297,81 +296,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         sinaUtil.login(activity, new SinaAuthorizeListener());
     }
 
-    /**
-     * 获取Twitter的授权
-     * @param activity
-     */
-    @Override
-    public void getTwitterAuthorize(Activity activity) {
-        if (twitterAuthClient == null){
-            twitterAuthClient = new TwitterAuthClient();
-        }
-        twitterAuthClient.authorize(activity, new Callback<TwitterSession>() {
-            @Override
-            public void success(Result<TwitterSession> result) {
-                String name = result.data.getUserName();
-                long userId = result.data.getUserId();
-                long id = result.data.getId();
-                TwitterAuthToken token = result.data.getAuthToken();
-                String secret = token.secret;
-                String strToken = token.token;
-                executeOpenLogin(strToken,6);
-
-                // 获取用户的的信息
-                TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
-                Call<User> call =  twitterApiClient.getAccountService().verifyCredentials(false, false);
-                call.enqueue(new Callback<User>() {
-                    @Override
-                    public void success(Result<User> result) {
-                        String dataResult = "Name: " + result.data.name +
-                                "\nScreenName: " + result.data.screenName +
-                                "\nProfileImage: " + result.data.profileImageUrl +
-                                "\nBackgroungUrl" + result.data.profileBannerUrl +
-                                "\nCreated at" + result.data.createdAt +
-                                "\nDescription" + result.data.description +
-                                "\nEmail" + result.data.email+
-                                "\nFriends Count" + result.data.friendsCount;
-                        System.out.println(result.data.profileImageUrl);
-
-                        String twitter_id = String.valueOf(result.data.id);
-                        String twitter_name = result.data.name;
-                        String[] str  = {twitter_name, result.data.profileImageUrl};
-
-                        PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, str[0]);
-                        PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, str[1]);
-                    }
-
-                    @Override
-                    public void failure(TwitterException exception) {
-                        AppLogger.e("twittergetUserInfo"+exception.getMessage());
-                    }
-                });
-            }
-
-            @Override
-            public void failure(TwitterException e) {
-                ToastUtil.showNegativeToast("授权失败");
-                AppLogger.e("twitter授权："+e);
-            }
-        });
-    }
-
-    /**
-     * 获取Facebook的授权
-     * @param activity
-     */
-    @Override
-    public void getFaceBookAuthorize(Activity activity) {
-        AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken != null && !accessToken.isExpired()){
-            //直接登录
-            executeOpenLogin(accessToken.getToken(),7);
-        }
-        if (accessToken == null || accessToken.isExpired()) {
-            LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "user_friends"));
-        }
-    }
-
     @Override
     public void registerByPhone(String phone, String verificationCode) {
         AppLogger.d("just send phone ");
@@ -438,14 +362,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         Tencent.onActivityResultData(requestCode, resultCode, data, qqAuthrizeListener);
     }
 
-    @Override
-    public TwitterAuthClient getTwitterBack() {
-        if (twitterAuthClient == null){
-            return null;
-        }
-        return twitterAuthClient;
-    }
-
     /**
      * 新浪微博的授权
      */
@@ -453,7 +369,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         @Override
         public void onComplete(Bundle values) {
             Oauth2AccessToken accessToken = Oauth2AccessToken.parseAccessToken(values);
-            UsersAPI usersAPI = new UsersAPI(accessToken,getView().getContext());
+            UsersAPI usersAPI = new UsersAPI(accessToken, getView().getContext());
             Long uid = Long.parseLong(accessToken.getUid());
             usersAPI.show(uid, sinaRequestListener);
             if (accessToken != null && accessToken.isSessionValid()) {
@@ -630,7 +546,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     @Override
                     public void call(RxEvent.CheckRegsiterBack checkRegsiterBack) {
                         if (isReg)
-                        getView().checkAccountResult(checkRegsiterBack);
+                            getView().checkAccountResult(checkRegsiterBack);
                     }
                 });
     }
@@ -665,9 +581,81 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         return decrypt;
     }
 
-    /**
-     * FaceBook回调结果
-     */
+    @Override
+    public void getTwitterAuthorize(Activity activity) {
+        if (twitterAuthClient == null){
+            twitterAuthClient = new TwitterAuthClient();
+        }
+        twitterAuthClient.authorize(activity, new Callback<TwitterSession>() {
+            @Override
+            public void success(Result<TwitterSession> result) {
+                String name = result.data.getUserName();
+                long userId = result.data.getUserId();
+                long id = result.data.getId();
+                TwitterAuthToken token = result.data.getAuthToken();
+                String secret = token.secret;
+                String strToken = token.token;
+                executeOpenLogin(strToken,6);
+
+                // 获取用户的的信息
+                TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
+                Call<User> call =  twitterApiClient.getAccountService().verifyCredentials(false, false);
+                call.enqueue(new Callback<User>() {
+                    @Override
+                    public void success(Result<User> result) {
+                        String dataResult = "Name: " + result.data.name +
+                                "\nScreenName: " + result.data.screenName +
+                                "\nProfileImage: " + result.data.profileImageUrl +
+                                "\nBackgroungUrl" + result.data.profileBannerUrl +
+                                "\nCreated at" + result.data.createdAt +
+                                "\nDescription" + result.data.description +
+                                "\nEmail" + result.data.email+
+                                "\nFriends Count" + result.data.friendsCount;
+                        System.out.println(result.data.profileImageUrl);
+
+                        String twitter_id = String.valueOf(result.data.id);
+                        String twitter_name = result.data.name;
+                        String[] str  = {twitter_name, result.data.profileImageUrl};
+
+                        PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, str[0]);
+                        PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, str[1]);
+                    }
+
+                    @Override
+                    public void failure(TwitterException exception) {
+                        AppLogger.e("twittergetUserInfo"+exception.getMessage());
+                    }
+                });
+            }
+
+            @Override
+            public void failure(TwitterException e) {
+                ToastUtil.showNegativeToast("授权失败");
+                AppLogger.e("twitter授权："+e);
+            }
+        });
+    }
+
+    @Override
+    public TwitterAuthClient getTwitterBack() {
+        if (twitterAuthClient == null){
+            return null;
+        }
+        return twitterAuthClient;
+    }
+
+    @Override
+    public void getFaceBookAuthorize(Activity activity) {
+        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+        if (accessToken != null && !accessToken.isExpired()){
+            //直接登录
+            executeOpenLogin(accessToken.getToken(),7);
+        }
+        if (accessToken == null || accessToken.isExpired()) {
+            LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "user_friends"));
+        }
+    }
+
     @Override
     public void fackBookCallBack() {
         callbackManager = CallbackManager.Factory.create();
@@ -675,7 +663,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             @Override
             public void onSuccess(LoginResult loginResult) {
                 AccessToken accessToken = loginResult.getAccessToken();
-                executeOpenLogin(accessToken.getToken(),7);
                 GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
@@ -691,7 +678,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-
+                        executeOpenLogin(accessToken.getToken(),7);
                         // 保存用户信息
                         PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, imageUrl);
                         PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, facebook_name);
