@@ -15,10 +15,13 @@ import android.util.Log;
 import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -29,6 +32,7 @@ import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
+import com.facebook.FacebookSdk;
 import com.squareup.leakcanary.LeakCanary;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -43,7 +47,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     private static final String TAG = "BaseApplication";
     private HttpProxyCacheServer proxy;
-    // Note: Your consumer key and secret should be obfuscated in your source code before shipping.
+
     private static final String TWITTER_KEY = "kCEeFDWzz5xHi8Ej9Wx6FWqRL";
     private static final String TWITTER_SECRET = "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5";
 
@@ -63,35 +67,48 @@ public class BaseApplication extends MultiDexApplication implements Application.
 //        }
         initLeakCanary();
         registerActivityLifecycleCallbacks(this);
-        initFabric();
 
+        initTwitter();
+        initFaceBook();
     }
 
-    private void initFabric() {
-        HandlerThreadUtils.post(()->{
-            TwitterAuthConfig authConfig =  new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-            Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
-        });
+    private void initFaceBook() {
+        FacebookSdk.sdkInitialize(getApplicationContext());
+    }
 
+    private void initTwitter() {
+        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+        Fabric.with(this, new TwitterCore(authConfig),new TweetComposer());
     }
 
 
     private void initLeakCanary() {
-        HandlerThreadUtils.post(() -> LeakCanary.install(BaseApplication.this));
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                LeakCanary.install(BaseApplication.this);
+            }
+        });
     }
 
     private void initBlockCanary() {
-        HandlerThreadUtils.post(() -> {
-            AppLogger.d("initBlockCanary");
-            //BlockCanary
-            BlockCanary.install(ContextUtils.getContext(), new BlockCanaryContext()).start();
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                AppLogger.d("initBlockCanary");
+                //BlockCanary
+                BlockCanary.install(ContextUtils.getContext(), new BlockCanaryContext()).start();
+            }
         });
     }
 
     private void initBugMonitor() {
-        HandlerThreadUtils.post(() -> {
-            //bugLy
-            BugMonitor.init(ContextUtils.getContext());
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                //bugLy
+                BugMonitor.init(ContextUtils.getContext());
+            }
         });
     }
 

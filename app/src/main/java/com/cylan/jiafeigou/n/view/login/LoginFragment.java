@@ -51,8 +51,10 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+import com.facebook.CallbackManager;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
 import com.tencent.connect.common.Constants;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 import java.lang.ref.WeakReference;
 
@@ -392,7 +394,9 @@ public class LoginFragment extends Fragment
             R.id.tv_login_forget_pwd,
             R.id.iv_top_bar_left,
             R.id.tv_top_bar_right,
-            R.id.tv_agreement
+            R.id.tv_agreement,
+            R.id.tv_twitterLogin_commit,
+            R.id.tv_facebookLogin_commit
     })
     public void onClick(View view) {
         switch (view.getId()) {
@@ -432,6 +436,13 @@ public class LoginFragment extends Fragment
                         fragment, android.R.id.content);
             }
             break;
+            case R.id.tv_twitterLogin_commit:
+                presenter.getTwitterAuthorize(getActivity());
+                break;
+
+            case R.id.tv_facebookLogin_commit:
+                presenter.getFaceBookAuthorize(getActivity());
+                break;
         }
     }
 
@@ -973,6 +984,17 @@ public class LoginFragment extends Fragment
                 requestCode == Constants.REQUEST_APPBAR) {
             presenter.onActivityResultData(requestCode, resultCode, data);
         }
+
+        TwitterAuthClient twitterBack = presenter.getTwitterBack();
+        if (twitterBack != null){
+            twitterBack.onActivityResult(requestCode,resultCode,data);
+        }
+
+        CallbackManager faceBookBackObj = presenter.getFaceBookBackObj();
+        if (faceBookBackObj != null){
+            faceBookBackObj.onActivityResult(requestCode,resultCode,data);
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 }

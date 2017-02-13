@@ -7,7 +7,9 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.facebook.CallbackManager;
 import com.sina.weibo.sdk.auth.sso.SsoHandler;
+import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 
 import rx.Subscription;
 
@@ -156,6 +158,38 @@ public interface LoginContract {
          * @return
          */
         String getTempAccPwd();
+
+
+        /**
+         * 获取twiiter的授权
+         * @param activity
+         */
+        void getTwitterAuthorize(Activity activity);
+
+        /**
+         * 获取Twitter的回调对象
+         * @return
+         */
+        TwitterAuthClient getTwitterBack();
+
+        /**
+         * 获取Facebook的授权
+         * @param activity
+         */
+        void getFaceBookAuthorize(Activity activity);
+
+        /**
+         * fackBook授权回调结果
+         */
+        void fackBookCallBack();
+
+        /**
+         * 获取facebook回调的对象
+         * @return
+         */
+        CallbackManager getFaceBookBackObj();
+
+
     }
 
 }

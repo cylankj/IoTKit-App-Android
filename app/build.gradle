@@ -1,22 +1,10 @@
-buildscript {
-    repositories {
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath 'io.fabric.tools:gradle:1.+'
-    }
-}
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+
+//apply plugin: 'io.fabric'
+
 //多渠道包
 apply plugin: 'packer'
-
-apply plugin: 'io.fabric'
-
-repositories {
-    maven { url 'https://maven.fabric.io/public' }
-}
 
 def releaseTime() {
     return new Date().format("yyyyMMddHHmm")
@@ -163,6 +151,7 @@ android {
 
 
 repositories {
+    maven { url 'https://maven.fabric.io/public' }
     flatDir {
         dirs 'libs'
     }
@@ -202,13 +191,14 @@ dependencies {
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.permis
     annotationProcessor rootProject.ext.permisApt
+//    compile project(':jlib')
     compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
-    compile files('libs/gson-2.2.4.jar')
+//    compile files('libs/gson-2.2.4.jar')
     compile files('libs/mid-sdk-2.3.jar')
     compile files('libs/mta-android-stat-sdk-2.2.0.jar')
     compile files('libs/nineoldandroids-2.4.0.jar')
-    compile files('libs/okhttp-3.2.0.jar')
-    compile files('libs/okio-1.6.0.jar')
+//    compile files('libs/okhttp-3.2.0.jar')
+//    compile files('libs/okio-1.6.0.jar')
     compile files('libs/open_sdk_r5756.jar')
     compile files('libs/weiboSDKCore_3.1.4.jar')
     compile files('libs/zxing.jar')
@@ -226,30 +216,35 @@ dependencies {
     //glide
     compile rootProject.ext.glide
     compile(name: rootProject.ext.cySdk, ext: 'aar')
-    compile(name:rootProject.ext.facebookSDK,ext:'aar')
     //自己写的 apt
 //    compile project(':annotation')
 //    compile project(':compiler')
 
+    //    https://github.com/cylankj/JFGAndroid-Ext.git
+    //
+    //渠道包
     compile 'com.danikula:videocache:2.6.4'
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
-//    https://github.com/cylankj/JFGAndroid-Ext.git
     compile 'com.cylan.ext:annotations:0.1.0'
+    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
     annotationProcessor 'com.cylan.ext:processor:0.1.0'
-    //
     debugCompile 'com.cylan.ext:optdebug:0.0.1'
     releaseCompile 'com.cylan.ext:optrelease:0.0.1'
     //渠道包
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
 
-    compile('com.twitter.sdk.android:twitter:2.3.1@aar') {
-        transitive = true;
-    }
-    compile('com.twitter.sdk.android:tweet-composer:2.3.1@aar') {
-        transitive = true;
-    }
+    // twitter
+    compile(name:'fabric-1.3.14', ext:'aar')
+    compile(name:'tweet-composer-2.3.1', ext:'aar')
+    compile(name:'tweet-ui-2.3.1', ext:'aar')
+    compile(name:'twitter-2.3.1', ext:'aar')
+    compile(name:'twitter-core-2.3.0', ext:'aar')
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
 
+    //facebook
+    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
 }
 

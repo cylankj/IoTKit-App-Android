@@ -26,5 +26,4 @@
         <include layout="@layout/fragment_login_layout_register_box" />
     </ViewSwitcher>
 
-
 </RelativeLayout>
