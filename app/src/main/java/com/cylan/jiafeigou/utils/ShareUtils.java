@@ -51,7 +51,6 @@ public class ShareUtils {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         shareContent.bitmap = resource;
-
                         wechatShare.shareByWX(shareContent);
                     }
 
@@ -68,7 +67,7 @@ public class ShareUtils {
         }
 
         Glide.with(ContextUtils.getContext())
-                .load("http://i.zeze.com/attachment/forum/201605/06/214516ariq1t91bllcozml.jpg")
+                .load(glideUrl)
                 .downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
@@ -114,7 +113,7 @@ public class ShareUtils {
         }
 
         Glide.with(ContextUtils.getContext())
-                .load("http://i.zeze.com/attachment/forum/201605/06/214516ariq1t91bllcozml.jpg")
+                .load(glideUrl)
                 .asBitmap()
                 .format(DecodeFormat.DEFAULT)
                 .into(new SimpleTarget<Bitmap>(150, 150) {
@@ -154,10 +153,15 @@ public class ShareUtils {
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         shareContent.bitmap = resource;
+                        wechatShare.shareByWX(shareContent);
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        wechatShare.shareByWX(shareContent);
                     }
                 });
 
-        wechatShare.shareByWX(shareContent);
 
     }
 
@@ -167,7 +171,7 @@ public class ShareUtils {
         }
 
         Glide.with(ContextUtils.getContext())
-                .load("http://i.zeze.com/attachment/forum/201605/06/214516ariq1t91bllcozml.jpg")
+                .load(videoThumbURL)
                 .downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
@@ -188,7 +192,7 @@ public class ShareUtils {
                 });
     }
 
-    public static void shareVideoToFacebook(Activity activity,String  videoURL,GlideUrl videoThumbURL) {
+    public static void shareVideoToFacebook(Activity activity, String videoURL, GlideUrl videoThumbURL) {
         if (!FacebookSdk.isInitialized()) {
             FacebookSdk.sdkInitialize(activity.getApplicationContext());
         }
@@ -197,21 +201,16 @@ public class ShareUtils {
             return;
         }
 
-        Glide.with(ContextUtils.getContext())
-                .load("http://i.zeze.com/attachment/forum/201605/06/214516ariq1t91bllcozml.jpg")
-                .downloadOnly(new SimpleTarget<File>() {
-                    @Override
-                    public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        File file = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, "Tweet.temp");
-                        FileUtils.copyFile(resource, file);
-                       ShareLinkContent content =new ShareLinkContent.Builder()
-                               .setImageUrl(Uri.fromFile(file))
-                               .setContentUrl(Uri.parse(videoURL))
-                               .setContentTitle("这是我分享的视频")
-                               .build();
-                        ShareDialog dialog = new ShareDialog(activity);
-                        dialog.show(content, ShareDialog.Mode.AUTOMATIC);
-                    }
-                });
+        ShareLinkContent content = new ShareLinkContent.Builder()
+                .setImageUrl(Uri.parse(videoThumbURL.toStringUrl()))
+                .setContentUrl(Uri.parse(videoURL))
+                .setContentTitle("这是我分享的视频")
+                .build();
+        ShareDialog dialog = new ShareDialog(activity);
+        if (dialog.canShow(content)) {
+            dialog.show(content, ShareDialog.Mode.AUTOMATIC);
+        }else{
+            ToastUtil.showNegativeToast(activity.getString(R.string.SHARE_ERROR));
+        }
     }
 }

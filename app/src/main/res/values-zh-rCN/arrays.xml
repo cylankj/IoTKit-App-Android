@@ -202,4 +202,10 @@
         <item>23小时</item>
         <item>24小时</item>
     </string-array>
+    <string-array name="time_unit">
+        <item>秒</item>
+        <item>分</item>
+        <item>时</item>
+        <item>天</item>
+    </string-array>
 </resources>

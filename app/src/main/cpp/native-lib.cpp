@@ -47,9 +47,9 @@ extern "C" jstring JNICALL native_getWeChatKey(JNIEnv *env, jclass clazz, jstrin
     if (content == NULL) {
         return NULL;
     }
-    std::string result = "";
+    std::string result = "wx3081bcdae8a842cf";
     if (strcmp(content, "yf") == 0) {
-        result = "wx3081bcdae8a842cf";
+        result = "wx7b9d35f344db8841";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }

@@ -105,19 +105,19 @@
 
 
     <!--MediaActivity -->
-    <dimen name="video_footer_height">60dp</dimen>
-    <dimen name="video_option_full_screen_margin_left">14dp</dimen>
-    <dimen name="video_option_full_screen_margin_right">13dp</dimen>
-    <dimen name="video_option_play_margin_left">9dp</dimen>
-    <dimen name="video_option_play_margin_right">14dp</dimen>
+    <dimen name="video_footer_height">@dimen/y60</dimen>
+    <dimen name="video_option_full_screen_margin_left">@dimen/y14</dimen>
+    <dimen name="video_option_full_screen_margin_right">@dimen/y13</dimen>
+    <dimen name="video_option_play_margin_left">@dimen/y9</dimen>
+    <dimen name="video_option_play_margin_right">@dimen/y14</dimen>
 
-    <dimen name="video_pager_page_margin">4dp</dimen>
+    <dimen name="video_pager_page_margin">@dimen/y4</dimen>
 
-    <dimen name="dialog_delay_record_width">280dp</dimen>
+    <dimen name="dialog_delay_record_width">@dimen/y280</dimen>
 
-    <dimen name="WheelItemTextSize">24sp</dimen>
-    <dimen name="WheelItemSpace">12dp</dimen>
-    <dimen name="WheelIndicatorSize">2dp</dimen>
-    <dimen name="WheelMargins">8dp</dimen>
+    <dimen name="WheelItemTextSize">@dimen/sp24</dimen>
+    <dimen name="WheelItemSpace">@dimen/y12</dimen>
+    <dimen name="WheelIndicatorSize">@dimen/y2</dimen>
+    <dimen name="WheelMargins">@dimen/y8</dimen>
 
 </resources>

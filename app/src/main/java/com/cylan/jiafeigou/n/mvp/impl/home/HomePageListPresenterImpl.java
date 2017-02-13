@@ -150,7 +150,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
             for (JFGDevice device : deviceList) {
                 uuidList.add(device.uuid);
             }
-            getView().onItemsInsert(null);//清空列表
             getView().onItemsInsert(uuidList);
         }
     }

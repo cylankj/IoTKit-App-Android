@@ -109,6 +109,11 @@ public class ViewUtils {
         v.setPadding(v.getPaddingLeft(), v.getPaddingTop() + height, v.getPaddingRight(), v.getPaddingBottom());
     }
 
+    public static void clearViewPaddingStatusBar(View v) {
+        final int height = getCompatStatusBarHeight(v.getContext());
+        v.setPadding(v.getPaddingLeft(), v.getPaddingTop() - height, v.getPaddingRight(), v.getPaddingBottom());
+    }
+
     public static void showPwd(EditText text, boolean show) {
         text.setTransformationMethod(show ?
                 HideReturnsTransformationMethod.getInstance()

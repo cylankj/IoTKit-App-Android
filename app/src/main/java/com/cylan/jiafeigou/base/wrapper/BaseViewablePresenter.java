@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.base.wrapper;
 
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -16,9 +15,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -74,6 +70,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     protected void onVideoDisconnected(JFGMsgVideoDisconn disconnect) {
+        AppLogger.d("onVideoDisconnected remote:" + disconnect.remote + ": code:" + disconnect.code);
     }
 
     protected void onVideoFlowRsp(JFGMsgVideoRtcp flowRsp) {
@@ -83,38 +80,15 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void startViewer() {
-        if (mResolutionRetrySub != null && mResolutionRetrySub.isUnsubscribed()) {
-            mResolutionRetrySub.unsubscribe();
-        }
         mView.onViewer();
         mHasResolution = false;
         mInViewCallWay = mView.onResolveViewLaunchType();
-        registerSubscription(getResolutionRetrySub());
-    }
-
-    protected Subscription getResolutionRetrySub() {
-        return mResolutionRetrySub = Observable.interval(0, 10, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .subscribe(count -> {
-                    try {
-                        if (mHasResolution) {
-                            unSubscribe(mResolutionRetrySub);
-                            return;
-                        }
-
-                        if (!TextUtils.isEmpty(mInViewIdentify)) {
-                            JfgCmdInsurance.getCmd().stopPlay(mInViewIdentify);
-                            SystemClock.sleep(2000);
-                        }
-                        if (TextUtils.isEmpty(mInViewIdentify)) {
-                            mInViewIdentify = onResolveViewIdentify();
-                        }
-                        AppLogger.d("正在进行第" + count + "次重试");
-                        JfgCmdInsurance.getCmd().playVideo(mInViewIdentify);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
-                }, Throwable::printStackTrace);
+        mInViewIdentify = onResolveViewIdentify();
+        try {
+            JfgCmdInsurance.getCmd().playVideo(mInViewIdentify);
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -123,16 +97,15 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
      * 而且还会清除播放状态
      */
     protected void stopViewer() {
-        post(() -> {
-            if (!TextUtils.isEmpty(mInViewIdentify)) {
-                try {
-                    mHasResolution = false;
-                    JfgCmdInsurance.getCmd().stopPlay(mInViewIdentify);
-                } catch (JfgException e) {
-                    e.printStackTrace();
-                }
+        if (!TextUtils.isEmpty(mInViewIdentify)) {
+            try {
+                mHasResolution = false;
+                AppLogger.d("stopViewer");
+                JfgCmdInsurance.getCmd().stopPlay(mInViewIdentify);
+            } catch (JfgException e) {
+                e.printStackTrace();
             }
-        });
+        }
     }
 
 
@@ -159,7 +132,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     public void onStop() {
         super.onStop();
-        stopViewer();
+        post(this::stopViewer);
     }
 
     @Override
@@ -172,9 +145,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void dismiss() {
-        stopViewer();
-        mInViewIdentify = null;
-        mHasResolution = true;
+        post(() -> {
+            stopViewer();
+            mInViewIdentify = null;
+            mHasResolution = true;
+        });
         mView.onDismiss();
     }
 

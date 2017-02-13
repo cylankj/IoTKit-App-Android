@@ -25,6 +25,7 @@ import rx.schedulers.Schedulers;
  */
 
 public abstract class BaseCallablePresenter<V extends CallableView> extends BaseViewablePresenter<V> implements CallablePresenter {
+    private static final long NEW_CALL_TIME_OUT = 30 * 1000L;
     protected Caller mCaller;
 
     @Override
@@ -34,6 +35,10 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         registerSubscription(getCallAnswerObserverSub());
     }
 
+    @Override
+    protected void onRegisterResponseParser() {
+        super.onRegisterResponseParser();
+    }
 
     @Override
     protected String onResolveViewIdentify() {
@@ -48,6 +53,8 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     callAnswerInOther();
                 }, Throwable::printStackTrace);
     }
+
+
 
     public void pickup() {
         mView.onViewer();
@@ -67,7 +74,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     return;//当主动查看门铃时忽略门铃呼叫
                 }
                 mIsSpeakerOn = true;//接听门铃默认打开麦克风
-
                 if (!TextUtils.isEmpty(mInViewIdentify)) {
                     mView.onNewCallWhenInLive(mCaller.caller);
                 } else {
@@ -75,6 +81,11 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     waitForPicture(mCaller.picture, () -> {
                         if (mView != null) mView.onPreviewPicture(mCaller.picture);
                     });
+                    postDelay(()->{
+                        if (!mHasResolution){//说明超过时间还没有人接听
+                            mView.onDismiss();
+                        }
+                    }, NEW_CALL_TIME_OUT);
                 }
                 break;
             case JConstant.VIEW_CALL_WAY_VIEWER:

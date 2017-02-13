@@ -122,12 +122,21 @@ public class TimeUtils {
                 .format(new Date(time));
     }
 
-    public static String getUptime(String format, long time) {
+    public static String getUptime(long time) {
         time = System.currentTimeMillis() / 1000 - time;
-        int day = (int) (time / 3600);
-        int minutes = (int) (time / 60);
-        int seconds = (int) (time - day * 3600 - minutes * 60);
-        return String.format(format, day, minutes, seconds);
+        int temp = (int) time / 60;
+        int minute = temp % 60;
+        temp = temp / 60;
+        int hour = temp % 24;
+        temp = temp / 24;
+        int day = temp;
+        if (day > 0 && hour > 0) {
+            return ContextUtils.getContext().getString(R.string.STANBY_TIME_D_H_M, day, hour, minute);
+        } else if (hour > 0) {
+            return ContextUtils.getContext().getString(R.string.STANBY_TIME_H_M, hour, minute);
+        } else {
+            return ContextUtils.getContext().getString(R.string.STANBY_TIME_M, minute);
+        }
     }
 
     public static String getDayInMonth(long time) {
@@ -223,6 +232,7 @@ public class TimeUtils {
         format.applyPattern("MMMM");
         return format.format(new Date(time));
     }
+
 
     public static String getBellRecordTime(long time) {
         Date today = new Date();

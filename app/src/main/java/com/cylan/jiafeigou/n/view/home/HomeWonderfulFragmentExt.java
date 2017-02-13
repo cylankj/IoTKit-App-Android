@@ -100,7 +100,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     ViewGroup mWonderfulGuideContainer;
 
     private WeakReference<WonderIndicatorWheelView> wheelViewWeakReference;
-    private WeakReference<ShareDialogFragment> shareDialogFragmentWeakReference;
+    private ShareDialogFragment shareDialogFragment;
     private WeakReference<SimpleDialogFragment> deleteDialogFragmentWeakReference;
 
     @BindView(R.id.tv_sec_title_head_wonder)
@@ -112,6 +112,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private ShadowFrameLayout mParent;
     private boolean isScrollShow = false;
     private boolean mShouldLoadMore = true;
+    private boolean mCanRefresh = true;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
         HomeWonderfulFragmentExt fragment = new HomeWonderfulFragmentExt();
@@ -156,10 +157,10 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     private ShareDialogFragment initShareDialog() {
-        if (shareDialogFragmentWeakReference == null || shareDialogFragmentWeakReference.get() == null) {
-            shareDialogFragmentWeakReference = new WeakReference<>(ShareDialogFragment.newInstance((Bundle) null));
+        if (shareDialogFragment == null) {
+            shareDialogFragment = ShareDialogFragment.newInstance();
         }
-        return shareDialogFragmentWeakReference.get();
+        return shareDialogFragment;
     }
 
     @Override
@@ -379,7 +380,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @OnClick(R.id.tv_wonderful_item_delete)
     public void removeAnymore() {
-       deleteItem(-1);
+        deleteItem(-1);
     }
 
     @Override
@@ -387,15 +388,18 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         switch (type) {
             case VIEW_TYPE_HIDE: {//hide
                 mWonderfulEmptyViewContainer.setVisibility(View.GONE);
+                mCanRefresh=true;
             }
             break;
             case VIEW_TYPE_EMPTY: {//empty
+                mCanRefresh=true;
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
                 mWonderfulGuideContainer.setVisibility(View.GONE);
                 mWonderfulEmptyContainer.setVisibility(View.VISIBLE);
             }
             break;
             case VIEW_TYPE_GUIDE: {//guide
+                mCanRefresh=false;
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
                 mWonderfulEmptyContainer.setVisibility(View.GONE);
                 mWonderfulGuideContainer.setVisibility(View.VISIBLE);
@@ -406,10 +410,14 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onRefresh() {
-        mPresenter.startRefresh();
-        srLayoutMainContentHolder.setRefreshing(true);
-        srLayoutMainContentHolder.removeCallbacks(mDelayAction);
-        srLayoutMainContentHolder.postDelayed(mDelayAction, 10000);
+        if (mCanRefresh) {
+            mPresenter.startRefresh();
+            srLayoutMainContentHolder.setRefreshing(true);
+            srLayoutMainContentHolder.removeCallbacks(mDelayAction);
+            srLayoutMainContentHolder.postDelayed(mDelayAction, 10000);
+        } else {
+            srLayoutMainContentHolder.setRefreshing(false);
+        }
     }
 
     private Runnable mDelayAction = new Runnable() {
@@ -439,16 +447,10 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     private void onShareWonderfulContent(DPWonderItem bean) {
-        boolean installed = false;
-        installed = mPresenter.checkWechat();
-        if (!installed) {
-            ToastUtil.showNegativeToast(getString(R.string.WeChat_Not_Installed));
-            return;
-        }
-
         ShareDialogFragment fragment = initShareDialog();
-        if (bean.msgType==DPWonderItem.TYPE_PIC){
-            fragment.setPictureURL(new WonderGlideURL(bean));
+        fragment.setPictureURL(new WonderGlideURL(bean));
+        if (bean.msgType == DPWonderItem.TYPE_VIDEO) {
+            fragment.setVideoURL(bean.fileName);
         }
         fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
     }
@@ -548,7 +550,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             long time = homeWonderAdapter.getItem(position).version;
             mPresenter.deleteTimeline(time);
             homeWonderAdapter.remove((Integer) value);
-        }else if (position ==-1){
+        } else if (position == -1) {
             mPresenter.removeGuideAnymore();
         }
     }

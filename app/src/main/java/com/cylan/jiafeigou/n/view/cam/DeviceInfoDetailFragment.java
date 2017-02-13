@@ -150,7 +150,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION, "");
         tvDeviceSystemVersion.setText(sVersion);
         int uptime = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_210_UP_TIME, 0);
-        tvDeviceUptime.setText(TimeUtils.getUptime(getString(R.string.STANBY_TIME), uptime));
+        tvDeviceUptime.setText(TimeUtils.getUptime( uptime));
     }
 
     private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {

@@ -16,11 +16,11 @@
   -->
 
 <resources>
-    <dimen name="gf_title_bar_height">48dp</dimen>
+    <dimen name="gf_title_bar_height">@dimen/y48</dimen>
 
-    <dimen name="video_footer_height">48dp</dimen>
-    <dimen name="video_option_full_screen_margin_left">30dp</dimen>
-    <dimen name="video_option_full_screen_margin_right">21dp</dimen>
-    <dimen name="video_option_play_margin_left">21dp</dimen>
-    <dimen name="video_option_play_margin_right">30dp</dimen>
+    <dimen name="video_footer_height">@dimen/y48</dimen>
+    <dimen name="video_option_full_screen_margin_left">@dimen/y30</dimen>
+    <dimen name="video_option_full_screen_margin_right">@dimen/y21</dimen>
+    <dimen name="video_option_play_margin_left">@dimen/y21</dimen>
+    <dimen name="video_option_play_margin_right">@dimen/y30</dimen>
 </resources>

@@ -7,7 +7,7 @@
     android:background="#000000"
     tools:context="com.cylan.jiafeigou.n.view.bell.BellRecordDetailActivity">
 
-    <com.cylan.photoview.PhotoView
+    <com.cylan.jiafeigou.support.photoview.PhotoView
         android:id="@+id/act_bell_detail_picture"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
