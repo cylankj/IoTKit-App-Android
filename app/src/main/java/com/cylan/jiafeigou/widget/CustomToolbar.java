@@ -45,7 +45,7 @@ public class CustomToolbar extends LinearLayout {
         String title = at.getString(R.styleable.CustomToolbarStyle_ct_title);
         String leftTitle = at.getString(R.styleable.CustomToolbarStyle_ct_left_title);
         int iconResId = at.getResourceId(R.styleable.CustomToolbarStyle_ct_icon, -1);
-        boolean showShadow = at.getBoolean(R.styleable.CustomToolbarStyle_ct_enable_shadow, true);
+        boolean showShadow = at.getBoolean(R.styleable.CustomToolbarStyle_ct_enable_shadow, false);
         fitSystemWindow = at.getBoolean(R.styleable.CustomToolbarStyle_ct_fit_system_window, true);
         at.recycle();
         View view = LayoutInflater.from(context).inflate(R.layout.layout_custom_tool_bar, this, true);

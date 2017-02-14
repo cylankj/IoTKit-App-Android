@@ -2,11 +2,23 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lLayout_wifi_list_item"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/y48"
+    android:layout_height="@dimen/y72"
     android:background="@android:color/white"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:padding="@dimen/x5"
     tools:context="com.cylan.jiafeigou.n.view.setting.WifiListFragment">
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/color_e8e8e8" />
+
+    <ImageView
+        android:id="@+id/imv_wifi_ssid"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/x10"
+        android:gravity="center" />
 
     <TextView
         android:id="@+id/tv_wifi_ssid"
@@ -14,6 +26,6 @@
         android:layout_height="match_parent"
         android:layout_gravity="center_vertical"
         android:gravity="center"
-        android:text="fdafafa"
-        android:textColor="#111fff" />
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/sp16" />
 </LinearLayout>

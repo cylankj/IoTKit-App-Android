@@ -4,6 +4,7 @@ package com.cylan.jiafeigou.n.view.setting;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -157,10 +158,23 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
         @Override
         public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, ScanResult item) {
             String ssid = item.SSID.replace("\"", "");
-            int security = NetUtils.getSecurity(item);
-            holder.setText(R.id.tv_wifi_ssid, ssid + " " + security);
+            holder.setImageResource(R.id.imv_wifi_ssid, getWifiIcon(item));
+            holder.setText(R.id.tv_wifi_ssid, ssid);
             holder.setOnClickListener(R.id.lLayout_wifi_list_item, clickListener);
         }
 
+        private int getWifiIcon(ScanResult item) {
+            int security = NetUtils.getSecurity(item);
+            int strength = WifiManager.calculateSignalLevel(item.level, 3);
+            if (security == 0) {
+                //open
+                strength += 4;
+            } else {
+                //encrypt
+                strength += 1;
+            }
+            int base = R.drawable.setting_icon_wifi_network_security1;
+            return base + strength;
+        }
     }
 }
