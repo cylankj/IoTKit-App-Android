@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
+
 
 /**
  * A simple {@link Fragment} subclass.
@@ -44,6 +47,8 @@ public class BindGuideFragment extends IBaseFragment {
     TextView tvGuideSubContent;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.tv_guide_main_content)
+    TextView tvGuideMainContent;
     // TODO: Rename parameter arguments, choose names that match
 
     public BindGuideFragment() {
@@ -72,6 +77,14 @@ public class BindGuideFragment extends IBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (getArguments() != null && TextUtils.equals(getArguments().getString(KEY_BIND_DEVICE),
+                getString(R.string.DOG_CAMERA_NAME))) {
+            //is cam
+            tvGuideMainContent.setText(getString(R.string.WIFI_SET_3));
+        } else {
+            //default bell
+            tvGuideMainContent.setText(getString(R.string.WIFI_SET_3_1));
+        }
         tvGuideSubContent.setText(getString(R.string.WIFI_SET_4, getString(R.string.app_name)));
         GlideDrawableImageViewTarget imageViewTarget =
                 new GlideDrawableImageViewTarget(imvBindGuide);
