@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
+import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
@@ -524,7 +525,7 @@ public class RxEvent {
     public static final class BellCallEvent {
 
         public final JFGDoorBellCaller caller;
-        public boolean isFromLocal=false;
+        public boolean isFromLocal = false;
         public LocalUdpMsg msg;
 
         public BellCallEvent(JFGDoorBellCaller jfgDoorBellCaller) {
@@ -690,6 +691,19 @@ public class RxEvent {
             this.seq = l;
             this.peer = s;
             this.resultCode = i;
+        }
+    }
+
+    public static class SetDataRsp {
+        public long seq;
+        public ArrayList<JFGDPMsgRet> rets;
+    }
+
+    public static class ErrorRsp extends RuntimeException {
+        public int code;
+
+        public ErrorRsp(int code) {
+            this.code = code;
         }
     }
 }

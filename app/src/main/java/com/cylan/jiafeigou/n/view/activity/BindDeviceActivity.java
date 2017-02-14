@@ -156,18 +156,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 }
                 break;
             }
-//            case R.id.v_to_bind_cloud_album:
-//                ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_cloud_album));
-//                Bundle bundle = new Bundle();
-//                BindScanFragment fragment = BindScanFragment.newInstance(bundle);
-//                getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .setCustomAnimations(0, R.anim.slide_down_out
-//                                , R.anim.slide_in_left, R.anim.slide_out_right)
-//                        .replace(android.R.id.content, fragment)
-//                        .addToBackStack("BindScanFragment")
-//                        .commit();
-//                break;
         }
     }
 
@@ -208,4 +196,5 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 .addToBackStack("BindCameraFragment")
                 .commit();
     }
+    
 }

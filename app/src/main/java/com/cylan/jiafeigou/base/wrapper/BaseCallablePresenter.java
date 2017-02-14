@@ -28,6 +28,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     private static final long NEW_CALL_TIME_OUT = 30 * 1000L;
     protected Caller mCaller;
 
+
     @Override
     @CallSuper
     protected void onRegisterSubscription() {
@@ -55,14 +56,13 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
 
-
     public void pickup() {
         mView.onViewer();
+        mInViewIdentify = onResolveViewIdentify();
         waitForPicture(mCaller.picture, this::startViewer);
     }
 
     protected void callAnswerInOther() {
-        mHasResolution = true;
         mView.onCallAnswerInOther();
     }
 
@@ -81,11 +81,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     waitForPicture(mCaller.picture, () -> {
                         if (mView != null) mView.onPreviewPicture(mCaller.picture);
                     });
-                    postDelay(()->{
-                        if (!mHasResolution){//说明超过时间还没有人接听
-                            mView.onDismiss();
-                        }
-                    }, NEW_CALL_TIME_OUT);
                 }
                 break;
             case JConstant.VIEW_CALL_WAY_VIEWER:
@@ -94,9 +89,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 break;
         }
 
-        setSpeaker(mIsSpeakerOn);
-
-        mView.onSpeaker(mIsSpeakerOn);
     }
 
     protected void waitForPicture(String url, JFGView.Action action) {

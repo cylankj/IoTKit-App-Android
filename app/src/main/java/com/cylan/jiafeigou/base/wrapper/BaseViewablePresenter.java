@@ -15,6 +15,9 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -31,7 +34,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     protected boolean mHasResolution = false;
 
-    protected Subscription mResolutionRetrySub;
+    protected Subscription mConnectDeviceTimeOut;
 
     @Override
     protected void onRegisterSubscription() {
@@ -43,13 +46,30 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         );
     }
 
+    protected Subscription getConnectDeviceTimeOutSub() {
+        AppLogger.e("getConnectDeviceTimeOutSub");
+        return mConnectDeviceTimeOut = Observable.just(null)
+                .delay(30, TimeUnit.SECONDS)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o -> {
+                    mView.onConnectDeviceTimeOut();
+                    AppLogger.e("onConnectDeviceTimeOut");
+                });
+    }
+
     protected Subscription getVideoDisconnectedSub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
                 .subscribeOn(Schedulers.io())
                 .filter(disconnectRsp -> TextUtils.equals(disconnectRsp.remote, onResolveViewIdentify()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onVideoDisconnected, Throwable::printStackTrace);
+//                .subscribe(this::onVideoDisconnected, Throwable::printStackTrace);
+                .subscribe(jfgMsgVideoDisconn -> {
+                    AppLogger.d("视频连接断开了");
+                    onVideoDisconnected(jfgMsgVideoDisconn);
+                }, Throwable::printStackTrace);
     }
+
 
     protected Subscription getResolutionSub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
@@ -70,7 +90,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     protected void onVideoDisconnected(JFGMsgVideoDisconn disconnect) {
-        AppLogger.d("onVideoDisconnected remote:" + disconnect.remote + ": code:" + disconnect.code);
+        AppLogger.e("onVideoDisconnected remote:" + disconnect.remote + ": code:" + disconnect.code);
+        mView.onConnectDeviceTimeOut();
     }
 
     protected void onVideoFlowRsp(JFGMsgVideoRtcp flowRsp) {
@@ -81,14 +102,18 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     public void startViewer() {
         mView.onViewer();
-        mHasResolution = false;
         mInViewCallWay = mView.onResolveViewLaunchType();
-        mInViewIdentify = onResolveViewIdentify();
+        if (TextUtils.isEmpty(mInViewIdentify))
+            mInViewIdentify = onResolveViewIdentify();
         try {
-            JfgCmdInsurance.getCmd().playVideo(mInViewIdentify);
+            if (!mHasResolution) {
+                AppLogger.e("startView" + mInViewIdentify);
+                JfgCmdInsurance.getCmd().playVideo(mInViewIdentify);
+            }
         } catch (JfgException e) {
             e.printStackTrace();
         }
+        registerSubscription(getConnectDeviceTimeOutSub());
     }
 
     /**
@@ -111,9 +136,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     protected void onVideoResolution(JFGMsgVideoResolution resolution) {
         try {
-            mHasResolution = true;
-            unSubscribe(mResolutionRetrySub);
+            unSubscribe(mConnectDeviceTimeOut);
             mView.onResolution(resolution);
+            mView.onSpeaker(mIsSpeakerOn);
+            mHasResolution = true;
+            setSpeaker(mIsSpeakerOn);
         } catch (JfgException e) {
             e.printStackTrace();
         }
@@ -138,7 +165,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     public void onStart() {
         super.onStart();
-        if (!TextUtils.isEmpty(mInViewIdentify)) {
+        if (!TextUtils.isEmpty(mInViewIdentify) && mHasResolution) { //已有分辨率消息说明已经接通,则恢复
             startViewer();
         }
     }
@@ -148,7 +175,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         post(() -> {
             stopViewer();
             mInViewIdentify = null;
-            mHasResolution = true;
         });
         mView.onDismiss();
     }

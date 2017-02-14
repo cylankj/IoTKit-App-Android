@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
+import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.utils.WonderGlideVideoThumbURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
@@ -70,11 +71,11 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
             photoView = new PhotoView(container.getContext());
             contentView = photoView;
             ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
-            ((PhotoView)photoView).setOnPhotoTapListener(mPhotoTapListener);
+            ((PhotoView) photoView).setOnPhotoTapListener(mPhotoTapListener);
             Glide.with(container.getContext())
-//                    .load(new WonderGlideURL(bean))
-//                    .load("http://c.hiphotos.baidu.com/image/pic/item/0dd7912397dda1449fad6f63b6b7d0a20df486be.jpg")
-                    .load(new GlideUrl("http://c.hiphotos.baidu.com/image/pic/item/0dd7912397dda1449fad6f63b6b7d0a20df486be.jpg"))
+                    .load(new WonderGlideURL(bean))
+////                    .load("http://c.hiphotos.baidu.com/image/pic/item/0dd7912397dda1449fad6f63b6b7d0a20df486be.jpg")
+//                    .load(new GlideUrl("http://c.hiphotos.baidu.com/image/pic/item/0dd7912397dda1449fad6f63b6b7d0a20df486be.jpg"))
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
                     .into(photoView);
         }
