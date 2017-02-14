@@ -13,6 +13,7 @@
         android:layout_height="@dimen/y60" />
 
     <com.cylan.jiafeigou.widget.CustomToolbar
+        hunt:ct_title_color="@color/color_black"
         android:id="@+id/rLayout_forget_pwd_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

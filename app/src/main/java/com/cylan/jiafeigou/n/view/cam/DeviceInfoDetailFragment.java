@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.util.List;
@@ -76,6 +77,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     LinearLayout lLayoutDeviceBattery;
     @BindView(R.id.tv_device_uptime)
     TextView tvDeviceUptime;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private String uuid;
     private EditFragmentDialog editDialogFragment;
 
@@ -109,7 +112,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(view.findViewById(R.id.fLayout_top_bar_container));
+        ViewUtils.setViewPaddingStatusBar(customToolbar);
         JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
         //仅3G摄像头、FreeCam显示此栏
         if (device != null && (JFGRules.isFreeCam(device.pid) || JFGRules.is3GCam(device.pid))) {

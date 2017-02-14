@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -23,6 +22,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamWarnContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamAlarmPresenterImpl;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.DurationDialogFragment;
 
 import java.util.Locale;
@@ -38,10 +38,6 @@ import butterknife.OnClick;
  */
 public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Presenter> implements CamWarnContract.View {
 
-    @BindView(R.id.imgV_top_bar_center)
-    TextView imgVTopBarCenter;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
     @BindView(R.id.rb_warn_effect_silence)
     RadioButton rbWarnEffectSilence;
     @BindView(R.id.rb_warn_effect_dog_)
@@ -54,6 +50,8 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     LinearLayout lLayoutWarnRepeatMode;
     @BindView(R.id.rg_warn_effect)
     RadioGroup rgWarnEffect;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private String uuid;
 
     public AlarmSoundEffectFragment() {
@@ -93,8 +91,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        imgVTopBarCenter.setText(getString(R.string.SOUNDS));
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+        ViewUtils.setViewPaddingStatusBar(customToolbar);
         DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
         int effect = notificationInfo.notification;
         final int count = rgWarnEffect.getChildCount();

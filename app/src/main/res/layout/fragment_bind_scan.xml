@@ -13,29 +13,10 @@
         android:layout_height="match_parent"
         hunt:hint="@string/EFAMILY_QRCODE_BOTTOM_TEXT" />
 
-    <FrameLayout
-        android:id="@+id/fLayout_toolbar"
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/imgV_nav_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/x5"
-            android:layout_marginRight="@dimen/x5"
-            android:layout_marginTop="@dimen/y5"
-            android:padding="@dimen/x10"
-            android:src="@drawable/nav_icon_back_white" />
-
-        <TextView
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp16"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:text="@string/DEVICES_TITLE" />
-    </FrameLayout>
-
+        android:layout_height="wrap_content" />
 
 </FrameLayout>

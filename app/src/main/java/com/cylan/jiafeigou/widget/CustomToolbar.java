@@ -21,7 +21,6 @@ public class CustomToolbar extends FrameLayout {
     TextView tvToolbarIcon;
     TextView tvToolbarTitle;
     TextView tvToolbarRight;
-    FrameLayout fLayoutToolbar;
 
     public CustomToolbar(Context context) {
         this(context, null);
@@ -36,21 +35,24 @@ public class CustomToolbar extends FrameLayout {
         TypedArray
                 at = context.obtainStyledAttributes(attrs, R.styleable.CustomToolbarStyle);
         int bgColor = at.getColor(R.styleable.CustomToolbarStyle_ct_background_color, Color.TRANSPARENT);
+        int titleColor = at.getColor(R.styleable.CustomToolbarStyle_ct_title_color, Color.TRANSPARENT);
+        int leftTitleColor = at.getColor(R.styleable.CustomToolbarStyle_ct_left_title_color, Color.TRANSPARENT);
         String title = at.getString(R.styleable.CustomToolbarStyle_ct_title);
+        String leftTitle = at.getString(R.styleable.CustomToolbarStyle_ct_left_title);
         int iconResId = at.getResourceId(R.styleable.CustomToolbarStyle_ct_icon, -1);
         at.recycle();
         setBackgroundColor(bgColor);
         View view = LayoutInflater.from(context).inflate(R.layout.layout_custom_tool_bar, this, true);
-        fLayoutToolbar = (FrameLayout) view.findViewById(R.id.fLayout_toolbar);
         tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
         tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
+        tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
         tvToolbarTitle.setText(title);
+        tvToolbarTitle.setTextColor(titleColor);
         if (iconResId != -1) {
-            tvToolbarIcon.setVisibility(VISIBLE);
             ViewUtils.setDrawablePadding(tvToolbarIcon, iconResId, 0);
         }
-        tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
-        tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
+        tvToolbarIcon.setText(leftTitle);
+        tvToolbarIcon.setTextColor(leftTitleColor);
     }
 
     public void setBackAction(OnClickListener clickListener) {

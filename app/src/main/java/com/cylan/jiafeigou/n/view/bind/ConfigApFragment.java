@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoginButton;
 
 import java.lang.ref.WeakReference;
@@ -67,6 +68,8 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     FrameLayout rLayoutWifiPwdInputBox;
     @BindView(R.id.vs_show_content)
     ViewSwitcher vsShowContent;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
 
     private List<ScanResult> cacheList;
@@ -110,6 +113,7 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewMarginStatusBar(customToolbar);
         if (cacheList != null && cacheList.size() > 0) {
             tvConfigApName.setText(cacheList.get(0).SSID);
             tvConfigApName.setTag(new BeanWifiList(cacheList.get(0)));

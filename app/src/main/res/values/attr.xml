@@ -45,8 +45,10 @@
     <declare-styleable name="CustomToolbarStyle">
         <attr name="ct_background_color" format="color" />
         <attr name="ct_left_title" format="string|reference" />
+        <attr name="ct_left_title_color" format="color|reference" />
         <attr name="ct_icon" format="reference" />
         <attr name="ct_title" format="string|reference" />
+        <attr name="ct_title_color" format="color|reference" />
     </declare-styleable>
     <declare-styleable name="SWheelViewStyle">
         <attr name="sw_shortLineHeight" format="float|dimension" />

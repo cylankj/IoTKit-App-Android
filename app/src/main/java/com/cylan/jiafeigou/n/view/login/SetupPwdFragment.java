@@ -104,6 +104,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     }
 
     private void initTitleBar() {
+        ViewUtils.setViewMarginStatusBar(customToolbar);
         customToolbar.setToolbarTitle(R.string.PASSWORD);
         customToolbar.setTvToolbarIcon(R.drawable.nav_icon_back_gary);
         initNavigateBack();

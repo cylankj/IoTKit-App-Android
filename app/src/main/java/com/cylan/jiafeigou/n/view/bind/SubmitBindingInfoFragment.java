@@ -16,6 +16,8 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
@@ -38,6 +40,8 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     LoginButton btnBindRepeat;
     @BindView(R.id.vs_layout_switch)
     ViewSwitcher vsLayoutSwitch;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     public static SubmitBindingInfoFragment newInstance(Bundle bundle) {
         SubmitBindingInfoFragment fragment = new SubmitBindingInfoFragment();
@@ -63,6 +67,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(customToolbar);
         adjustViewSize();
         if (basePresenter != null)
             basePresenter.startCounting();

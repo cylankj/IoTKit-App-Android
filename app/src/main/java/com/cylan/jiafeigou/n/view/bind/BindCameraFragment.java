@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.nineoldandroids.animation.Animator;
 
 import java.util.List;
@@ -44,6 +45,8 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
     ImageView imgVCameraHand;
     @BindView(R.id.imgV_camera_red_dot)
     ImageView imgVCameraRedDot;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private Animator animator;
 
     public BindCameraFragment() {
@@ -74,6 +77,14 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewPaddingStatusBar(customToolbar);
+        customToolbar.setBackAction(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() != null)
+                    getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
         initAnimation();
     }
 

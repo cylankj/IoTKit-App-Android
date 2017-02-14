@@ -18,6 +18,8 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.view.adapter.ToBindDeviceListAdapter;
+import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.ArrayList;
 
@@ -36,6 +38,8 @@ public class BindDeviceListFragment extends IBaseFragment implements ToBindDevic
     ToBindDeviceListAdapter toBindDeviceListAdapter;
     @BindView(R.id.fLayout_toolbar)
     FrameLayout fLayoutTopBar;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
 
     public BindDeviceListFragment() {
@@ -80,6 +84,7 @@ public class BindDeviceListFragment extends IBaseFragment implements ToBindDevic
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewMarginStatusBar(customToolbar);
         Bundle bundle = getArguments();
         if (bundle == null) {
             return;

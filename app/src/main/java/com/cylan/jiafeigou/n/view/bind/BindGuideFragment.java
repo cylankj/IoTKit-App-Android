@@ -23,6 +23,8 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +43,8 @@ public class BindGuideFragment extends IBaseFragment {
     TextView tvBindGuideNext;
     @BindView(R.id.tv_guide_sub_content)
     TextView tvGuideSubContent;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     // TODO: Rename parameter arguments, choose names that match
 
     public BindGuideFragment() {
@@ -73,6 +77,7 @@ public class BindGuideFragment extends IBaseFragment {
         GlideDrawableImageViewTarget imageViewTarget =
                 new GlideDrawableImageViewTarget(imvBindGuide);
         Glide.with(this).load(R.raw.bind_guide).into(imageViewTarget);
+        ViewUtils.setViewMarginStatusBar(customToolbar);
     }
 
     @Override
