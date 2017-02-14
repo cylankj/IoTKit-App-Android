@@ -6,7 +6,7 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -16,7 +16,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
  * Created by cylan-hunt on 17-2-12.
  */
 
-public class CustomToolbar extends FrameLayout {
+public class CustomToolbar extends LinearLayout {
 
     TextView tvToolbarIcon;
     TextView tvToolbarTitle;
@@ -40,9 +40,10 @@ public class CustomToolbar extends FrameLayout {
         String title = at.getString(R.styleable.CustomToolbarStyle_ct_title);
         String leftTitle = at.getString(R.styleable.CustomToolbarStyle_ct_left_title);
         int iconResId = at.getResourceId(R.styleable.CustomToolbarStyle_ct_icon, -1);
+        boolean showShadow = at.getBoolean(R.styleable.CustomToolbarStyle_ct_enable_shadow, true);
         at.recycle();
-        setBackgroundColor(bgColor);
         View view = LayoutInflater.from(context).inflate(R.layout.layout_custom_tool_bar, this, true);
+        findViewById(R.id.fLayout_toolbar).setBackgroundColor(bgColor);
         tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
         tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
         tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
@@ -53,6 +54,9 @@ public class CustomToolbar extends FrameLayout {
         }
         tvToolbarIcon.setText(leftTitle);
         tvToolbarIcon.setTextColor(leftTitleColor);
+        if (!showShadow) {
+            findViewById(R.id.v_shadow).setVisibility(GONE);
+        }
     }
 
     public void setBackAction(OnClickListener clickListener) {

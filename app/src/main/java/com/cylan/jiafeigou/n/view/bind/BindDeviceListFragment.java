@@ -36,8 +36,6 @@ public class BindDeviceListFragment extends IBaseFragment implements ToBindDevic
     @BindView(R.id.rv_to_bind_device_list)
     RecyclerView rvToBindDeviceList;
     ToBindDeviceListAdapter toBindDeviceListAdapter;
-    @BindView(R.id.fLayout_toolbar)
-    FrameLayout fLayoutTopBar;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 

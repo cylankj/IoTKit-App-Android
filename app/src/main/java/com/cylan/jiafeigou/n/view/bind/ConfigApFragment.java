@@ -62,8 +62,6 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     TextView tvConfigApName;
 
     WiFiListDialogFragment fiListDialogFragment;
-    @BindView(R.id.fLayout_toolbar)
-    FrameLayout fLayoutTopBar;
     @BindView(R.id.rLayout_wifi_pwd_input_box)
     FrameLayout rLayoutWifiPwdInputBox;
     @BindView(R.id.vs_show_content)

@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -17,6 +15,7 @@ import com.cylan.jiafeigou.n.view.bind.BindCameraFragment;
 import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
@@ -27,12 +26,12 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_AUTO_SHOW_BIND;
 
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
 
-    @BindView(R.id.imgV_top_bar_left)
-    ImageView imgVTopBarLeft;
     @BindView(R.id.imgV_top_bar_center)
     TextView tvTopBarCenter;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
+    //    @BindView(R.id.fLayout_top_bar_container)
+//    FrameLayout fLayoutTopBarContainer;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,12 +50,10 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     }
 
     private void initTopBar() {
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
-    }
-
-    @OnClick(R.id.imgV_top_bar_left)
-    public void onClose() {
-        onBackPressed();
+        ViewUtils.setViewPaddingStatusBar(customToolbar);
+        customToolbar.setBackAction((View v) -> {
+            onBackPressed();
+        });
     }
 
     @Override
