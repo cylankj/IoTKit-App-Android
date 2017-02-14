@@ -189,7 +189,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         }
     }
 
-    @OnClick({R.id.imgV_top_bar_center,
+    @OnClick({
             R.id.fLayout_protection_sensitivity,
             R.id.fLayout_protection_warn_effect,
             R.id.fLayout_protection_start_time,
@@ -197,9 +197,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             R.id.fLayout_protection_repeat_period})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imgV_top_bar_center:
-                getActivity().getSupportFragmentManager().popBackStack();
-                break;
             case R.id.fLayout_protection_sensitivity: {
                 SetSensitivityDialogFragment fragment = SetSensitivityDialogFragment.newInstance(getArguments());
                 fragment.setAction((int id, Object value) -> {

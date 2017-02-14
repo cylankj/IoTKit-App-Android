@@ -92,6 +92,10 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ViewUtils.setViewPaddingStatusBar(customToolbar);
+        customToolbar.setBackAction((View v) -> {
+            if (getActivity() != null)
+                getActivity().getSupportFragmentManager().popBackStack();
+        });
         DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
         int effect = notificationInfo.notification;
         final int count = rgWarnEffect.getChildCount();
@@ -119,12 +123,10 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
         }
     }
 
-    @OnClick({R.id.imgV_top_bar_center, R.id.lLayout_warn_repeat_mode})
+    @OnClick({
+            R.id.lLayout_warn_repeat_mode})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imgV_top_bar_center:
-                getActivity().getSupportFragmentManager().popBackStack();
-                break;
             case R.id.lLayout_warn_repeat_mode:
                 ViewUtils.deBounceClick(view);
                 DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
