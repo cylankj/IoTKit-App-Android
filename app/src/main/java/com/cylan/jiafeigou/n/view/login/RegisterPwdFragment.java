@@ -24,12 +24,11 @@ import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.cylan.jiafeigou.utils.NetUtils;
 
 
 /**
@@ -59,6 +58,14 @@ public class RegisterPwdFragment extends SetupPwdFragment
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        customToolbar.setBackAction((View v) -> {
+            showSimpleDialog("是否确认退出?", "是", "否", false);
+        });
+    }
+
+    @Override
     public void doAction(String account, String pwd, String code) {
         if (NetUtils.getJfgNetType(getContext()) == 0) {
             Toast.makeText(getContext(), "bad network", Toast.LENGTH_SHORT).show();
@@ -77,15 +84,6 @@ public class RegisterPwdFragment extends SetupPwdFragment
         PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD, pwd);
     }
 
-    @Override
-    protected void initNavigateBack() {
-        ivLoginTopLeft.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSimpleDialog("是否确认退出?","是","否",false);
-            }
-        });
-    }
 
     @Override
     public void onDialogAction(int id, Object value) {
@@ -144,7 +142,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
         login.userName = PreferencesUtils.getString(JConstant.AUTO_LOGIN_ACCOUNT);
         login.pwd = PreferencesUtils.getString(JConstant.AUTO_LOGIN_PWD);
         boolean validEmailNum = JConstant.EMAIL_REG.matcher(login.userName).find();
-        if (validEmailNum){
+        if (validEmailNum) {
             // TODO 发送验证邮件
             afterSendMailView(login.userName);
             return;
@@ -156,8 +154,8 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 pwdPresenter.executeLogin(login);
                 //账号和密码
                 try {
-                    String hex = AESUtil.encrypt(login.userName+"|"+login.pwd);
-                    FileUtils.saveDataToFile(getView().getContext(),hex);
+                    String hex = AESUtil.encrypt(login.userName + "|" + login.pwd);
+                    FileUtils.saveDataToFile(getView().getContext(), hex);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -171,7 +169,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
      * 发送验证邮件后view
      */
     private void afterSendMailView(String account) {
-        tvTopBarCenter.setText("邮箱验证");
+        customToolbar.setToolbarTitle(R.string.CHANGE_EMAIL);
         flInputContainer.setVisibility(View.GONE);
         View mailView = LayoutInflater.from(getActivity())
                 .inflate(R.layout.fragment_forget_pwd_by_email, null);

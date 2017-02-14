@@ -34,6 +34,7 @@ import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
+import com.cylan.jiafeigou.n.view.setting.WifiListFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -123,7 +124,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private void initDelayRecordBtn() {
-        if (device != null && JFGRules.is3GCam(device.pid)) {
+        if (device != null && JFGRules.showDelayRecordBtn(device.pid)) {
             svSettingDeviceDelayCapture.setEnabled(true);
         } else {
             svSettingDeviceDelayCapture.setVisibility(View.GONE);
@@ -322,7 +323,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                                     .show();
                         } else {
                             //显示列表
-                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+//                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            Bundle bundle = new Bundle();
+                            bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
+                            WifiListFragment fragment = WifiListFragment.getInstance(bundle);
+                            loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                         }
                     }
                 }

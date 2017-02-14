@@ -86,6 +86,11 @@ public class ViewUtils {
         increaseMargins(v, 0, height, 0, 0);
     }
 
+    public static void setViewMarginStatusBar(Context context, View v) {
+        final int height = getCompatStatusBarHeight(context);
+        increaseMargins(v, 0, height, 0, 0);
+    }
+
     /**
      * 不在需要marginStatusBar的高度
      *

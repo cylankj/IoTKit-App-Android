@@ -21,15 +21,16 @@ import android.widget.ViewSwitcher;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
-import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoginButton;
 
 import java.lang.ref.WeakReference;
@@ -46,7 +47,7 @@ import butterknife.OnTextChanged;
  * Use the {@link ConfigApFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Presenter>
+public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
         implements ConfigApContract.View, WiFiListDialogFragment.ClickCallBack {
 
     @BindView(R.id.iv_wifi_clear_pwd)
@@ -61,12 +62,14 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     TextView tvConfigApName;
 
     WiFiListDialogFragment fiListDialogFragment;
-    @BindView(R.id.fLayout_top_bar)
+    @BindView(R.id.fLayout_toolbar)
     FrameLayout fLayoutTopBar;
     @BindView(R.id.rLayout_wifi_pwd_input_box)
     FrameLayout rLayoutWifiPwdInputBox;
     @BindView(R.id.vs_show_content)
     ViewSwitcher vsShowContent;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
 
     private List<ScanResult> cacheList;
@@ -99,16 +102,18 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate activity_cloud_live_mesg_call_out_item fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_config_ap, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewMarginStatusBar(customToolbar);
         if (cacheList != null && cacheList.size() > 0) {
             tvConfigApName.setText(cacheList.get(0).SSID);
             tvConfigApName.setTag(new BeanWifiList(cacheList.get(0)));
@@ -132,6 +137,7 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void onPause() {
         super.onPause();
+        JConstant.ConfigApStep = 3;
         if (basePresenter != null) {
             basePresenter.unregisterNetworkMonitor();
         }
@@ -150,11 +156,6 @@ public class ConfigApFragment extends BaseTitleFragment<ConfigApContract.Present
     @Override
     public void onDetach() {
         super.onDetach();
-    }
-
-    @Override
-    protected int getSubContentViewId() {
-        return R.layout.fragment_config_ap;
     }
 
     @OnTextChanged(R.id.et_wifi_pwd)

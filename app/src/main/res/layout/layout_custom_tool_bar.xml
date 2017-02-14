@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/fLayout_top_bar"
+    android:id="@+id/fLayout_toolbar"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/y48"
-    android:background="@color/color_white">
-
-    <ImageView
-        android:id="@+id/iv_top_bar_left"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="start|center_vertical"
-        android:paddingLeft="@dimen/x15"
-        android:paddingRight="@dimen/x15"
-        android:clickable="true"
-        android:src="@drawable/nav_icon_close_gary" />
+    android:layout_height="@dimen/y48">
 
     <TextView
-        android:id="@+id/tv_top_bar_center"
-        style="@style/text_base_singleLine"
+        android:id="@+id/tv_toolbar_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:clickable="true"
+        android:drawablePadding="@dimen/x15"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/x15"
+        android:paddingRight="@dimen/x15"
+        android:textSize="@dimen/sp18" />
+
+    <TextView
+        android:id="@+id/tv_toolbar_title"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:text="@string/LOGIN"
+        android:gravity="center_vertical"
         android:textColor="@color/color_444444"
         android:textSize="@dimen/sp22" />
 
     <TextView
-        android:id="@+id/tv_top_bar_right"
+        android:id="@+id/tv_toolbar_right"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="end|center_vertical"

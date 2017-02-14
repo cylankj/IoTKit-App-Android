@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView1;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.TimePickDialogFragment;
@@ -50,10 +51,6 @@ import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Presenter>
         implements SafeInfoContract.View {
 
-    @BindView(R.id.imgV_top_bar_center)
-    TextView imgVTopBarCenter;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
     @BindView(R.id.tv_protection_sensitivity)
     TextView tvProtectionSensitivity;
     @BindView(R.id.tv_protection_notification)
@@ -68,6 +65,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     SettingItemView1 swMotionDetection;
     @BindView(R.id.lLayout_safe_container)
     LinearLayout lLayoutSafeContainer;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
     private TimePickDialogFragment timePickDialogFragment;
     private String uuid;
@@ -102,14 +101,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_safe_protection, container, false);
-        ButterKnife.bind(this, view);
-        return view;
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -118,7 +109,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             view.findViewById(R.id.fLayout_protection_warn_effect).setVisibility(View.GONE);
         }
 
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+        ViewUtils.setViewPaddingStatusBar(customToolbar);
         boolean alarm = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch)).setChecked(alarm);
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch))
@@ -147,6 +138,15 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             updateDetails();
     }
 
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_safe_protection, container, false);
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
     private void showDetail(boolean show) {
         final int count = lLayoutSafeContainer.getChildCount();
         for (int i = 0; i < count; i++) {
@@ -167,7 +167,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     private void updateDetails() {
         boolean flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        imgVTopBarCenter.setText(R.string.SECURE);
         //移动侦测
         swMotionDetection.setSwitchButtonState(flag);
         //提示音

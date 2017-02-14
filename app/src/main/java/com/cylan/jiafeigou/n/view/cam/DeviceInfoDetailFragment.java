@@ -21,10 +21,12 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
+import com.cylan.jiafeigou.n.view.setting.SdcardInfoFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.util.List;
@@ -49,8 +51,6 @@ import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TOUCH_OUT
  */
 public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Presenter>
         implements CamInfoContract.View {
-    @BindView(R.id.imgV_top_bar_center)
-    TextView imgVTopBarCenter;
     @BindView(R.id.tv_device_alias)
     TextView tvDeviceAlias;
     @BindView(R.id.lLayout_information_facility_name)
@@ -77,6 +77,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     LinearLayout lLayoutDeviceBattery;
     @BindView(R.id.tv_device_uptime)
     TextView tvDeviceUptime;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private String uuid;
     private EditFragmentDialog editDialogFragment;
 
@@ -102,7 +104,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_facility_information, null);
+        View view = inflater.inflate(R.layout.fragment_facility_information, container, false);
         ButterKnife.bind(this, view);
         return view;
     }
@@ -110,7 +112,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(view.findViewById(R.id.fLayout_top_bar_container));
+        ViewUtils.setViewPaddingStatusBar(customToolbar);
         JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
         //仅3G摄像头、FreeCam显示此栏
         if (device != null && (JFGRules.isFreeCam(device.pid) || JFGRules.is3GCam(device.pid))) {
@@ -167,10 +169,12 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         return sdStatus != null ? getString(R.string.SD_NORMAL) : "";
     }
 
-    @OnClick({R.id.imgV_top_bar_center, R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone})
+    @OnClick({R.id.tv_toolbar_icon,
+            R.id.lLayout_sdcard,
+            R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imgV_top_bar_center:
+            case R.id.tv_toolbar_icon:
                 getActivity().onBackPressed();
                 break;
             case R.id.lLayout_information_facility_name:
@@ -179,7 +183,22 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             case R.id.lLayout_information_facility_timezone:
                 toEditTimezone();
                 break;
+            case R.id.lLayout_sdcard:
+                toFormatSdcardPage();
+                break;
         }
+    }
+
+    /**
+     * 跳转到
+     * Micro SD卡页面
+     */
+    private void toFormatSdcardPage() {
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        SdcardInfoFragment sdcardInfoFragment = SdcardInfoFragment.getInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                sdcardInfoFragment, android.R.id.content);
     }
 
     /**
@@ -193,8 +212,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             if (!(o instanceof DpMsgDefine.DPTimeZone)) {
                 return;
             }
-//            DpMsgDefine.DPTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
-//            basePresenter.updateInfoReq(zone, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
             //更新ui
             updateDetails();
         });
@@ -220,10 +237,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
             @Override
             public void onDialogAction(int id, String value) {
-//                if (basePresenter != null) {
-//                    updateDetails();
-//                }
-
                 JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
                 if (!TextUtils.isEmpty(value) && device != null && !TextUtils.equals(value, device.alias)) {
                     device.alias = value;

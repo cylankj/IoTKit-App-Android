@@ -16,10 +16,16 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
 
     protected final String TAG = this.getClass().getSimpleName();
     protected T mView;//弱引用会被强制释放,我们的view需要我们手动释放,不适合弱引用
+    protected String uuid;
     private CompositeSubscription compositeSubscription;
 
     public AbstractPresenter(T view) {
         mView = view;
+    }
+
+    public AbstractPresenter(T view, String uuid) {
+        mView = view;
+        this.uuid = uuid;
     }
 
     public T getView() {

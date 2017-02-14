@@ -172,7 +172,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .map((List<ScanResult> s) -> ScanResultListFilter.extractPretty(scanResults, false))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((List<ScanResult> s) -> {
-                    getView().onWiFiResult(scanResults);
+                    getView().onWiFiResult(s);
                 }, new RxHelper.EmptyException("resultList call"));
     }
 

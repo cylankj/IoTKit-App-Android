@@ -10,33 +10,27 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 /**
  * Created by cylan-hunt on 16-10-24.
  */
 
 public class AgreementFragment extends Fragment {
-    @BindView(R.id.iv_top_bar_left)
-    ImageView ivTopBarLeft;
-    @BindView(R.id.tv_top_bar_center)
-    TextView tvTopBarCenter;
-    @BindView(R.id.tv_top_bar_right)
-    TextView tvTopBarRight;
-    @BindView(R.id.fLayout_top_bar)
     FrameLayout fLayoutTopBar;
     @BindView(R.id.webView)
     WebView webview;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     public static AgreementFragment getInstance(Bundle bundle) {
         AgreementFragment fragment = new AgreementFragment();
@@ -74,12 +68,11 @@ public class AgreementFragment extends Fragment {
             }
         });
         webview.loadUrl(agreementUrl);
-        ivTopBarLeft.setImageResource(R.drawable.nav_icon_back_gary);
-        tvTopBarCenter.setText("用户协议");
-    }
-
-    @OnClick(R.id.iv_top_bar_left)
-    public void onClick() {
-        ActivityUtils.justPop(getActivity());
+        customToolbar.setTvToolbarIcon(R.drawable.nav_icon_back_gary);
+        customToolbar.setToolbarTitle(R.string.RECORD_MODE_2);
+        customToolbar.setBackAction((View v) -> {
+            ActivityUtils.justPop(getActivity());
+        });
+        ViewUtils.setViewMarginStatusBar(customToolbar);
     }
 }

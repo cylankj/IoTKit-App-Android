@@ -8,8 +8,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -20,6 +18,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -27,7 +26,6 @@ import com.google.zxing.Result;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JConstant.EFAMILY_QR_CODE_REG;
 import static com.cylan.jiafeigou.misc.JConstant.EFAMILY_URL_PREFIX;
@@ -41,10 +39,8 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
 
     @BindView(R.id.zxV_scan)
     ZXingScannerView zxVScan;
-    @BindView(R.id.imgV_nav_back)
-    ImageView imgVNavBack;
-    @BindView(R.id.fLayout_top_bar)
-    FrameLayout fLayoutTopBar;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private String uuid;
     private SimpleDialogFragment rebindDialog;
     private Bundle bindBundle;
@@ -88,7 +84,14 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ViewUtils.setViewMarginStatusBar(fLayoutTopBar);
+        ViewUtils.setViewMarginStatusBar(customToolbar);
+        customToolbar.setBackAction(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (getActivity() != null)
+                    getActivity().getSupportFragmentManager().popBackStack();
+            }
+        });
     }
 
 
@@ -125,13 +128,6 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                 zxVScan.resumeCameraPreview(BindScanFragment.this);
             }, 2000);
         }
-    }
-
-
-    @OnClick(R.id.imgV_nav_back)
-    public void onClick() {
-        if (getActivity() != null)
-            getActivity().getSupportFragmentManager().popBackStack();
     }
 
     @Override

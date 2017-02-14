@@ -20,26 +20,32 @@
             android:textColor="@color/color_black"
             android:textSize="@dimen/sp16" />
 
-        <EditText
-            android:id="@+id/et_input_box"
+        <LinearLayout
+            android:id="@+id/lLayout_input_box"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/x24"
             android:layout_marginStart="@dimen/x24"
-            android:background="@null"
-            android:hint="@string/DEViCE_NAME"
-            android:maxLength="12"
-            android:textColor="@color/color_666666"
-            android:textColorHint="@color/color_666666"
-            android:textSize="@dimen/sp14" />
+            android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_marginEnd="@dimen/x24"
-            android:layout_marginStart="@dimen/x24"
-            android:layout_marginTop="@dimen/y7"
-            android:background="@color/color_4b9fd5" />
+            <EditText
+                android:id="@+id/et_input_box"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@null"
+                android:hint="@string/DEViCE_NAME"
+                android:maxLength="12"
+                android:textColor="@color/color_666666"
+                android:textColorHint="@color/color_666666"
+                android:textSize="@dimen/sp14" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y1"
+                android:layout_marginTop="@dimen/y7"
+                android:background="@color/color_4b9fd5" />
+        </LinearLayout>
+
 
         <FrameLayout
             android:layout_width="match_parent"
