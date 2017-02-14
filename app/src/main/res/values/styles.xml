@@ -117,6 +117,15 @@
     <declare-styleable name="LoginButton">
         <attr name="lb_stroke_color" format="color" />
     </declare-styleable>
+    <declare-styleable name="SmoothPercent">
+        <attr name="sp_color" format="color" />
+    </declare-styleable>
+    <declare-styleable name="LoginButtonV2">
+        <attr name="lb_v2_stroke_color" format="color" />
+        <attr name="lb_v2_stroke_width" format="dimension" />
+        <attr name="lb_v2_point_radius" format="float" />
+    </declare-styleable>
+
 
     <style name="BlurDialogFragment.Default.Animation" parent="@android:style/Animation.Activity">
         <item name="android:windowEnterAnimation">@anim/slide_in_down</item>

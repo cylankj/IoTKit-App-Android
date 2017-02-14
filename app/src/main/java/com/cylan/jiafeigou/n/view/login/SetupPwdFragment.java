@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,15 +51,13 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     CheckBox cbShowInputBox;
     @BindView(R.id.et_input_box)
     EditText etInputBox;
-    @BindView(R.id.iv_top_bar_left)
-    ImageView ivLoginTopLeft;
     protected SetupPwdContract.Presenter pwdPresenter;
     @BindView(R.id.vs_set_account_pwd)
     ViewSwitcher vsSetAccountPwd;
     @BindView(R.id.fl_input_container)
     FrameLayout flInputContainer;
-    @BindView(R.id.tv_top_bar_center)
-    TextView tvTopBarCenter;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     public SetupPwdFragment() {
         // Required empty public constructor
@@ -105,16 +104,13 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     }
 
     private void initTitleBar() {
-        FrameLayout layout = (FrameLayout) getView().findViewById(R.id.rLayout_login_top);
-        layout.findViewById(R.id.tv_top_bar_right).setVisibility(View.GONE);
-        TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
-        tvTitle.setText(getString(R.string.PASSWORD));
-        ivLoginTopLeft.setImageResource(R.drawable.nav_icon_back_gary);
+        customToolbar.setToolbarTitle(R.string.PASSWORD);
+        customToolbar.setTvToolbarIcon(R.drawable.nav_icon_back_gary);
         initNavigateBack();
     }
 
     protected void initNavigateBack() {
-        ivLoginTopLeft.setOnClickListener(new View.OnClickListener() {
+        customToolbar.setBackAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtils.justPop(getActivity());

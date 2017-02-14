@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -35,10 +36,11 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.List;
 
@@ -54,7 +56,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-14.
  */
 
-public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.View {
+public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContract.View {
 
 
     @BindView(R.id.et_forget_username)
@@ -91,8 +93,10 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
     @BindView(R.id.vs_set_account_pwd)
     ViewSwitcher vsSetAccountPwd;
 
-    @BindView(R.id.tv_top_bar_center)
-    TextView tvLoginTopCenter;
+    @BindView(R.id.fLayout_forget_container)
+    FrameLayout fLayoutForgetContainer;
+    @BindView(R.id.rLayout_forget_pwd_toolbar)
+    CustomToolbar rLayoutForgetPwdToolbar;
 
     /**
      * {0}请输入手机号/邮箱 {1}请输入邮箱
@@ -130,18 +134,19 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_forget_pwd, container, false);
-        ButterKnife.bind(this, view);
-        return view;
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         initTitleBar();
         initView(view);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_forget_pwd, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
@@ -161,13 +166,8 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
     }
 
     private void initTitleBar() {
-        FrameLayout layout = (FrameLayout) getView().findViewById(R.id.rLayout_login_top);
-        layout.findViewById(R.id.tv_top_bar_right).setVisibility(View.GONE);
-        TextView tvTitle = (TextView) layout.findViewById(R.id.tv_top_bar_center);
-        tvTitle.setText(getString(R.string.FORGOT_PWD));
-        ImageView imgBackHandle = (ImageView) layout.findViewById(R.id.iv_top_bar_left);
-        imgBackHandle.setImageResource(R.drawable.nav_icon_back_gary);
-        imgBackHandle.setOnClickListener(new View.OnClickListener() {
+        ViewUtils.setViewMarginStatusBar(rLayoutForgetPwdToolbar);
+        rLayoutForgetPwdToolbar.setBackAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ActivityUtils.justPop(getActivity());
@@ -337,9 +337,9 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
         if (ret == -1)
             return;
         if (ret == JConstant.TYPE_EMAIL)
-            tvLoginTopCenter.setText(getString(R.string.EMAIL));
+            rLayoutForgetPwdToolbar.setToolbarTitle(R.string.EMAIL);
         else if (ret == JConstant.TYPE_PHONE) {
-            tvLoginTopCenter.setText(getString(R.string.NEW_PWD));
+            rLayoutForgetPwdToolbar.setToolbarTitle(R.string.NEW_PWD);
         }
     }
 
@@ -495,6 +495,7 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
     /**
      * 重置密码的结果
+     *
      * @param code
      */
     @Override
@@ -518,12 +519,12 @@ public class ForgetPwdFragment extends Fragment implements ForgetPwdContract.Vie
 
     @Override
     public void checkIsRegReuslt(int code) {
-        if (code == 0){
-            if(!Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etForgetUsername)).find()){
+        if (code == 0) {
+            if (!Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etForgetUsername)).find()) {
                 start2HandleVerificationCode();
             }
             presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
-        }else {
+        } else {
             ToastUtil.showNegativeToast(getString(R.string.INVALID_ACCOUNT));
         }
     }

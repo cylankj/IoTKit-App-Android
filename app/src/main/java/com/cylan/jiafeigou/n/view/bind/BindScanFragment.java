@@ -43,7 +43,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     ZXingScannerView zxVScan;
     @BindView(R.id.imgV_nav_back)
     ImageView imgVNavBack;
-    @BindView(R.id.fLayout_top_bar)
+    @BindView(R.id.fLayout_toolbar)
     FrameLayout fLayoutTopBar;
     private String uuid;
     private SimpleDialogFragment rebindDialog;

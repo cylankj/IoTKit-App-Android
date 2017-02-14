@@ -81,7 +81,7 @@ public class EditFragmentDialog extends BaseDialog {
             tvConfirm.setText(lContent);
         if (!TextUtils.isEmpty(rContent))
             tvCancel.setText(rContent);
-        if (!bundle.getBoolean(KEY_SHOW_EDIT, false)) {
+        if (!bundle.getBoolean(KEY_SHOW_EDIT, true)) {
             view.findViewById(R.id.lLayout_input_box).setVisibility(View.GONE);
         }
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));

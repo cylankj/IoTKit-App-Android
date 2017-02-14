@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.ex.JfgException;
+import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -161,7 +162,8 @@ public class SimpleBindFlow extends AFullBind {
     private void setServerLanguage(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
         try {
             AppLogger.i(BIND_TAG + udpDevicePortrait);
-            String address = Security.getServerPrefix(JFGRules.getTrimPackageName()) + ".jfgou.com";
+            //
+            String address = DebugOptionsImpl.getServer().replace(":443", "");
             int port = Security.getServerPort(JFGRules.getTrimPackageName());
             //设置语言
             JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(

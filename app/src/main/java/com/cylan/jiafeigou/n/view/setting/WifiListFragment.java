@@ -17,9 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.WifiListPresenterImpl;
-import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -42,7 +42,7 @@ import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_SHOW_EDIT
 /**
  * A simple {@link Fragment} subclass.
  */
-public class WifiListFragment extends BaseTitleFragment<WifiListContract.Presenter>
+public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
         implements WifiListContract.View, SwipeRefreshLayout.OnRefreshListener {
 
     @BindView(R.id.rv_wifi_list)
@@ -70,21 +70,17 @@ public class WifiListFragment extends BaseTitleFragment<WifiListContract.Present
     }
 
     @Override
-    protected int getSubContentViewId() {
-        return R.layout.fragment_wifi_list;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_wifi_list, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
     public void setPresenter(WifiListContract.Presenter presenter) {
 
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
     }
 
     @Override

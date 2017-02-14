@@ -14,13 +14,13 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
-import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.nineoldandroids.animation.Animator;
 
 import java.util.List;
@@ -34,7 +34,7 @@ import butterknife.OnClick;
  * Use the {@link BindCameraFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BindCameraFragment extends BaseTitleFragment<BindDeviceContract.Presenter> implements BindDeviceContract.View {
+public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Presenter> implements BindDeviceContract.View {
     public static final String KEY_SUB_FRAGMENT_ID = "sub_key_id";
     public static final String KEY_DEVICE_LIST = "key_device_list";
 
@@ -77,11 +77,10 @@ public class BindCameraFragment extends BaseTitleFragment<BindDeviceContract.Pre
         initAnimation();
     }
 
-
-    @Override
-    protected int getSubContentViewId() {
-        return R.layout.fragment_bind_camera;
-    }
+//    @Override
+//    protected int getSubContentViewId() {
+//        return R.layout.fragment_bind_camera;
+//    }
 
 
     private void initAnimation() {
@@ -104,7 +103,7 @@ public class BindCameraFragment extends BaseTitleFragment<BindDeviceContract.Pre
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // TODO: inflate activity_cloud_live_mesg_call_out_item fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        View rootView = inflater.inflate(R.layout.fragment_bind_camera, container, false);
         ButterKnife.bind(this, rootView);
         return rootView;
     }

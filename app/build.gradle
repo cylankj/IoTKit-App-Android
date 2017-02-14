@@ -224,7 +224,6 @@ dependencies {
     //
     //渠道包
     //渠道包
-    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
 
     // twitter
 //    testCompile 'junit:junit:4.12'
@@ -238,7 +237,6 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
-    compile 'com.android.support:support-v4:23.4.0'
     annotationProcessor 'com.cylan.ext:processor:0.1.0'
     debugCompile 'com.cylan.ext:optdebug:0.0.1'
     releaseCompile 'com.cylan.ext:optrelease:0.0.1'

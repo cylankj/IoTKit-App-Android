@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:orientation="vertical"
+    tools:context="com.cylan.jiafeigou.n.view.setting.SdcardInfoFragment">
+
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x20"
+        android:layout_marginTop="@dimen/x12"
+        android:text="@string/VALID_STORAGE"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="@dimen/sp14" />
+
+
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/sv_setting_device_detail"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y72"
+        android:layout_marginStart="@dimen/x10"
+        hunt:sv_sub_title="string/EQUIPMENT_INFO"
+        hunt:sv_title="控件使用情况"
+        hunt:sv_v_divider="false" />
+
+    <com.cylan.jiafeigou.widget.SmoothPercent
+        android:id="@+id/sm_percent"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y5"
+        android:layout_marginEnd="@dimen/x26"
+        android:layout_marginStart="@dimen/x20"
+        android:background="@color/color_8c8c8c"
+        hunt:sp_color="@color/color_6FA3FD" />
+
+    <com.cylan.jiafeigou.widget.LoginButtonV2
+        android:id="@+id/lb2_sdcard_format"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y45"
+        android:layout_marginEnd="@dimen/x30"
+        android:layout_marginStart="@dimen/x30"
+        android:layout_marginTop="@dimen/y69"
+        android:gravity="center"
+        android:text="格式化SD卡"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="@dimen/sp17"
+        hunt:lb_v2_point_radius="3.0"
+        hunt:lb_v2_stroke_width="@dimen/x1"
+        hunt:lb_v2_stroke_color="@color/color_d8d8d8" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/y9"
+        android:text="清空数据时候设备将会重启"
+        android:textColor="@color/color_8c8c8c"
+        android:textSize="@dimen/sp12" />
+</LinearLayout>

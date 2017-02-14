@@ -6,8 +6,11 @@
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.bind.BindDeviceListFragment">
 
-    <include layout="@layout/layout_top_bar_item" />
 
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
     <TextView
         android:layout_width="match_parent"
         android:layout_height="@dimen/y48"

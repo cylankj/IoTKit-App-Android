@@ -18,9 +18,9 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.anim.FlipAnimation;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
-import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -38,7 +38,7 @@ import butterknife.OnClick;
  * Use the {@link BindDoorBellFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BindDoorBellFragment extends BaseTitleFragment<BindDeviceContract.Presenter> implements BindDeviceContract.View {
+public class BindDoorBellFragment extends IBaseFragment<BindDeviceContract.Presenter> implements BindDeviceContract.View {
 
     @BindView(R.id.fLayout_flip_before)
     FrameLayout fLayoutFlipBefore;
@@ -87,14 +87,6 @@ public class BindDoorBellFragment extends BaseTitleFragment<BindDeviceContract.P
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate activity_cloud_live_mesg_call_out_item fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
-    }
-
-    @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         if (getView() != null) getView().postDelayed(new Runnable() {
@@ -106,8 +98,12 @@ public class BindDoorBellFragment extends BaseTitleFragment<BindDeviceContract.P
     }
 
     @Override
-    protected int getSubContentViewId() {
-        return R.layout.fragment_bind_doorbell;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_bind_doorbell, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     private AnimatorSet setHandLeft;

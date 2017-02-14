@@ -102,14 +102,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_safe_protection, container, false);
-        ButterKnife.bind(this, view);
-        return view;
-    }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -145,6 +137,14 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         showDetail(alarm);
         if (alarm)
             updateDetails();
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_safe_protection, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     private void showDetail(boolean show) {

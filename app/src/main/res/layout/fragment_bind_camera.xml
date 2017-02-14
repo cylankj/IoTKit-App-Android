@@ -6,14 +6,17 @@
     android:clickable="true"
     tools:context="com.cylan.jiafeigou.n.view.bind.BindCameraFragment">
 
-    <include layout="@layout/layout_top_bar_item" />
 
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <TextView
         android:id="@+id/tv_main_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/fLayout_top_bar"
+        android:layout_below="@+id/fLayout_toolbar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/y20"
         android:gravity="center"
@@ -95,5 +98,5 @@
         android:id="@+id/fLayout_bind_device_list_fragment_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/fLayout_top_bar" />
+        android:layout_below="@+id/fLayout_toolbar" />
 </RelativeLayout>
