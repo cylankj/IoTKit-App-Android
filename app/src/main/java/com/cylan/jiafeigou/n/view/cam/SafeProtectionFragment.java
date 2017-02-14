@@ -109,7 +109,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             view.findViewById(R.id.fLayout_protection_warn_effect).setVisibility(View.GONE);
         }
 
-        ViewUtils.setViewPaddingStatusBar(customToolbar);
         boolean alarm = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch)).setChecked(alarm);
         ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch))

@@ -112,7 +112,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(customToolbar);
         JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
         //仅3G摄像头、FreeCam显示此栏
         if (device != null && (JFGRules.isFreeCam(device.pid) || JFGRules.is3GCam(device.pid))) {

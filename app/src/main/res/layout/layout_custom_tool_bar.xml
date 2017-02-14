@@ -1,55 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/y58"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
     <FrameLayout
-        android:id="@+id/fLayout_toolbar"
+        android:id="@+id/fLayout_toolbar_content"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y48"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/tv_toolbar_icon"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:clickable="true"
-            android:drawablePadding="@dimen/x15"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/x15"
-            android:paddingRight="@dimen/x15"
-            android:textSize="@dimen/sp18" />
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y48">
 
-        <TextView
-            android:id="@+id/tv_toolbar_title"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:gravity="center_vertical"
-            android:textColor="@color/color_444444"
-            android:textSize="@dimen/sp22" />
+            <TextView
+                android:id="@+id/tv_toolbar_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:clickable="true"
+                android:drawablePadding="@dimen/x15"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/x15"
+                android:paddingRight="@dimen/x15"
+                android:textSize="@dimen/sp18" />
 
-        <TextView
-            android:id="@+id/tv_toolbar_right"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end|center_vertical"
-            android:gravity="center"
-            android:paddingLeft="@dimen/x15"
-            android:paddingRight="@dimen/x15"
-            android:text="@string/Tap0_register"
-            android:textColor="@color/color_4b9fd5"
-            android:textSize="@dimen/sp14"
-            android:visibility="gone" />
+            <TextView
+                android:id="@+id/tv_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:gravity="center_vertical"
+                android:textColor="@color/color_444444"
+                android:textSize="@dimen/sp22" />
+
+            <TextView
+                android:id="@+id/tv_toolbar_right"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|center_vertical"
+                android:gravity="center"
+                android:paddingLeft="@dimen/x15"
+                android:paddingRight="@dimen/x15"
+                android:text="@string/Tap0_register"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp14"
+                android:visibility="gone" />
+        </FrameLayout>
     </FrameLayout>
-
 
     <View
         android:id="@+id/v_shadow"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y10"
-        android:layout_gravity="bottom"
-        android:background="@drawable/little_shape" />
+        android:background="@drawable/little_shape"
+        android:visibility="gone" />
 </LinearLayout>

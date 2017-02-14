@@ -91,7 +91,6 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ViewUtils.setViewPaddingStatusBar(customToolbar);
         customToolbar.setBackAction((View v) -> {
             if (getActivity() != null)
                 getActivity().getSupportFragmentManager().popBackStack();

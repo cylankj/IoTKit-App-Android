@@ -6,11 +6,14 @@ import android.graphics.Color;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ViewUtils;
+
+import static com.cylan.jiafeigou.utils.ViewUtils.getCompatStatusBarHeight;
 
 /**
  * Created by cylan-hunt on 17-2-12.
@@ -21,6 +24,8 @@ public class CustomToolbar extends LinearLayout {
     TextView tvToolbarIcon;
     TextView tvToolbarTitle;
     TextView tvToolbarRight;
+    ViewGroup viewGroup;
+    private boolean fitSystemWindow;
 
     public CustomToolbar(Context context) {
         this(context, null);
@@ -41,9 +46,11 @@ public class CustomToolbar extends LinearLayout {
         String leftTitle = at.getString(R.styleable.CustomToolbarStyle_ct_left_title);
         int iconResId = at.getResourceId(R.styleable.CustomToolbarStyle_ct_icon, -1);
         boolean showShadow = at.getBoolean(R.styleable.CustomToolbarStyle_ct_enable_shadow, true);
+        fitSystemWindow = at.getBoolean(R.styleable.CustomToolbarStyle_ct_fit_system_window, true);
         at.recycle();
         View view = LayoutInflater.from(context).inflate(R.layout.layout_custom_tool_bar, this, true);
-        findViewById(R.id.fLayout_toolbar).setBackgroundColor(bgColor);
+        viewGroup = (ViewGroup) findViewById(R.id.fLayout_toolbar_content);
+        viewGroup.setBackgroundColor(bgColor);
         tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
         tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
         tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
@@ -54,8 +61,20 @@ public class CustomToolbar extends LinearLayout {
         }
         tvToolbarIcon.setText(leftTitle);
         tvToolbarIcon.setTextColor(leftTitleColor);
-        if (!showShadow) {
-            findViewById(R.id.v_shadow).setVisibility(GONE);
+        if (showShadow) {
+            findViewById(R.id.v_shadow).setVisibility(VISIBLE);
+        }
+    }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        if (fitSystemWindow) {
+            final int height = getCompatStatusBarHeight(getContext());
+            viewGroup.setPadding(viewGroup.getPaddingLeft(),
+                    viewGroup.getPaddingTop() + height,
+                    viewGroup.getPaddingRight(),
+                    viewGroup.getPaddingBottom());
         }
     }
 

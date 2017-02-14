@@ -15,15 +15,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_background_color="@color/color_0ba8cf"
-        hunt:ct_left_title_color="@color/color_white"
+        hunt:ct_enable_shadow="true"
+        hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
-        hunt:ct_title_color="@color/color_white"
-        hunt:ct_left_title="@string/SECURE" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y10"
-        android:background="@drawable/little_shape" />
+        hunt:ct_left_title="@string/SECURE"
+        hunt:ct_left_title_color="@color/color_white"
+        hunt:ct_title_color="@color/color_white" />
 
     <TextView
         android:layout_width="wrap_content"

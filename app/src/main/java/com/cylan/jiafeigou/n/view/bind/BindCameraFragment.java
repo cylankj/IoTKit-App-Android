@@ -77,7 +77,7 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(customToolbar);
+
         customToolbar.setBackAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

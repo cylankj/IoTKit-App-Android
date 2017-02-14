@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.VideoAutoRecordPresenterImpl;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -91,7 +90,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         rb24Hours.setChecked(focus == 1);
         rbNever.setOnCheckedChangeListener(this);
         rbNever.setChecked(focus == 2);
-        ViewUtils.setViewPaddingStatusBar(customToolbar);
     }
 
     @Override

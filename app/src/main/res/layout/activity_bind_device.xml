@@ -3,7 +3,7 @@
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/color_f4f4f4"
     tools:context="com.cylan.jiafeigou.n.view.activity.BindDeviceActivity">
 
@@ -12,16 +12,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-
         <com.cylan.jiafeigou.widget.CustomToolbar
             android:id="@+id/custom_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             hunt:ct_background_color="@color/color_0ba8cf"
+            hunt:ct_enable_shadow="true"
+            hunt:ct_fit_system_window="true"
             hunt:ct_icon="@drawable/nav_icon_close_white"
-            hunt:ct_left_title="@string/DEVICES_TITLE"
-            hunt:ct_left_title_color="@color/color_white"
-            hunt:ct_title_color="@color/color_black" />
+            hunt:ct_title="@string/DEVICES_TITLE"
+            hunt:ct_title_color="@color/color_white" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/v_to_scan_qrcode"
@@ -42,7 +42,7 @@
             android:background="@color/color_white"
             hunt:leftDrawable="@drawable/icon_home_camera_online"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="智能摄像头"
+            hunt:text="@string/DOG_CAMERA_NAME"
             hunt:textColor="@color/color_383838"
             hunt:textSize="@dimen/sp16" />
 

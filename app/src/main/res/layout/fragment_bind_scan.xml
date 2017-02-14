@@ -17,6 +17,9 @@
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        hunt:ct_enable_shadow="false"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_gary" />
 
 </FrameLayout>

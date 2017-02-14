@@ -67,7 +67,6 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(customToolbar);
         adjustViewSize();
         if (basePresenter != null)
             basePresenter.startCounting();

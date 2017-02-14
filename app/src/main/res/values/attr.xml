@@ -50,6 +50,7 @@
         <attr name="ct_enable_shadow" format="boolean" />
         <attr name="ct_title" format="string|reference" />
         <attr name="ct_title_color" format="color|reference" />
+        <attr name="ct_fit_system_window" format="boolean|reference" />
     </declare-styleable>
     <declare-styleable name="SWheelViewStyle">
         <attr name="sw_shortLineHeight" format="float|dimension" />

@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lLayout_config_ap"
     android:layout_width="match_parent"
@@ -12,7 +13,11 @@
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        hunt:ct_enable_shadow="false"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_gary" />
+
     <ViewSwitcher
         android:id="@+id/vs_show_content"
         android:layout_width="match_parent"

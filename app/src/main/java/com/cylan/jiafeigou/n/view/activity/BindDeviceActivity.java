@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -26,10 +25,6 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_AUTO_SHOW_BIND;
 
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
 
-    @BindView(R.id.imgV_top_bar_center)
-    TextView tvTopBarCenter;
-    //    @BindView(R.id.fLayout_top_bar_container)
-//    FrameLayout fLayoutTopBarContainer;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
@@ -50,7 +45,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     }
 
     private void initTopBar() {
-        ViewUtils.setViewPaddingStatusBar(customToolbar);
         customToolbar.setBackAction((View v) -> {
             onBackPressed();
         });

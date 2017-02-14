@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -77,7 +76,6 @@ public class BindGuideFragment extends IBaseFragment {
         GlideDrawableImageViewTarget imageViewTarget =
                 new GlideDrawableImageViewTarget(imvBindGuide);
         Glide.with(this).load(R.raw.bind_guide).into(imageViewTarget);
-        ViewUtils.setViewMarginStatusBar(customToolbar);
     }
 
     @Override
