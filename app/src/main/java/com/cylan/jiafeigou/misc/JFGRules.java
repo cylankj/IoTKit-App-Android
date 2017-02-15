@@ -179,6 +179,10 @@ public class JFGRules {
         return false;
     }
 
+    public static boolean is2WCam(int pid) {
+        return pid == JConstant.OS_CAMERA_PANORAMA_HAISI;
+    }
+
     public static class PlayErr {
 
         public static final int ERR_UNKOWN = -2;

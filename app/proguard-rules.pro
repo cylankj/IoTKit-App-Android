@@ -40,6 +40,8 @@
 -keep public class com.android.vending.licensing.ILicensingService
 -keep public class org.msgpack.** { *; }
 -keep public class org.webrtc.** { *; }
+
+-keep public class com.cylan.jiafeigou.support.Securuty
 -dontnote java.util.AbstractMap.**
 -dontwarn org.msgpack.**
 -dontnote org.msgpack.**
