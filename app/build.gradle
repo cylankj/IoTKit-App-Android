@@ -6,13 +6,6 @@ apply plugin: 'me.tatarka.retrolambda'
 //多渠道包
 apply plugin: 'packer'
 
-def releaseTime() {
-    return new Date().format("yyyyMMddHHmm")
-}
-
-def getPackageName() {
-    return "JiafeigouPlayer"
-}
 //从version.properties中读取versionName
 def vCode
 def vName
@@ -34,6 +27,16 @@ def boolean hasSignKey() {
     return false
 }
 
+def boolean isInJenkins() {
+    Properties properties = new Properties()
+    File localProperties = project.rootProject.file('local.properties')
+    if (localProperties.exists()) {
+        properties.load(localProperties.newDataInputStream())
+        def hasJenkinsTag = properties.getProperty('isInJenkins')
+        return hasJenkinsTag != null || hasJenkinsTag;
+    }
+    return false
+}
 
 android {
     compileOptions {
@@ -58,8 +61,10 @@ android {
 
     }
     externalNativeBuild {
-        cmake {
-            path 'CMakeLists.txt'
+        if (!isInJenkins()) {
+            cmake {
+                path 'CMakeLists.txt'
+            }
         }
     }
     sourceSets.main {
@@ -243,14 +248,14 @@ dependencies {
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
 
     // twitter
-    compile(name:'fabric-1.3.14', ext:'aar')
-    compile(name:'tweet-composer-2.3.1', ext:'aar')
-    compile(name:'tweet-ui-2.3.1', ext:'aar')
-    compile(name:'twitter-2.3.1', ext:'aar')
-    compile(name:'twitter-core-2.3.0', ext:'aar')
+    compile(name: 'fabric-1.3.14', ext: 'aar')
+    compile(name: 'tweet-composer-2.3.1', ext: 'aar')
+    compile(name: 'tweet-ui-2.3.1', ext: 'aar')
+    compile(name: 'twitter-2.3.1', ext: 'aar')
+    compile(name: 'twitter-core-2.3.0', ext: 'aar')
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
-    compile(name: rootProject.ext.facebookSDK, ext:'aar'){
+    compile(name: rootProject.ext.facebookSDK, ext: 'aar') {
         transitive = true
     }
     compile 'fr.avianey:bolts-android-api:1+'
