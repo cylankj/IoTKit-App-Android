@@ -18,7 +18,6 @@ public class ShadowFrameLayout extends FrameLayout {
     Rect mRect = new Rect();
     private boolean mFixSize = false;
     private boolean mAdjustSize = false;
-    private Bitmap mCacheBitmap;
 
     public ShadowFrameLayout(Context context) {
         this(context, null);
@@ -47,21 +46,23 @@ public class ShadowFrameLayout extends FrameLayout {
     }
 
     public void adjustSize(boolean adjust) {
+//        if (true) return;
+
         ImageView view = (ImageView) findViewById(R.id.iv_wonderful_item_content);
+
         if (view != null) {
+            view.setTag(null);
             if (adjust) {
                 getLocalVisibleRect(mRect);
                 if (!mAdjustSize) {
                     view.setDrawingCacheEnabled(true);
                     Bitmap cache = view.getDrawingCache();
                     if (cache != null) {
-                        mCacheBitmap = Bitmap.createBitmap(cache);
                         view.setImageBitmap(Bitmap.createBitmap(cache, mRect.left, mRect.top, cache.getWidth(), mRect.top == 0 ? mRect.bottom : cache.getHeight() - mRect.top));
                     }
                 }
                 view.layout(mRect.left, mRect.top, mRect.right, mRect.bottom);
             } else {
-                if (mCacheBitmap != null) view.setImageBitmap(mCacheBitmap);
                 view.layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
             }
         }

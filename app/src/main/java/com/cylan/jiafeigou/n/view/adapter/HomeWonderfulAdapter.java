@@ -7,7 +7,6 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -81,12 +80,10 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
         if (bean.msgType == DpMsgDefine.DPWonderItem.TYPE_PIC) {
             Glide.with(getContext()).load(new WonderGlideURL(bean))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
         } else if (bean.msgType == DpMsgDefine.DPWonderItem.TYPE_VIDEO) {
             Glide.with(getContext()).load(new WonderGlideVideoThumbURL(bean))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
         }
 

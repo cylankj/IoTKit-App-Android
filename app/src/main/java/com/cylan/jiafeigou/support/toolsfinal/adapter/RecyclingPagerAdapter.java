@@ -163,7 +163,7 @@ public abstract class RecyclingPagerAdapter extends PagerAdapter {
         }
 
         /**
-         * @return A view from the ScrapViews collection. These are unordered.
+         * @return A view from the ScrapViews delete. These are unordered.
          */
         View getScrapView(int position, int viewType) {
             if (viewTypeCount == 1) {

@@ -1,8 +1,8 @@
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                 xmlns:app="http://schemas.android.com/apk/res-auto"
-                                                 android:layout_width="match_parent"
-                                                 android:layout_height="match_parent"
-                                                 android:clipChildren="true">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="true">
 
 
     <android.support.design.widget.AppBarLayout
@@ -28,7 +28,8 @@
                     android:id="@+id/imgWonderfulTopBg"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/bg_wonderful_daytime"/>
+                    android:scaleType="fitXY"
+                    android:src="@drawable/bg_wonderful_daytime" />
 
                 <TextView
                     android:id="@+id/tv_title_head_wonder"
@@ -38,7 +39,7 @@
                     android:layout_marginTop="@dimen/y18"
                     android:text="@string/Tap2_TitleName"
                     android:textColor="@color/color_white"
-                    android:textSize="@dimen/sp22"/>
+                    android:textSize="@dimen/sp22" />
 
                 <TextView
                     android:id="@+id/tv_sec_title_head_wonder"
@@ -49,7 +50,7 @@
                     android:layout_marginTop="@dimen/y8"
                     android:text="@string/Tap2_Index_Greetings"
                     android:textColor="@color/color_white"
-                    android:textSize="@dimen/sp15"/>
+                    android:textSize="@dimen/sp15" />
             </RelativeLayout>
 
             <ImageView
@@ -57,7 +58,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:alpha="0"
-                android:background="@color/color_0ba8cf"/>
+                android:background="@color/color_0ba8cf" />
 
             <FrameLayout
                 android:id="@+id/fLayout_date_head_wonder"
@@ -73,18 +74,18 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:alpha="1"
-                    android:background="@drawable/btn_pressed_date_head_wonderful"/>
+                    android:background="@drawable/btn_pressed_date_head_wonderful" />
 
                 <com.cylan.jiafeigou.widget.textview.WonderfulTitleHead
                     android:id="@+id/tv_date_item_head_wonder"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:drawablePadding="@dimen/y5"
                     android:drawableEnd="@drawable/wonderful_arrow_down"
+                    android:drawablePadding="@dimen/y5"
                     android:gravity="center"
                     android:textColor="@color/color_788291"
-                    android:textSize="@dimen/sp14"/>
+                    android:textSize="@dimen/sp14" />
             </FrameLayout>
         </FrameLayout>
 
@@ -105,7 +106,7 @@
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rV_wonderful_list"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent" />
 
             <FrameLayout
                 android:id="@+id/fLayout_empty_view_container"
@@ -115,11 +116,11 @@
 
                 <include
                     android:id="@+id/fragment_wonderful_guide"
-                    layout="@layout/item_wonderful_guide"/>
+                    layout="@layout/item_wonderful_guide" />
 
                 <include
                     android:id="@+id/fragment_wonderful_empty"
-                    layout="@layout/layout_wonderful_list_empty_view"/>
+                    layout="@layout/layout_wonderful_list_empty_view" />
             </FrameLayout>
         </FrameLayout>
 

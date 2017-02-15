@@ -706,4 +706,18 @@ public class RxEvent {
             this.code = code;
         }
     }
+
+    public static class DeleteWonder {
+        public int position;
+    }
+
+    public static class DeleteWonderRsp {
+        public boolean success;
+        public int position;
+
+        public DeleteWonderRsp(boolean b, int position) {
+            this.position = position;
+            success = b;
+        }
+    }
 }

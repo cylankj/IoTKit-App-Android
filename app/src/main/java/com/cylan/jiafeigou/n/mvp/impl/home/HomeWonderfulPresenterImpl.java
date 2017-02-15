@@ -5,6 +5,7 @@ import android.content.pm.PackageManager;
 import android.support.v4.util.LongSparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -12,12 +13,14 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -50,7 +54,17 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(getTimeTickEventSub(), getPageScrolledSub());
+        registerSubscription(getTimeTickEventSub(), getPageScrolledSub(), getDeleteWonderfulSub());
+    }
+
+    private Subscription getDeleteWonderfulSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonder.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(deleteWonder -> {
+                    AppLogger.e("接收到删除 WonderItem 请求");
+                    deleteTimeline(deleteWonder.position);
+                });
     }
 
     @Override
@@ -88,8 +102,13 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     public void startRefresh() {
         if (DataSourceManager.getInstance().isOnline()) {
-            TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.get(mPositionDayStart);
-            load(items == null || items.size() == 0 ? mPositionDayStart : items.first().version, items != null && items.size() > 0);
+            int index = mWonderDaySource.indexOfKey(mPositionDayStart);
+            if (index == 0) {//first
+                load(0, false);
+            } else {
+                TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.get(mPositionDayStart);
+                load(items == null || items.size() == 0 ? mPositionDayStart : items.first().version, mPositionDayStart != 0);
+            }
         } else {
             mView.onLoginStateChanged(false);
         }
@@ -113,11 +132,41 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     @Override
-    public void deleteTimeline(long time) {
-        ArrayList<JFGDPMsg> params = new ArrayList<>();
-        JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, time);
-        params.add(msg);
-        robotDelData("", params, 0);
+    public void deleteTimeline(int position) {
+        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            TreeSet<DpMsgDefine.DPWonderItem> wonderItems = mWonderDaySource.get(mPositionDayStart);
+            ArrayList<DpMsgDefine.DPWonderItem> temp = new ArrayList<>(wonderItems);
+            long time = temp.get(position).version;
+            ArrayList<JFGDPMsg> params = new ArrayList<>();
+            JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, time);
+            params.add(msg);
+            try {
+                AppLogger.e("正在删除!");
+                long seq = JfgCmdInsurance.getCmd().robotDelData("", params, 0);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (JfgException e) {
+                e.printStackTrace();
+                subscriber.onError(e);
+            }
+        }).subscribeOn(Schedulers.io())
+                .timeout(10, TimeUnit.SECONDS)
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).filter(rsp -> rsp.seq == seq).first())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(rsp -> {
+                    if (rsp.resultCode == 0) {//success
+                        ToastUtil.showPositiveToast("删除成功");
+                        AppLogger.e("删除成功");
+                        RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
+                        mView.onDeleteWonderSuccess(position);
+                    } else {
+                        AppLogger.e("删除失败");
+                        ToastUtil.showNegativeToast("删除失败");
+                    }
+                }, e -> {
+                    ToastUtil.showNegativeToast("删除失败!");
+                    e.printStackTrace();
+                });
     }
 
     @Override

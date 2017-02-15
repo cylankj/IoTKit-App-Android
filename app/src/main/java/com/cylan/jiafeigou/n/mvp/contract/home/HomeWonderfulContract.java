@@ -39,6 +39,8 @@ public interface HomeWonderfulContract {
         void onTimeLineRsp(long dayStartTime);
 
         void onTimeLineInit(List<WonderIndicatorWheelView.WheelItem> list);
+
+        void onDeleteWonderSuccess(int position);
     }
 
     interface Presenter extends JFGPresenter {
@@ -46,7 +48,7 @@ public interface HomeWonderfulContract {
 
         void startLoadMore();
 
-        void deleteTimeline(long time);
+        void deleteTimeline(int position);
 
         boolean checkWechat();
 

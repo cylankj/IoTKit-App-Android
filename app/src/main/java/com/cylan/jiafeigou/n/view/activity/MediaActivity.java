@@ -38,6 +38,8 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.adapter.MediaDetailPagerAdapter;
 import com.cylan.jiafeigou.n.view.adapter.TransitionListenerAdapter;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
@@ -59,6 +61,10 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
+import rx.schedulers.Schedulers;
 import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
@@ -94,7 +100,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     ImageView mPictureDownload;
     @BindView(R.id.act_media_picture_opt_share)
     ImageView mPictureShare;
-    @BindView(R.id.act_media_picture_opt_collection)
+    @BindView(R.id.act_media_picture_opt_delete)
     ImageView mPictureCollection;
     @BindView(R.id.act_media_pic_option)
     FrameLayout mPictureFooterContainer;
@@ -143,6 +149,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private File mDownloadFile;
     private int mCurrentPlayState = PLAY_STATE_RESET;
     private static final long HEADER_AND_FOOTER_SHOW_TIME = 3000;
+    private Subscription mDeleteWonderSub;
 
     @Override
     protected void onRestart() {
@@ -231,7 +238,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                 } else if (mCurrentViewType == DPWonderItem.TYPE_PIC && mPhotoView != object) {
                     mPhotoView = (View) object;
                 }
-
             }
         };
         mAdapter.setPhotoTapListener(this);
@@ -445,9 +451,36 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+        registerDeleteWonderSub();
+    }
+
+    private void registerDeleteWonderSub() {
+        if (mDeleteWonderSub != null && mDeleteWonderSub.isUnsubscribed())
+            mDeleteWonderSub.unsubscribe();
+        mDeleteWonderSub = RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonderRsp.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(deleteWonderRsp -> {
+                    if (deleteWonderRsp.success) {
+                        mMediaList.remove(deleteWonderRsp.position);
+                        mAdapter.notifyDataSetChanged();
+                        if (mAdapter.getCount() == 0) {//说明已经删完了,则退出到每日精彩列表页面
+                            finish();
+                        }
+                    }
+                });
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         AppLogger.d("onStop");
+        if (mDeleteWonderSub != null && mDeleteWonderSub.isUnsubscribed()) {
+            mDeleteWonderSub.unsubscribe();
+            mDeleteWonderSub = null;
+        }
     }
 
     @Override
@@ -514,13 +547,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         }
     }
 
-    @OnClick({R.id.act_media_header_opt_delete})
+    @OnClick({R.id.act_media_header_opt_delete, R.id.act_media_picture_opt_delete})
     public void delete() {
-    }
-
-    @OnClick(R.id.act_media_picture_opt_collection)
-    public void collection() {
-
+        RxEvent.DeleteWonder wonder = new RxEvent.DeleteWonder();
+        wonder.position = mCurrentPosition;
+        RxBus.getCacheInstance().post(wonder);
     }
 
     @OnClick({R.id.act_media_header_opt_download, R.id.act_media_picture_opt_download})
@@ -676,10 +707,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                 break;
             case IjkMediaPlayer.MEDIA_INFO_NETWORK_BANDWIDTH:
                 break;
-
-//            case IjkMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
-//                if (mVideoView != null)
-//                    mVideoView.setRotation(extra);
         }
         return false;
     }
@@ -736,7 +763,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mVideoView.setVisibility(View.VISIBLE);
         mVideoLoadingBar.setVisibility(View.VISIBLE);
 //        String url = mCurrentMediaBean.fileName;
-
         String url = "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4";
         mCurrentPlayState = PLAY_STATE_RESET;
         mMediaPlayer.reset();
@@ -776,15 +802,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     @Override
     public void onVideoSizeChanged(IMediaPlayer iMediaPlayer, int width, int height, int i2, int i3) {
-//        if (mVideoView != null) {
-//            int videoWidth = mVideoView.getWidth();
-//            int videoHeight = mVideoView.getHeight();
-//            mVideoView.setScaleX(videoWidth / height);
-//            mVideoView.setScaleY(videoHeight / width);
-//            Matrix transform = mVideoView.getTransform(null);
-//            transform.setScale(height / videoWidth, width / videoHeight);
-//            mVideoView.setTransform(transform);
-//        }
     }
 
     @Override

@@ -64,13 +64,13 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     public void onViewAttached(JFGView view) {
         mView = (V) view;
         onRegisterResponseParser();
+        onRegisterSubscription();
         mSourceManager = DataSourceManager.getInstance();
     }
 
     @Override
     @CallSuper
     public void onStart() {
-        onRegisterSubscription();
     }
 
     @CallSuper
@@ -102,11 +102,12 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @Override
     @CallSuper
     public void onStop() {
-        onUnRegisterSubscription();
+
     }
 
     @Override
     public void onViewDetached() {
+        onUnRegisterSubscription();
         mView = null;
         mSourceManager = null;
     }
@@ -289,8 +290,8 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         mResponseParserMap.put(msg, parser);
     }
 
-    protected void registerLocalUDPMessageParser(String cmd,LocalUDPMessageParser parser){
-        mLocalMessageParserMap.put(cmd,parser);
+    protected void registerLocalUDPMessageParser(String cmd, LocalUDPMessageParser parser) {
+        mLocalMessageParserMap.put(cmd, parser);
     }
 
     public interface ResponseParser {
@@ -338,7 +339,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         robotGetData(peer, queryDps, limit, asc, timeoutMs, null);
     }
 
-    protected void robotDelData(String peer, ArrayList<JFGDPMsg> dps, int timeoutMs) {
+    protected void robotDelDataAsync(String peer, ArrayList<JFGDPMsg> dps, int timeoutMs) {
         post(() -> {
             long seq = 0;
             try {
