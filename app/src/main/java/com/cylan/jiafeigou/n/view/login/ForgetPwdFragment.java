@@ -166,7 +166,6 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     }
 
     private void initTitleBar() {
-        ViewUtils.setViewMarginStatusBar(rLayoutForgetPwdToolbar);
         rLayoutForgetPwdToolbar.setBackAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -28,7 +28,6 @@ import com.cylan.jiafeigou.n.view.adapter.DeviceTimeZoneAdapter;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.google.gson.Gson;
 
 import java.util.List;
 
@@ -186,11 +185,19 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
     }
 
-    @OnClick(R.id.iv_timezone_search)
-    public void onClick() {
-        etTimezoneSearch.getText().clear();
-        etTimezoneSearch.setFocusableInTouchMode(true);
-        etTimezoneSearch.setFocusable(true);
-        etTimezoneSearch.requestFocus();
+    @OnClick({R.id.iv_timezone_search, R.id.iv_back})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.iv_timezone_search:
+                etTimezoneSearch.getText().clear();
+                etTimezoneSearch.setFocusableInTouchMode(true);
+                etTimezoneSearch.setFocusable(true);
+                etTimezoneSearch.requestFocus();
+                break;
+            case R.id.iv_back:
+                getActivity().getSupportFragmentManager().popBackStack();
+                break;
+        }
+
     }
 }

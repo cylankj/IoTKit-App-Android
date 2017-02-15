@@ -28,7 +28,6 @@ import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView1;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
@@ -104,6 +103,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        customToolbar.setBackAction((View v) -> {
+            getActivity().getSupportFragmentManager().popBackStack();
+        });
         JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
         if (device != null && JFGRules.isFreeCam(device.pid)) {
             view.findViewById(R.id.fLayout_protection_warn_effect).setVisibility(View.GONE);
@@ -116,13 +118,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     if (!isChecked) {
                         new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
                                 .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
-                                .setPositiveButton(getString(R.string.CARRY_ON), new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        basePresenter.updateInfoReq(false, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-                                        showDetail(false);
-                                        updateDetails();
-                                    }
+                                .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                                    basePresenter.updateInfoReq(false, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                                    showDetail(false);
+                                    updateDetails();
                                 })
                                 .setNegativeButton(getString(R.string.CANCEL), null)
                                 .show();

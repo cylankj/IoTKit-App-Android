@@ -176,7 +176,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewMarginStatusBar(rLayoutLoginToolbar);
         addOnTouchListener(view);
         showLayout();
         if (BuildConfig.DEBUG) {
