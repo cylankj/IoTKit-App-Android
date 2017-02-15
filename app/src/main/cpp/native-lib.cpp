@@ -80,7 +80,7 @@ extern "C" jstring JNICALL native_getVKey(JNIEnv *env, jclass clazz, jstring con
     LOGD("JNICALL", "native_getVKey:%s", content);
     std::string result = "";
     if (strcmp(content, "test1") == 0) {
-        result = "kjSle3yL8XPYlobnG4GstpeI8rwNKGj9";
+        result = "jJcdnOdv906Z0sakVd5dWwJLUY1o3cHc";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
@@ -110,7 +110,7 @@ extern "C" jstring JNICALL native_getVId(JNIEnv *env, jclass clazz, jstring cont
     }
     std::string result = "";
     if (strcmp(content, "test1") == 0) {
-        result = "0H7A";
+        result = "001U";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
