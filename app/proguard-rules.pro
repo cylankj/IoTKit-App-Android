@@ -41,6 +41,8 @@
 -keep public class org.msgpack.** { *; }
 -keep public class org.webrtc.** { *; }
 
+-keep org.webrtc.videoengine.MediaCodecVideoEncoder$OutputBufferInfo
+
 -keep public class com.cylan.jiafeigou.support.Security
 -dontnote java.util.AbstractMap.**
 -dontwarn org.msgpack.**
