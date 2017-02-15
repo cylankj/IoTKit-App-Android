@@ -77,28 +77,7 @@ extern "C" jstring JNICALL native_getVKey(JNIEnv *env, jclass clazz, jstring con
     if (content == NULL) {
         return NULL;
     }
-    LOGD("JNICALL", "native_getVKey:%s", content);
-    std::string result = "";
-    if (strcmp(content, "test1") == 0) {
-        result = "jJcdnOdv906Z0sakVd5dWwJLUY1o3cHc";
-        env->ReleaseStringUTFChars(content_, content);
-        return env->NewStringUTF(result.c_str());
-    }
-    if (strcmp(content, "") == 0) {
-        result = "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3";
-        env->ReleaseStringUTFChars(content_, content);
-        return env->NewStringUTF(result.c_str());
-    }
-    if (strcmp(content, "yf") == 0) {
-        result = "DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz";
-        env->ReleaseStringUTFChars(content_, content);
-        return env->NewStringUTF(result.c_str());
-    }
-    if (strcmp(content, "zhongxing") == 0) {
-        result = "Cd6DEgRvX92xAXRIkUexWDPxzTwKqHK3";
-        env->ReleaseStringUTFChars(content_, content);
-        return env->NewStringUTF(result.c_str());
-    }
+    std::string result = "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G";
     env->ReleaseStringUTFChars(content_, content);
     return env->NewStringUTF(result.c_str());
 }
@@ -108,27 +87,7 @@ extern "C" jstring JNICALL native_getVId(JNIEnv *env, jclass clazz, jstring cont
     if (content == NULL) {
         return NULL;
     }
-    std::string result = "";
-    if (strcmp(content, "test1") == 0) {
-        result = "001U";
-        env->ReleaseStringUTFChars(content_, content);
-        return env->NewStringUTF(result.c_str());
-    }
-    if (strcmp(content, "") == 0) {
-        result = "0001";
-        env->ReleaseStringUTFChars(content_, content);
-        return env->NewStringUTF(result.c_str());
-    }
-    if (strcmp(content, "yf") == 0) {
-        result = "003H";
-        env->ReleaseStringUTFChars(content_, content);
-        return env->NewStringUTF(result.c_str());
-    }
-    if (strcmp(content, "zhongxing") == 0) {
-        result = "003J";
-        env->ReleaseStringUTFChars(content_, content);
-        return env->NewStringUTF(result.c_str());
-    }
+    std::string result = "0001";
     env->ReleaseStringUTFChars(content_, content);
     return env->NewStringUTF(result.c_str());
 }
