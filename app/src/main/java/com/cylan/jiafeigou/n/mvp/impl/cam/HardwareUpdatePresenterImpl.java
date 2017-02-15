@@ -10,9 +10,12 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
  */
 public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdateContract.View> implements HardwareUpdateContract.Presenter {
 
-    public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view) {
+    private String uuid;
+
+    public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view,String uuid) {
         super(view);
         view.setPresenter(this);
+        this.uuid = uuid;
     }
 
 

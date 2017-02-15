@@ -11,11 +11,16 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface SdCardInfoContract {
 
     interface View extends BaseView<Presenter>{
-
+        void sdUseDetail(String volume,float data);
+        void showLoading();
+        void hideLoading();
+        void clearSdResult(int code);
     }
 
 
     interface Presenter extends BasePresenter{
-
+        boolean getSdcardState();
+        void clearSDcard();
+        void clearCountTime();
     }
 }

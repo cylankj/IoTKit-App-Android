@@ -67,10 +67,16 @@ public class SimpleDialogFragment extends BaseDialog {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Bundle bundle = getArguments();
+        final boolean ishow_cancle_btn = bundle.getBoolean("ishow_cancle_btn");
         final String title = bundle.getString(KEY_TITLE);
         final String lContent = bundle.getString(KEY_LEFT_CONTENT);
         final String rContent = bundle.getString(KEY_RIGHT_CONTENT);
         final String content = bundle.getString(KEY_CONTENT_CONTENT);
+
+        if (ishow_cancle_btn){
+            tvDialogBtnRight.setVisibility(View.GONE);
+        }
+
         if (!TextUtils.isEmpty(title))
             tvDialogTitle.setText(title);
         if (!TextUtils.isEmpty(lContent))

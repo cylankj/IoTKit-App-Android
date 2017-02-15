@@ -30,5 +30,10 @@ public interface CamInfoContract {
          */
         void updateInfoReq(Object value, long id);
 
+        /**
+         * 检测是否有新固件
+         */
+        void checkNewSoftVersion();
+
     }
 }

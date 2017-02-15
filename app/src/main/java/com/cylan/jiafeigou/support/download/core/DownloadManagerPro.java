@@ -142,7 +142,6 @@ public class DownloadManagerPro {
         private String sdCardFolderAddress;
         private DownloadManagerListener downloadManagerListener;
 
-
         public TaskBuilder setAllowNetType(int allowNetType) {
             this.allowNetType = allowNetType;
             return this;

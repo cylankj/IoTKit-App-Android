@@ -15,6 +15,5 @@ public interface HardwareUpdateContract {
     }
 
     interface Presenter extends BasePresenter{
-
     }
 }

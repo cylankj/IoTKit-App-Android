@@ -74,6 +74,7 @@
         android:layout_height="wrap_content">
 
         <View
+            android:id="@+id/view_total_volume"
             android:layout_marginLeft="@dimen/x16"
             android:layout_marginRight="@dimen/x16"
             android:layout_marginTop="@dimen/y6"
@@ -91,20 +92,34 @@
             android:layout_height="@dimen/y5"/>
     </FrameLayout>
 
-    <TextView
-        android:id="@+id/tv_clecr_sdcard"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y42"
-        android:gravity="center"
-        android:layout_centerVertical="true"
-        android:padding="@dimen/x10"
-        android:text="格式化SD卡"
+    <FrameLayout
         android:layout_marginTop="@dimen/y69"
         android:layout_marginEnd="@dimen/x30"
         android:layout_marginStart="@dimen/x30"
-        android:background="@drawable/long_btn_bg_shape_white"
-        android:textColor="#4B9FD5"
-        android:textSize="@dimen/sp16" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/tv_clecr_sdcard"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y42"
+            android:gravity="center"
+            android:layout_centerVertical="true"
+            android:padding="@dimen/x10"
+            android:text="格式化SD卡"
+            android:background="@drawable/long_btn_bg_shape_white"
+            android:textColor="#4B9FD5"
+            android:textSize="@dimen/sp16" />
+
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/iv_loading_rotate"
+            android:layout_gravity="center"
+            android:src="@drawable/listview_loading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </FrameLayout>
 
     <TextView
         android:layout_marginTop="@dimen/y9"

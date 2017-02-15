@@ -200,6 +200,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private void jump2HardwareUpdateFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        bundle.putString("the_new_soft_version","");
         HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 hardwareUpdateFragment, android.R.id.content);
