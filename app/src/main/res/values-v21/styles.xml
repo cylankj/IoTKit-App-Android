@@ -24,7 +24,7 @@
         <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 
-    <style name="CamActivityTheme" parent="AppTheme"/>
+    <style name="CamActivityTheme" parent="AppTheme" />
 
     <style name="MediaActivityTransition" parent="AppTheme">
         <item name="android:statusBarColor">@android:color/black</item>
@@ -36,8 +36,7 @@
         </item>
     </style>
 
-    <style name="CamDelayRecordStyle" parent="AppTheme">
-    </style>
+    <style name="CamDelayRecordStyle" parent="AppTheme"></style>
     <!--普通样式-->
     <style name="SwitchButtonNormal">
         <item name="kswThumbDrawable">@drawable/switch_btn_thumb_selector</item>
@@ -93,5 +92,10 @@
         <item name="android:textAppearance">
             @android:style/TextAppearance.Material.Notification.Emphasis
         </item>
+    </style>
+
+    <style name="MyRadioButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@android:color/holo_blue_dark</item>
+        <item name="colorControlActivated">@android:color/holo_green_dark</item>
     </style>
 </resources>

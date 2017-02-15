@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cam;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
@@ -39,7 +40,10 @@ import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.DensityUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
@@ -48,7 +52,6 @@ import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
-import com.cylan.jiafeigou.utils.DensityUtils;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
@@ -56,6 +59,8 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -97,6 +102,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     LiveTimeLayout liveTimeLayout;
     @BindView(R.id.imgV_cam_zoom_to_full_screen)
     ImageView imgVCamZoomToFullScreen;
+    @BindView(R.id.imv_double_sight)
+    ImageView imvDoubleSight;
 
     private CamLiveController camLiveController;
     //    /**
@@ -152,6 +159,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onViewCreated(view, savedInstanceState);
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
         boolean isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
+        if (device != null)//2w显示双排视图  3.1.0功能
+            imvDoubleSight.setVisibility(isNormalView ? View.GONE : View.VISIBLE);
+        checkSightDialog(isNormalView);
         ViewUtils.updateViewHeight(fLayoutCamLiveView, isNormalView ? 0.8f : 1.0f);//720*576
         initBottomBtn(false);
         imgVCamSwitchSpeaker.setOnClickListener(this);
@@ -216,6 +226,29 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         });
     }
 
+    private void checkSightDialog(boolean isNormalCam) {
+        if (isNormalCam || basePresenter.isShareDevice()) return;
+        boolean isFirstShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
+        if (!isFirstShow) return;//不是第一次
+        View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
+        if (old != null) {
+            //已经有了
+            old.setVisibility(View.VISIBLE);
+            return;
+        }
+        View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
+        fLayoutCamLiveView.addView(view, (fLayoutCamLiveView.getChildCount() == 0 ? 1 : fLayoutCamLiveView.getChildCount()) - 1);//最顶
+        View layout = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
+        view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
+            if (layout != null) fLayoutCamLiveView.removeView(layout);
+        });
+        view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
+            if (layout != null) fLayoutCamLiveView.removeView(layout);
+            ToastUtil.showNegativeToast("go");
+            startActivity(new Intent(getActivity(), SightSettingActivity.class));
+        });
+        PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
+    }
 
     /**
      * 根据 待机模式 ,分享用户模式设置一些view的状态
