@@ -141,6 +141,15 @@
                 hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sbtn_setting_sight"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:visibility="gone"
+                hunt:sv_image_src="@drawable/setting_icon_angle_visual_angle"
+                hunt:sv_title="@string/Tap1_Camera_ViewAngle"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sbtn_setting_110v"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"

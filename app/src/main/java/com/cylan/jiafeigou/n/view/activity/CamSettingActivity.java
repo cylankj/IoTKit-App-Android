@@ -38,6 +38,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -87,6 +88,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     SettingItemView0 sbtnSetting110v;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.sbtn_setting_sight)
+    SettingItemView0 sbtnSettingSight;
     private String uuid;
     private JFGDevice device;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
@@ -112,6 +115,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     protected void onStart() {
         super.onStart();
+        initSightBtn();
         initStandbyBtn();
         init110VVoltageBtn();
         initLedIndicatorBtn();
@@ -119,6 +123,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         initRotateBtn();
         initDelayRecordBtn();
         initBackListener();
+    }
+
+    private void initSightBtn() {
+        if (device != null && JFGRules.isPanoramicCam(device.pid)) {
+            sbtnSettingSight.setVisibility(View.VISIBLE);
+            int defaultValue = PreferencesUtils.getInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL, 0);
+            sbtnSettingSight.setTvSubTitle(getString(defaultValue == 0 ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+        }
     }
 
     private void initBackListener() {
