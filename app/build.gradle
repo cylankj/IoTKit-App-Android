@@ -250,6 +250,9 @@ dependencies {
     compile(name:'twitter-core-2.3.0', ext:'aar')
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
-    compile(name: rootProject.ext.facebookSDK, ext:'aar')
+    compile(name: rootProject.ext.facebookSDK, ext:'aar'){
+        transitive = true
+    }
+    compile 'fr.avianey:bolts-android-api:1+'
 }
 
