@@ -41,4 +41,9 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                     AppLogger.e(throwable.getLocalizedMessage());
                 });
     }
+
+    @Override
+    public void checkNewSoftVersion() {
+        // TODO 检测是否有新的固件
+    }
 }

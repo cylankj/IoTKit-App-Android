@@ -58,7 +58,6 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     @BindView(R.id.fLayout_top_bar_container)
     FrameLayout fLayoutTopBarContainer;
 
-
     private String mailBox;
     private MineInfoBindMailContract.Presenter presenter;
 
@@ -279,7 +278,6 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     /**
      * 网络状态变化
-     *
      * @param state
      */
     @Override

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
@@ -21,11 +22,9 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-import com.cylan.jiafeigou.n.view.setting.SdcardInfoFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
@@ -77,8 +76,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     LinearLayout lLayoutDeviceBattery;
     @BindView(R.id.tv_device_uptime)
     TextView tvDeviceUptime;
+    @BindView(R.id.ll_SDcard_item)
+    LinearLayout llSDcardItem;
+    @BindView(R.id.rl_hardware_update)
+    RelativeLayout rlHardwareUpdate;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.hardware_update_point)
+    View hardwareUpdatePoint;
     private String uuid;
     private EditFragmentDialog editDialogFragment;
 
@@ -151,7 +156,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION, "");
         tvDeviceSystemVersion.setText(sVersion);
         int uptime = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_210_UP_TIME, 0);
-        tvDeviceUptime.setText(TimeUtils.getUptime( uptime));
+        tvDeviceUptime.setText(TimeUtils.getUptime(uptime));
     }
 
     private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {
@@ -168,9 +173,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         return sdStatus != null ? getString(R.string.SD_NORMAL) : "";
     }
 
-    @OnClick({R.id.tv_toolbar_icon,
-            R.id.lLayout_sdcard,
-            R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone})
+    @OnClick({R.id.tv_toolbar_icon,R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone, R.id.ll_SDcard_item, R.id.rl_hardware_update})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
@@ -182,22 +185,37 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             case R.id.lLayout_information_facility_timezone:
                 toEditTimezone();
                 break;
-            case R.id.lLayout_sdcard:
-                toFormatSdcardPage();
+            case R.id.ll_SDcard_item:
+                jump2SdcardDetailFragment();
+                break;
+
+            case R.id.rl_hardware_update:
+                jump2HardwareUpdateFragment();
                 break;
         }
     }
 
     /**
-     * 跳转到
-     * Micro SD卡页面
+     * 固件升级
      */
-    private void toFormatSdcardPage() {
+    private void jump2HardwareUpdateFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        SdcardInfoFragment sdcardInfoFragment = SdcardInfoFragment.getInstance(bundle);
+        bundle.putString("the_new_soft_version", "");
+        HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                sdcardInfoFragment, android.R.id.content);
+                hardwareUpdateFragment, android.R.id.content);
+    }
+
+    /**
+     * 显示Sd卡的详情
+     */
+    private void jump2SdcardDetailFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                sdcardDetailFragment, android.R.id.content);
     }
 
     /**

@@ -140,6 +140,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     @Override
     public void registerResult(int code) {
         if (code == JError.ErrorOK) {
+            // TODO 是否增加邮箱验证界面
             ToastUtil.showToast(getString(R.string.Added_successfully));
         } else {
             ToastUtil.showToast(getString(R.string.Tips_Device_TimeoutRetry));
