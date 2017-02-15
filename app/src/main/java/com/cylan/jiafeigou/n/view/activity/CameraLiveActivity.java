@@ -24,6 +24,8 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -169,6 +171,9 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                     AppLogger.e("err: " + e.getLocalizedMessage());
                 }
             }
+            RxEvent.CamLivePageScrolled scrolled = new RxEvent.CamLivePageScrolled();
+            scrolled.selected = position == 0;
+            RxBus.getCacheInstance().post(scrolled);
         }
 
         @Override
