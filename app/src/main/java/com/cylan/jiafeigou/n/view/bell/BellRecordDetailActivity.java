@@ -188,7 +188,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 AppLogger.e(result + "");
                 subscriber.onNext((int) result);
                 subscriber.onCompleted();
-                AppLogger.e("正在设置 robotData");
+                AppLogger.d("正在设置 robotData:");
             } catch (Exception e) {
                 e.printStackTrace();
                 subscriber.onError(e);
@@ -199,7 +199,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     if (aLong == (int) setDataRsp.seq) {
                         int code = setDataRsp.rets.get(0).ret;
                         AppLogger.d("setRobotDataResponse" + code);
-                        if (code == 0) {
+                        if (code == 0) {//判断返回结果,不为零说明出现异常
                             return true;
                         } else {
                             throw new RxEvent.ErrorRsp(code);
@@ -223,21 +223,21 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                                 .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID))
                                 .downloadOnly(100, 100);
                         result = getCmd().putFileToCloud(remotePath, future.get().getAbsolutePath());
-                        AppLogger.e("正在设置 CloudFile");
+                        AppLogger.d("正在设置 CloudFile");
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     return result;
                 })
                 .zipWith(RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class), (aLong, jfgMsgHttpResult) -> {
-                    AppLogger.e("sss" + aLong + new Gson().toJson(jfgMsgHttpResult));
+                    AppLogger.e(" 正在解析 http请求返回的结果:" + aLong + new Gson().toJson(jfgMsgHttpResult));
                     return aLong == jfgMsgHttpResult.requestId && jfgMsgHttpResult.ret == 200;
                 })
                 .filter(s -> s)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(aBoolean -> {
                     ToastUtil.showPositiveToast("收藏成功!");
-                    AppLogger.e("收藏成功!");
+                    AppLogger.d("收藏成功!");
                 }, e -> {
                     if (e instanceof RxEvent.ErrorRsp) {
                         RxEvent.ErrorRsp rsp = (RxEvent.ErrorRsp) e;
