@@ -39,50 +39,51 @@
             android:id="@+id/sv_sight_horizontal"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
-            android:layout_toStartOf="@+id/rbtn_sight_horizontal"
+            android:layout_toStartOf="@+id/rg_view"
             hunt:sv_image_src="@drawable/setting_icon_angle_head"
             hunt:sv_sub_title="@string/Tap1_Camera_FrontTips"
             hunt:sv_title="@string/Tap1_Camera_Front"
-            hunt:sv_v_divider="false" />
+            hunt:sv_v_divider="true" />
 
-        <RadioButton
-            android:theme="@style/MyRadioButton"
-            android:id="@+id/rbtn_sight_horizontal"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:button="@null"
-            android:drawableEnd="@android:drawable/btn_radio"
-            android:padding="20dp" />
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/x20"
-        android:orientation="horizontal">
 
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/sv_sight_vertical"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
-            android:layout_toStartOf="@+id/rbtn_sight_vertical"
+            android:layout_below="@+id/sv_sight_horizontal"
+            android:layout_toStartOf="@+id/rg_view"
             hunt:sv_image_src="@drawable/setting_icon_angle_overlooking"
             hunt:sv_sub_title="@string/Tap1_Camera_OverlookTips"
             hunt:sv_title="@string/Tap1_Camera_Overlook"
-            hunt:sv_v_divider="false" />
+            hunt:sv_v_divider="true" />
 
-        <RadioButton
-            android:theme="@style/MyRadioButton"
-            android:id="@+id/rbtn_sight_vertical"
+        <RadioGroup
+            android:id="@+id/rg_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:button="@null"
-            android:drawableEnd="@android:drawable/btn_radio"
-            android:padding="20dp" />
+            android:layout_alignParentEnd="true">
+
+
+            <RadioButton
+                android:id="@+id/rbtn_sight_horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y72"
+                android:button="@null"
+                android:drawableEnd="@android:drawable/btn_radio"
+                android:paddingEnd="@dimen/x15"
+                android:paddingStart="@dimen/x15"
+                android:theme="@style/MyRadioButton" />
+
+            <RadioButton
+                android:id="@+id/rbtn_sight_vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y72"
+                android:button="@null"
+                android:drawableEnd="@android:drawable/btn_radio"
+                android:paddingEnd="@dimen/x15"
+                android:paddingStart="@dimen/x15"
+                android:theme="@style/MyRadioButton" />
+        </RadioGroup>
     </RelativeLayout>
 
 
