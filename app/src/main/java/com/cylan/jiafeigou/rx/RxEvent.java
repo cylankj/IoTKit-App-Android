@@ -524,7 +524,7 @@ public class RxEvent {
     public static final class BellCallEvent {
 
         public final JFGDoorBellCaller caller;
-        public boolean isFromLocal=false;
+        public boolean isFromLocal = false;
         public LocalUdpMsg msg;
 
         public BellCallEvent(JFGDoorBellCaller jfgDoorBellCaller) {
@@ -691,5 +691,9 @@ public class RxEvent {
             this.peer = s;
             this.resultCode = i;
         }
+    }
+
+    public static final class CamLivePageScrolled {
+        public boolean selected;
     }
 }
