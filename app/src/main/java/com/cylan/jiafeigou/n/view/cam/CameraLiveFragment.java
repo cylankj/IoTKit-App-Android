@@ -245,7 +245,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
             if (layout != null) fLayoutCamLiveView.removeView(layout);
             ToastUtil.showNegativeToast("go");
-            startActivity(new Intent(getActivity(), SightSettingActivity.class));
+            Intent intent = new Intent(getActivity(), SightSettingActivity.class);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            startActivity(intent);
         });
         PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
     }
