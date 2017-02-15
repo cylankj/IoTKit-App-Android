@@ -61,10 +61,8 @@ android {
 
     }
     externalNativeBuild {
-        if (!isInJenkins()) {
-            cmake {
-                path 'CMakeLists.txt'
-            }
+        cmake {
+            path 'CMakeLists.txt'
         }
     }
     sourceSets.main {
