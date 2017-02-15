@@ -145,6 +145,11 @@ android {
             versionName vName
             versionCode vCode
         }
+        _test1 {
+            applicationIdSuffix ".test1"
+            versionName vName
+            versionCode vCode
+        }
         //中性包
         _zhongxing {
             applicationIdSuffix ".zhongxing"
