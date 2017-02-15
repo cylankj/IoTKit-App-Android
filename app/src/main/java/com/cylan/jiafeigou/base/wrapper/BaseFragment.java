@@ -218,7 +218,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
 
     @Override
     public void onLoginStateChanged(boolean online) {
-        ToastUtil.showNegativeToast(getString(R.string.UNLOGIN));
+//        ToastUtil.showNegativeToast(getString(R.string.UNLOGIN));
     }
 
     /**
