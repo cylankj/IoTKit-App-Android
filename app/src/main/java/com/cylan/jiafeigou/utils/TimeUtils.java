@@ -248,7 +248,7 @@ public class TimeUtils {
                 return ContextUtils.getContext().getString(R.string.TODAY);
             }
             if (today.getDay() - provide.getDay() == 1) {//说明是在昨天，则按照昨天 时:分显示
-                return ContextUtils.getContext().getString(R.string.TOMORROW);
+                return ContextUtils.getContext().getString(R.string.YESTERDAY);
             }
         }
         //按照月.日 时：分显示

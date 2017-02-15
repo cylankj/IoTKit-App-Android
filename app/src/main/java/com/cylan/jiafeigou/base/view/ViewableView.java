@@ -20,4 +20,6 @@ public interface ViewableView extends JFGView {
     void onFlowSpeed(int speed);
 
     String onResolveViewLaunchType();
+
+    void onConnectDeviceTimeOut();
 }

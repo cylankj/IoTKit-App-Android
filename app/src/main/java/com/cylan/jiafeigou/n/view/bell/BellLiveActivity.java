@@ -130,8 +130,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-
-        mVideoViewContainer.postDelayed(this::setHideBackMargin, 200);
+        setHideBackMargin();
     }
 
     private void setNormalBackMargin() {
@@ -160,6 +159,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private void newCall() {
         mVideoPlayController.setState(LivePlayControlView.STATE_LOADING, null);
+        imgvBellLiveCapture.setEnabled(false);
+        imgvBellLiveSpeaker.setEnabled(false);
         String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
         long time = getIntent().getLongExtra(JConstant.VIEW_CALL_WAY_TIME, System.currentTimeMillis());
         CallablePresenter.Caller caller = new CallablePresenter.Caller();
@@ -294,6 +295,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         initVideoView();
         JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, mSurfaceView);
         mBellLiveVideoPicture.setVisibility(View.GONE);
+        mVideoPlayController.setState(ILiveControl.STATE_IDLE, null);
+        imgvBellLiveCapture.setEnabled(true);
+        imgvBellLiveSpeaker.setEnabled(true);
     }
 
     @Override
@@ -317,6 +321,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
+    public void onConnectDeviceTimeOut() {
+        ToastUtil.showNegativeToast("连接门铃超时");
+        mPresenter.dismiss();
+    }
+
+    @Override
     public void onPreviewPicture(String URL) {
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         Glide.with(this).load(URL).into(mBellLiveVideoPicture);
@@ -326,7 +336,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onViewer() {
         dLayoutBellHotSeat.setVisibility(View.GONE);
         fLayoutBellAfterLive.setVisibility(View.VISIBLE);
-        mVideoPlayController.setState(ILiveControl.STATE_IDLE, null);
+
     }
 
 
@@ -394,6 +404,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                     mPresenter.pickup();
                     break;
                 case VIEW_ACTION_CANCEL:
+
                     break;
             }
         }

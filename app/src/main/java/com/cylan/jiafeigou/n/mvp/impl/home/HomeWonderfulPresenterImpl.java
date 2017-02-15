@@ -168,13 +168,6 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         registerResponseParser(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, this::onWonderfulAccountRsp);
     }
 
-    private Runnable mRetryAction = new Runnable() {
-        @Override
-        public void run() {
-
-        }
-    };
-
     private void onWonderfulAccountRsp(DataPoint... values) {
         boolean init = mWonderDaySource.size() == 0 || mWonderDaySource.valueAt(0).size() == 0;
         TreeSet<DpMsgDefine.DPWonderItem> wonderItems = mWonderDaySource.get(mPositionDayStart);
@@ -192,11 +185,11 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 List<WonderIndicatorWheelView.WheelItem> list = getInitWheelList(TimeUtils.getSpecificDayStartTime(item.time * 1000L));
                 mView.onTimeLineInit(list);
                 mTimeLineSeq.clear();
-                removeCallback(mRetryAction);
+
                 for (WonderIndicatorWheelView.WheelItem wheelItem : list) {
                     queryTimeLine(wheelItem.time);
                 }
-                postDelay(mRetryAction, 5000);
+
             } else {
                 DpMsgDefine.DPWonderItem item = (DpMsgDefine.DPWonderItem) values[0];
                 mView.onTimeLineRsp(TimeUtils.getSpecificDayStartTime(item.time * 1000L));

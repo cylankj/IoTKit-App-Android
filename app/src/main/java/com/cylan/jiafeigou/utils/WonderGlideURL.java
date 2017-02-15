@@ -21,8 +21,6 @@ public class WonderGlideURL extends GlideUrl {
 
     public WonderGlideURL(DpMsgDefine.DPWonderItem bean) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
-        if (bean == null || bean.fileName == null || bean.cid == null)
-            throw new IllegalArgumentException("DPWonderItem is Not Completed!");
         mBean = bean;
     }
 

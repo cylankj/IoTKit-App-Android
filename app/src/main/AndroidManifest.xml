@@ -211,7 +211,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/MediaActivityTransition"
+            android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <service
@@ -303,8 +303,11 @@
             tools:replace="android:theme"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <meta-data android:name="io.fabric.ApiKey" android:value="kCEeFDWzz5xHi8Ej9Wx6FWqRL"/>
+        <meta-data android:name="io.fabric.ApiKey" android:value="gAEvHs0LStZiVGIopGVYFn72g"/>
         <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id" />
+        <provider android:authorities="com.facebook.app.FacebookContentProvider1866682200216878"
+            android:name="com.facebook.FacebookContentProvider"
+            android:exported="true"/>
     </application>
 
 </manifest>

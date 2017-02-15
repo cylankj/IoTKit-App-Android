@@ -90,6 +90,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                     item.place = alias;
                     item.fileName = alarm.time + "_" + index + ".jpg";
+                    item.time = alarm.time;
                     ArrayList<JFGDPMsg> jfgdpMsgs = new ArrayList<>(1);
                     JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, alarm.time);
                     msg.packValue = item.toBytes();
@@ -119,6 +120,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                         Log.d(TAG, "remotePath:" + remotePath);
                         try {
                             JfgCmdInsurance.getCmd().putFileToCloud(remotePath.toString(), path);
+
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

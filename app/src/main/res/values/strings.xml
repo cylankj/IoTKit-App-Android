@@ -830,7 +830,7 @@
     <string name="FACEBOOK">Facebook</string>
     <string name="TWITTER">Twitter</string>
     <string name="facebook_app_id">1866682200216878</string>
-    <string name="TOMORROW" >Tomorrow</string>
+    <string name="YESTERDAY" >Yesterday</string>
     <string name="WE_CHAT">WeChat</string>
     <string name="WE_FRIENDS">Circle of friends</string>
     <string name="UNLOGIN">Not logged</string>

@@ -290,6 +290,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         } else {//普通模式下的点击事件,即查看大图模式
             Intent intent = new Intent(this, BellRecordDetailActivity.class);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bellCallRecordListAdapter.getItem(position));
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
             startActivity(intent);
         }
     }

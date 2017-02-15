@@ -192,8 +192,10 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
         AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgMsgHttpResult));
-        if (RxBus.getCacheInstance().hasObservers())
+        if (RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.GetHttpDoneResult(jfgMsgHttpResult));
+            RxBus.getCacheInstance().post(jfgMsgHttpResult);
+        }
     }
 
     @Override
@@ -222,6 +224,10 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
+        RxEvent.SetDataRsp rsp = new RxEvent.SetDataRsp();
+        rsp.seq = l;
+        rsp.rets = arrayList;
+        RxBus.getCacheInstance().post(rsp);
     }
 
     @Override
@@ -322,7 +328,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotDelDataRsp(long l, String s, int i) {
         AppLogger.d("OnRobotDelDataRsp :" + l + " uuid:" + s + " i:" + i);
-        RxBus.getCacheInstance().post(new RxEvent.DeleteDataRsp(l,s,i));
+        RxBus.getCacheInstance().post(new RxEvent.DeleteDataRsp(l, s, i));
     }
 
     @Override
@@ -455,7 +461,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnNotifyStorageType(int i) {
-        ToastUtil.showToast("biaozhi"+i);
+        ToastUtil.showToast("biaozhi" + i);
     }
 
     @Override
@@ -474,5 +480,10 @@ public class DataSourceService extends Service implements AppCallBack {
         map.put("ServerAddress", serverAddress);
         Log.d("getAppParameter", "getAppParameter:" + map);
         return map;
+    }
+
+    @Override
+    public void OnBindDevRsp(int i, String s) {
+
     }
 }
