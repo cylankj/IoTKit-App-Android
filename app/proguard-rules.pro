@@ -41,7 +41,7 @@
 -keep public class org.msgpack.** { *; }
 -keep public class org.webrtc.** { *; }
 
--keep public class com.cylan.jiafeigou.support.Securuty
+-keep public class com.cylan.jiafeigou.support.Security
 -dontnote java.util.AbstractMap.**
 -dontwarn org.msgpack.**
 -dontnote org.msgpack.**
