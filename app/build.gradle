@@ -27,13 +27,13 @@ def boolean hasSignKey() {
     return false
 }
 
-def boolean isInJenkins() {
+def boolean needBuild(String flavor) {
     Properties properties = new Properties()
-    File localProperties = project.rootProject.file('local.properties')
+    File localProperties = project.rootProject.file('build.properties')
     if (localProperties.exists()) {
         properties.load(localProperties.newDataInputStream())
-        def hasJenkinsTag = properties.getProperty('isInJenkins')
-        return hasJenkinsTag != null || hasJenkinsTag;
+        def needBuild = properties.getProperty(flavor).toString().toInteger()
+        return needBuild == 1
     }
     return false
 }
@@ -131,7 +131,7 @@ android {
 
 
     productFlavors {
-        if (isInJenkins()) {//打包平台才运行
+        if (needBuild("_yun")) {//打包平台才运行
             _yun {
                 //vid vkey已经搬到Security.java
                 //官方运营
@@ -139,17 +139,21 @@ android {
                 versionCode vCode
             }
         }
-        _yf {
-            applicationIdSuffix ".yf"
-            versionName vName
-            versionCode vCode
+        if (needBuild("_yf")) {
+            _yf {
+                applicationIdSuffix ".yf"
+                versionName vName
+                versionCode vCode
+            }
         }
-        _test1 {
-            applicationIdSuffix ".test1"
-            versionName vName
-            versionCode vCode
+        if (needBuild("_test1")) {
+            _test1 {
+                applicationIdSuffix ".test1"
+                versionName vName
+                versionCode vCode
+            }
         }
-        if (isInJenkins()) {        //中性包
+        if (needBuild("_zhongxing")) {        //中性包
             _zhongxing {
                 applicationIdSuffix ".zhongxing"
                 versionName vName
