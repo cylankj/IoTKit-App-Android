@@ -8,184 +8,161 @@
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.activity.CamSettingActivity">
 
-    <LinearLayout
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_shadow="true"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_close_white"
+        hunt:ct_left_title="@string/SETTINGS_1"
+        hunt:ct_left_title_color="@color/color_white"
+        hunt:ct_title_color="@color/color_black" />
 
-        <FrameLayout
-            android:id="@+id/fLayout_top_bar_container"
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingTop="@dimen/y10"
+        android:scrollbars="none">
+
+        <LinearLayout
+            android:id="@+id/lLayout_setting_item_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_0ba8cf">
+            android:orientation="vertical"
+            android:paddingLeft="@dimen/x20"
+            android:paddingRight="@dimen/x20">
+
 
             <TextView
-                android:id="@+id/imgV_top_bar_center"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:drawableLeft="@drawable/nav_tab_back_selector"
-                android:drawablePadding="@dimen/x15"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/x15"
-                android:text="@string/SETTINGS_1"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18" />
-        </FrameLayout>
-    </LinearLayout>
-
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="@dimen/y10"
-            android:scrollbars="none">
-
-            <LinearLayout
-                android:id="@+id/lLayout_setting_item_container"
-                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:paddingLeft="@dimen/x20"
-                android:paddingRight="@dimen/x20">
+                android:text="@string/SETTINGS"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp15" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_detail"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_sub_title="@string/EQUIPMENT_INFO"
+                hunt:sv_title="@string/EQUIPMENT_INFO"
+                hunt:sv_v_divider="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y15"
+                android:text="@string/NETWORK"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp15" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_wifi"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_image_src="@drawable/setting_icon_wifi"
+                hunt:sv_sub_title="cylan608"
+                hunt:sv_title="@string/WIFI"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView1
+                android:id="@+id/sv_setting_device_mobile_network"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y54"
+                hunt:sv_image_src="@drawable/setting_icon_3g"
+                hunt:sv_title="@string/MOBILE_DATA"
+                hunt:sv_v_divider="false" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/y15"
+                android:text="@string/SETTINGS_1"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp15" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_safe_protection"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_image_src="@drawable/setting_icon_safe"
+                hunt:sv_title="@string/SECURE"
+                hunt:sv_v_divider="true" />
 
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/SETTINGS"
-                    android:textColor="@color/color_4b9fd5"
-                    android:textSize="@dimen/sp15" />
-
-                <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/sv_setting_device_detail"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/setting_icon_information"
-                    hunt:sv_sub_title="@string/EQUIPMENT_INFO"
-                    hunt:sv_title="@string/EQUIPMENT_INFO"
-                    hunt:sv_v_divider="false" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/NETWORK"
-                    android:textColor="@color/color_4b9fd5"
-                    android:textSize="@dimen/sp15" />
-
-                <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/sv_setting_device_wifi"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/setting_icon_wifi"
-                    hunt:sv_sub_title="cylan608"
-                    hunt:sv_title="@string/WIFI"
-                    hunt:sv_v_divider="true" />
-
-                <com.cylan.jiafeigou.widget.SettingItemView1
-                    android:id="@+id/sv_setting_device_mobile_network"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    hunt:sv_image_src="@drawable/setting_icon_3g"
-                    hunt:sv_title="@string/MOBILE_DATA"
-                    hunt:sv_v_divider="false" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/SETTINGS_1"
-                    android:textColor="@color/color_4b9fd5"
-                    android:textSize="@dimen/sp15" />
-
-                <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/sv_setting_safe_protection"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/setting_icon_safe"
-                    hunt:sv_title="@string/SECURE"
-                    hunt:sv_v_divider="true" />
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_auto_record"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_image_src="@drawable/setting_icon_videotape"
+                hunt:sv_title="@string/SETTING_RECORD"
+                hunt:sv_v_divider="true" />
 
 
-                <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/sv_setting_device_auto_record"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/setting_icon_videotape"
-                    hunt:sv_title="@string/SETTING_RECORD"
-                    hunt:sv_v_divider="true" />
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_delay_capture"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_image_src="@drawable/setting_icon_filming"
+                hunt:sv_sub_title="@string/Tap1_CameraFun_Timelapse_NotStart"
+                hunt:sv_title="@string/Tap2_Timelapse_title"
+                hunt:sv_v_divider="true" />
 
 
-                <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/sv_setting_device_delay_capture"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/setting_icon_filming"
-                    hunt:sv_sub_title="@string/Tap1_CameraFun_Timelapse_NotStart"
-                    hunt:sv_title="@string/Tap2_Timelapse_title"
-                    hunt:sv_v_divider="true" />
+            <com.cylan.jiafeigou.widget.SettingItemView1
+                android:id="@+id/sv_setting_device_standby_mode"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y54"
+                hunt:sv_image_src="@drawable/setting_icon_standby"
+                hunt:sv_sub_title="000d0d0d"
+                hunt:sv_title="@string/Tap1_CameraFun_Standby"
+                hunt:sv_v_divider="true" />
 
 
-                <com.cylan.jiafeigou.widget.SettingItemView1
-                    android:id="@+id/sv_setting_device_standby_mode"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    hunt:sv_image_src="@drawable/setting_icon_standby"
-                    hunt:sv_sub_title="000d0d0d"
-                    hunt:sv_title="@string/Tap1_CameraFun_Standby"
-                    hunt:sv_v_divider="true" />
+            <com.cylan.jiafeigou.widget.SettingItemView1
+                android:id="@+id/sv_setting_device_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y54"
+                hunt:sv_image_src="@drawable/setting_icon_3g"
+                hunt:sv_title="@string/LED"
+                hunt:sv_v_divider="true" />
 
 
-                <com.cylan.jiafeigou.widget.SettingItemView1
-                    android:id="@+id/sv_setting_device_indicator"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    hunt:sv_image_src="@drawable/setting_icon_3g"
-                    hunt:sv_title="@string/LED"
-                    hunt:sv_v_divider="true" />
+            <com.cylan.jiafeigou.widget.SettingItemView1
+                android:id="@+id/sv_setting_device_rotatable"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y54"
+                hunt:sv_image_src="@drawable/setting_icon_rotate_pic"
+                hunt:sv_title="@string/Tap1_CameraFun_VideoDirection"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sbtn_setting_110v"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                hunt:sv_image_src="@drawable/icon_setting_electricity"
+                hunt:sv_sub_title="@string/FOOT_TIP_VOTE"
+                hunt:sv_title="@string/HZ_VOTE"
+                hunt:sv_v_divider="false"
+                hunt:sv_visibility="true" />
 
 
-                <com.cylan.jiafeigou.widget.SettingItemView1
-                    android:id="@+id/sv_setting_device_rotatable"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54"
-                    hunt:sv_image_src="@drawable/setting_icon_rotate_pic"
-                    hunt:sv_title="@string/Tap1_CameraFun_VideoDirection"
-                    hunt:sv_v_divider="true" />
-
-                <com.cylan.jiafeigou.widget.SettingItemView0
-                    android:id="@+id/sbtn_setting_110v"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y72"
-                    hunt:sv_image_src="@drawable/icon_setting_electricity"
-                    hunt:sv_sub_title="@string/FOOT_TIP_VOTE"
-                    hunt:sv_title="@string/HZ_VOTE"
-                    hunt:sv_v_divider="false"
-                    hunt:sv_visibility="true" />
-
-
-                <TextView
-                    android:id="@+id/tv_setting_unbind"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y42"
-                    android:layout_marginBottom="@dimen/y20"
-                    android:layout_marginTop="@dimen/y61"
-                    android:background="@drawable/un_bind_device_btn_seletor"
-                    android:gravity="center"
-                    android:text="@string/DELETE_CID"
-                    android:textColor="@color/color_FF3D32"
-                    android:textSize="@dimen/sp16" />
-            </LinearLayout>
-        </ScrollView>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
-
-    </FrameLayout>
+            <TextView
+                android:id="@+id/tv_setting_unbind"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y42"
+                android:layout_marginBottom="@dimen/y20"
+                android:layout_marginTop="@dimen/y61"
+                android:background="@drawable/un_bind_device_btn_seletor"
+                android:gravity="center"
+                android:text="@string/DELETE_CID"
+                android:textColor="@color/color_FF3D32"
+                android:textSize="@dimen/sp16" />
+        </LinearLayout>
+    </ScrollView>
 
 </LinearLayout>

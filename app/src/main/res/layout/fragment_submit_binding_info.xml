@@ -9,7 +9,13 @@
     android:orientation="vertical"
     tools:context=".n.view.bind.ConfigApFragment">
 
-    <include layout="@layout/layout_top_bar_item" />
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_gary" />
 
     <ViewSwitcher
         android:id="@+id/vs_layout_switch"
@@ -29,8 +35,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:padding="@dimen/x10"
-                hunt:progress_radius="@dimen/x100"
                 hunt:progress_point_radius="@dimen/x5"
+                hunt:progress_radius="@dimen/x100"
                 hunt:progress_stroke_color="@color/color_4b9fd5"
                 hunt:progress_swipe_degree="330" />
 

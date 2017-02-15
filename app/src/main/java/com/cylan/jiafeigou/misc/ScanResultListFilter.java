@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.misc;
 
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,6 +54,8 @@ public class ScanResultListFilter {
             if (result.frequency > 4900 && result.frequency < 5900)
                 continue;
             results.add(result);
+            int level = WifiManager.calculateSignalLevel(result.level, 5);
+            Log.d("TABLES", "TABLES:" + ssid + " " + level);
         }
         return results;
 

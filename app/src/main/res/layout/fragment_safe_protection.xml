@@ -9,12 +9,18 @@
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment">
 
-    <include layout="@layout/layout_toolbar" />
 
-    <View
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y10"
-        android:background="@drawable/little_shape" />
+        android:layout_height="wrap_content"
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_shadow="true"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title="@string/SECURE"
+        hunt:ct_left_title_color="@color/color_white"
+        hunt:ct_title_color="@color/color_white" />
 
     <TextView
         android:layout_width="wrap_content"

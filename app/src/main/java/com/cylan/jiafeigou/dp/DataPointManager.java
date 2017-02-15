@@ -208,6 +208,10 @@ public class DataPointManager implements IParser, IDataPoint {
                                 try {
                                     if (dp == null) continue;
                                     Object o = DpUtils.unpackData(dp.packValue, DpMsgMap.ID_2_CLASS_MAP.get((int) dp.id));
+                                    if (o != null && o instanceof DataPoint) {
+                                        ((DataPoint) o).id = dp.id;
+                                        ((DataPoint) o).version = dp.version;
+                                    }
                                     BaseValue value = new BaseValue();
                                     value.setId(dp.id);
                                     value.setVersion(dp.version);

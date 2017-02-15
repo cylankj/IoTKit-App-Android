@@ -3,7 +3,7 @@
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:background="@color/color_f4f4f4"
     tools:context="com.cylan.jiafeigou.n.view.activity.BindDeviceActivity">
 
@@ -12,46 +12,16 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-        <LinearLayout
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:id="@+id/fLayout_top_bar_container"
-                android:background="@color/color_0ba8cf"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/imgV_top_bar_left"
-                        style="@style/ripple_background_borderless"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/x15"
-                        android:src="@drawable/nav_icon_close_white" />
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_toRightOf="@id/imgV_top_bar_left"
-                        android:id="@+id/imgV_top_bar_center"
-                        android:layout_centerVertical="true"
-                        android:text="@string/DEVICES_TITLE"
-                        android:textColor="@color/color_white"
-                        android:textSize="@dimen/sp16" />
-                </RelativeLayout>
-
-            </FrameLayout>
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y10"
-                android:background="@drawable/little_shape" />
-        </LinearLayout>
+            hunt:ct_background_color="@color/color_0ba8cf"
+            hunt:ct_enable_shadow="true"
+            hunt:ct_fit_system_window="true"
+            hunt:ct_icon="@drawable/nav_icon_close_white"
+            hunt:ct_title="@string/DEVICES_TITLE"
+            hunt:ct_title_color="@color/color_white" />
 
         <com.cylan.jiafeigou.widget.HomeMineItemView
             android:id="@+id/v_to_scan_qrcode"
@@ -72,7 +42,7 @@
             android:background="@color/color_white"
             hunt:leftDrawable="@drawable/icon_home_camera_online"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="智能摄像头"
+            hunt:text="@string/DOG_CAMERA_NAME"
             hunt:textColor="@color/color_383838"
             hunt:textSize="@dimen/sp16" />
 
@@ -88,20 +58,20 @@
             hunt:textSize="@dimen/sp16" />
 
         <!--<com.cylan.jiafeigou.widget.HomeMineItemView-->
-            <!--android:id="@+id/v_to_bind_cloud_album"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/y67"-->
-            <!--android:background="@color/color_white"-->
-            <!--hunt:leftDrawable="@drawable/icon_home_album_online"-->
-            <!--hunt:rightDrawable="@drawable/icon_mine_arrow_next"-->
-            <!--hunt:text="云相框"-->
-            <!--hunt:textColor="@color/color_383838"-->
-            <!--hunt:textSize="@dimen/sp16" />-->
+        <!--android:id="@+id/v_to_bind_cloud_album"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="@dimen/y67"-->
+        <!--android:background="@color/color_white"-->
+        <!--hunt:leftDrawable="@drawable/icon_home_album_online"-->
+        <!--hunt:rightDrawable="@drawable/icon_mine_arrow_next"-->
+        <!--hunt:text="云相框"-->
+        <!--hunt:textColor="@color/color_383838"-->
+        <!--hunt:textSize="@dimen/sp16" />-->
     </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fLayout_bind_device_fragment_container_id"
-        android:visibility="gone"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 </FrameLayout>

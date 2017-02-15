@@ -1,4 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -6,14 +7,19 @@
     android:clickable="true"
     tools:context="com.cylan.jiafeigou.n.view.bind.BindCameraFragment">
 
-    <include layout="@layout/layout_top_bar_item" />
 
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_gary" />
 
     <TextView
         android:id="@+id/tv_main_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/fLayout_top_bar"
+        android:layout_below="@+id/custom_toolbar"
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/y30"
         android:gravity="center"
@@ -111,10 +117,10 @@
 
     <TextView
         android:id="@+id/tv_bind_doorbell_tip"
+        style="@style/ripple_background"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y50"
         android:layout_alignParentBottom="true"
-        style="@style/ripple_background"
         android:gravity="center"
         android:text="红灯已常亮"
         android:textColor="@color/color_4b9fd5"
@@ -123,6 +129,5 @@
     <FrameLayout
         android:id="@+id/fLayout_bind_device_list_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/fLayout_top_bar" />
+        android:layout_height="match_parent" />
 </RelativeLayout>

@@ -15,9 +15,11 @@ import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
-import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.n.view.adapter.ToBindDeviceListAdapter;
+import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.ArrayList;
 
@@ -29,13 +31,13 @@ import butterknife.ButterKnife;
  * Use the {@link BindDeviceListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BindDeviceListFragment extends BaseTitleFragment implements ToBindDeviceListAdapter.ItemClickListener {
+public class BindDeviceListFragment extends IBaseFragment implements ToBindDeviceListAdapter.ItemClickListener {
 
     @BindView(R.id.rv_to_bind_device_list)
     RecyclerView rvToBindDeviceList;
     ToBindDeviceListAdapter toBindDeviceListAdapter;
-    @BindView(R.id.fLayout_top_bar)
-    FrameLayout fLayoutTopBar;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
 
     public BindDeviceListFragment() {
@@ -67,17 +69,20 @@ public class BindDeviceListFragment extends BaseTitleFragment implements ToBindD
         toBindDeviceListAdapter = new ToBindDeviceListAdapter(context);
     }
 
+
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate activity_cloud_live_mesg_call_out_item fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_bind_device_list, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewMarginStatusBar(customToolbar);
         Bundle bundle = getArguments();
         if (bundle == null) {
             return;
@@ -88,11 +93,6 @@ public class BindDeviceListFragment extends BaseTitleFragment implements ToBindD
         toBindDeviceListAdapter.addAll(results);
         toBindDeviceListAdapter.setOnItemClickListener(this);
         rvToBindDeviceList.setAdapter(toBindDeviceListAdapter);
-    }
-
-    @Override
-    protected int getSubContentViewId() {
-        return R.layout.fragment_bind_device_list;
     }
 
     @Override

@@ -23,8 +23,9 @@
             android:id="@+id/imgV_nav_back"
             style="@style/ripple_background"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/x15"
+            android:layout_height="@dimen/y48"
+            android:paddingEnd="@dimen/x20"
+            android:paddingStart="@dimen/x20"
             android:src="@drawable/nav_icon_back_white" />
 
         <com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip

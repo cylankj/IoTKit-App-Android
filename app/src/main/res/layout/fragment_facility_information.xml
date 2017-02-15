@@ -1,35 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
     android:orientation="vertical">
 
     <!-- 顶部栏 -->
-    <LinearLayout
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:id="@+id/fLayout_top_bar_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/color_0ba8cf">
-
-            <TextView
-                android:id="@+id/imgV_top_bar_center"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:drawableLeft="@drawable/nav_tab_back_selector"
-                android:drawablePadding="@dimen/x15"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/x15"
-                android:text="@string/EQUIPMENT_INFO"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18" />
-        </FrameLayout>
-    </LinearLayout>
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title="@string/EQUIPMENT_INFO"
+        hunt:ct_left_title_color="@color/color_white" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -127,6 +114,7 @@
 
             <!-- “储存”相关模块 -->
             <LinearLayout
+                android:id="@+id/lLayout_sdcard"
                 style="@style/information_item"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"

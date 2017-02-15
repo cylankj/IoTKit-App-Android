@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -13,25 +14,27 @@
         android:layout_width="@dimen/x1"
         android:layout_height="@dimen/y60" />
 
-    <include
-        android:id="@+id/rLayout_login_top"
-        layout="@layout/layout_top_bar_item" />
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        hunt:ct_title_color="@color/color_black" />
 
     <!--<include layout="@layout/simple_input_box" />-->
 
     <ViewSwitcher
-        android:inAnimation="@anim/slide_in_right_overshoot"
-        android:outAnimation="@anim/slide_out_left"
         android:id="@+id/vs_set_account_pwd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/x19"
-        android:layout_marginRight="@dimen/x19">
+        android:layout_marginRight="@dimen/x19"
+        android:inAnimation="@anim/slide_in_right_overshoot"
+        android:outAnimation="@anim/slide_out_left">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <FrameLayout
                 android:id="@+id/fl_input_container"
@@ -102,7 +105,6 @@
                 android:text="@string/CARRY_ON" />
 
         </LinearLayout>
-
 
 
     </ViewSwitcher>

@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.login;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -33,6 +32,7 @@ import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
@@ -48,6 +48,7 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -69,7 +70,7 @@ import butterknife.OnTextChanged;
 /**
  * 登陆主界面
  */
-public class LoginFragment extends Fragment
+public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         implements LoginContract.View,
         BaseDialog.BaseDialogAction {
     private static final String TAG = "Fragment";
@@ -97,7 +98,7 @@ public class LoginFragment extends Fragment
     RelativeLayout rLayoutLoginThirdParty;
 
     @BindView(R.id.rLayout_login)
-    RelativeLayout rLayoutLogin;
+    LinearLayout rLayoutLogin;
 
     @BindView(R.id.tv_qqLogin_commit)
     TextView tvQqLoginCommit;
@@ -110,11 +111,7 @@ public class LoginFragment extends Fragment
 
     @BindView(R.id.lb_login_commit)
     LoginButton lbLogin;
-    @BindView(R.id.iv_top_bar_left)
-    ImageView ivLoginTopLeft;
-    @BindView(R.id.tv_top_bar_center)
-    TextView tvLoginTopCenter;
-    @BindView(R.id.tv_top_bar_right)
+    @BindView(R.id.tv_toolbar_right)
     TextView tvLoginTopRight;
     @BindView(R.id.rLayout_pwd_input_box)
     FrameLayout rLayoutPwdInputBox;
@@ -149,6 +146,8 @@ public class LoginFragment extends Fragment
     RelativeLayout rLayoutLoginThirdPartyAbroad;
     @BindView(R.id.rLayout_register_box)
     FrameLayout rLayoutRegisterBox;
+    @BindView(R.id.rLayout_login_top)
+    CustomToolbar rLayoutLoginToolbar;
 
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
@@ -160,36 +159,26 @@ public class LoginFragment extends Fragment
         return fragment;
     }
 
-    @Nullable
-    @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_login_layout, container, false);
-        ButterKnife.bind(this, view);
-        addOnTouchListener(view);
-        showLayout();
-        return view;
-    }
-
     /**
      * 用来点击空白处隐藏键盘
      *
      * @param view
      */
     public void addOnTouchListener(View view) {
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    IMEUtils.hide(getActivity());
-                }
-                return false;
+        view.setOnTouchListener((View v, MotionEvent event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                IMEUtils.hide(getActivity());
             }
+            return false;
         });
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setViewMarginStatusBar(rLayoutLoginToolbar);
+        addOnTouchListener(view);
+        showLayout();
         if (BuildConfig.DEBUG) {
             ivLoginClearPwd.setVisibility(View.GONE);
             ivLoginClearUsername.setVisibility(View.GONE);
@@ -198,6 +187,16 @@ public class LoginFragment extends Fragment
         initView();
         showRegisterPage();
     }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_login_layout, container, false);
+        ButterKnife.bind(this, view);
+        return view;
+    }
+
 
     @Override
     public void onStart() {
@@ -244,7 +243,7 @@ public class LoginFragment extends Fragment
 
     private void switchBoxBindPhone() {
         //register
-        tvLoginTopCenter.setText(getString(R.string.Tap0_BindPhoneNo));
+        rLayoutLoginToolbar.setToolbarTitle(R.string.Tap0_BindPhoneNo);
         tvLoginTopRight.setVisibility(View.GONE);
         tvRegisterWayContent.setVisibility(View.GONE);
         tvAgreement.setVisibility(View.GONE);
@@ -314,7 +313,7 @@ public class LoginFragment extends Fragment
 
         tvAgreement.setText("《" + getString(R.string.TERM_OF_USE) + "》");
         if (getView() != null)
-            getView().findViewById(R.id.tv_top_bar_right).setVisibility(View.VISIBLE);
+            getView().findViewById(R.id.tv_toolbar_right).setVisibility(View.VISIBLE);
         ViewUtils.setChineseExclude(etLoginPwd, JConstant.PWD_LEN_MAX);
         //大陆用户显示 第三方登陆
         rLayoutLoginThirdParty.setVisibility(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? View.VISIBLE : View.GONE);
@@ -392,11 +391,11 @@ public class LoginFragment extends Fragment
             R.id.iv_login_clear_pwd,
             R.id.iv_login_clear_username,
             R.id.tv_login_forget_pwd,
-            R.id.iv_top_bar_left,
-            R.id.tv_top_bar_right,
-            R.id.tv_agreement,
             R.id.tv_twitterLogin_commit,
-            R.id.tv_facebookLogin_commit
+            R.id.tv_facebookLogin_commit,
+            R.id.tv_toolbar_icon,
+            R.id.tv_toolbar_right,
+            R.id.tv_agreement
     })
     public void onClick(View view) {
         switch (view.getId()) {
@@ -419,14 +418,14 @@ public class LoginFragment extends Fragment
             case R.id.tv_xlLogin_commit:
                 presenter.startSinaAuthorize(getActivity());
                 break;
-            case R.id.iv_top_bar_left:
+            case R.id.tv_toolbar_icon:
                 if (getActivity() != null && getActivity() instanceof SmartcallActivity) {
-                    getActivity().onBackPressed();
+                    getActivity().finish();
                 } else if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
                     getActivity().onBackPressed();
                 }
                 break;
-            case R.id.tv_top_bar_right:
+            case R.id.tv_toolbar_right:
                 switchBox();
                 break;
             case R.id.tv_agreement: {
@@ -453,13 +452,13 @@ public class LoginFragment extends Fragment
         final String content = tvLoginTopRight.getText().toString();
         if (TextUtils.equals(content, getString(R.string.Tap0_register))) {
             //register
-            tvLoginTopCenter.setText(getString(R.string.Tap0_register));
+            rLayoutLoginToolbar.setToolbarTitle(R.string.Tap0_register);
             tvLoginTopRight.setText(getString(R.string.LOGIN));
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_left);
             vsLayoutSwitcher.showNext();
         } else if (TextUtils.equals(content, getString(R.string.LOGIN))) {
-            tvLoginTopCenter.setText(getString(R.string.LOGIN));
+            rLayoutLoginToolbar.setToolbarTitle(R.string.LOGIN);
             tvLoginTopRight.setText(getString(R.string.Tap0_register));
             //延时200ms,
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
@@ -494,14 +493,6 @@ public class LoginFragment extends Fragment
                 presenter.executeLogin(login);
                 presenter.loginCountTime();
             } else {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        resetView();
-                        ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
-                    }
-                }, 1000);
-                return;
             }
         }
         enableEditTextCursor(false);
@@ -559,10 +550,11 @@ public class LoginFragment extends Fragment
     public void verifyCodeResult(int code) {
         if (!isVisible())
             return;
-        Toast.makeText(getActivity(), code == 0 ? "good" : "无效验证码", Toast.LENGTH_SHORT).show();
+//        Toast.makeText(getActivity(), code == 0 ? "good" : "无效验证码", Toast.LENGTH_SHORT).show();
         if (code == 0) {
             jump2NextPage();
         } else {
+            ToastUtil.showNegativeToast(getString(R.string.Tap0_invaildcode));
             if (verificationCodeLogic != null)
                 verificationCodeLogic.initTimer();
         }
@@ -754,7 +746,7 @@ public class LoginFragment extends Fragment
         if (callback.jfgResult.code != 0) {
             final boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             registerWay = validPhoneNum ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
-            if (registerWay == JConstant.REGISTER_BY_EMAIL){
+            if (registerWay == JConstant.REGISTER_BY_EMAIL) {
                 jump2NextPage();
                 return;
             }

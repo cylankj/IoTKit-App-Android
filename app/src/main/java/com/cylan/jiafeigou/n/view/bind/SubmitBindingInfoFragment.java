@@ -12,10 +12,12 @@ import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
-import com.cylan.jiafeigou.n.view.BaseTitleFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
@@ -27,7 +29,7 @@ import butterknife.OnClick;
  * Created by cylan-hunt on 16-11-12.
  */
 
-public class SubmitBindingInfoFragment extends BaseTitleFragment<SubmitBindingInfoContract.Presenter>
+public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoContract.Presenter>
         implements SubmitBindingInfoContract.View {
 
     @BindView(R.id.progress_loading)
@@ -38,6 +40,8 @@ public class SubmitBindingInfoFragment extends BaseTitleFragment<SubmitBindingIn
     LoginButton btnBindRepeat;
     @BindView(R.id.vs_layout_switch)
     ViewSwitcher vsLayoutSwitch;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     public static SubmitBindingInfoFragment newInstance(Bundle bundle) {
         SubmitBindingInfoFragment fragment = new SubmitBindingInfoFragment();
@@ -52,8 +56,12 @@ public class SubmitBindingInfoFragment extends BaseTitleFragment<SubmitBindingIn
     }
 
     @Override
-    protected int getSubContentViewId() {
-        return R.layout.fragment_submit_binding_info;
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
+        View view = inflater.inflate(R.layout.fragment_submit_binding_info, container, false);
+        ButterKnife.bind(this, view);
+        return view;
     }
 
     @Override
@@ -109,14 +117,6 @@ public class SubmitBindingInfoFragment extends BaseTitleFragment<SubmitBindingIn
     @Override
     public void setPresenter(SubmitBindingInfoContract.Presenter presenter) {
         this.basePresenter = presenter;
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // TODO: inflate a fragment view
-        View rootView = super.onCreateView(inflater, container, savedInstanceState);
-        ButterKnife.bind(this, rootView);
-        return rootView;
     }
 
     @OnClick(R.id.btn_bind_repeat)

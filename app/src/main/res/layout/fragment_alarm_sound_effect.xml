@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,7 +8,16 @@
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.cam.AlarmSoundEffectFragment">
 
-    <include layout="@layout/layout_toolbar" />
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title="@string/SOUNDS"
+        hunt:ct_left_title_color="@color/color_white"
+        hunt:ct_title_color="@color/color_black" />
 
     <View
         android:layout_width="match_parent"

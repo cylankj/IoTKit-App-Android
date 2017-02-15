@@ -9,10 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
@@ -20,7 +18,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.VideoAutoRecordPresenterImpl;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,10 +35,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         implements VideoAutoRecordContract.View,
         CompoundButton.OnCheckedChangeListener {
 
-    @BindView(R.id.imgV_top_bar_center)
-    TextView imgVTopBarCenter;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
     @BindView(R.id.rg_auto_record_mode)
     RadioGroup rgAutoRecordMode;
     @BindView(R.id.rb_motion)
@@ -49,6 +43,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     RadioButton rb24Hours;
     @BindView(R.id.rb_never)
     RadioButton rbNever;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private String uuid;
 
     public void onAttach(Context context) {
@@ -87,7 +83,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        imgVTopBarCenter.setText(R.string.SETTING_RECORD);
         int focus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
         rbMotion.setChecked(focus == 0);
         rbMotion.setOnCheckedChangeListener(this);
@@ -95,7 +90,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         rb24Hours.setChecked(focus == 1);
         rbNever.setOnCheckedChangeListener(this);
         rbNever.setChecked(focus == 2);
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
     @Override

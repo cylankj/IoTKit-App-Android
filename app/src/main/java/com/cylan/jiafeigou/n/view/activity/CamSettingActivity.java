@@ -13,7 +13,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -34,12 +33,14 @@ import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
+import com.cylan.jiafeigou.n.view.setting.WifiListFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
@@ -60,10 +61,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         implements CamSettingContract.View {
 
     private static final int REQ_DELAY_RECORD = 122;
-    @BindView(R.id.imgV_top_bar_center)
-    TextView imgVTopBarCenter;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
     @BindView(R.id.sv_setting_device_detail)
     SettingItemView0 svSettingDeviceDetail;
     @BindView(R.id.sv_setting_device_wifi)
@@ -88,6 +85,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     LinearLayout lLayoutSettingItemContainer;
     @BindView(R.id.sbtn_setting_110v)
     SettingItemView0 sbtnSetting110v;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private String uuid;
     private JFGDevice device;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
@@ -100,7 +99,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         setContentView(R.layout.activity_cam_setting);
         ButterKnife.bind(this);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
-        initTopBar();
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         device = GlobalDataProxy.getInstance().fetch(this.uuid);
         if (TextUtils.isEmpty(uuid)) {
@@ -120,10 +118,22 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         initMobileNetBtn();
         initRotateBtn();
         initDelayRecordBtn();
+        initBackListener();
+    }
+
+    private void initBackListener() {
+        customToolbar.post(() -> {
+            customToolbar.setBackAction((View v) -> {
+                finish();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
+                }
+            });
+        });
     }
 
     private void initDelayRecordBtn() {
-        if (device != null && JFGRules.is3GCam(device.pid)) {
+        if (device != null && JFGRules.showDelayRecordBtn(device.pid)) {
             svSettingDeviceDelayCapture.setEnabled(true);
         } else {
             svSettingDeviceDelayCapture.setVisibility(View.GONE);
@@ -133,10 +143,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    private void initTopBar() {
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
     @Override
@@ -219,14 +225,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     });
         }
 
-    }
-
-    @OnClick(R.id.imgV_top_bar_center)
-    public void onBackClick() {
-        finish();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
-        }
     }
 
     @OnClick({R.id.sv_setting_device_detail,
@@ -322,7 +320,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                                     .show();
                         } else {
                             //显示列表
-                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+//                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            Bundle bundle = new Bundle();
+                            bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
+                            WifiListFragment fragment = WifiListFragment.getInstance(bundle);
+                            loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                         }
                     }
                 }

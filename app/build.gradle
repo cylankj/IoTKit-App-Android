@@ -222,6 +222,14 @@ dependencies {
     //    https://github.com/cylankj/JFGAndroid-Ext.git
     //
     //渠道包
+    //渠道包
+
+    // twitter
+//    testCompile 'junit:junit:4.12'
+//    compile fileTree(dir: 'libs', include: ['*.jar'])
+//    compile('com.twitter.sdk.android:twitter:2.3.1@aar') {
+//        transitive = true;
+//    }
     compile 'com.danikula:videocache:2.6.4'
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'

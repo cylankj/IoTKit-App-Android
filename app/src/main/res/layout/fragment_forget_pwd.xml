@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/lLayout_forget_pwd"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -7,21 +8,26 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <include
-        android:id="@+id/rLayout_login_top"
-        layout="@layout/layout_top_bar_item"
+    <Space
+        android:layout_width="@dimen/x1"
+        android:layout_height="@dimen/y60" />
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        hunt:ct_title_color="@color/color_black"
+        android:id="@+id/rLayout_forget_pwd_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y48"
-        android:layout_marginTop="@dimen/y60" />
+        android:layout_height="wrap_content"
+        hunt:ct_icon="@drawable/login_btn_close"
+        hunt:ct_title="@string/FORGOT_PWD" />
 
     <ViewSwitcher
-        android:inAnimation="@anim/slide_in_right_overshoot"
-        android:outAnimation="@anim/slide_out_left"
         android:id="@+id/vs_set_account_pwd"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/x19"
-        android:layout_marginRight="@dimen/x19">
+        android:layout_marginRight="@dimen/x19"
+        android:inAnimation="@anim/slide_in_right_overshoot"
+        android:outAnimation="@anim/slide_out_left">
 
         <FrameLayout
             android:id="@+id/fLayout_forget_container"

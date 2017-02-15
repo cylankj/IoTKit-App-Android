@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/rLayout_login"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,12 +9,18 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <include
+
+    <Space
+        android:layout_width="@dimen/x1"
+        android:layout_height="@dimen/y60" />
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/rLayout_login_top"
-        layout="@layout/layout_top_bar_item"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y48"
-        android:layout_marginTop="@dimen/y60" />
+        hunt:ct_icon="@drawable/login_btn_close"
+        hunt:ct_title="@string/LOGIN"
+        hunt:ct_title_color="@color/color_black" />
 
     <ViewSwitcher
         android:id="@+id/vsLayout_login_box"
@@ -26,4 +33,4 @@
         <include layout="@layout/fragment_login_layout_register_box" />
     </ViewSwitcher>
 
-</RelativeLayout>
+</LinearLayout>
