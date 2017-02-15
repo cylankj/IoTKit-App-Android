@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_sight_setting_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.cylan.jiafeigou.n.view.activity.SightSettingActivity">
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title="@string/Tap1_Camera_ViewAngle"
+        hunt:ct_left_title_color="@color/color_white"
+        hunt:ct_title_color="@color/color_black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x20"
+        android:layout_marginTop="@dimen/x12"
+        android:text="@string/SETTINGS"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="@dimen/sp14" />
+
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x20"
+        android:orientation="horizontal">
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_sight_horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y72"
+            android:layout_toStartOf="@+id/rbtn_sight_horizontal"
+            hunt:sv_image_src="@drawable/setting_icon_angle_head"
+            hunt:sv_sub_title="@string/Tap1_Camera_FrontTips"
+            hunt:sv_title="@string/Tap1_Camera_Front"
+            hunt:sv_v_divider="false" />
+
+        <RadioButton
+            android:theme="@style/MyRadioButton"
+            android:id="@+id/rbtn_sight_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:button="@null"
+            android:drawableEnd="@android:drawable/btn_radio"
+            android:padding="20dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x20"
+        android:orientation="horizontal">
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_sight_vertical"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y72"
+            android:layout_toStartOf="@+id/rbtn_sight_vertical"
+            hunt:sv_image_src="@drawable/setting_icon_angle_overlooking"
+            hunt:sv_sub_title="@string/Tap1_Camera_OverlookTips"
+            hunt:sv_title="@string/Tap1_Camera_Overlook"
+            hunt:sv_v_divider="false" />
+
+        <RadioButton
+            android:theme="@style/MyRadioButton"
+            android:id="@+id/rbtn_sight_vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:button="@null"
+            android:drawableEnd="@android:drawable/btn_radio"
+            android:padding="20dp" />
+    </RelativeLayout>
+
+
+</LinearLayout>
