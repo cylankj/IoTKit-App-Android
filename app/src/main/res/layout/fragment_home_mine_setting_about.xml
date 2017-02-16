@@ -1,179 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-    <FrameLayout
-        android:background="@color/color_0ba8cf"
-        android:id="@+id/rl_home_mine_setting_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/iv_home_setting_about_back"
-                android:clickable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:padding="@dimen/x15"
-                android:src="@drawable/nav_tab_back_selector" />
-
-            <TextView
-                android:layout_toRightOf="@id/iv_home_setting_about_back"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:text="@string/ABOUT"
-                android:gravity="center_vertical"
-                android:textSize="@dimen/sp18"
-                android:textColor="@color/color_white" />
-
-        </RelativeLayout>
-    </FrameLayout>
-
-    <FrameLayout
-        android:id="@+id/rl_home_mine_setting_version"
-        android:layout_below="@id/rl_home_mine_setting_title"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y216">
-
-            <ImageView
-                android:id="@+id/iv_logon"
-                android:layout_marginTop="@dimen/y56"
-                android:layout_centerHorizontal="true"
-                android:src="@mipmap/ic_launcher"
-                android:layout_width="@dimen/x60"
-                android:layout_height="@dimen/y60" />
-
-            <TextView
-                android:layout_marginTop="@dimen/y8"
-                android:layout_centerHorizontal="true"
-                android:layout_below="@id/iv_logon"
-                android:textColor="@color/color_33333"
-                android:textSize="@dimen/sp16"
-                android:text="加菲狗3.0"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
-
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y10"
-            android:background="@drawable/little_shape" />
-    </FrameLayout>
-
-    <RelativeLayout
-        android:layout_below="@id/rl_home_mine_setting_version"
-        android:id="@+id/rLayout_home_setting_website"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y72">
-
-        <LinearLayout
-            android:layout_centerVertical="true"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/x20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/WEB"
-                android:textSize="@dimen/sp16"
-                android:textColor="@color/color_33333" />
-
-            <TextView
-                android:layout_marginTop="@dimen/y5"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/x20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="www.jfgou.com"
-                android:textSize="@dimen/sp13"
-                android:textColor="@color/color_8c8c8c" />
-        </LinearLayout>
-
-        <View
-            android:layout_alignParentBottom="true"
-            android:layout_marginRight="@dimen/x20"
-            android:layout_marginLeft="@dimen/x20"
-            android:layout_width="match_parent"
-            android:layout_height="1dip"
-            android:background="@color/color_f2f2f2" />
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_below="@id/rLayout_home_setting_website"
-        android:id="@+id/rLayout_home_setting_hotphone"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y72">
-
-        <LinearLayout
-            android:layout_centerVertical="true"
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <TextView
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/x20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/ABOUT_PHONE"
-                android:textSize="@dimen/sp16"
-                android:textColor="@color/color_33333" />
-
-            <TextView
-                android:id="@+id/tv_hotphone"
-                android:layout_marginTop="@dimen/y5"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/x20"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="400-716-3232"
-                android:textSize="@dimen/sp13"
-                android:textColor="@color/color_8c8c8c" />
-        </LinearLayout>
-
-    </RelativeLayout>
+    android:orientation="vertical">
 
     <LinearLayout
-        android:paddingBottom="@dimen/y40"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_user_agreement"
-        android:textColor="@color/color_4b9fd5"
-        android:textSize="@dimen/sp16"
-        android:layout_gravity="center_horizontal"
-        android:layout_alignParentBottom="true"
-        android:text="@string/TERM_OF_USE"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            hunt:ct_background_color="@color/color_0ba8cf"
+            hunt:ct_enable_shadow="true"
+            hunt:ct_fit_system_window="true"
+            hunt:ct_icon="@drawable/nav_tab_back_selector"
+            hunt:ct_left_title="@string/ABOUT"
+            hunt:ct_left_title_color="@color/color_white"
+            hunt:ct_title_color="@color/color_black" />
+
+        <ImageView
+            android:id="@+id/iv_logon"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y60"
+            android:layout_marginTop="@dimen/y56"
+            android:src="@mipmap/ic_launcher" />
 
         <TextView
-            android:textColor="@color/color_adadad"
-            android:textSize="@dimen/sp11"
-            android:layout_gravity="center_horizontal"
-            android:layout_alignParentBottom="true"
-            android:text="@string/copyrightEn"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:id="@+id/tv_app_version"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y8"
+            android:gravity="center"
+            android:textColor="@color/color_33333"
+            android:textSize="@dimen/sp16" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_official_website"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y72"
+            android:layout_marginStart="@dimen/x15"
+            android:layout_marginTop="@dimen/y74"
+            hunt:sv_sub_title="www.jfgou.com"
+            hunt:sv_title="@string/WEB"
+            hunt:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_hot_line"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y72"
+            android:layout_marginStart="@dimen/x15"
+            hunt:sv_sub_title="400-716-3232"
+            hunt:sv_title="@string/ABOUT_PHONE"
+            hunt:sv_v_divider="true" />
+
     </LinearLayout>
 
-</RelativeLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/y40">
+
+        <TextView
+            android:id="@+id/tv_user_agreement"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/TERM_OF_USE"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="@dimen/sp16" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/copyrightEn"
+            android:textColor="@color/color_adadad"
+            android:textSize="@dimen/sp11" />
+    </LinearLayout>
+
+</FrameLayout>
