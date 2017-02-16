@@ -226,6 +226,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         });
     }
 
+    /**
+     * 视角设置
+     * @param isNormalCam
+     */
     private void checkSightDialog(boolean isNormalCam) {
         if (isNormalCam || basePresenter.isShareDevice()) return;
         boolean isFirstShow = PreferencesUtils.getBoolean(KEY_CAM_SIGHT_SETTING + uuid, true);
@@ -239,6 +243,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
         fLayoutCamLiveView.addView(view, (fLayoutCamLiveView.getChildCount() == 0 ? 1 : fLayoutCamLiveView.getChildCount()) - 1);//最顶
         View layout = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
+        ((TextView) (view.findViewById(R.id.tv_sight_setting_content))).setText(getString(R.string.Tap1_Camera_Overlook) + ": "
+                + getString(R.string.Tap1_Camera_OverlookTips));
         view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
             if (layout != null) fLayoutCamLiveView.removeView(layout);
         });

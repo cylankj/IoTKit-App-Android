@@ -115,6 +115,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     protected void onStart() {
         super.onStart();
+        initBackListener();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         initSightBtn();
         initStandbyBtn();
         init110VVoltageBtn();
@@ -122,7 +128,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         initMobileNetBtn();
         initRotateBtn();
         initDelayRecordBtn();
-        initBackListener();
     }
 
     private void initSightBtn() {
@@ -152,10 +157,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
 
     @Override
     public void onBackPressed() {
