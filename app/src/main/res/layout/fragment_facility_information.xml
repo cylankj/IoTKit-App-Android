@@ -40,68 +40,23 @@
                 android:textColor="#4B9FD5"
                 android:textSize="@dimen/sp14" />
 
-            <LinearLayout
-                android:id="@+id/lLayout_information_facility_name"
-                style="@style/information_item"
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_alias"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/EQUIPMENT_NAME"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp16" />
-
-                <TextView
-                    android:id="@+id/tv_device_alias"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y3"
-                    android:textColor="#8C8C8C"
-                    android:textSize="@dimen/sp13" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@color/color_f2f2f2" />
-            </LinearLayout>
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_title="@string/EQUIPMENT_NAME"
+                hunt:sv_v_divider="true" />
 
 
             <!-- 设备时区 -->
-            <LinearLayout
-                android:id="@+id/lLayout_information_facility_timezone"
-                style="@style/information_item"
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_time_zone"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/SETTING_TIMEZONE"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp16" />
-
-                <TextView
-                    android:id="@+id/tv_device_time_zone"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y3"
-                    android:textColor="#8C8C8C"
-                    android:textSize="@dimen/sp13" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@color/color_f2f2f2"
-                    android:visibility="gone" />
-            </LinearLayout>
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_title="@string/SETTING_TIMEZONE"
+                hunt:sv_v_divider="false" />
 
             <TextView
                 style="@style/information_item"
@@ -113,38 +68,13 @@
                 android:textSize="@dimen/sp14" />
 
             <!-- “储存”相关模块 -->
-            <LinearLayout
-                android:id="@+id/lLayout_sdcard"
-                style="@style/information_item"
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_sdcard_state"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/SETTING_SD"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp16" />
-
-                <TextView
-                    android:id="@+id/tv_device_sdcard_state"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y3"
-                    android:text="@string/SD_INIT_ERR"
-                    android:textColor="#8C8C8C"
-                    android:textSize="@dimen/sp13" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@color/color_f2f2f2"
-                    android:visibility="gone" />
-            </LinearLayout>
-
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_title="@string/SETTING_SD"
+                hunt:sv_v_divider="false" />
             <!-- “网络”相关模块 -->
             <!-- 移动网络 -->
             <TextView
@@ -156,66 +86,25 @@
                 android:textColor="#4B9FD5"
                 android:textSize="@dimen/sp14" />
 
-            <LinearLayout
-                style="@style/information_item"
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_mobile_net"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:orientation="vertical">
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_sub_title=" "
+                hunt:sv_title="@string/NETWORK_1"
+                hunt:sv_v_divider="true" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/NETWORK_1"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp16" />
-
-                <TextView
-                    android:id="@+id/tv_device_mobile_net"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y3"
-                    android:textColor="#8C8C8C"
-                    android:textSize="@dimen/sp13" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@color/color_f2f2f2" />
-            </LinearLayout>
 
             <!-- Wi-Fi -->
-            <LinearLayout
-                style="@style/information_item"
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_wifi_state"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/device_Wi_Fi"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp16" />
-
-                <TextView
-                    android:id="@+id/tv_device_wifi_state"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y3"
-                    android:text="未启用"
-                    android:textColor="#8C8C8C"
-                    android:textSize="@dimen/sp13" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@color/color_f2f2f2"
-                    android:visibility="gone" />
-            </LinearLayout>
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_sub_title=" "
+                hunt:sv_title="@string/device_Wi_Fi"
+                hunt:sv_v_divider="false" />
 
             <!-- "信息"模块 -->
             <!-- CID编号 -->
@@ -228,187 +117,56 @@
                 android:textColor="#4B9FD5"
                 android:textSize="@dimen/sp14" />
 
-            <LinearLayout
-                style="@style/information_item"
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_cid"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/Tap1_Setting_Cid"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp16" />
-
-                <TextView
-                    android:id="@+id/tv_device_cid"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y3"
-                    android:textColor="#8C8C8C"
-                    android:textSize="@dimen/sp13" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@color/color_f2f2f2" />
-            </LinearLayout>
-
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_sub_title=" "
+                hunt:sv_title="@string/Tap1_Setting_Cid"
+                hunt:sv_v_divider="true" />
             <!-- MAC -->
-            <LinearLayout
-                style="@style/information_item"
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_mac"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:orientation="vertical">
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_sub_title=" "
+                hunt:sv_title="@string/MAC"
+                hunt:sv_v_divider="true" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/MAC"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp16" />
-
-                <TextView
-                    android:id="@+id/tv_device_mac"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y3"
-                    android:textColor="#8C8C8C"
-                    android:textSize="@dimen/sp13" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@color/color_f2f2f2" />
-            </LinearLayout>
 
             <!-- 系统版本 -->
-            <LinearLayout
-                style="@style/information_item"
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_system_version"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:orientation="vertical">
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_sub_title=" "
+                hunt:sv_title="@string/SYSTME_VERSION"
+                hunt:sv_v_divider="true" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/SYSTME_VERSION"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp16" />
-
-                <TextView
-                    android:id="@+id/tv_device_system_version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y3"
-                    android:textColor="#8C8C8C"
-                    android:textSize="@dimen/sp13" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@color/color_f2f2f2" />
-            </LinearLayout>
-
-            <!--&lt;!&ndash; 软件版本 &ndash;&gt;-->
-            <!--<LinearLayout-->
-            <!--style="@style/information_item"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="@dimen/y72"-->
-            <!--android:orientation="vertical">-->
-
-            <!--<TextView-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="@dimen/y15"-->
-            <!--android:text="@string/SOFTWARE_VERSION"-->
-            <!--android:textColor="#000000"-->
-            <!--android:textSize="@dimen/sp16" />-->
-
-            <!--<TextView-->
-            <!--android:id="@+id/tv_device_soft_version"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_marginTop="@dimen/y3"-->
-            <!--android:textColor="#8C8C8C"-->
-            <!--android:textSize="@dimen/sp13" />-->
-
-            <!--<View-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="1dip"-->
-            <!--android:layout_marginTop="@dimen/y10"-->
-            <!--android:background="@color/color_f2f2f2" />-->
-            <!--</LinearLayout>-->
 
             <!-- 电池电量 -->
-            <LinearLayout
-                android:id="@+id/lLayout_device_battery"
-                style="@style/information_item"
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_battery_level"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:orientation="vertical"
-                android:visibility="gone">
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_sub_title=" "
+                hunt:sv_title="@string/BATTERY_LEVEL"
+                hunt:sv_v_divider="true" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/BATTERY_LEVEL"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp16" />
-
-                <TextView
-                    android:id="@+id/tv_device_battery_level"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y3"
-                    android:text="@string/CHARGING"
-                    android:textColor="#8C8C8C"
-                    android:textSize="@dimen/sp13" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@color/color_f2f2f2" />
-            </LinearLayout>
 
             <!-- 储存空间 -->
-            <LinearLayout
-                style="@style/information_item"
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_uptime"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:orientation="vertical">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y15"
-                    android:text="@string/STANBY"
-                    android:textColor="#000000"
-                    android:textSize="@dimen/sp16" />
-
-                <TextView
-                    android:id="@+id/tv_device_uptime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/y3"
-                    android:textColor="#8C8C8C"
-                    android:textSize="@dimen/sp13" />
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dip"
-                    android:layout_marginTop="@dimen/y10"
-                    android:background="@color/color_f2f2f2" />
-            </LinearLayout>
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_sub_title=" "
+                hunt:sv_title="@string/STANBY"
+                hunt:sv_v_divider="false" />
         </LinearLayout>
     </ScrollView>
 </LinearLayout>
