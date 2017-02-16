@@ -184,11 +184,6 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
             case R.id.tv_wifi_pwd_submit:
                 ViewUtils.deBounceClick(tvWifiPwdSubmit);
                 tvWifiPwdSubmit.viewZoomSmall();
-                if (basePresenter == null ||
-                        !basePresenter.isConnectDog()) {
-                    ToastUtil.showNegativeToast("狗丢了");
-                    return;
-                }
                 String ssid = ViewUtils.getTextViewContent(tvConfigApName);
                 String pwd = ViewUtils.getTextViewContent(etWifiPwd);
                 int type = 0;
@@ -201,11 +196,11 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
                     type = BindUtils.getSecurity(((BeanWifiList) o).result);
                 }
                 if (TextUtils.isEmpty(pwd)) {
-                    ToastUtil.showNegativeToast("请输入密码");
+                    ToastUtil.showNegativeToast(getString(R.string.ENTER_PWD_1));
                     return;
                 }
                 if (basePresenter != null)
-                    basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
+                    basePresenter.sendWifiInfo(!basePresenter.isConnectDog(), ViewUtils.getTextViewContent(tvConfigApName),
                             ViewUtils.getTextViewContent(etWifiPwd), type);
                 break;
             case R.id.tv_config_ap_name:
