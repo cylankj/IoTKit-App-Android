@@ -19,11 +19,14 @@
             android:src="@drawable/camera_icon_overlooking" />
 
         <TextView
+            android:id="@+id/tv_sight_setting_content"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="@dimen/x52"
+            android:layout_marginStart="@dimen/x52"
             android:layout_marginTop="@dimen/y22"
-            android:text="俯视:"
+            android:gravity="center"
             android:textColor="@android:color/white" />
 
         <LinearLayout
@@ -35,8 +38,9 @@
 
             <TextView
                 android:id="@+id/btn_sight_setting_cancel"
-                android:layout_width="@dimen/x95"
-                android:layout_height="@dimen/y36"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/btn_sight_setting"
                 android:gravity="center"
                 android:text="@string/CANCEL"
                 android:textColor="@android:color/white"
@@ -44,9 +48,10 @@
 
             <TextView
                 android:id="@+id/btn_sight_setting_next"
-                android:layout_width="@dimen/x95"
-                android:layout_height="@dimen/y36"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/x54"
+                android:background="@drawable/btn_sight_setting"
                 android:gravity="center"
                 android:text="@string/Tap1_Tosetup"
                 android:textColor="@android:color/white"

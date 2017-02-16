@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
+import com.cylan.jiafeigou.dp.DPConstant;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -24,7 +25,7 @@ public interface CamMessageListContract {
          * 设备信息{在线,sd卡,电量.....所有信息}
          *
          * @param id:消息id
-         * @param o:      {@link com.cylan.jiafeigou.dp.DpMsgConstant}
+         * @param o:      {@link DPConstant}
          */
         void deviceInfoChanged(int id, Object o);
     }

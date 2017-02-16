@@ -42,6 +42,7 @@
             android:layout_toStartOf="@+id/rg_view"
             hunt:sv_image_src="@drawable/setting_icon_angle_head"
             hunt:sv_sub_title="@string/Tap1_Camera_FrontTips"
+            hunt:sv_sub_title_gravity="start"
             hunt:sv_title="@string/Tap1_Camera_Front"
             hunt:sv_v_divider="true" />
 
@@ -54,6 +55,7 @@
             android:layout_toStartOf="@+id/rg_view"
             hunt:sv_image_src="@drawable/setting_icon_angle_overlooking"
             hunt:sv_sub_title="@string/Tap1_Camera_OverlookTips"
+            hunt:sv_sub_title_gravity="start"
             hunt:sv_title="@string/Tap1_Camera_Overlook"
             hunt:sv_v_divider="true" />
 
@@ -71,8 +73,7 @@
                 android:button="@null"
                 android:drawableEnd="@android:drawable/btn_radio"
                 android:paddingEnd="@dimen/x15"
-                android:paddingStart="@dimen/x15"
-                android:theme="@style/MyRadioButton" />
+                android:paddingStart="@dimen/x15" />
 
             <RadioButton
                 android:id="@+id/rbtn_sight_vertical"
@@ -81,8 +82,7 @@
                 android:button="@null"
                 android:drawableEnd="@android:drawable/btn_radio"
                 android:paddingEnd="@dimen/x15"
-                android:paddingStart="@dimen/x15"
-                android:theme="@style/MyRadioButton" />
+                android:paddingStart="@dimen/x15" />
         </RadioGroup>
     </RelativeLayout>
 

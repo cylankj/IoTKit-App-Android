@@ -9,13 +9,11 @@ import android.view.ViewGroup;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -26,7 +24,6 @@ import butterknife.ButterKnife;
  */
 
 public class AgreementFragment extends Fragment {
-    FrameLayout fLayoutTopBar;
     @BindView(R.id.webView)
     WebView webview;
     @BindView(R.id.custom_toolbar)
@@ -67,11 +64,8 @@ public class AgreementFragment extends Fragment {
             }
         });
         webview.loadUrl(agreementUrl);
-        customToolbar.setTvToolbarIcon(R.drawable.nav_icon_back_gary);
-        customToolbar.setToolbarTitle(R.string.RECORD_MODE_2);
         customToolbar.setBackAction((View v) -> {
             ActivityUtils.justPop(getActivity());
         });
-        ViewUtils.setViewMarginStatusBar(customToolbar);
     }
 }

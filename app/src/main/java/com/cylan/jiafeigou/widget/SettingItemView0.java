@@ -55,6 +55,8 @@ public class SettingItemView0 extends RelativeLayout {
         imgvIcon.setImageDrawable(srcId);
         tvTitle.setText(title);
         tvSubTitle.setText(subTitle);
+        int subTitleGravity = ta.getInt(R.styleable.SettingItemViewStyle_sv_sub_title_gravity, -1);
+        tvSubTitle.setGravity(subTitleGravity);
         switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_visibility, false)
                 ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_divider, false)
@@ -73,5 +75,13 @@ public class SettingItemView0 extends RelativeLayout {
 
     public void setSwitchButtonState(boolean state) {
         switchButton.setChecked(state);
+    }
+
+    public CharSequence getSubTitle() {
+        return tvSubTitle.getText();
+    }
+
+    public CharSequence getTitle() {
+        return tvTitle.getText();
     }
 }
