@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:gravity="center_horizontal"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
-    <include layout="@layout/layout_item_vedio_wonderful"/>
+    <include layout="@layout/layout_item_vedio_wonderful" />
 
     <Button
         android:id="@+id/item_wonderful_to_start"
@@ -15,7 +16,7 @@
         android:background="@drawable/un_bind_device_btn_seletor"
         android:text="@string/Tap2_Index_OpenTimelapse"
         android:textColor="@color/delay_record_start_now_color"
-        android:textSize="@dimen/sp17"/>
+        android:textSize="@dimen/sp17" />
 
 
 </LinearLayout>

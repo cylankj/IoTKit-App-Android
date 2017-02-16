@@ -50,12 +50,11 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
             handleState(holder, item);
         }
 
-        DpMsgDefine.DPWonderItem item1 = getItem(getCount() - 1);
-        if (item1.msgType != DpMsgDefine.DPWonderItem.TYPE_LOAD) {
-            if (layoutPosition == getCount() - 1 && layoutPosition > 0) {
-                holder.setVisibility(R.id.tv_wonderful_item_footer, View.VISIBLE);
-            }
-        }
+        if (layoutPosition == getCount() - 1
+                && getItem(getCount() - 1).msgType != DpMsgDefine.DPWonderItem.TYPE_LOAD
+                && layoutPosition > 0) {
+            holder.setVisibility(R.id.tv_wonderful_item_footer, View.VISIBLE);
+        }else  holder.setVisibility(R.id.tv_wonderful_item_footer, View.INVISIBLE);
     }
 
     private void initClickListener(SuperViewHolder holder, final int layoutPosition) {

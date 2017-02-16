@@ -799,6 +799,11 @@ public class DpMsgDefine {
             return (T) ((DPSet) super.$()).value;
         }
 
+        public List<T> list() {
+            return new ArrayList<>(value);
+        }
+
+
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);

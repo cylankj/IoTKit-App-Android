@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
@@ -12,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -61,17 +59,18 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
+import rx.Observable;
 import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem;
 
-
+@RuntimePermissions
 public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnInfoListener, IMediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener, IMediaPlayer.OnErrorListener, IMediaPlayer.OnVideoSizeChangedListener, PhotoViewAttacher.OnPhotoTapListener {
 
 
@@ -149,7 +148,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     private File mDownloadFile;
     private int mCurrentPlayState = PLAY_STATE_RESET;
     private static final long HEADER_AND_FOOTER_SHOW_TIME = 3000;
-    private Subscription mDeleteWonderSub;
 
     @Override
     protected void onRestart() {
@@ -165,6 +163,8 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             postponeEnterTransition();
             initShareElementCallback();
+        } else {
+
         }
         //数据初始化
         mCurrentPosition = mStartPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
@@ -248,7 +248,14 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             } else {
                 mHeaderContainer.setVisibility(View.GONE);
                 mFooterContainer.setVisibility(View.GONE);
-                startPostponedEnterTransition();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    startPostponedEnterTransition();
+                } else {
+                    animateHeaderAndFooter(true, true);
+                    if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
+                        startPlayVideo();
+                    }
+                }
             }
         });
         mMediaPager.setAdapter(mAdapter);
@@ -450,37 +457,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         }
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-        registerDeleteWonderSub();
-    }
-
-    private void registerDeleteWonderSub() {
-        if (mDeleteWonderSub != null && mDeleteWonderSub.isUnsubscribed())
-            mDeleteWonderSub.unsubscribe();
-        mDeleteWonderSub = RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonderRsp.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(deleteWonderRsp -> {
-                    if (deleteWonderRsp.success) {
-                        mMediaList.remove(deleteWonderRsp.position);
-                        mAdapter.notifyDataSetChanged();
-                        if (mAdapter.getCount() == 0) {//说明已经删完了,则退出到每日精彩列表页面
-                            finish();
-                        }
-                    }
-                });
-    }
 
     @Override
     protected void onStop() {
         super.onStop();
         AppLogger.d("onStop");
-        if (mDeleteWonderSub != null && mDeleteWonderSub.isUnsubscribed()) {
-            mDeleteWonderSub.unsubscribe();
-            mDeleteWonderSub = null;
-        }
     }
 
     @Override
@@ -549,37 +530,50 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     @OnClick({R.id.act_media_header_opt_delete, R.id.act_media_picture_opt_delete})
     public void delete() {
-        RxEvent.DeleteWonder wonder = new RxEvent.DeleteWonder();
-        wonder.position = mCurrentPosition;
-        RxBus.getCacheInstance().post(wonder);
-    }
-
-    @OnClick({R.id.act_media_header_opt_download, R.id.act_media_picture_opt_download})
-    public void download() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            downloadFile();//已经获得了授权
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            //需要重新提示用户授权
-            Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_DOWNLOAD);
-        }
-
+        Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
+            RxEvent.DeleteWonder wonder = new RxEvent.DeleteWonder();
+            wonder.position = mCurrentPosition;
+            RxBus.getCacheInstance().post(wonder);
+            subscriber.onNext(wonder.position);
+            subscriber.onCompleted();
+        }).flatMap(position -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonderRsp.class).filter(rsp -> rsp.position == position).first())
+                .subscribe(rsp -> {
+                    if (rsp.success) {
+                        if (mAdapter.getCount() > 0) {
+                            mMediaList.remove(rsp.position);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                        if (mAdapter.getCount() == 0) {//说明已经删完了,则退出到每日精彩列表页面
+                            finish();
+                        }
+                    }
+                });
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQ_DOWNLOAD) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                downloadFile();
-            } else {
-                Toast.makeText(this, getString(R.string.permission_download), Toast.LENGTH_SHORT).show();
-            }
-        }
+        MediaActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    private void downloadFile() {
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onDownloadPermissionDenied() {
+        Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onDownloadPermissionNeverAskAgain() {
+        Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick({R.id.act_media_header_opt_download, R.id.act_media_picture_opt_download})
+    void download() {
+        MediaActivityPermissionsDispatcher.downloadFileWithCheck(this);
+    }
+
+
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void downloadFile() {
         if (mCurrentViewType == DPWonderItem.TYPE_PIC) {
             mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
         } else if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
@@ -634,7 +628,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                         delete();
                         break;
                     case R.id.dialog_media_video_download:
-                        download();
+                        MediaActivityPermissionsDispatcher.downloadFileWithCheck(this);
                         break;
                     case R.id.dialog_media_video_share:
                         share();
@@ -822,4 +816,5 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     public void onOutsidePhotoTap() {
         animateHeaderAndFooter();
     }
+
 }

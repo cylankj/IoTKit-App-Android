@@ -5,8 +5,8 @@ import android.content.pm.PackageManager;
 import android.support.v4.util.LongSparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -27,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -46,10 +47,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     private LongSparseArray<TreeSet<DpMsgDefine.DPWonderItem>> mWonderDaySource = new LongSparseArray<>();
     private long mPositionDayStart = 0;
     private long mPositionDayEnd = 0;
-
+    private boolean mHasTimeWheelInit = false;
     private static final int MAX_DAY_COUNT = 40;
     private static final long DAY_TIME = 24 * 60 * 60 * 1000L;
-    private List<Long> mTimeLineSeq = new ArrayList<>();
+
 
     @Override
     protected void onRegisterSubscription() {
@@ -62,7 +63,6 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleteWonder -> {
-                    AppLogger.e("接收到删除 WonderItem 请求");
                     deleteTimeline(deleteWonder.position);
                 });
     }
@@ -101,18 +101,57 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startRefresh() {
-        if (DataSourceManager.getInstance().isOnline()) {
-            int index = mWonderDaySource.indexOfKey(mPositionDayStart);
-            if (index == 0) {//first
-                load(0, false);
-            } else {
-                TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.get(mPositionDayStart);
-                load(items == null || items.size() == 0 ? mPositionDayStart : items.first().version, mPositionDayStart != 0);
-            }
-        } else {
-            mView.onLoginStateChanged(false);
-        }
+        queryTimeLine(0, false)
+                .map(result -> {
+                    if (mWonderDaySource.size() > 0) {
+                        TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.valueAt(mWonderDaySource.size() - 1);
+                        if (result.get(0).time >= items.last().time) {
 
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(result -> {
+                    AppLogger.e("正在更新 UI 界面");
+                    if (isEmpty(mPositionDayStart)) {
+                        mView.chooseEmptyView(VIEW_TYPE_EMPTY);
+                    } else {
+                        mView.chooseEmptyView(VIEW_TYPE_HIDE);
+                        mView.onQueryTimeLineSuccess(result, true);
+                    }
+                    long initValue = mHasTimeWheelInit ? -1L : mPositionDayStart;
+                    AppLogger.e("initValue:" + initValue);
+                    return initValue;
+                })
+                .observeOn(Schedulers.io())
+                .filter(initValue -> initValue > 0)
+                .map(initValue -> {
+                    List<WonderIndicatorWheelView.WheelItem> wheelList = getInitWheelList(initValue);
+                    mView.onTimeLineInit(wheelList);
+                    mHasTimeWheelInit = true;
+                    return wheelList;
+                })
+                .flatMap(Observable::from)
+                .map(item -> sendQueryRequest(item.time, true))
+                .filter(seq -> seq > 0)
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> rsp.seq == seq).first())
+                .map(rsp -> {
+                    DpMsgDefine.DPWonderItem item = null;
+                    ArrayList<JFGDPMsg> msgs = rsp.map.get(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG);
+                    if (msgs.size() > 0) {
+                        item = new DpMsgDefine.DPWonderItem();
+                        item.setValue(msgs.get(0), rsp.seq);
+                    }
+                    return item;
+                })
+                .filter(item -> item != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(item -> mView.onTimeLineRsp(item.time * 1000L), e -> {
+                    if (e instanceof TimeoutException) {
+                        mView.onQueryTimeLineTimeOut();
+                    }
+                    AppLogger.e(e.getLocalizedMessage());
+                });
     }
 
     private void load(long version, boolean asc) {
@@ -129,6 +168,50 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         if (items != null) {
             load(items.last().version, false);
         }
+    }
+
+    public Observable<List<DpMsgDefine.DPWonderItem>> queryTimeLine(long version, boolean asc) {
+        return Observable.just(sendQueryRequest(version, asc))
+                .filter(seq -> seq > 0)
+                .subscribeOn(Schedulers.io())
+                .flatMap(seq -> RxBus.getCacheInstance()
+                        .toObservable(RxEvent.ParseResponseCompleted.class)
+                        .timeout(10, TimeUnit.SECONDS)
+                        .filter(rsp -> rsp.seq == seq)
+                        .first())
+                .map(rsp -> {
+                    AppLogger.e("收到从服务器返回数据!!!");
+                    DpMsgDefine.DPSet<DpMsgDefine.DPWonderItem> result = mSourceManager.getValue(mUUID, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, rsp.seq);
+                    return result.list();
+                });
+    }
+
+    private List<DpMsgDefine.DPWonderItem> cacheWonderItems(DpMsgDefine.DPSet<DpMsgDefine.DPWonderItem> set) {
+        if (set == null || set.value.size() == 0) return null;
+        AppLogger.e("正在缓冲条目");
+        List<DpMsgDefine.DPWonderItem> result = new ArrayList<>();
+        if (mPositionDayStart == 0 || mPositionDayEnd == 0) {
+            mPositionDayStart = TimeUtils.getSpecificDayStartTime(set.value.first().time * 1000L);
+            mPositionDayEnd = TimeUtils.getSpecificDayEndTime(set.value.first().time * 1000L);
+        }
+        TreeSet<DpMsgDefine.DPWonderItem> wonderItems = mWonderDaySource.get(mPositionDayStart);
+        if (wonderItems == null) {
+            wonderItems = new TreeSet<>();
+            mWonderDaySource.put(mPositionDayStart, wonderItems);
+        }
+        for (DpMsgDefine.DPWonderItem item : set.value) {
+            if (!wonderItems.contains(item) && item.time * 1000L >= mPositionDayStart && item.time * 1000L < mPositionDayEnd) {
+                result.add(item);
+                AppLogger.e("添加条目" + item.version);
+            }
+        }
+        wonderItems.addAll(result);
+        return result;
+    }
+
+    private boolean isEmpty(long time) {
+        TreeSet<DpMsgDefine.DPWonderItem> wonderItems = mWonderDaySource.get(time);
+        return wonderItems == null || wonderItems.size() == 0;
     }
 
     @Override
@@ -150,8 +233,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io())
-                .timeout(10, TimeUnit.SECONDS)
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).filter(rsp -> rsp.seq == seq).first())
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).timeout(10, TimeUnit.SECONDS).filter(rsp -> rsp.seq == seq).first())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     if (rsp.resultCode == 0) {//success
@@ -165,7 +247,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     }
                 }, e -> {
                     ToastUtil.showNegativeToast("删除失败!");
-                    e.printStackTrace();
+                    AppLogger.e(e.getMessage());
                 });
     }
 
@@ -189,15 +271,23 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void loadSpecificDay(long timeStamp) {
-        mPositionDayStart = TimeUtils.getSpecificDayStartTime(timeStamp);
-        mPositionDayEnd = TimeUtils.getSpecificDayEndTime(timeStamp);
-        TreeSet<DpMsgDefine.DPWonderItem> items = mWonderDaySource.get(mPositionDayStart);
-        if (items != null) {
-            mView.chooseEmptyView(items.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
-            mView.onMediaListRsp(new ArrayList<>(items));
-        } else {
-            load(mPositionDayEnd, false);
-        }
+        Observable.create((Observable.OnSubscribe<TreeSet<DpMsgDefine.DPWonderItem>>) subscriber -> {
+            mPositionDayStart = TimeUtils.getSpecificDayStartTime(timeStamp);
+            mPositionDayEnd = TimeUtils.getSpecificDayEndTime(timeStamp);
+            subscriber.onNext(mWonderDaySource.get(mPositionDayStart));
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .flatMap(wonderItems -> wonderItems != null ? Observable.just(new ArrayList<>(wonderItems)) : queryTimeLine(mPositionDayEnd, false))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(items -> {
+                    mView.chooseEmptyView(items.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
+                    mView.onQueryTimeLineSuccess(items, false);
+                }, e -> {
+                    if (e instanceof TimeoutException) {
+                        mView.onQueryTimeLineTimeOut();
+                    }
+                });
     }
 
     @Override
@@ -207,33 +297,38 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         ArrayList<JFGDPMsg> params = new ArrayList<>();
         params.add(msg);
         long[] seq = new long[1];
-        mTimeLineSeq.add(seq[0]);
         robotGetData("", params, 1, true, 0, seq);
     }
 
-    @Override
-    protected void onRegisterResponseParser() {
-        super.onRegisterResponseParser();
-        registerResponseParser(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, this::onWonderfulAccountRsp);
+    private long sendQueryRequest(long version, boolean asc) {
+        try {
+            AppLogger.e("正在发送查询请求" + version + asc);
+            ArrayList<JFGDPMsg> params = new ArrayList<>();
+            JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, version);
+            params.add(msg);
+            return JfgCmdInsurance.getCmd().robotGetData("", params, 21, asc, 0);//多请求一条数据,用来判断是否是一天最后一条
+        } catch (JfgException e) {
+            AppLogger.e(e.getMessage());
+            return -1;
+        }
     }
 
     private void onWonderfulAccountRsp(DataPoint... values) {
         boolean init = mWonderDaySource.size() == 0 || mWonderDaySource.valueAt(0).size() == 0;
         TreeSet<DpMsgDefine.DPWonderItem> wonderItems = mWonderDaySource.get(mPositionDayStart);
-        List<DpMsgDefine.DPWonderItem> results = filter(values);
         if (wonderItems == null) {
             wonderItems = new TreeSet<>();
             mWonderDaySource.put(mPositionDayStart, wonderItems);
         }
+        List<DpMsgDefine.DPWonderItem> results = filter(wonderItems, values);
         wonderItems.addAll(results);
         mView.chooseEmptyView(wonderItems.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
-        mView.onMediaListRsp(results);
+        mView.onQueryTimeLineSuccess(results, false);
         if (values != null && values.length > 0) {
             if (init) {//init
                 DpMsgDefine.DPWonderItem item = (DpMsgDefine.DPWonderItem) values[0];
                 List<WonderIndicatorWheelView.WheelItem> list = getInitWheelList(TimeUtils.getSpecificDayStartTime(item.time * 1000L));
                 mView.onTimeLineInit(list);
-                mTimeLineSeq.clear();
 
                 for (WonderIndicatorWheelView.WheelItem wheelItem : list) {
                     queryTimeLine(wheelItem.time);
@@ -260,7 +355,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         return result;
     }
 
-    private List<DpMsgDefine.DPWonderItem> filter(DataPoint... values) {
+    private List<DpMsgDefine.DPWonderItem> filter(TreeSet<DpMsgDefine.DPWonderItem> wonderItems, DataPoint... values) {
         if (values == null) return null;
         List<DpMsgDefine.DPWonderItem> result = new ArrayList<>(21);
         DpMsgDefine.DPWonderItem wonderItem;
@@ -271,9 +366,8 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 mPositionDayEnd = TimeUtils.getSpecificDayEndTime(wonderItem.time * 1000L);
             }
             if (wonderItem.time * 1000L >= mPositionDayStart && wonderItem.time * 1000L < mPositionDayEnd) {
-                //说明是在同一天
-                AppLogger.e("是在同一天");
-                result.add(wonderItem);
+                if (wonderItems != null && !wonderItems.contains(wonderItem))
+                    result.add(wonderItem);
             }
         }
         return result;

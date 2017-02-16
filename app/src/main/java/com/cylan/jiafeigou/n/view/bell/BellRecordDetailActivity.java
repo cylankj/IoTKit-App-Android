@@ -1,17 +1,14 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -56,12 +53,17 @@ import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
+@RuntimePermissions
 public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     private static final int REQ_DOWNLOAD = 20000;
@@ -150,14 +152,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_download)
     public void download() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            downloadFile();//已经获得了授权
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            //需要重新提示用户授权
-            ToastUtil.showNegativeToast(getString(R.string.DOWNLOAD_NEED_PERMISSION));
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_DOWNLOAD);
-        }
+        BellRecordDetailActivityPermissionsDispatcher.downloadFileWithCheck(this);
     }
 
     @OnClick(R.id.act_bell_picture_opt_share)
@@ -246,16 +241,11 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQ_DOWNLOAD) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                downloadFile();
-            } else {
-                Toast.makeText(this, getString(R.string.permission_download), Toast.LENGTH_SHORT).show();
-            }
-        }
+        BellRecordDetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    private void downloadFile() {
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void downloadFile() {
         mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCallRecord.timeInLong / 1000 + ".jpg");
 
         if (mDownloadFile.exists()) {
@@ -282,6 +272,16 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                         mDownloadFile = null;
                     }
                 });
+    }
+
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onDownloadPermissionDenied() {
+        ToastUtil.showNegativeToast("下载文件需要权限,请手动开启");
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onDownloadPermissionNerverAskAgain() {
+        ToastUtil.showNegativeToast("下载文件需要权限,请手动开启");
     }
 
     @Override

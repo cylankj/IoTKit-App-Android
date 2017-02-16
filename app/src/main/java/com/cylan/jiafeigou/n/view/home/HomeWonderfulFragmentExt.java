@@ -113,7 +113,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private LinearLayoutManager mLinearLayoutManager;
     private ShadowFrameLayout mParent;
     private boolean isScrollShow = false;
-    private boolean mShouldLoadMore = true;
     private boolean mCanRefresh = true;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
@@ -250,7 +249,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 int visibleItemCount = mLinearLayoutManager.getChildCount();
                 int totalItemCount = mLinearLayoutManager.getItemCount();
                 if (dy > 0) { //check for scroll down
-                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount && !mShouldLoadMore) {
+                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount && homeWonderAdapter.getItem(totalItemCount - 1).msgType != DPWonderItem.TYPE_LOAD) {
+
                         if (!getWheelView().isShown()) {
                             isScrollShow = true;
                             showWheelView();
@@ -280,24 +280,28 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @UiThread
     @Override
-    public void onMediaListRsp(List<DPWonderItem> resultList) {
-        srLayoutMainContentHolder.removeCallbacks(mDelayAction);
+    public void onQueryTimeLineSuccess(List<DPWonderItem> resultList, boolean isRefresh) {
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
-            mShouldLoadMore = false;
+            ToastUtil.showNegativeToast("暂无数据!");
             return;
         }
-        DPWonderItem last = homeWonderAdapter.getItem(homeWonderAdapter.getCount() - 1);
-        if (last != null && last.msgType == 2) homeWonderAdapter.remove(last);
-        homeWonderAdapter.addAll(resultList);
-        DPWonderItem wonderItem = resultList.get(0);
-        tvDateItemHeadWonder.setText(TimeUtils.getDayString(wonderItem.time * 1000L));
-
-        if (resultList.size() == 20) {
-            mShouldLoadMore = true;
-            homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
+        if (isRefresh) {
+            homeWonderAdapter.addAll(0, resultList);
+            rVDevicesList.scrollToPosition(0);
         } else {
-            mShouldLoadMore = false;
+            int lastPosition = homeWonderAdapter.getCount() - 1;
+            DPWonderItem last = homeWonderAdapter.getItem(lastPosition);
+            if (last.msgType == 2) {
+                homeWonderAdapter.remove(last);
+            }
+            homeWonderAdapter.addAll(resultList);
+            DPWonderItem wonderItem = resultList.get(0);
+            tvDateItemHeadWonder.setText(TimeUtils.getDayString(wonderItem.time * 1000L));
+            if (resultList.size() == 20) {
+                homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
+            }
+            homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
         }
         srLayoutMainContentHolder.setNestedScrollingEnabled(true);
     }
@@ -320,6 +324,17 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onDeleteWonderSuccess(int position) {
         homeWonderAdapter.remove(position);
+    }
+
+    @Override
+    public void onQueryTimeLineTimeOut() {
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.REQUEST_TIME_OUT));
+        srLayoutMainContentHolder.setRefreshing(false);
+    }
+
+    @Override
+    public void onChangeTimeLineDaySuccess(List<DPWonderItem> items) {
+
     }
 
     @SuppressWarnings("deprecation")
@@ -395,6 +410,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         switch (type) {
             case VIEW_TYPE_HIDE: {//hide
                 mWonderfulEmptyViewContainer.setVisibility(View.GONE);
+                mWonderfulGuideContainer.setVisibility(View.GONE);
+                mWonderfulEmptyContainer.setVisibility(View.GONE);
                 mCanRefresh = true;
             }
             break;
@@ -403,6 +420,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
                 mWonderfulGuideContainer.setVisibility(View.GONE);
                 mWonderfulEmptyContainer.setVisibility(View.VISIBLE);
+
             }
             break;
             case VIEW_TYPE_GUIDE: {//guide
@@ -413,6 +431,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             }
             break;
         }
+        srLayoutMainContentHolder.setRefreshing(false);
     }
 
     @Override
@@ -420,22 +439,10 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         if (mCanRefresh) {
             mPresenter.startRefresh();
             srLayoutMainContentHolder.setRefreshing(true);
-            srLayoutMainContentHolder.removeCallbacks(mDelayAction);
-            srLayoutMainContentHolder.postDelayed(mDelayAction, 10000);
         } else {
             srLayoutMainContentHolder.setRefreshing(false);
         }
     }
-
-    private Runnable mDelayAction = new Runnable() {
-        @Override
-        public void run() {
-            if (srLayoutMainContentHolder.isRefreshing()) {
-                ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.REQUEST_TIME_OUT));
-                srLayoutMainContentHolder.setRefreshing(false);
-            }
-        }
-    };
 
     private void onEnterWonderfulContent(ArrayList<? extends Parcelable> list, int position, View v) {
         final Intent intent = new Intent(getActivity(), MediaActivity.class);

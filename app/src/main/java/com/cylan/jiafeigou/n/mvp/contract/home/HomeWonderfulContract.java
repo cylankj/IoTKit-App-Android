@@ -18,7 +18,7 @@ public interface HomeWonderfulContract {
         int VIEW_TYPE_EMPTY = 0;
         int VIEW_TYPE_GUIDE = 1;
 
-        void onMediaListRsp(List<DpMsgDefine.DPWonderItem> list);
+        void onQueryTimeLineSuccess(List<DpMsgDefine.DPWonderItem> list, boolean isRefresh);
 
         void onHeadBackgroundChang(int daytime);
 
@@ -41,6 +41,10 @@ public interface HomeWonderfulContract {
         void onTimeLineInit(List<WonderIndicatorWheelView.WheelItem> list);
 
         void onDeleteWonderSuccess(int position);
+
+        void onQueryTimeLineTimeOut();
+
+        void onChangeTimeLineDaySuccess(List<DpMsgDefine.DPWonderItem> items);
     }
 
     interface Presenter extends JFGPresenter {
