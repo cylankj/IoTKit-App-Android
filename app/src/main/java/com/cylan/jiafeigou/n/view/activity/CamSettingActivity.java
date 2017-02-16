@@ -438,7 +438,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             boolean flag = MiscUtils.cast(value.getValue(), false);
             svSettingDeviceStandbyMode.setSwitchButtonState(flag);
         }
-        svSettingDeviceDetail.setTvSubTitle(basePresenter.getDetailsSubTitle(getContext()));
+        String detailInfo = basePresenter.getDetailsSubTitle(getContext());
+        if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
+            svSettingDeviceDetail.setTvSubTitle(basePresenter.getDetailsSubTitle(getContext()), android.R.color.holo_red_dark);
+        } else
+            svSettingDeviceDetail.setTvSubTitle(basePresenter.getDetailsSubTitle(getContext()), R.color.color_8C8C8C);
         svSettingSafeProtection.setTvSubTitle(basePresenter.getAlarmSubTitle(getContext()));
         svSettingDeviceAutoRecord.setTvSubTitle(basePresenter.getAutoRecordTitle(getContext()));
     }

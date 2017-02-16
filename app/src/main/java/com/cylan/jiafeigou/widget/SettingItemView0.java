@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -70,6 +71,16 @@ public class SettingItemView0 extends RelativeLayout {
      * @param charSequence
      */
     public void setTvSubTitle(CharSequence charSequence) {
+        tvSubTitle.setText(charSequence);
+    }
+
+    /**
+     * 设置副标题
+     *
+     * @param charSequence
+     */
+    public void setTvSubTitle(CharSequence charSequence, @ColorRes int color) {
+        tvSubTitle.setTextColor(getResources().getColor(color));
         tvSubTitle.setText(charSequence);
     }
 

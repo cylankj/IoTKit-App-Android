@@ -118,7 +118,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         if (status != null) {
             if (status.hasSdcard && status.err != 0) {
                 //sd初始化失败时候显示
-                return context.getString(R.string.NO_SDCARD);
+                return context.getString(R.string.SD_INIT_ERR, status.err);
             }
         }
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
