@@ -60,7 +60,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     private HomeSettingContract.Presenter presenter;
 
-    private HomeSettingAboutFragment homeSettingAboutFragment;
+    private AboutFragment aboutFragment;
 
     public static HomeSettingFragment newInstance() {
         return new HomeSettingFragment();
@@ -69,7 +69,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        homeSettingAboutFragment = HomeSettingAboutFragment.newInstance();
+        aboutFragment = AboutFragment.newInstance();
     }
 
     @Nullable
@@ -110,7 +110,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, homeSettingAboutFragment, "homeSettingAboutFragment")
+                        .add(android.R.id.content, aboutFragment, "aboutFragment")
                         .addToBackStack("mineHelpFragment")
                         .commit();
                 break;

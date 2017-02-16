@@ -3,7 +3,6 @@
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginTop="@dimen/y10"
     android:background="@color/color_white"
     android:clickable="true"
     android:orientation="vertical">
@@ -12,12 +11,18 @@
         android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_shadow="true"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_tab_back_selector"
+        hunt:ct_left_title="@string/WEB"
+        hunt:ct_left_title_color="@color/color_white"
         hunt:ct_title_color="@color/color_black" />
 
     <WebView
         android:id="@+id/webView"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </LinearLayout>
 
 
