@@ -40,15 +40,27 @@
 -keep public class com.android.vending.licensing.ILicensingService
 -keep public class org.msgpack.** { *; }
 -keep public class org.webrtc.** { *; }
+-keep public class com.cylan.** { *; }
+-keep public class com.cylan.panorama.** { *; }
+#内部类混淆
+-keep class org.webrtc.videoengine.MediaCodecVideoEncoder$*{
+    *;
+}
+-keep class org.webrtc.videoengine.MediaCodecVideoDecoder$*{
+    *;
+}
+-keep class org.webrtc.videoengine.MediaCodecVideoDecoder{
+    *;
+}
 
--keep org.webrtc.videoengine.MediaCodecVideoEncoder$OutputBufferInfo
-
--keep public class com.cylan.jiafeigou.support.Security
+-keep public class com.cylan.jiafeigou.support.Security{
+    public <methods>;
+}
 -dontnote java.util.AbstractMap.**
 -dontwarn org.msgpack.**
 -dontnote org.msgpack.**
 
--keep public class net.sqlcipher.**
+-keep  class net.sqlcipher.**{*;}
 -dontnote net.sqlcipher.**
 
 -dontwarn okio.**
@@ -110,6 +122,37 @@
 -keepclassmembers class **.R$* {
     public static <fields>;
 }
+
+
+-dontnote libcore.icu.ICU
+##---------------Begin: proguard configuration for Gson  ----------
+# Gson uses generic type information stored in activity_cloud_live_mesg_video_talk_item class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
+
+# Gson specific classes
+-keep class sun.misc.** { *; }
+-dontwarn sun.misc.**
+-dontnote sun.misc.**
+-dontnote com.google.gson.**
+-dontnote com.sina.weibo.sdk.**
+#-keep class com.google.gson.stream.** { *; }
+
+# Application classes that will be serialized/deserialized over Gson
+# -keep class mypersonalclass.data.model.** { *; }
+
+##  okhttp3   ####start
+# OkHttp
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp3.** { *; }
+-keep interface com.squareup.okhttp3.** { *; }
+-dontwarn com.squareup.okhttp3.**
+-dontwarn okhttp3.**
+##  okhttp3  ####end
+
+
+########################Rxjava###############################################
 -keep class rx.schedulers.Schedulers {
     public static <methods>;
 }
@@ -132,37 +175,6 @@
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
-
--dontnote libcore.icu.ICU
-##---------------Begin: proguard configuration for Gson  ----------
-# Gson uses generic type information stored in activity_cloud_live_mesg_video_talk_item class file when working with fields. Proguard
-# removes such information by default, so configure it to keep all of it.
--keepattributes Signature
-
-# Gson specific classes
--keep class sun.misc.** { *; }
--dontwarn sun.misc.**
--dontnote sun.misc.**
--dontnote com.google.gson.**
--dontnote com.sina.weibo.sdk.**
--dontwarn okhttp3.**
-#-keep class com.google.gson.stream.** { *; }
-
-# Application classes that will be serialized/deserialized over Gson
-# -keep class mypersonalclass.data.model.** { *; }
-
-##  okhttp3   ####start
-# OkHttp
--keepattributes Signature
--keepattributes *Annotation*
--keep class com.squareup.okhttp3.** { *; }
--keep interface com.squareup.okhttp3.** { *; }
--dontwarn com.squareup.okhttp3.**
-##  okhttp3  ####end
-
-
-########################Rxjava###############################################
-
 -keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
    long producerIndex;
    long consumerIndex;
