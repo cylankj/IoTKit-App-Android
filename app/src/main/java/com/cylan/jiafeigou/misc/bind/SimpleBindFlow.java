@@ -215,6 +215,8 @@ public class SimpleBindFlow extends AFullBind {
         return RxBus.getCacheInstance().toObservable(JfgUdpMsg.PingAck.class)
                 .filter((JfgUdpMsg.PingAck pingAck) -> {
                     //注意条件
+                    AppLogger.i(BIND_TAG + "pingObservable: " + pingAck);
+
                     return !TextUtils.isEmpty(pingAck.cid)
                             && pingAck.cid.endsWith(ssidInDigits);
                 })
@@ -232,6 +234,7 @@ public class SimpleBindFlow extends AFullBind {
         return RxBus.getCacheInstance().toObservable(JfgUdpMsg.FPingAck.class)
                 .filter((JfgUdpMsg.FPingAck pingAck) -> {
                     //注意条件
+                    AppLogger.i(BIND_TAG + "fPingObservable: " + pingAck);
                     return !TextUtils.isEmpty(pingAck.cid)
                             && pingAck.cid.endsWith(ssidInDigits);
                 })
