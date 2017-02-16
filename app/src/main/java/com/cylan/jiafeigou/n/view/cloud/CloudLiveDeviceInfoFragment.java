@@ -174,9 +174,8 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
                             && !TextUtils.equals(device.alias, value)) {
                         tvInformationFacilityName.setText(value);
                         device.alias = value;
+                        GlobalDataProxy.getInstance().updateJFGDevice(device);
                         updateDetails();
-                        presenter.saveCloudInfoBean(device, DpMsgMap.ID_2000003_BASE_ALIAS);
-
                         if (listener != null) {
                             listener.changeName(value);
                         }
