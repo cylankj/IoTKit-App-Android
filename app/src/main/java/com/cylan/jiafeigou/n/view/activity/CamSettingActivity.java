@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -438,7 +439,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             boolean flag = MiscUtils.cast(value.getValue(), false);
             svSettingDeviceStandbyMode.setSwitchButtonState(flag);
         }
-        svSettingDeviceDetail.setTvSubTitle(basePresenter.getDetailsSubTitle(getContext()));
+        String detailInfo = basePresenter.getDetailsSubTitle(getContext());
+        if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains(getString(R.string.SD_INIT_ERR))) {
+
+        }
+        svSettingDeviceDetail.setTvSubTitle(basePresenter.getDetailsSubTitle(getContext()), android.R.color.holo_red_dark);
         svSettingSafeProtection.setTvSubTitle(basePresenter.getAlarmSubTitle(getContext()));
         svSettingDeviceAutoRecord.setTvSubTitle(basePresenter.getAutoRecordTitle(getContext()));
     }
