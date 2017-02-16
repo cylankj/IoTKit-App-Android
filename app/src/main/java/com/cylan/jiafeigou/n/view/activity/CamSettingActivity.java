@@ -244,7 +244,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             R.id.sv_setting_safe_protection,
             R.id.tv_setting_unbind,
             R.id.sv_setting_device_delay_capture,
-            R.id.sv_setting_device_wifi
+            R.id.sv_setting_device_wifi,
+            R.id.sbtn_setting_sight
     })
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
@@ -341,6 +342,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     }
                 }
                 break;
+            case R.id.sbtn_setting_sight:
+                Intent intent = new Intent(this, SightSettingActivity.class);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                startActivity(intent);
+                break;
         }
     }
 
@@ -374,6 +380,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 continue;//解绑按钮
             }
             if (view.getId() == R.id.sv_setting_device_auto_record) {
+                continue;//解绑按钮
+            }
+            if (view.getId() == R.id.sbtn_setting_sight) {
                 continue;//解绑按钮
             }
             if (view instanceof ViewGroup) {
