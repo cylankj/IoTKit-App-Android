@@ -120,10 +120,10 @@ android {
         }
         release {
             if (hasSignKey()) {
-                shrinkResources true
-                minifyEnabled true
-                zipAlignEnabled true
-                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+//                shrinkResources true
+//                minifyEnabled true
+//                zipAlignEnabled true
+//                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
                 signingConfig signingConfigs.release
             }
         }
