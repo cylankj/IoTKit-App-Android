@@ -22,4 +22,6 @@ public interface ViewableView extends JFGView {
     String onResolveViewLaunchType();
 
     void onConnectDeviceTimeOut();
+
+    void onVideoDisconnect(int code);
 }

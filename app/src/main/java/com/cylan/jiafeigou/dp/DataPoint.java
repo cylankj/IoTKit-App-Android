@@ -228,7 +228,6 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
         try {
             Field field = getProperties().get(msg.id);
             if (field == null) return false;
-
             DataPoint value = (DataPoint) field.get(this);
             Class<?> type = field.getType();
             if (DpMsgDefine.DPSet.class.isAssignableFrom(type)) {//setType

@@ -1,17 +1,14 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.Manifest;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -49,19 +46,24 @@ import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
+@RuntimePermissions
 public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     private static final int REQ_DOWNLOAD = 20000;
@@ -119,6 +121,8 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
         Glide.with(this)
                 .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID))
+                .placeholder(R.drawable.wonderful_pic_place_holder)
+                .error(R.drawable.brokent_image)
                 .listener(new RequestListener<JFGGlideURL, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, JFGGlideURL model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -148,14 +152,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_download)
     public void download() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            downloadFile();//已经获得了授权
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            //需要重新提示用户授权
-            ToastUtil.showNegativeToast(getString(R.string.DOWNLOAD_NEED_PERMISSION));
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_DOWNLOAD);
-        }
+        BellRecordDetailActivityPermissionsDispatcher.downloadFileWithCheck(this);
     }
 
     @OnClick(R.id.act_bell_picture_opt_share)
@@ -170,9 +167,8 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     @OnClick(R.id.act_bell_picture_opt_collection)
     public void collection() {
         Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
-            //先设置 robotData
-            long result = -1;
             try {
+                //先设置 robotData
                 DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                 item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                 item.cid = mUUID;
@@ -184,7 +180,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, mCallRecord.timeInLong);
                 msg.packValue = item.toBytes();
                 req.add(msg);
-                result = JfgCmdInsurance.getCmd().robotSetData(mUUID, req);
+                long result = JfgCmdInsurance.getCmd().robotSetData(mUUID, req);
                 AppLogger.e(result + "");
                 subscriber.onNext((int) result);
                 subscriber.onCompleted();
@@ -194,21 +190,11 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io())
-                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class), (aLong, setDataRsp) -> {
-                    AppLogger.d("正在解析 robotSetData的返回结果");
-                    if (aLong == (int) setDataRsp.seq) {
-                        int code = setDataRsp.rets.get(0).ret;
-                        AppLogger.d("setRobotDataResponse" + code);
-                        if (code == 0) {//判断返回结果,不为零说明出现异常
-                            return true;
-                        } else {
-                            throw new RxEvent.ErrorRsp(code);
-                        }
-                    }
-                    return false;
-                })
-                .filter(s -> s)
-                .map(code -> {
+                .timeout(10, TimeUnit.SECONDS)
+                .flatMap(req -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).filter(rsp -> req == (int) rsp.seq).first())
+                .map(rsp -> {
+                    int code = rsp.rets.get(0).ret;
+                    if (code != 0) throw new RxEvent.ErrorRsp(code);
                     long result = -1;
                     try {
                         String remotePath = "/long/" +
@@ -218,7 +204,6 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                                 "/wonder/" +
                                 mCallRecord.timeInLong / 1000 +
                                 "_1.jpg";
-
                         FutureTarget<File> future = Glide.with(ContextUtils.getContext())
                                 .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID))
                                 .downloadOnly(100, 100);
@@ -229,15 +214,16 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     }
                     return result;
                 })
-                .zipWith(RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class), (aLong, jfgMsgHttpResult) -> {
-                    AppLogger.e(" 正在解析 http请求返回的结果:" + aLong + new Gson().toJson(jfgMsgHttpResult));
-                    return aLong == jfgMsgHttpResult.requestId && jfgMsgHttpResult.ret == 200;
-                })
-                .filter(s -> s)
+                .flatMap(req -> RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class).filter(rsp -> rsp.requestId == req).first())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(aBoolean -> {
-                    ToastUtil.showPositiveToast("收藏成功!");
-                    AppLogger.d("收藏成功!");
+                .subscribe(result -> {
+                    if (result.ret == 200) {//收藏成功
+                        ToastUtil.showPositiveToast("收藏成功!");
+                        AppLogger.d("收藏成功!");
+                    } else {
+                        ToastUtil.showPositiveToast("收藏失败!");
+                        AppLogger.d("收藏失败!");
+                    }
                 }, e -> {
                     if (e instanceof RxEvent.ErrorRsp) {
                         RxEvent.ErrorRsp rsp = (RxEvent.ErrorRsp) e;
@@ -245,25 +231,21 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                             case 1050://收藏达到上限
                                 ToastUtil.showNegativeToast("已达到收藏上限!");
                                 break;
+                            default:
+                                ToastUtil.showNegativeToast("收藏失败!");
                         }
                     }
-
                 });
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQ_DOWNLOAD) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                downloadFile();
-            } else {
-                Toast.makeText(this, getString(R.string.permission_download), Toast.LENGTH_SHORT).show();
-            }
-        }
+        BellRecordDetailActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    private void downloadFile() {
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void downloadFile() {
         mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCallRecord.timeInLong / 1000 + ".jpg");
 
         if (mDownloadFile.exists()) {
@@ -290,6 +272,16 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                         mDownloadFile = null;
                     }
                 });
+    }
+
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onDownloadPermissionDenied() {
+        ToastUtil.showNegativeToast("下载文件需要权限,请手动开启");
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onDownloadPermissionNerverAskAgain() {
+        ToastUtil.showNegativeToast("下载文件需要权限,请手动开启");
     }
 
     @Override

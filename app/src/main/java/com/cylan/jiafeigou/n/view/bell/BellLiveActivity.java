@@ -6,6 +6,7 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.ScaleGestureDetector;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.live.LivePlayControlView;
+import com.cylan.jiafeigou.widget.video.ViEAndroidGLES20_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.lang.ref.WeakReference;
@@ -69,6 +71,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     TextView mBellLiveBack;
 
     private ImageView mLandBellLiveSpeaker;
+    private ScaleGestureDetector mGestureDetector;
+    private float mScaleFactor = 1.0f;
     /**
      * 水平方向的view
      */
@@ -103,7 +107,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 handlePortClick();
             }
         });
-        newCall();
         //三秒后隐藏状态栏
         mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
         mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
@@ -171,6 +174,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onResume();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        newCall();
     }
 
     @Override
@@ -321,6 +330,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
+    public void onVideoDisconnect(int code) {
+        mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
+    }
+
+    @Override
     public void onConnectDeviceTimeOut() {
         ToastUtil.showNegativeToast("连接门铃超时");
         mPresenter.dismiss();
@@ -334,6 +348,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
 
     public void onViewer() {
+        mBellLiveVideoPicture.setVisibility(View.VISIBLE);
+        mBellLiveVideoPicture.setImageResource(R.drawable.default_diagram_mask);
+        mVideoPlayController.setState(ILiveControl.STATE_LOADING, null);
         dLayoutBellHotSeat.setVisibility(View.GONE);
         fLayoutBellAfterLive.setVisibility(View.VISIBLE);
 
@@ -366,6 +383,19 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mSurfaceView.setLayoutParams(params);
             mVideoViewContainer.removeAllViews();
             mVideoViewContainer.addView(mSurfaceView);
+            mGestureDetector = new ScaleGestureDetector(this, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                @Override
+                public boolean onScale(ScaleGestureDetector detector) {
+                    mScaleFactor *= detector.getScaleFactor();
+                    mScaleFactor = Math.max(1.0f, Math.min(mScaleFactor, 3.0f));
+                    AppLogger.e("当前缩放比例为:" + mScaleFactor);
+                    if (mSurfaceView instanceof ViEAndroidGLES20_Ext) {
+                        ((ViEAndroidGLES20_Ext) mSurfaceView).setScaleFactor(mScaleFactor);
+                    }
+
+                    return false;
+                }
+            });
         }
         AppLogger.i("initVideoView");
         mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
@@ -414,7 +444,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void clickImage(int state) {
         switch (state) {
             case ILiveControl.STATE_LOADING_FAILED:
-                mPresenter.pickup();
+                mPresenter.startViewer();
                 break;
         }
     }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/act_media_root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -9,7 +8,7 @@
     <com.cylan.jiafeigou.misc.HackyViewPager
         android:id="@+id/act_media_pager"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
 
     <FrameLayout
@@ -19,12 +18,11 @@
         android:background="#7F000000"
         android:clickable="true">
 
-        <RelativeLayout
-            style="@style/video_header_container">
+        <RelativeLayout style="@style/video_header_container">
 
             <ImageView
                 android:id="@+id/act_media_header_back"
-                style="@style/video_header_back"/>
+                style="@style/video_header_back" />
 
             <TextView
                 android:id="@+id/act_media_header_title"
@@ -33,7 +31,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
                 android:textColor="#FFFFFF"
-                android:textSize="@dimen/sp18"/>
+                android:textSize="@dimen/sp18" />
 
             <LinearLayout
                 android:id="@+id/act_media_header_opt_container"
@@ -41,15 +39,15 @@
 
                 <ImageView
                     android:id="@+id/act_media_header_opt_delete"
-                    style="@style/video_header_opt_delete"/>
+                    style="@style/video_header_opt_delete" />
 
                 <ImageView
                     android:id="@+id/act_media_header_opt_download"
-                    style="@style/video_header_opt_download"/>
+                    style="@style/video_header_opt_download" />
 
                 <ImageView
                     android:id="@+id/act_media_header_opt_share"
-                    style="@style/video_header_opt_share"/>
+                    style="@style/video_header_opt_share" />
             </LinearLayout>
         </RelativeLayout>
 
@@ -69,19 +67,19 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y60"
             android:layout_gravity="bottom"
-            android:visibility="gone">
+            android:visibility="visible">
 
             <ImageView
                 android:id="@+id/act_media_picture_opt_download"
-                style="@style/picture_opt_download"/>
+                style="@style/picture_opt_download" />
 
             <ImageView
                 android:id="@+id/act_media_picture_opt_share"
-                style="@style/picture_opt_share"/>
+                style="@style/picture_opt_share" />
 
             <ImageView
-                android:id="@+id/act_media_picture_opt_collection"
-                style="@style/picture_opt_collection"/>
+                android:id="@+id/act_media_picture_opt_delete"
+                style="@style/picture_opt_delete" />
         </FrameLayout>
 
         <FrameLayout
@@ -93,29 +91,29 @@
 
                 <ImageView
                     android:id="@+id/act_media_video_opt_play"
-                    style="@style/video_opt_play"/>
+                    style="@style/video_opt_play" />
 
                 <TextView
                     android:id="@+id/act_media_video_opt_play_time"
                     style="@style/video_opt_play_time"
-                    android:text="00:00"/>
+                    android:text="00:00" />
 
                 <SeekBar
                     android:id="@+id/act_media_video_opt_seek_bar"
-                    style="@style/video_opt_seek_bar"/>
+                    style="@style/video_opt_seek_bar" />
 
                 <TextView
                     android:id="@+id/act_media_video_opt_total_time"
                     style="@style/video_opt_total_time"
-                    android:text="00:00"/>
+                    android:text="00:00" />
 
                 <ImageView
                     android:id="@+id/act_media_video_opt_full_screen"
-                    style="@style/video_opt_full_screen"/>
+                    style="@style/video_opt_full_screen" />
 
                 <ImageView
                     android:id="@+id/act_media_video_opt_more"
-                    style="@style/video_opt_more"/>
+                    style="@style/video_opt_more" />
             </LinearLayout>
         </FrameLayout>
     </FrameLayout>

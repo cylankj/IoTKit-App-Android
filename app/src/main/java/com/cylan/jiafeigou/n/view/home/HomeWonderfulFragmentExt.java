@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.app.SharedElementCallback;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
@@ -26,7 +27,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -42,6 +42,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -112,7 +113,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private LinearLayoutManager mLinearLayoutManager;
     private ShadowFrameLayout mParent;
     private boolean isScrollShow = false;
-    private boolean mShouldLoadMore = true;
     private boolean mCanRefresh = true;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
@@ -249,7 +249,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 int visibleItemCount = mLinearLayoutManager.getChildCount();
                 int totalItemCount = mLinearLayoutManager.getItemCount();
                 if (dy > 0) { //check for scroll down
-                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount && !mShouldLoadMore) {
+                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount && homeWonderAdapter.getItem(totalItemCount - 1).msgType != DPWonderItem.TYPE_LOAD) {
+
                         if (!getWheelView().isShown()) {
                             isScrollShow = true;
                             showWheelView();
@@ -279,24 +280,28 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @UiThread
     @Override
-    public void onMediaListRsp(List<DPWonderItem> resultList) {
-        srLayoutMainContentHolder.removeCallbacks(mDelayAction);
+    public void onQueryTimeLineSuccess(List<DPWonderItem> resultList, boolean isRefresh) {
         srLayoutMainContentHolder.setRefreshing(false);
         if (resultList == null || resultList.size() == 0) {
-            mShouldLoadMore = false;
+            ToastUtil.showNegativeToast("暂无数据!");
             return;
         }
-        DPWonderItem last = homeWonderAdapter.getItem(homeWonderAdapter.getCount() - 1);
-        if (last != null && last.msgType == 2) homeWonderAdapter.remove(last);
-        homeWonderAdapter.addAll(resultList);
-        DPWonderItem wonderItem = resultList.get(0);
-        tvDateItemHeadWonder.setText(TimeUtils.getDayString(wonderItem.time * 1000L));
-
-        if (resultList.size() == 20) {
-            mShouldLoadMore = true;
-            homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
+        if (isRefresh) {
+            homeWonderAdapter.addAll(0, resultList);
+            rVDevicesList.scrollToPosition(0);
         } else {
-            mShouldLoadMore = false;
+            int lastPosition = homeWonderAdapter.getCount() - 1;
+            DPWonderItem last = homeWonderAdapter.getItem(lastPosition);
+            if (last.msgType == 2) {
+                homeWonderAdapter.remove(last);
+            }
+            homeWonderAdapter.addAll(resultList);
+            DPWonderItem wonderItem = resultList.get(0);
+            tvDateItemHeadWonder.setText(TimeUtils.getDayString(wonderItem.time * 1000L));
+            if (resultList.size() == 20) {
+                homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
+            }
+            homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
         }
         srLayoutMainContentHolder.setNestedScrollingEnabled(true);
     }
@@ -314,6 +319,23 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onTimeLineInit(List<WonderIndicatorWheelView.WheelItem> list) {
         getWheelView().init(list);
+    }
+
+    @Override
+    public void onDeleteWonderSuccess(int position) {
+        homeWonderAdapter.remove(position);
+    }
+
+    @Override
+    public void onQueryTimeLineTimeOut() {
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.REQUEST_TIME_OUT));
+        srLayoutMainContentHolder.setRefreshing(false);
+    }
+
+    @Override
+    public void onChangeTimeLineDaySuccess(List<DPWonderItem> items) {
+        homeWonderAdapter.clear();
+        onQueryTimeLineSuccess(items, true);
     }
 
     @SuppressWarnings("deprecation")
@@ -349,8 +371,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @OnClick(R.id.item_wonderful_to_start)
     public void openWonderful() {
-        int loginState = GlobalDataProxy.getInstance().getLoginState();
-        if (loginState == LogState.STATE_ACCOUNT_ON) {//在线表示已登录
+        if (GlobalDataProxy.getInstance().isOnline()) {//在线表示已登录
             Intent intent = new Intent(getActivityContext(), DelayRecordActivity.class);
             intent.putExtra(JConstant.VIEW_CALL_WAY, VIEW_LAUNCH_WAY_WONDERFUL);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
@@ -390,6 +411,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         switch (type) {
             case VIEW_TYPE_HIDE: {//hide
                 mWonderfulEmptyViewContainer.setVisibility(View.GONE);
+                mWonderfulGuideContainer.setVisibility(View.GONE);
+                mWonderfulEmptyContainer.setVisibility(View.GONE);
                 mCanRefresh = true;
             }
             break;
@@ -398,6 +421,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
                 mWonderfulGuideContainer.setVisibility(View.GONE);
                 mWonderfulEmptyContainer.setVisibility(View.VISIBLE);
+
             }
             break;
             case VIEW_TYPE_GUIDE: {//guide
@@ -408,6 +432,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             }
             break;
         }
+        srLayoutMainContentHolder.setRefreshing(false);
     }
 
     @Override
@@ -415,22 +440,10 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         if (mCanRefresh) {
             mPresenter.startRefresh();
             srLayoutMainContentHolder.setRefreshing(true);
-            srLayoutMainContentHolder.removeCallbacks(mDelayAction);
-            srLayoutMainContentHolder.postDelayed(mDelayAction, 10000);
         } else {
             srLayoutMainContentHolder.setRefreshing(false);
         }
     }
-
-    private Runnable mDelayAction = new Runnable() {
-        @Override
-        public void run() {
-            if (srLayoutMainContentHolder.isRefreshing()) {
-                ToastUtil.showNegativeToast(getString(R.string.REQUEST_TIME_OUT));
-                srLayoutMainContentHolder.setRefreshing(false);
-            }
-        }
-    };
 
     private void onEnterWonderfulContent(ArrayList<? extends Parcelable> list, int position, View v) {
         final Intent intent = new Intent(getActivity(), MediaActivity.class);
@@ -548,14 +561,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         }
         final int position = (int) value;
         if (position >= 0 && position < homeWonderAdapter.getCount()) {
-
-            long time = homeWonderAdapter.getItem(position).version;
-            mPresenter.deleteTimeline(time);
-            homeWonderAdapter.remove((Integer) value);
+            mPresenter.deleteTimeline(position);
         } else if (position == -1) {
             mPresenter.removeGuideAnymore();
         }
     }
+
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -569,7 +580,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         int i = ColorUtils.blendARGB(Color.WHITE, Color.parseColor("#788291"), ratio);
         tvDateItemHeadWonder.setTextColor(i);
         tvDateItemHeadWonder.setTitleHeadIsTop(ratio < 0.1);
-//        tvDateItemHeadWonder.setBackgroundToRight();
+        tvDateItemHeadWonder.setBackgroundToRight();
     }
 
 
@@ -591,30 +602,47 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             } else {
                 newSharedElement = mWonderfulGuideContainer.findViewById(R.id.iv_wonderful_item_content);
             }
+            if (newSharedElement == null) return;
             ShadowFrameLayout parent = (ShadowFrameLayout) newSharedElement.getParent();
             if (mParent != parent) {
                 mParent.adjustSize(false);
-                parent.adjustSize(true);
+                int position = ViewUtils.getParentAdapterPosition(rVDevicesList, newSharedElement, R.id.lLayout_item_wonderful);
+                homeWonderAdapter.notifyItemChanged(position);
             }
             AppLogger.d("transition newTransitionName: " + newTransitionName);
             AppLogger.d("transition newSharedElement: " + newSharedElement);
-            if (newSharedElement != null) {
-                names.clear();
-                names.add(newTransitionName);
-                sharedElements.clear();
-                sharedElements.put(newTransitionName, newSharedElement);
-            }
+            names.clear();
+            names.add(newTransitionName);
+            sharedElements.clear();
+            sharedElements.put(newTransitionName, newSharedElement);
             mTmpReenterState = null;
         }
     }
 
     @Override
     public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+        if (sharedElementNames.size() == 0) {
+            if (homeWonderAdapter.getCount() == 0) {
+                mPresenter.startRefresh();
+            }
+            return;
+        }
         View view = sharedElements.get(0);
         if (view != null) {
             final ShadowFrameLayout parent = (ShadowFrameLayout) view.getParent();
-            parent.post(() -> parent.adjustSize(false));
+            parent.post(() -> {
+                parent.adjustSize(false);
+                int position = ViewUtils.getParentAdapterPosition(rVDevicesList, view, R.id.lLayout_item_wonderful);
+                if (position >= 0 && position < homeWonderAdapter.getCount()) {
+                    homeWonderAdapter.notifyItemChanged(position);
+                }
+            });
         }
+    }
+
+    @Override
+    public void onSharedElementArrived(List<String> sharedElementNames, List<View> sharedElements, SharedElementCallback.OnSharedElementsReadyListener listener) {
+
     }
 
     @Override

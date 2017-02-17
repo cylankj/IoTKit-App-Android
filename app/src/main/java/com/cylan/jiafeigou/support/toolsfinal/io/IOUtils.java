@@ -1505,7 +1505,7 @@ public class IOUtils {
     //-----------------------------------------------------------------------
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * an <code>OutputStream</code> line by line, using the default character
      * encoding of the platform and the specified line ending.
      *
@@ -1522,7 +1522,7 @@ public class IOUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * an <code>OutputStream</code> line by line, using the specified character
      * encoding and the specified line ending.
      *
@@ -1552,7 +1552,7 @@ public class IOUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * an <code>OutputStream</code> line by line, using the specified character
      * encoding and the specified line ending.
      * <p/>
@@ -1575,7 +1575,7 @@ public class IOUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * a <code>Writer</code> line by line, using the specified line ending.
      *
      * @param lines      the lines to write, null entries produce blank lines

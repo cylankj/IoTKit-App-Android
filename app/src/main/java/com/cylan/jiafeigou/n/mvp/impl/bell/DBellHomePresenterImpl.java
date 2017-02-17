@@ -69,6 +69,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             msg = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, bean.version);
             params.add(msg);
         }
-        robotDelData(mUUID, params, 0);
+        robotDelDataAsync(mUUID, params, 0);
     }
 }
