@@ -34,6 +34,7 @@
                 android:hint="@string/PHONE_NUMBER_2"
                 android:inputType="phone"
                 android:maxLength="11"
+                android:maxLines="1"
                 android:paddingLeft="@dimen/x40"
                 android:paddingRight="@dimen/x40"
                 android:textColor="@color/color_666666"
@@ -84,6 +85,7 @@
                 android:hint="@string/ENTER_CODE"
                 android:inputType="numberDecimal"
                 android:maxLength="6"
+                android:maxLines="1"
                 android:paddingLeft="@dimen/x40"
                 android:paddingRight="@dimen/x40"
                 android:textColor="@color/color_666666"
@@ -145,8 +147,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:autoLink="web"
-                android:textColor="@color/color_4b9fd5"
-                android:text="@string/TERM_OF_USE" />
+                android:text="@string/TERM_OF_USE"
+                android:textColor="@color/color_4b9fd5" />
         </LinearLayout>
 
 

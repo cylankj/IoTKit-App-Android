@@ -126,6 +126,8 @@ public class SmartcallActivity extends NeedLoginActivity
                 //只有 beforeLoginFragment页面
                 System.exit(0);
                 finish();
+            } else {
+                getSupportFragmentManager().popBackStack();
             }
         }
     }
