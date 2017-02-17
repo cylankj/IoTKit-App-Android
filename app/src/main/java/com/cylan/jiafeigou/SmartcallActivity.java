@@ -120,7 +120,10 @@ public class SmartcallActivity extends NeedLoginActivity
         View view = findViewById(android.R.id.content);
         if (view != null) {
             View beforeLoginLayout = ((ViewGroup) view).getChildAt(0);
-            if (beforeLoginLayout != null && beforeLoginLayout.getId() == R.id.rLayout_before_login) {                //只有 beforeLoginFragment页面
+            if (beforeLoginLayout != null
+                    && beforeLoginLayout.getId() == R.id.rLayout_before_login
+                    && ((ViewGroup) view).getChildCount() == 1) {
+                //只有 beforeLoginFragment页面
                 System.exit(0);
                 finish();
             }
