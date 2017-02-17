@@ -43,8 +43,10 @@ public class CustomToolbar extends LinearLayout {
         int bgColor = at.getColor(R.styleable.CustomToolbarStyle_ct_background_color, Color.TRANSPARENT);
         int titleColor = at.getColor(R.styleable.CustomToolbarStyle_ct_title_color, Color.TRANSPARENT);
         int leftTitleColor = at.getColor(R.styleable.CustomToolbarStyle_ct_left_title_color, Color.TRANSPARENT);
+        int rightTitleColor = at.getColor(R.styleable.CustomToolbarStyle_ct_right_title_color, Color.TRANSPARENT);
         String title = at.getString(R.styleable.CustomToolbarStyle_ct_title);
         String leftTitle = at.getString(R.styleable.CustomToolbarStyle_ct_left_title);
+        String rightTitle = at.getString(R.styleable.CustomToolbarStyle_ct_right_title);
         int iconResIdLeft = at.getResourceId(R.styleable.CustomToolbarStyle_ct_icon, -1);
         int iconResIdRight = at.getResourceId(R.styleable.CustomToolbarStyle_ct_icon_right, -1);
         boolean showShadow = at.getBoolean(R.styleable.CustomToolbarStyle_ct_enable_shadow, false);
@@ -52,22 +54,30 @@ public class CustomToolbar extends LinearLayout {
         at.recycle();
         View view = LayoutInflater.from(context).inflate(R.layout.layout_custom_tool_bar, this, true);
         viewGroup = (ViewGroup) findViewById(R.id.fLayout_toolbar_content);
-        viewGroup.setBackgroundColor(bgColor);
+        if (bgColor != 0)
+            viewGroup.setBackgroundColor(bgColor);
         tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
         tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
         tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
+        if (rightTitleColor != 0) tvToolbarTitle.setTextColor(rightTitleColor);
         tvToolbarTitle.setVisibility(VISIBLE);
         tvToolbarTitle.setText(title);
-        tvToolbarTitle.setTextColor(titleColor);
+        if (titleColor != 0)
+            tvToolbarTitle.setTextColor(titleColor);
         if (iconResIdLeft != -1) {
             ViewUtils.setDrawablePadding(tvToolbarIcon, iconResIdLeft, 0);
+        }
+        if (!TextUtils.isEmpty(rightTitle)) {
+            tvToolbarRight.setVisibility(VISIBLE);
+            tvToolbarRight.setText(rightTitle);
         }
         if (iconResIdRight != -1) {
             tvToolbarRight.setVisibility(VISIBLE);
             ViewUtils.setDrawablePadding(tvToolbarRight, iconResIdRight, 0);
         }
         tvToolbarIcon.setText(leftTitle);
-        tvToolbarIcon.setTextColor(leftTitleColor);
+        if (leftTitleColor != 0)
+            tvToolbarIcon.setTextColor(leftTitleColor);
         if (showShadow) {
             findViewById(R.id.v_shadow).setVisibility(VISIBLE);
         }
@@ -110,4 +120,15 @@ public class CustomToolbar extends LinearLayout {
         tvToolbarRight.setText(resId);
     }
 
+    public CharSequence getTitle() {
+        return tvToolbarTitle.getText();
+    }
+
+    public CharSequence getSubTitle() {
+        return tvToolbarRight.getText();
+    }
+
+    public TextView getTvToolbarRight() {
+        return tvToolbarRight;
+    }
 }

@@ -111,8 +111,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @BindView(R.id.lb_login_commit)
     LoginButton lbLogin;
-    @BindView(R.id.tv_toolbar_right)
-    TextView tvLoginTopRight;
     @BindView(R.id.rLayout_pwd_input_box)
     FrameLayout rLayoutPwdInputBox;
     @BindView(R.id.view_third_party_center)
@@ -231,19 +229,19 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         /**
          * 第三方使用亲友功能跳转到绑定手机这
          */
-        if (bundle != null && bundle.containsKey(RxEvent.NeedLoginEvent.KEY) && bundle.getBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE)) {
-            switchBoxBindPhone();
-            return;
-        }
         if (bundle != null && bundle.containsKey(RxEvent.NeedLoginEvent.KEY)) {
-            switchBox();
+            if (bundle.getBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE))
+                switchBoxBindPhone();
+            else {
+                switchBox();
+            }
         }
     }
 
     private void switchBoxBindPhone() {
         //register
         rLayoutLoginToolbar.setToolbarTitle(R.string.Tap0_BindPhoneNo);
-        tvLoginTopRight.setVisibility(View.GONE);
+        rLayoutLoginToolbar.getTvToolbarRight().setVisibility(View.GONE);
         tvRegisterWayContent.setVisibility(View.GONE);
         tvAgreement.setVisibility(View.GONE);
         before_tvAgreement.setVisibility(View.GONE);
@@ -448,17 +446,17 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 页面切换
      */
     private void switchBox() {
-        final String content = tvLoginTopRight.getText().toString();
-        if (TextUtils.equals(content, getString(R.string.Tap0_register))) {
+        final String content = rLayoutLoginToolbar.getTitle().toString();
+        if (TextUtils.equals(content, getString(R.string.LOGIN))) {
             //register
             rLayoutLoginToolbar.setToolbarTitle(R.string.Tap0_register);
-            tvLoginTopRight.setText(getString(R.string.LOGIN));
+            rLayoutLoginToolbar.setToolbarRightTitle(R.string.LOGIN);
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_left);
             vsLayoutSwitcher.showNext();
-        } else if (TextUtils.equals(content, getString(R.string.LOGIN))) {
+        } else if (TextUtils.equals(content, getString(R.string.Tap0_register))) {
             rLayoutLoginToolbar.setToolbarTitle(R.string.LOGIN);
-            tvLoginTopRight.setText(getString(R.string.Tap0_register));
+            rLayoutLoginToolbar.setToolbarRightTitle(R.string.Tap0_register);
             //延时200ms,
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_right);
@@ -504,7 +502,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * @param enable
      */
     private void enableOtherBtn(boolean enable) {
-        tvLoginTopRight.setEnabled(enable);
+        rLayoutLoginToolbar.setEnabled(enable);
         cbShowPwd.setEnabled(enable);
     }
 
