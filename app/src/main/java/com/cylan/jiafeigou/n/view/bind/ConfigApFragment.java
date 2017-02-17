@@ -188,14 +188,14 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
                 String pwd = ViewUtils.getTextViewContent(etWifiPwd);
                 int type = 0;
                 if (TextUtils.isEmpty(ssid)) {
-                    ToastUtil.showNegativeToast("请选择wifi");
+                    ToastUtil.showNegativeToast("没有文案:请选择wifi");
                     return;
                 }
                 Object o = tvConfigApName.getTag();
                 if (o != null && o instanceof BeanWifiList) {
                     type = BindUtils.getSecurity(((BeanWifiList) o).result);
                 }
-                if (TextUtils.isEmpty(pwd)) {
+                if (TextUtils.isEmpty(pwd) || pwd.length() < 8) {
                     ToastUtil.showNegativeToast(getString(R.string.ENTER_PWD_1));
                     return;
                 }

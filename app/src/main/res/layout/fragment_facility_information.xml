@@ -74,7 +74,7 @@
                 android:layout_height="@dimen/y72"
                 android:layout_marginStart="@dimen/x6"
                 hunt:sv_title="@string/SETTING_SD"
-                hunt:sv_v_divider="false" />
+                hunt:sv_v_divider="true" />
 
             <!--固件升级-->
             <com.cylan.jiafeigou.widget.SettingItemView0

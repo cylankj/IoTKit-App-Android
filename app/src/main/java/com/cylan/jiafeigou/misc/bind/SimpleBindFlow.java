@@ -130,6 +130,7 @@ public class SimpleBindFlow extends AFullBind {
                     }
                     AppLogger.i(BIND_TAG + integer);
                 });
+        AppLogger.i("sendPingFPing");
     }
 
     /**

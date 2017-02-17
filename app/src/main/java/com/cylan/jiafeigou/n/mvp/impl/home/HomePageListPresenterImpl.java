@@ -3,11 +3,13 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -117,21 +119,23 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.LoginRsp o) -> {
-                    if (getView() != null)
-                        getView().onLoginState(GlobalDataProxy.getInstance().isOnline()
-                                && GlobalDataProxy.getInstance().getJfgAccount() != null);
-                    if (GlobalDataProxy.getInstance().getJfgAccount() != null)
+                    JFGAccount account = GlobalDataProxy.getInstance().getJfgAccount();
+                    if (account != null && !TextUtils.isEmpty(account.getAccount()))
                         getView().onAccountUpdate(GlobalDataProxy.getInstance().getJfgAccount());
                 });
     }
 
     private Subscription JFGAccountUpdate() {
         return RxBus.getCacheInstance().toObservableSticky(JFGAccount.class)
-                .filter(new RxHelper.Filter<>(TAG + "JFGAccountUpdate", (getView() != null && GlobalDataProxy.getInstance().isOnline()
-                        && GlobalDataProxy.getInstance().getJfgAccount() != null)))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((JFGAccount jfgAccount) -> {
                     getView().onAccountUpdate(jfgAccount);
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(o -> {
+                    Log.d("CYLAN_TAG", "JFGAccount rsp:");
+                    subUuidList();
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("JFGAccount"))
@@ -174,9 +178,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void fetchDeviceList(boolean manually) {
-        if (!DataSourceManager.getInstance().isOnline()) {
+        int state = GlobalDataProxy.getInstance().getLoginState();
+        if (state != LogState.STATE_ACCOUNT_ON) {
             getView().onLoginState(false);
-            getView().onRefreshFinish();
         }
         Observable.just(manually)
                 .subscribeOn(Schedulers.newThread())
@@ -196,11 +200,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return null;
                 })
-                .delay(2000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object aBoolean) -> {
                     subUuidList();
-                    if (getView() != null) getView().onRefreshFinish();
+                }, throwable -> {
+                    AppLogger.e("err: " + throwable.getLocalizedMessage());
                 });
     }
 

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -44,7 +45,8 @@ public class CustomToolbar extends LinearLayout {
         int leftTitleColor = at.getColor(R.styleable.CustomToolbarStyle_ct_left_title_color, Color.TRANSPARENT);
         String title = at.getString(R.styleable.CustomToolbarStyle_ct_title);
         String leftTitle = at.getString(R.styleable.CustomToolbarStyle_ct_left_title);
-        int iconResId = at.getResourceId(R.styleable.CustomToolbarStyle_ct_icon, -1);
+        int iconResIdLeft = at.getResourceId(R.styleable.CustomToolbarStyle_ct_icon, -1);
+        int iconResIdRight = at.getResourceId(R.styleable.CustomToolbarStyle_ct_icon_right, -1);
         boolean showShadow = at.getBoolean(R.styleable.CustomToolbarStyle_ct_enable_shadow, false);
         fitSystemWindow = at.getBoolean(R.styleable.CustomToolbarStyle_ct_fit_system_window, true);
         at.recycle();
@@ -54,10 +56,15 @@ public class CustomToolbar extends LinearLayout {
         tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
         tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
         tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
+        tvToolbarTitle.setVisibility(VISIBLE);
         tvToolbarTitle.setText(title);
         tvToolbarTitle.setTextColor(titleColor);
-        if (iconResId != -1) {
-            ViewUtils.setDrawablePadding(tvToolbarIcon, iconResId, 0);
+        if (iconResIdLeft != -1) {
+            ViewUtils.setDrawablePadding(tvToolbarIcon, iconResIdLeft, 0);
+        }
+        if (iconResIdRight != -1) {
+            tvToolbarRight.setVisibility(VISIBLE);
+            ViewUtils.setDrawablePadding(tvToolbarRight, iconResIdRight, 0);
         }
         tvToolbarIcon.setText(leftTitle);
         tvToolbarIcon.setTextColor(leftTitleColor);

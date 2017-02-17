@@ -112,6 +112,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     private void submitWifiInfo2Device(SubmitWifiInfo wifiInfo, String tag) {
         final String ssidInDigits = getCurrentBindCidInShort();
         if (!TextUtils.isDigitsOnly(ssidInDigits)) {
+            AppLogger.d("ssid is invalid: " + ssidInDigits);
         }
         if (aFullBind != null)
             aFullBind.sendWifiInfo(wifiInfo.ssid, wifiInfo.pwd, wifiInfo.type);
@@ -137,6 +138,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         if (aFullBind != null) {
             //纯数字
             final String ssidInDigits = getCurrentBindCidInShort();
+            AppLogger.d("ssid digits: " + ssidInDigits);
             if (TextUtils.isEmpty(ssidInDigits)) {
                 getView().lossDogConnection();
                 return false;

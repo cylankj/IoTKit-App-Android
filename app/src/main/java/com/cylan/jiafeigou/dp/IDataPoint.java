@@ -18,7 +18,7 @@ public interface IDataPoint {
      *
      * @param jfgDevice
      */
-    void cacheDevice(String uuid, JFGDevice jfgDevice);
+    void cacheDevice(JFGDevice... jfgDevice);
 
     /**
      * 删除对应的JFGDevice
@@ -37,14 +37,20 @@ public interface IDataPoint {
     JFGDevice fetch(String uuid);
 
     /**
+     * @param uuid uuid+id
+     * @param pair
+     */
+    void cacheUnread(String uuid, Pair<Integer, BaseValue> pair);
+
+    /**
      * 更新
      *
      * @param device
      * @return
      */
-    boolean updateJFGDevice(String account, JFGDevice device);
+    boolean updateJFGDevice(JFGDevice device);
 
-    ArrayList<JFGDevice> fetchAll(String account);
+    ArrayList<JFGDevice> fetchAll();
 
     boolean insert(String uuid, BaseValue baseValue);
 
@@ -64,7 +70,7 @@ public interface IDataPoint {
      */
     boolean deleteAll(String uuid);
 
-    boolean deleteJFGDevice(String account, String uuid);
+    boolean deleteJFGDevice(String uuid);
 
     Object delete(String uuid, long id);
 
@@ -86,6 +92,8 @@ public interface IDataPoint {
      * @return
      */
     BaseValue fetchLocal(String uuid, long id);
+
+    BaseValue fetchLocal(String uuid, long id, boolean topOne);
 
     boolean deleteAll(String uuid, long id, ArrayList<Long> versions);
 
@@ -125,5 +133,5 @@ public interface IDataPoint {
      */
     long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException;
 
-    void clearAll();
+    void clear();
 }

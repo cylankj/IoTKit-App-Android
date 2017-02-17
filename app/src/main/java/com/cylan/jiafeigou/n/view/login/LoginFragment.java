@@ -480,20 +480,20 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @OnClick(R.id.lb_login_commit)
     public void login(View view) {
-        IMEUtils.hide(getActivity());
-        lbLogin.viewZoomSmall();
-        AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
-        AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
+        if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
+            ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+            return;
+        }
         LoginAccountBean login = new LoginAccountBean();
         login.userName = ViewUtils.getTextViewContent(etLoginUsername);
         login.pwd = ViewUtils.getTextViewContent(etLoginPwd);
-        if (presenter != null) {
-            if (NetUtils.getNetType(ContextUtils.getContext()) != -1) {
-                presenter.executeLogin(login);
-                presenter.loginCountTime();
-            } else {
-            }
+        if (presenter != null && NetUtils.getNetType(ContextUtils.getContext()) != -1) {
+            presenter.executeLogin(login);
         }
+        IMEUtils.hide(getActivity());
+        AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
+        AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
+        lbLogin.viewZoomSmall();
         enableEditTextCursor(false);
         enableOtherBtn(false);
     }
@@ -579,7 +579,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             } else if (code == 162) {
                 ToastUtil.showNegativeToast("登录失败：accend_token_error");
             } else if (code == JError.ErrorConnect) {
-                ToastUtil.showNegativeToast("登录超时");
+                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             }
         }
     }
@@ -977,13 +977,13 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         }
 
         TwitterAuthClient twitterBack = presenter.getTwitterBack();
-        if (twitterBack != null){
-            twitterBack.onActivityResult(requestCode,resultCode,data);
+        if (twitterBack != null) {
+            twitterBack.onActivityResult(requestCode, resultCode, data);
         }
 
         CallbackManager faceBookBackObj = presenter.getFaceBookBackObj();
-        if (faceBookBackObj != null){
-            faceBookBackObj.onActivityResult(requestCode,resultCode,data);
+        if (faceBookBackObj != null) {
+            faceBookBackObj.onActivityResult(requestCode, resultCode, data);
         }
 
         super.onActivityResult(requestCode, resultCode, data);
