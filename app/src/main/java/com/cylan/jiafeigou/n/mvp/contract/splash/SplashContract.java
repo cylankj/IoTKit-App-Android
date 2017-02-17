@@ -28,13 +28,9 @@ public interface SplashContract {
 
         void finishAppDelay();
 
-        void resumeLogin();
-
         void autoLogin(LoginAccountBean login);
 
         String getTempAccPwd();
-
-        Subscription resultLoginSub();
 
 
     }

@@ -26,6 +26,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -348,7 +349,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @OnClick(R.id.item_wonderful_to_start)
     public void openWonderful() {
-        if (GlobalDataProxy.getInstance().isOnline()) {//在线表示已登录
+        int loginState = GlobalDataProxy.getInstance().getLoginState();
+        if (loginState == LogState.STATE_ACCOUNT_ON) {//在线表示已登录
             Intent intent = new Intent(getActivityContext(), DelayRecordActivity.class);
             intent.putExtra(JConstant.VIEW_CALL_WAY, VIEW_LAUNCH_WAY_WONDERFUL);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
@@ -388,18 +390,18 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         switch (type) {
             case VIEW_TYPE_HIDE: {//hide
                 mWonderfulEmptyViewContainer.setVisibility(View.GONE);
-                mCanRefresh=true;
+                mCanRefresh = true;
             }
             break;
             case VIEW_TYPE_EMPTY: {//empty
-                mCanRefresh=true;
+                mCanRefresh = true;
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
                 mWonderfulGuideContainer.setVisibility(View.GONE);
                 mWonderfulEmptyContainer.setVisibility(View.VISIBLE);
             }
             break;
             case VIEW_TYPE_GUIDE: {//guide
-                mCanRefresh=false;
+                mCanRefresh = false;
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
                 mWonderfulEmptyContainer.setVisibility(View.GONE);
                 mWonderfulGuideContainer.setVisibility(View.VISIBLE);

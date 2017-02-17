@@ -111,8 +111,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @BindView(R.id.lb_login_commit)
     LoginButton lbLogin;
-    @BindView(R.id.tv_toolbar_right)
-    TextView tvLoginTopRight;
     @BindView(R.id.rLayout_pwd_input_box)
     FrameLayout rLayoutPwdInputBox;
     @BindView(R.id.view_third_party_center)
@@ -176,7 +174,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewMarginStatusBar(rLayoutLoginToolbar);
         addOnTouchListener(view);
         showLayout();
         if (BuildConfig.DEBUG) {
@@ -232,19 +229,19 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         /**
          * 第三方使用亲友功能跳转到绑定手机这
          */
-        if (bundle != null && bundle.containsKey(RxEvent.NeedLoginEvent.KEY) && bundle.getBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE)) {
-            switchBoxBindPhone();
-            return;
-        }
         if (bundle != null && bundle.containsKey(RxEvent.NeedLoginEvent.KEY)) {
-            switchBox();
+            if (bundle.getBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE))
+                switchBoxBindPhone();
+            else {
+                switchBox();
+            }
         }
     }
 
     private void switchBoxBindPhone() {
         //register
         rLayoutLoginToolbar.setToolbarTitle(R.string.Tap0_BindPhoneNo);
-        tvLoginTopRight.setVisibility(View.GONE);
+        rLayoutLoginToolbar.getTvToolbarRight().setVisibility(View.GONE);
         tvRegisterWayContent.setVisibility(View.GONE);
         tvAgreement.setVisibility(View.GONE);
         before_tvAgreement.setVisibility(View.GONE);
@@ -449,17 +446,17 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 页面切换
      */
     private void switchBox() {
-        final String content = tvLoginTopRight.getText().toString();
-        if (TextUtils.equals(content, getString(R.string.Tap0_register))) {
+        final String content = rLayoutLoginToolbar.getTitle().toString();
+        if (TextUtils.equals(content, getString(R.string.LOGIN))) {
             //register
             rLayoutLoginToolbar.setToolbarTitle(R.string.Tap0_register);
-            tvLoginTopRight.setText(getString(R.string.LOGIN));
+            rLayoutLoginToolbar.setToolbarRightTitle(R.string.LOGIN);
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_left);
             vsLayoutSwitcher.showNext();
-        } else if (TextUtils.equals(content, getString(R.string.LOGIN))) {
+        } else if (TextUtils.equals(content, getString(R.string.Tap0_register))) {
             rLayoutLoginToolbar.setToolbarTitle(R.string.LOGIN);
-            tvLoginTopRight.setText(getString(R.string.Tap0_register));
+            rLayoutLoginToolbar.setToolbarRightTitle(R.string.Tap0_register);
             //延时200ms,
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_right);
@@ -481,20 +478,20 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @OnClick(R.id.lb_login_commit)
     public void login(View view) {
-        IMEUtils.hide(getActivity());
-        lbLogin.viewZoomSmall();
-        AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
-        AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
+        if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
+            ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+            return;
+        }
         LoginAccountBean login = new LoginAccountBean();
         login.userName = ViewUtils.getTextViewContent(etLoginUsername);
         login.pwd = ViewUtils.getTextViewContent(etLoginPwd);
-        if (presenter != null) {
-            if (NetUtils.getNetType(ContextUtils.getContext()) != -1) {
-                presenter.executeLogin(login);
-                presenter.loginCountTime();
-            } else {
-            }
+        if (presenter != null && NetUtils.getNetType(ContextUtils.getContext()) != -1) {
+            presenter.executeLogin(login);
         }
+        IMEUtils.hide(getActivity());
+        AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
+        AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
+        lbLogin.viewZoomSmall();
         enableEditTextCursor(false);
         enableOtherBtn(false);
     }
@@ -505,7 +502,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * @param enable
      */
     private void enableOtherBtn(boolean enable) {
-        tvLoginTopRight.setEnabled(enable);
+        rLayoutLoginToolbar.setEnabled(enable);
         cbShowPwd.setEnabled(enable);
     }
 
@@ -580,7 +577,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             } else if (code == 162) {
                 ToastUtil.showNegativeToast("登录失败：accend_token_error");
             } else if (code == JError.ErrorConnect) {
-                ToastUtil.showNegativeToast("登录超时");
+                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             }
         }
     }
@@ -978,13 +975,13 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         }
 
         TwitterAuthClient twitterBack = presenter.getTwitterBack();
-        if (twitterBack != null){
-            twitterBack.onActivityResult(requestCode,resultCode,data);
+        if (twitterBack != null) {
+            twitterBack.onActivityResult(requestCode, resultCode, data);
         }
 
         CallbackManager faceBookBackObj = presenter.getFaceBookBackObj();
-        if (faceBookBackObj != null){
-            faceBookBackObj.onActivityResult(requestCode,resultCode,data);
+        if (faceBookBackObj != null) {
+            faceBookBackObj.onActivityResult(requestCode, resultCode, data);
         }
 
         super.onActivityResult(requestCode, resultCode, data);

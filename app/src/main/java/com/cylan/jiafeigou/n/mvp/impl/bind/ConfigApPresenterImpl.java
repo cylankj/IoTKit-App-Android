@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.misc.bind.AFullBind;
 import com.cylan.jiafeigou.misc.bind.IBindResult;
 import com.cylan.jiafeigou.misc.bind.SimpleBindFlow;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -80,22 +81,21 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         //2.发送fping,等待fping_ack
         //3.发送setServer,setLanguage
         //4.发送sendWifi
-        AppLogger.i("sendWifiInfo:start:");
-        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
-        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        if (wifiInfo == null || !JFGRules.isCylanDevice(wifiInfo.getSSID())) {
-            //something happened
-            AppLogger.i("ConfigApPresenterImpl 连接错误");
+        String shortCid = getCurrentBindCidInShort();
+        if (TextUtils.isEmpty(shortCid)) {
             getView().lossDogConnection();
             return;
         }
-        final String ssidInDigits = BindUtils.getDigitsString(wifiInfo.getSSID());
-        if (!TextUtils.isDigitsOnly(ssidInDigits)) {
-
-        }
-        if (aFullBind != null)
-            aFullBind.sendWifiInfo(ssid, pwd, type);
-        AppLogger.i("sendWifiInfo: " + (aFullBind != null));
+        aFullBind.getBindObservable(shortCid)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
+                    AppLogger.d(UdpConstant.BIND_TAG + "last state");
+                    if (aFullBind != null)
+                        aFullBind.sendWifiInfo(ssid, pwd, type);
+                }, throwable -> {
+                    AppLogger.e("err: " + throwable.getLocalizedMessage());
+                });
+        aFullBind.startPingFPing(shortCid);
     }
 
     @Override
@@ -112,23 +112,12 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     public void clearConnection() {
     }
 
-    @Override
-    public void startPingFlow() {
-        if (aFullBind != null) {
-            WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
-            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-            if (wifiInfo == null || !JFGRules.isCylanDevice(wifiInfo.getSSID())) {
-                //something happened
-                AppLogger.i("ConfigApPresenterImpl 连接错误");
-                getView().lossDogConnection();
-                return;
-            }
-            //纯数字
-            final String ssidInDigits = BindUtils.getDigitsString(wifiInfo.getSSID());
-            aFullBind.startPingFPing(ssidInDigits);
-        }
-
-
+    private String getCurrentBindCidInShort() {
+        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+        WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        if (wifiInfo != null && JFGRules.isCylanDevice(wifiInfo.getSSID()))
+            return BindUtils.getDigitsString(wifiInfo.getSSID());
+        else return "";
     }
 
     @Override
@@ -328,4 +317,5 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             }
         }
     }
+
 }

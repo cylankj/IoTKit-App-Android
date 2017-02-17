@@ -28,6 +28,7 @@
             android:gravity="center"
             android:hint="@string/Tap0_enterphoneoremail"
             android:maxLength="60"
+            android:maxLines="1"
             android:paddingLeft="@dimen/x40"
             android:paddingRight="@dimen/x40"
             android:textColor="@color/color_666666"
@@ -77,6 +78,7 @@
             android:hint="@string/ENTER_PWD_1"
             android:inputType="textPassword"
             android:maxLength="12"
+            android:maxLines="1"
             android:paddingLeft="@dimen/x40"
             android:paddingRight="@dimen/x40"
             android:textColor="@color/color_666666"
@@ -151,16 +153,17 @@
         android:textSize="@dimen/sp12" />
 
     <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:layout_marginBottom="@dimen/y24"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginBottom="@dimen/y24">
 
         <RelativeLayout
             android:id="@+id/rLayout_login_third_party"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <TextView
                 android:id="@+id/tv_qqLogin_commit"
                 style="@style/third_party_login_style"
@@ -188,10 +191,11 @@
         </RelativeLayout>
 
         <RelativeLayout
-            android:visibility="gone"
             android:id="@+id/rLayout_login_third_party_abroad"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:visibility="gone">
+
             <TextView
                 android:id="@+id/tv_twitterLogin_commit"
                 style="@style/third_party_login_style"

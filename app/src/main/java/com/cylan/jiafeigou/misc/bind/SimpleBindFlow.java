@@ -39,39 +39,8 @@ public class SimpleBindFlow extends AFullBind {
 
     @Override
     public void startPingFPing(final String shortUUID) {
-        unSubscribe(pingFPingSub);
         //空
         setDevicePortrait(null);
-        //zip用法,合并,这里使用了timeout,也就是说,次subscription的生命周期只有1s
-        pingFPingSub = Observable.zip(pingObservable(shortUUID),
-                fPingObservable(shortUUID), (JfgUdpMsg.PingAck pingAck, JfgUdpMsg.FPingAck fPingAck) -> {
-                    //此处完成了第1和第2步.
-                    UdpConstant.UdpDevicePortrait d = BindUtils.assemble(pingAck, fPingAck);
-                    setDevicePortrait(d);
-                    AppLogger.i(BIND_TAG + d);
-                    return d;
-                })
-                .subscribeOn(Schedulers.newThread())
-                //是否需要升级
-                .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
-                    boolean needUpdate = BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
-                            && BindUtils.isUcos(udpDevicePortrait.uuid);
-                    //是否需要升级
-                    if (needUpdate)
-                        iBindResult.needToUpgrade();
-                    return !needUpdate;
-                })
-                .map((final UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
-                    if (udpDevicePortrait.net == 2) {
-                        iBindResult.isMobileNet();
-                    }
-                    setServerLanguage(udpDevicePortrait);
-                    return udpDevicePortrait;
-                })
-                //1s内
-                .timeout(1000, TimeUnit.MILLISECONDS, timeoutException())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe();
         sendPingFPing();
     }
 
@@ -130,6 +99,7 @@ public class SimpleBindFlow extends AFullBind {
                     }
                     AppLogger.i(BIND_TAG + integer);
                 });
+        AppLogger.i("sendPingFPing");
     }
 
     /**
@@ -251,10 +221,13 @@ public class SimpleBindFlow extends AFullBind {
 
     @Override
     public void sendWifiInfo(final String ssid, final String pwd, final int type) {
-        AppLogger.i("sendWifiInfo:");
-        Observable.just(null)
+        Observable.range(1, 3)
                 .subscribeOn(Schedulers.newThread())
-                .map((Object o) -> {
+                .filter((Integer integer) -> {
+                    return devicePortrait != null;
+                })
+                .map((Integer o) -> {
+                    AppLogger.i("sendWifiInfo:" + devicePortrait);
                     JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
                             devicePortrait.mac,
                             ssid, pwd);
@@ -268,11 +241,13 @@ public class SimpleBindFlow extends AFullBind {
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-
+                    return devicePortrait.uuid;
+                })
+                .subscribe((String cid) -> {
                     //此时,设备还没恢复连接,需要加入队列
-                    int key = ("JfgCmdInsurance.getCmd().bindDevice" + devicePortrait.uuid).hashCode();
+                    int key = ("JfgCmdInsurance.getCmd().bindDevice" + cid).hashCode();
                     OfflineTaskQueue.getInstance().enqueue(key, new Runnable() {
-                        private String cid = devicePortrait.uuid;
+//                        private String cid = devicePortrait.uuid;
 
                         @Override
                         public void run() {
@@ -285,10 +260,6 @@ public class SimpleBindFlow extends AFullBind {
                             }
                         }
                     });
-                    return null;
-                })
-                .delay(500, TimeUnit.MILLISECONDS)
-                .subscribe((Object o) -> {
                     //恢复wifi
                     iBindResult.onLocalFlowFinish();
                     AppLogger.i(BIND_TAG + "onLocalFlowFinish");
@@ -296,5 +267,40 @@ public class SimpleBindFlow extends AFullBind {
                     AppLogger.e(BIND_TAG + throwable.getLocalizedMessage());
                 });
 
+    }
+
+    @Override
+    public Observable<UdpConstant.UdpDevicePortrait> getBindObservable(String shortUUID) {
+        //zip用法,合并,这里使用了timeout,也就是说,次subscription的生命周期只有1s
+        return Observable.zip(pingObservable(shortUUID),
+                fPingObservable(shortUUID), (JfgUdpMsg.PingAck pingAck, JfgUdpMsg.FPingAck fPingAck) -> {
+                    //此处完成了第1和第2步.
+                    UdpConstant.UdpDevicePortrait d = BindUtils.assemble(pingAck, fPingAck);
+                    setDevicePortrait(d);
+                    AppLogger.i(BIND_TAG + d);
+                    return d;
+                })
+                .subscribeOn(Schedulers.newThread())
+                //是否需要升级
+                .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
+                    boolean needUpdate = BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
+                            && BindUtils.isUcos(udpDevicePortrait.uuid);
+                    //是否需要升级
+                    if (needUpdate)
+                        iBindResult.needToUpgrade();
+                    AppLogger.i(BIND_TAG + "need to upgrade: " + needUpdate);
+                    return !needUpdate;
+                })
+                .map((final UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
+                    if (udpDevicePortrait.net == 2) {
+                        iBindResult.isMobileNet();
+                        AppLogger.i(BIND_TAG + "is 3G");
+                    }
+                    setServerLanguage(udpDevicePortrait);
+                    return udpDevicePortrait;
+                })
+                .throttleFirst(1, TimeUnit.SECONDS)
+                //1s内
+                .timeout(1000, TimeUnit.MILLISECONDS, timeoutException());
     }
 }

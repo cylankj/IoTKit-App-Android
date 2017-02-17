@@ -13,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -285,22 +286,18 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @UiThread
     @Override
     public void onItemsInsert(List<String> resultList) {
-        srLayoutMainContentHolder.setRefreshing(false);
-        List<String> filter = filter(resultList);
-        homePageListAdapter.addAll(filter);
-        if (filter==null||filter.size()==0){
-            homePageListAdapter.notifyDataSetChanged();
-        }
-        srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount()>0);
+        onRefreshFinish();
+        homePageListAdapter.addAll(filter(resultList));
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
     }
-    private List<String> filter(List<String> origin){
-        List<String> result=new ArrayList<>(32);
+
+    private List<String> filter(List<String> origin) {
+        List<String> result = new ArrayList<>(32);
         List<String> list = homePageListAdapter.getList();
-        if (origin!=null){
+        if (origin != null) {
             for (String s : origin) {
-                if (!list.contains(s)){
+                if (!list.contains(s)) {
                     result.add(s);
                 }
             }
@@ -359,7 +356,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onLoginState(boolean state) {
         if (!state) {
             onRefreshFinish();
-//            Toast.makeText(getContext(), "还没登陆", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.UNLOGIN), Toast.LENGTH_SHORT).show();
         } else {
             //setDevice online view
         }
@@ -372,10 +369,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onRefresh() {
-        if (basePresenter != null)
-            basePresenter.fetchDeviceList(true);
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
+        if (basePresenter != null)
+            basePresenter.fetchDeviceList(true);
     }
 
     @Override
@@ -389,6 +386,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
         String uuid = homePageListAdapter.getItem(position);
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        if (device == null) {
+            Log.d("CYLAN_TAG", "devices is null:" + GlobalDataProxy.getInstance().fetchAll());
+        }
         int pid = device == null ? 0 : device.pid;
         if (uuid != null) {
             Bundle bundle = new Bundle();

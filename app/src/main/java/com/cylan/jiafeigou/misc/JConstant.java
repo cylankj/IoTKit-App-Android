@@ -100,6 +100,7 @@ public class JConstant {
     public static final String VIEW_CALL_WAY_TIME = "VIEW_CALL_WAY_TIME";
     public static final String KEY_SIMPLE_STRING_ITEM = "KEY_SIMPLE_STRING_ITEM";
 
+    public static final String KEY_CAM_SIGHT_SETTING = "cam_sight_setting";
     public static int ConfigApStep = 0;
 
 
@@ -118,6 +119,7 @@ public class JConstant {
 
     public static final String KEY_DEVICE_ITEM_UUID = "key_device_uuid";
 
+    public static final String KEY_CAM_SIGHT_HORIZONTAL = "cam_sight";
     /**
      * 保存了 {@link BellLiveActivity}的进程id
      */
@@ -293,6 +295,18 @@ public class JConstant {
     public static final String BIND_DEVICE_CLOUD = "cloud";
     public static final String BIND_DEVICE_MAG = "mag";
 
+    /**
+     * 无账号:0
+     * 有账号,未登录:1
+     * 有账号,已登录:2
+     *
+     * @return
+     */
+    public final static String KEY_ACCOUNT = "key_account";
+
+    public final static String KEY_ACCOUNT_LOG_STATE = "key_log_state";
+
+    public final static String KEY_NTP_INTERVAL = "ntp_key";
 
     public static final int PLAY_STATE_IDLE = 1;
     public static final int PLAY_STATE_PREPARE = 2;

@@ -25,6 +25,10 @@
 -keepattributes Signature #保持泛型
 -keepattributes SourceFile,LineNumberTable # keep住源文件以及行号
 
+-keep public class * extends com.google.android.exoplayer.**{*;}
+
+-keep public class * extends android.os.SystemProperties
+-keep public class * extends android.app.ActivityThread
 -keep public class * extends android.app.Activity
 -keep public class * extends android.app.Fragment
 -keep public class * extends android.app.Application
@@ -34,24 +38,49 @@
 -keep public class * extends android.app.backup.BackupAgentHelper
 -keep public class * extends android.preference.Preference
 -keep public class com.android.vending.licensing.ILicensingService
--keep class org.msgpack.** { *; }
--keep class org.webrtc.** { *; }
+-keep public class org.msgpack.** { *; }
+-keep public class org.webrtc.** { *; }
+-keep public class com.cylan.** { *; }
+-keep public class com.cylan.panorama.** { *; }
+#内部类混淆
+-keep class org.webrtc.videoengine.MediaCodecVideoEncoder$*{
+    *;
+}
+-keep class org.webrtc.videoengine.MediaCodecVideoDecoder$*{
+    *;
+}
+-keep class org.webrtc.videoengine.MediaCodecVideoDecoder{
+    *;
+}
+
+-keep public class com.cylan.jiafeigou.support.Security{
+    public <methods>;
+}
+-dontnote java.util.AbstractMap.**
 -dontwarn org.msgpack.**
+-dontnote org.msgpack.**
+
+-keep  class net.sqlcipher.**{*;}
+-dontnote net.sqlcipher.**
+
 -dontwarn okio.**
 -dontwarn javax.annotation.**
 
+-dontnote android.os.SystemProperties
+-dontnote android.app.ActivityThread
+-dontnote com.google.android.**
+-dontnote com.cylan.**
+
+-keep public class sun.security.**{*;}
+-dontwarn sun.security.**
+-dontnote sun.security.**
 -dontnote android.net.http.*
--dontnote org.apache.commons.codec.**
--dontnote org.apache.http.**
+-dontnote org.apache.**
+-dontnote com.android.org.conscrypt.**
 
-#-keep public class com.cylan.ext.opt.DebugOptionsImpl{
-#    public <methods>;
-#}
-
--keep public class java.nio.ByteBuffer
--keep public class * extends java.nio.ByteBuffer
 -keep  class java.nio.** { *; }
 -dontwarn java.nio.**
+-dontnote java.nio.**
 
 #######################bugly#########################################
 -keep public class * extends android.app.Service
@@ -59,8 +88,9 @@
 -keep public class com.tencent.bugly.**{*;}
 -keep class com.tencent.android.tpush.**  {* ;}
 -keep class com.tencent.mid.**  {* ;}
+-dontnote  com.tencent.**
 ###mta##
--keep class com.tencent.stat.**  {* ;}
+-keep class com.tencent.**  {* ;}
 ################################################################
 
 -keepattributes InnerClasses
@@ -92,6 +122,37 @@
 -keepclassmembers class **.R$* {
     public static <fields>;
 }
+
+
+-dontnote libcore.icu.ICU
+##---------------Begin: proguard configuration for Gson  ----------
+# Gson uses generic type information stored in activity_cloud_live_mesg_video_talk_item class file when working with fields. Proguard
+# removes such information by default, so configure it to keep all of it.
+-keepattributes Signature
+
+# Gson specific classes
+-keep class sun.misc.** { *; }
+-dontwarn sun.misc.**
+-dontnote sun.misc.**
+-dontnote com.google.gson.**
+-dontnote com.sina.weibo.sdk.**
+#-keep class com.google.gson.stream.** { *; }
+
+# Application classes that will be serialized/deserialized over Gson
+# -keep class mypersonalclass.data.model.** { *; }
+
+##  okhttp3   ####start
+# OkHttp
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp3.** { *; }
+-keep interface com.squareup.okhttp3.** { *; }
+-dontwarn com.squareup.okhttp3.**
+-dontwarn okhttp3.**
+##  okhttp3  ####end
+
+
+########################Rxjava###############################################
 -keep class rx.schedulers.Schedulers {
     public static <methods>;
 }
@@ -114,32 +175,6 @@
 -keepclassmembers class rx.internal.util.unsafe.BaseLinkedQueueConsumerNodeRef {
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
-
--dontnote libcore.icu.ICU
-##---------------Begin: proguard configuration for Gson  ----------
-# Gson uses generic type information stored in activity_cloud_live_mesg_video_talk_item class file when working with fields. Proguard
-# removes such information by default, so configure it to keep all of it.
--keepattributes Signature
-
-# Gson specific classes
--keep class sun.misc.Unsafe { *; }
-#-keep class com.google.gson.stream.** { *; }
-
-# Application classes that will be serialized/deserialized over Gson
-# -keep class mypersonalclass.data.model.** { *; }
-
-##  okhttp3   ####start
-# OkHttp
--keepattributes Signature
--keepattributes *Annotation*
--keep class com.squareup.okhttp3.** { *; }
--keep interface com.squareup.okhttp3.** { *; }
--dontwarn com.squareup.okhttp3.**
-##  okhttp3  ####end
-
-
-########################Rxjava###############################################
--dontwarn sun.misc.**
 -keepclassmembers class rx.internal.util.unsafe.*ArrayQueue*Field* {
    long producerIndex;
    long consumerIndex;
@@ -151,3 +186,36 @@
     rx.internal.util.atomic.LinkedQueueNode consumerNode;
 }
 ########################Rxjava###############################################
+
+
+# retrofit specific
+-dontwarn com.squareup.okhttp.**
+-dontwarn com.google.appengine.api.urlfetch.**
+-dontwarn rx.**
+-dontwarn retrofit.**
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.squareup.okhttp.** { *; }
+-keep interface com.squareup.okhttp.** { *; }
+-keep class retrofit.** { *; }
+-keepclasseswithmembers class * {
+    @retrofit.http.* <methods>;
+}
+
+-keep class com.facebook.** {
+   *;
+}
+-keep class com.twitter.** {
+   *;
+}
+-dontnote io.fabric.sdk.**
+-dontnote com.twitter.**
+-dontnote com.facebook.**
+-keepattributes Signature
+
+-dontnote tv.danmaku.ijk.**
+-keep class tv.danmaku.ijk.media.player.* {*; }
+-keep class tv.danmaku.ijk.media.player.IjkMediaPlayer{*;}
+-keep class tv.danmaku.ijk.media.player.ffmpeg.FFmpegApi{*;}
+
+-dontwarn com.squareup.picasso.**

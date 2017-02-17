@@ -7,8 +7,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
@@ -21,12 +19,11 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-import com.cylan.jiafeigou.n.view.setting.SdcardInfoFragment;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.util.List;
@@ -51,34 +48,29 @@ import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TOUCH_OUT
  */
 public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Presenter>
         implements CamInfoContract.View {
-    @BindView(R.id.tv_device_alias)
-    TextView tvDeviceAlias;
-    @BindView(R.id.lLayout_information_facility_name)
-    LinearLayout lLayoutInformationFacilityName;
-    @BindView(R.id.tv_device_time_zone)
-    TextView tvDeviceTimeZone;
-    @BindView(R.id.lLayout_information_facility_timezone)
-    LinearLayout lLayoutInformationFacilityTimezone;
-    @BindView(R.id.tv_device_sdcard_state)
-    TextView tvDeviceSdcardState;
-    @BindView(R.id.tv_device_mobile_net)
-    TextView tvDeviceMobileNet;
-    @BindView(R.id.tv_device_wifi_state)
-    TextView tvDeviceWifiState;
-    @BindView(R.id.tv_device_cid)
-    TextView tvDeviceCid;
-    @BindView(R.id.tv_device_mac)
-    TextView tvDeviceMac;
-    @BindView(R.id.tv_device_system_version)
-    TextView tvDeviceSystemVersion;
-    @BindView(R.id.tv_device_battery_level)
-    TextView tvDeviceBatteryLevel;
-    @BindView(R.id.lLayout_device_battery)
-    LinearLayout lLayoutDeviceBattery;
-    @BindView(R.id.tv_device_uptime)
-    TextView tvDeviceUptime;
+
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.tv_device_alias)
+    SettingItemView0 tvDeviceAlias;
+    @BindView(R.id.tv_device_time_zone)
+    SettingItemView0 tvDeviceTimeZone;
+    @BindView(R.id.tv_device_sdcard_state)
+    SettingItemView0 tvDeviceSdcardState;
+    @BindView(R.id.tv_device_mobile_net)
+    SettingItemView0 tvDeviceMobileNet;
+    @BindView(R.id.tv_device_wifi_state)
+    SettingItemView0 tvDeviceWifiState;
+    @BindView(R.id.tv_device_mac)
+    SettingItemView0 tvDeviceMac;
+    @BindView(R.id.tv_device_system_version)
+    SettingItemView0 tvDeviceSystemVersion;
+    @BindView(R.id.tv_device_battery_level)
+    SettingItemView0 tvDeviceBatteryLevel;
+    @BindView(R.id.tv_device_uptime)
+    SettingItemView0 tvDeviceUptime;
+    @BindView(R.id.tv_device_cid)
+    SettingItemView0 tvDeviceCid;
     private String uuid;
     private EditFragmentDialog editDialogFragment;
 
@@ -115,7 +107,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
         //仅3G摄像头、FreeCam显示此栏
         if (device != null && (JFGRules.isFreeCam(device.pid) || JFGRules.is3GCam(device.pid))) {
-            lLayoutDeviceBattery.setVisibility(View.VISIBLE);
+            tvDeviceBatteryLevel.setVisibility(View.VISIBLE);
         }
     }
 
@@ -135,23 +127,28 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                     if (list != null) {
                         int index = list.indexOf(bean);
                         if (index > 0 && index < list.size()) {
-                            tvDeviceTimeZone.setText(list.get(index).getName());
+                            tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
                         }
                     }
                 });
         DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
-        tvDeviceSdcardState.setText(getSdcardState(status));
+        String statusContent = getSdcardState(status);
+        if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
+            tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
+        } else {
+            tvDeviceSdcardState.setTvSubTitle(statusContent, R.color.color_8c8c8c);
+        }
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-        tvDeviceAlias.setText(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
-        tvDeviceCid.setText(uuid);
+        tvDeviceAlias.setTvSubTitle(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
+        tvDeviceCid.setTvSubTitle(uuid);
         String mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC, "");
-        tvDeviceMac.setText(mac);
+        tvDeviceMac.setTvSubTitle(mac);
         int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);
-        tvDeviceBatteryLevel.setText(String.format(Locale.getDefault(), "%s", battery));
+        tvDeviceBatteryLevel.setTvSubTitle(String.format(Locale.getDefault(), "%s", battery));
         String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION, "");
-        tvDeviceSystemVersion.setText(sVersion);
+        tvDeviceSystemVersion.setTvSubTitle(sVersion);
         int uptime = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_210_UP_TIME, 0);
-        tvDeviceUptime.setText(TimeUtils.getUptime( uptime));
+        tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(uptime));
     }
 
     private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {
@@ -159,7 +156,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         if (sdStatus != null) {
             if (!sdStatus.hasSdcard && sdStatus.err != 0) {
                 //sd初始化失败时候显示
-                return getString(R.string.NO_SDCARD);
+                return getString(R.string.SD_INIT_ERR, sdStatus.err);
             }
         }
         if (sdStatus != null && !sdStatus.hasSdcard) {
@@ -169,35 +166,50 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     @OnClick({R.id.tv_toolbar_icon,
-            R.id.lLayout_sdcard,
-            R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone})
+            R.id.tv_device_sdcard_state,
+            R.id.tv_device_alias,
+            R.id.tv_device_time_zone})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
                 getActivity().onBackPressed();
                 break;
-            case R.id.lLayout_information_facility_name:
+            case R.id.tv_device_alias:
                 toEditAlias();
                 break;
-            case R.id.lLayout_information_facility_timezone:
+            case R.id.tv_device_time_zone:
                 toEditTimezone();
                 break;
-            case R.id.lLayout_sdcard:
-                toFormatSdcardPage();
+            case R.id.tv_device_sdcard_state:
+                jump2SdcardDetailFragment();
+                break;
+            case R.id.rl_hardware_update:
+                jump2HardwareUpdateFragment();
                 break;
         }
     }
 
     /**
-     * 跳转到
-     * Micro SD卡页面
+     * 固件升级
      */
-    private void toFormatSdcardPage() {
+    private void jump2HardwareUpdateFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        SdcardInfoFragment sdcardInfoFragment = SdcardInfoFragment.getInstance(bundle);
+        bundle.putString("the_new_soft_version", "");
+        HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                sdcardInfoFragment, android.R.id.content);
+                hardwareUpdateFragment, android.R.id.content);
+    }
+
+    /**
+     * 显示Sd卡的详情
+     */
+    private void jump2SdcardDetailFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                sdcardDetailFragment, android.R.id.content);
     }
 
     /**
@@ -239,7 +251,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
                 if (!TextUtils.isEmpty(value) && device != null && !TextUtils.equals(value, device.alias)) {
                     device.alias = value;
-                    tvDeviceAlias.setText(value);
+                    tvDeviceAlias.setTvSubTitle(value);
                     GlobalDataProxy.getInstance().updateJFGDevice(device);
                 }
             }

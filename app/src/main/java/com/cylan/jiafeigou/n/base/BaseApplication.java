@@ -12,8 +12,9 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.cylan.ext.opt.DebugOptionsImpl;
+import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -49,12 +50,12 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onCreate() {
         super.onCreate();
+        GlobalDataProxy.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
         enableDebugOptions();
         MtaManager.init(getApplicationContext(), true);
         //每一个新的进程启动时，都会调用onCreate方法。
 //        if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
         Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
-        startService(new Intent(getApplicationContext(), DaemonService.class));
         startService(new Intent(getApplicationContext(), DataSourceService.class));
         initBlockCanary();
         initBugMonitor();
@@ -68,13 +69,21 @@ public class BaseApplication extends MultiDexApplication implements Application.
     }
 
     private void initFaceBook() {
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        HandlerThreadUtils.postAtFrontOfQueue(new Runnable() {
+            @Override
+            public void run() {
+                FacebookSdk.sdkInitialize(getApplicationContext());
+            }
+        });
     }
 
     private void initTwitter() {
-        HandlerThreadUtils.post(() -> {
-            TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-            Fabric.with(this, new TwitterCore(authConfig), new TweetComposer());
+        HandlerThreadUtils.postAtFrontOfQueue(new Runnable() {
+            @Override
+            public void run() {
+                TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+                Fabric.with(getApplicationContext(), new TwitterCore(authConfig), new TweetComposer());
+            }
         });
     }
 

@@ -17,10 +17,6 @@ public abstract class AFullBind implements IFullBind {
     protected IBindResult iBindResult;
     protected String bindCode;
     private String currentBindUUID = "";
-    /**
-     * ping fping流程.
-     */
-    protected Subscription pingFPingSub;
 
     protected boolean isDogUpgrading = false;
 
@@ -53,7 +49,6 @@ public abstract class AFullBind implements IFullBind {
 
     @Override
     public void clean() {
-        unSubscribe(pingFPingSub);
         iBindResult = null;
         devicePortrait = null;
         currentBindUUID = null;

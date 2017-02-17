@@ -19,23 +19,18 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
-import com.cylan.jiafeigou.n.mvp.impl.splash.SplashPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.text.SimpleDateFormat;
@@ -73,7 +68,6 @@ public class SmartcallActivity extends NeedLoginActivity
         setContentView(R.layout.activity_welcome_page);
         ButterKnife.bind(this);
         initPresenter();
-        if (presenter != null) presenter.start();
         fullScreen(true);
     }
 
@@ -96,6 +90,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onStart() {
         super.onStart();
+        if (presenter != null) presenter.start();
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
@@ -118,7 +113,23 @@ public class SmartcallActivity extends NeedLoginActivity
     }
 
     private void initPresenter() {
-        presenter = new SplashPresenterImpl(this);
+        presenter = new SmartCallPresenterImpl(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        View view = findViewById(android.R.id.content);
+        if (view != null) {
+            View beforeLoginLayout = ((ViewGroup) view).getChildAt(0);
+            if (beforeLoginLayout != null
+                    && beforeLoginLayout.getId() == R.id.rLayout_before_login
+                    && ((ViewGroup) view).getChildCount() == 1) {
+                //只有 beforeLoginFragment页面
+                finish();
+            } else {
+                getSupportFragmentManager().popBackStack();
+            }
+        }
     }
 
     /**
@@ -134,57 +145,22 @@ public class SmartcallActivity extends NeedLoginActivity
      * pre-登陆
      */
     private void initLoginPage() {
-        if (isLoginIn()) {
-            //进去主页 home page
+        int loginState = GlobalDataProxy.getInstance().getLoginState();
+        if (loginState == LogState.STATE_ACCOUNT_ON) {        //进去主页 home page
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 startActivity(new Intent(this, NewHomeActivity.class),
                         ActivityOptionsCompat.makeCustomAnimation(this, R.anim.alpha_in, R.anim.alpha_out).toBundle());
             } else {
                 startActivity(new Intent(this, NewHomeActivity.class));
             }
+            startService(new Intent(getApplicationContext(), DaemonService.class));
             finish();
         } else {
-            if (presenter != null) {
-                String tempAccPwd = presenter.getTempAccPwd();
-                LoginAccountBean login = new LoginAccountBean();
-                if (!TextUtils.isEmpty(tempAccPwd)) {
-                    int i = tempAccPwd.indexOf("|");
-                    login.userName = tempAccPwd.substring(0, i);
-                    login.pwd = tempAccPwd.substring(i + 1);
-                }
-                if (!(TextUtils.isEmpty(login.userName) || TextUtils.isEmpty(login.pwd))){
-                    if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
-                        JFGAccount jfgAccount = new JFGAccount();
-                        GlobalDataProxy.getInstance().setJfgAccount(jfgAccount);
-                        RxBus.getCacheInstance().postSticky(jfgAccount);
-                        RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
-
-                        //TODO 赋值
-
-                        DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
-
-                        //进去主页 home page
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            startActivity(new Intent(this, NewHomeActivity.class),
-                                    ActivityOptionsCompat.makeCustomAnimation(this, R.anim.alpha_in, R.anim.alpha_out).toBundle());
-                        } else {
-                            startActivity(new Intent(this, NewHomeActivity.class));
-                        }
-                        finish();
-                    } else {
-                        presenter.autoLogin(login);
-                    }
-                    //非三方登录的标记
-                    RxBus.getCacheInstance().postSticky(false);
-                    return;
-                }
-
-                //进入登陆页 login page
-                getSupportFragmentManager().beginTransaction()
-                        .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
-                        .addToBackStack(BeforeLoginFragment.class.getSimpleName())
-                        .commitAllowingStateLoss();
-            }
+            //进入登陆页 login page
+            getSupportFragmentManager().beginTransaction()
+                    .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
+                    .addToBackStack(BeforeLoginFragment.class.getSimpleName())
+                    .commitAllowingStateLoss();
         }
     }
 
@@ -221,12 +197,6 @@ public class SmartcallActivity extends NeedLoginActivity
             startActivity(new Intent(this, NewHomeActivity.class));
         }
         finish();
-    }
-
-
-    private boolean isLoginIn() {
-        return GlobalDataProxy.getInstance().isOnline()
-                && GlobalDataProxy.getInstance().getJfgAccount() != null;
     }
 
     /**

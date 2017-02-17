@@ -6,6 +6,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_AUTO_SHOW_BIND;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -81,6 +84,13 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
         customToolbar.setBackAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (getActivity() != null && getActivity().getIntent() != null) {
+                    if (!TextUtils.isEmpty(getActivity().getIntent().getStringExtra(KEY_AUTO_SHOW_BIND))) {
+                        //从wifi配置跳过来
+                        getActivity().finish();
+                        return;
+                    }
+                }
                 if (getActivity() != null)
                     getActivity().getSupportFragmentManager().popBackStack();
             }

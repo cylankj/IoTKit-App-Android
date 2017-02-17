@@ -398,7 +398,25 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 resolutionNotifySub(),
                 videoDisconnectSub(),
                 robotDataSync(),
+                viewPagerSwitch(),
                 historyDataListSub()};
+    }
+
+    /**
+     * 页面切换了,需要暂停播放
+     *
+     * @return
+     */
+    private Subscription viewPagerSwitch() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.CamLivePageScrolled.class)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((RxEvent.CamLivePageScrolled camLivePageScrolled) -> {
+                    if (camLivePageScrolled.selected) {
+                        startPlayVideo(getPlayType());
+                    } else stopPlayVideo(getPlayType());
+                }, (Throwable throwable) -> {
+                    AppLogger.e("err:" + throwable.getLocalizedMessage());
+                });
     }
 
     /**

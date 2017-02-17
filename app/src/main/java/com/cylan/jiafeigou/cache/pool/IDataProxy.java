@@ -5,6 +5,7 @@ import android.util.Pair;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.BaseValue;
 
@@ -18,9 +19,11 @@ public interface IDataProxy {
     /**
      * Map<account+uuid,JFGDevice>
      *
-     * @param jfgDevice
+     * @param device
      */
-    void cacheDevice(String uuid, JFGDevice jfgDevice);
+    void cacheDevice(JFGDevice... device);
+
+    void robotGetDataRsp(RobotoGetDataRsp dataRsp);
 
     /**
      * 删除对应的JFGDevice
@@ -39,6 +42,12 @@ public interface IDataProxy {
     JFGDevice fetch(String uuid);
 
     void cacheShareList(ArrayList<JFGShareListInfo> arrayList);
+
+    /**
+     * @param uuid uuid+id
+     * @param pair
+     */
+    void cacheUnread(String uuid, Pair<Integer, BaseValue> pair);
 
     /**
      * 该设备是否被分享
@@ -106,6 +115,8 @@ public interface IDataProxy {
      */
     BaseValue fetchLocal(String uuid, long id);
 
+    BaseValue fetchLocal(String uuid, long id, boolean topOne);
+
     boolean deleteAll(String uuid, long id, ArrayList<Long> versions);
 
     /**
@@ -142,6 +153,6 @@ public interface IDataProxy {
      *
      * @return long req
      */
-    long robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException;
+    long robotGetDataReq(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) throws JfgException;
 
 }

@@ -22,14 +22,6 @@ public interface CloudLiveDeviceInfoContract {
 
         String getWifiState();              //获取WiFi的状态
 
-        /**
-         * 保存的设备的属性
-         *
-         * @param value
-         * @param id
-         */
-        void saveCloudInfoBean(Object value, int id);
-
     }
 
 }

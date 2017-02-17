@@ -154,10 +154,10 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         return null;
     }
 
-    @Override
-    public int getCount() {
-        return GlobalDataProxy.getInstance().isOnline() ? super.getCount() : 0;
-    }
+//    @Override
+//    public int getCount() {
+//        return GlobalDataProxy.getInstance().isOnline() ? super.getCount() : 0;
+//    }
 
     private String getLastWarnContent(Pair<Integer, BaseValue> msgCountPair, int pid) {
         final int msgCount = msgCountPair == null ? 0 : msgCountPair.first;

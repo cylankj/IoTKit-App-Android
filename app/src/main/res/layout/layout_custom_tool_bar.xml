@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -42,7 +42,6 @@
                 android:gravity="center"
                 android:paddingLeft="@dimen/x15"
                 android:paddingRight="@dimen/x15"
-                android:text="@string/Tap0_register"
                 android:textColor="@color/color_4b9fd5"
                 android:textSize="@dimen/sp14"
                 android:visibility="gone" />
@@ -55,4 +54,4 @@
         android:layout_height="@dimen/y10"
         android:background="@drawable/little_shape"
         android:visibility="gone" />
-</LinearLayout>
+</merge>

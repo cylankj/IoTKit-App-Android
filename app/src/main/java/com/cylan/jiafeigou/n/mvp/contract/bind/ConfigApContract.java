@@ -76,11 +76,11 @@ public interface ConfigApContract {
          */
         void clearConnection();
 
-        /**
-         * 一旦进来页面,就开始ping流程,避免在后台做,ping结果需要保持,状态判断.
-         * 这一流程,非常快.
-         */
-        void startPingFlow();
+//        /**
+//         * 一旦进来页面,就开始ping流程,避免在后台做,ping结果需要保持,状态判断.
+//         * 这一流程,非常快.
+//         */
+//        boolean startPingFlow();
 
         boolean isConnectDog();
 

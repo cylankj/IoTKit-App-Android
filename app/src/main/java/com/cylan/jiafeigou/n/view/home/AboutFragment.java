@@ -12,18 +12,18 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingAboutContract;
 import com.cylan.jiafeigou.n.view.login.AgreementFragment;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.SettingItemView0;
+
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,26 +34,21 @@ import butterknife.OnClick;
  * 创建时间：2016/9/5
  * 描述：
  */
-public class HomeSettingAboutFragment extends Fragment implements HomeSettingAboutContract.View {
+public class AboutFragment extends Fragment {
     private static final int MY_PERMISSIONS_REQUEST_CALL_PHONE = 1;
-    @BindView(R.id.iv_home_setting_about_back)
-    ImageView ivHomeSettingAboutBack;
-    @BindView(R.id.rLayout_home_setting_hotphone)
-    RelativeLayout rLayoutHomeSettingHotphone;
-    @BindView(R.id.tv_hotphone)
-    TextView tvHotphone;
     @BindView(R.id.tv_user_agreement)
     TextView tvUserAgreement;
-    @BindView(R.id.rLayout_home_setting_website)
-    RelativeLayout rl_website;
-    @BindView(R.id.rl_home_mine_setting_title)
-    FrameLayout rlHomeMineSettingTitle;
+    @BindView(R.id.tv_app_version)
+    TextView tvAppVersion;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
+    @BindView(R.id.sv_hot_line)
+    SettingItemView0 svHotLine;
 
-    private HomeSettingAboutContract.Presenter presenter;
     private Intent intent;
 
-    public static HomeSettingAboutFragment newInstance() {
-        return new HomeSettingAboutFragment();
+    public static AboutFragment newInstance() {
+        return new AboutFragment();
     }
 
     @Nullable
@@ -67,44 +62,42 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlHomeMineSettingTitle);
+        tvAppVersion.setText(String.format(Locale.getDefault(), "%s", PackageUtils.getAppVersionName(getActivity())));
+        customToolbar.setBackAction((View v) -> {
+            getActivity().getSupportFragmentManager().popBackStack();
+        });
     }
 
-    @Override
-    public void setPresenter(HomeSettingAboutContract.Presenter presenter) {
-        this.presenter = presenter;
-    }
-
-    @OnClick({R.id.iv_home_setting_about_back, R.id.rLayout_home_setting_hotphone, R.id.tv_user_agreement, R.id.rLayout_home_setting_website})
+    @OnClick({R.id.sv_hot_line, R.id.tv_user_agreement, R.id.sv_official_website})
     public void onClick(View view) {
-
+        ViewUtils.deBounceClick(view);
         switch (view.getId()) {
-            case R.id.iv_home_setting_about_back:
-                getFragmentManager().popBackStack();
-                break;
-            case R.id.rLayout_home_setting_hotphone:
+            case R.id.sv_hot_line:
                 intent = new Intent(Intent.ACTION_CALL, Uri.parse("tel:" + getHotPhone()));
                 if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                    HomeSettingAboutFragment.this.requestPermissions(
+                    AboutFragment.this.requestPermissions(
                             new String[]{Manifest.permission.CALL_PHONE},
                             MY_PERMISSIONS_REQUEST_CALL_PHONE);
                     return;
                 }
                 getContext().startActivity(intent);
                 break;
-            case R.id.rLayout_home_setting_website:
+            case R.id.sv_official_website:
             case R.id.tv_user_agreement:
                 IMEUtils.hide(getActivity());
                 AgreementFragment fragment = AgreementFragment.getInstance(null);
-                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                        fragment, android.R.id.content);
+                getFragmentManager().beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, fragment, "homeSettingAboutFragment")
+                        .addToBackStack("mineHelpFragment")
+                        .commit();
                 break;
         }
     }
 
-    @Override
     public String getHotPhone() {
-        return tvHotphone.getText().toString().trim();
+        return (String) svHotLine.getSubTitle();
     }
 
     @Override

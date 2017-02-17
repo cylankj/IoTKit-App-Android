@@ -123,7 +123,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     public ArrayList<CamMessageBean> call(Object o) {
                         ArrayList<JFGDPMsg> dps = getReqList(new long[]{0, 0}, new int[]{DpMsgMap.ID_505_CAMERA_ALARM_MSG, DpMsgMap.ID_222_SDCARD_SUMMARY});
                         try {
-                            querySeq = GlobalDataProxy.getInstance().robotGetData(
+                            querySeq = GlobalDataProxy.getInstance().robotGetDataReq(
                                     uuid,
                                     dps, 20, false, 0);
                             AppLogger.i("req: " + querySeq);
@@ -174,7 +174,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     ArrayList<JFGDPMsg> dps = getReqList(new long[]{0, 0},
                             new int[]{DpMsgMap.ID_505_CAMERA_ALARM_MSG, DpMsgMap.ID_222_SDCARD_SUMMARY});
                     try {
-                        querySeq = GlobalDataProxy.getInstance().robotGetData(
+                        querySeq = GlobalDataProxy.getInstance().robotGetDataReq(
                                 uuid,
                                 dps, 20, false, 0);
                         AppLogger.i("loadMore: " + querySeq);

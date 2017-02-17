@@ -56,5 +56,7 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/y1"
         android:layout_alignParentBottom="true"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginStart="@dimen/x10"
         android:background="@color/color_e8e8e8" />
 </merge>
