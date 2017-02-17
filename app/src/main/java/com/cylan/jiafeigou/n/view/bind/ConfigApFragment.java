@@ -128,7 +128,6 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
         super.onResume();
         if (basePresenter != null) {
             basePresenter.refreshWifiList();
-            basePresenter.startPingFlow();
         }
     }
 
@@ -199,7 +198,7 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
                     return;
                 }
                 if (basePresenter != null)
-                    basePresenter.sendWifiInfo(!basePresenter.isConnectDog(), ViewUtils.getTextViewContent(tvConfigApName),
+                    basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
                             ViewUtils.getTextViewContent(etWifiPwd), type);
                 tvWifiPwdSubmit.viewZoomSmall();
                 break;

@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
@@ -124,7 +125,6 @@ public class SmartcallActivity extends NeedLoginActivity
                     && beforeLoginLayout.getId() == R.id.rLayout_before_login
                     && ((ViewGroup) view).getChildCount() == 1) {
                 //只有 beforeLoginFragment页面
-                System.exit(0);
                 finish();
             } else {
                 getSupportFragmentManager().popBackStack();
@@ -153,6 +153,7 @@ public class SmartcallActivity extends NeedLoginActivity
             } else {
                 startActivity(new Intent(this, NewHomeActivity.class));
             }
+            startService(new Intent(getApplicationContext(), DaemonService.class));
             finish();
         } else {
             //进入登陆页 login page

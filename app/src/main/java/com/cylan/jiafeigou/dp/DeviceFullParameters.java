@@ -167,7 +167,7 @@ public class DeviceFullParameters {
                             }
                         }
                         AppLogger.i("robotSyc:" + updatedItems.keySet());
-                        return null;
+                        return updatedItems;
                     }
                 })
                 .filter((Map<String, BaseValue> map) -> (map.size() > 0))

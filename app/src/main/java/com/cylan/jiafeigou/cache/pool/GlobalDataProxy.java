@@ -118,6 +118,10 @@ public class GlobalDataProxy implements IDataProxy {
 
     @Override
     public void cacheDevice(JFGDevice... device) {
+        if (device != null)
+            for (JFGDevice d : device) {
+                Log.d("debug", "debug: " + new Gson().toJson(d));
+            }
         dataPointManager.cacheDevice(device);
         DeviceFullParameters.getInstance().getDeviceFullParameters(device);
     }

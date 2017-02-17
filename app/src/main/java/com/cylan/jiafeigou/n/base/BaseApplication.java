@@ -15,7 +15,6 @@ import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -57,7 +56,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
         //每一个新的进程启动时，都会调用onCreate方法。
 //        if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
         Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
-        startService(new Intent(getApplicationContext(), DaemonService.class));
         startService(new Intent(getApplicationContext(), DataSourceService.class));
         initBlockCanary();
         initBugMonitor();
