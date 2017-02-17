@@ -67,6 +67,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     SettingItemView0 tvDeviceSystemVersion;
     @BindView(R.id.tv_device_battery_level)
     SettingItemView0 tvDeviceBatteryLevel;
+    @BindView(R.id.tv_device_uptime)
     SettingItemView0 tvDeviceUptime;
     @BindView(R.id.tv_device_cid)
     SettingItemView0 tvDeviceCid;
@@ -166,14 +167,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     @OnClick({R.id.tv_toolbar_icon,
             R.id.tv_device_sdcard_state,
-            R.id.lLayout_information_facility_name,
+            R.id.tv_device_alias,
             R.id.tv_device_time_zone})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
                 getActivity().onBackPressed();
                 break;
-            case R.id.lLayout_information_facility_name:
+            case R.id.tv_device_alias:
                 toEditAlias();
                 break;
             case R.id.tv_device_time_zone:

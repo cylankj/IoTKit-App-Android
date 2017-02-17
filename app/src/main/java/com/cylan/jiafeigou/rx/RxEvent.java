@@ -276,6 +276,7 @@ public class RxEvent {
     /**
      * 获取登录用户的信息
      */
+    @Deprecated
     public static final class GetUserInfo {
 
         public JFGAccount jfgAccount;
@@ -396,6 +397,7 @@ public class RxEvent {
     /**
      * 获取设备列表
      */
+    @Deprecated
     public static final class DeviceList {
         public List<JFGDevice> jfgDevices;
 
@@ -418,6 +420,7 @@ public class RxEvent {
 //        public ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs;
 //    }
 
+    @Deprecated
     public static final class JFGRobotSyncData {
         public String identity;
         public boolean state;
@@ -467,7 +470,6 @@ public class RxEvent {
 
     /**
      * 这个消息从{@link com.cylan.jiafeigou.n.engine.DataSourceService#OnRobotCountDataRsp(long, String, ArrayList)}
-     * 传到{@link DataPointManager#handleUnreadMessageCount()}
      */
     public static final class UnreadCount {
         public String uuid;

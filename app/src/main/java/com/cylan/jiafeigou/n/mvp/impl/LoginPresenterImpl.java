@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
@@ -62,9 +63,9 @@ import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
@@ -97,28 +98,49 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public void executeLogin(final LoginAccountBean login) {
-        Observable.just(login)
-                .subscribeOn(Schedulers.newThread())
+        Observable.create(new Observable.OnSubscribe<LoginAccountBean>() {
+            @Override
+            public void call(Subscriber<? super LoginAccountBean> subscriber) {
+                Log.d("CYLAN_TAG", "executeLogin");
+                subscriber.onNext(login);
+                subscriber.onCompleted();
+            }
+        })
+                .subscribeOn(Schedulers.io())
                 .map((LoginAccountBean o) -> {
+                    Log.d("CYLAN_TAG", "executeLogin next");
                     try {
                         JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
-                    } catch (JfgException e) {
+                        //账号和密码
+                        String hex = AESUtil.encrypt(login.userName + "|" + login.pwd);
+                        FileUtils.saveDataToFile(getView().getContext(), hex);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
                     //非三方登录的标记
                     RxBus.getCacheInstance().postSticky(false);
-                    return o;
+                    return null;
                 })
-                .subscribe();
+                .observeOn(AndroidSchedulers.mainThread())
+                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class),
+                        (Object o, RxEvent.ResultLogin resultLogin) -> {
+                            if (getView() != null) getView().loginResult(resultLogin.code);
+                            return null;
+                        })
+                .timeout(3, TimeUnit.SECONDS, Observable.just("timeout")
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(s -> {
+                            Log.d("CYLAN_TAG", "timeout");
+                            if (getView() != null) getView().loginResult(JError.ErrorConnect);
+                            return null;
+                        }))
+                .subscribe((Object o) -> {
+                    Log.d("CYLAN_TAG", "executeLogin subscribe next");
+                }, throwable -> {
+                    Log.d("CYLAN_TAG", "executeLogin next " + throwable.getLocalizedMessage());
+                });
 
-        //账号和密码
-        try {
-            String hex = AESUtil.encrypt(login.userName+"|"+login.pwd);
-            FileUtils.saveDataToFile(getView().getContext(),hex);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -146,53 +168,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-                resultLoginSub(),
                 resultVerifyCodeSub(),
                 smsCodeResultSub(),
                 switchBoxSub(),
                 loginPopBackSub(),
-//                resultRegisterSub(),
                 checkAccountBack()
         };
-    }
-
-    private Subscription resultLoginSub() {
-        //sdk中，登陆失败的话，自动一分钟登录一次。
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
-                .delay(500, TimeUnit.MILLISECONDS)//set a delay
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.ResultLogin resultLogin) -> {
-                    if (getView().isLoginViewVisible()) {
-                        getView().loginResult(resultLogin.code);
-                        if (resultLogin.code == 0){
-                            isLoginSucc = true;
-                        }
-                    }
-                }, (Throwable throwable) -> {
-                    AppLogger.e("" + throwable);
-                });
-    }
-
-    private Subscription resultRegisterSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultRegister.class)
-                .subscribeOn(Schedulers.newThread())
-                .delay(1000, TimeUnit.MILLISECONDS)//set a delay
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.ResultRegister register) -> {
-                    if (getView().isLoginViewVisible()) {
-                        getView().registerResult(register.code);
-                    }
-                    if (register.code == JError.ErrorOK) {
-                        //注册成功
-                        PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
-                        getView().registerResult(register.code);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("" + throwable.getLocalizedMessage());
-                    }
-                });
     }
 
     private Subscription resultVerifyCodeSub() {
@@ -200,22 +181,13 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribeOn(Schedulers.newThread())
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
-                    @Override
-                    public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
-                        if (isRegSms)
-                            getView().verifyCodeResult(resultVerifyCode.code);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("" + throwable.getLocalizedMessage());
-                    }
-                }, new Action0() {
-                    @Override
-                    public void call() {
-                        AppLogger.d("complete?");
-                    }
+                .subscribe((RxEvent.ResultVerifyCode resultVerifyCode) -> {
+                    if (isRegSms)
+                        getView().verifyCodeResult(resultVerifyCode.code);
+                }, (Throwable throwable) -> {
+                    AppLogger.e("" + throwable.getLocalizedMessage());
+                }, () -> {
+                    AppLogger.d("complete?");
                 });
     }
 
@@ -240,17 +212,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         return RxBus.getCacheInstance().toObservable(RxEvent.SwitchBox.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.SwitchBox>() {
-                    @Override
-                    public void call(RxEvent.SwitchBox switchBox) {
-                        getView().switchBox("");
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("" + throwable.getLocalizedMessage());
-                    }
-                });
+                .subscribe(switchBox -> {
+                    getView().switchBox("");
+                }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
     }
 
     private Subscription loginPopBackSub() {
@@ -533,8 +497,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             e.printStackTrace();
                         }
                     }
-                },throwable -> {
-                    AppLogger.e("checkAccountIsReg"+throwable.getLocalizedMessage());
+                }, throwable -> {
+                    AppLogger.e("checkAccountIsReg" + throwable.getLocalizedMessage());
                 });
     }
 
@@ -557,10 +521,10 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public void loginCountTime() {
         rx.Observable.just(null)
-                .delay(30000,TimeUnit.MILLISECONDS)
+                .delay(30000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o ->{
+                .subscribe(o -> {
                     if (getView() != null && !isLoginSucc)
                         getView().loginResult(JError.ErrorConnect);
                 });
@@ -570,7 +534,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     public String getTempAccPwd() {
         String decrypt = "";
         String dataFromFile = FileUtils.getDataFromFile(getView().getContext());
-        if (TextUtils.isEmpty(dataFromFile)){
+        if (TextUtils.isEmpty(dataFromFile)) {
             return "";
         }
         try {
@@ -583,7 +547,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public void getTwitterAuthorize(Activity activity) {
-        if (twitterAuthClient == null){
+        if (twitterAuthClient == null) {
             twitterAuthClient = new TwitterAuthClient();
         }
         twitterAuthClient.authorize(activity, new Callback<TwitterSession>() {
@@ -595,11 +559,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 TwitterAuthToken token = result.data.getAuthToken();
                 String secret = token.secret;
                 String strToken = token.token;
-                executeOpenLogin(strToken,6);
+                executeOpenLogin(strToken, 6);
 
                 // 获取用户的的信息
                 TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
-                Call<User> call =  twitterApiClient.getAccountService().verifyCredentials(false, false);
+                Call<User> call = twitterApiClient.getAccountService().verifyCredentials(false, false);
                 call.enqueue(new Callback<User>() {
                     @Override
                     public void success(Result<User> result) {
@@ -609,13 +573,13 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                                 "\nBackgroungUrl" + result.data.profileBannerUrl +
                                 "\nCreated at" + result.data.createdAt +
                                 "\nDescription" + result.data.description +
-                                "\nEmail" + result.data.email+
+                                "\nEmail" + result.data.email +
                                 "\nFriends Count" + result.data.friendsCount;
                         System.out.println(result.data.profileImageUrl);
 
                         String twitter_id = String.valueOf(result.data.id);
                         String twitter_name = result.data.name;
-                        String[] str  = {twitter_name, result.data.profileImageUrl};
+                        String[] str = {twitter_name, result.data.profileImageUrl};
 
                         PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, str[0]);
                         PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, str[1]);
@@ -623,7 +587,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
                     @Override
                     public void failure(TwitterException exception) {
-                        AppLogger.e("twittergetUserInfo"+exception.getMessage());
+                        AppLogger.e("twittergetUserInfo" + exception.getMessage());
                     }
                 });
             }
@@ -631,14 +595,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             @Override
             public void failure(TwitterException e) {
                 ToastUtil.showNegativeToast("授权失败");
-                AppLogger.e("twitter授权："+e);
+                AppLogger.e("twitter授权：" + e);
             }
         });
     }
 
     @Override
     public TwitterAuthClient getTwitterBack() {
-        if (twitterAuthClient == null){
+        if (twitterAuthClient == null) {
             return null;
         }
         return twitterAuthClient;
@@ -647,9 +611,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public void getFaceBookAuthorize(Activity activity) {
         AccessToken accessToken = AccessToken.getCurrentAccessToken();
-        if (accessToken != null && !accessToken.isExpired()){
+        if (accessToken != null && !accessToken.isExpired()) {
             //直接登录
-            executeOpenLogin(accessToken.getToken(),7);
+            executeOpenLogin(accessToken.getToken(), 7);
         }
         if (accessToken == null || accessToken.isExpired()) {
             LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "user_friends"));
@@ -678,7 +642,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
-                        executeOpenLogin(accessToken.getToken(),7);
+                        executeOpenLogin(accessToken.getToken(), 7);
                         // 保存用户信息
                         PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, imageUrl);
                         PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, facebook_name);
@@ -705,9 +669,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public CallbackManager getFaceBookBackObj() {
-        if (callbackManager != null){
+        if (callbackManager != null) {
             return callbackManager;
-        }else {
+        } else {
             return null;
         }
     }

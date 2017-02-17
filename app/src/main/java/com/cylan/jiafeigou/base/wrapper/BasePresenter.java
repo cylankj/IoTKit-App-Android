@@ -340,7 +340,12 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     protected void robotDelData(String peer, ArrayList<JFGDPMsg> dps, int timeoutMs) {
         post(() -> {
-            long seq = JfgCmdInsurance.getCmd().robotDelData(peer, dps, timeoutMs);
+            long seq = 0;
+            try {
+                seq = JfgCmdInsurance.getCmd().robotDelData(peer, dps, timeoutMs);
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
             mRequestSeqs.add(seq);
         });
     }

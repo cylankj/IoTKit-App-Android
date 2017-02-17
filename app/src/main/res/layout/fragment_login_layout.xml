@@ -20,6 +20,7 @@
         android:layout_height="wrap_content"
         hunt:ct_icon="@drawable/login_btn_close"
         hunt:ct_title="@string/LOGIN"
+        hunt:ct_right_title="@string/Tap0_register"
         hunt:ct_title_color="@color/color_black" />
 
     <ViewSwitcher

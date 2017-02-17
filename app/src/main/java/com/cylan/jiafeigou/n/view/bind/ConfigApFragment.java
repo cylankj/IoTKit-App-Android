@@ -128,7 +128,6 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
         super.onResume();
         if (basePresenter != null) {
             basePresenter.refreshWifiList();
-            basePresenter.startPingFlow();
         }
     }
 
@@ -183,25 +182,25 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
                 break;
             case R.id.tv_wifi_pwd_submit:
                 ViewUtils.deBounceClick(tvWifiPwdSubmit);
-                tvWifiPwdSubmit.viewZoomSmall();
                 String ssid = ViewUtils.getTextViewContent(tvConfigApName);
                 String pwd = ViewUtils.getTextViewContent(etWifiPwd);
                 int type = 0;
                 if (TextUtils.isEmpty(ssid)) {
-                    ToastUtil.showNegativeToast("请选择wifi");
+                    ToastUtil.showNegativeToast("没有文案:请选择wifi");
                     return;
                 }
                 Object o = tvConfigApName.getTag();
                 if (o != null && o instanceof BeanWifiList) {
                     type = BindUtils.getSecurity(((BeanWifiList) o).result);
                 }
-                if (TextUtils.isEmpty(pwd)) {
+                if (TextUtils.isEmpty(pwd) || pwd.length() < 8) {
                     ToastUtil.showNegativeToast(getString(R.string.ENTER_PWD_1));
                     return;
                 }
                 if (basePresenter != null)
-                    basePresenter.sendWifiInfo(!basePresenter.isConnectDog(), ViewUtils.getTextViewContent(tvConfigApName),
+                    basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
                             ViewUtils.getTextViewContent(etWifiPwd), type);
+                tvWifiPwdSubmit.viewZoomSmall();
                 break;
             case R.id.tv_config_ap_name:
                 if (getView() != null)

@@ -58,12 +58,11 @@ public interface ConfigApContract {
         void unregisterNetworkMonitor();
 
         /**
-         * @param needRePing 之前的平ping失效
          * @param ssid
          * @param pwd
          * @param type
          */
-        void sendWifiInfo(boolean needRePing, String ssid, String pwd, int type);
+        void sendWifiInfo(String ssid, String pwd, int type);
 
         /**
          * 会发送ping,fping消息,确认设备是否在通信范围内.
@@ -77,11 +76,11 @@ public interface ConfigApContract {
          */
         void clearConnection();
 
-        /**
-         * 一旦进来页面,就开始ping流程,避免在后台做,ping结果需要保持,状态判断.
-         * 这一流程,非常快.
-         */
-        boolean startPingFlow();
+//        /**
+//         * 一旦进来页面,就开始ping流程,避免在后台做,ping结果需要保持,状态判断.
+//         * 这一流程,非常快.
+//         */
+//        boolean startPingFlow();
 
         boolean isConnectDog();
 
