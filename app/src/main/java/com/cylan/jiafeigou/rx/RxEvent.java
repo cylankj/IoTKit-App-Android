@@ -659,8 +659,12 @@ public class RxEvent {
         public byte[] data;
     }
 
-    public static class CallAnswerd {
+    public static class CallAnswered {
+        public CallAnswered(boolean self) {
+            this.self = self;
+        }
 
+        public boolean self;
     }
 
     public static class GetDataResponse {

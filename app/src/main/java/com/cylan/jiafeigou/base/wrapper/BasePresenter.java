@@ -64,13 +64,14 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     public void onViewAttached(JFGView view) {
         mView = (V) view;
         onRegisterResponseParser();
-        onRegisterSubscription();
+
         mSourceManager = DataSourceManager.getInstance();
     }
 
     @Override
     @CallSuper
     public void onStart() {
+        onRegisterSubscription();
     }
 
     @CallSuper
@@ -102,12 +103,11 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @Override
     @CallSuper
     public void onStop() {
-
+        onUnRegisterSubscription();
     }
 
     @Override
     public void onViewDetached() {
-        onUnRegisterSubscription();
         mView = null;
         mSourceManager = null;
     }

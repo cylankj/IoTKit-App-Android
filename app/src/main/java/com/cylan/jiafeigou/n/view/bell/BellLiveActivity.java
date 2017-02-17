@@ -107,7 +107,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 handlePortClick();
             }
         });
-        newCall();
         //三秒后隐藏状态栏
         mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
         mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
@@ -175,6 +174,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onResume();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        newCall();
     }
 
     @Override
@@ -325,6 +330,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
+    public void onVideoDisconnect(int code) {
+        mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
+    }
+
+    @Override
     public void onConnectDeviceTimeOut() {
         ToastUtil.showNegativeToast("连接门铃超时");
         mPresenter.dismiss();
@@ -338,6 +348,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
 
     public void onViewer() {
+        mBellLiveVideoPicture.setVisibility(View.VISIBLE);
+        mBellLiveVideoPicture.setImageResource(R.drawable.default_diagram_mask);
+        mVideoPlayController.setState(ILiveControl.STATE_LOADING, null);
         dLayoutBellHotSeat.setVisibility(View.GONE);
         fLayoutBellAfterLive.setVisibility(View.VISIBLE);
 
@@ -383,7 +396,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                     return false;
                 }
             });
-            mSurfaceView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
         }
         AppLogger.i("initVideoView");
         mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
@@ -432,7 +444,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void clickImage(int state) {
         switch (state) {
             case ILiveControl.STATE_LOADING_FAILED:
-                mPresenter.pickup();
+                mPresenter.startViewer();
                 break;
         }
     }
