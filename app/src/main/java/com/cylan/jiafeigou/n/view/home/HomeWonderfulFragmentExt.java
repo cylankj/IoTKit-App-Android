@@ -334,7 +334,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onChangeTimeLineDaySuccess(List<DPWonderItem> items) {
-
+        homeWonderAdapter.clear();
+        onQueryTimeLineSuccess(items, true);
     }
 
     @SuppressWarnings("deprecation")

@@ -16,8 +16,10 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -39,11 +41,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(
-                getVideoDisconnectedSub(),
-                getResolutionSub(),
-                getVideoFlowRspSub()
-        );
+//        registerSubscription(
+//                getVideoDisconnectedSub(),
+//                getResolutionSub(),
+//                getVideoFlowRspSub()
+//        );
     }
 
     protected Subscription getConnectDeviceTimeOutSub() {
@@ -101,19 +103,75 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void startViewer() {
-        mView.onViewer();
-        mInViewCallWay = mView.onResolveViewLaunchType();
-        if (TextUtils.isEmpty(mInViewIdentify))
-            mInViewIdentify = onResolveViewIdentify();
-        try {
-            if (!mHasResolution) {
-                AppLogger.e("startView" + mInViewIdentify);
-                JfgCmdInsurance.getCmd().playVideo(mInViewIdentify);
+//        mView.onViewer();
+//        mInViewCallWay = mView.onResolveViewLaunchType();
+//        if (TextUtils.isEmpty(mInViewIdentify))
+//            mInViewIdentify = onResolveViewIdentify();
+//        try {
+//            if (!mHasResolution) {
+//                AppLogger.e("startView" + mInViewIdentify);
+//                JfgCmdInsurance.getCmd().playVideo(mInViewIdentify);
+//            }
+//        } catch (JfgException e) {
+//            e.printStackTrace();
+//        }
+//        registerSubscription(getConnectDeviceTimeOutSub());
+
+        Observable.create((Observable.OnSubscribe<String>) subscriber -> {
+            try {
+                mView.onViewer();
+                AppLogger.e("StartView:" + getViewHandler());
+                JfgCmdInsurance.getCmd().playVideo(getViewHandler());
+                subscriber.onNext(getViewHandler());
+                subscriber.onCompleted();
+            } catch (JfgException e) {
+                e.printStackTrace();
+                AppLogger.e("StartVideo 失败!");
+                subscriber.onError(e);
             }
-        } catch (JfgException e) {
-            e.printStackTrace();
-        }
-        registerSubscription(getConnectDeviceTimeOutSub());
+        })
+                .subscribeOn(Schedulers.io())
+                .flatMap(peer -> RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
+                        .filter(rsp -> TextUtils.equals(rsp.peer, peer))
+                        .first()
+                        .timeout(30, TimeUnit.SECONDS).map(rsp -> {
+                            AppLogger.e("连接设备超时!!!");
+                            mView.onConnectDeviceTimeOut();
+                            return rsp;
+                        }))
+                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(rsp -> {
+                    try {
+                        AppLogger.e("接收到分辨率消息");
+                        mView.onResolution(rsp);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
+                            .takeUntil(
+                                    RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+                                            .filter(dis -> TextUtils.equals(dis.remote, rsp.peer))
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .map(dis -> {
+                                                AppLogger.e("视频连接断开了,错误码为:" + dis.code);
+                                                switch (dis.code) {
+
+                                                    default://dismiss 掉的,属于正常关闭
+
+                                                }
+                                                return dis;
+                                            })
+                            );
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(rtcp -> {
+                    AppLogger.e("onFlow");
+                    mView.onFlowSpeed(rtcp.bitRate);
+                }, e -> {
+                    if (e instanceof TimeoutException) {
+                        AppLogger.e("出错了, aaaaaaa");
+                    }
+                });
     }
 
     /**
@@ -131,6 +189,25 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 e.printStackTrace();
             }
         }
+
+        Observable.create((Observable.OnSubscribe<String>) subscriber -> {
+            try {
+                JfgCmdInsurance.getCmd().stopPlay(getViewHandler());
+                subscriber.onNext(getViewHandler());
+                subscriber.onCompleted();
+                AppLogger.e("停止直播成功");
+            } catch (JfgException e) {
+                e.printStackTrace();
+                subscriber.onError(e);
+                AppLogger.e("停止直播失败");
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .subscribe(s -> {
+                    JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                    disconn.code = -1000000;
+                    RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
+                }, Throwable::printStackTrace);
     }
 
 
@@ -159,15 +236,22 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     public void onStop() {
         super.onStop();
-        post(this::stopViewer);
+        stopViewer();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (!TextUtils.isEmpty(mInViewIdentify) && mHasResolution) { //已有分辨率消息说明已经接通,则恢复
+//        if (!TextUtils.isEmpty(mInViewIdentify) && mHasResolution) { //已有分辨率消息说明已经接通,则恢复
+//            startViewer();
+//        }
+        if (getViewHandler() != null) {
             startViewer();
         }
+    }
+
+    protected String getViewHandler() {
+
     }
 
     @Override

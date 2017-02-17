@@ -6,6 +6,7 @@ import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
+import android.view.ScaleGestureDetector;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.live.LivePlayControlView;
+import com.cylan.jiafeigou.widget.video.ViEAndroidGLES20_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.lang.ref.WeakReference;
@@ -69,6 +71,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     TextView mBellLiveBack;
 
     private ImageView mLandBellLiveSpeaker;
+    private ScaleGestureDetector mGestureDetector;
+    private float mScaleFactor = 1.0f;
     /**
      * 水平方向的view
      */
@@ -366,6 +370,20 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mSurfaceView.setLayoutParams(params);
             mVideoViewContainer.removeAllViews();
             mVideoViewContainer.addView(mSurfaceView);
+            mGestureDetector = new ScaleGestureDetector(this, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+                @Override
+                public boolean onScale(ScaleGestureDetector detector) {
+                    mScaleFactor *= detector.getScaleFactor();
+                    mScaleFactor = Math.max(1.0f, Math.min(mScaleFactor, 3.0f));
+                    AppLogger.e("当前缩放比例为:" + mScaleFactor);
+                    if (mSurfaceView instanceof ViEAndroidGLES20_Ext) {
+                        ((ViEAndroidGLES20_Ext) mSurfaceView).setScaleFactor(mScaleFactor);
+                    }
+
+                    return false;
+                }
+            });
+            mSurfaceView.setOnTouchListener((v, event) -> mGestureDetector.onTouchEvent(event));
         }
         AppLogger.i("initVideoView");
         mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);

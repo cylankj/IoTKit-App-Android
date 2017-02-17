@@ -914,6 +914,7 @@ public class DpMsgDefine {
             return 0;
         }
 
+
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.cid);
@@ -925,6 +926,7 @@ public class DpMsgDefine {
         }
 
         public DPWonderItem() {
+            id = 602;
         }
 
         protected DPWonderItem(Parcel in) {
