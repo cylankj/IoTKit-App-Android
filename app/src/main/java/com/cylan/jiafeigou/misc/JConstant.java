@@ -179,7 +179,7 @@ public class JConstant {
     public static final int OS_DOOR_BELL_CAM = 14; //摄像头主板
     public static final int OS_DOOR_BELL_V2 = 15; //wifi狗主板
     public static final int OS_CAMERA_ANDROID_4G = 16;  //DOG_82
-    public static final int OS_CAMERA_CC3200 = 17;    //乐视狗使用门铃包DOG-CAM-CC3200
+    public static final int OS_CAMERA_CC3200 = 17;    //乐视狗使用门铃包DOG-CAM-CC3200 freeCam
     public static final int OS_CAMERA_PANORAMA_HAISI = 18;    //海思全景摄像头  2W
     public static final int OS_CAMERA_PANORAMA_QIAOAN = 19;    //乔安全景摄像头  3W
     public static final int OS_CAMERA_PANORAMA_GUOKE = 20;    //国科全景摄像头   4W
