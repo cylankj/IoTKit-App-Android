@@ -7,6 +7,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
@@ -19,6 +22,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -69,10 +73,17 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     SettingItemView0 tvDeviceBatteryLevel;
     @BindView(R.id.tv_device_uptime)
     SettingItemView0 tvDeviceUptime;
+    @BindView(R.id.rl_hardware_update)
+    RelativeLayout rlHardwareUpdate;
+    @BindView(R.id.hardware_update_point)
+    View hardwareUpdatePoint;
+    @BindView(R.id.tv_new_software)
+    TextView tvNewSoftware;
     @BindView(R.id.tv_device_cid)
     SettingItemView0 tvDeviceCid;
     private String uuid;
     private EditFragmentDialog editDialogFragment;
+    private RxEvent.CheckDevVersionRsp checkDevVersion;
 
     public static DeviceInfoDetailFragment newInstance(Bundle bundle) {
         DeviceInfoDetailFragment fragment = new DeviceInfoDetailFragment();
@@ -115,6 +126,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     public void onStart() {
         super.onStart();
         updateDetails();
+        basePresenter.checkNewSoftVersion();
     }
 
     private void updateDetails() {
@@ -168,7 +180,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @OnClick({R.id.tv_toolbar_icon,
             R.id.tv_device_sdcard_state,
             R.id.tv_device_alias,
-            R.id.tv_device_time_zone})
+            R.id.tv_device_time_zone,
+            R.id.rl_hardware_update})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
@@ -195,7 +208,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private void jump2HardwareUpdateFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        bundle.putString("the_new_soft_version", "");
+        bundle.putSerializable("version_content", checkDevVersion);
         HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 hardwareUpdateFragment, android.R.id.content);
@@ -268,5 +281,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void setPresenter(CamInfoContract.Presenter presenter) {
         basePresenter = presenter;
+    }
+
+    @Override
+    public void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
+        checkDevVersion = checkDevVersionRsp;
+        if (checkDevVersionRsp.hasNew) {
+            hardwareUpdatePoint.setVisibility(View.VISIBLE);
+            tvNewSoftware.setVisibility(View.VISIBLE);
+        }
     }
 }

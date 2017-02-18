@@ -360,7 +360,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     private void helpItem(View view) {
-//        if (!JCache.isOnline()) {
         if (!GlobalDataProxy.getInstance().isOnline()) {
             needStartLoginFragment();
             return;

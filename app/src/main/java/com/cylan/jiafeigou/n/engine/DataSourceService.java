@@ -217,6 +217,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SdcardClearRsp(l,arrayList));
     }
 
     @Override
@@ -446,7 +447,10 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3) {
-
+        AppLogger.d("OnCheckDevVersionRsp :");
+        if (RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().post(new RxEvent.CheckDevVersionRsp(b,s,s1,s2,s3));
+        }
     }
 
     @Override

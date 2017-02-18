@@ -65,7 +65,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/y6"
-        android:text="476.43MB/4G"
+        android:text="0.0MB/0G"
         android:textColor="#8c8c8c"
         android:textSize="@dimen/sp14" />
 
@@ -88,7 +88,7 @@
             android:layout_marginRight="@dimen/x16"
             android:layout_marginTop="@dimen/y6"
             android:background="#6fa3fd"
-            android:layout_width="100dp"
+            android:layout_width="0dp"
             android:layout_height="@dimen/y5"/>
     </FrameLayout>
 
@@ -106,7 +106,7 @@
             android:gravity="center"
             android:layout_centerVertical="true"
             android:padding="@dimen/x10"
-            android:text="格式化SD卡"
+            android:text="@string/Clear_Sdcard"
             android:background="@drawable/long_btn_bg_shape_white"
             android:textColor="#4B9FD5"
             android:textSize="@dimen/sp16" />
@@ -122,6 +122,8 @@
     </FrameLayout>
 
     <TextView
+        android:visibility="gone"
+        android:id="@+id/tv_clear_restart"
         android:layout_marginTop="@dimen/y9"
         android:layout_gravity="center"
         android:text="清空数据时设备将会重启"

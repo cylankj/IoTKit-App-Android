@@ -5,6 +5,7 @@ import android.os.Bundle;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
+import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
@@ -16,6 +17,7 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DataPointManager;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -697,5 +699,35 @@ public class RxEvent {
 
     public static final class CamLivePageScrolled {
         public boolean selected;
+
+    }
+
+    public static class SdcardClearRsp{
+        public long seq;
+
+        public SdcardClearRsp(long seq, ArrayList<JFGDPMsgRet> arrayList) {
+            this.seq = seq;
+            this.arrayList = arrayList;
+        }
+
+        public ArrayList<JFGDPMsgRet> arrayList;
+
+    }
+
+    public static class CheckDevVersionRsp implements Serializable{
+        public boolean hasNew;
+        public String url;
+
+        public CheckDevVersionRsp(boolean hasNew, String url, String version, String tip, String md5) {
+            this.hasNew = hasNew;
+            this.url = url;
+            this.version = version;
+            this.tip = tip;
+            this.md5 = md5;
+        }
+
+        public String version;
+        public String tip;
+        public String md5;
     }
 }

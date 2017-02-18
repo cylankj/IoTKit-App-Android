@@ -77,7 +77,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         });
     }
 
-    private void initTwitter() {
+    private void initTwitter(){
         HandlerThreadUtils.postAtFrontOfQueue(new Runnable() {
             @Override
             public void run() {
@@ -86,6 +86,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             }
         });
     }
+
 
 
     private void initLeakCanary() {

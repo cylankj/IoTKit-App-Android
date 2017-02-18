@@ -78,6 +78,7 @@ public class SimpleDialogFragment extends BaseDialog {
         }
 
         if (!TextUtils.isEmpty(title)){
+            tvDialogTitle.setVisibility(View.VISIBLE);
             tvDialogTitle.setText(title);
         }
         if (!TextUtils.isEmpty(lContent))

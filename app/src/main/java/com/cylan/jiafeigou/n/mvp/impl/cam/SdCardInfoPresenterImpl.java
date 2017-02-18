@@ -1,18 +1,27 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevBaseValue;
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -32,6 +41,13 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
         super(view);
         view.setPresenter(this);
         this.uuid = uuid;
+    }
+
+    @Override
+    protected Subscription[] register() {
+        return new Subscription[]{
+                onClearSdBack()
+        };
     }
 
     /**
@@ -55,8 +71,19 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     }
 
     @Override
-    public void clearSDcard() {
+    public void clearSDcard(int id) {
         // TODO 格式化Sd卡
+        Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .subscribe((Object o) -> {
+                    BaseValue baseValue = new BaseValue();
+                    baseValue.setId(id);
+                    baseValue.setVersion(System.currentTimeMillis());
+                    baseValue.setValue(o);
+                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                }, (Throwable throwable) -> {
+                    AppLogger.e(throwable.getLocalizedMessage());
+                });
     }
 
     @Override
@@ -68,6 +95,23 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .subscribe((Object o)->{
                     if (getView() != null && !isClearSucc)getView().clearSdResult(2);
                 });
+    }
+
+    @Override
+    public Subscription onClearSdBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearRsp.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((RxEvent.SdcardClearRsp sdcardClearRsp)->{
+                    if (sdcardClearRsp != null){
+                        isClearSucc = true;
+                        JFGDPMsgRet jfgdpMsgRet = sdcardClearRsp.arrayList.get(0);
+                        if (jfgdpMsgRet.id == 218 && jfgdpMsgRet.ret == 0){
+                            getView().clearSdResult(0);
+                        }else {
+                            getView().clearSdResult(1);
+                        }
+                    }
+                } );
     }
 
 }
