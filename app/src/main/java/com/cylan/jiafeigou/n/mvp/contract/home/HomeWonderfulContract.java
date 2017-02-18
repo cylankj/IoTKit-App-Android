@@ -36,7 +36,7 @@ public interface HomeWonderfulContract {
 
         void chooseEmptyView(int type);//type:0:empty:1:guide:-1:hide
 
-        void onTimeLineRsp(long dayStartTime);
+        void onTimeLineRsp(long dayStartTime, boolean b1, boolean b);
 
         void onTimeLineInit(List<WonderIndicatorWheelView.WheelItem> list);
 

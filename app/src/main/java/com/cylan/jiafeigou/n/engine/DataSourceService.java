@@ -206,9 +206,12 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
-        AppLogger.d("OnLocalMessage :" + new Gson().toJson(robotoGetDataRsp));
+        AppLogger.d("OnRobotGetDataRsp :" + new Gson().toJson(robotoGetDataRsp));
         GlobalDataProxy.getInstance().robotGetDataRsp(robotoGetDataRsp);
         DataSourceManager.getInstance().cacheRobotoGetDataRsp(robotoGetDataRsp);
+        if (RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().post(robotoGetDataRsp);
+        }
     }
 
     @Override

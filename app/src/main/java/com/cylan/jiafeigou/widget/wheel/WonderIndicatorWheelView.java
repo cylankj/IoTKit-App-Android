@@ -38,6 +38,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     private FrameLayout mWonderItemsContainer;
     private float mFactor = 2.0F;
     private int mViewWidth;
+    private static final long DAY_TIME = 24 * 60 * 60 * 1000L;
 
     public WonderIndicatorWheelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -139,17 +140,13 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     public void onItemClick(View itemView, int viewType, int position) {
         WheelItem c = mAdapter.getItem(position);
         if (mLastPosition != position) {
-            mAdapter.getItem(mLastPosition).selected = false;
             c.selected = true;
-            SuperViewHolder holder;
-            holder = (SuperViewHolder) mIndicatorList.findViewHolderForAdapterPosition(mLastPosition);
-            if (holder == null) {
-                mAdapter.notifyItemChanged(mLastPosition);
-            } else {
-                holder.setSelected(R.id.wonder_indicator_item, false);
-            }
             itemView.findViewById(R.id.wonder_indicator_item).setSelected(true);
             mIndicatorList.smoothScrollToPosition(position);
+            if (mLastPosition != -1) {
+                mAdapter.getItem(mLastPosition).selected = false;
+                mAdapter.notifyItemChanged(mLastPosition);
+            }
             mLastPosition = position;
             if (mListener != null) mListener.onChanged(c.time);
         }
@@ -198,17 +195,30 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         }
     }
 
-    public void notify(long time) {
+    public void notify(long time, boolean hasDate, boolean selected) {
         long startTime = TimeUtils.getSpecificDayStartTime(time);
         WheelItem item;
         for (int i = 0; i < mAdapter.getList().size(); i++) {
             item = mAdapter.getItem(i);
-            if (item.time == startTime) {
-                item.wonderful = true;
+            if (item.time / DAY_TIME == startTime / DAY_TIME) {
+                item.wonderful = hasDate;
+                item.selected = selected;
+                if (selected && mLastPosition != -1) {
+                    mAdapter.getItem(mLastPosition).selected = false;
+                    mAdapter.notifyItemChanged(mLastPosition);
+                    mLastPosition = i;
+                } else if (!selected && mLastPosition == i) {
+                    mLastPosition = -1;
+                }
                 mAdapter.notifyItemChanged(i);
+                mIndicatorList.smoothScrollToPosition(mLastPosition);
                 return;
             }
         }
+    }
+
+    private void changeSelected(long time) {
+
     }
 
     public void scrollPositionToCenter() {

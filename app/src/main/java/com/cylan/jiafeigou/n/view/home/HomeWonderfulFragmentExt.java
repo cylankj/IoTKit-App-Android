@@ -306,7 +306,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
         }
         homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
-        ToastUtil.showPositiveToast("刷新成功");
         srLayoutMainContentHolder.setNestedScrollingEnabled(true);
     }
 
@@ -316,8 +315,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     @Override
-    public void onTimeLineRsp(long dayStartTime) {
-        getWheelView().notify(dayStartTime);
+    public void onTimeLineRsp(long dayStartTime, boolean b1, boolean b) {
+        getWheelView().notify(dayStartTime, b1, b);
     }
 
     @Override

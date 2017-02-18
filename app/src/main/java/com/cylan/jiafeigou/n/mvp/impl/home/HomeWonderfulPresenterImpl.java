@@ -54,7 +54,19 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(getTimeTickEventSub(), getPageScrolledSub(), getDeleteWonderfulSub());
+        registerSubscription(getTimeTickEventSub(), getPageScrolledSub());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        registerSubscription(getDeleteWonderfulSub());
+    }
+
+    @Override
+    public void onViewDetached() {
+        super.onViewDetached();
+        onUnRegisterSubscription();
     }
 
     private Subscription getDeleteWonderfulSub() {
@@ -62,6 +74,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleteWonder -> {
+                    AppLogger.e("收到删除请求,正在删除");
                     deleteTimeline(deleteWonder.position);
                 });
     }
@@ -100,27 +113,23 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startRefresh() {
-        queryTimeLine(0, false)
+        queryTimeLine(0, 21, false)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnUnsubscribe(() -> AppLogger.e("刷新链取消订阅了"))
                 .map(result -> {
                     AppLogger.e("正在更新 UI 界面");
                     int oldSize = mWonderItems.size();
                     long oldVersion = mWonderItems.isEmpty() ? 0 : mWonderItems.first().version;
-                    if (mWonderItems.addAll(result)) {//说明有新数据
-                        AppLogger.e("有新数据");
-                        long topVersion = mWonderItems.first().version;
-                        updateCurrentItems(TimeUtils.getSpecificDayStartTime(topVersion), TimeUtils.getSpecificDayEndTime(topVersion));
-                        mView.chooseEmptyView(VIEW_TYPE_HIDE);
-                        if (oldVersion < mCurrentDayStartTime) {//change
-                            mView.onChangeTimeLineDaySuccess(mCurrentWonderItems);
-                        } else if (oldVersion >= mCurrentDayStartTime && oldVersion <= mCurrentDayEndTime) {//update
-                            mView.onQueryTimeLineSuccess(mCurrentWonderItems.subList(0, mWonderItems.size() - oldSize), true);
-                        }
-                    } else if (mCurrentWonderItems.size() == 0) {
-                        mView.chooseEmptyView(VIEW_TYPE_EMPTY);
-                    } else {
-                        mView.onQueryTimeLineSuccess(null, true);
+                    mWonderItems.addAll(result);
+                    int newSize = mWonderItems.size();
+                    long topVersion = mWonderItems.first().version;
+                    boolean empty = oldSize == newSize && mCurrentWonderItems.size() == 0;
+                    updateCurrentItems(TimeUtils.getSpecificDayStartTime(topVersion), TimeUtils.getSpecificDayEndTime(topVersion));
+                    if (mCurrentWonderItems.size() > 0) mView.chooseEmptyView(VIEW_TYPE_HIDE);
+                    if (empty || oldVersion < mCurrentDayStartTime) {//change
+                        mView.onChangeTimeLineDaySuccess(mCurrentWonderItems);
+                        mView.onTimeLineRsp(mCurrentWonderItems.get(0).version, true, true);
+                    } else if (oldVersion >= mCurrentDayStartTime && oldVersion <= mCurrentDayEndTime) {//update
+                        mView.onQueryTimeLineSuccess(mCurrentWonderItems.subList(0, newSize - oldSize), true);
                     }
                     long initValue = -1;
                     if (!mHasTimeWheelInit && mWonderItems.size() > 0) {
@@ -131,29 +140,33 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 })
                 .observeOn(Schedulers.io())
                 .filter(initValue -> initValue > 0)
-                .first()
                 .map(initValue -> {
                     List<WonderIndicatorWheelView.WheelItem> wheelList = getInitWheelList(initValue);
                     mView.onTimeLineInit(wheelList);
                     mHasTimeWheelInit = true;
+                    AppLogger.e("正在初始化时间轴数据,当前 list 大小为:" + wheelList.size());
                     return wheelList;
                 })
-                .flatMap(items -> Observable.from(items).onBackpressureBuffer())
-                .map(item -> sendQueryRequest(item.time, true))
-                .filter(seq -> seq > 0)
+                .flatMap(Observable::from)
+                .map(item -> sendQueryRequest(item.time, 1, true))
+                .filter(seq -> seq != -1)
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> rsp.seq == seq).first())
                 .map(rsp -> {
-                    DpMsgDefine.DPWonderItem item = null;
+                    AppLogger.e("收到时间轴更新数据");
                     ArrayList<JFGDPMsg> msgs = rsp.map.get(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG);
+                    long version = -1;
                     if (msgs.size() > 0) {
-                        item = new DpMsgDefine.DPWonderItem();
-                        item.setValue(msgs.get(0), rsp.seq);
+                        version = msgs.get(0).version;
                     }
-                    return item;
+                    return version;
                 })
-                .filter(item -> item != null)
+                .filter(version -> version != -1)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(item -> mView.onTimeLineRsp(item.version), e -> {
+                .doOnUnsubscribe(() -> AppLogger.e("刷新链取消订阅了"))
+                .subscribe(version -> {
+                    AppLogger.e("正在更新时间轴条目:" + version);
+                    mView.onTimeLineRsp(version, true, version >= mCurrentDayStartTime && version <= mCurrentDayEndTime);
+                }, e -> {
                     if (e instanceof TimeoutException) {
                         mView.onQueryTimeLineTimeOut();
                     }
@@ -184,7 +197,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startLoadMore() {
-        queryTimeLine(mCurrentWonderItems.get(mCurrentWonderItems.size() - 1).version, false)
+        queryTimeLine(mCurrentWonderItems.get(mCurrentWonderItems.size() - 1).version, 21, false)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     int oldSize = mCurrentWonderItems.size();
@@ -201,8 +214,8 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 });
     }
 
-    public Observable<List<DpMsgDefine.DPWonderItem>> queryTimeLine(long version, boolean asc) {
-        return Observable.just(sendQueryRequest(version, asc))
+    public Observable<List<DpMsgDefine.DPWonderItem>> queryTimeLine(long version, int count, boolean asc) {
+        return Observable.just(sendQueryRequest(version, count, asc))
                 .filter(seq -> seq > 0)
                 .subscribeOn(Schedulers.io())
                 .flatMap(seq -> RxBus.getCacheInstance()
@@ -246,7 +259,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 subscriber.onError(e);
             }
         }).subscribeOn(Schedulers.io())
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).onBackpressureBuffer().filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     if (rsp.resultCode == 0) {//success
@@ -255,6 +268,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         mWonderItems.remove(item);
                         ToastUtil.showPositiveToast("删除成功");
                         mView.onDeleteWonderSuccess(position);
+                        if (mCurrentWonderItems.isEmpty()) {//说明当天的已经删完了
+                            mView.chooseEmptyView(VIEW_TYPE_EMPTY);
+                            mView.onTimeLineRsp(mCurrentDayStartTime, false, false);
+                        }
                         RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
                     } else {
                         AppLogger.e("删除失败");
@@ -294,9 +311,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
             subscriber.onCompleted();
         })
                 .subscribeOn(Schedulers.io())
-                .flatMap(wonderItems -> wonderItems != null && wonderItems.size() > 0 ? Observable.just(new ArrayList<>(wonderItems)) : queryTimeLine(mCurrentDayEndTime, false).map(ret -> {
+                .flatMap(wonderItems -> wonderItems != null && wonderItems.size() > 0 ? Observable.just(mCurrentWonderItems) : queryTimeLine(mCurrentDayEndTime, 21, false).map(ret -> {
+                    AppLogger.e("从新请求数据");
                     for (DpMsgDefine.DPWonderItem item : ret) {
-                        if (item.version > mCurrentDayStartTime && item.version < mCurrentDayEndTime) {
+                        if (item.version >= mCurrentDayStartTime && item.version <= mCurrentDayEndTime) {
                             mCurrentWonderItems.add(item);
                         }
                     }
@@ -305,7 +323,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(items -> {
                     mView.chooseEmptyView(items.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
-                    mView.onQueryTimeLineSuccess(new ArrayList<>(items), false);
+                    mView.onChangeTimeLineDaySuccess(items);
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         mView.onQueryTimeLineTimeOut();
@@ -323,13 +341,13 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         robotGetData("", params, 1, true, 0, seq);
     }
 
-    private long sendQueryRequest(long version, boolean asc) {
+    private long sendQueryRequest(long version, int count, boolean asc) {
         try {
-            AppLogger.e("正在发送查询请求" + version + asc);
+            AppLogger.e("正在发送查询请求,version:" + version + "count:" + count + "acs:" + asc);
             ArrayList<JFGDPMsg> params = new ArrayList<>();
             JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, version);
             params.add(msg);
-            return JfgCmdInsurance.getCmd().robotGetData("", params, 21, asc, 0);//多请求一条数据,用来判断是否是一天最后一条
+            return JfgCmdInsurance.getCmd().robotGetData("", params, count, asc, 0);//多请求一条数据,用来判断是否是一天最后一条
         } catch (JfgException e) {
             AppLogger.e(e.getMessage());
             return -1;

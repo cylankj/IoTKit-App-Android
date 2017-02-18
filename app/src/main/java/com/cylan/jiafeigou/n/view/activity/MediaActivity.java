@@ -532,6 +532,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     public void delete() {
         Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
             RxEvent.DeleteWonder wonder = new RxEvent.DeleteWonder();
+            AppLogger.e("正在发送删除请求:" + mCurrentPosition);
             wonder.position = mCurrentPosition;
             RxBus.getCacheInstance().post(wonder);
             subscriber.onNext(wonder.position);
@@ -539,6 +540,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         }).flatMap(position -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonderRsp.class).filter(rsp -> rsp.position == position).first())
                 .subscribe(rsp -> {
                     if (rsp.success) {
+                        AppLogger.e("删除成功");
                         if (mAdapter.getCount() > 0) {
                             mMediaList.remove(rsp.position);
                             mAdapter.notifyDataSetChanged();
