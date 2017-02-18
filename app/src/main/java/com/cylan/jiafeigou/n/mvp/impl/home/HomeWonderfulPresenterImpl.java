@@ -105,8 +105,14 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(result -> {
                     AppLogger.e("正在更新 UI 界面");
+                    long topVersion = -1;
+                    if (mWonderItems.size() > 0) {
+                        topVersion = mWonderItems.first().version;
+                    }
                     if (mWonderItems.addAll(result)) {//说明有新数据
-                        TreeSet<DpMsgDefine.DPWonderItem> wonderItems = changeCurrentItems(TimeUtils.getSpecificDayStartTime(mWonderItems.first().time * 1000L), TimeUtils.getSpecificDayEndTime(mWonderItems.first().time * 1000L));
+                        AppLogger.e("有新数据");
+                        if (topVersion == -1) topVersion = mWonderItems.first().version;
+                        TreeSet<DpMsgDefine.DPWonderItem> wonderItems = changeCurrentItems(TimeUtils.getSpecificDayStartTime(topVersion), TimeUtils.getSpecificDayEndTime(topVersion));
                         mView.chooseEmptyView(VIEW_TYPE_HIDE);
                         if (wonderItems.size() < mCurrentWonderItems.size()) {
                             mView.onQueryTimeLineSuccess(new ArrayList<>(wonderItems), true);
@@ -120,7 +126,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     }
                     long initValue = -1;
                     if (!mHasTimeWheelInit && mWonderItems.size() > 0) {
-                        initValue = mWonderItems.first().time * 1000L;
+                        initValue = mWonderItems.first().version;
                     }
                     AppLogger.e("initValue:" + initValue);
                     return initValue;
@@ -161,7 +167,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         TreeSet<DpMsgDefine.DPWonderItem> result = new TreeSet<>();
         boolean hasDayChanged = false;
         for (DpMsgDefine.DPWonderItem item : mCurrentWonderItems) {
-            if (item.time * 1000L < versionStart || item.time * 1000L > versionEnd) {
+            if (item.version < versionStart || item.version > versionEnd) {
                 result.add(item);
             }
         }
@@ -169,7 +175,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         result.clear();
         if (mCurrentWonderItems.size() == 0) hasDayChanged = true;
         for (DpMsgDefine.DPWonderItem item : mWonderItems) {
-            if (item.time * 1000L >= versionStart && item.time * 1000L <= versionEnd) {
+            if (item.version >= versionStart && item.version <= versionEnd) {
                 mCurrentWonderItems.add(item);
                 if (hasDayChanged) result.add(item);
             }

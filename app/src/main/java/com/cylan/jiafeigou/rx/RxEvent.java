@@ -724,4 +724,8 @@ public class RxEvent {
             success = b;
         }
     }
+
+    public static class CamLivePageScrolled {
+        public boolean selected;
+    }
 }

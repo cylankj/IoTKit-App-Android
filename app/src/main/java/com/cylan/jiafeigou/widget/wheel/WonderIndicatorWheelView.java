@@ -160,15 +160,15 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         int value = (int) animation.getAnimatedValue();
-        int containerX= mWonderItemsContainer.getScrollX();
-        if ((containerX >0 && value<=0)||(containerX < 0 && value >= 0)) {
+        int containerX = mWonderItemsContainer.getScrollX();
+        if ((containerX > 0 && value <= 0) || (containerX < 0 && value >= 0)) {
             mWonderItemsContainer.scrollTo(0, 0);
             int scrollX = value - mScrolledX;
             mIndicatorList.scrollBy(scrollX, 0);
             mScrolledX = value;
-        }else if ((containerX>0&&value>=0) ||(containerX<0&&value<=0)){
-         mWonderItemsContainer.scrollTo(value,0);
-        }else {
+        } else if ((containerX > 0 && value >= 0) || (containerX < 0 && value <= 0)) {
+            mWonderItemsContainer.scrollTo(value, 0);
+        } else {
             int scrollX = value - mScrolledX;
             mIndicatorList.scrollBy(scrollX, 0);
             mScrolledX = (int) animation.getAnimatedValue();
