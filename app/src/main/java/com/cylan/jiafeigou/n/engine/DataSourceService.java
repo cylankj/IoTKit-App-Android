@@ -222,6 +222,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SdcardClearRsp(l,arrayList));
     }
 
     @Override
@@ -239,7 +240,6 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d("OnlineStatus :" + b);
         GlobalDataProxy.getInstance().setOnline(b);
         RxBus.getCacheInstance().post(new RxEvent.LoginRsp(b));
-
         DataSourceManager.getInstance().setOnline(b);//设置用户在线信息
     }
 
@@ -450,7 +450,10 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3) {
-
+        AppLogger.d("OnCheckDevVersionRsp :");
+        if (RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().post(new RxEvent.CheckDevVersionRsp(b,s,s1,s2,s3));
+        }
     }
 
     @Override
@@ -474,5 +477,10 @@ public class DataSourceService extends Service implements AppCallBack {
         map.put("ServerAddress", serverAddress);
         Log.d("getAppParameter", "getAppParameter:" + map);
         return map;
+    }
+
+    @Override
+    public void OnBindDevRsp(int i, String s) {
+
     }
 }

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
+import android.text.TextUtils;
 
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGDevice;
@@ -89,10 +90,12 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                     public void call(ArrayList<DeviceBean> deviceList) {
                         if (getView() != null && deviceList != null && deviceList.size() > 0) {
                             allDevice.clear();
-                            allDevice.addAll(deviceList);
                             ArrayList<String> cidList = new ArrayList<String>();
                             for (DeviceBean bean : deviceList) {
-                                cidList.add(bean.uuid);
+                                if (TextUtils.isEmpty(bean.shareAccount)){
+                                    cidList.add(bean.uuid);
+                                    allDevice.add(bean);
+                                }
                             }
                             getDeviceInfo(cidList);
                         } else {

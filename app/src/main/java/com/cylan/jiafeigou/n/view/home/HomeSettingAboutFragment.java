@@ -12,6 +12,9 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -20,10 +23,15 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingAboutContract;
 import com.cylan.jiafeigou.n.view.login.AgreementFragment;
+import com.cylan.jiafeigou.n.view.mine.WebsiteFragement;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,10 +56,14 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
     RelativeLayout rl_website;
     @BindView(R.id.rl_home_mine_setting_title)
     FrameLayout rlHomeMineSettingTitle;
+    @BindView(R.id.tv_copy_right)
+    TextView tvCopyRight;
+
+    private static final String COPY_RIGHT = "Copyright @ 2005-%s Cylan.All Rights Reserved";
 
     private HomeSettingAboutContract.Presenter presenter;
     private Intent intent;
-
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
     public static HomeSettingAboutFragment newInstance() {
         return new HomeSettingAboutFragment();
     }
@@ -75,6 +87,12 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
         this.presenter = presenter;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        tvCopyRight.setText(String.format(COPY_RIGHT, simpleDateFormat.format(new Date(System.currentTimeMillis()))));
+    }
+
     @OnClick({R.id.iv_home_setting_about_back, R.id.rLayout_home_setting_hotphone, R.id.tv_user_agreement, R.id.rLayout_home_setting_website})
     public void onClick(View view) {
 
@@ -93,6 +111,8 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
                 getContext().startActivity(intent);
                 break;
             case R.id.rLayout_home_setting_website:
+                enterWeb();
+                break;
             case R.id.tv_user_agreement:
                 IMEUtils.hide(getActivity());
                 AgreementFragment fragment = AgreementFragment.getInstance(null);
@@ -100,6 +120,13 @@ public class HomeSettingAboutFragment extends Fragment implements HomeSettingAbo
                         fragment, android.R.id.content);
                 break;
         }
+    }
+
+    private void enterWeb() {
+        IMEUtils.hide(getActivity());
+        WebsiteFragement fragment = WebsiteFragement.getInstance(null);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                fragment, android.R.id.content);
     }
 
     @Override

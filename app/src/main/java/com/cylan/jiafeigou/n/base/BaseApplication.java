@@ -76,9 +76,15 @@ public class BaseApplication extends MultiDexApplication implements Application.
         FacebookSdk.sdkInitialize(getApplicationContext());
     }
 
-    private void initTwitter() {
-        TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-        Fabric.with(this, new TwitterCore(authConfig),new TweetComposer());
+    private void initTwitter(){
+        HandlerThreadUtils.post(new Runnable() {
+            @Override
+            public void run() {
+                TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
+                Fabric.with(BaseApplication.this, new TwitterCore(authConfig), new TweetComposer());
+            }
+        });
+
     }
 
 

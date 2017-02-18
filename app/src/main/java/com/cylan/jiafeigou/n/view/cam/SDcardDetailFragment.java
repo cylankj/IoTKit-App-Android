@@ -14,6 +14,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -57,6 +58,8 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     View viewTotalVolume;
     @BindView(R.id.iv_loading_rotate)
     ImageView ivLoadingRotate;
+    @BindView(R.id.tv_clear_restart)
+    TextView tvClearRestart;
 
     private String uuid;
     private SdCardInfoContract.Presenter basePresenter;
@@ -114,16 +117,16 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
 
     private void showClearSdDialog() {
         DpMsgDefine.DPSdStatus sdStatus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
-        if (sdStatus.used == 0){
+        if (sdStatus.used == 0) {
             ToastUtil.showToast(getString(R.string.Clear_Sdcard_tips3));
             return;
         }
         Bundle bundle = new Bundle();
-        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT,getString(R.string.CARRY_ON));
+        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
         bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Clear_Sdcard_tips));
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
-            basePresenter.clearSDcard();
+            basePresenter.clearSDcard(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD);
             basePresenter.clearCountTime();
             showLoading();
         });
@@ -165,7 +168,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     @Override
     public void clearSdResult(int code) {
         hideLoading();
-        switch (code){
+        switch (code) {
             case 0:
                 ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
                 break;
@@ -183,10 +186,15 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             showHasNoSdDialog();
             return;
         }
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
+        //仅3G摄像头显示此栏
+        if (device != null && JFGRules.is3GCam(device.pid)) {
+            tvClearRestart.setVisibility(View.VISIBLE);
+        }
 
         DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
         boolean show = net != null && JFGRules.isDeviceOnline(net);
-        if (!show || NetUtils.getJfgNetType(getContext()) == 0){
+        if (!show || NetUtils.getJfgNetType(getContext()) == 0) {
             tvClecrSdcard.setTextColor(Color.parseColor("#8c8c8c"));
             tvClecrSdcard.setEnabled(false);
         }

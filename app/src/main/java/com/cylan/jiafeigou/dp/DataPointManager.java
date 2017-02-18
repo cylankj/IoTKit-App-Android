@@ -444,7 +444,12 @@ public class DataPointManager implements IParser, IDataPoint {
             msg.version = version;
             msgs.add(msg);
         }
-        long req = JfgCmdInsurance.getCmd().robotDelData(uuid, msgs, 0);
+        long req = 0;
+        try {
+            req = JfgCmdInsurance.getCmd().robotDelData(uuid, msgs, 0);
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
         if (DEBUG) Log.d(TAG, "deleteRobot: " + req + " " + msgs);
     }
 

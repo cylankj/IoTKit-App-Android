@@ -175,7 +175,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             if (getView() != null) {
                                 getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
                                 if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())) {
-                                    userInfo.setAlias(createRandomName());
+                                    userInfo.setAlias(userInfo.getAccount());
                                 }
                                 getView().setAliasName(userInfo.getAlias());
                             }

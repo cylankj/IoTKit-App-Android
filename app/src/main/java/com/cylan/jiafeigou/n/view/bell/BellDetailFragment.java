@@ -3,9 +3,12 @@ package com.cylan.jiafeigou.n.view.bell;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
@@ -13,8 +16,12 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
+import com.cylan.jiafeigou.n.view.cam.HardwareUpdateFragment;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView0;
@@ -22,6 +29,7 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
@@ -55,6 +63,14 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     SettingItemView0 svSettingDeviceUptime;
     @BindView(R.id.lLayout_setting_container)
     LinearLayout lLayoutSettingContainer;
+    @BindView(R.id.sv_setting_hardware_update)
+    SettingItemView0 svSettingHardwareUpdate;
+    @BindView(R.id.hardware_update_point)
+    View hardwareUpdatePoint;
+    @BindView(R.id.rl_hardware_update)
+    RelativeLayout rlHardwareUpdate;
+
+    private RxEvent.CheckDevVersionRsp checkDevVersion;
 
     public static BellDetailFragment newInstance(Bundle bundle) {
         BellDetailFragment fragment = new BellDetailFragment();
@@ -136,5 +152,39 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         String ssid = TextUtils.isEmpty(device.net.$().ssid) ? getString(R.string.OFF_LINE) : device.net.$().ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);
         svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(device.up_time.$()));
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        // TODO: inflate a fragment view
+        View rootView = super.onCreateView(inflater, container, savedInstanceState);
+        ButterKnife.bind(this, rootView);
+        return rootView;
+    }
+
+    @OnClick(R.id.rl_hardware_update)
+    public void OnClick(){
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+        bundle.putSerializable("version_content",checkDevVersion);
+        HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                hardwareUpdateFragment, android.R.id.content);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (mPresenter != null)
+            mPresenter.checkNewVersion(mUUID);
+    }
+
+    @Override
+    public void checkResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
+        this.checkDevVersion = checkDevVersionRsp;
+        if (checkDevVersionRsp.hasNew){
+            hardwareUpdatePoint.setVisibility(View.VISIBLE);
+            svSettingHardwareUpdate.setTvSubTitle("新固件");
+        }
     }
 }

@@ -74,6 +74,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     private HomeMineHelpSuggestionContract.Presenter presenter;
     private int itemPosition;
     private boolean resendFlag;
+    private boolean hasSendLog = false;
 
     public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
         HomeMineHelpSuggestionFragment fragment = new HomeMineHelpSuggestionFragment();
@@ -231,8 +232,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         }
         suggestionAdapter.add(suggestionBean);
         suggestionAdapter.notifyDataSetHasChanged();
-        presenter.sendFeedBack(suggestionBean);
-//        presenter.sendLogToCloud(presenter.getSaveLogCloudUrl(),presenter.getLocalLogUrl());
+        presenter.sendFeedBack(suggestionBean,true);
     }
 
     @Override
@@ -294,6 +294,16 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     }
 
     /**
+     * 上传日志的结果
+     */
+    @Override
+    public void sendLogResult(int code) {
+        addInputItem();
+        hideLoadingDialog();
+        hasSendLog = true;
+    }
+
+    /**
      * 初始化显示列表
      *
      * @param list
@@ -318,7 +328,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 resendFlag = true;
                 ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);
                 send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
-                presenter.sendFeedBack(item);
+                presenter.sendFeedBack(item,false);
                 presenter.deleteOnItemFromDb(item);
             }
         });

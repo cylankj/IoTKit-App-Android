@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -84,8 +85,11 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     CustomToolbar customToolbar;
     @BindView(R.id.hardware_update_point)
     View hardwareUpdatePoint;
+    @BindView(R.id.tv_new_software)
+    TextView tvNewSoftware;
     private String uuid;
     private EditFragmentDialog editDialogFragment;
+    private RxEvent.CheckDevVersionRsp checkDevVersion;
 
     public static DeviceInfoDetailFragment newInstance(Bundle bundle) {
         DeviceInfoDetailFragment fragment = new DeviceInfoDetailFragment();
@@ -128,6 +132,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     public void onStart() {
         super.onStart();
         updateDetails();
+        basePresenter.checkNewSoftVersion();
     }
 
     private void updateDetails() {
@@ -173,7 +178,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         return sdStatus != null ? getString(R.string.SD_NORMAL) : "";
     }
 
-    @OnClick({R.id.tv_toolbar_icon,R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone, R.id.ll_SDcard_item, R.id.rl_hardware_update})
+    @OnClick({R.id.tv_toolbar_icon, R.id.lLayout_information_facility_name, R.id.lLayout_information_facility_timezone, R.id.ll_SDcard_item, R.id.rl_hardware_update})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
@@ -188,7 +193,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             case R.id.ll_SDcard_item:
                 jump2SdcardDetailFragment();
                 break;
-
             case R.id.rl_hardware_update:
                 jump2HardwareUpdateFragment();
                 break;
@@ -201,7 +205,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private void jump2HardwareUpdateFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        bundle.putString("the_new_soft_version", "");
+        bundle.putSerializable("version_content",checkDevVersion);
         HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 hardwareUpdateFragment, android.R.id.content);
@@ -274,5 +278,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void setPresenter(CamInfoContract.Presenter presenter) {
         basePresenter = presenter;
+    }
+
+    @Override
+    public void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
+        checkDevVersion = checkDevVersionRsp;
+        if (checkDevVersionRsp.hasNew) {
+            hardwareUpdatePoint.setVisibility(View.VISIBLE);
+            tvNewSoftware.setVisibility(View.VISIBLE);
+        }
     }
 }
