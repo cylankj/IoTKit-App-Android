@@ -54,7 +54,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
                 && getItem(getCount() - 1).msgType != DpMsgDefine.DPWonderItem.TYPE_LOAD
                 && layoutPosition > 0) {
             holder.setVisibility(R.id.tv_wonderful_item_footer, View.VISIBLE);
-        }else  holder.setVisibility(R.id.tv_wonderful_item_footer, View.INVISIBLE);
+        } else holder.setVisibility(R.id.tv_wonderful_item_footer, View.INVISIBLE);
     }
 
     private void initClickListener(SuperViewHolder holder, final int layoutPosition) {
@@ -68,7 +68,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
 
     private void handleState(SuperViewHolder holder, DpMsgDefine.DPWonderItem bean) {
         //时间
-        holder.setText(R.id.tv_wonderful_item_date, TimeUtils.getHH_MM(bean.time * 1000L));
+        holder.setText(R.id.tv_wonderful_item_date, TimeUtils.getHH_MM(bean.version));
         //来自摄像头
         if (TextUtils.isEmpty(bean.place)) {
             holder.setVisibility(R.id.tv_wonderful_item_device_name, View.GONE);
