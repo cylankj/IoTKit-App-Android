@@ -73,12 +73,12 @@ extern "C" int JNICALL native_getServerPort(JNIEnv *env, jclass clazz, jstring c
     return 443;
 }
 extern "C" jstring JNICALL native_getVKey(JNIEnv *env, jclass clazz, jstring content_) {
-    std::string result = "DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz";//DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz
+    std::string result = "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G";//DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz
     return env->NewStringUTF(result.c_str());
 }
 //根据包名的后缀,{"":官方版本} {"zhongxing":doby}
 extern "C" jstring JNICALL native_getVId(JNIEnv *env, jclass clazz, jstring content_) {
-    std::string result = "003H";//003H
+    std::string result = "0001";//003H
     return env->NewStringUTF(result.c_str());
 }
 extern "C" jstring JNICALL native_getSinaAppKey(JNIEnv *env, jclass clazz, jstring content_) {
