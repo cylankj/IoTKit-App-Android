@@ -305,6 +305,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             }
             homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
         }
+        homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
         ToastUtil.showPositiveToast("刷新成功");
         srLayoutMainContentHolder.setNestedScrollingEnabled(true);
     }
@@ -327,6 +328,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onDeleteWonderSuccess(int position) {
         homeWonderAdapter.remove(position);
+        if (position < homeWonderAdapter.getCount())
+            homeWonderAdapter.notifyItemChanged(position);
     }
 
     @Override

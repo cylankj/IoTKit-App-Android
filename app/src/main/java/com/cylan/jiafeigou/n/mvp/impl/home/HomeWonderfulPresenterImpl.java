@@ -24,7 +24,6 @@ import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.NavigableSet;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -45,7 +44,7 @@ import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View
 public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContract.View>
         implements HomeWonderfulContract.Presenter {
     private TreeSet<DpMsgDefine.DPWonderItem> mWonderItems = new TreeSet<>();
-    private TreeSet<DpMsgDefine.DPWonderItem> mCurrentWonderItems = new TreeSet<>();
+    private List<DpMsgDefine.DPWonderItem> mCurrentWonderItems = new ArrayList<>();
     private long mCurrentDayStartTime;
     private long mCurrentDayEndTime;
     private boolean mHasTimeWheelInit = false;
@@ -103,6 +102,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     public void startRefresh() {
         queryTimeLine(0, false)
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnUnsubscribe(() -> AppLogger.e("刷新链取消订阅了"))
                 .map(result -> {
                     AppLogger.e("正在更新 UI 界面");
                     int oldSize = mWonderItems.size();
@@ -110,13 +110,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     if (mWonderItems.addAll(result)) {//说明有新数据
                         AppLogger.e("有新数据");
                         long topVersion = mWonderItems.first().version;
-                        changeCurrentItems(TimeUtils.getSpecificDayStartTime(topVersion), TimeUtils.getSpecificDayEndTime(topVersion));
+                        updateCurrentItems(TimeUtils.getSpecificDayStartTime(topVersion), TimeUtils.getSpecificDayEndTime(topVersion));
                         mView.chooseEmptyView(VIEW_TYPE_HIDE);
                         if (oldVersion < mCurrentDayStartTime) {//change
-                            mView.onChangeTimeLineDaySuccess(new ArrayList<>(mCurrentWonderItems));
+                            mView.onChangeTimeLineDaySuccess(mCurrentWonderItems);
                         } else if (oldVersion >= mCurrentDayStartTime && oldVersion <= mCurrentDayEndTime) {//update
-                            List<DpMsgDefine.DPWonderItem> query = new ArrayList<>(mCurrentWonderItems);
-                            mView.onQueryTimeLineSuccess(query.subList(0, mWonderItems.size() - oldSize), true);
+                            mView.onQueryTimeLineSuccess(mCurrentWonderItems.subList(0, mWonderItems.size() - oldSize), true);
                         }
                     } else if (mCurrentWonderItems.size() == 0) {
                         mView.chooseEmptyView(VIEW_TYPE_EMPTY);
@@ -132,13 +131,14 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 })
                 .observeOn(Schedulers.io())
                 .filter(initValue -> initValue > 0)
+                .first()
                 .map(initValue -> {
                     List<WonderIndicatorWheelView.WheelItem> wheelList = getInitWheelList(initValue);
                     mView.onTimeLineInit(wheelList);
                     mHasTimeWheelInit = true;
                     return wheelList;
                 })
-                .flatMap(Observable::from)
+                .flatMap(items -> Observable.from(items).onBackpressureBuffer())
                 .map(item -> sendQueryRequest(item.time, true))
                 .filter(seq -> seq > 0)
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> rsp.seq == seq).first())
@@ -153,7 +153,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 })
                 .filter(item -> item != null)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(item -> mView.onTimeLineRsp(item.time * 1000L), e -> {
+                .subscribe(item -> mView.onTimeLineRsp(item.version), e -> {
                     if (e instanceof TimeoutException) {
                         mView.onQueryTimeLineTimeOut();
                     }
@@ -162,7 +162,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 });
     }
 
-    private TreeSet<DpMsgDefine.DPWonderItem> changeCurrentItems(long versionStart, long versionEnd) {
+    private List<DpMsgDefine.DPWonderItem> updateCurrentItems(long versionStart, long versionEnd) {
         mCurrentDayStartTime = versionStart;
         mCurrentDayEndTime = versionEnd;
         mCurrentWonderItems.clear();
@@ -184,10 +184,21 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startLoadMore() {
-//        TreeSet<DpMsgDefine.DPWonderItem> items = mWonderItems.get(mPositionDayStart);
-//        if (items != null) {
-//            load(items.last().version, false);
-//        }
+        queryTimeLine(mCurrentWonderItems.get(mCurrentWonderItems.size() - 1).version, false)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    int oldSize = mCurrentWonderItems.size();
+                    for (DpMsgDefine.DPWonderItem item : result) {
+                        if (item.version >= mCurrentDayStartTime && item.version <= mCurrentDayEndTime) {
+                            mCurrentWonderItems.add(item);
+                        }
+                    }
+                    mView.onQueryTimeLineSuccess(new ArrayList<>(mCurrentWonderItems).subList(oldSize, mCurrentWonderItems.size()), false);
+                }, e -> {
+                    if (e instanceof TimeoutException) {
+                        mView.onQueryTimeLineTimeOut();
+                    }
+                });
     }
 
     public Observable<List<DpMsgDefine.DPWonderItem>> queryTimeLine(long version, boolean asc) {
@@ -222,10 +233,8 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     public void deleteTimeline(int position) {
         Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-            ArrayList<DpMsgDefine.DPWonderItem> temp = new ArrayList<>(mCurrentWonderItems);
-            long time = temp.get(position).version;
             ArrayList<JFGDPMsg> params = new ArrayList<>();
-            JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, time);
+            JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, mCurrentWonderItems.get(position).version);
             params.add(msg);
             try {
                 AppLogger.e("正在删除!");
@@ -241,10 +250,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> {
                     if (rsp.resultCode == 0) {//success
-                        ToastUtil.showPositiveToast("删除成功");
                         AppLogger.e("删除成功");
-                        RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
+                        DpMsgDefine.DPWonderItem item = mCurrentWonderItems.remove(position);
+                        mWonderItems.remove(item);
+                        ToastUtil.showPositiveToast("删除成功");
                         mView.onDeleteWonderSuccess(position);
+                        RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
                     } else {
                         AppLogger.e("删除失败");
                         ToastUtil.showNegativeToast("删除失败");
@@ -275,10 +286,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void loadSpecificDay(long timeStamp) {
-        Observable.create((Observable.OnSubscribe<NavigableSet<DpMsgDefine.DPWonderItem>>) subscriber -> {
+        Observable.create((Observable.OnSubscribe<List<DpMsgDefine.DPWonderItem>>) subscriber -> {
             mCurrentDayStartTime = TimeUtils.getSpecificDayStartTime(timeStamp);
             mCurrentDayEndTime = TimeUtils.getSpecificDayEndTime(timeStamp);
-            changeCurrentItems(mCurrentDayStartTime, mCurrentDayEndTime);
+            updateCurrentItems(mCurrentDayStartTime, mCurrentDayEndTime);
             subscriber.onNext(mCurrentWonderItems);
             subscriber.onCompleted();
         })

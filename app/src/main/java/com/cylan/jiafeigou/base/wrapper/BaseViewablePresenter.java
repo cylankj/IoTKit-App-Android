@@ -129,8 +129,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     try {
                         AppLogger.e("接收到分辨率消息");
                         mView.onResolution(rsp);
-                        mView.onSpeaker(mIsSpeakerOn);
-                        setSpeaker(mIsSpeakerOn).subscribe();
                         mInViewIdentify = onResolveViewIdentify();
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -253,22 +251,17 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void switchSpeaker() {
-        setSpeaker(!mIsSpeakerOn)
+        setSpeaker(mIsSpeakerOn = !mIsSpeakerOn)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(on -> mView.onSpeaker(mIsSpeakerOn = on));
+                .subscribe(on -> mView.onSpeaker(on), Throwable::printStackTrace);
     }
 
     protected Observable<Boolean> setSpeaker(boolean on) {
-        return Observable.create((Observable.OnSubscribe<Boolean>) subscriber -> {
-            if (on) {//当前是开启状态
-                JfgCmdInsurance.getCmd().setAudio(false, true, true);//开启设备的扬声器和麦克风
-                JfgCmdInsurance.getCmd().setAudio(true, true, true);//开启客户端的扬声器和麦克风
-            } else {//当前是关闭状态，则开启
-                JfgCmdInsurance.getCmd().setAudio(true, false, false);
-                JfgCmdInsurance.getCmd().setAudio(false, false, false);
-            }
-            subscriber.onNext(on);
-            subscriber.onCompleted();
+        return Observable.just(on).map(s -> {
+            AppLogger.e("正在切换 Speaker :" + on);
+            JfgCmdInsurance.getCmd().setAudio(false, on, on);//开启设备的扬声器和麦克风
+            JfgCmdInsurance.getCmd().setAudio(true, on, on);//开启客户端的扬声器和麦克风
+            return s;
         }).subscribeOn(Schedulers.io());
     }
 

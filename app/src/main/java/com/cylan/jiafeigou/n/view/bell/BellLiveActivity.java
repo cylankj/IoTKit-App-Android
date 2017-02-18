@@ -1,9 +1,11 @@
 package com.cylan.jiafeigou.n.view.bell;
 
+import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
 import android.opengl.GLSurfaceView;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ScaleGestureDetector;
@@ -31,7 +33,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
-import com.cylan.jiafeigou.widget.live.LivePlayControlView;
 import com.cylan.jiafeigou.widget.video.ViEAndroidGLES20_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
@@ -40,7 +41,11 @@ import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 
+@RuntimePermissions
 public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Presenter>
         implements DragLayout.OnDragReleaseListener, View.OnClickListener
         , BellLiveContract.View, ILiveControl.Action {
@@ -80,12 +85,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private SurfaceView mSurfaceView;
 
-
     private String mNewCallHandle;
 
     private String mLiveTitle = "宝宝的房间";
 
     private boolean isLandMode = false;
+    private boolean isLanchFromBellCall = false;
 
 
     @Override
@@ -107,18 +112,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 handlePortClick();
             }
         });
-        //三秒后隐藏状态栏
-        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
-        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
     }
 
     private void handlePortClick() {
         int visibility = mVideoViewContainer.getSystemUiVisibility();
         if (visibility != View.SYSTEM_UI_FLAG_VISIBLE) {//说明状态栏被隐藏了,则显示三秒后隐藏
             setNormalBackMargin();
-            mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
-            mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
-            mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
         } else {//说明状态栏没有隐藏,则直接隐藏
             hideStatusBar();
         }
@@ -140,6 +139,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         mBellLiveBack.setVisibility(View.VISIBLE);
         mBellLiveBack.animate().setDuration(200).translationY(0);
         mBellFlow.animate().setDuration(200).translationY(0);
+        mVideoViewContainer.setSystemUiVisibility(View.SYSTEM_UI_FLAG_VISIBLE);
+        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
+        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
     }
 
     private void setHideBackMargin() {
@@ -161,9 +163,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     private void newCall() {
-        mVideoPlayController.setState(LivePlayControlView.STATE_LOADING, null);
-        imgvBellLiveCapture.setEnabled(false);
-        imgvBellLiveSpeaker.setEnabled(false);
+        makeViewLayoutFromCall();
         String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
         long time = getIntent().getLongExtra(JConstant.VIEW_CALL_WAY_TIME, System.currentTimeMillis());
         CallablePresenter.Caller caller = new CallablePresenter.Caller();
@@ -174,6 +174,29 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onResume();
         }
+    }
+
+    private void makeViewLayoutFromCall() {
+        if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_VIEWER)) {
+            isLanchFromBellCall = false;
+            dLayoutBellHotSeat.setVisibility(View.GONE);
+            fLayoutBellAfterLive.setVisibility(View.VISIBLE);
+        } else if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)) {
+            isLanchFromBellCall = true;
+            dLayoutBellHotSeat.setVisibility(View.VISIBLE);
+            fLayoutBellAfterLive.setVisibility(View.GONE);
+        }
+        onSpeaker(isLanchFromBellCall);
+        mBellLiveVideoPicture.setVisibility(View.VISIBLE);
+        mBellLiveVideoPicture.setImageResource(R.drawable.default_diagram_mask);
+        mVideoPlayController.setState(ILiveControl.STATE_LOADING, null);
+        imgvBellLiveCapture.setEnabled(false);
+        imgvBellLiveSpeaker.setEnabled(false);
+        if (!isLandMode) imgvBellLiveSwitchToLand.setEnabled(false);
+        //三秒后隐藏状态栏
+        setNormalBackMargin();
+        mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
+        mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
     }
 
     @Override
@@ -195,7 +218,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onScreenRotationChanged(boolean land) {
         isLandMode = land;
-
         handleScreenUpdate(!land);
         getWindow().getDecorView().post(() -> handleSystemBar(!land, 100));
     }
@@ -280,11 +302,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         switch (view.getId()) {
             case R.id.imgv_bell_live_capture:
             case R.id.imgv_bell_live_land_capture:
-                mPresenter.capture();
+                BellLiveActivityPermissionsDispatcher.captureWithStoragePermissionWithCheck(this);
                 break;
             case R.id.imgv_bell_live_speaker:
             case R.id.imgv_bell_live_land_mic:
-                mPresenter.switchSpeaker();
+                BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
                 break;
             case R.id.imgv_bell_live_land_hangup:
             case R.id.imgv_bell_live_hang_up:
@@ -307,6 +329,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         mVideoPlayController.setState(ILiveControl.STATE_IDLE, null);
         imgvBellLiveCapture.setEnabled(true);
         imgvBellLiveSpeaker.setEnabled(true);
+        imgvBellLiveSwitchToLand.setEnabled(true);
+        if (isLanchFromBellCall) {
+            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
+        }
     }
 
     @Override
@@ -320,6 +346,32 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onLiveStop(int errId) {
 
+    }
+
+    @NeedsPermission(Manifest.permission.RECORD_AUDIO)
+    void switchSpeakerWithPermission() {
+        mPresenter.switchSpeaker();
+    }
+
+    @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
+    void hasNoAudioPermission() {
+        ToastUtil.showNegativeToast("开启麦克风需要权限,请手动开启");
+    }
+
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void captureWithStoragePermission() {
+        mPresenter.capture();
+    }
+
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void hasNoStoragePermission() {
+        ToastUtil.showNegativeToast("截屏需要 SD 卡读写权限,请手动开启");
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        BellLiveActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @Override
@@ -348,12 +400,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
 
     public void onViewer() {
-        mBellLiveVideoPicture.setVisibility(View.VISIBLE);
-        mBellLiveVideoPicture.setImageResource(R.drawable.default_diagram_mask);
-        mVideoPlayController.setState(ILiveControl.STATE_LOADING, null);
         dLayoutBellHotSeat.setVisibility(View.GONE);
         fLayoutBellAfterLive.setVisibility(View.VISIBLE);
-
     }
 
 
@@ -361,7 +409,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onSpeaker(boolean on) {
         if (mLandBellLiveSpeaker != null)
             mLandBellLiveSpeaker.setImageResource(on ? R.drawable.doorbell_icon_landscape_talk : R.drawable.doorbell_icon_landscape_no_talk);
-        imgvBellLiveSpeaker.setImageResource(on ? R.drawable.doorbell_icon_talk : R.drawable.doorbell_icon_no_talk);
+        imgvBellLiveSpeaker.setImageResource(on ? R.drawable.icon_port_voice_on_selector : R.drawable.icon_port_voice_off_selector);
     }
 
     @Override
@@ -417,7 +465,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onCallAnswerInOther() {
-        finishExt();
         ToastUtil.showNegativeToast(getString(R.string.Tips_Call_Answer_In_Other));
     }
 

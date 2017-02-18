@@ -29,6 +29,7 @@ import rx.schedulers.Schedulers;
 public abstract class BaseCallablePresenter<V extends CallableView> extends BaseViewablePresenter<V> implements CallablePresenter {
     private static final long NEW_CALL_TIME_OUT = 30 * 1000L;
     protected Caller mCaller;
+    protected Caller mHolderCaller;
 
 
     @Override
@@ -60,8 +61,9 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     public void pickup() {
         AppLogger.e("正在接听");
+        if (mHolderCaller != null) mCaller = mHolderCaller;
         startViewer();
-//        RxBus.getCacheInstance().post(new RxEvent.CallAnswered(true));
+        RxBus.getCacheInstance().post(new RxEvent.CallAnswered(true));
     }
 
     protected void callAnswerInOther() {
@@ -69,7 +71,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     public void newCall(Caller caller) {
-        Observable.just(mCaller = caller)
+        Observable.just(caller)
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(who -> {
                     switch (mView.onResolveViewLaunchType()) {
@@ -78,24 +80,30 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                 AppLogger.e("主动查看门铃忽略门铃呼叫");
                                 return Observable.empty();//当主动查看门铃时忽略门铃呼叫
                             }
-                            mIsSpeakerOn = true;//接听门铃默认打开麦克风
                             if (!TextUtils.isEmpty(mInViewIdentify)) {
-                                mView.onNewCallWhenInLive(mCaller.caller);
+                                mHolderCaller = who;
+                                mView.onNewCallWhenInLive(mHolderCaller.caller);
                                 AppLogger.e("直播过程中的门铃呼叫");
                                 return RxBus.getCacheInstance().toObservable(RxEvent.CallAnswered.class)
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .map(answer -> {
                                             if (!answer.self) {//说明不是自己接听的
                                                 AppLogger.e("门铃在其他端接听了");
+                                                mHolderCaller = null;
                                                 mView.onCallAnswerInOther();
+                                                if (mCaller == null) {
+                                                    mView.onDismiss();
+                                                }
                                             }
                                             return answer;
                                         });
                             } else if (!TextUtils.isEmpty(mRestoreViewHandler)) {//view
-                                mView.onViewer();
                                 startViewer();
-
+                                if (mHolderCaller != null) {
+                                    mView.onNewCallWhenInLive(mHolderCaller.caller);
+                                }
                             } else {
+                                mCaller = who;
                                 mView.onListen();
                                 waitForPicture(mCaller.picture, () -> {
                                     if (mView != null) mView.onPreviewPicture(mCaller.picture);
@@ -103,7 +111,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                             }
                             break;
                         case JConstant.VIEW_CALL_WAY_VIEWER:
-                            mIsSpeakerOn = false;//主动查看门铃默认关闭麦克风
+                            mCaller = who;
                             startViewer();
                             break;
                     }
