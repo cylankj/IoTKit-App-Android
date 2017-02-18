@@ -105,19 +105,18 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(result -> {
                     AppLogger.e("正在更新 UI 界面");
-                    long topVersion = -1;
-                    if (mWonderItems.size() > 0) {
-                        topVersion = mWonderItems.first().version;
-                    }
+                    int oldSize = mWonderItems.size();
+                    long oldVersion = mWonderItems.isEmpty() ? 0 : mWonderItems.first().version;
                     if (mWonderItems.addAll(result)) {//说明有新数据
                         AppLogger.e("有新数据");
-                        if (topVersion == -1) topVersion = mWonderItems.first().version;
-                        TreeSet<DpMsgDefine.DPWonderItem> wonderItems = changeCurrentItems(TimeUtils.getSpecificDayStartTime(topVersion), TimeUtils.getSpecificDayEndTime(topVersion));
+                        long topVersion = mWonderItems.first().version;
+                        changeCurrentItems(TimeUtils.getSpecificDayStartTime(topVersion), TimeUtils.getSpecificDayEndTime(topVersion));
                         mView.chooseEmptyView(VIEW_TYPE_HIDE);
-                        if (wonderItems.size() < mCurrentWonderItems.size()) {
-                            mView.onQueryTimeLineSuccess(new ArrayList<>(wonderItems), true);
-                        } else {
+                        if (oldVersion < mCurrentDayStartTime) {//change
                             mView.onChangeTimeLineDaySuccess(new ArrayList<>(mCurrentWonderItems));
+                        } else if (oldVersion >= mCurrentDayStartTime && oldVersion <= mCurrentDayEndTime) {//update
+                            List<DpMsgDefine.DPWonderItem> query = new ArrayList<>(mCurrentWonderItems);
+                            mView.onQueryTimeLineSuccess(query.subList(0, mWonderItems.size() - oldSize), true);
                         }
                     } else if (mCurrentWonderItems.size() == 0) {
                         mView.chooseEmptyView(VIEW_TYPE_EMPTY);
@@ -164,23 +163,15 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private TreeSet<DpMsgDefine.DPWonderItem> changeCurrentItems(long versionStart, long versionEnd) {
-        TreeSet<DpMsgDefine.DPWonderItem> result = new TreeSet<>();
-        boolean hasDayChanged = false;
-        for (DpMsgDefine.DPWonderItem item : mCurrentWonderItems) {
-            if (item.version < versionStart || item.version > versionEnd) {
-                result.add(item);
-            }
-        }
-        mCurrentWonderItems.removeAll(result);
-        result.clear();
-        if (mCurrentWonderItems.size() == 0) hasDayChanged = true;
+        mCurrentDayStartTime = versionStart;
+        mCurrentDayEndTime = versionEnd;
+        mCurrentWonderItems.clear();
         for (DpMsgDefine.DPWonderItem item : mWonderItems) {
             if (item.version >= versionStart && item.version <= versionEnd) {
                 mCurrentWonderItems.add(item);
-                if (hasDayChanged) result.add(item);
             }
         }
-        return result;
+        return mCurrentWonderItems;
     }
 
     private void load(long version, boolean asc) {

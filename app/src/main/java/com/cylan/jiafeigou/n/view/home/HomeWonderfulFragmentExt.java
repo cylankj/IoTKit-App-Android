@@ -114,6 +114,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private ShadowFrameLayout mParent;
     private boolean isScrollShow = false;
     private boolean mCanRefresh = true;
+    private boolean mHasMore;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
         HomeWonderfulFragmentExt fragment = new HomeWonderfulFragmentExt();
@@ -295,14 +296,16 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             if (last.msgType == 2) {
                 homeWonderAdapter.remove(last);
             }
-            homeWonderAdapter.addAll(resultList);
-            DPWonderItem wonderItem = resultList.get(0);
-            tvDateItemHeadWonder.setText(TimeUtils.getDayString(wonderItem.time * 1000L));
-            if (resultList.size() == 20) {
+            mHasMore = resultList.size() == 21;
+            if (mHasMore) {
+                homeWonderAdapter.addAll(resultList.subList(0, 20));
                 homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
+            } else {
+                homeWonderAdapter.addAll(resultList);
             }
             homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
         }
+        ToastUtil.showPositiveToast("刷新成功");
         srLayoutMainContentHolder.setNestedScrollingEnabled(true);
     }
 
