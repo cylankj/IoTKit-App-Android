@@ -123,6 +123,7 @@ public class TimeUtils {
     }
 
     public static String getUptime(long time) {
+        if (time == 0) return "";
         time = System.currentTimeMillis() / 1000 - time;
         int temp = (int) time / 60;
         int minute = temp % 60;
