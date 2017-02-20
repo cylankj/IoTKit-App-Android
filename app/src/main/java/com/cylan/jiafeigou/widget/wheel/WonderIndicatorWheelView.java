@@ -205,7 +205,6 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
                 }
                 if (selected) mLastPosition = i;
                 mAdapter.notifyItemChanged(i);
-                mIndicatorList.smoothScrollToPosition(mLastPosition);
                 return;
             }
         }
