@@ -120,7 +120,7 @@ public abstract class AbstractWheel extends View {
      * Create a new AbstractWheel instance
      *
      * @param context  the application environment.
-     * @param attrs    a collection of attributes.
+     * @param attrs    a delete of attributes.
      * @param defStyle The default style to apply to this view.
      */
     public AbstractWheel(Context context, AttributeSet attrs, int defStyle) {
@@ -138,7 +138,7 @@ public abstract class AbstractWheel extends View {
     /**
      * Initiates data and parameters from styles
      *
-     * @param attrs    a collection of attributes.
+     * @param attrs    a delete of attributes.
      * @param defStyle The default style to apply to this view.
      */
     protected void initAttributes(AttributeSet attrs, int defStyle) {

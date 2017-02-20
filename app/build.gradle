@@ -80,6 +80,10 @@ android {
     signingConfigs {
         debug {
             v2SigningEnabled false
+            storeFile file('../debug.keystore')
+            storePassword 'android'
+            keyAlias 'AndroidDebugKey'
+            keyPassword 'android'
         }
         release {
             // 满足下面两个条件时需要此配置
@@ -146,7 +150,7 @@ android {
 
 
 repositories {
-    maven { url 'https://maven.fabric.io/public' }
+//    maven { url 'https://maven.fabric.io/public' }
     flatDir {
         dirs 'libs'
     }

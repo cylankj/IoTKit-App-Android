@@ -372,6 +372,14 @@
         <item name="android:layout_marginRight">@dimen/y40</item>
     </style>
 
+    <style name="picture_opt_delete">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:src">@drawable/wonderful_icon_view_picture_delete</item>
+        <item name="android:layout_gravity">right|center_vertical</item>
+        <item name="android:layout_marginRight">@dimen/y40</item>
+    </style>
+
     <style name="video_opt_play_land">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

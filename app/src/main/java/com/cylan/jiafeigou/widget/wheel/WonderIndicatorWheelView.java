@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.List;
 
+
 /**
  * Created by yzd on 17-1-17.
  */
@@ -38,6 +39,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     private FrameLayout mWonderItemsContainer;
     private float mFactor = 2.0F;
     private int mViewWidth;
+    private static final long DAY_TIME = 24 * 60 * 60 * 1000L;
 
     public WonderIndicatorWheelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -139,17 +141,13 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     public void onItemClick(View itemView, int viewType, int position) {
         WheelItem c = mAdapter.getItem(position);
         if (mLastPosition != position) {
-            mAdapter.getItem(mLastPosition).selected = false;
             c.selected = true;
-            SuperViewHolder holder;
-            holder = (SuperViewHolder) mIndicatorList.findViewHolderForAdapterPosition(mLastPosition);
-            if (holder == null) {
-                mAdapter.notifyItemChanged(mLastPosition);
-            } else {
-                holder.setSelected(R.id.wonder_indicator_item, false);
-            }
             itemView.findViewById(R.id.wonder_indicator_item).setSelected(true);
             mIndicatorList.smoothScrollToPosition(position);
+            if (mLastPosition != -1) {
+                mAdapter.getItem(mLastPosition).selected = false;
+                mAdapter.notifyItemChanged(mLastPosition);
+            }
             mLastPosition = position;
             if (mListener != null) mListener.onChanged(c.time);
         }
@@ -160,15 +158,15 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
         int value = (int) animation.getAnimatedValue();
-        int containerX= mWonderItemsContainer.getScrollX();
-        if ((containerX >0 && value<=0)||(containerX < 0 && value >= 0)) {
+        int containerX = mWonderItemsContainer.getScrollX();
+        if ((containerX > 0 && value <= 0) || (containerX < 0 && value >= 0)) {
             mWonderItemsContainer.scrollTo(0, 0);
             int scrollX = value - mScrolledX;
             mIndicatorList.scrollBy(scrollX, 0);
             mScrolledX = value;
-        }else if ((containerX>0&&value>=0) ||(containerX<0&&value<=0)){
-         mWonderItemsContainer.scrollTo(value,0);
-        }else {
+        } else if ((containerX > 0 && value >= 0) || (containerX < 0 && value <= 0)) {
+            mWonderItemsContainer.scrollTo(value, 0);
+        } else {
             int scrollX = value - mScrolledX;
             mIndicatorList.scrollBy(scrollX, 0);
             mScrolledX = (int) animation.getAnimatedValue();
@@ -191,24 +189,30 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
 
     public void init(List<WheelItem> items) {
         mAdapter.addAll(items);
-        WheelItem item;
-        for (int i = 0; i < mAdapter.getList().size(); i++) {
-            item = mAdapter.getItem(i);
-            if (item.selected) mLastPosition = i;
-        }
     }
 
-    public void notify(long time) {
+    public void notify(long time, boolean hasDate, boolean selected) {
         long startTime = TimeUtils.getSpecificDayStartTime(time);
         WheelItem item;
         for (int i = 0; i < mAdapter.getList().size(); i++) {
             item = mAdapter.getItem(i);
-            if (item.time == startTime) {
-                item.wonderful = true;
+            if (item.time / DAY_TIME == startTime / DAY_TIME) {
+                item.wonderful = hasDate;
+                item.selected = selected;
+                if (mLastPosition != i & mLastPosition != -1) {
+                    mAdapter.getItem(mLastPosition).selected = !selected;
+                    mAdapter.notifyItemChanged(mLastPosition);
+                }
+                if (selected) mLastPosition = i;
                 mAdapter.notifyItemChanged(i);
+                mIndicatorList.smoothScrollToPosition(mLastPosition);
                 return;
             }
         }
+    }
+
+    private void changeSelected(long time) {
+
     }
 
     public void scrollPositionToCenter() {

@@ -211,7 +211,7 @@
             android:configChanges="orientation|keyboardHidden|screenSize|screenLayout"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
-            android:theme="@style/MediaActivityTransition"
+            android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
         <service
@@ -302,6 +302,14 @@
 
         <activity
             android:name=".n.view.activity.SightSettingActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <activity
+            android:name=".n.view.bell.BellRecordDetailActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"

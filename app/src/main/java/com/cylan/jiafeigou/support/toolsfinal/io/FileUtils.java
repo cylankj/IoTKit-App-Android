@@ -1740,7 +1740,7 @@ public class FileUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * the specified <code>File</code> line by line.
      * The specified character encoding and the default line ending will be used.
      * <p/>
@@ -1759,7 +1759,7 @@ public class FileUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * the specified <code>File</code> line by line, optionally appending.
      * The specified character encoding and the default line ending will be used.
      *
@@ -1777,7 +1777,7 @@ public class FileUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * the specified <code>File</code> line by line.
      * The default VM encoding and the default line ending will be used.
      *
@@ -1791,7 +1791,7 @@ public class FileUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * the specified <code>File</code> line by line.
      * The default VM encoding and the default line ending will be used.
      *
@@ -1807,7 +1807,7 @@ public class FileUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * the specified <code>File</code> line by line.
      * The specified character encoding and the line ending will be used.
      * <p/>
@@ -1828,7 +1828,7 @@ public class FileUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * the specified <code>File</code> line by line.
      * The specified character encoding and the line ending will be used.
      *
@@ -1857,7 +1857,7 @@ public class FileUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * the specified <code>File</code> line by line.
      * The default VM encoding and the specified line ending will be used.
      *
@@ -1872,7 +1872,7 @@ public class FileUtils {
     }
 
     /**
-     * Writes the <code>toString()</code> value of each item in a collection to
+     * Writes the <code>toString()</code> value of each item in a delete to
      * the specified <code>File</code> line by line.
      * The default VM encoding and the specified line ending will be used.
      *

@@ -98,7 +98,7 @@
         android:layout_height="@dimen/y50"
         android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:text="蓝灯已闪烁"
+        android:text="@string/BLINKING"
         android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp16" />
 

@@ -41,4 +41,6 @@ public interface JFGSourceManager {
     void syncJFGDeviceProperty(String uuid);
 
     void syncAllJFGDeviceProperty();
+
+    <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion);
 }

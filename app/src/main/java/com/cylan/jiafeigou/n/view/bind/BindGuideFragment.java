@@ -89,6 +89,9 @@ public class BindGuideFragment extends IBaseFragment {
         GlideDrawableImageViewTarget imageViewTarget =
                 new GlideDrawableImageViewTarget(imvBindGuide);
         Glide.with(this).load(R.raw.bind_guide).into(imageViewTarget);
+        customToolbar.setBackAction((View v) -> {
+            getActivity().onBackPressed();
+        });
     }
 
     @Override

@@ -77,7 +77,7 @@ public class WheelVerticalView extends AbstractWheelView {
      * Create a new wheel vertical view.
      *
      * @param context The application environment.
-     * @param attrs   A collection of attributes.
+     * @param attrs   A delete of attributes.
      */
     public WheelVerticalView(Context context, AttributeSet attrs) {
         this(context, attrs, R.attr.abstractWheelViewStyle);
@@ -87,7 +87,7 @@ public class WheelVerticalView extends AbstractWheelView {
      * Create a new wheel vertical view.
      *
      * @param context  the application environment.
-     * @param attrs    a collection of attributes.
+     * @param attrs    a delete of attributes.
      * @param defStyle The default style to apply to this view.
      */
     public WheelVerticalView(Context context, AttributeSet attrs, int defStyle) {

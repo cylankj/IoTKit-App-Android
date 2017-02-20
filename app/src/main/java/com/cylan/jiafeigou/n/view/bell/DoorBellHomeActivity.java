@@ -290,6 +290,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         } else {//普通模式下的点击事件,即查看大图模式
             Intent intent = new Intent(this, BellRecordDetailActivity.class);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bellCallRecordListAdapter.getItem(position));
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
             startActivity(intent);
         }
     }
@@ -369,8 +370,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             onBellBatteryDrainOut();
         }
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
-//        cvBellHomeBackground.setState(device.net.$().net);
-        cvBellHomeBackground.setState(1);
+        cvBellHomeBackground.setState(device.net.$().net);
         cvBellHomeBackground.setActionInterface(this);
     }
 

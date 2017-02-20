@@ -84,6 +84,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private String uuid;
     private EditFragmentDialog editDialogFragment;
     private RxEvent.CheckDevVersionRsp checkDevVersion;
+    private JFGDevice device;
 
     public static DeviceInfoDetailFragment newInstance(Bundle bundle) {
         DeviceInfoDetailFragment fragment = new DeviceInfoDetailFragment();
@@ -95,6 +96,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     public void onAttach(Context context) {
         super.onAttach(context);
         this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
+        device = GlobalDataProxy.getInstance().fetch(uuid);
         basePresenter = new DeviceInfoDetailPresenterImpl(this, uuid);
     }
 
@@ -130,6 +132,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private void updateDetails() {
+        //是否显示移动网络
+        tvDeviceMobileNet.setVisibility(device != null && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
         MiscUtils.loadTimeZoneList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((List<TimeZoneBean> list) -> {

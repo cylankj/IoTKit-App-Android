@@ -171,6 +171,13 @@ public class RxEvent {
         public ResultLogin(int code) {
             this.code = code;
         }
+
+        @Override
+        public String toString() {
+            return "ResultLogin{" +
+                    "code=" + code +
+                    '}';
+        }
     }
 
     public static final class ResultBind {
@@ -278,7 +285,6 @@ public class RxEvent {
     /**
      * 获取登录用户的信息
      */
-    @Deprecated
     public static final class GetUserInfo {
 
         public JFGAccount jfgAccount;
@@ -399,7 +405,6 @@ public class RxEvent {
     /**
      * 获取设备列表
      */
-    @Deprecated
     public static final class DeviceList {
         public List<JFGDevice> jfgDevices;
 
@@ -422,7 +427,6 @@ public class RxEvent {
 //        public ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs;
 //    }
 
-    @Deprecated
     public static final class JFGRobotSyncData {
         public String identity;
         public boolean state;
@@ -472,6 +476,7 @@ public class RxEvent {
 
     /**
      * 这个消息从{@link com.cylan.jiafeigou.n.engine.DataSourceService#OnRobotCountDataRsp(long, String, ArrayList)}
+     * 传到{@link DataPointManager#handleUnreadMessageCount()}
      */
     public static final class UnreadCount {
         public String uuid;
@@ -662,8 +667,12 @@ public class RxEvent {
         public byte[] data;
     }
 
-    public static class CallAnswerd {
+    public static class CallAnswered {
+        public CallAnswered(boolean self) {
+            this.self = self;
+        }
 
+        public boolean self;
     }
 
     public static class GetDataResponse {
@@ -697,7 +706,34 @@ public class RxEvent {
         }
     }
 
-    public static final class CamLivePageScrolled {
+    public static class SetDataRsp {
+        public long seq;
+        public ArrayList<JFGDPMsgRet> rets;
+    }
+
+    public static class ErrorRsp extends RuntimeException {
+        public int code;
+
+        public ErrorRsp(int code) {
+            this.code = code;
+        }
+    }
+
+    public static class DeleteWonder {
+        public int position;
+    }
+
+    public static class DeleteWonderRsp {
+        public boolean success;
+        public int position;
+
+        public DeleteWonderRsp(boolean b, int position) {
+            this.position = position;
+            success = b;
+        }
+    }
+
+    public static class CamLivePageScrolled {
         public boolean selected;
 
     }

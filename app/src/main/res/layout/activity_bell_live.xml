@@ -16,22 +16,20 @@
         <FrameLayout
             android:id="@+id/act_bell_live_video_view_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent" />
 
-            <ImageView
-                android:id="@+id/act_bell_live_video_picture"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:scaleType="fitXY"
-                android:src="@drawable/default_diagram_mask" />
-          <com.cylan.jiafeigou.widget.live.LivePlayControlView
-              android:id="@+id/act_bell_live_video_play_controller"
-              android:layout_width="wrap_content"
-              android:layout_gravity="center"
-              android:layout_height="wrap_content"/>
+        <ImageView
+            android:id="@+id/act_bell_live_video_picture"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="fitXY"
+            android:src="@drawable/default_diagram_mask" />
 
-        </FrameLayout>
-
+        <com.cylan.jiafeigou.widget.live.LivePlayControlView
+            android:id="@+id/act_bell_live_video_play_controller"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
 
         <ImageView
             android:id="@+id/imgv_bell_live_switch_to_land"
@@ -40,7 +38,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/y10"
             android:padding="@dimen/y10"
-            android:src="@drawable/icon_live_zoom_full_screen" />
+            android:src="@drawable/icon_port_fullscreen_selector" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -48,23 +46,23 @@
             android:background="@drawable/doorbell_shadow">
 
             <TextView
-                android:layout_marginTop="@dimen/y40"
                 android:id="@+id/act_bell_live_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/y15"
-                android:drawableStart="@drawable/nav_icon_back_white"
+                android:layout_marginTop="@dimen/y40"
                 android:drawablePadding="@dimen/y20"
+                android:drawableStart="@drawable/nav_icon_back_white"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp16" />
 
             <TextView
                 android:id="@+id/tv_bell_live_flow"
-                android:layout_marginTop="@dimen/y40"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y21"
                 android:layout_gravity="end"
                 android:layout_marginEnd="@dimen/y15"
+                android:layout_marginTop="@dimen/y40"
                 android:background="@drawable/live_flow_transparent_bg"
                 android:gravity="center"
                 android:paddingLeft="@dimen/y8"

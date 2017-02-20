@@ -63,7 +63,6 @@ import java.util.concurrent.TimeUnit;
 
 import retrofit2.Call;
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -96,51 +95,65 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         ctx = view.getContext();
     }
 
-    @Override
-    public void executeLogin(final LoginAccountBean login) {
-        Observable.create(new Observable.OnSubscribe<LoginAccountBean>() {
-            @Override
-            public void call(Subscriber<? super LoginAccountBean> subscriber) {
-                Log.d("CYLAN_TAG", "executeLogin");
-                subscriber.onNext(login);
-                subscriber.onCompleted();
-            }
-        })
+    /**
+     * 登录
+     *
+     * @param o
+     * @return
+     */
+    private Observable<Object> loginObservable(LoginAccountBean o) {
+        return Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .map((LoginAccountBean o) -> {
-                    Log.d("CYLAN_TAG", "executeLogin next");
+                .map(login -> {
+                    Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
                         JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
                         //账号和密码
-                        String hex = AESUtil.encrypt(login.userName + "|" + login.pwd);
+                        String hex = AESUtil.encrypt(o.userName + "|" + o.pwd);
                         FileUtils.saveDataToFile(getView().getContext(), hex);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
+                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(o));
                     //非三方登录的标记
                     RxBus.getCacheInstance().postSticky(false);
                     return null;
+                });
+    }
+
+    /**
+     * 登录结果
+     *
+     * @return
+     */
+    private Observable<RxEvent.ResultLogin> loginResultObservable() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class);
+    }
+
+    @Override
+    public void executeLogin(final LoginAccountBean login) {
+        Observable.zip(loginObservable(login), loginResultObservable(),
+                (Object o, RxEvent.ResultLogin resultLogin) -> {
+                    Log.d("CYLAN_TAG", "login: " + resultLogin);
+                    return resultLogin;
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class),
-                        (Object o, RxEvent.ResultLogin resultLogin) -> {
-                            if (getView() != null) getView().loginResult(resultLogin.code);
-                            return null;
-                        })
-                .timeout(3, TimeUnit.SECONDS, Observable.just("timeout")
+                .timeout(3, TimeUnit.SECONDS, Observable.just(null)
                         .observeOn(AndroidSchedulers.mainThread())
-                        .map(s -> {
-                            Log.d("CYLAN_TAG", "timeout");
+                        .map((Object o) -> {
+                            Log.d("CYLAN_TAG", "login timeout: ");
                             if (getView() != null) getView().loginResult(JError.ErrorConnect);
                             return null;
                         }))
-                .subscribe((Object o) -> {
-                    Log.d("CYLAN_TAG", "executeLogin subscribe next");
+                .subscribeOn(Schedulers.io())
+                .delay(30 * 1000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((RxEvent.ResultLogin o) -> {
+                    Log.d("CYLAN_TAG", "login subscribe: " + o);
+                    if (getView() != null) getView().loginResult(o.code);
                 }, throwable -> {
-                    Log.d("CYLAN_TAG", "executeLogin next " + throwable.getLocalizedMessage());
+                    if (getView() != null) getView().loginResult(JError.ErrorConnect);
+                    Log.d("CYLAN_TAG", "login err: " + throwable.getLocalizedMessage());
                 });
-
     }
 
     /**

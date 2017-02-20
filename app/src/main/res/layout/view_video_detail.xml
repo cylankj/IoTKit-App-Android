@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_gravity="center"
             android:layout_height="wrap_content"
-            android:padding="@dimen/x5"
+            android:padding="@dimen/y5"
             app:progress_point_radius="@dimen/y2"
             app:progress_radius="@dimen/y20"
             app:progress_stroke_color="@color/color_white"
