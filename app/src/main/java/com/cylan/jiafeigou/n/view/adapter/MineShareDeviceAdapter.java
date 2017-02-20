@@ -41,7 +41,7 @@ public class MineShareDeviceAdapter extends SuperAdapter<DeviceBean> {
         resMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.me_icon_head_camera);
         resMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.me_icon_head_camera);
 
-        resMap.put(JConstant.OS_CAMERA_3G, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_ANDROID_3_0, R.drawable.me_icon_head_camera);
 
         //MAG
         resMap.put(JConstant.OS_MAGNET, R.drawable.me_icon_head_magnetometer);
