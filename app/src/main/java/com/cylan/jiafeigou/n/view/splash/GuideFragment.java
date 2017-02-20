@@ -53,10 +53,10 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
 //        vGuideIndicator.setFocusedIndex(index);
         Log.d("vGuideIndicator", "vGuideIndicator: " + index);
         if (index == 3) {
-            //进入登陆页 login page
+            //进入登陆页 login page//这里要用replace
             getActivity().getSupportFragmentManager()
                     .beginTransaction()
-                    .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
+                    .replace(android.R.id.content, BeforeLoginFragment.newInstance(null))
                     .commitAllowingStateLoss();
         }
     }
