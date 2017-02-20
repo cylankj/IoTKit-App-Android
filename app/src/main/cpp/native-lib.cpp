@@ -78,7 +78,7 @@ extern "C" jstring JNICALL native_getVKey(JNIEnv *env, jclass clazz, jstring con
         return NULL;
     }
     std::string result = "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G";
-    if (strcmp(content, "zhongxing")) {
+    if (strcmp(content, "zhongxing") == 0) {
         result = "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
@@ -93,7 +93,7 @@ extern "C" jstring JNICALL native_getVId(JNIEnv *env, jclass clazz, jstring cont
         return NULL;
     }
     std::string result = "0001";
-    if (strcmp(content, "zhongxing")) {
+    if (strcmp(content, "zhongxing") == 0) {
         result = "0002";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
@@ -107,7 +107,7 @@ extern "C" jstring JNICALL native_getSinaAppKey(JNIEnv *env, jclass clazz, jstri
         return NULL;
     }
     std::string result = "1315129656";
-    if (strcmp(content, "")) {
+    if (strcmp(content, "") == 0) {
         result = "1315129656";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
