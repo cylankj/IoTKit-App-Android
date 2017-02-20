@@ -21,10 +21,10 @@ import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link BigPicFragment#newInstance} factory method to
+ * Use the {@link NormalMediaFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BigPicFragment extends Fragment {
+public class NormalMediaFragment extends Fragment {
 
     public static final String KEY_TITLE = "KEY_TITLE";
     public static final String KEY_INDEX = "key_index";
@@ -33,7 +33,7 @@ public class BigPicFragment extends Fragment {
     PhotoView imgVShowPic;
 
 
-    public BigPicFragment() {
+    public NormalMediaFragment() {
         // Required empty public constructor
     }
 
@@ -42,11 +42,11 @@ public class BigPicFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param bundle Parameter 1.
-     * @return A new instance of fragment BigPicFragment.
+     * @return A new instance of fragment NormalMediaFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static BigPicFragment newInstance(Bundle bundle) {
-        BigPicFragment fragment = new BigPicFragment();
+    public static NormalMediaFragment newInstance(Bundle bundle) {
+        NormalMediaFragment fragment = new NormalMediaFragment();
         fragment.setArguments(bundle);
         return fragment;
     }

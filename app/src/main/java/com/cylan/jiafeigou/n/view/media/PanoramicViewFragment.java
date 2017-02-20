@@ -19,16 +19,16 @@ import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link VideoViewFragment#newInstance} factory method to
+ * Use the {@link PanoramicViewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VideoViewFragment extends Fragment {
+public class PanoramicViewFragment extends Fragment {
 
     public static final String KEY_VIDEO_URL = "key_video_url";
     @BindView(R.id.vv_play_video)
     VideoView vvPlayVideo;
 
-    public VideoViewFragment() {
+    public PanoramicViewFragment() {
         // Required empty public constructor
     }
 
@@ -37,11 +37,11 @@ public class VideoViewFragment extends Fragment {
      * this fragment using the provided parameters.
      *
      * @param url Parameter 1.
-     * @return A new instance of fragment BigPicFragment.
+     * @return A new instance of fragment NormalMediaFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static VideoViewFragment newInstance(String url) {
-        VideoViewFragment fragment = new VideoViewFragment();
+    public static PanoramicViewFragment newInstance(String url) {
+        PanoramicViewFragment fragment = new PanoramicViewFragment();
         Bundle bundle = new Bundle();
         bundle.putString(KEY_VIDEO_URL, url);
         fragment.setArguments(bundle);
