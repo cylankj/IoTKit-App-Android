@@ -132,7 +132,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public void executeLogin(final LoginAccountBean login) {
-        Observable.zip(loginObservable(login), loginResultObservable(),
+        //加入
+        addSubscription(Observable.zip(loginObservable(login), loginResultObservable(),
                 (Object o, RxEvent.ResultLogin resultLogin) -> {
                     Log.d("CYLAN_TAG", "login: " + resultLogin);
                     return resultLogin;
@@ -153,7 +154,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 }, throwable -> {
                     if (getView() != null) getView().loginResult(JError.ErrorConnect);
                     Log.d("CYLAN_TAG", "login err: " + throwable.getLocalizedMessage());
-                });
+                }));
     }
 
     /**
@@ -225,26 +226,16 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         return RxBus.getCacheInstance().toObservable(RxEvent.SwitchBox.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(switchBox -> {
-                    getView().switchBox("");
-                }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
+                .subscribe(switchBox -> getView().switchBox(""),
+                        throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
     }
 
     private Subscription loginPopBackSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.LoginPopBack.class)
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.LoginPopBack>() {
-                    @Override
-                    public void call(RxEvent.LoginPopBack loginPopBack) {
-                        getView().updateAccount(loginPopBack.account);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("" + throwable.getLocalizedMessage());
-                    }
-                });
+                .subscribe(loginPopBack -> getView().updateAccount(loginPopBack.account),
+                        throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
     }
 
     @Override
@@ -282,40 +273,23 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     public void getCodeByPhone(final String phone) {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        JfgCmdInsurance.getCmd().sendCheckCode(phone,
-                                JfgEnum.JFG_SMS_REGISTER);
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("" + throwable.getLocalizedMessage());
-                    }
-                });
+                .subscribe(o -> JfgCmdInsurance.getCmd().sendCheckCode(phone,
+                        JfgEnum.JFG_SMS_REGISTER),
+                        throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
     }
 
     @Override
     public void verifyCode(final String phone, final String code, final String token) {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        try {
-                            JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
-                            isRegSms = true;
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(o -> {
+                    try {
+                        JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
+                        isRegSms = true;
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.i("throw:" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, throwable -> AppLogger.i("throw:" + throwable.getLocalizedMessage()));
     }
 
     @Override
