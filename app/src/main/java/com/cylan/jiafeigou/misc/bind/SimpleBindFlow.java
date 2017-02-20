@@ -133,7 +133,11 @@ public class SimpleBindFlow extends AFullBind {
         try {
             AppLogger.i(BIND_TAG + udpDevicePortrait);
             //
-            String address = DebugOptionsImpl.getServer().replace(":443", "");
+            String debugServer = DebugOptionsImpl.getServer().replace(":443", "");
+            //空,不合法
+            if (TextUtils.isEmpty(debugServer) || !debugServer.contains("jfgou.com")) {
+                debugServer = Security.getServerPrefix(JFGRules.getTrimPackageName()) + ".jfgou.com";
+            }
             int port = Security.getServerPort(JFGRules.getTrimPackageName());
             //设置语言
             JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
@@ -144,7 +148,7 @@ public class SimpleBindFlow extends AFullBind {
             JfgUdpMsg.SetServer setServer =
                     new JfgUdpMsg.SetServer(udpDevicePortrait.uuid,
                             udpDevicePortrait.mac,
-                            address,
+                            debugServer,
                             port,
                             80);
             AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
