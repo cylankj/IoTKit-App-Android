@@ -145,7 +145,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             return null;
                         }))
                 .subscribeOn(Schedulers.io())
-                .delay(1000, TimeUnit.MILLISECONDS)
+                .delay(30 * 1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.ResultLogin o) -> {
                     Log.d("CYLAN_TAG", "login subscribe: " + o);
