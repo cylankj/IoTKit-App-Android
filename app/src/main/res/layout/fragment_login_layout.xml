@@ -12,7 +12,7 @@
 
     <Space
         android:layout_width="@dimen/x1"
-        android:layout_height="@dimen/y60" />
+        android:layout_height="@dimen/y33" />
 
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/rLayout_login_top"

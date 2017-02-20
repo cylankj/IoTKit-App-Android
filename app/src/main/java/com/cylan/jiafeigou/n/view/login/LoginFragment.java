@@ -575,10 +575,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             } else if (code == JError.ErrorLoginInvalidPass) {
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
             } else if (code == 162) {
-                ToastUtil.showNegativeToast("登录失败：accend_token_error");
+                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             } else if (code == JError.ErrorConnect) {
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
-            }
+            } else ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
         }
     }
 
