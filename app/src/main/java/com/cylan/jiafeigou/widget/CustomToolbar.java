@@ -110,6 +110,11 @@ public class CustomToolbar extends LinearLayout {
         tvToolbarTitle.setText(resId);
     }
 
+    public void setToolbarTitle(String resContent) {
+        if (!tvToolbarTitle.isShown()) tvToolbarTitle.setVisibility(View.VISIBLE);
+        tvToolbarTitle.setText(resContent);
+    }
+
     public void setToolbarLeftTitle(int resId) {
         if (!tvToolbarIcon.isShown()) tvToolbarIcon.setVisibility(View.VISIBLE);
         tvToolbarIcon.setText(resId);

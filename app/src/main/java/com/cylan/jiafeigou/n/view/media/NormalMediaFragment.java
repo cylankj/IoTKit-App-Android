@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 
@@ -24,9 +25,8 @@ import butterknife.ButterKnife;
  * Use the {@link NormalMediaFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class NormalMediaFragment extends Fragment {
+public class NormalMediaFragment extends IBaseFragment {
 
-    public static final String KEY_TITLE = "KEY_TITLE";
     public static final String KEY_INDEX = "key_index";
     public static final String KEY_UUID = "key_uuid";
     @BindView(R.id.imgV_show_pic)
@@ -61,7 +61,7 @@ public class NormalMediaFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View view = inflater.inflate(R.layout.fragment_wonderful_big_pic, container, false);
+        View view = inflater.inflate(R.layout.fragment_normal_big_pic, container, false);
         ButterKnife.bind(this, view);
         // Postpone the shared element enter transition in onCreate()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
@@ -80,17 +80,7 @@ public class NormalMediaFragment extends Fragment {
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgVShowPic);
         imgVShowPic.setOnViewTapListener((View v, float x, float y) -> {
-            if (callBack != null) callBack.click();
+            if (callBack != null) callBack.callBack(null);
         });
-    }
-
-    private CallBack callBack;
-
-    public void setCallBack(CallBack callBack) {
-        this.callBack = callBack;
-    }
-
-    public interface CallBack {
-        void click();
     }
 }

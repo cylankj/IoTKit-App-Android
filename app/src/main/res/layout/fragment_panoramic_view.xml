@@ -7,11 +7,20 @@
     android:fitsSystemWindows="true"
     tools:context=".n.view.media.NormalMediaFragment">
 
-    <VideoView
-        android:id="@+id/vv_play_video"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:transitionName="picDetailsFragment"
-        tools:ignore="ContentDescription,UnusedAttribute" />
+        android:orientation="vertical">
+        <!--代码动态设置成1:1-->
+        <FrameLayout
+            android:id="@+id/fLayout_panoramic_container"
+            android:layout_width="match_parent"
+            android:layout_height="100dp" />
+
+        <Space
+            android:layout_width="1dp"
+            android:layout_height="@dimen/y59" />
+
+    </LinearLayout>
 </FrameLayout>

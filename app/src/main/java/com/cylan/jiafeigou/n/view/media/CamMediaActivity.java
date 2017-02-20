@@ -10,12 +10,16 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
-import android.widget.TextView;
+import android.widget.LinearLayout;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.HackyViewPager;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMediaPresenterImpl;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
@@ -24,7 +28,7 @@ import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.lang.ref.WeakReference;
 
@@ -44,16 +48,19 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     @BindView(R.id.vp_container)
     HackyViewPager vpContainer;
-    @BindView(R.id.tv_big_pic_title)
-    TextView tvBigPicTitle;
-    @BindView(R.id.fLayout_details_title)
-    FrameLayout fLayoutBigPicTitle;
+    //    @BindView(R.id.tv_big_pic_title)
+//    TextView tvBigPicTitle;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     @BindView(R.id.fLayout_cam_handle_bar)
     FrameLayout fLayoutCamHandleBar;
+    @BindView(R.id.lLayout_preview)
+    LinearLayout lLayoutPreview;
 
     private int currentIndex = -1;
     private DpMsgDefine.DPAlarm alarmMsg;
     private String uuid;
+    private JFGDevice device;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,15 +71,15 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         setContentView(R.layout.activity_cam_media);
         ButterKnife.bind(this);
         uuid = getIntent().getStringExtra(KEY_UUID);
+        device = GlobalDataProxy.getInstance().fetch(uuid);
         basePresenter = new CamMediaPresenterImpl(this, uuid);
         alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
         customAdapter.setContents(alarmMsg);
         vpContainer.setAdapter(customAdapter);
         vpContainer.setCurrentItem(currentIndex = getIntent().getIntExtra(KEY_INDEX, 0));
-        ViewUtils.setViewMarginStatusBar(fLayoutBigPicTitle);
-        customAdapter.setCallback(() -> {
-            AnimatorUtils.slideAuto(fLayoutBigPicTitle, true);
+        customAdapter.setCallback(object -> {
+            AnimatorUtils.slideAuto(customToolbar, true);
             AnimatorUtils.slideAuto(fLayoutCamHandleBar, false);
         });
         vpContainer.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -81,12 +88,24 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 currentIndex = position;
             }
         });
+        decideWhichView();
+    }
+
+    private void decideWhichView() {
+        if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
+            vpContainer.setLocked(true);
+        }
+        int count = MiscUtils.getCount(alarmMsg.fileIndex);
+        for (int i = 3; i > count; i--) {
+            View v = lLayoutPreview.getChildAt(i - 1);
+            v.setVisibility(View.GONE);
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        tvBigPicTitle.setText(TimeUtils.getMediaPicTimeInString(alarmMsg.time * 1000L));
+        customToolbar.setToolbarTitle(TimeUtils.getMediaPicTimeInString(alarmMsg.time * 1000L));
     }
 
     @OnClick({R.id.imgV_big_pic_download,
@@ -156,7 +175,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     private class CustomAdapter extends FragmentPagerAdapter {
         private DpMsgDefine.DPAlarm contents;
-        private BigPicFragment.CallBack callBack;
+        private NormalMediaFragment.CallBack callBack;
 
         public void setContents(DpMsgDefine.DPAlarm contents) {
             this.contents = contents;
@@ -172,7 +191,13 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, contents);
             bundle.putInt(KEY_INDEX, position);
             bundle.putString(KEY_UUID, uuid);
-            BigPicFragment fragment = BigPicFragment.newInstance(bundle);
+            bundle.putInt("totalCount", MiscUtils.getCount(contents.fileIndex));
+            IBaseFragment fragment = null;
+            if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
+                fragment = PanoramicViewFragment.newInstance(bundle);
+            } else {
+                fragment = NormalMediaFragment.newInstance(bundle);
+            }
             fragment.setCallBack(this.callBack);
             return fragment;
         }
@@ -182,7 +207,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             return MiscUtils.getCount(contents.fileIndex);
         }
 
-        private void setCallback(BigPicFragment.CallBack callback) {
+        private void setCallback(IBaseFragment.CallBack callback) {
             this.callBack = callback;
         }
     }
