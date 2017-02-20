@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.cylan.ex.JfgException;
 import com.cylan.ext.opt.DebugOptionsImpl;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -138,6 +139,8 @@ public class SimpleBindFlow extends AFullBind {
             if (TextUtils.isEmpty(debugServer) || !debugServer.contains("jfgou.com")) {
                 debugServer = Security.getServerPrefix(JFGRules.getTrimPackageName()) + ".jfgou.com";
             }
+            if (TextUtils.isEmpty(debugServer) && BuildConfig.DEBUG)
+                throw new IllegalArgumentException("server address is empty");
             int port = Security.getServerPort(JFGRules.getTrimPackageName());
             //设置语言
             JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
