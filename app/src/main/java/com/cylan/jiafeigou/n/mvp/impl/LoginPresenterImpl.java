@@ -137,7 +137,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     Log.d("CYLAN_TAG", "login: " + resultLogin);
                     return resultLogin;
                 })
-                .timeout(3, TimeUnit.SECONDS, Observable.just(null)
+                .timeout(30 * 1000L, TimeUnit.SECONDS, Observable.just(null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map((Object o) -> {
                             Log.d("CYLAN_TAG", "login timeout: ");
@@ -145,7 +145,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             return null;
                         }))
                 .subscribeOn(Schedulers.io())
-                .delay(30 * 1000, TimeUnit.MILLISECONDS)
+                .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.ResultLogin o) -> {
                     Log.d("CYLAN_TAG", "login subscribe: " + o);
