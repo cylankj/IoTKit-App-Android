@@ -15,6 +15,7 @@ import org.webrtc.videoengine.ViEAndroidGLES20;
 
 public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewFactory.IVideoView {
     private VideoViewFactory.InterActListener interActListener;
+    private float mScaleFactor = 1.0f;
 
     public ViEAndroidGLES20_Ext(Context context) {
         super(context);
@@ -34,6 +35,15 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
 
     }
 
+//    @Override
+//    public void onDrawFrame(GL10 gl) {
+//        super.onDrawFrame(gl);
+////        gl.glScalef(mScaleFactor, mScaleFactor, 1);
+//    }
+
+    public void setScaleFactor(float scaleFactor) {
+        mScaleFactor = scaleFactor;
+    }
 
     @Override
     public void setInterActListener(VideoViewFactory.InterActListener interActListener) {

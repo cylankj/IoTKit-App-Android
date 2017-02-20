@@ -4,7 +4,6 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
@@ -12,7 +11,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +36,8 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.adapter.MediaDetailPagerAdapter;
 import com.cylan.jiafeigou.n.view.adapter.TransitionListenerAdapter;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
@@ -59,13 +59,18 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
+import rx.Observable;
 import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem;
 
-
+@RuntimePermissions
 public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnPreparedListener, IMediaPlayer.OnInfoListener, IMediaPlayer.OnCompletionListener, SeekBar.OnSeekBarChangeListener, ViewPager.OnPageChangeListener, IMediaPlayer.OnErrorListener, IMediaPlayer.OnVideoSizeChangedListener, PhotoViewAttacher.OnPhotoTapListener {
 
 
@@ -94,7 +99,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     ImageView mPictureDownload;
     @BindView(R.id.act_media_picture_opt_share)
     ImageView mPictureShare;
-    @BindView(R.id.act_media_picture_opt_collection)
+    @BindView(R.id.act_media_picture_opt_delete)
     ImageView mPictureCollection;
     @BindView(R.id.act_media_pic_option)
     FrameLayout mPictureFooterContainer;
@@ -158,6 +163,8 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             postponeEnterTransition();
             initShareElementCallback();
+        } else {
+
         }
         //数据初始化
         mCurrentPosition = mStartPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
@@ -231,7 +238,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                 } else if (mCurrentViewType == DPWonderItem.TYPE_PIC && mPhotoView != object) {
                     mPhotoView = (View) object;
                 }
-
             }
         };
         mAdapter.setPhotoTapListener(this);
@@ -242,7 +248,14 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             } else {
                 mHeaderContainer.setVisibility(View.GONE);
                 mFooterContainer.setVisibility(View.GONE);
-                startPostponedEnterTransition();
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    startPostponedEnterTransition();
+                } else {
+                    animateHeaderAndFooter(true, true);
+                    if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
+                        startPlayVideo();
+                    }
+                }
             }
         });
         mMediaPager.setAdapter(mAdapter);
@@ -444,6 +457,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         }
     }
 
+
     @Override
     protected void onStop() {
         super.onStop();
@@ -514,41 +528,54 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         }
     }
 
-    @OnClick({R.id.act_media_header_opt_delete})
+    @OnClick({R.id.act_media_header_opt_delete, R.id.act_media_picture_opt_delete})
     public void delete() {
-    }
-
-    @OnClick(R.id.act_media_picture_opt_collection)
-    public void collection() {
-
-    }
-
-    @OnClick({R.id.act_media_header_opt_download, R.id.act_media_picture_opt_download})
-    public void download() {
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-            downloadFile();//已经获得了授权
-        } else if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            //需要重新提示用户授权
-            Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, REQ_DOWNLOAD);
-        }
-
+        Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
+            RxEvent.DeleteWonder wonder = new RxEvent.DeleteWonder();
+            AppLogger.e("正在发送删除请求:" + mCurrentPosition);
+            wonder.position = mCurrentPosition;
+            RxBus.getCacheInstance().post(wonder);
+            subscriber.onNext(wonder.position);
+            subscriber.onCompleted();
+        }).flatMap(position -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonderRsp.class).filter(rsp -> rsp.position == position).first())
+                .subscribe(rsp -> {
+                    if (rsp.success) {
+                        AppLogger.e("删除成功");
+                        if (mAdapter.getCount() > 0) {
+                            mMediaList.remove(rsp.position);
+                            mAdapter.notifyDataSetChanged();
+                        }
+                        if (mAdapter.getCount() == 0) {//说明已经删完了,则退出到每日精彩列表页面
+                            finish();
+                        }
+                    }
+                });
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == REQ_DOWNLOAD) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                downloadFile();
-            } else {
-                Toast.makeText(this, getString(R.string.permission_download), Toast.LENGTH_SHORT).show();
-            }
-        }
+        MediaActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    private void downloadFile() {
+    @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onDownloadPermissionDenied() {
+        Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void onDownloadPermissionNeverAskAgain() {
+        Toast.makeText(this, "下载文件需要权限,请手动开启", Toast.LENGTH_SHORT).show();
+    }
+
+    @OnClick({R.id.act_media_header_opt_download, R.id.act_media_picture_opt_download})
+    void download() {
+        MediaActivityPermissionsDispatcher.downloadFileWithCheck(this);
+    }
+
+
+    @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    void downloadFile() {
         if (mCurrentViewType == DPWonderItem.TYPE_PIC) {
             mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
         } else if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
@@ -603,7 +630,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                         delete();
                         break;
                     case R.id.dialog_media_video_download:
-                        download();
+                        MediaActivityPermissionsDispatcher.downloadFileWithCheck(this);
                         break;
                     case R.id.dialog_media_video_share:
                         share();
@@ -676,10 +703,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                 break;
             case IjkMediaPlayer.MEDIA_INFO_NETWORK_BANDWIDTH:
                 break;
-
-//            case IjkMediaPlayer.MEDIA_INFO_VIDEO_ROTATION_CHANGED:
-//                if (mVideoView != null)
-//                    mVideoView.setRotation(extra);
         }
         return false;
     }
@@ -736,7 +759,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mVideoView.setVisibility(View.VISIBLE);
         mVideoLoadingBar.setVisibility(View.VISIBLE);
 //        String url = mCurrentMediaBean.fileName;
-
         String url = "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4";
         mCurrentPlayState = PLAY_STATE_RESET;
         mMediaPlayer.reset();
@@ -776,15 +798,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     @Override
     public void onVideoSizeChanged(IMediaPlayer iMediaPlayer, int width, int height, int i2, int i3) {
-//        if (mVideoView != null) {
-//            int videoWidth = mVideoView.getWidth();
-//            int videoHeight = mVideoView.getHeight();
-//            mVideoView.setScaleX(videoWidth / height);
-//            mVideoView.setScaleY(videoHeight / width);
-//            Matrix transform = mVideoView.getTransform(null);
-//            transform.setScale(height / videoWidth, width / videoHeight);
-//            mVideoView.setTransform(transform);
-//        }
     }
 
     @Override
@@ -805,4 +818,5 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     public void onOutsidePhotoTap() {
         animateHeaderAndFooter();
     }
+
 }

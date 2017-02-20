@@ -188,8 +188,10 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnHttpDone(JFGMsgHttpResult jfgMsgHttpResult) {
         AppLogger.d("OnLocalMessage :" + new Gson().toJson(jfgMsgHttpResult));
-        if (RxBus.getCacheInstance().hasObservers())
+        if (RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.GetHttpDoneResult(jfgMsgHttpResult));
+            RxBus.getCacheInstance().post(jfgMsgHttpResult);
+        }
     }
 
     @Override
@@ -204,9 +206,12 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
-        AppLogger.d("OnLocalMessage :" + new Gson().toJson(robotoGetDataRsp));
+        AppLogger.d("OnRobotGetDataRsp :" + new Gson().toJson(robotoGetDataRsp));
         GlobalDataProxy.getInstance().robotGetDataRsp(robotoGetDataRsp);
         DataSourceManager.getInstance().cacheRobotoGetDataRsp(robotoGetDataRsp);
+        if (RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().post(robotoGetDataRsp);
+        }
     }
 
     @Override
@@ -217,6 +222,10 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
+        RxEvent.SetDataRsp rsp = new RxEvent.SetDataRsp();
+        rsp.seq = l;
+        rsp.rets = arrayList;
+        RxBus.getCacheInstance().post(rsp);
     }
 
     @Override
@@ -305,7 +314,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnOtherClientAnswerCall() {
         AppLogger.d("OnLocalMessage :");
-        RxBus.getCacheInstance().post(new RxEvent.CallAnswerd());
+        RxBus.getCacheInstance().post(new RxEvent.CallAnswered(false));
     }
 
     @Override

@@ -799,6 +799,11 @@ public class DpMsgDefine {
             return (T) ((DPSet) super.$()).value;
         }
 
+        public List<T> list() {
+            return new ArrayList<>(value);
+        }
+
+
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
@@ -909,6 +914,7 @@ public class DpMsgDefine {
             return 0;
         }
 
+
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             dest.writeString(this.cid);
@@ -920,6 +926,7 @@ public class DpMsgDefine {
         }
 
         public DPWonderItem() {
+            id = 602;
         }
 
         protected DPWonderItem(Parcel in) {

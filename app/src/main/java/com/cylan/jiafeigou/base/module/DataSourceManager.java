@@ -8,6 +8,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -53,7 +54,9 @@ public class DataSourceManager implements JFGSourceManager {
     private JFGDPAccount mJFGAccount;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
     private boolean isOnline;
-    private JFGDPDevice mFakeDevice=new JFGDPDevice() {};
+    private JFGDPDevice mFakeDevice = new JFGDPDevice() {
+    };
+
     private DataSourceManager() {
     }
 
@@ -84,7 +87,7 @@ public class DataSourceManager implements JFGSourceManager {
 
         JFGDPDevice device = mCachedDeviceMap.get(uuid);
 //        if (device == null&& BuildConfig.DEBUG) throw new IllegalArgumentException("天啊,它真的发生了,你是不是又在乱传参数???");
-        return device==null? null : getValueWithAccountCheck((T) device.$());
+        return device == null ? null : getValueWithAccountCheck((T) device.$());
     }
 
     @Override
@@ -148,6 +151,18 @@ public class DataSourceManager implements JFGSourceManager {
         for (Map.Entry<String, JFGDPDevice> entry : mCachedDeviceMap.entrySet()) {
             syncJFGDeviceProperty(entry.getKey());
         }
+    }
+
+    @Override
+    public <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion) {
+        List<T> result = new ArrayList<>();
+        DpMsgDefine.DPSet<T> origin = getValue(uuid, msgId);
+        for (T t : origin.value) {
+            if (t.version >= startVersion && t.version < endVersion) {
+                result.add(t);
+            }
+        }
+        return result;
     }
 
     public void syncJFGDeviceProperty(String uuid) {

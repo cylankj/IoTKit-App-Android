@@ -32,10 +32,7 @@
             android:layout_gravity="center"
             android:ellipsize="end"
             android:gravity="center"
-            android:lines="1"
-            android:maxLength="8"
-            android:singleLine="true"
-            android:text="Hi"
+            android:maxLines="1"
             android:textColor="@android:color/white"
             android:textSize="@dimen/sp26" />
 
