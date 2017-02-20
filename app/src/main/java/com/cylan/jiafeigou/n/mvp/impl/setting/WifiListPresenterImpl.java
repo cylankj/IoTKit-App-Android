@@ -166,6 +166,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((List<ScanResult> s) -> {
                     getView().onResults((ArrayList<ScanResult>) s);
+                    AppLogger.i("wifiList: " + s.size());
                 }, new RxHelper.EmptyException("resultList call"));
     }
 
