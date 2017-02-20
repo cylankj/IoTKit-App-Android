@@ -77,7 +77,7 @@ extern "C" jstring JNICALL native_getVKey(JNIEnv *env, jclass clazz, jstring con
     if (content == NULL) {
         return NULL;
     }
-    std::string result = "DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz";
+    std::string result = "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G";
     if (strcmp(content, "zhongxing")) {
         result = "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1";
         env->ReleaseStringUTFChars(content_, content);
