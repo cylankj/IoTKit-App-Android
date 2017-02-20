@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,12 +39,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, MineMessageBean item) {
         //处理消息时间
-        holder.setText(R.id.message_item_time, parseTime(item.getTime()));
-        if (layoutPosition == 0 | compareTime(getItem(getItemCount() - 1).getTime(), item.getTime())) {
-            holder.setVisibility(R.id.message_item_time, View.VISIBLE);
-        } else {
-            holder.setVisibility(R.id.message_item_time, View.GONE);
-        }
+        holder.setText(R.id.item_time, parseTime(item.getTime()));
 
         if (isShowCheck) {
             holder.setVisibility(R.id.delete_check, View.VISIBLE);
@@ -68,9 +64,34 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
         }
 
         //处理消息显示
-        holder.setText(R.id.message_item_msg, item.getContent());
+        holder.setText(R.id.tv_device_name,item.getContent());
 
-        //TODO
+        if (item.isDone == 1){
+            switch (item.type){
+                case 601:
+                    holder.setText(R.id.mesg_item_content,String.format(ContextUtils.getContext().getString(R.string.MSG_REBIND), item.getName()));
+                    break;
+                case 603:
+                    holder.setText(R.id.mesg_item_content,"该设备已分享");
+                    break;
+                case 604:
+                    holder.setText(R.id.mesg_item_content,"亲友分享了改设备");
+                    break;
+            }
+        }else {
+            switch (item.type){
+                case 601:
+                    holder.setText(R.id.mesg_item_content, "该设备已被解绑");
+                    break;
+                case 603:
+                    holder.setText(R.id.mesg_item_content,ContextUtils.getContext().getString(R.string.Tap1_shareDevice_canceledshare));
+                    break;
+                case 604:
+                    holder.setText(R.id.mesg_item_content,"亲友取消了分享该设备");
+                    break;
+            }
+        }
+
     }
 
     @Override
@@ -88,7 +109,8 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
 
             @Override
             public int getLayoutId(int viewType) {
-                return R.layout.fragment_home_mine_message_items;
+//                return R.layout.fragment_mine_message_system_items;
+                return R.layout.fragment_mine_message_items;
             }
         };
     }

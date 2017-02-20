@@ -13,6 +13,11 @@ import rx.Subscription;
 public interface MineInfoSetNewPwdContract {
     interface View extends BaseView<Presenter> {
         void registerResult(int code);
+
+        /**
+         * 跳转到邮箱验证界面
+         */
+        void jump2MailConnectFragment();
     }
 
     interface Presenter extends BasePresenter {
@@ -30,5 +35,7 @@ public interface MineInfoSetNewPwdContract {
          * @return
          */
         Subscription registerBack();
+
+
     }
 }

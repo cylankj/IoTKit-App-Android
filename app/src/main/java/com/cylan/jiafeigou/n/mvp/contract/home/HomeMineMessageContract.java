@@ -69,6 +69,19 @@ public interface HomeMineMessageContract {
          */
         void saveIntoDb(MineMessageBean bean);
 
+
+        /**
+         * Dp获取消息记录数据
+         */
+        void getMesgDpData();
+
+        /**
+         * Dp获取消息记录数据回调
+         *
+         * @return
+         */
+        Subscription getMesgDpDataCallBack();
+
     }
 
 }

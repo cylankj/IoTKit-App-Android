@@ -53,7 +53,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
 
     private HomeMineMessageContract.Presenter presenter;
     private HomeMineMessageAdapter messageAdapter;
-    private ArrayList<MineMessageBean> mesgdata;
+    private boolean hasNewMesg;
     private ArrayList<MineMessageBean> hasCheckData;
 
     public static HomeMineMessageFragment newInstance(Bundle bundle) {
@@ -66,7 +66,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle arguments = getArguments();
-        mesgdata = arguments.getParcelableArrayList("mesgdata");
+        hasNewMesg = arguments.getBoolean("hasNewMesg");
     }
 
     @Nullable
@@ -85,7 +85,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     }
 
     private void initPresenter() {
-        presenter = new HomeMineMessagePresenterImp(this, mesgdata);
+        presenter = new HomeMineMessagePresenterImp(this, hasNewMesg);
     }
 
     private void initTopBar() {

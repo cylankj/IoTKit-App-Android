@@ -134,16 +134,28 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
 
     /**
      * 注册结果
-     *
      * @param code
      */
     @Override
     public void registerResult(int code) {
         if (code == JError.ErrorOK) {
-            // TODO 是否增加邮箱验证界面
-            ToastUtil.showToast(getString(R.string.Added_successfully));
+            //增加邮箱验证界面
+            jump2MailConnectFragment();
         } else {
             ToastUtil.showToast(getString(R.string.Tips_Device_TimeoutRetry));
         }
+    }
+
+    @Override
+    public void jump2MailConnectFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString("useraccount", useraccount);
+        MineReSetMailTip fragment = MineReSetMailTip.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, fragment, "mineInfoSetNewPwdFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
     }
 }

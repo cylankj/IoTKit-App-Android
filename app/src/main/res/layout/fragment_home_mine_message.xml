@@ -61,7 +61,7 @@
         <RelativeLayout
             android:id="@+id/rl_delete_dialog"
             android:visibility="gone"
-            android:background="#11000000"
+            android:background="#f2f2f2"
             android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y50">

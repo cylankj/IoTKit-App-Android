@@ -93,9 +93,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
      */
     @Override
     public void sendSetAccountReq(String newEmail) {
-        if (getView() != null) {
-            getView().showSendReqHint();
-        }
+
         rx.Observable.just(newEmail)
                 .delay(2000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
@@ -116,6 +114,8 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                         AppLogger.e("sendSetAccountReq" + throwable.getLocalizedMessage());
                     }
                 });
+
+        getView().jump2MailConnectFragment();
     }
 
     /**
@@ -150,7 +150,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                         if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
                             jfgAccount = getUserInfo.jfgAccount;
                             getView().getUserAccountData(getUserInfo.jfgAccount);
-                            getView().showSendReqResult(getUserInfo);
+//                            getView().showSendReqResult(getUserInfo);
                         }
                     }
                 });

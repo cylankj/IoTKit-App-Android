@@ -14,6 +14,12 @@ public interface CamInfoContract {
 
     interface View extends BaseView<Presenter> {
         void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp);
+
+        void showLoading();
+
+        void hideLoading();
+
+        void clearSdReslut(int code);
     }
 
     interface Presenter extends BasePresenter {
@@ -43,5 +49,15 @@ public interface CamInfoContract {
          */
         Subscription checkNewSoftVersionBack();
 
+        /**
+         * 清空Sd卡
+         */
+        void clearSdcard();
+
+        /**
+         * 清空Sd卡的回调
+         * @return
+         */
+        Subscription clearSdcardBack();
     }
 }
