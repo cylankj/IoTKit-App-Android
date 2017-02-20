@@ -195,7 +195,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             //非待机模式
             boolean flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
             if (!flag) {
-                basePresenter.startPlayVideo(basePresenter.getPlayType());
+                starPlay();
             }
             onDeviceStandBy(flag);
         }
@@ -210,6 +210,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onDestroyView() {
         super.onDestroyView();
         if (videoView != null) ((View) videoView).setVisibility(View.GONE);
+    }
+
+    private void starPlay() {
+        View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
+        AppLogger.d("startPlay: old == null: " + (old == null));
+        if (old != null) return;//不用播放
+        basePresenter.startPlayVideo(basePresenter.getPlayType());
     }
 
     /**
@@ -228,6 +235,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     /**
      * 视角设置
+     *
      * @param isNormalCam
      */
     private void checkSightDialog(boolean isNormalCam) {
@@ -247,6 +255,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 + getString(R.string.Tap1_Camera_OverlookTips));
         view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
             if (layout != null) fLayoutCamLiveView.removeView(layout);
+            starPlay();
         });
         view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
             if (layout != null) fLayoutCamLiveView.removeView(layout);
@@ -560,6 +569,14 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onHistoryLiveStop(int state) {
 
+    }
+
+    @Override
+    public void onPageSelected(boolean checked) {
+        if (basePresenter != null) {
+            if (checked) starPlay();
+            else basePresenter.stopPlayVideo(basePresenter.getPlayType());
+        }
     }
 
     @Override

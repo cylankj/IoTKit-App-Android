@@ -409,11 +409,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
      */
     private Subscription viewPagerSwitch() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CamLivePageScrolled.class)
-                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.CamLivePageScrolled camLivePageScrolled) -> {
-                    if (camLivePageScrolled.selected) {
-                        startPlayVideo(getPlayType());
-                    } else stopPlayVideo(getPlayType());
+                    if (getView() != null) {
+                        getView().onPageSelected(camLivePageScrolled.selected);
+                    }
                 }, (Throwable throwable) -> {
                     AppLogger.e("err:" + throwable.getLocalizedMessage());
                 });

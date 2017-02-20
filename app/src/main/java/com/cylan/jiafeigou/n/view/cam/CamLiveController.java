@@ -43,6 +43,7 @@ import java.util.Set;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.widget.live.ILiveControl.STATE_IDLE;
 import static com.cylan.jiafeigou.widget.live.ILiveControl.STATE_PLAYING;
@@ -200,7 +201,7 @@ public class CamLiveController implements
      */
     public void setLoadingState(int state, String content) {
         int playType = presenterRef.get().getPlayType();
-        if (playType == TYPE_LIVE) {
+        if (playType != TYPE_HISTORY) {
             if (state == STATE_PLAYING || state == STATE_STOP)
                 state = STATE_IDLE;//根据原型,直播没有暂停
         }
