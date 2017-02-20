@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 import android.os.SystemClock;
 import android.view.View;
 
+import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
@@ -36,6 +37,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
 
     //    private BeanCamInfo beanCamInfo;
     private String uuid;
+    private long requst;
 
     public DeviceInfoDetailPresenterImpl(CamInfoContract.View view, String uuid) {
         super(view);
@@ -46,7 +48,8 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-                checkNewSoftVersionBack()
+                checkNewSoftVersionBack(),
+                clearSdcardBack()
         };
     }
 
@@ -93,6 +96,37 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .subscribe((RxEvent.CheckDevVersionRsp checkDevVersionRsp) -> {
                     if (checkDevVersionRsp != null)
                         getView().checkDevResult(checkDevVersionRsp);
+                });
+    }
+
+    @Override
+    public void clearSdcard() {
+        rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Object o)->{
+                    ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
+                    JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD,0);
+                    ipList.add(mesg);
+                    try {
+                        requst = JfgCmdInsurance.getCmd().robotSetData(uuid, ipList);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    @Override
+    public Subscription clearSdcardBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearRsp.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((RxEvent.SdcardClearRsp respone)->{
+                    if (respone != null && respone.seq == requst ){
+                        if (respone.arrayList.get(0).ret == 0){
+                            getView().clearSdReslut(0);
+                        }else {
+                            getView().clearSdReslut(1);
+                        }
+                    }
                 });
     }
 

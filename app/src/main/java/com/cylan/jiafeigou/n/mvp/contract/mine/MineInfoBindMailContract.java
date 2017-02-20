@@ -58,6 +58,11 @@ public interface MineInfoBindMailContract {
          * 网络状态变化
          */
         void onNetStateChanged(int state);
+
+        /**
+         * 跳转到邮箱验证界面
+         */
+        void jump2MailConnectFragment();
     }
 
     interface Presenter extends BasePresenter {

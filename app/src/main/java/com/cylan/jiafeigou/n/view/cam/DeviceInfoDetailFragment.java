@@ -26,9 +26,12 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.util.List;
 import java.util.Locale;
@@ -222,12 +225,35 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      * 显示Sd卡的详情
      */
     private void jump2SdcardDetailFragment() {
+        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        String statusContent = getSdcardState(status);
+        if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
+            showClearSDDialog();
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 sdcardDetailFragment, android.R.id.content);
     }
+
+    /**
+     *格式化SD卡
+     */
+    private void showClearSDDialog() {
+        Bundle bundle = new Bundle();
+        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT,"去格式化");
+        bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "Micro SD卡需要格式化，才能存储视频");
+        SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
+        simpleDialogFragment.setAction((int id, Object value) -> {
+            //开始格式化
+            basePresenter.clearSdcard();
+            showLoading();
+        });
+        simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
+    }
+
 
     /**
      * 编辑时区
@@ -293,6 +319,26 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         if (checkDevVersionRsp.hasNew) {
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
             tvNewSoftware.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void showLoading() {
+        LoadingDialog.showLoading(getFragmentManager(),"格式化中...");
+    }
+
+    @Override
+    public void hideLoading() {
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    @Override
+    public void clearSdReslut(int code) {
+        hideLoading();
+        if (code == 0){
+            ToastUtil.showPositiveToast("格式化成功");
+        }else {
+            ToastUtil.showNegativeToast("格式化失败");
         }
     }
 }

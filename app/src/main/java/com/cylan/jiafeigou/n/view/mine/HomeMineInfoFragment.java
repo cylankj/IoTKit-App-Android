@@ -710,7 +710,4 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         }
     }
 
-    @OnClick()
-    public void onClick() {
-    }
 }

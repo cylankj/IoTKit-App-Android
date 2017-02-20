@@ -92,8 +92,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
             hideSendReqHint();
             if (getEditText().equals(getUserInfo.jfgAccount.getEmail())) {
                 //绑定成功
-                ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
-                getFragmentManager().popBackStack();
+                jump2MailConnectFragment();
             } else {
                 //绑定失败
                 ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
@@ -286,6 +285,19 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
             hideSendReqHint();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
+    }
+
+    @Override
+    public void jump2MailConnectFragment() {
+        Bundle bundle = new Bundle();
+        bundle.putString("useraccount", getEditText());
+        MineReSetMailTip fragment = MineReSetMailTip.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, fragment, "mineReSetMailTip")
+                .addToBackStack("personalInformationFragment")
+                .commit();
     }
 
     /**

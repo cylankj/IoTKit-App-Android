@@ -84,24 +84,6 @@ public interface HomeMineContract {
          */
         boolean checkOpenLogIn();
 
-        /**
-         * Dp获取消息记录数据
-         */
-        Subscription getMesgDpData();
-
-        /**
-         * Dp获取消息记录数据回调
-         *
-         * @return
-         */
-        Subscription getMesgDpDataCallBack();
-
-        /**
-         * 获取的消息的所有的数据
-         *
-         * @return
-         */
-        ArrayList<MineMessageBean> getMesgAllData();
 
         /**
          * 获取是否三方登录的回调
@@ -110,5 +92,26 @@ public interface HomeMineContract {
          */
         Subscription checkIsOpenLoginCallBack();
 
+        /**
+         * 获取到未读的消息数
+         */
+        void getUnReadMesg();
+
+        /**
+         * 未读消息的回调
+         * @return
+         */
+        Subscription unReadMesgBack();
+
+        /**
+         * 是否有未读消息
+         * @return
+         */
+        boolean hasUnReadMesg();
+
+        /**
+         * 清空未读
+         */
+        void markHasRead();
     }
 }

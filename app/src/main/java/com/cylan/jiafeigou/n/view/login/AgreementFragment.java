@@ -64,7 +64,7 @@ public class AgreementFragment extends Fragment {
             }
         });
         webview.loadUrl(agreementUrl);
-        customToolbar.setTvToolbarIcon(R.drawable.nav_icon_back_gary);
+//        customToolbar.setTvToolbarIcon(R.drawable.nav_icon_back_gary);
         customToolbar.setToolbarTitle(R.string.TERM_OF_USE);
         customToolbar.setBackAction((View v) -> {
             ActivityUtils.justPop(getActivity());
