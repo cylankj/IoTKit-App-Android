@@ -307,7 +307,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 初始化view
      */
     private void initView() {
-
+        rLayoutLoginToolbar.setBackAction(v -> getActivity().getSupportFragmentManager().popBackStack());
         tvAgreement.setText("《" + getString(R.string.TERM_OF_USE) + "》");
         if (getView() != null)
             getView().findViewById(R.id.tv_toolbar_right).setVisibility(View.VISIBLE);
