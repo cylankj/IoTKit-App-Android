@@ -340,6 +340,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onChangeTimeLineDaySuccess(List<DPWonderItem> items) {
         homeWonderAdapter.clear();
+        if (items.size() > 0)
+            tvDateItemHeadWonder.setText(TimeUtils.getDayString(items.get(0).version));
         onQueryTimeLineSuccess(items, true);
     }
 

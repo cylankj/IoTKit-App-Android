@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.List;
 
+
 /**
  * Created by yzd on 17-1-17.
  */
@@ -188,11 +189,6 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
 
     public void init(List<WheelItem> items) {
         mAdapter.addAll(items);
-        WheelItem item;
-        for (int i = 0; i < mAdapter.getList().size(); i++) {
-            item = mAdapter.getItem(i);
-            if (item.selected) mLastPosition = i;
-        }
     }
 
     public void notify(long time, boolean hasDate, boolean selected) {
@@ -203,13 +199,11 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
             if (item.time / DAY_TIME == startTime / DAY_TIME) {
                 item.wonderful = hasDate;
                 item.selected = selected;
-                if (selected && mLastPosition != -1) {
-                    mAdapter.getItem(mLastPosition).selected = false;
+                if (mLastPosition != i & mLastPosition != -1) {
+                    mAdapter.getItem(mLastPosition).selected = !selected;
                     mAdapter.notifyItemChanged(mLastPosition);
-                    mLastPosition = i;
-                } else if (!selected && mLastPosition == i) {
-                    mLastPosition = -1;
                 }
+                if (selected) mLastPosition = i;
                 mAdapter.notifyItemChanged(i);
                 mIndicatorList.smoothScrollToPosition(mLastPosition);
                 return;
