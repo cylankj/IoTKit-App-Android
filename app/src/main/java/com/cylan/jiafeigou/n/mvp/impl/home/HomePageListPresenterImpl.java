@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -127,9 +128,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private Subscription JFGAccountUpdate() {
-        return RxBus.getCacheInstance().toObservableSticky(JFGAccount.class)
+        return RxBus.getCacheInstance().toObservable(JFGAccount.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((JFGAccount jfgAccount) -> {
+                    Log.d("CYLAN_TAG", "onAccountUpdate rsp:" + new Gson().toJson(jfgAccount));
                     getView().onAccountUpdate(jfgAccount);
                     return null;
                 })
