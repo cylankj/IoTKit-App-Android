@@ -873,4 +873,5 @@
   <string name="web">http://www.cleverdog.com.cn/</string>
   <string name="wifi_authentication">verifizieren%s ist WiFi&#8211;Verbindung</string>
   <string name="wifi_hasnot">Aktuelles WiFi nicht gefunden</string>
+
 </resources>
