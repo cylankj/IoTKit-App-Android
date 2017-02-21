@@ -526,6 +526,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             case JError.STOP_MAUNALLY:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
                 break;
+            case JFGRules.PlayErr.ERR_NOT_FLOW:
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NETWORK_TIMEOUT));
+                break;
             default:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
                 break;
