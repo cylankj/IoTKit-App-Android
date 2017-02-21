@@ -35,7 +35,8 @@
 
             <LinearLayout
                 android:id="@+id/act_media_header_opt_container"
-                style="@style/video_header_opt_container">
+                style="@style/video_header_opt_container"
+                android:layout_centerInParent="true">
 
                 <ImageView
                     android:id="@+id/act_media_header_opt_delete"
@@ -58,8 +59,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:alpha="0.5"
-        android:background="#000000"
+        android:background="#7F000000"
         android:clickable="true">
 
         <FrameLayout
@@ -85,6 +85,7 @@
         <FrameLayout
             android:id="@+id/act_media_video_option"
             android:layout_width="match_parent"
+
             android:layout_height="@dimen/video_footer_height">
 
             <LinearLayout style="@style/video_opt_container">

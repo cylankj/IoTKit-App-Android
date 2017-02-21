@@ -100,6 +100,12 @@ public class DragLayout extends FrameLayout {
         }
     }
 
+    public void doRingAnimation() {
+        if (draggedView != null) {
+//            draggedView.animate()
+        }
+    }
+
     @Override
     protected void onSizeChanged(int w, int h, int oldw, int oldh) {
         super.onSizeChanged(w, h, oldw, oldh);
