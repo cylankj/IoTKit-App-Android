@@ -13,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -326,9 +327,24 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onAccountUpdate(JFGAccount greetBean) {
         tvHeaderNickName.setText(String.format("Hi,%s",
-                greetBean.getAccount()));
+                getBeautifulAlias(greetBean)));
         tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
                 : getString(R.string.Tap1_Index_NightGreetings));
+    }
+
+    /**
+     * 根据规则截取字符串
+     *
+     * @param account
+     * @return
+     */
+    private String getBeautifulAlias(JFGAccount account) {
+        if (account == null) return "";
+        String temp = TextUtils.isEmpty(account.getAlias()) ? account.getAccount() : account.getAlias();
+        if (!TextUtils.isEmpty(temp) && temp.length() > 8) {
+            temp = temp.substring(0, 8) + "...";
+        }
+        return temp;
     }
 
     @SuppressWarnings("deprecation")

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_cam_media"
     android:layout_width="match_parent"
@@ -12,27 +13,54 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-    <FrameLayout
-        android:id="@+id/fLayout_details_title"
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        hunt:ct_enable_shadow="false"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_close_gary" />
 
-        <ImageView
-            android:id="@+id/tv_big_pic_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/x15"
-            android:src="@drawable/nav_icon_close_gary" />
+    <LinearLayout
+        android:id="@+id/lLayout_preview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/fLayout_cam_handle_bar"
+        android:layout_centerHorizontal="true"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:visibility="gone">
 
-        <TextView
-            android:id="@+id/tv_big_pic_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp16" />
-    </FrameLayout>
+        <com.cylan.smartcall.widget.corner.RoundedImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginLeft="7.5dp"
+            android:layout_marginRight="7.5dp"
+            android:minHeight="56dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/image_load_failed"
+            hunt:riv_corner_radius="5dp" />
+
+        <com.cylan.smartcall.widget.corner.RoundedImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginLeft="7.5dp"
+            android:layout_marginRight="7.5dp"
+            android:minHeight="56dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/image_load_failed"
+            hunt:riv_corner_radius="5dp" />
+
+        <com.cylan.smartcall.widget.corner.RoundedImageView
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_marginLeft="7.5dp"
+            android:layout_marginRight="7.5dp"
+            android:minHeight="56dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/image_load_failed"
+            hunt:riv_corner_radius="5dp" />
+    </LinearLayout>
 
     <FrameLayout
         android:id="@+id/fLayout_cam_handle_bar"

@@ -5,13 +5,14 @@
     android:background="@color/color_black"
     android:clickable="true"
     android:fitsSystemWindows="true"
-    tools:context=".n.view.media.BigPicFragment">
+    tools:context=".n.view.media.NormalMediaFragment">
 
-    <VideoView
-        android:id="@+id/vv_play_video"
+    <com.cylan.jiafeigou.support.photoview.PhotoView
+        android:id="@+id/imgV_show_pic"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
+        android:scaleType="fitCenter"
         android:transitionName="picDetailsFragment"
         tools:ignore="ContentDescription,UnusedAttribute" />
 </FrameLayout>
