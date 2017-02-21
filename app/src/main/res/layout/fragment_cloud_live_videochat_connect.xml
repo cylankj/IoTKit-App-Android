@@ -68,7 +68,7 @@
                 android:drawableTop="@drawable/btn_listen"
                 android:textColor="#5a6a7d"
                 android:textSize="@dimen/sp14"
-                android:text="@string/ANSWER"
+                android:text="@string/EFAMILY_CALL_ANSWER"
                 android:drawablePadding="@dimen/x4"
                 android:gravity="center_horizontal"
                 android:layout_width="wrap_content"

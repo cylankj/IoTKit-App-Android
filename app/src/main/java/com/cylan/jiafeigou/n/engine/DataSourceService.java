@@ -332,12 +332,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-        AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + arrayList);
-//        RxEvent.JFGRobotSyncData data = new RxEvent.JFGRobotSyncData();
-//        data.state = b;
-//        data.identity = s;
-//        data.dataList = arrayList;
-//        RxBus.getCacheInstance().post(data);
+        AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + new Gson().toJson(arrayList));
         GlobalDataProxy.getInstance().cacheRobotoSyncData(b, s, arrayList);
         DataSourceManager.getInstance().cacheRobotoSyncData(b, s, arrayList);
     }

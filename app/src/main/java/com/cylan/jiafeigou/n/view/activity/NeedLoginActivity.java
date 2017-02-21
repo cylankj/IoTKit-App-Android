@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
@@ -30,7 +31,7 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
     private WeakReference<LoginFragment> loginFragmentWeakReference;
     private WeakReference<LoginPresenterImpl> loginPresenterWeakReference;
     CompositeSubscription _subscriptions;
-    private LoginFragment fragment;
+//    private LoginFragment fragment;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,17 +70,14 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
             extra = new Bundle();
         extra.putInt(JConstant.KEY_ACTIVITY_FRAGMENT_CONTAINER_ID, android.R.id.content);
         extra.putInt(JConstant.KEY_SHOW_LOGIN_FRAGMENT, 1);
-        fragment = null;
+        Fragment fragment = null;
         if (loginFragmentWeakReference != null && loginFragmentWeakReference.get() != null) {
             fragment = loginFragmentWeakReference.get();
         } else {
-            fragment = LoginFragment.newInstance(extra);
-            loginFragmentWeakReference = new WeakReference<>(fragment);
+            loginFragmentWeakReference = new WeakReference<>(LoginFragment.newInstance(extra));
+            fragment = loginFragmentWeakReference.get();
         }
         fragment.setArguments(extra);
-        if (loginPresenterWeakReference != null && loginPresenterWeakReference.get() != null) {
-            fragment.setPresenter(loginPresenterWeakReference.get());
-        } else loginPresenterWeakReference = new WeakReference<>(new LoginPresenterImpl(fragment));
         if (getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName()) != null)
             return;
         View v = findViewById(R.id.rLayout_login);
@@ -92,14 +90,14 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
             } catch (Exception e) {
             }
         }
-        if (extra.getBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA)) {
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    fragment, android.R.id.content, 0);
-        } else {
-            //do not add to back stack
-            ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
-                    fragment, android.R.id.content, 0);
-        }
+////        if (extra.getBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA)) {
+//        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+//                fragment, android.R.id.content, 0);
+//        } else {
+//            //do not add to back stack
+        ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+                fragment, android.R.id.content, 0);
+//        }
     }
 
     @Override
@@ -112,8 +110,8 @@ public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (fragment != null && fragment instanceof LoginFragment) {
-            fragment.onActivityResult(requestCode, resultCode, data);
+        if (loginFragmentWeakReference != null && loginFragmentWeakReference.get() != null) {
+            loginFragmentWeakReference.get().onActivityResult(requestCode, resultCode, data);
         }
     }
 }

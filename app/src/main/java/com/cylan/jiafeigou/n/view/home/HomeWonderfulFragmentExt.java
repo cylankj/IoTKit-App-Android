@@ -333,7 +333,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onQueryTimeLineTimeOut() {
-        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.REQUEST_TIME_OUT));
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.Clear_Sdcard_tips5));
         srLayoutMainContentHolder.setRefreshing(false);
     }
 
@@ -574,11 +574,14 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         }
     }
 
+    private float preRatio = -1;
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         final float ratio = (appbar.getTotalScrollRange() + verticalOffset) * 1.0f
                 / appbar.getTotalScrollRange();
+        if (preRatio == ratio) return;
+        preRatio = ratio;
         final float alpha = 1.0f - ratio;
         if (imgWonderfulTitleCover.getAlpha() != alpha) {
             imgWonderfulTitleCover.setAlpha(alpha);

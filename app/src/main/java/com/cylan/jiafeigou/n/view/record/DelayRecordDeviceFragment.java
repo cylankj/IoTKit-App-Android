@@ -134,7 +134,7 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
             boolean online = device.net != null && (device.net.net != 0 && device.net.net != -1);
             holder.setEnabled(R.id.item_device_container, online);
             holder.setText(R.id.item_device_alias, device.alias);
-            holder.setText(R.id.item_device_open_state, device.camera_time_lapse_photography == null ? mContext.getString(R.string.Tap1_Setting_Unopened) : mContext.getString(R.string.Tap1_Setting_Opened));
+            holder.setText(R.id.item_device_open_state, device.camera_time_lapse_photography == null ? mContext.getString(R.string.Tap1_Setting_Unopened) : mContext.getString(R.string.Tap2_Index_OpenTimelapse));
             holder.setImageResource(R.id.item_device_icon, online ? R.drawable.icon_home_camera_online : R.drawable.icon_home_camera_offline);
         }
     }

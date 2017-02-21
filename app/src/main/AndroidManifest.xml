@@ -298,7 +298,7 @@
             android:value="kCEeFDWzz5xHi8Ej9Wx6FWqRL" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
+            android:value="fb1866682200216878" />
 
         <activity
             android:name=".n.view.activity.SightSettingActivity"
