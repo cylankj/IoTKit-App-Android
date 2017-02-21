@@ -31,7 +31,7 @@
         android:gravity="center"
         android:visibility="gone">
 
-        <com.cylan.smartcall.widget.corner.RoundedImageView
+        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginLeft="7.5dp"
@@ -41,7 +41,7 @@
             android:src="@drawable/image_load_failed"
             hunt:riv_corner_radius="5dp" />
 
-        <com.cylan.smartcall.widget.corner.RoundedImageView
+        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginLeft="7.5dp"
@@ -51,7 +51,7 @@
             android:src="@drawable/image_load_failed"
             hunt:riv_corner_radius="5dp" />
 
-        <com.cylan.smartcall.widget.corner.RoundedImageView
+        <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
             android:layout_width="56dp"
             android:layout_height="56dp"
             android:layout_marginLeft="7.5dp"
