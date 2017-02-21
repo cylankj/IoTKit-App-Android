@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -156,6 +158,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initAppbarDrag();
         //添加Handler
         homePageListAdapter.clear();
         appbar.addOnOffsetChangedListener(this);
@@ -165,6 +168,23 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initListAdapter();
         initSomeViewMargin();
         addEmptyView();
+    }
+
+    /**
+     * 初始化是否可拖动
+     */
+    private void initAppbarDrag() {
+        if (appbar.getLayoutParams() != null) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
+            AppBarLayout.Behavior appBarLayoutBehaviour = new AppBarLayout.Behavior();
+            appBarLayoutBehaviour.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+                @Override
+                public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                    return homePageListAdapter.getCount() > 4;
+                }
+            });
+            layoutParams.setBehavior(appBarLayoutBehaviour);
+        }
     }
 
     @Override
@@ -288,10 +308,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @UiThread
     @Override
     public void onItemsInsert(List<String> resultList) {
+        srLayoutMainContentHolder.setNestedScrollingEnabled(resultList.size() > JFGRules.NETSTE_SCROLL_COUNT);
         onRefreshFinish();
         homePageListAdapter.addAll(filter(resultList));
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
-        srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
     }
 
     private List<String> filter(List<String> origin) {
@@ -342,10 +362,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     private String getBeautifulAlias(JFGAccount account) {
         if (account == null) return "";
         String temp = TextUtils.isEmpty(account.getAlias()) ? account.getAccount() : account.getAlias();
-        if (!TextUtils.isEmpty(temp) && temp.length() > 8) {
-            temp = temp.substring(0, 8) + "...";
-        }
-        return temp;
+        return MiscUtils.getBeautifulString(temp, 8);
     }
 
     @SuppressWarnings("deprecation")
