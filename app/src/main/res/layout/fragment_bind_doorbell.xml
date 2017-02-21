@@ -23,7 +23,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/y30"
         android:gravity="center"
-        android:text="重新开机，长按WiFi键"
+        android:text="@string/Tap1_AddDevice_DoorbellTipsTitle"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp26" />
 
@@ -35,7 +35,7 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="@dimen/y15"
         android:gravity="center"
-        android:text="等待红灯常亮"
+        android:text="@string/Tap1_AddDevice_DoorbellTips"
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp16" />
 
@@ -122,7 +122,7 @@
         android:layout_height="@dimen/y50"
         android:layout_alignParentBottom="true"
         android:gravity="center"
-        android:text="红灯已常亮"
+        android:text="@string/DOOR_BLINKING"
         android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp16" />
 

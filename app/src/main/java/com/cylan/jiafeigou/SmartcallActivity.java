@@ -69,6 +69,7 @@ public class SmartcallActivity extends NeedLoginActivity
         ButterKnife.bind(this);
         initPresenter();
         fullScreen(true);
+        if (presenter != null) presenter.start();
     }
 
     /**
@@ -90,7 +91,6 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 

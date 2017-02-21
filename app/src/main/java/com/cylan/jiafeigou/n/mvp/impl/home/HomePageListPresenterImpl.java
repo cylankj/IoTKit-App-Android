@@ -92,6 +92,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         } else if (update.id == DpMsgMap.ID_201_NET) {
                             DpMsgDefine.DPNet net = update.value.getValue();
                         }
+                        AppLogger.d("data pool update: " + update);
                         return null;
                     }
                 })

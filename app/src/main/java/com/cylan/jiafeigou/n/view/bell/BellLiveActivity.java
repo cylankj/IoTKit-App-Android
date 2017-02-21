@@ -465,12 +465,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onCallAnswerInOther() {
-        ToastUtil.showNegativeToast(getString(R.string.Tips_Call_Answer_In_Other));
+        ToastUtil.showNegativeToast(getString(R.string.DOOR_OTHER_LISTENED));
     }
 
     @Override
     public void onNewCallWhenInLive(String person) {
-        mNewCallHandle = showAlert(getString(R.string.Tips_New_Call_Coming), getString(R.string.Tips_New_Call_Come_Listen, person), getString(R.string.ANSWER), getString(R.string.IGNORE));
+        mNewCallHandle = showAlert(getString(R.string.Tap1_Index_Tips_Newvisitor), getString(R.string.Tap1_Index_Tips_Newvisitor), getString(R.string.EFAMILY_CALL_ANSWER), getString(R.string.IGNORE));
     }
 
     @Override

@@ -47,7 +47,10 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.functions.Func2;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -59,7 +62,6 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View> implements CamLiveContract.Presenter {
     //    private DeviceBean bean;
 //    private BeanCamInfo beanCamInfo;
-    private boolean isRtcpSignal;
     private int playType = CamLiveContract.TYPE_LIVE;
     private boolean speakerFlag, micFlag;
     private int[] videoResolution = {0, 0};
@@ -69,6 +71,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private IData historyDataProvider;
     private String uuid;
     private int stopReason = JError.STOP_MAUNALLY;//手动断开
+    private CompositeSubscription liveCompositeSub = new CompositeSubscription();
     /**
      * 帧率记录
      */
@@ -80,97 +83,47 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         this.uuid = uuid;
     }
 
-    /**
-     * Rtcp和resolution的回调,
-     * 只有resolution回调之后,才能设置{@link JfgAppCmd#enableRenderLocalView(boolean, View)} (View)}
-     * 正常播放回调
-     * 10s没有视频,直接断开
-     *
-     * @return
-     */
-    private Subscription rtcpNotifySub() {
-        return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
-                .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null && isRtcpSignal))
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((JFGMsgVideoRtcp rtcp) -> {
-                    frameRateList.add(rtcp.frameRate);
-                    if (frameRateList.size() == 11) {
-                        frameRateList.remove(0);//移除最前沿的一个
-                        boolean isBad = MiscUtils.isBad(frameRateList, 2, 10);
-                        if (isBad) {
-                            frameRateList.clear();
-                            AppLogger.e("is bad net work");
-                            //暂停播放
-                            setStopReason(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
-                            stopPlayVideo(playType);
-                        }
-                    }
-                    getView().onRtcp(rtcp);
-//                    Log.d(TAG, "rtcp: " + new Gson().toJson(rtcp));
-                }, (Throwable throwable) -> {
-                    AppLogger.e("rtcp err: " + throwable.getLocalizedMessage());
-                });
-    }
-
-    /**
-     * 分辨率回调
-     *
-     * @return
-     */
-    private Subscription resolutionNotifySub() {
-        return RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
-                .filter((JFGMsgVideoResolution jfgMsgVideoResolution) -> {
-                    boolean filter =
-                            TextUtils.equals(uuid, jfgMsgVideoResolution.peer)
-                                    && getView() != null;
-                    if (!filter) {
-                        AppLogger.e("getView(): " + (getView() != null));
-                        AppLogger.e("this peer is out date: " + jfgMsgVideoResolution.peer);
-                    }
-                    return filter;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((JFGMsgVideoResolution resolution) -> {
-                    isRtcpSignal = true;
-                    videoResolution[0] = resolution.width;
-                    videoResolution[1] = resolution.height;
-                    try {
-                        getView().onResolution(resolution);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
-                    getView().onLiveStarted(playType);
-                    playState = PLAY_STATE_PLAYING;
-                    AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution));
-                }, (Throwable throwable) -> {
-                    AppLogger.e("resolution err: " + throwable.getLocalizedMessage());
-                });
-    }
 
     /**
      * 视频断开连接
+     * 只需要开始播放后注册
      *
      * @return
      */
     private Subscription videoDisconnectSub() {
-        return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                .subscribeOn(Schedulers.newThread())
-                .filter((JFGMsgVideoDisconn jfgMsgVideoDisconn) -> {
-                    boolean notNull = getView() != null
-                            && TextUtils.equals(uuid, jfgMsgVideoDisconn.remote);
-                    if (!notNull) {
-                        AppLogger.e("err: " + uuid);
-                    } else {
-                        AppLogger.i("stop for reason: " + jfgMsgVideoDisconn.code);
+        return Observable.create(subscriber -> {
+            subscriber.onNext(null);
+            subscriber.onCompleted();
+            //只要JFGMsgVideoDisconn返回一次 满足条件的对象,videoDisconnectSub()这个链条就会被unsubscribe,
+            //即使后面,再有JFGMsgVideoDisconn对象,下面这个zipWith也不会被执行,所以不会有内存泄露
+        }).zipWith(RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+                        .subscribeOn(Schedulers.newThread())
+                        .filter((JFGMsgVideoDisconn jfgMsgVideoDisconn) -> {
+                            boolean notNull = getView() != null
+                                    && TextUtils.equals(uuid, jfgMsgVideoDisconn.remote);
+                            if (!notNull) {
+                                AppLogger.e("err: " + uuid);
+                            } else {
+                                AppLogger.i("stop for reason: " + jfgMsgVideoDisconn.code);
+                            }
+                            return notNull;
+                        })
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .takeFirst(disconn -> {
+                            playState = PLAY_STATE_IDLE;
+                            getView().onLiveStop(playType, disconn.code);
+                            reset();
+                            AppLogger.d("reset subscription");
+                            return true;
+                        }),
+                new Func2<Object, JFGMsgVideoDisconn, Object>() {
+                    @Override
+                    public Object call(Object o, JFGMsgVideoDisconn disconn) {
+                        AppLogger.i("jfgMsgVideoDisconn finish:");
+                        return null;
                     }
-                    return notNull;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((JFGMsgVideoDisconn jfgMsgVideoDisconn) -> {
-                    playState = PLAY_STATE_IDLE;
-                    getView().onLiveStop(playType, jfgMsgVideoDisconn.code);
-                }, (Throwable throwable) -> {
+                }).subscribe(o -> AppLogger.i("jfgMsgVideoDisconn finish:"),
+                (Throwable throwable) -> {
                     AppLogger.e("videoDisconnectSub:" + throwable.getLocalizedMessage());
                 });
     }
@@ -214,35 +167,150 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         this.stopReason = stopReason;
     }
 
+    //    private Subscription playFlowSub;
+    private void reset() {
+        liveCompositeSub.unsubscribe();
+        liveCompositeSub = new CompositeSubscription();
+    }
+
     @Override
     public void startPlayVideo(int type) {
         getView().onLivePrepare(type);
         playState = PLAY_STATE_PREPARE;
         playType = CamLiveContract.TYPE_LIVE;
-        Observable.just(uuid)
-                .subscribeOn(Schedulers.newThread())
-                .filter((String s) -> {
-                    //判断网络状况
-                    final int net = NetUtils.getJfgNetType(getView().getContext());
-                    AppLogger.i("play start live " + net + " " + s);
-                    if (net == 0) {
-                        Observable.just(null)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .subscribe((Object o) -> {
-                                    playState = PLAY_STATE_IDLE;
-                                    getView().onLiveStop(playType, JFGRules.PlayErr.ERR_NERWORK);
-                                });
+        reset();
+        liveCompositeSub.add(prePlay()
+                .zipWith(getInterestingOne().timeout(10, TimeUnit.SECONDS, Observable.just("timeout")
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .map(s -> {
+                            AppLogger.e("play video :" + s);
+                            frameRateList.clear();
+                            //暂停播放
+                            setStopReason(JFGRules.PlayErr.ERR_NOT_FLOW);
+                            stopPlayVideo(playType);
+                            return s;
+                        }))
+                        //filter getInterestingOne()
+                        .filter(result -> {
+                            AppLogger.d("action: " + result);
+                            return TextUtils.equals(result, "JFGMsgVideoResolution");
+                        }), (String s, Object o) -> {
+                    AppLogger.i("start to receive rtcp");
+                    //开始接收rtcp
+                    liveCompositeSub.add(rtcpNotifySub().subscribe());
+                    return null;
+                })
+                .subscribe(objectObservable -> AppLogger.e("flow done"),
+                        throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
+        //加入管理,如果播放失败,收到disconnect
+        liveCompositeSub.add(videoDisconnectSub());
+    }
+
+    /**
+     * Rtcp和resolution的回调,
+     * 只有resolution回调之后,才能设置{@link JfgAppCmd#enableRenderLocalView(boolean, View)} (View)}
+     * 正常播放回调
+     * 10s没有视频,直接断开
+     *
+     * @return
+     */
+    private Observable<Object> rtcpNotifySub() {
+        return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
+                .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
+                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .timeout(10, TimeUnit.SECONDS, Observable.just("no rtcp call back")
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .map(s -> {
+                            frameRateList.clear();
+                            //暂停播放
+                            setStopReason(JFGRules.PlayErr.ERR_NOT_FLOW);
+                            stopPlayVideo(playType);
+                            AppLogger.e(s);
+                            return null;
+                        }))
+                .map((JFGMsgVideoRtcp rtcp) -> {
+                    frameRateList.add(rtcp.frameRate);
+                    if (frameRateList.size() == 11) {
+                        frameRateList.remove(0);//移除最前沿的一个
+                        boolean isBad = MiscUtils.isBad(frameRateList, 2, 10);
+                        if (isBad) {
+                            frameRateList.clear();
+                            AppLogger.e("is bad net work");
+                            //暂停播放
+                            setStopReason(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
+                            stopPlayVideo(playType);
+                        }
+                    }
+                    getView().onRtcp(rtcp);
+                    return null;
+                });
+//                .retry(new RxHelper.RxException<>("rtcpNotifySub"));;
+    }
+
+    /**
+     * disconnect 或者 分辨率
+     *
+     * @return
+     */
+    private Observable<String> getInterestingOne() {
+        return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+                .filter(disconnect -> (TextUtils.equals(disconnect.remote, uuid)))
+                .map((JFGMsgVideoDisconn disconn) -> {
+                    AppLogger.e("disconnected: " + new Gson().toJson(disconn));
+                    return "JFGMsgVideoDisconn";
+                })
+                .subscribeOn(Schedulers.io())
+                .mergeWith(RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
+                        .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(resolution -> {
+                            AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution) + "," + Thread.currentThread().getName());
+                            videoResolution[0] = resolution.width;
+                            videoResolution[1] = resolution.height;
+                            try {
+                                getView().onResolution(resolution);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
+                            getView().onLiveStarted(playType);
+                            playState = PLAY_STATE_PLAYING;
+                            return "JFGMsgVideoResolution";
+                        }))
+                .first();
+    }
+
+    /**
+     * 1.检查网络
+     * 2.开始播放
+     *
+     * @return
+     */
+    private Observable<String> prePlay() {
+        return Observable.just("")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .filter(o -> {
+                    if (NetUtils.getJfgNetType(getView().getContext()) == 0) {
+                        //断网了
+                        setStopReason(JFGRules.PlayErr.ERR_NERWORK);
+                        stopPlayVideo(getPlayType());
+                        AppLogger.i("stop play  video for err network");
                         return false;
                     }
-                    return !TextUtils.isEmpty(s);
+                    return true;
                 })
-                .subscribe((String s) -> {
-                    try {
-                        JfgCmdInsurance.getCmd().playVideo(s);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
+                .subscribeOn(Schedulers.io())
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        try {
+                            JfgCmdInsurance.getCmd().playVideo(uuid);
+                            AppLogger.i("play video: " + uuid);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
                     }
-                    AppLogger.i("play video");
                 });
     }
 
@@ -294,6 +362,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
                     getView().onLiveStop(playType, stopReason);
+                    AppLogger.d("live stop");
                 }, (Throwable throwable) -> {
                     AppLogger.e("" + throwable.getLocalizedMessage());
                 });
@@ -302,6 +371,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public String getUuid() {
         return uuid;
+    }
+
+    @Override
+    public void stop() {
+        super.stop();
+        reset();
     }
 
     @Override
@@ -394,9 +469,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-                rtcpNotifySub(),
-                resolutionNotifySub(),
-                videoDisconnectSub(),
                 robotDataSync(),
                 viewPagerSwitch(),
                 historyDataListSub()};
@@ -409,11 +481,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
      */
     private Subscription viewPagerSwitch() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CamLivePageScrolled.class)
-                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.CamLivePageScrolled camLivePageScrolled) -> {
-                    if (camLivePageScrolled.selected) {
-                        startPlayVideo(getPlayType());
-                    } else stopPlayVideo(getPlayType());
+                    if (getView() != null) {
+                        getView().onPageSelected(camLivePageScrolled.selected);
+                    }
                 }, (Throwable throwable) -> {
                     AppLogger.e("err:" + throwable.getLocalizedMessage());
                 });

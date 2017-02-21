@@ -66,6 +66,8 @@ public interface CamLiveContract {
          * @param state
          */
         void onHistoryLiveStop(int state);
+
+        void onPageSelected(boolean checked);
     }
 
     interface Presenter extends BasePresenter {

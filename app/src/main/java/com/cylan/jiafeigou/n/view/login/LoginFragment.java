@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.login;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.CountDownTimer;
@@ -35,6 +36,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
+import com.cylan.jiafeigou.n.mvp.impl.LoginPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -149,12 +151,18 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
-    private LoginContract.Presenter presenter;
+//    private LoginContract.Presenter basePresenter;
 
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
         fragment.setArguments(bundle);
         return fragment;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        basePresenter = new LoginPresenterImpl(this);
     }
 
     /**
@@ -198,8 +206,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) {
-            presenter.start();
+        if (basePresenter != null) {
+            basePresenter.start();
         }
     }
 
@@ -211,7 +219,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onStop() {
         super.onStop();
-        if (presenter != null) presenter.stop();
+        if (basePresenter != null) basePresenter.stop();
         if (lbLogin != null) lbLogin.cancelAnim();
 //        if (verificationCodeLogic != null) verificationCodeLogic.stop();
     }
@@ -307,7 +315,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 初始化view
      */
     private void initView() {
-
+        rLayoutLoginToolbar.setBackAction(v -> getActivity().getSupportFragmentManager().popBackStack());
         tvAgreement.setText("《" + getString(R.string.TERM_OF_USE) + "》");
         if (getView() != null)
             getView().findViewById(R.id.tv_toolbar_right).setVisibility(View.VISIBLE);
@@ -319,7 +327,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 ? getString(R.string.SHARE_E_MAIL) : getString(R.string.EMAIL));
 
         //回显
-        String tempAccPwd = presenter.getTempAccPwd();
+        String tempAccPwd = basePresenter.getTempAccPwd();
         if (!TextUtils.isEmpty(tempAccPwd)) {
             int i = tempAccPwd.indexOf("|");
             etLoginUsername.setText(tempAccPwd.substring(0, i));
@@ -410,10 +418,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 forgetPwd();
                 break;
             case R.id.tv_qqLogin_commit:
-                presenter.getQQAuthorize(getActivity());
+                basePresenter.getQQAuthorize(getActivity());
                 break;
             case R.id.tv_xlLogin_commit:
-                presenter.startSinaAuthorize(getActivity());
+                basePresenter.startSinaAuthorize(getActivity());
                 break;
             case R.id.tv_toolbar_icon:
                 if (getActivity() != null && getActivity() instanceof SmartcallActivity) {
@@ -433,11 +441,11 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             }
             break;
             case R.id.tv_twitterLogin_commit:
-                presenter.getTwitterAuthorize(getActivity());
+                basePresenter.getTwitterAuthorize(getActivity());
                 break;
 
             case R.id.tv_facebookLogin_commit:
-                presenter.getFaceBookAuthorize(getActivity());
+                basePresenter.getFaceBookAuthorize(getActivity());
                 break;
         }
     }
@@ -485,8 +493,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         LoginAccountBean login = new LoginAccountBean();
         login.userName = ViewUtils.getTextViewContent(etLoginUsername);
         login.pwd = ViewUtils.getTextViewContent(etLoginPwd);
-        if (presenter != null && NetUtils.getNetType(ContextUtils.getContext()) != -1) {
-            presenter.executeLogin(login);
+        if (basePresenter != null && NetUtils.getNetType(ContextUtils.getContext()) != -1) {
+            basePresenter.executeLogin(login);
         }
         IMEUtils.hide(getActivity());
         AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
@@ -611,8 +619,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     }
 
     @Override
-    public void setPresenter(LoginContract.Presenter presenter) {
-        this.presenter = presenter;
+    public void setPresenter(LoginContract.Presenter basePresenter) {
+        this.basePresenter = basePresenter;
 //        AppLogger.e("setPresenter");
     }
 
@@ -704,8 +712,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 校验 验证码
      */
     private void verifyCode() {
-        if (presenter != null)
-            presenter.verifyCode(ViewUtils.getTextViewContent(etRegisterInputBox),
+        if (basePresenter != null)
+            basePresenter.verifyCode(ViewUtils.getTextViewContent(etRegisterInputBox),
                     ViewUtils.getTextViewContent(etVerificationInput),
                     PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
     }
@@ -747,7 +755,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 jump2NextPage();
                 return;
             }
-            presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+            basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
             //显示验证码输入框
             handleVerificationCodeBox(true);
             tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
@@ -799,8 +807,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
             IMEUtils.hide(getActivity());
             //获取验证码
-            if (presenter != null)
-                presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
+            if (basePresenter != null)
+                basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
 
         } else {
             final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
@@ -809,8 +817,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 return;
             }
             //获取验证码
-            if (presenter != null)
-                presenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
+            if (basePresenter != null)
+                basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
         }
     }
 
@@ -853,8 +861,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             case R.id.tv_meter_get_code:
                 if (verificationCodeLogic != null)
                     verificationCodeLogic.start();
-                if (presenter != null)
-                    presenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+                if (basePresenter != null)
+                    basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
                 break;
             case R.id.tv_register_submit:
                 handleRegisterConfirm();
@@ -964,22 +972,22 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        SsoHandler sinaCallBack = presenter.getSinaCallBack();
+        SsoHandler sinaCallBack = basePresenter.getSinaCallBack();
         if (sinaCallBack != null) {
             sinaCallBack.authorizeCallBack(requestCode, resultCode, data);
         }
 
         if (requestCode == Constants.REQUEST_LOGIN ||
                 requestCode == Constants.REQUEST_APPBAR) {
-            presenter.onActivityResultData(requestCode, resultCode, data);
+            basePresenter.onActivityResultData(requestCode, resultCode, data);
         }
 
-        TwitterAuthClient twitterBack = presenter.getTwitterBack();
+        TwitterAuthClient twitterBack = basePresenter.getTwitterBack();
         if (twitterBack != null) {
             twitterBack.onActivityResult(requestCode, resultCode, data);
         }
 
-        CallbackManager faceBookBackObj = presenter.getFaceBookBackObj();
+        CallbackManager faceBookBackObj = basePresenter.getFaceBookBackObj();
         if (faceBookBackObj != null) {
             faceBookBackObj.onActivityResult(requestCode, resultCode, data);
         }

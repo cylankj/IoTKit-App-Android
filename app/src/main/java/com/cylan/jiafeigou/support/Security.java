@@ -29,7 +29,7 @@ public class Security {
 
     /**
      * @param packageNameSuffix
-     * @return :服务器appKey
+     * @return :注意:服务器域名前缀  yf  test1 yun
      */
     public native static String getServerPrefix(String packageNameSuffix);
 

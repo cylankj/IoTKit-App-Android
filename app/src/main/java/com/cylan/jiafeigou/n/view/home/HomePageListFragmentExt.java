@@ -212,7 +212,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_CID));
             bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
-            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
+            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(bundle));
             simpleDialogFragmentWeakReference.get().setAction(this);
         }
     }
@@ -373,7 +373,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onLoginState(boolean state) {
         if (!state) {
             onRefreshFinish();
-            Toast.makeText(getContext(), getString(R.string.UNLOGIN), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), getString(R.string.UNLOGIN), Toast.LENGTH_SHORT).show();
         } else {
             //setDevice online view
         }

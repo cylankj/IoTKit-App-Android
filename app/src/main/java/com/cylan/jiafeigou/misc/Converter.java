@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.misc;
 
 import com.cylan.jiafeigou.dp.BaseValue;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 

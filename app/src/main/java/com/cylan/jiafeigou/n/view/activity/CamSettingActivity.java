@@ -464,7 +464,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (state == JError.ErrorOK) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
             setResult(RESULT_OK);
-            ToastUtil.showPositiveToast(getString(R.string.DOOR_UNBIND));
+            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
             finish();
         }
     }
