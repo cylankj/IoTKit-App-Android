@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -69,6 +70,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     FrameLayout fLayoutBellHomeListEdition;
     @BindView(R.id.cv_bell_home_background)
     BellTopBackgroundView cvBellHomeBackground;
+    @BindView(R.id.fragment_bell_home_empty)
+    ViewGroup mEmptyView;
     private WeakReference<BellSettingFragment> fragmentWeakReference;
     private WeakReference<LBatteryWarnDialog> lBatteryWarnDialog;
     private BellCallRecordListAdapter bellCallRecordListAdapter;
@@ -89,9 +92,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     protected void onResume() {
         super.onResume();
-        if (bellCallRecordListAdapter.getList() == null || bellCallRecordListAdapter.getList().size() == 0) {
-            startLoadData(false, 0);
-        }
+        startLoadData(false, 0);
     }
 
 
@@ -102,7 +103,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 && lBatteryWarnDialog.get() != null
                 && lBatteryWarnDialog.get().isResumed())
             lBatteryWarnDialog.get().dismiss();
-        imgVTopBarCenter.removeCallbacks(mLoadAction);
     }
 
     @Override
@@ -146,18 +146,10 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         });
     }
 
-    private Runnable mLoadAction = () -> {
-        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
-            ToastUtil.showNegativeToast(getString(R.string.REQUEST_TIME_OUT));
-        }
-    };
-
     private void startLoadData(boolean asc, long version) {
         LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), true);
         mIsLastLoadFinish = false;
         mPresenter.fetchBellRecordsList(asc, version);
-        imgVTopBarCenter.postDelayed(mLoadAction, 10000);
     }
 
     @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right})
@@ -238,36 +230,44 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList) {
-        imgVTopBarCenter.removeCallbacks(mLoadAction);
         LoadingDialog.dismissLoading(getSupportFragmentManager());
         if (beanArrayList != null && beanArrayList.size() < 20) endlessLoading = true;
         bellCallRecordListAdapter.addAll(beanArrayList);
         mIsLastLoadFinish = true;
         if (bellCallRecordListAdapter.getList().size() == 0) {//show empty startViewer
+            mEmptyView.setVisibility(View.VISIBLE);
             Toast.makeText(this, "暂无数据", Toast.LENGTH_SHORT).show();
         }
     }
 
-
     @Override
-    public boolean onLongClick(View v) {
+    public void onQueryRecordListTimeOut() {
+        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            ToastUtil.showNegativeToast(getString(R.string.REQUEST_TIME_OUT));
+        }
+        }
+
+
+        @Override
+        public boolean onLongClick (View v){
 //        if (!TextUtils.isEmpty(mPresenter.getBellInfo().deviceBase.shareAccount))//共享账号不可操作
 //            return true;
-        final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
-        if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
-            AppLogger.d("position is invalid");
-            return false;
+            final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
+            if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
+                AppLogger.d("position is invalid");
+                return false;
+            }
+            //toggle edit mode
+            if (bellCallRecordListAdapter.getMode() == 0) {
+                AppLogger.d("enter edition mode");
+                bellCallRecordListAdapter.setMode(1);
+                bellCallRecordListAdapter.reverseItemSelectedState(position);
+                tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
+                showEditBar(true);
+            }
+            return true;
         }
-        //toggle edit mode
-        if (bellCallRecordListAdapter.getMode() == 0) {
-            AppLogger.d("enter edition mode");
-            bellCallRecordListAdapter.setMode(1);
-            bellCallRecordListAdapter.reverseItemSelectedState(position);
-            tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
-            showEditBar(true);
-        }
-        return true;
-    }
 
     private void showEditBar(boolean show) {
         AnimatorUtils.slide(fLayoutBellHomeListEdition);

@@ -12,6 +12,8 @@ import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
+import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
+import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.dp.BaseValue;
@@ -734,5 +736,21 @@ public class RxEvent {
 
     public static class CamLivePageScrolled {
         public boolean selected;
+    }
+
+    public static class LiveResponse {
+        public boolean success;
+        public JFGMsgVideoResolution resolution;
+        public JFGMsgVideoDisconn disconnect;
+
+        public LiveResponse(JFGMsgVideoResolution resolution) {
+            success = true;
+            this.resolution = resolution;
+        }
+
+        public LiveResponse(JFGMsgVideoDisconn disconnect) {
+            success = false;
+            this.disconnect = disconnect;
+        }
     }
 }

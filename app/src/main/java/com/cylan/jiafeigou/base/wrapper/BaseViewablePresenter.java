@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
@@ -29,13 +30,8 @@ import rx.schedulers.Schedulers;
 
 public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter {
 
-    protected String mInViewIdentify = null;
-    protected String mInViewCallWay = null;
+    //    protected String mInViewCallWay = null;
     protected boolean mIsSpeakerOn = false;
-    protected String mRestoreViewHandler = null;
-    protected boolean mHasResolution = false;
-
-    protected Subscription mConnectDeviceTimeOut;
 
     @Override
     protected void onRegisterSubscription() {
@@ -47,17 +43,17 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 //        );
     }
 
-    protected Subscription getConnectDeviceTimeOutSub() {
-        AppLogger.e("getConnectDeviceTimeOutSub");
-        return mConnectDeviceTimeOut = Observable.just(null)
-                .delay(30, TimeUnit.SECONDS)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o -> {
-                    mView.onConnectDeviceTimeOut();
-                    AppLogger.e("onConnectDeviceTimeOut");
-                });
-    }
+//    protected Subscription getConnectDeviceTimeOutSub() {
+//        AppLogger.e("getConnectDeviceTimeOutSub");
+//        return mConnectDeviceTimeOut = Observable.just(null)
+//                .delay(30, TimeUnit.SECONDS)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(o -> {
+//                    mView.onConnectDeviceTimeOut();
+//                    AppLogger.e("onConnectDeviceTimeOut");
+//                });
+//    }
 
     protected Subscription getVideoDisconnectedSub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
@@ -78,7 +74,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .filter(videoResolutionRsp -> TextUtils.equals(onResolveViewIdentify(), videoResolutionRsp.peer))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(videoResolutionRsp -> {
-                    mHasResolution = true;
+//                    mHasResolution = true;
                     onVideoResolution(videoResolutionRsp);
                 }, Throwable::printStackTrace);
     }
@@ -120,16 +116,28 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     mView.onViewer();
                     return s;
                 })
-                .flatMap(peer -> RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
-                        .timeout(30, TimeUnit.SECONDS)
-                        .filter(rsp -> TextUtils.equals(rsp.peer, peer))
-                        .first())
+                .flatMap(s -> Observable.merge(
+                        RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
+                                .subscribeOn(Schedulers.io())
+                                .filter(rsp -> TextUtils.equals(rsp.peer, s)).timeout(30, TimeUnit.SECONDS)
+                                .first().map(RxEvent.LiveResponse::new),
+                        RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .map(dis -> {
+                                    AppLogger.e("视频连接断开了: remote:" + dis.remote + "code:" + dis.code);
+                                    mView.onVideoDisconnect(dis.code);
+                                    return new RxEvent.LiveResponse(dis);
+                                })
+                ).first())
+                .filter(response -> response.success)
+                .map(response -> response.resolution)
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(rsp -> {
                     try {
-                        AppLogger.e("接收到分辨率消息");
+                        AppLogger.d("接收到分辨率消息,准备播放直播");
                         mView.onResolution(rsp);
-                        mInViewIdentify = onResolveViewIdentify();
+                        RxBus.getCacheInstance().post(new RxEvent.CallAnswered(true));//发送一条 CallAnswer 消息表明自己成功连接了
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -145,7 +153,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                                                         break;
                                                     default:
                                                         mView.onVideoDisconnect(dis.code);
-
                                                 }
                                                 return dis;
                                             })
@@ -170,42 +177,39 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
      * 这样当我们onPause时停止直播后可以在onResume中进行恢复,dismiss不仅会停止直播
      * 而且还会清除播放状态
      */
-    protected Observable<String> stopViewer() {
-        return Observable.create((Observable.OnSubscribe<String>) subscriber -> {
-            try {
-                JfgCmdInsurance.getCmd().stopPlay(getViewHandler());
-                subscriber.onNext(getViewHandler());
-                subscriber.onCompleted();
-                AppLogger.e("停止直播成功");
-            } catch (JfgException e) {
-                e.printStackTrace();
-                subscriber.onError(e);
-                AppLogger.e("停止直播失败");
-            }
-        })
+    protected Observable<Boolean> stopViewer() {
+        return Observable.just(getViewHandler())
                 .subscribeOn(Schedulers.io())
-                .map(s -> {
-                    mInViewIdentify = null;
-                    JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-                    disconn.remote = getViewHandler();
-                    disconn.code = -1000000;
-                    RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
-                    AppLogger.e("正在发送停止直播消息");
-                    return s;
+                .map(handler -> {
+                    if (!TextUtils.isEmpty(handler)) {
+                        try {
+                            JfgCmdInsurance.getCmd().stopPlay(handler);
+                            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                            disconn.remote = getViewHandler();
+                            disconn.code = -1000000;
+                            RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
+                            AppLogger.e("正在发送停止直播消息");
+                            return true;
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                            AppLogger.e("停止直播失败");
+                        }
+                    }
+                    return false;
                 });
     }
 
 
     protected void onVideoResolution(JFGMsgVideoResolution resolution) {
-        try {
-            unSubscribe(mConnectDeviceTimeOut);
-            mView.onResolution(resolution);
-            mView.onSpeaker(mIsSpeakerOn);
-            mHasResolution = true;
-            setSpeaker(mIsSpeakerOn);
-        } catch (JfgException e) {
-            e.printStackTrace();
-        }
+//        try {
+////            unSubscribe(mConnectDeviceTimeOut);
+////            mView.onResolution(resolution);
+////            mView.onSpeaker(mIsSpeakerOn);
+////            mHasResolution = true;
+//            setSpeaker(mIsSpeakerOn);
+//        } catch (JfgException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override
@@ -221,10 +225,12 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     public void onStop() {
         super.onStop();
-        if (mInViewIdentify != null) {
-            mRestoreViewHandler = mInViewIdentify;
+        if (getViewHandler() != null) {
             stopViewer().subscribe();
         }
+    }
+
+    protected void setViewHandler(String handler) {
     }
 
     @Override
@@ -233,10 +239,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     protected String getViewHandler() {
-        if (TextUtils.isEmpty(mInViewIdentify)) {
-            mInViewIdentify = onResolveViewIdentify();
-        }
-        return mInViewIdentify;
+        return onResolveViewIdentify();
     }
 
     @Override
@@ -244,9 +247,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         stopViewer()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> {
-                    mInViewIdentify = null;
-                    mRestoreViewHandler = null;
+                    setViewHandler(null);
                     mView.onDismiss();
+                }, e -> {
+
                 });
     }
 

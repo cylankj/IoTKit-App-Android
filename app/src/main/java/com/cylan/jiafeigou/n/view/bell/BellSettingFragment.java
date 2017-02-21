@@ -153,6 +153,8 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 }
                 break;
             case R.id.tv_setting_clear_:
+                ViewUtils.deBounceClick(view);
+                mPresenter.clearBellRecord(mUUID);
                 break;
             case R.id.tv_setting_unbind:
                 ViewUtils.deBounceClick(view);
@@ -174,6 +176,16 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
             ToastUtil.showPositiveToast(getString(R.string.DOOR_UNBIND));
             getActivity().finish();
         }
+    }
+
+    @Override
+    public void onClearBellRecordSuccess() {
+        ToastUtil.showPositiveToast("清空呼叫记录成功!");
+    }
+
+    @Override
+    public void onClearBellRecordFaild() {
+        ToastUtil.showNegativeToast("清空呼叫记录失败!");
     }
 
     @Override

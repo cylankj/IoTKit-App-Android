@@ -12,6 +12,8 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +27,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
@@ -74,6 +77,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     ILiveControl mVideoPlayController;
     @BindView(R.id.act_bell_live_back)
     TextView mBellLiveBack;
+    @BindView(R.id.view_bell_handle)
+    ImageView mBellhandle;
+    private Intent mCallIntent;
+    private Intent mHolderIntent;
 
     private ImageView mLandBellLiveSpeaker;
     private ScaleGestureDetector mGestureDetector;
@@ -158,6 +165,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        mHolderIntent = intent;
         setIntent(intent);
         newCall();
     }
@@ -323,6 +331,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
+        mCallIntent = getIntent();
         initVideoView();
         JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, mSurfaceView);
         mBellLiveVideoPicture.setVisibility(View.GONE);
@@ -379,16 +388,41 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         dLayoutBellHotSeat.setVisibility(View.VISIBLE);
         fLayoutBellAfterLive.setVisibility(View.GONE);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
+        Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
+        mBellhandle.startAnimation(shake);
+    }
+
+    @Override
+    public void onNewCallTimeOut() {
+        if (mCallIntent != null) {
+            setIntent(mCallIntent);
+            dismissAlert();
+        }
     }
 
     @Override
     public void onVideoDisconnect(int code) {
-        mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
+        switch (code) {
+            case JError.ErrorVideoPeerInConnect://其他端在查看
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_PEER_IN_CONNECTED));
+                break;
+            case JError.ErrorVideoPeerNotExist://对端不在线
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_PEER_NOT_EXIST));
+                break;
+            case JError.ErrorVideoNotLogin://本端未登录
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_NOT_LOGIN));
+                break;
+            case JError.ErrorVideoPeerDisconnect://对端断开
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_PEER_DISCONNECTED));
+                break;
+            default:
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
+        }
     }
 
     @Override
     public void onConnectDeviceTimeOut() {
-        ToastUtil.showNegativeToast("连接门铃超时");
+        ToastUtil.showNegativeToast(getString(R.string.CONNECT_TO_BELL_TIME_OUT));
         mPresenter.dismiss();
     }
 

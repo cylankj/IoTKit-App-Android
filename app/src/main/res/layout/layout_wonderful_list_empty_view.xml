@@ -26,6 +26,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/y20"
+        android:gravity="center_horizontal"
         android:text="@string/NO_CONTENTS_1"
         android:textColor="@color/color_888888"
         android:textSize="@dimen/sp16" />

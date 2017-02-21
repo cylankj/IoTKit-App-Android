@@ -3,10 +3,13 @@ package com.cylan.jiafeigou.n.mvp.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.utils.TimeUtils;
+
 /**
  * Created by cylan-hunt on 16-8-3.
  */
-public class BellCallRecordBean implements Comparable<BellCallRecordBean> ,Parcelable{
+public class BellCallRecordBean implements Comparable<BellCallRecordBean>, Parcelable {
     public String url;
     //应该隐藏
     public String date, timeStr;
@@ -68,4 +71,16 @@ public class BellCallRecordBean implements Comparable<BellCallRecordBean> ,Parce
             return new BellCallRecordBean[size];
         }
     };
+
+    public static BellCallRecordBean parse(DpMsgDefine.DPBellCallRecord record) {
+        if (record == null) return null;
+        BellCallRecordBean result = new BellCallRecordBean();
+        result.answerState = record.isOK;
+        result.timeInLong = record.time * 1000L;
+        result.timeStr = TimeUtils.getHH_MM(record.time * 1000L);
+        result.date = TimeUtils.getBellRecordTime(record.time * 1000L);
+        result.type = record.type;
+        result.version = record.version;
+        return result;
+    }
 }
