@@ -160,12 +160,6 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         setContentView(R.layout.activity_media);
         ButterKnife.bind(this);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            postponeEnterTransition();
-            initShareElementCallback();
-        } else {
-
-        }
         //数据初始化
         mCurrentPosition = mStartPosition = getIntent().getIntExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, 0);
         mMediaList = getIntent().getParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST);
@@ -173,16 +167,19 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mCurrentViewType = mCurrentMediaBean.msgType;
         if (savedInstanceState != null) {
             mCurrentPosition = savedInstanceState.getInt(STATE_CURRENT_PAGE_POSITION);
-            mEnterAnimationFinished = savedInstanceState.getBoolean(STATE_ENTER_ANIMATION_FINISHED, false);
         }
         initViewAndListener();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mEnterAnimationFinished = false;
+            postponeEnterTransition();
+            initShareElementCallback();
+        }
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putInt(STATE_CURRENT_PAGE_POSITION, mCurrentPosition);
-        outState.putBoolean(STATE_ENTER_ANIMATION_FINISHED, mEnterAnimationFinished);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
@@ -194,7 +191,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                 mEnterAnimationFinished = true;
                 animateHeaderAndFooter(true, true);
                 if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
-                    startPlayVideo();
+                    mPhotoView.postDelayed(MediaActivity.this::startPlayVideo, 500);
                 }
             }
         });
@@ -224,6 +221,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             public void setPrimaryItem(ViewGroup container, int position, Object object) {
                 super.setPrimaryItem(container, position, object);
                 if (mCurrentViewType == DPWonderItem.TYPE_VIDEO && mPagerContentView != object) {
+                    AppLogger.e("setPrimaryItem");
                     mPagerContentView = (View) object;
                     ViewHolder holder = (ViewHolder) mPagerContentView.getTag();
                     mPhotoView = holder.mPhotoView;
@@ -236,26 +234,38 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                     mVideoView.setSurfaceTextureListener(mSurfaceTextureListener);
                     if (mEnterAnimationFinished) startPlayVideo();
                 } else if (mCurrentViewType == DPWonderItem.TYPE_PIC && mPhotoView != object) {
+                    AppLogger.e("picture");
                     mPhotoView = (View) object;
+                }
+            }
+
+            @Override
+            public void destroyItem(ViewGroup container, int position, Object object) {
+                super.destroyItem(container, position, object);
+                if (mPagerContentView == object) {
+                    mPagerContentView = null;
+                    mVideoView = null;
+                    mPhotoView = null;
                 }
             }
         };
         mAdapter.setPhotoTapListener(this);
         mMediaPager.setPageMargin((int) getResources().getDimension(R.dimen.video_pager_page_margin));
         mAdapter.setOnInitFinishListener(() -> {
+            AppLogger.e("Glide 加载完成");
             if (mEnterAnimationFinished) {
                 animateHeaderAndFooter(true, true);
-            } else {
-                mHeaderContainer.setVisibility(View.GONE);
-                mFooterContainer.setVisibility(View.GONE);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    startPostponedEnterTransition();
-                } else {
-                    animateHeaderAndFooter(true, true);
-                    if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
-                        startPlayVideo();
-                    }
-                }
+                return;
+            }
+            mHeaderContainer.setVisibility(View.GONE);
+            mFooterContainer.setVisibility(View.GONE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                startPostponedEnterTransition();
+                return;
+            }
+            animateHeaderAndFooter(true, true);
+            if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
+                startPlayVideo();
             }
         });
         mMediaPager.setAdapter(mAdapter);
@@ -266,7 +276,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                 mContentRootView.removeCallbacks(mHideHeaderAndFooterCallback);
                 animateHeaderAndFooter(true, true, () -> mContentRootView.postDelayed(mHideHeaderAndFooterCallback, HEADER_AND_FOOTER_SHOW_TIME));
             }
-            return false;
+            return true;
         });
     }
 
@@ -389,8 +399,8 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         params.rightMargin = (int) resources.getDimension(R.dimen.video_option_full_screen_margin_right);
         mVideoFullScreen.setLayoutParams(params);
 
-        mVideoFullScreen.setImageResource(R.drawable.wonderful_icon_video_full_screen);
-        mHeaderBack.setImageResource(R.drawable.btn_close);
+        mVideoFullScreen.setImageResource(R.drawable.icon_port_fullscreen_selector);
+        mHeaderBack.setImageResource(R.drawable.nav_tab_back_selector);
         mVideoMore.setVisibility(View.VISIBLE);
         mMediaPager.setLocked(false);
         updatePlayState();
@@ -462,6 +472,13 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     protected void onStop() {
         super.onStop();
         AppLogger.d("onStop");
+        stopVideoPlay();
+    }
+
+    private void stopVideoPlay() {
+        if (mMediaPlayer != null) {
+            mMediaPlayer.release();
+        }
     }
 
     @Override
@@ -482,6 +499,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         mCurrentPlayState = PLAY_STATE_PLAYING;
         startUpdateTime();
         updatePlayState();
+        AppLogger.e("SSSSSSSSSSSSSSs");
         mPhotoView.setVisibility(View.INVISIBLE);
     }
 
@@ -506,6 +524,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         } else if (mCurrentPlayState == PLAY_STATE_READY_TO_PLAY || mCurrentPlayState == PLAY_STATE_PAUSED) {
             mCurrentPlayState = PLAY_STATE_PLAYING;
             mMediaPlayer.start();
+            mPhotoView.setVisibility(View.INVISIBLE);
             startUpdateTime();
         } else {
             startPlayVideo();
@@ -527,6 +546,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                 break;
         }
     }
+
 
     @OnClick({R.id.act_media_header_opt_delete, R.id.act_media_picture_opt_delete})
     public void delete() {
@@ -756,6 +776,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     private void startPlayVideo() {
+        AppLogger.e("startPlayVideo");
         mVideoView.setVisibility(View.VISIBLE);
         mVideoLoadingBar.setVisibility(View.VISIBLE);
 //        String url = mCurrentMediaBean.fileName;

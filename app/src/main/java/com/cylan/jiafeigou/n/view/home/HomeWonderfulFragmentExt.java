@@ -339,6 +339,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onChangeTimeLineDaySuccess(List<DPWonderItem> items) {
+        if (getWheelView().isShown()) {
+            getWheelView().scrollPositionToCenter();
+        }
         homeWonderAdapter.clear();
         if (items.size() > 0)
             tvDateItemHeadWonder.setText(TimeUtils.getDayString(items.get(0).version));
@@ -590,7 +593,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         int i = ColorUtils.blendARGB(Color.WHITE, Color.parseColor("#788291"), ratio);
         tvDateItemHeadWonder.setTextColor(i);
         tvDateItemHeadWonder.setTitleHeadIsTop(ratio < 0.1);
-        tvDateItemHeadWonder.setBackgroundToRight();
     }
 
 

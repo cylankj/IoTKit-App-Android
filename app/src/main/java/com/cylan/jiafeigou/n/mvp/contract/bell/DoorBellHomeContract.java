@@ -23,6 +23,7 @@ public interface DoorBellHomeContract {
 
         void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList);
 
+        void onQueryRecordListTimeOut();
     }
 
     interface Presenter extends JFGPresenter {

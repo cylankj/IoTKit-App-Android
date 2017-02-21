@@ -257,13 +257,15 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_marginLeft">@dimen/y14</item>
         <item name="android:layout_marginRight">@dimen/y13</item>
-        <item name="android:src">@drawable/wonderful_icon_video_full_screen</item>
+        <item name="android:src">@drawable/icon_port_fullscreen_selector</item>
     </style>
 
-    <style name="video_opt_seek_bar">
+    <style name="video_opt_seek_bar" parent="Widget.AppCompat.SeekBar">
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
+        <item name="android:progressDrawable">@drawable/media_seek_bar_drawable</item>
+        <item name="android:thumb">@drawable/seek_bar_dot_white</item>
     </style>
 
     <style name="video_opt_play_time">
@@ -304,7 +306,7 @@
     <style name="video_header_back">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:src">@drawable/btn_login_nav_close</item>
+        <item name="android:src">@drawable/nav_tab_back_selector</item>
         <item name="android:padding">@dimen/y15</item>
         <item name="android:layout_centerVertical">true</item>
 

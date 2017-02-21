@@ -18,6 +18,9 @@ public interface BellSettingContract {
          */
         void unbindDeviceRsp(int state);
 
+        void onClearBellRecordSuccess();
+
+        void onClearBellRecordFaild();
     }
 
     interface Presenter extends JFGPresenter {
@@ -25,6 +28,8 @@ public interface BellSettingContract {
          * 解绑设备
          */
         void unbindDevice();
+
+        void clearBellRecord(String uuid);
     }
 }
 

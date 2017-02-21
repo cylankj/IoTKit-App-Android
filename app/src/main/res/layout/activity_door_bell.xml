@@ -25,8 +25,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:drawablePadding="@dimen/y15"
-                android:padding="@dimen/y15"
                 android:drawableStart="@drawable/nav_tab_back_selector"
+                android:padding="@dimen/y15"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp16" />
 
@@ -51,6 +51,11 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
 
+        <include
+            android:id="@+id/fragment_bell_home_empty"
+            layout="@layout/layout_wonderful_list_empty_view"
+            android:visibility="gone" />
+
         <FrameLayout
             android:id="@+id/fLayout_bell_home_list_edition"
             android:layout_width="match_parent"
@@ -70,8 +75,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                android:paddingStart="@dimen/y30"
                 android:paddingEnd="@dimen/y30"
+                android:paddingStart="@dimen/y30"
                 android:text="@string/CANCEL" />
 
             <TextView
@@ -80,8 +85,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:paddingStart="@dimen/y30"
                 android:paddingEnd="@dimen/y30"
+                android:paddingStart="@dimen/y30"
                 android:text="@string/SELECT_ALL"
                 android:textColor="@color/color_4b9fd5" />
 
@@ -91,8 +96,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="end"
                 android:gravity="center"
-                android:paddingStart="@dimen/y30"
                 android:paddingEnd="@dimen/y30"
+                android:paddingStart="@dimen/y30"
                 android:text="@string/DELETE"
                 android:textColor="@color/color_4b9fd5" />
         </FrameLayout>

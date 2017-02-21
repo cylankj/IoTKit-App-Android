@@ -42,6 +42,7 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
         mStartPosition = startPosition;
     }
 
+
     @Override
     public int getCount() {
         return mMediaBeanList == null ? 0 : mMediaBeanList.size();
@@ -66,7 +67,6 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
             Glide.with(container.getContext())
                     .load(new WonderGlideVideoThumbURL(bean))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .error(R.drawable.brokent_image)
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
                     .into(photoView);
         } else {

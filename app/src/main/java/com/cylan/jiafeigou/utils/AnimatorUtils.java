@@ -45,6 +45,11 @@ public class AnimatorUtils {
         an.setDuration(duration).start();
     }
 
+    public static void shake(View view) {
+//        view.animate().setInterpolator(CycleInterpolator)
+
+    }
+
 
     public interface OnFinish {
         void onFinish();

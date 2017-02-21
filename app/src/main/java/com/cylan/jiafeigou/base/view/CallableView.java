@@ -15,4 +15,6 @@ public interface CallableView extends ViewableView {
     void onPreviewPicture(String picture);
 
     void onListen();
+
+    void onNewCallTimeOut();
 }

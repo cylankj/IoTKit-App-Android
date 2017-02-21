@@ -232,7 +232,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         }
         suggestionAdapter.add(suggestionBean);
         suggestionAdapter.notifyDataSetHasChanged();
-        presenter.sendFeedBack(suggestionBean,true);
+        presenter.sendFeedBack(suggestionBean);
     }
 
     @Override
@@ -298,7 +298,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
      */
     @Override
     public void sendLogResult(int code) {
-        addInputItem();
         hideLoadingDialog();
         hasSendLog = true;
     }
@@ -328,7 +327,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 resendFlag = true;
                 ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);
                 send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
-                presenter.sendFeedBack(item,false);
+                presenter.sendFeedBack(item);
                 presenter.deleteOnItemFromDb(item);
             }
         });

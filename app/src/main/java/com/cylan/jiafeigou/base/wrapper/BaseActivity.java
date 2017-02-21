@@ -229,7 +229,13 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     public void startActivity(Intent intent) {
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID,mUUID);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
         super.startActivity(intent);
+    }
+
+    protected void dismissAlert() {
+        if (mAlertDialog != null && mAlertDialog.isShowing()) {
+            mAlertDialog.dismiss();
+        }
     }
 }

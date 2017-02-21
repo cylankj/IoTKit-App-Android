@@ -108,7 +108,7 @@ public interface HomeMineHelpSuggestionContract {
         /**
          * 上传意见反馈
          */
-        void sendFeedBack(MineHelpSuggestionBean bean,boolean hasLog);
+        void sendFeedBack(MineHelpSuggestionBean bean);
 
         /**
          * 获取系统的自动回复
@@ -147,12 +147,6 @@ public interface HomeMineHelpSuggestionContract {
          * @return
          */
         void upLoadLogFile(MineHelpSuggestionBean bean);
-
-        /**
-         * 上传日志到云存储
-         * @param localUrl
-         */
-        void sendLogToCloud(String localUrl);
 
         /**
          * 上传日志回调

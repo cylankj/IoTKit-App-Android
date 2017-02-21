@@ -118,16 +118,20 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .map(result -> {
                     AppLogger.e("正在更新 UI 界面");
                     int oldSize = mWonderItems.size();
-                    long oldVersion = mWonderItems.isEmpty() ? 0 : mWonderItems.first().version;
+                    long oldVersion = mCurrentWonderItems.isEmpty() ? 0 : mCurrentWonderItems.get(0).version;
                     mWonderItems.addAll(result);
                     int newSize = mWonderItems.size();
                     long topVersion = mWonderItems.first().version;
+                    if (oldSize < newSize) {
+                        updateCurrentItems(TimeUtils.getSpecificDayStartTime(topVersion), TimeUtils.getSpecificDayEndTime(topVersion));
+                    }
                     boolean empty = oldSize == newSize && mCurrentWonderItems.size() == 0;
-                    updateCurrentItems(TimeUtils.getSpecificDayStartTime(topVersion), TimeUtils.getSpecificDayEndTime(topVersion));
                     if (mCurrentWonderItems.size() > 0) mView.chooseEmptyView(VIEW_TYPE_HIDE);
                     if (empty || oldVersion < mCurrentDayStartTime) {//change
+                        if (mHasTimeWheelInit) {
+                            mView.onTimeLineRsp(mCurrentWonderItems.get(0).version, true, true);
+                        }
                         mView.onChangeTimeLineDaySuccess(mCurrentWonderItems);
-                        mView.onTimeLineRsp(mCurrentWonderItems.get(0).version, true, true);
                     } else if (oldVersion >= mCurrentDayStartTime && oldVersion <= mCurrentDayEndTime) {//update
                         mView.onQueryTimeLineSuccess(mCurrentWonderItems.subList(0, newSize - oldSize), true);
                     }
