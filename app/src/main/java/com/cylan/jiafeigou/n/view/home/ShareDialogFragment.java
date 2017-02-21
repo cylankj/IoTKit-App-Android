@@ -71,44 +71,44 @@ public class ShareDialogFragment extends BaseDialog {
         return view;
     }
 
-    @OnClick({R.id.tv_share_to_timeline, R.id.tv_share_to_wechat_friends,R.id.tv_share_to_facebook_friends,R.id.tv_share_to_twitter_friends})
+    @OnClick({R.id.tv_share_to_timeline, R.id.tv_share_to_wechat_friends, R.id.tv_share_to_facebook_friends, R.id.tv_share_to_twitter_friends})
     public void onClick(View view) {
         dismiss();
         switch (view.getId()) {
             case R.id.tv_share_to_timeline:
-                if (glideUrl != null&&!TextUtils.isEmpty(mVideoURL)) {
-                    ShareUtils.shareVideoToWechat(getActivity(),mVideoURL, WXSceneTimeline, glideUrl);
-                } else if (glideUrl!=null) {
+                if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneTimeline, glideUrl);
+                } else if (glideUrl != null) {
                     ShareUtils.sharePictureToWechat(getActivity(), glideUrl, WXSceneTimeline);
-                }else{
-                    ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
                 }
                 break;
             case R.id.tv_share_to_wechat_friends:
-                if (glideUrl != null&&!TextUtils.isEmpty(mVideoURL)) {
-                    ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneSession,glideUrl);
-                } else if (glideUrl!=null){
+                if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneSession, glideUrl);
+                } else if (glideUrl != null) {
                     ShareUtils.sharePictureToWechat(getActivity(), glideUrl, WXSceneSession);
-                }else{
-                    ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
                 }
                 break;
             case R.id.tv_share_to_twitter_friends:
-                if (glideUrl!=null&&!TextUtils.isEmpty(mVideoURL)) {
-                    ShareUtils.shareVideoToTwitter(getActivity(),mVideoURL,glideUrl);
-                }else if (glideUrl!=null){
-                    ShareUtils.sharePictureToTwitter(getActivity(),glideUrl);
-                }else{
-                    ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
+                if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.shareVideoToTwitter(getActivity(), mVideoURL, glideUrl);
+                } else if (glideUrl != null) {
+                    ShareUtils.sharePictureToTwitter(getActivity(), glideUrl);
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
                 }
                 break;
             case R.id.tv_share_to_facebook_friends:
-                if (glideUrl!=null&&!TextUtils.isEmpty(mVideoURL)) {
-                    ShareUtils.shareVideoToFacebook(getActivity(),mVideoURL,glideUrl);
-                }else if (glideUrl!=null){
+                if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
+                    ShareUtils.shareVideoToFacebook(getActivity(), mVideoURL, glideUrl);
+                } else if (glideUrl != null) {
                     ShareUtils.shareToFacebook(getActivity(), glideUrl);
-                }else{
-                    ToastUtil.showNegativeToast(getString(R.string.SHARE_ERROR));
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
                 }
                 break;
         }

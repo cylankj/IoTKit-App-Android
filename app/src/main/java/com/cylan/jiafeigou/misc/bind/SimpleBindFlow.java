@@ -5,6 +5,7 @@ import android.util.Log;
 
 import com.cylan.ex.JfgException;
 import com.cylan.ext.opt.DebugOptionsImpl;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -133,7 +134,13 @@ public class SimpleBindFlow extends AFullBind {
         try {
             AppLogger.i(BIND_TAG + udpDevicePortrait);
             //
-            String address = DebugOptionsImpl.getServer().replace(":443", "");
+            String debugServer = DebugOptionsImpl.getServer().replace(":443", "");
+            //空,不合法
+            if (TextUtils.isEmpty(debugServer) || !debugServer.contains("jfgou.com")) {
+                debugServer = Security.getServerPrefix(JFGRules.getTrimPackageName()) + ".jfgou.com";
+            }
+            if (TextUtils.isEmpty(debugServer) && BuildConfig.DEBUG)
+                throw new IllegalArgumentException("server address is empty");
             int port = Security.getServerPort(JFGRules.getTrimPackageName());
             //设置语言
             JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
@@ -144,7 +151,7 @@ public class SimpleBindFlow extends AFullBind {
             JfgUdpMsg.SetServer setServer =
                     new JfgUdpMsg.SetServer(udpDevicePortrait.uuid,
                             udpDevicePortrait.mac,
-                            address,
+                            debugServer,
                             port,
                             80);
             AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));

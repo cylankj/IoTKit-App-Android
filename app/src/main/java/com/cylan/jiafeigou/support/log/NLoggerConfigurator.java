@@ -22,7 +22,7 @@ public class NLoggerConfigurator {
      */
     private String filePath;
     private int maxBackupSize = 2;
-    private long maxFileSize = 512 * 1024;
+    private long maxFileSize = 5 * 1024 * 1024;
     private boolean immediateFlush = true;
     private boolean useLogCatAppender = true;
     private boolean useFileAppender = true;

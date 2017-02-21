@@ -7,6 +7,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
@@ -19,12 +22,16 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.util.List;
 import java.util.Locale;
@@ -69,10 +76,17 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     SettingItemView0 tvDeviceBatteryLevel;
     @BindView(R.id.tv_device_uptime)
     SettingItemView0 tvDeviceUptime;
+    @BindView(R.id.rl_hardware_update)
+    RelativeLayout rlHardwareUpdate;
+    @BindView(R.id.hardware_update_point)
+    View hardwareUpdatePoint;
+    @BindView(R.id.tv_new_software)
+    TextView tvNewSoftware;
     @BindView(R.id.tv_device_cid)
     SettingItemView0 tvDeviceCid;
     private String uuid;
     private EditFragmentDialog editDialogFragment;
+    private RxEvent.CheckDevVersionRsp checkDevVersion;
     private JFGDevice device;
 
     public static DeviceInfoDetailFragment newInstance(Bundle bundle) {
@@ -117,6 +131,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     public void onStart() {
         super.onStart();
         updateDetails();
+        basePresenter.checkNewSoftVersion();
     }
 
     private void updateDetails() {
@@ -172,7 +187,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @OnClick({R.id.tv_toolbar_icon,
             R.id.tv_device_sdcard_state,
             R.id.tv_device_alias,
-            R.id.tv_device_time_zone})
+            R.id.tv_device_time_zone,
+            R.id.rl_hardware_update})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
@@ -199,7 +215,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private void jump2HardwareUpdateFragment() {
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        bundle.putString("the_new_soft_version", "");
+        bundle.putSerializable("version_content", checkDevVersion);
         HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 hardwareUpdateFragment, android.R.id.content);
@@ -209,12 +225,35 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      * 显示Sd卡的详情
      */
     private void jump2SdcardDetailFragment() {
+        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        String statusContent = getSdcardState(status);
+        if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
+            showClearSDDialog();
+            return;
+        }
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 sdcardDetailFragment, android.R.id.content);
     }
+
+    /**
+     *格式化SD卡
+     */
+    private void showClearSDDialog() {
+        Bundle bundle = new Bundle();
+        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT,"去格式化");
+        bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "Micro SD卡需要格式化，才能存储视频");
+        SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
+        simpleDialogFragment.setAction((int id, Object value) -> {
+            //开始格式化
+            basePresenter.clearSdcard();
+            showLoading();
+        });
+        simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
+    }
+
 
     /**
      * 编辑时区
@@ -272,5 +311,34 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void setPresenter(CamInfoContract.Presenter presenter) {
         basePresenter = presenter;
+    }
+
+    @Override
+    public void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
+        checkDevVersion = checkDevVersionRsp;
+        if (checkDevVersionRsp.hasNew) {
+            hardwareUpdatePoint.setVisibility(View.VISIBLE);
+            tvNewSoftware.setVisibility(View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void showLoading() {
+        LoadingDialog.showLoading(getFragmentManager(),"格式化中...");
+    }
+
+    @Override
+    public void hideLoading() {
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    @Override
+    public void clearSdReslut(int code) {
+        hideLoading();
+        if (code == 0){
+            ToastUtil.showPositiveToast("格式化成功");
+        }else {
+            ToastUtil.showNegativeToast("格式化失败");
+        }
     }
 }

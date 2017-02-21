@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginTop="@dimen/y20"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/item_time"
+        android:textColor="#adadad"
+        android:textSize="@dimen/sp13"
+        android:text="2016/04/01 12:00"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+
+        <RelativeLayout
+            android:layout_marginTop="@dimen/y22"
+            android:layout_marginLeft="@dimen/x15"
+            android:id="@+id/rl_mine_message_server"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <CheckBox
+                android:visibility="gone"
+                android:layout_centerVertical="true"
+                android:id="@+id/delete_check"
+                android:background="@drawable/custom_rtbn_style1"
+                android:button="@null"
+                android:layout_marginRight="@dimen/x15"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <ImageView
+                android:layout_toRightOf="@id/delete_check"
+                android:id="@+id/iv_mesg_icon"
+                android:src="@drawable/pic_head"
+                android:layout_width="@dimen/x40"
+                android:layout_height="@dimen/y40" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_toRightOf="@id/rl_mine_message_server"
+            android:orientation="vertical"
+            android:layout_width="@dimen/x230"
+            android:layout_marginTop="@dimen/y26"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tv_device_name"
+                android:textColor="@color/color_666666"
+                android:layout_marginBottom="@dimen/y4"
+                android:layout_marginLeft="@dimen/x14"
+                android:text="门铃二"
+                android:textSize="@dimen/sp13"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:background="@drawable/pic_container_white"
+                android:layout_marginBottom="@dimen/y10"
+                android:textColor="#666666"
+                android:textSize="@dimen/sp14"
+                android:id="@+id/mesg_item_content"
+                android:text="亲爱的用户,客户端将进行系统维护升级,期间对设备正常使用将会造成一定影响，对您造成的不便之处敬请谅解。再次感谢您对加菲狗的支持！"
+                android:layout_marginLeft="@dimen/x8"
+                android:layout_marginRight="@dimen/x8"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

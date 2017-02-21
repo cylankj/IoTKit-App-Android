@@ -24,8 +24,8 @@ public class MineMessageBean implements Parcelable {
     public String time;
     @Column(name = "name")
     public String name;
-
-
+    @Column(name = "isDone")
+    public int isDone;
     @Column(name = "isCheck")
     public int isCheck;
 
@@ -91,6 +91,14 @@ public class MineMessageBean implements Parcelable {
         this.isCheck = isCheck;
     }
 
+    public int getIsDone() {
+        return isDone;
+    }
+
+    public void setIsDone(int isDone) {
+        this.isDone = isDone;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.name);
@@ -99,6 +107,7 @@ public class MineMessageBean implements Parcelable {
         dest.writeInt(this.type);
         dest.writeInt(this.id);
         dest.writeInt(this.isCheck);
+        dest.writeInt(this.isDone);
     }
 
     protected MineMessageBean(Parcel in) {
@@ -108,6 +117,7 @@ public class MineMessageBean implements Parcelable {
         this.type = in.readInt();
         this.id = in.readInt();
         this.isCheck = in.readByte();
+        this.isDone = in.readByte();
     }
 
     public static final Creator<MineMessageBean> CREATOR = new Creator<MineMessageBean>() {

@@ -58,6 +58,35 @@
                 hunt:sv_v_divider="true"
                 hunt:sv_v_image_show="false" />
 
+            <RelativeLayout
+                android:id="@+id/rl_hardware_update"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:orientation="vertical">
+
+                <com.cylan.jiafeigou.widget.SettingItemView0
+                    android:id="@+id/sv_setting_hardware_update"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y72"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
+                    hunt:sv_image_src="@drawable/setting_icon_information"
+                    hunt:sv_sub_title=""
+                    hunt:sv_title="固件升级"
+                    hunt:sv_v_divider="true"
+                    hunt:sv_v_image_show="false" />
+
+                <View
+                    android:visibility="invisible"
+                    android:layout_marginRight="@dimen/x20"
+                    android:id="@+id/hardware_update_point"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/hardware_update_point"
+                    android:layout_width="@dimen/x7"
+                    android:layout_height="@dimen/y7"/>
+            </RelativeLayout>
+
             <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sv_setting_device_cid"
                 android:layout_width="match_parent"

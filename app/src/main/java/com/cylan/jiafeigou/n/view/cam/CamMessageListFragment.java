@@ -161,7 +161,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (getView() != null) getView().post(() -> {
             long time = camMessageListAdapter.getList().get(currentPosition).time;
             boolean isToday = TimeUtils.isToday(time);
-            String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.TODAY) + ")" : "");
+            String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
             tvCamMessageListDate.setText(content);
         });
     }

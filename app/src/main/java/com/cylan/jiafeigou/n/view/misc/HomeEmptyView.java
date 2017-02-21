@@ -24,7 +24,7 @@ public class HomeEmptyView extends EmptyView {
 
     private void initAnimator() {
         ObjectAnimator showAnimator = ObjectAnimator.ofFloat(view, "alpha", 0.0f, 1.0f);
-        showAnimator.setDuration(400);
+        showAnimator.setDuration(1);
         showAnimator.setInterpolator(new LinearInterpolator());
         showAnimator.addListener(new AnimatorUtils.SimpleAnimationListener() {
             @Override
@@ -36,7 +36,7 @@ public class HomeEmptyView extends EmptyView {
         showAnimation.playTogether(showAnimator);
 
         ObjectAnimator hideAnimator = ObjectAnimator.ofFloat(view, "alpha", 1.0f, 0.0f);
-        hideAnimator.setDuration(400);
+        hideAnimator.setDuration(1);
         hideAnimator.setInterpolator(new LinearInterpolator());
         hideAnimator.addListener(new AnimatorUtils.SimpleAnimationListener() {
             @Override

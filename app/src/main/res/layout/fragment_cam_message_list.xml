@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
     android:background="@color/color_white"
+    android:clickable="true"
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.cam.CamMessageListFragment">
 

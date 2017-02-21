@@ -39,6 +39,7 @@ import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
+import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
@@ -534,6 +535,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         //进入登陆页 login page
         getActivity().startActivity(new Intent(getContext(), SmartcallActivity.class));
         getActivity().finish();
+
     }
 
     @Override
@@ -710,7 +712,4 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         }
     }
 
-    @OnClick()
-    public void onClick() {
-    }
 }

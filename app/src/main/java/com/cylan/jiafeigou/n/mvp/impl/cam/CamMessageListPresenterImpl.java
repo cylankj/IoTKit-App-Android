@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
@@ -37,7 +38,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     private String uuid;
     private long querySeq;
-    private Subscription timeoutSub;
 
     public CamMessageListPresenterImpl(CamMessageListContract.View view, String uuid) {
         super(view);
@@ -47,8 +47,46 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     protected Subscription[] register() {
-        return new Subscription[]{messageListSub(), sdcardStatusSub()};
+        return new Subscription[]{sdcardStatusSub()};
     }
+//
+//    /**
+//     * 注册监听
+//     *
+//     * @return
+//     */
+//    private Subscription messageListSub() {
+//        return RxBus.getCacheInstance().toObservable(Long.class)
+//                .subscribeOn(Schedulers.computation())
+//                .filter((Long aLong) -> (aLong != null && aLong == querySeq))
+//                .flatMap(new Func1<Long, Observable<ArrayList<CamMessageBean>>>() {
+//                    @Override
+//                    public Observable<ArrayList<CamMessageBean>> call(Long aLong) {
+//                        ArrayList<BaseValue> allList = new ArrayList<>();
+//                        ArrayList<BaseValue> list_505 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+//                        ArrayList<BaseValue> list_222 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY);
+//                        if (list_505 != null) allList.addAll(list_505);
+//                        if (list_222 != null) allList.addAll(list_222);
+//                        Collections.sort(allList);//来个排序
+//                        return Observable.just(Converter.convert(uuid, allList));
+//                    }
+//                })
+//                .map((ArrayList<CamMessageBean> camList) -> {
+//                    ArrayList<CamMessageBean> list = new ArrayList<>(getView().getList());
+//                    camList.removeAll(list);//删除重复的
+//                    return camList;
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(new RxHelper.Filter<>("messageListSub()=null?", getView() != null))
+//                .map((ArrayList<CamMessageBean> jfgdpMsgs) -> {
+//                    getView().onMessageListRsp(jfgdpMsgs);
+//                    AppLogger.i("messageListSub+" + jfgdpMsgs.size());
+//                    getView().setRefresh(false);
+//                    return null;
+//                })
+//                .retry(new RxHelper.RxException<>("messageListSub"))
+//                .subscribe();
+//    }
 
     /**
      * sd卡状态更新
@@ -79,30 +117,52 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .subscribe();
     }
 
-
-    private Subscription messageListSub() {
-        return RxBus.getCacheInstance().toObservable(Long.class)
-                .subscribeOn(Schedulers.computation())
-                .filter((Long aLong) -> (aLong != null && aLong == querySeq))
-                .flatMap(new Func1<Long, Observable<ArrayList<CamMessageBean>>>() {
-                    @Override
-                    public Observable<ArrayList<CamMessageBean>> call(Long aLong) {
-                        ArrayList<BaseValue> allList = new ArrayList<>();
-                        ArrayList<BaseValue> list_505 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
-                        ArrayList<BaseValue> list_222 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY);
-                        if (list_505 != null) allList.addAll(list_505);
-                        if (list_222 != null) allList.addAll(list_222);
-                        Collections.sort(allList);//来个排序
-                        return Observable.just(Converter.convert(uuid, allList));
+    /**
+     * 请求列表
+     *
+     * @return
+     */
+    private Observable<Long> makeReq() {
+        return Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .map(o -> {
+                    ArrayList<JFGDPMsg> dps = getReqList(new long[]{0, 0}, new int[]{DpMsgMap.ID_505_CAMERA_ALARM_MSG, DpMsgMap.ID_222_SDCARD_SUMMARY});
+                    try {
+                        long req = GlobalDataProxy.getInstance().robotGetDataReq(
+                                uuid,
+                                dps, 20, false, 0);
+                        AppLogger.i("req: " + req);
+                        return req;
+                    } catch (JfgException e) {
+                        AppLogger.e("wth:+" + e.getLocalizedMessage());
+                        return 0L;
                     }
-                })
-                .map((ArrayList<CamMessageBean> camList) -> {
-                    ArrayList<CamMessageBean> list = getView().getList();
-                    if (list != null)
-                        camList.removeAll(list);//删除重复的
-                    return camList;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
+                });
+    }
+
+    @Override
+    public void fetchMessageList(final boolean manually) {
+        makeReq().flatMap(aLong -> {
+            return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                    .filter(robotoGetDataRsp -> aLong == robotoGetDataRsp.seq);//相同的req
+        }).flatMap(new Func1<RobotoGetDataRsp, Observable<ArrayList<CamMessageBean>>>() {
+            @Override
+            public Observable<ArrayList<CamMessageBean>> call(RobotoGetDataRsp robotoGetDataRsp) {
+                ArrayList<BaseValue> allList = new ArrayList<>();
+                ArrayList<BaseValue> list_505 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+                ArrayList<BaseValue> list_222 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY);
+                if (list_505 != null) allList.addAll(list_505);
+                if (list_222 != null) allList.addAll(list_222);
+                Collections.sort(allList);//来个排序
+                AppLogger.i("get msgList: " + allList.size());
+                return Observable.just(Converter.convert(uuid, allList));
+            }
+        }).map((ArrayList<CamMessageBean> camList) -> {
+            ArrayList<CamMessageBean> list = getView().getList();
+            if (list != null)
+                camList.removeAll(list);//删除重复的
+            return camList;
+        }).observeOn(AndroidSchedulers.mainThread())
                 .filter(new RxHelper.Filter<>("messageListSub()=null?", getView() != null))
                 .map((ArrayList<CamMessageBean> jfgdpMsgs) -> {
                     getView().onMessageListRsp(jfgdpMsgs);
@@ -111,32 +171,17 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("messageListSub"))
-                .subscribe();
-    }
-
-    @Override
-    public void fetchMessageList(final boolean manually) {
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .map(new Func1<Object, ArrayList<CamMessageBean>>() {
-                    @Override
-                    public ArrayList<CamMessageBean> call(Object o) {
-                        ArrayList<JFGDPMsg> dps = getReqList(new long[]{0, 0}, new int[]{DpMsgMap.ID_505_CAMERA_ALARM_MSG, DpMsgMap.ID_222_SDCARD_SUMMARY});
-                        try {
-                            querySeq = GlobalDataProxy.getInstance().robotGetDataReq(
-                                    uuid,
-                                    dps, 20, false, 0);
-                            AppLogger.i("req: " + querySeq);
-                        } catch (JfgException e) {
-                            AppLogger.e("wth:+" + e.getLocalizedMessage());
-                        }
-                        if (manually) {
-                            registerTimeout();
-                        }
-                        return null;
-                    }
-                })
-                .subscribe();
+                .timeout(5000, TimeUnit.MILLISECONDS, Observable
+                        .just("makeReq timeout")
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .filter(s -> (getView() != null))
+                        .map(s -> {
+                            getView().setRefresh(false);
+                            AppLogger.e(s);
+                            return null;
+                        }))
+                .subscribe(o -> {
+                }, throwable -> AppLogger.e("messageList err:" + throwable.getLocalizedMessage()));
     }
 
     private ArrayList<JFGDPMsg> getReqList(long[] versions, int[] ids) {
@@ -149,21 +194,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
             dps.add(new JFGDPMsg(ids[i], versions[i]));
         }
         return dps;
-    }
-
-    /**
-     * 超时
-     */
-    private void registerTimeout() {
-        if (timeoutSub != null) unSubscribe(timeoutSub);
-        timeoutSub = Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .delay(3000, TimeUnit.MILLISECONDS)
-                .filter((Object o) -> getView() != null)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Object o) -> {
-                    getView().setRefresh(false);
-                });
     }
 
     @Override

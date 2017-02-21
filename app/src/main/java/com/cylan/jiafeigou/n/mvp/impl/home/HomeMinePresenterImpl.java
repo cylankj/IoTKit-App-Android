@@ -7,8 +7,11 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -21,9 +24,11 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 import rx.Observable;
@@ -39,17 +44,16 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
 
-    public static int PHONE_LOGIN = 1;                     //手机登录
-    public static int EMAIL_LOGIN = 2;                     //邮箱登录
-    public static int THIRD_PART_LOGIN = 3;                //第三方登录
-
     private Subscription onRefreshSubscription;
     private Subscription onBlurSubscribtion;
     private Subscription onLoadUserHeadSubscribtion;
     private CompositeSubscription subscription;
     private JFGAccount userInfo;                          //用户信息bean
-    private ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
+
     private boolean isOpenLogin = false;
+    private boolean hasUnRead;
+    private long requstId;
+    private int unreadNum;
 
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
@@ -75,8 +79,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         }
         subscription = new CompositeSubscription();
         subscription.add(checkIsOpenLoginCallBack());
-        subscription.add(getMesgDpData());
-        subscription.add(getMesgDpDataCallBack());
+        subscription.add(unReadMesgBack());
     }
 
     @Override
@@ -175,7 +178,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             if (getView() != null) {
                                 getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
                                 if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())) {
-                                    userInfo.setAlias(createRandomName());
+                                    userInfo.setAlias(userInfo.getAccount());
                                 }
                                 getView().setAliasName(userInfo.getAlias());
                             }
@@ -205,76 +208,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     }
 
     /**
-     * Dp获取到消息记录
-     */
-    @Override
-    public Subscription getMesgDpData() {
-        return rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        try {
-                            ArrayList<JFGDPMsg> dp = new ArrayList<>();
-                            JFGDPMsg msg = new JFGDPMsg(601, 0);
-                            dp.add(msg);
-                            long seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("", dp, 0, false, 0);
-                            AppLogger.d("getMesgDpData" + seq);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("getMesgDpData" + throwable.getLocalizedMessage());
-                    }
-                });
-    }
-
-    /**
-     * Dp获取消息记录的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription getMesgDpDataCallBack() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .subscribeOn(Schedulers.io())
-                .map(new Func1<RobotoGetDataRsp, ArrayList<MineMessageBean>>() {
-                    @Override
-                    public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        if (robotoGetDataRsp != null && robotoGetDataRsp instanceof RobotoGetDataRsp) {
-                            results.clear();
-                            ArrayList<JFGDPMsg> jfgdpMsgs = robotoGetDataRsp.map.get(601);
-                            results.addAll(convertData(jfgdpMsgs));
-                        }
-                        return results;
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<MineMessageBean>>() {
-                    @Override
-                    public void call(ArrayList<MineMessageBean> list) {
-                        if (list.size() != 0) {
-                            getView().setMesgNumber(list.size());
-                        }
-                    }
-                });
-
-    }
-
-    /**
-     * 拿到消息的所有的数据
-     *
-     * @return
-     */
-    @Override
-    public ArrayList<MineMessageBean> getMesgAllData() {
-        return results;
-    }
-
-    /**
      * 是否三方登录的回调
      *
      * @return
@@ -293,24 +226,68 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     }
 
     /**
-     * 解析转换数据
-     *
-     * @param jfgdpMsgs
+     * 获取到未读消息数
      */
-    private ArrayList<MineMessageBean> convertData(ArrayList<JFGDPMsg> jfgdpMsgs) {
-        MineMessageBean bean;
-        ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
-        if (jfgdpMsgs != null) {
-            for (JFGDPMsg jfgdpMsg : jfgdpMsgs) {
-                try {
-                    bean = DpUtils.unpackData(jfgdpMsg.packValue, MineMessageBean.class);
-                    results.add(bean);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return results;
+    @Override
+    public void getUnReadMesg() {
+        Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .subscribe((Object o) -> {
+                    ArrayList<Long> idList = new ArrayList<>();
+                    idList.add((long) 601);
+                    idList.add((long) 603);
+                    idList.add((long) 604);
+                    try {
+                        requstId = JfgCmdInsurance.getCmd().robotCountData("", idList, 0);
+                    } catch (JfgException e) {
+                        AppLogger.e("" + e.getLocalizedMessage());
+                    }
+                });
+    }
+
+    @Override
+    public Subscription unReadMesgBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((RxEvent.UnreadCount unreadCount) ->{
+                    if (unreadCount != null && unreadCount.seq == requstId){
+                        for (JFGDPMsgCount jfgdpMsgCount:unreadCount.msgList){
+                            unreadNum += jfgdpMsgCount.count;
+                        }
+                        getView().setMesgNumber(unreadNum);
+                        if (unreadNum != 0){
+                            hasUnRead = true;
+                            markHasRead();
+                        }else {
+                            hasUnRead = false;
+                        }
+                    }
+                });
+    }
+
+    @Override
+    public boolean hasUnReadMesg() {
+        return hasUnRead;
+    }
+
+    /**
+     * 清空未读消息数
+     */
+    @Override
+    public void markHasRead() {
+        rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Object o)->{
+                    ArrayList<Long> idList = new ArrayList<>();
+                    idList.add((long) 601);
+                    idList.add((long) 603);
+                    idList.add((long) 604);
+                    try {
+                        JfgCmdInsurance.getCmd().robotCountDataClear(uuid, idList, 0);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
 }

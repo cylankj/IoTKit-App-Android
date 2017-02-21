@@ -42,8 +42,10 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                         try {
                             if (JConstant.PHONE_REG.matcher(account).find()) {
                                 JfgCmdInsurance.getCmd().register(account, pwd, JConstant.TYPE_PHONE, "");
+//                                JfgCmdInsurance.getCmd().setPwdWithBindAccount(pwd,JConstant.TYPE_PHONE,token);
                             } else if (JConstant.EMAIL_REG.matcher(account).find()) {
                                 JfgCmdInsurance.getCmd().register(account, pwd, JConstant.TYPE_EMAIL, "");
+//                                JfgCmdInsurance.getCmd().setPwdWithBindAccount(pwd,JConstant.TYPE_EMAIL,token);
                             }
 
                         } catch (JfgException e) {
@@ -79,8 +81,8 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
 
     @Override
     protected Subscription[] register() {
-        Subscription[] subscriptions = new Subscription[]{};
-        subscriptions[0] = registerBack();
-        return subscriptions;
+        return new Subscription[]{
+                registerBack()
+        };
     }
 }

@@ -68,7 +68,7 @@
             android:layout_marginTop="@dimen/y24"
             android:drawableLeft="@drawable/doorbell_icon_connect"
             android:drawablePadding="@dimen/y10"
-            android:text="@string/CALL_ANSWERD"
+            android:text="@string/DOOR_CALL"
             android:textColor="@color/color_CBCFD0"
             android:textSize="@dimen/sp13" />
     </LinearLayout>

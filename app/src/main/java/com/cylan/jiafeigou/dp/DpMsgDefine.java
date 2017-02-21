@@ -970,4 +970,23 @@ public class DpMsgDefine {
             return guideBean;
         }
     }
+
+    @Message
+    public static final class DPMineMesg{
+        @Index(0)
+        public String cid;
+        @Index(1)
+        public boolean isDone;
+        @Index(2)
+        public String account;
+
+        public DPMineMesg(){}
+
+        public DPMineMesg(String cid, boolean isDone, String account) {
+            this.cid = cid;
+            this.isDone = isDone;
+            this.account = account;
+        }
+    }
+
 }

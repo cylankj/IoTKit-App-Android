@@ -2,6 +2,9 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.rx.RxEvent;
+
+import rx.Subscription;
 
 /**
  * Created by cylan-hunt on 16-11-25.
@@ -10,8 +13,13 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface CamInfoContract {
 
     interface View extends BaseView<Presenter> {
+        void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp);
 
+        void showLoading();
 
+        void hideLoading();
+
+        void clearSdReslut(int code);
     }
 
     interface Presenter extends BasePresenter {
@@ -35,5 +43,21 @@ public interface CamInfoContract {
          */
         void checkNewSoftVersion();
 
+        /**
+         * 新固件检测回调
+         * @return
+         */
+        Subscription checkNewSoftVersionBack();
+
+        /**
+         * 清空Sd卡
+         */
+        void clearSdcard();
+
+        /**
+         * 清空Sd卡的回调
+         * @return
+         */
+        Subscription clearSdcardBack();
     }
 }

@@ -9,9 +9,9 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -156,7 +156,7 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
     }
 
     private void setAnswerState(final int state, TextView textView) {
-        textView.setText(state == 0 ? mContext.getString(R.string.CALL_NOT_ANSWER) : mContext.getString(R.string.CALL_ANSWERD));
+        textView.setText(state == 0 ? mContext.getString(R.string.DOOR_UNCALL) : mContext.getString(R.string.DOOR_CALL));
         ViewUtils.setDrawablePadding(textView, state == 0 ? R.drawable.doorbell_icon_not_connected : R.drawable.doorbell_icon_connect, 0);
     }
 

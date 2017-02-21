@@ -123,6 +123,7 @@ public class TimeUtils {
     }
 
     public static String getUptime(long time) {
+        if (time == 0) return "";
         time = System.currentTimeMillis() / 1000 - time;
         int temp = (int) time / 60;
         int minute = temp % 60;
@@ -245,10 +246,10 @@ public class TimeUtils {
         if (today.getMonth() == provide.getMonth()) {
             if (today.getDay() == provide.getDay()) {//说明是在同一天，则按照今天 时:分显示
 //                format.applyPattern("今天");
-                return ContextUtils.getContext().getString(R.string.TODAY);
+                return ContextUtils.getContext().getString(R.string.DOOR_TODAY);
             }
             if (today.getDay() - provide.getDay() == 1) {//说明是在昨天，则按照昨天 时:分显示
-                return ContextUtils.getContext().getString(R.string.YESTERDAY);
+                return ContextUtils.getContext().getString(R.string.Yesterday);
             }
         }
         //按照月.日 时：分显示

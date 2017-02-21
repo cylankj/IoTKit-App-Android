@@ -37,7 +37,7 @@ public class HelperActivity extends AppCompatActivity {
 
     private void requestPermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            showRequestPermissionRationale();
+//            showRequestPermissionRationale();
 
         } else {
             showAppPermissionSettings();
@@ -45,50 +45,50 @@ public class HelperActivity extends AppCompatActivity {
     }
 
     private void showRequestPermissionRationale() {
-        Snackbar snackbar = Snackbar.make(
-                view,
-                getString(R.string.permission_info),
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(getString(R.string.OK), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        ActivityCompat.requestPermissions(
-                                HelperActivity.this,
-                                permissions,
-                                Constants.PERMISSION_REQUEST_CODE);
-                    }
-                });
+//        Snackbar snackbar = Snackbar.make(
+//                view,
+//                getString(R.string.permission_info),
+//                Snackbar.LENGTH_INDEFINITE)
+//                .setAction(getString(R.string.OK), new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        ActivityCompat.requestPermissions(
+//                                HelperActivity.this,
+//                                permissions,
+//                                Constants.PERMISSION_REQUEST_CODE);
+//                    }
+//                });
 
         /*((TextView) snackbar.getView()
                 .findViewById(android.support.design.R.id.snackbar_text)).setMaxLines(maxLines);*/
-        snackbar.show();
+//        snackbar.show();
     }
 
     private void showAppPermissionSettings() {
-        Snackbar snackbar = Snackbar.make(
-                view,
-                getString(R.string.permission_force),
-                Snackbar.LENGTH_INDEFINITE)
-                .setAction(getString(R.string.SETTINGS), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Uri uri = Uri.fromParts(
-                                "package",
-//                                HelperActivity.this.getPackageName(),
-                                ContextUtils.getContext().getPackageName(),
-                                null);
-
-                        Intent intent = new Intent();
-                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
-                        intent.setData(uri);
-                        startActivityForResult(intent, Constants.PERMISSION_REQUEST_CODE);
-                    }
-                });
-
-        /*((TextView) snackbar.getView()
-                .findViewById(android.support.design.R.id.snackbar_text)).setMaxLines(maxLines);*/
-        snackbar.show();
+//        Snackbar snackbar = Snackbar.make(
+//                view,
+//                getString(R.string.permission_force),
+//                Snackbar.LENGTH_INDEFINITE)
+//                .setAction(getString(R.string.SETTINGS), new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Uri uri = Uri.fromParts(
+//                                "package",
+////                                HelperActivity.this.getPackageName(),
+//                                ContextUtils.getContext().getPackageName(),
+//                                null);
+//
+//                        Intent intent = new Intent();
+//                        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+//                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
+//                        intent.setData(uri);
+//                        startActivityForResult(intent, Constants.PERMISSION_REQUEST_CODE);
+//                    }
+//                });
+//
+//        /*((TextView) snackbar.getView()
+//                .findViewById(android.support.design.R.id.snackbar_text)).setMaxLines(maxLines);*/
+//        snackbar.show();
     }
 
     @Override

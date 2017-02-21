@@ -8,9 +8,12 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.robolectric.util.Pair;
 
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscriber;
+import rx.Subscription;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -273,4 +276,146 @@ public class RxBusTest {
 //        RxBus.getCacheInstance().post(45);
         SystemClock.sleep(2000);
     }
+
+    @Test
+    public void testTimeout() throws InterruptedException {
+        getString().flatMap((String s) ->
+                RxBus.getCacheInstance().toObservable(String.class)
+                        .filter((String string) -> {
+                            System.out.println("get string: " + string);
+                            return string.equals("good");
+                        }))
+                .timeout(800, TimeUnit.MILLISECONDS, Observable.just(1)
+                        .map(new Func1<Integer, String>() {
+                            @Override
+                            public String call(Integer integer) {
+                                System.out.println("timeout");
+                                return "timeout";
+                            }
+                        }))
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        RxBus.getCacheInstance().hasObservers();
+                        System.out.println("finish: " + s);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+
+                        System.out.println("err: " + throwable.getLocalizedMessage());
+                    }
+                });
+        Thread.sleep(500);
+        Thread.sleep(500);
+        RxBus.getCacheInstance().post("budui");
+        RxBus.getCacheInstance().post("zailai");
+        RxBus.getCacheInstance().post("nihao");
+    }
+
+    private Observable<String> getString() {
+        return Observable.just("nihao")
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        return s;
+                    }
+                });
+    }
+
+
+    @Test
+    public void testZip() {
+        check().zipWith(RxBus.getCacheInstance().toObservable(String.class)
+                .filter(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        System.out.println("what: " + s);
+                        return null;
+                    }
+                }), new Func2<Boolean, String, Object>() {
+            @Override
+            public Object call(Boolean aBoolean, String s) {
+                System.out.println("good: " + aBoolean);
+                return null;
+            }
+        }).subscribe();
+    }
+
+    private Observable<Boolean> check() {
+        return Observable.just(true)
+                .filter(new Func1<Boolean, Boolean>() {
+                    @Override
+                    public Boolean call(Boolean aBoolean) {
+                        int random = new Random().nextInt(20) % 2;
+                        System.out.println("random: " + random);
+                        return false;
+                    }
+                });
+    }
+
+    @Test
+    public void testUnSubscribeSelf() throws InterruptedException {
+        Observable<String> what = RxBus.getCacheInstance().toObservable(String.class)
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        return s;
+                    }
+                }).filter(new Func1<String, Boolean>() {
+                    @Override
+                    public Boolean call(String s) {
+                        System.out.println("get: " + s);
+                        return s.equals("sss");
+                    }
+                });
+
+        Subscription subscription = Observable.create(new Observable.OnSubscribe<Subscriber>() {
+            @Override
+            public void call(Subscriber<? super Subscriber> subscriber) {
+                System.out.println("start");
+                subscriber.onNext(subscriber);
+                subscriber.onCompleted();
+            }
+        }).zipWith(what, new Func2<Subscriber, String, Object>() {
+            @Override
+            public Object call(Subscriber subscriber, String s) {
+                System.out.println("zip? " + s);
+                if (s.equals("sss")) {
+
+                    System.out.println("unsu");
+                }
+                return null;
+            }
+        }).subscribe();
+        RxBus.getCacheInstance().post("ddd");
+        RxBus.getCacheInstance().post("sss");
+        RxBus.getCacheInstance().post("ddd");
+        RxBus.getCacheInstance().post("saaass");
+        System.out.println("? " + (subscription.isUnsubscribed()));
+        Thread.sleep(500);
+        System.out.println("? " + (subscription.isUnsubscribed()));
+        System.out.println("result: " + (subscription.isUnsubscribed()));
+        RxBus.getCacheInstance().post("next");
+        RxBus.getCacheInstance().post("next");
+        RxBus.getCacheInstance().post("next");
+    }
+
+    @Test
+    public void testThread() throws InterruptedException {
+        RxBus.getCacheInstance().toObservable(String.class)
+                .map(new Func1<String, Object>() {
+                    @Override
+                    public Object call(String s) {
+                        System.out.println("what: "+Thread.currentThread());
+                        return null;
+                    }
+                })
+                .subscribe();
+        RxBus.getCacheInstance().post("googd");
+        RxBus.getCacheInstance().post("googd");
+        Thread.sleep(200);
+    }
+
+
 }

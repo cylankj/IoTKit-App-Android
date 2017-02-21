@@ -5,6 +5,7 @@ import android.os.Environment;
 import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
+import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -19,11 +20,14 @@ import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ZipUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -53,7 +57,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     private DbManager dbManager;
     private JFGAccount userInfomation;
     private boolean isOpenLogin;
-    private String saveLogCloudUrl = "";
+    private boolean hasSendLog;
 
     public HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view) {
         super(view);
@@ -71,6 +75,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             compositeSubscription.add(getAccountInfo());
             compositeSubscription.add(getSystemAutoReplyCallBack());
             compositeSubscription.add(sendFeedBackReq());
+            compositeSubscription.add(sendLogBack());
         }
     }
 
@@ -212,12 +217,18 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public void sendFeedBack(MineHelpSuggestionBean bean) {
+        if (!hasSendLog){
+            getView().showLoadingDialog();
+        }
         rx.Observable.just(bean)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<MineHelpSuggestionBean>() {
                     @Override
                     public void call(MineHelpSuggestionBean bean) {
-                        JfgCmdInsurance.getCmd().sendFeedback(Long.parseLong(bean.getDate()), bean.getText(), true);
+                        JfgCmdInsurance.getCmd().sendFeedback((Long.parseLong(bean.getDate()))/1000, bean.getText(),!hasSendLog);
+                        if (!hasSendLog){
+                            upLoadLogFile(bean);
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -271,7 +282,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     /**
      * 发送反馈的回调
-     *
      * @return
      */
     @Override
@@ -299,7 +309,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     /**
      * 是否三方登录
-     *
      * @return
      */
     @Override
@@ -315,59 +324,44 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     }
 
     @Override
-    public String getSaveLogCloudUrl() {
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<Object, String>() {
-                    @Override
-                    public String call(Object o) {
-                        try {
-                            return JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.FEEDBACK_LOG, 0, System.currentTimeMillis() / 1000 + ".zip", "", Security.getVId(JFGRules.getTrimPackageName()));
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                            return "";
-                        }
-                    }
-                })
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        saveLogCloudUrl = s;
-                    }
-                });
-        return saveLogCloudUrl;
-    }
+    public void upLoadLogFile(MineHelpSuggestionBean bean) {
+        if (Environment.getExternalStorageState().equals(Environment.MEDIA_UNMOUNTED)){
+            return;
+        }
+        File logFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/log");
+        File crashFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/crash");
+        File outFile = new File(Environment.getExternalStorageDirectory().toString() + "/"+bean.getDate()+"Smarthome.zip");
+        try {
+            Collection<File> files = new ArrayList<>();
+            files.add(logFile);
+            files.add(crashFile);
+            ZipUtils.zipFiles(files,outFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-    @Override
-    public String getLocalLogUrl() {
-        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            return "";
-        } else {
-            return Environment.getExternalStorageDirectory().toString() + "/Smarthome";
+        String fileName = (Long.parseLong(bean.getDate()))/1000 + ".zip";
+        String remoteUrl = null;
+        try {
+            remoteUrl = "/log/0001/"+userInfomation.getAccount()+"/"+fileName;
+            int code = JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
+            ToastUtil.showToast(""+code);
+        } catch (JfgException e) {
+            e.printStackTrace();
         }
     }
 
     /**
-     * @param localUrl
+     * 上传日志的回调
      */
     @Override
-    public void sendLogToCloud(String remoteUrl, String localUrl) {
-        rx.Observable.just(localUrl)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, localUrl);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e(throwable.getLocalizedMessage());
+    public Subscription sendLogBack() {
+        return RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((JFGMsgHttpResult jfgMsgHttpResult) -> {
+                    if (jfgMsgHttpResult != null){
+                        hasSendLog = true;
+                        getView().sendLogResult(0);
                     }
                 });
     }

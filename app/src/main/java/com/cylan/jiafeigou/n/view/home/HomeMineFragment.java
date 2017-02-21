@@ -111,6 +111,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
             basePresenter.portraitBlur(bm);
             setAliasName(getString(R.string.Tap3_LogIn));
+            basePresenter.getUnReadMesg();
         }
         super.onStart();
     }
@@ -269,8 +270,16 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         ivHomeMinePortrait.setImageBitmap(resource);
-                        Bitmap bitmap = Bitmap.createBitmap(resource);
-                        basePresenter.portraitBlur(bitmap);
+                        if (!TextUtils.isEmpty(url)){
+                            if (url.contains("default")){
+                                rLayoutHomeMineTop.setBackground(getResources().getDrawable(R.drawable.me_bg_top_image));
+                            }else {
+                                Bitmap bitmap = Bitmap.createBitmap(resource);
+                                basePresenter.portraitBlur(bitmap);
+                            }
+                        }else {
+                            rLayoutHomeMineTop.setBackground(getResources().getDrawable(R.drawable.me_bg_top_image));
+                        }
                     }
 
                     @Override
@@ -360,7 +369,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     private void helpItem(View view) {
-//        if (!JCache.isOnline()) {
         if (!GlobalDataProxy.getInstance().isOnline()) {
             needStartLoginFragment();
             return;
@@ -382,7 +390,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             return;
         }
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("mesgdata", basePresenter.getMesgAllData());
+        bundle.putBoolean("hasNewMesg",basePresenter.hasUnReadMesg());
         homeMineMessageFragment = HomeMineMessageFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
