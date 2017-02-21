@@ -124,7 +124,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     public void unbindDeviceRsp(int state) {
         if (state == JError.ErrorOK) {
             LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
-            ToastUtil.showPositiveToast(getString(R.string.DOOR_UNBIND));
+            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
             getActivity().finish();
         }
     }

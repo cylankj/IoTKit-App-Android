@@ -169,7 +169,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
             mInformationText.setText(R.string.Tap1_CameraFun_Timelapse_SynthesisTips);
         } else if (time == DELAY_RECORD_PROCESS) {
             //已完成录制,正在进行视频合成
-            mInformationText.setText(R.string.delay_record_hint_information_3);
+            mInformationText.setText(R.string.Tap1_CameraFun_Timelapse_Synthesis);
         } else if (time == DELAY_RECORD_RECORDING) {
             //yet do nothing
         }

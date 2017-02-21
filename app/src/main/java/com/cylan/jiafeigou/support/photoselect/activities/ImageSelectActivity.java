@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.support.photoselect.models.Image;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Locale;
 
 public class ImageSelectActivity extends HelperActivity {
     private ArrayList<Image> images;
@@ -118,7 +119,7 @@ public class ImageSelectActivity extends HelperActivity {
                              */
                             if (actionMode != null) {
                                 countSelected = msg.arg1;
-                                actionMode.setTitle(countSelected + " " + getString(R.string.selected));
+                                actionMode.setTitle(String.format(Locale.getDefault(), getString(R.string.Tap3_Userinfo_PhotosSelected), countSelected, 5));
                             }
                         }
                         break;

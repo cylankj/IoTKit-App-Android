@@ -333,7 +333,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onQueryTimeLineTimeOut() {
-        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.REQUEST_TIME_OUT));
+        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.Clear_Sdcard_tips5));
         srLayoutMainContentHolder.setRefreshing(false);
     }
 
