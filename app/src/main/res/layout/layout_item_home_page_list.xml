@@ -67,7 +67,6 @@
         android:layout_toEndOf="@+id/img_device_icon"
         android:ellipsize="end"
         android:lines="1"
-        android:maxLength="8"
         android:maxLines="1"
         android:textColor="@color/color_777777"
         android:textSize="@dimen/sp14" />
