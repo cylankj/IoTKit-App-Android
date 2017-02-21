@@ -9,7 +9,6 @@
     android:clickable="true"
     android:orientation="vertical">
 
-
     <Space
         android:layout_width="@dimen/x1"
         android:layout_height="@dimen/y33" />

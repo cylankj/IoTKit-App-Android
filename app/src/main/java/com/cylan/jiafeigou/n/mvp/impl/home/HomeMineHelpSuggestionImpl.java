@@ -216,7 +216,10 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      * 上传意见反馈
      */
     @Override
-    public void sendFeedBack(MineHelpSuggestionBean bean,boolean hasLog) {
+    public void sendFeedBack(MineHelpSuggestionBean bean) {
+        if (!hasSendLog){
+            getView().showLoadingDialog();
+        }
         rx.Observable.just(bean)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<MineHelpSuggestionBean>() {
@@ -279,7 +282,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     /**
      * 发送反馈的回调
-     *
      * @return
      */
     @Override
@@ -307,7 +309,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     /**
      * 是否三方登录
-     *
      * @return
      */
     @Override
@@ -327,11 +328,13 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_UNMOUNTED)){
             return;
         }
-        File zipFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/log");
+        File logFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/log");
+        File crashFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/crash");
         File outFile = new File(Environment.getExternalStorageDirectory().toString() + "/"+bean.getDate()+"Smarthome.zip");
         try {
             Collection<File> files = new ArrayList<>();
-            files.add(zipFile);
+            files.add(logFile);
+            files.add(crashFile);
             ZipUtils.zipFiles(files,outFile);
         } catch (IOException e) {
             e.printStackTrace();
@@ -340,38 +343,12 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         String fileName = (Long.parseLong(bean.getDate()))/1000 + ".zip";
         String remoteUrl = null;
         try {
-            remoteUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.FEEDBACK_LOG, 0,fileName,"", Security.getVId(JFGRules.getTrimPackageName()));
-            int code = JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getPath());
+            remoteUrl = "/log/0001/"+userInfomation.getAccount()+"/"+fileName;
+            int code = JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
             ToastUtil.showToast(""+code);
         } catch (JfgException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * @param localUrl
-     */
-    @Override
-    public void sendLogToCloud(String localUrl) {
-        rx.Observable.just(localUrl)
-                .subscribeOn(Schedulers.io())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            String fileName = System.currentTimeMillis()/1000 + ".zip";
-                            String remoteUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.FEEDBACK_LOG, 0,fileName,"", Security.getVId(JFGRules.getTrimPackageName()));
-                            JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, localUrl);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e(throwable.getLocalizedMessage());
-                    }
-                });
     }
 
     /**
