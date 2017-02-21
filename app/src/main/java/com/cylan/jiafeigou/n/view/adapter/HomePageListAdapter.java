@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 
@@ -120,7 +121,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         int iconRes = (onLineState != 0 && onLineState != -1) ? JConstant.onLineIconMap.get(pid)
                 : JConstant.offLineIconMap.get(pid);
         //昵称
-        holder.setText(R.id.tv_device_alias, TextUtils.isEmpty(alias) ? uuid : alias);
+        holder.setText(R.id.tv_device_alias, MiscUtils.getBeautifulString(TextUtils.isEmpty(alias) ? uuid : alias, 8));
         if (!TextUtils.isEmpty(shareAccount))
             holder.setVisibility(R.id.tv_device_share_tag, VISIBLE);
         else holder.setVisibility(R.id.tv_device_share_tag, GONE);

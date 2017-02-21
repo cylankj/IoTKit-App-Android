@@ -342,10 +342,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     private String getBeautifulAlias(JFGAccount account) {
         if (account == null) return "";
         String temp = TextUtils.isEmpty(account.getAlias()) ? account.getAccount() : account.getAlias();
-        if (!TextUtils.isEmpty(temp) && temp.length() > 8) {
-            temp = temp.substring(0, 8) + "...";
-        }
-        return temp;
+        return MiscUtils.getBeautifulString(temp, 8);
     }
 
     @SuppressWarnings("deprecation")
