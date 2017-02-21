@@ -42,6 +42,7 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
         mStartPosition = startPosition;
     }
 
+
     @Override
     public int getCount() {
         return mMediaBeanList == null ? 0 : mMediaBeanList.size();

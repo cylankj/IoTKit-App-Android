@@ -187,6 +187,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .map(s -> {
                     mInViewIdentify = null;
                     JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                    disconn.remote = getViewHandler();
                     disconn.code = -1000000;
                     RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
                     AppLogger.e("正在发送停止直播消息");

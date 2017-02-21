@@ -492,6 +492,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         switch (state) {
             case ILiveControl.STATE_LOADING_FAILED:
                 mPresenter.startViewer();
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING, "");
                 break;
         }
     }

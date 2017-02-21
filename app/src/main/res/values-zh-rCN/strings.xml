@@ -862,4 +862,5 @@
     <string name="DOWNLOAD_START">开始下载</string>
     <string name="DOWNLOAD_FAILD">下载失败</string>
     <string name="DOWNLOAD_NEED_PERMISSION">下载文件需要权限,请手动开启</string>
+    <string name="DEVICE">设备</string>
 </resources>
