@@ -439,6 +439,15 @@ public class RxEvent {
         public String uuid;
         public int id;
         public BaseValue value;
+
+        @Override
+        public String toString() {
+            return "DataPoolUpdate{" +
+                    "uuid='" + uuid + '\'' +
+                    ", id=" + id +
+                    ", value=" + value +
+                    '}';
+        }
     }
 
 //    /**
