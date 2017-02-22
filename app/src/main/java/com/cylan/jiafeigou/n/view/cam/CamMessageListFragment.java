@@ -45,7 +45,6 @@ import butterknife.OnClick;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_BUNDLE;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_INDEX;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_TIME;
-import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_UUID;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_RIGHT_CONTENT;
@@ -332,7 +331,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         intent.putExtra(KEY_INDEX, index);
         intent.putExtra(KEY_BUNDLE, camMessageListAdapter.getItem(position).alarmMsg);
         intent.putExtra(KEY_TIME, camMessageListAdapter.getItem(position).time);
-        intent.putExtra(KEY_UUID, uuid);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         Log.d("imgV_cam_message_pic_0", "imgV_cam_:" + position + " " + camMessageListAdapter.getItem(position).alarmMsg);
         return intent;
     }
