@@ -487,7 +487,7 @@ public class RxEvent {
 
     /**
      * 这个消息从{@link com.cylan.jiafeigou.n.engine.DataSourceService#OnRobotCountDataRsp(long, String, ArrayList)}
-     * 传到{@link DataPointManager#handleUnreadMessageCount()}
+     * 传到{@link DataPointManager}
      */
     public static final class UnreadCount {
         public String uuid;

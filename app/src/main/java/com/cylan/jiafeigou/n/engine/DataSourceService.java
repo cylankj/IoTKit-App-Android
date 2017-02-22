@@ -106,7 +106,7 @@ public class DataSourceService extends Service implements AppCallBack {
                     JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
                 } catch (PackageManager.NameNotFoundException e) {
                     AppLogger.d("let's go err:" + e.getLocalizedMessage());
-                } catch (JfgException e) {
+                } catch (Exception e) {
                     AppLogger.d("let's go err:" + e.getLocalizedMessage());
                 }
                 AppLogger.d("let's go initNative:");

@@ -108,6 +108,11 @@ public class DeviceFullParameters {
                 .subscribe();
     }
 
+    /**
+     * 请求响应
+     *
+     * @param robotoGetDataRsp
+     */
     public void fullDataPointAssembler(RobotoGetDataRsp robotoGetDataRsp) {
         Observable.just(robotoGetDataRsp)
                 .subscribeOn(Schedulers.computation())
@@ -153,6 +158,13 @@ public class DeviceFullParameters {
                 .subscribe();
     }
 
+    /**
+     * 服务器推送
+     *
+     * @param b
+     * @param identity
+     * @param arrayList
+     */
     public void assembleFullParameters(boolean b, final String identity, ArrayList<JFGDPMsg> arrayList) {
         Observable.just(arrayList)
                 .subscribeOn(Schedulers.io())
