@@ -68,6 +68,11 @@ public interface CamLiveContract {
         void onHistoryLiveStop(int state);
 
         void onPageSelected(boolean checked);
+
+        /**
+         * @param start :开始显示loading
+         */
+        void shouldWaitFor(boolean start);
     }
 
     interface Presenter extends BasePresenter {

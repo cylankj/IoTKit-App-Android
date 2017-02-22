@@ -596,7 +596,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void shouldWaitFor(boolean start) {
-        camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
+        camLiveController.setLoadingState(start ? ILiveControl.STATE_LOADING : ILiveControl.STATE_IDLE, null);
     }
 
     @Override

@@ -22,6 +22,8 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.live.IFeedRtcp;
+import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -39,7 +41,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -59,7 +60,9 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 /**
  * Created by cylan-hunt on 16-7-27.
  */
-public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View> implements CamLiveContract.Presenter {
+public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View>
+        implements CamLiveContract.Presenter,
+        IFeedRtcp.MonitorListener {
     //    private DeviceBean bean;
 //    private BeanCamInfo beanCamInfo;
     private int playType = CamLiveContract.TYPE_LIVE;
@@ -75,12 +78,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     /**
      * 帧率记录
      */
-    private List<Integer> frameRateList = new ArrayList<>();
+//    private List<Integer> frameRateList = new ArrayList<>();
+    private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
 
     public CamLivePresenterImpl(CamLiveContract.View view, String uuid) {
         super(view);
         view.setPresenter(this);
         this.uuid = uuid;
+        feedRtcp.setMonitorListener(this);
     }
 
 
@@ -171,6 +176,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private void reset() {
         liveCompositeSub.unsubscribe();
         liveCompositeSub = new CompositeSubscription();
+        feedRtcp.stop();
     }
 
     @Override
@@ -184,7 +190,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .map(s -> {
                             AppLogger.e("play video :" + s);
-                            frameRateList.clear();
                             //暂停播放
                             setStopReason(JFGRules.PlayErr.ERR_NOT_FLOW);
                             stopPlayVideo(playType);
@@ -222,7 +227,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .timeout(10, TimeUnit.SECONDS, Observable.just("no rtcp call back")
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .map(s -> {
-                            frameRateList.clear();
                             //暂停播放
                             setStopReason(JFGRules.PlayErr.ERR_NOT_FLOW);
                             stopPlayVideo(playType);
@@ -230,22 +234,13 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             return null;
                         }))
                 .map((JFGMsgVideoRtcp rtcp) -> {
-                    frameRateList.add(rtcp.frameRate);
-                    if (frameRateList.size() == 11) {
-                        frameRateList.remove(0);//移除最前沿的一个
-                        boolean isBad = MiscUtils.isBad(frameRateList, 2, 10);
-                        if (isBad) {
-                            frameRateList.clear();
-                            AppLogger.e("is bad net work");
-                            //暂停播放
-                            setStopReason(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
-                            stopPlayVideo(playType);
-                        }
+                    try {
+                        getView().onRtcp(rtcp);
+                    } catch (Exception e) {
+                        AppLogger.e("err: " + e.getLocalizedMessage());
                     }
-                    getView().onRtcp(rtcp);
                     return null;
                 });
-//                .retry(new RxHelper.RxException<>("rtcpNotifySub"));;
     }
 
     /**
@@ -543,5 +538,24 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
                 .subscribe();
+    }
+
+    @Override
+    public void onFrameFailed() {
+        AppLogger.e("is bad net work");
+        //暂停播放
+        setStopReason(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
+        stopPlayVideo(playType);
+    }
+
+    @Override
+    public void onFrameRate(boolean slow) {
+        Observable.just(slow)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(slowFrameRate -> {
+                    getView().shouldWaitFor(slow);
+                }, throwable -> {
+                    AppLogger.e("err: " + throwable.getLocalizedMessage());
+                });
     }
 }
