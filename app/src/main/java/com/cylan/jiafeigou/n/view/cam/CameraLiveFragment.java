@@ -9,6 +9,7 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.PopupWindowCompat;
 import android.util.Log;
@@ -272,6 +273,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      */
     @Override
     public void onDeviceStandBy(boolean flag) {
+        fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
         camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
         showFloatFlowView(false, null);
         //进入待机模式
@@ -288,7 +290,14 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 Log.d("showSceneView", "showSceneView: " + (System.currentTimeMillis() - time));
                 fLayoutCamLiveView.addView(v, 0);//最底
                 v.findViewById(R.id.lLayout_standby_jump_setting)//跳转到设置页面
-                        .setOnClickListener(view -> startActivity(new Intent(getActivity(), CamSettingActivity.class)));
+                        .setOnClickListener(view -> {
+                            Intent intent = new Intent(getActivity(), CamSettingActivity.class);
+                            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                            startActivity(intent,
+                                    ActivityOptionsCompat.makeCustomAnimation(getActivity(),
+                                            R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+                            startActivity(new Intent(getActivity(), CamSettingActivity.class));
+                        });
             } else v = viewStandbyRef.get();
         }
         v.setVisibility(flag ? View.VISIBLE : View.GONE);
