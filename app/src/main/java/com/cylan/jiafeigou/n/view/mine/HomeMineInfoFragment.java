@@ -258,7 +258,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void showMyQrcodeDialog() {
         if (myQrcodeDialog == null || myQrcodeDialog.get() == null) {
             Bundle bundle = new Bundle();
-            bundle.putBoolean("isopenlogin",presenter.checkOpenLogin());
+            bundle.putBoolean("isopenlogin", presenter.checkOpenLogin());
             bundle.putSerializable("jfgaccount", argumentData);
             myQrcodeDialog = new WeakReference<>(MyQRCodeDialog.newInstance(bundle));
         }
@@ -342,6 +342,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                         .into(new BitmapImageViewTarget(userImageHead) {
                             @Override
                             protected void setResource(Bitmap resource) {
+                                if (resource == null) return;
                                 RoundedBitmapDrawable circularBitmapDrawable =
                                         RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
                                 circularBitmapDrawable.setCircular(true);
@@ -527,8 +528,8 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void jump2LoginFragment() {
         //账号和密码
         try {
-            String hex = AESUtil.encrypt(argumentData.getAccount()+"|"+"");
-            FileUtils.saveDataToFile(getView().getContext(),hex);
+            String hex = AESUtil.encrypt(argumentData.getAccount() + "|" + "");
+            FileUtils.saveDataToFile(getView().getContext(), hex);
         } catch (Exception e) {
             e.printStackTrace();
         }
