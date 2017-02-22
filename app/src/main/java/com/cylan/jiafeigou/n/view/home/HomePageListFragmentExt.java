@@ -5,9 +5,11 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -46,6 +48,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -155,6 +158,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initAppbarDrag();
         //添加Handler
         homePageListAdapter.clear();
         appbar.addOnOffsetChangedListener(this);
@@ -164,6 +168,23 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initListAdapter();
         initSomeViewMargin();
         addEmptyView();
+    }
+
+    /**
+     * 初始化是否可拖动
+     */
+    private void initAppbarDrag() {
+        if (appbar.getLayoutParams() != null) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
+            AppBarLayout.Behavior appBarLayoutBehaviour = new AppBarLayout.Behavior();
+            appBarLayoutBehaviour.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
+                @Override
+                public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
+                    return homePageListAdapter.getCount() > 4;
+                }
+            });
+            layoutParams.setBehavior(appBarLayoutBehaviour);
+        }
     }
 
     @Override
@@ -211,7 +232,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_CID));
             bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
-            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(null));
+            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(bundle));
             simpleDialogFragmentWeakReference.get().setAction(this);
         }
     }
@@ -287,10 +308,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @UiThread
     @Override
     public void onItemsInsert(List<String> resultList) {
+        srLayoutMainContentHolder.setNestedScrollingEnabled(resultList.size() > JFGRules.NETSTE_SCROLL_COUNT);
         onRefreshFinish();
         homePageListAdapter.addAll(filter(resultList));
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
-        srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
     }
 
     private List<String> filter(List<String> origin) {
@@ -341,10 +362,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     private String getBeautifulAlias(JFGAccount account) {
         if (account == null) return "";
         String temp = TextUtils.isEmpty(account.getAlias()) ? account.getAccount() : account.getAlias();
-        if (!TextUtils.isEmpty(temp) && temp.length() > 8) {
-            temp = temp.substring(0, 8) + "...";
-        }
-        return temp;
+        return MiscUtils.getBeautifulString(temp, 8);
     }
 
     @SuppressWarnings("deprecation")
@@ -372,7 +390,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onLoginState(boolean state) {
         if (!state) {
             onRefreshFinish();
-            Toast.makeText(getContext(), getString(R.string.UNLOGIN), Toast.LENGTH_SHORT).show();
+//            Toast.makeText(getContext(), getString(R.string.UNLOGIN), Toast.LENGTH_SHORT).show();
         } else {
             //setDevice online view
         }
@@ -421,6 +439,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             } else if (JConstant.isEFamily(pid)) {
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
+            } else {
+                ToastUtil.showToast("设备没定义");
             }
         }
     }

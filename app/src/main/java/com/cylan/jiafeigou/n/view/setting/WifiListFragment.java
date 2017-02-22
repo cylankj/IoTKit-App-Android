@@ -13,6 +13,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,7 @@ import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.util.ArrayList;
@@ -50,6 +52,8 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
     RecyclerView rvWifiList;
     @BindView(R.id.sw_refresh_wifi)
     SwipeRefreshLayout swRefreshWifi;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     private String uuid;
 
@@ -90,6 +94,9 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
         rvWifiList.setAdapter(new AAdapter(getContext(), null, R.layout.layout_wifi_list_item));
         rvWifiList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         swRefreshWifi.setOnRefreshListener(this);
+        customToolbar.setBackAction(v -> {//回退事件
+            getActivity().getSupportFragmentManager().popBackStack();
+        });
     }
 
     private View.OnClickListener clickListener = new View.OnClickListener() {
@@ -161,6 +168,7 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
             holder.setImageResource(R.id.imv_wifi_ssid, getWifiIcon(item));
             holder.setText(R.id.tv_wifi_ssid, ssid);
             holder.setOnClickListener(R.id.lLayout_wifi_list_item, clickListener);
+            Log.d("WifiList", "list: " + ssid);
         }
 
         private int getWifiIcon(ScanResult item) {

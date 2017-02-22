@@ -2,181 +2,13 @@ package com.cylan.jiafeigou.support.log;
 
 /**
  * Created by cylan on 2015/1/19.
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p/>
- * User: modified by hunt
- * Date: 15-01-04
- * <p>
- * User: modified by hunt
- * Date: 15-01-04
- * <p>
- * User: modified by hunt
- * Date: 15-01-04
- * <p>
- * User: modified by hunt
- * Date: 15-01-04
- */
-
-/**
- * User: modified by hunt
- * Date: 15-01-04
  */
 
 
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
 
 import java.io.File;
@@ -192,7 +24,7 @@ public class AppLogger {
     private static final String tagL = "L:";
     private static final StringBuilder builder = new StringBuilder();
     protected static final String TAG = "CYLAN_TAG";
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = BuildConfig.DEBUG;
 
     private static final String DEFAULT_LOG = JConstant.LOG_PATH + File.separator + "log.txt";
 
@@ -428,6 +260,8 @@ public class AppLogger {
                 .getStackTrace()[2];
         builder.setLength(0);
         return builder
+                .append(Thread.currentThread().toString())
+                .append("-")
                 .append(caller.getFileName())
                 .append(tagLeft)
                 .append(tagL)

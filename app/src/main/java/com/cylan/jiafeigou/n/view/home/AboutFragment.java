@@ -16,6 +16,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.login.AgreementFragment;
+import com.cylan.jiafeigou.n.view.mine.WebsiteFragement;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -23,6 +25,8 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -44,9 +48,12 @@ public class AboutFragment extends Fragment {
     CustomToolbar customToolbar;
     @BindView(R.id.sv_hot_line)
     SettingItemView0 svHotLine;
+    @BindView(R.id.tv_copy_right)
+    TextView tvCopyRight;
 
     private Intent intent;
-
+    private static final String COPY_RIGHT = "Copyright @ 2005-%s Cylan.All Rights Reserved";
+    private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
     public static AboutFragment newInstance() {
         return new AboutFragment();
     }
@@ -62,6 +69,7 @@ public class AboutFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        tvCopyRight.setText(String.format(COPY_RIGHT, simpleDateFormat.format(new Date(System.currentTimeMillis()))));
         tvAppVersion.setText(String.format(Locale.getDefault(), "%s", PackageUtils.getAppVersionName(getActivity())));
         customToolbar.setBackAction((View v) -> {
             getActivity().getSupportFragmentManager().popBackStack();
@@ -83,6 +91,8 @@ public class AboutFragment extends Fragment {
                 getContext().startActivity(intent);
                 break;
             case R.id.sv_official_website:
+                enterWeb();
+                break;
             case R.id.tv_user_agreement:
                 IMEUtils.hide(getActivity());
                 AgreementFragment fragment = AgreementFragment.getInstance(null);
@@ -94,6 +104,13 @@ public class AboutFragment extends Fragment {
                         .commit();
                 break;
         }
+    }
+
+    private void enterWeb() {
+        IMEUtils.hide(getActivity());
+        WebsiteFragement fragment = WebsiteFragement.getInstance(null);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                fragment, android.R.id.content);
     }
 
     public String getHotPhone() {

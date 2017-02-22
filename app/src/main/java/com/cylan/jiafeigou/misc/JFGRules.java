@@ -112,7 +112,7 @@ public class JFGRules {
     }
 
     public static boolean is3GCam(int pid) {
-        return pid == JConstant.OS_CAMERA_3G;
+        return pid == JConstant.OS_CAMERA_ANDROID_3_0;
     }
 
     public static boolean isFreeCam(int pid) {
@@ -120,7 +120,8 @@ public class JFGRules {
     }
 
     public static boolean showLedIndicator(int pid) {
-        return pid == JConstant.OS_CAMERA_3G ||
+        return pid == JConstant.OS_CAMERA_ANDROID_3_0 ||
+                pid == JConstant.OS_CAMERA_ANDROID ||
                 pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
                 pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
                 pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
@@ -134,7 +135,7 @@ public class JFGRules {
      * @return
      */
     public static boolean showDelayRecordBtn(int pid) {
-        return pid == JConstant.OS_CAMERA_3G;
+        return pid == JConstant.OS_CAMERA_ANDROID_3_0;
     }
     //freeCam 海思 wifi
     public static boolean showMobileLayout(int pid) {

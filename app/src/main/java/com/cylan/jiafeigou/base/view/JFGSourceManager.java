@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.base.view;
 
+
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.JFGDPAccount;

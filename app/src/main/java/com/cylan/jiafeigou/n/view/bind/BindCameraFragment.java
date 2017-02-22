@@ -146,7 +146,7 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
     public void onDevicesRsp(List<ScanResult> resultList) {
         final int count = ListUtils.getSize(resultList);
         if (count == 0) {
-            Toast.makeText(getContext(), "没发现设备", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.Tap1_Index_NoDevice), Toast.LENGTH_SHORT).show();
             return;
         }
     }
@@ -159,15 +159,15 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
     @Override
     public void onNoListError() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Toast.makeText(getContext(), "请启用定位服务", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.turn_on_gps), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(getContext(), "没有wifi列表", Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), getString(R.string.Tap1_Index_NoDevice), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onNoJFGDevices() {
-        Toast.makeText(getContext(), "找不到设备啊", Toast.LENGTH_SHORT).show();
+        Toast.makeText(getContext(), getString(R.string.Tap1_Index_NoDevice), Toast.LENGTH_SHORT).show();
     }
 
     @Override

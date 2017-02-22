@@ -108,6 +108,11 @@ public class DeviceFullParameters {
                 .subscribe();
     }
 
+    /**
+     * 请求响应
+     *
+     * @param robotoGetDataRsp
+     */
     public void fullDataPointAssembler(RobotoGetDataRsp robotoGetDataRsp) {
         Observable.just(robotoGetDataRsp)
                 .subscribeOn(Schedulers.computation())
@@ -117,6 +122,7 @@ public class DeviceFullParameters {
                         final String identity = dpDataRsp.identity;
                         Log.d(TAG, "fullDataPointAssembler: " + identity);
                         boolean needNotify = false;
+                        boolean isNotEmpty = false;
                         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dpDataRsp.map.entrySet()) {
                             if (entry.getValue() == null) continue;
                             for (JFGDPMsg dp : entry.getValue()) {
@@ -133,11 +139,16 @@ public class DeviceFullParameters {
                                     value.setValue(o);
                                     boolean changed = DataPointManager.getInstance().putValue(identity, value);
                                     needNotify |= changed;
+                                    isNotEmpty = true;
                                     Log.d(TAG, "put: " + dp.id + " " + changed + " " + needNotify);
                                 } catch (Exception e) {
                                     AppLogger.i("dp is null: " + dp.id + ".." + e.getLocalizedMessage());
                                 }
                             }
+                        }
+                        //表明有数据更新并且存到内存中.
+                        if (isNotEmpty) {
+                            RxBus.getCacheInstance().post(dpDataRsp);
                         }
                         return null;
                     }
@@ -147,28 +158,32 @@ public class DeviceFullParameters {
                 .subscribe();
     }
 
+    /**
+     * 服务器推送
+     *
+     * @param b
+     * @param identity
+     * @param arrayList
+     */
     public void assembleFullParameters(boolean b, final String identity, ArrayList<JFGDPMsg> arrayList) {
         Observable.just(arrayList)
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<ArrayList<JFGDPMsg>, Map<String, BaseValue>>() {
-                    @Override
-                    public Map<String, BaseValue> call(ArrayList<JFGDPMsg> jfgdpMsgs) {
-                        Map<String, BaseValue> updatedItems = new HashMap<>();
-                        for (JFGDPMsg jfg : jfgdpMsgs) {
-                            try {
-                                BaseValue base = new BaseValue();
-                                base.setId(jfg.id);
-                                base.setVersion(jfg.version);
-                                base.setValue(DpUtils.unpackData(jfg.packValue, DpMsgMap.ID_2_CLASS_MAP.get((int) jfg.id)));
-                                boolean result = GlobalDataProxy.getInstance().update(identity, base, false);
-                                if (result) updatedItems.put(identity, base);
-                            } catch (Exception e) {
-                                AppLogger.e("" + jfg.id + " " + e.getLocalizedMessage());
-                            }
+                .map(jfgdpMsgs -> {
+                    Map<String, BaseValue> updatedItems = new HashMap<>();
+                    for (JFGDPMsg jfg : jfgdpMsgs) {
+                        try {
+                            BaseValue base = new BaseValue();
+                            base.setId(jfg.id);
+                            base.setVersion(jfg.version);
+                            base.setValue(DpUtils.unpackData(jfg.packValue, DpMsgMap.ID_2_CLASS_MAP.get((int) jfg.id)));
+                            boolean result = GlobalDataProxy.getInstance().update(identity, base, false);
+                            if (result) updatedItems.put(identity, base);
+                        } catch (Exception e) {
+                            AppLogger.e("" + jfg.id + " " + e.getLocalizedMessage());
                         }
-                        AppLogger.i("robotSyc:" + updatedItems.keySet());
-                        return updatedItems;
                     }
+                    AppLogger.i("robotSyc:" + updatedItems.keySet());
+                    return updatedItems;
                 })
                 .filter((Map<String, BaseValue> map) -> (map.size() > 0))
                 .map((Map<String, BaseValue> map) -> {

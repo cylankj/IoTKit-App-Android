@@ -1,36 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
     <!-- 顶部栏 -->
-    <LinearLayout
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_tab_back_selector"
+        hunt:ct_left_title="@string/SETTING_SD"
+        hunt:ct_left_title_color="@color/color_white" />
 
-        <FrameLayout
-            android:id="@+id/fLayout_top_bar_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/color_0ba8cf">
-
-            <TextView
-                android:id="@+id/imgV_top_bar_center"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:drawableLeft="@drawable/nav_tab_back_selector"
-                android:drawablePadding="@dimen/x15"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/x15"
-                android:text="@string/SETTING_SD"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18" />
-        </FrameLayout>
-    </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -41,7 +28,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/y12"
-            android:text="设备"
+            android:text="@string/DEVICE"
             android:textColor="#4B9FD5"
             android:textSize="@dimen/sp14" />
 
@@ -52,11 +39,11 @@
     </FrameLayout>
 
     <TextView
-        android:text="空间使用情况"
         style="@style/information_item"
-        android:layout_marginTop="@dimen/y12"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/y12"
+        android:text="@string/VALID_STORAGE"
         android:textSize="@dimen/sp16" />
 
     <TextView
@@ -65,7 +52,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/y6"
-        android:text="476.43MB/4G"
+        android:text="0.0MB/0G"
         android:textColor="#8c8c8c"
         android:textSize="@dimen/sp14" />
 
@@ -75,59 +62,61 @@
 
         <View
             android:id="@+id/view_total_volume"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y5"
             android:layout_marginLeft="@dimen/x16"
             android:layout_marginRight="@dimen/x16"
             android:layout_marginTop="@dimen/y6"
-            android:background="@color/color_d2d2d2"
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y5"/>
+            android:background="@color/color_d2d2d2" />
 
         <View
             android:id="@+id/view_has_use_volume"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/y5"
             android:layout_marginLeft="@dimen/x16"
             android:layout_marginRight="@dimen/x16"
             android:layout_marginTop="@dimen/y6"
-            android:background="#6fa3fd"
-            android:layout_width="100dp"
-            android:layout_height="@dimen/y5"/>
+            android:background="#6fa3fd" />
     </FrameLayout>
 
     <FrameLayout
-        android:layout_marginTop="@dimen/y69"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/x30"
         android:layout_marginStart="@dimen/x30"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_marginTop="@dimen/y69">
 
         <TextView
             android:id="@+id/tv_clecr_sdcard"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y42"
-            android:gravity="center"
             android:layout_centerVertical="true"
-            android:padding="@dimen/x10"
-            android:text="格式化SD卡"
             android:background="@drawable/long_btn_bg_shape_white"
+            android:gravity="center"
+            android:padding="@dimen/x10"
+            android:text="@string/Clear_Sdcard"
             android:textColor="#4B9FD5"
             android:textSize="@dimen/sp16" />
 
         <ImageView
-            android:visibility="gone"
             android:id="@+id/iv_loading_rotate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:src="@drawable/listview_loading"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:visibility="gone" />
 
     </FrameLayout>
 
     <TextView
-        android:layout_marginTop="@dimen/y9"
-        android:layout_gravity="center"
-        android:text="清空数据时设备将会重启"
-        android:textSize="@dimen/sp12"
-        android:textColor="@color/color_8c8c8c"
+        android:id="@+id/tv_clear_restart"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/y9"
+        android:text="@string/Clear_Sdcard_tips2"
+        android:textColor="@color/color_8c8c8c"
+        android:textSize="@dimen/sp12"
+        android:visibility="gone" />
 
 </LinearLayout>

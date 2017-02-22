@@ -122,7 +122,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         Glide.with(this)
                 .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
-                .error(R.drawable.brokent_image)
+                .error(R.drawable.broken_image)
                 .listener(new RequestListener<JFGGlideURL, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, JFGGlideURL model, Target<GlideDrawable> target, boolean isFirstResource) {
@@ -249,26 +249,26 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCallRecord.timeInLong / 1000 + ".jpg");
 
         if (mDownloadFile.exists()) {
-            ToastUtil.showPositiveToast(getString(R.string.FILE_DOWNLOADED));
+//            ToastUtil.showPositiveToast(getString(R.string.FILE_DOWNLOADED));
             return;
         }
         Glide.with(this).load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID)).
                 downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        ToastUtil.showPositiveToast(getString(R.string.DOWNLOAD_COMPLETED));
+//                        ToastUtil.showPositiveToast(getString(R.string.DOWNLOAD_COMPLETED));
                         FileUtils.copyFile(resource, mDownloadFile);
                         mDownloadFile = null;
                     }
 
                     @Override
                     public void onLoadStarted(Drawable placeholder) {
-                        ToastUtil.showPositiveToast(getString(R.string.DOWNLOAD_START));
+//                        ToastUtil.showPositiveToast(getString(R.string.DOWNLOAD_START));
                     }
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        ToastUtil.showNegativeToast(getString(R.string.DOWNLOAD_FAILD));
+                        ToastUtil.showNegativeToast(getString(R.string.DELETED_SUC));
                         mDownloadFile = null;
                     }
                 });

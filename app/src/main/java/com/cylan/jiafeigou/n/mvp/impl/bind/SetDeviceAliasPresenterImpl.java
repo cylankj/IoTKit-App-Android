@@ -35,7 +35,7 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                 .map((String s) -> {
                     try {
                         JfgCmdInsurance.getCmd().setAliasByCid(uuid, s);
-                        AppLogger.i("setup alias: " + uuid);
+                        AppLogger.i("setup alias: " + s);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }

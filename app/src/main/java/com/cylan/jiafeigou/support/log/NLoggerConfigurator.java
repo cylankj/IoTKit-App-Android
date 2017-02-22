@@ -9,7 +9,7 @@ import android.util.Log;
 public class NLoggerConfigurator {
 
     private int logLevel = Log.VERBOSE;
-    private String messagePattern = "yyyy-mm-dd HH:mm:ss.SSS ";
+    private String messagePattern = "yyyy-MM-dd HH:mm:ss.SSS ";
     private String logCatPattern = "%m%n";
 //    /**
 //     * 文件目录
@@ -22,7 +22,7 @@ public class NLoggerConfigurator {
      */
     private String filePath;
     private int maxBackupSize = 2;
-    private long maxFileSize = 512 * 1024;
+    private long maxFileSize = 5 * 1024 * 1024;
     private boolean immediateFlush = true;
     private boolean useLogCatAppender = true;
     private boolean useFileAppender = true;

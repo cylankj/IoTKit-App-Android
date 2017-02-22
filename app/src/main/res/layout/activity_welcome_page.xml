@@ -25,6 +25,7 @@
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="@dimen/y20"
             android:gravity="center"
-            android:textSize="@dimen/sp9" />
+            android:textSize="@dimen/sp9"
+            android:visibility="gone" />
     </FrameLayout>
 </merge>

@@ -74,6 +74,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     private HomeMineHelpSuggestionContract.Presenter presenter;
     private int itemPosition;
     private boolean resendFlag;
+    private boolean hasSendLog = false;
 
     public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
         HomeMineHelpSuggestionFragment fragment = new HomeMineHelpSuggestionFragment();
@@ -232,7 +233,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         suggestionAdapter.add(suggestionBean);
         suggestionAdapter.notifyDataSetHasChanged();
         presenter.sendFeedBack(suggestionBean);
-//        presenter.sendLogToCloud(presenter.getSaveLogCloudUrl(),presenter.getLocalLogUrl());
     }
 
     @Override
@@ -291,6 +291,15 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             mRvMineSuggestion.setAdapter(suggestionAdapter);
         }
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
+    }
+
+    /**
+     * 上传日志的结果
+     */
+    @Override
+    public void sendLogResult(int code) {
+        hideLoadingDialog();
+        hasSendLog = true;
     }
 
     /**

@@ -47,9 +47,9 @@ public class CamWarnGlideURL extends GlideUrl {
                 .append(index + 1)
                 .append(".jpg");
         try {
-            Log.d("toURL", "toURL: " + mBean + " uuid:" + uuid);
             url = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.WARNING,
                     mBean.type, builder.toString(), uuid, Security.getVId(JFGRules.getTrimPackageName()));
+            Log.d("toURL", "toURL: " + url);
         } catch (JfgException e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
         }

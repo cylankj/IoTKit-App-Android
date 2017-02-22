@@ -228,7 +228,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     private void initRotateBtn() {
         if (device != null && JFGRules.isPanoramicCam(device.pid)) {
-            svSettingDeviceIndicator.setVisibility(View.GONE);
+            svSettingDeviceRotate.setVisibility(View.GONE);
         } else {
             int state = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE, 0);
             ((SwitchButton) svSettingDeviceIndicator.findViewById(R.id.btn_item_switch)).setChecked(state != 0);
@@ -308,6 +308,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                         ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
                                 R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
             }
+            break;
             case R.id.sv_setting_device_wifi:
                 if (device != null && JFGRules.isFreeCam(device.pid)) {
                     Intent intent = new Intent(this, BindDeviceActivity.class);
@@ -464,7 +465,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (state == JError.ErrorOK) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
             setResult(RESULT_OK);
-            ToastUtil.showPositiveToast(getString(R.string.DOOR_UNBIND));
+            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
             finish();
         }
     }

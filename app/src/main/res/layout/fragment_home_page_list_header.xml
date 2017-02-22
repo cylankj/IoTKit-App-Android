@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="在这里开始美好的一天"
+            android:text="@string/Tap1_Index_DayGreetings"
             android:textColor="@android:color/white"
             android:textSize="@dimen/sp16" />
     </LinearLayout>

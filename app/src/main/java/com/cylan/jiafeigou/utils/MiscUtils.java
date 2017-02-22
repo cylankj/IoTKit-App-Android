@@ -150,4 +150,11 @@ public class MiscUtils {
                     }
                 });
     }
+
+    public static String getBeautifulString(String temp, int len) {
+        if (!TextUtils.isEmpty(temp) && temp.length() > len) {
+            temp = temp.substring(0, len) + "...";
+        }
+        return temp;
+    }
 }

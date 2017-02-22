@@ -54,6 +54,11 @@ public interface HomeMineHelpSuggestionContract {
          */
         void refrshRecycleView(int code);
 
+        /**
+         * 上传日志的结果
+         */
+        void sendLogResult(int code);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -137,24 +142,16 @@ public interface HomeMineHelpSuggestionContract {
          * @return
          */
         Subscription isOpenLogin();
-
-        /**
-         * 获取日志存储路径
-         * @return
-         */
-        String getSaveLogCloudUrl();
-
         /**
          * 获取本地日志Url
          * @return
          */
-        String getLocalLogUrl();
+        void upLoadLogFile(MineHelpSuggestionBean bean);
 
         /**
-         * 上传日志到云存储
-         * @param localUrl
+         * 上传日志回调
          */
-        void sendLogToCloud(String remoteUrl,String localUrl);
+        Subscription sendLogBack();
 
     }
 }

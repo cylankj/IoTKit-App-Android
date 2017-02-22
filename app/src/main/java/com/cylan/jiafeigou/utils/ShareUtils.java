@@ -56,14 +56,14 @@ public class ShareUtils {
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        ToastUtil.showNegativeToast(activity.getString(R.string.SHARE_ERROR));
+                        ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
                     }
                 });
     }
 
     public static void sharePictureToTwitter(FragmentActivity activity, GlideUrl glideUrl) {
         if (!isTwitterInstalled()) {
-            ToastUtil.showNegativeToast(activity.getString(R.string.ERROR_TWITTER_NOT_INSTALLED));
+            ToastUtil.showNegativeToast(activity.getString(R.string.Tap0_Login_NoInstalled, "twitter"));
         }
 
         Glide.with(ContextUtils.getContext())
@@ -108,7 +108,7 @@ public class ShareUtils {
             FacebookSdk.sdkInitialize(activity.getApplicationContext());
         }
         if (!isFacebookInstalled()) {
-            ToastUtil.showNegativeToast(activity.getString(R.string.ERROR_FACEBOOK_NOT_INSTALLED));
+            ToastUtil.showNegativeToast(activity.getString(R.string.Tap0_Login_NoInstalled, "facebook"));
             return;
         }
 
@@ -128,7 +128,7 @@ public class ShareUtils {
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        ToastUtil.showNegativeToast(activity.getString(R.string.SHARE_ERROR));
+                        ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
                     }
                 });
 
@@ -167,7 +167,7 @@ public class ShareUtils {
 
     public static void shareVideoToTwitter(Activity activity, String videoURL, GlideUrl videoThumbURL) {
         if (!isTwitterInstalled()) {
-            ToastUtil.showNegativeToast(activity.getString(R.string.ERROR_TWITTER_NOT_INSTALLED));
+            ToastUtil.showNegativeToast(activity.getString(R.string.Tap0_Login_NoInstalled, "twitter"));
         }
 
         Glide.with(ContextUtils.getContext())
@@ -197,7 +197,7 @@ public class ShareUtils {
             FacebookSdk.sdkInitialize(activity.getApplicationContext());
         }
         if (!isFacebookInstalled()) {
-            ToastUtil.showNegativeToast(activity.getString(R.string.ERROR_FACEBOOK_NOT_INSTALLED));
+            ToastUtil.showNegativeToast(activity.getString(R.string.Tap0_Login_NoInstalled, "facebook"));
             return;
         }
 
@@ -209,8 +209,8 @@ public class ShareUtils {
         ShareDialog dialog = new ShareDialog(activity);
         if (dialog.canShow(content)) {
             dialog.show(content, ShareDialog.Mode.AUTOMATIC);
-        }else{
-            ToastUtil.showNegativeToast(activity.getString(R.string.SHARE_ERROR));
+        } else {
+            ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
         }
     }
 }

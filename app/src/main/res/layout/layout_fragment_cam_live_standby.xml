@@ -6,6 +6,7 @@
     android:background="@color/color_2A3C58">
 
     <LinearLayout
+        android:id="@+id/lLayout_standby_jump_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"

@@ -106,7 +106,7 @@ public class DataSourceService extends Service implements AppCallBack {
                     JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
                 } catch (PackageManager.NameNotFoundException e) {
                     AppLogger.d("let's go err:" + e.getLocalizedMessage());
-                } catch (JfgException e) {
+                } catch (Exception e) {
                     AppLogger.d("let's go err:" + e.getLocalizedMessage());
                 }
                 AppLogger.d("let's go initNative:");
@@ -191,7 +191,7 @@ public class DataSourceService extends Service implements AppCallBack {
         if (RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.GetHttpDoneResult(jfgMsgHttpResult));
             RxBus.getCacheInstance().post(jfgMsgHttpResult);
-        }
+    }
     }
 
     @Override
@@ -211,7 +211,7 @@ public class DataSourceService extends Service implements AppCallBack {
         DataSourceManager.getInstance().cacheRobotoGetDataRsp(robotoGetDataRsp);
         if (RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(robotoGetDataRsp);
-        }
+    }
     }
 
     @Override
@@ -222,6 +222,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SdcardClearRsp(l,arrayList));
         RxEvent.SetDataRsp rsp = new RxEvent.SetDataRsp();
         rsp.seq = l;
         rsp.rets = arrayList;
@@ -331,12 +332,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-        AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + arrayList);
-//        RxEvent.JFGRobotSyncData data = new RxEvent.JFGRobotSyncData();
-//        data.state = b;
-//        data.identity = s;
-//        data.dataList = arrayList;
-//        RxBus.getCacheInstance().post(data);
+        AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + new Gson().toJson(arrayList));
         GlobalDataProxy.getInstance().cacheRobotoSyncData(b, s, arrayList);
         DataSourceManager.getInstance().cacheRobotoSyncData(b, s, arrayList);
     }
@@ -455,7 +451,10 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3) {
-
+        AppLogger.d("OnCheckDevVersionRsp :");
+        if (RxBus.getCacheInstance().hasObservers()) {
+            RxBus.getCacheInstance().post(new RxEvent.CheckDevVersionRsp(b,s,s1,s2,s3));
+        }
     }
 
     @Override

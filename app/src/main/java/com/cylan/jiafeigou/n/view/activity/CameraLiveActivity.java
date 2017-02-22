@@ -174,6 +174,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             RxEvent.CamLivePageScrolled scrolled = new RxEvent.CamLivePageScrolled();
             scrolled.selected = position == 0;
             RxBus.getCacheInstance().post(scrolled);
+            AppLogger.d("onPageSelected" + scrolled.selected);
         }
 
         @Override
