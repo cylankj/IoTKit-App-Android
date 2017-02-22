@@ -77,7 +77,7 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
             Glide.with(container.getContext())
                     .load(new WonderGlideURL(bean))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .error(R.drawable.brokent_image)
+                    .error(R.drawable.broken_image)
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
                     .into(photoView);
         }

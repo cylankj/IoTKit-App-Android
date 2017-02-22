@@ -122,7 +122,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         Glide.with(this)
                 .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
-                .error(R.drawable.brokent_image)
+                .error(R.drawable.broken_image)
                 .listener(new RequestListener<JFGGlideURL, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, JFGGlideURL model, Target<GlideDrawable> target, boolean isFirstResource) {
