@@ -40,6 +40,7 @@ import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.DensityUtils;
@@ -286,6 +287,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 viewStandbyRef = new WeakReference<>(v);
                 Log.d("showSceneView", "showSceneView: " + (System.currentTimeMillis() - time));
                 fLayoutCamLiveView.addView(v, 0);//最底
+                v.findViewById(R.id.lLayout_standby_jump_setting)//跳转到设置页面
+                        .setOnClickListener(view -> startActivity(new Intent(getActivity(), CamSettingActivity.class)));
             } else v = viewStandbyRef.get();
         }
         v.setVisibility(flag ? View.VISIBLE : View.GONE);
@@ -580,6 +583,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             if (checked) starPlay();
             else basePresenter.stopPlayVideo(basePresenter.getPlayType());
         }
+    }
+
+    @Override
+    public void shouldWaitFor(boolean start) {
+        camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
     }
 
     @Override
