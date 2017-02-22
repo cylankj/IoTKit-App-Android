@@ -198,7 +198,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                         basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
                     });
-        } else svSettingDeviceMobileNetwork.setVisibility(View.GONE);
+        } else {
+            svSettingDeviceMobileNetwork.setVisibility(View.GONE);
+            svSettingDeviceWifi.showDivider(false);
+        }
     }
 
     private void init110VVoltageBtn() {
