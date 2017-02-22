@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
@@ -25,6 +26,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.HackyViewPager;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -55,7 +57,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     public static final String KEY_BUNDLE = "key_bundle";
     public static final String KEY_TIME = "key_time";
     public static final String KEY_INDEX = "key_index";
-    public static final String KEY_UUID = "key_uuid";
 
     @BindView(R.id.vp_container)
     HackyViewPager vpContainer;
@@ -66,7 +67,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @BindView(R.id.lLayout_preview)
     LinearLayout lLayoutPreview;
 
-    private int currentIndex = -1;
+    private int currentIndex = -1, previewFocusIndex = -1;
     private DpMsgDefine.DPAlarm alarmMsg;
     private String uuid;
     private JFGDevice device;
@@ -79,7 +80,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cam_media);
         ButterKnife.bind(this);
-        uuid = getIntent().getStringExtra(KEY_UUID);
+        uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         device = GlobalDataProxy.getInstance().fetch(uuid);
         basePresenter = new CamMediaPresenterImpl(this, uuid);
         alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
@@ -113,7 +114,12 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             for (int i = 0; i < count; i++) {
                 final View v = lLayoutPreview.getChildAt(i);
                 final int jjj = i;
-                v.setOnClickListener(view -> updateFocus(true, jjj));
+                v.setOnClickListener(view -> {
+                    if (previewFocusIndex != jjj) {
+                        previewFocusIndex = jjj;
+                        updateFocus(true, jjj);
+                    }
+                });
                 //可能出错,不是对应的index
                 GlideUrl url = new CamWarnGlideURL(alarmMsg, i, uuid);
                 Glide.with(ContextUtils.getContext())
@@ -139,13 +145,17 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         updateFocus(false, currentIndex);
     }
 
+    private static String makeFragmentName(int viewId, long id) {
+        return "android:switcher:" + viewId + ":" + id;
+    }
+
     private void updateFocus(boolean auto, int index) {
         int count = MiscUtils.getCount(alarmMsg.fileIndex);
         if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
-            //全景需要兼容
-            Fragment fragment = ((CustomAdapter) vpContainer.getAdapter()).getItem(0);
+            //全景需要兼容,这里的tag的构造方式,看FragmentPagerAdapter,最后一个方法
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(makeFragmentName(vpContainer.getId(), 0));
             if (auto && fragment != null && fragment instanceof PanoramicViewFragment) {
-                ((PanoramicViewFragment) fragment).loadBitmap(currentIndex);
+                ((PanoramicViewFragment) fragment).loadBitmap(index);
             }
         } else {
             vpContainer.setCurrentItem(index, false);
@@ -250,7 +260,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             Bundle bundle = new Bundle();
             bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, contents);
             bundle.putInt(KEY_INDEX, position);
-            bundle.putString(KEY_UUID, uuid);
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
             bundle.putInt("totalCount", MiscUtils.getCount(contents.fileIndex));
             IBaseFragment fragment = null;
             if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
@@ -265,9 +275,14 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         @Override
         public int getCount() {
             //全景图片不适合使用viewpager,虽然用起来很简单,切换的时候有bug.
-//            if (device != null && JFGRules.isNeedPanoramicView(device.pid)) return 1;
+            if (device != null && JFGRules.isNeedPanoramicView(device.pid)) return 1;
             Log.d("getCount", "getCount: ");
             return MiscUtils.getCount(contents.fileIndex);
+        }
+
+        @Override
+        public void destroyItem(ViewGroup container, int position, Object object) {
+            //do nothing
         }
 
         private void setCallback(IBaseFragment.CallBack callback) {

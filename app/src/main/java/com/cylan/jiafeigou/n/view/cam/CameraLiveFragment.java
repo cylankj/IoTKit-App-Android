@@ -218,6 +218,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
+        boolean isStandBY = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+        if (isStandBY) return;
         basePresenter.startPlayVideo(basePresenter.getPlayType());
     }
 
