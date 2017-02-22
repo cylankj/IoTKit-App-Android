@@ -134,4 +134,8 @@ public class PanoramicViewFragment extends IBaseFragment {
     public void onDestroyView() {
 //        super.onDestroyView();
     }
+
+    public void loadBitmap(int currentIndex) {
+
+    }
 }

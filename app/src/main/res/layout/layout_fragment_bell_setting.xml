@@ -26,7 +26,7 @@
                 android:drawableStart="@drawable/nav_tab_back_selector"
                 android:gravity="center_vertical"
                 android:paddingStart="@dimen/y15"
-                android:text="@string/SETTINGS_1"
+                android:text="@string/EQUIPMENT_INFO"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp18" />
         </FrameLayout>
@@ -46,7 +46,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/x20"
+            android:layout_marginEnd="@dimen/y20"
             android:layout_marginStart="@dimen/y20"
             android:layout_marginTop="@dimen/y10"
             android:text="@string/DEVICE"
