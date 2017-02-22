@@ -23,23 +23,19 @@ import java.util.concurrent.TimeoutException;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by yzd on 16-12-30.
  */
 
 public abstract class BaseCallablePresenter<V extends CallableView> extends BaseViewablePresenter<V> implements CallablePresenter {
-    private static final long NEW_CALL_TIME_OUT = 30 * 1000L;
     protected Caller mCaller;
     protected Caller mHolderCaller;
-
 
     @Override
     @CallSuper
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-//        registerSubscription(getCallAnswerObserverSub());
     }
 
     @Override
@@ -51,16 +47,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     protected String onResolveViewIdentify() {
         return mCaller == null ? null : mCaller.caller;
     }
-
-    protected Subscription getCallAnswerObserverSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.CallAnswered.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(callAnswer -> {
-                    callAnswerInOther();
-                }, Throwable::printStackTrace);
-    }
-
 
     public void pickup() {
         AppLogger.e("正在接听");
@@ -78,21 +64,14 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         }
     }
 
-    protected void callAnswerInOther() {
-        mView.onCallAnswerInOther();
-    }
-
     public void newCall(Caller caller) {
-        Observable.just(mHolderCaller = caller)
+        Subscription subscription = Observable.just(mHolderCaller = caller)
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(who -> !(TextUtils.equals(mViewLaunchType, JConstant.VIEW_CALL_WAY_VIEWER)
+                        && TextUtils.equals(mView.onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)))
                 .flatMap(who -> {
                     switch (mView.onResolveViewLaunchType()) {
                         case JConstant.VIEW_CALL_WAY_LISTEN:
-                            if (TextUtils.equals(mView.onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_VIEWER)) {
-                                AppLogger.e("主动查看门铃忽略门铃呼叫");
-                                return Observable.empty();//当主动查看门铃时忽略门铃呼叫
-                            }
-
                             if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
                                 mView.onNewCallWhenInLive(mHolderCaller.caller);
                             } else if (mHolderCaller != null) {
@@ -111,8 +90,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                             break;
                     }
                     return RxBus.getCacheInstance().toObservable(RxEvent.CallAnswered.class)
-                            .timeout(30, TimeUnit.SECONDS);//三十秒超时时间,如果无人接听的话
-
+                            .timeout(30, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()); //三十秒超时时间,如果无人接听的话
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(answer -> {
@@ -129,6 +107,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         if (mCaller == null) {//没有正在查看的直播,且当前直播接听超时,则直接关闭退出
+                            mView.onNewCallTimeOut();
                             mView.onDismiss();
                         } else if (mHolderCaller != null) {
                             mHolderCaller = null;
@@ -136,6 +115,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         }
                     }
                 });
+        registerSubscription(subscription);
     }
 
     protected void waitForPicture(String url, JFGView.Action action) {

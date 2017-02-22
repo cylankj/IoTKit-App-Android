@@ -68,24 +68,15 @@
                 android:layout_marginTop="@dimen/y30"
                 android:descendantFocusability="blocksDescendants">
 
-                <FrameLayout
-                    android:id="@+id/fl_date_bg_head_wonder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:alpha="1"
-                    android:background="@drawable/btn_pressed_date_head_wonderful" />
-
-                <com.cylan.jiafeigou.widget.textview.WonderfulTitleHead
+                <TextView
                     android:id="@+id/tv_date_item_head_wonder"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:drawableEnd="@drawable/wonderful_arrow_down"
-                    android:drawablePadding="@dimen/y5"
+                    android:layout_height="@dimen/y48"
+                    android:alpha="0"
                     android:gravity="center"
-                    android:textColor="@color/color_788291"
-                    android:textSize="@dimen/sp14" />
+                    android:text="@string/Tap2_TitleName"
+                    android:textColor="@color/color_white"
+                    android:textSize="@dimen/sp18" />
             </FrameLayout>
         </FrameLayout>
 

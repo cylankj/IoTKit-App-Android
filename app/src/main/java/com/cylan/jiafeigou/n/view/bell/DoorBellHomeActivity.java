@@ -14,7 +14,6 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -86,6 +85,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     protected void initViewAndListener() {
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
+        cvBellHomeBackground.setActionInterface(this);
         initAdapter();
     }
 
@@ -234,10 +234,9 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         if (beanArrayList != null && beanArrayList.size() < 20) endlessLoading = true;
         bellCallRecordListAdapter.addAll(beanArrayList);
         mIsLastLoadFinish = true;
-        if (bellCallRecordListAdapter.getList().size() == 0) {//show empty startViewer
-            mEmptyView.setVisibility(View.VISIBLE);
-            Toast.makeText(this, "暂无数据", Toast.LENGTH_SHORT).show();
-        }
+        boolean isEmpty = bellCallRecordListAdapter.getList().size() == 0;
+        mEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
+        if (isEmpty) ToastUtil.showNegativeToast("暂无数据");
     }
 
     @Override
@@ -246,28 +245,28 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             LoadingDialog.dismissLoading(getSupportFragmentManager());
             ToastUtil.showNegativeToast(getString(R.string.REQUEST_TIME_OUT));
         }
-        }
+    }
 
 
-        @Override
-        public boolean onLongClick (View v){
+    @Override
+    public boolean onLongClick(View v) {
 //        if (!TextUtils.isEmpty(mPresenter.getBellInfo().deviceBase.shareAccount))//共享账号不可操作
 //            return true;
-            final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
-            if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
-                AppLogger.d("position is invalid");
-                return false;
-            }
-            //toggle edit mode
-            if (bellCallRecordListAdapter.getMode() == 0) {
-                AppLogger.d("enter edition mode");
-                bellCallRecordListAdapter.setMode(1);
-                bellCallRecordListAdapter.reverseItemSelectedState(position);
-                tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
-                showEditBar(true);
-            }
-            return true;
+        final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
+        if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
+            AppLogger.d("position is invalid");
+            return false;
         }
+        //toggle edit mode
+        if (bellCallRecordListAdapter.getMode() == 0) {
+            AppLogger.d("enter edition mode");
+            bellCallRecordListAdapter.setMode(1);
+            bellCallRecordListAdapter.reverseItemSelectedState(position);
+            tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
+            showEditBar(true);
+        }
+        return true;
+    }
 
     private void showEditBar(boolean show) {
         AnimatorUtils.slide(fLayoutBellHomeListEdition);
@@ -371,7 +370,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         }
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         cvBellHomeBackground.setState(device.net.$().net);
-        cvBellHomeBackground.setActionInterface(this);
+
     }
 
 }

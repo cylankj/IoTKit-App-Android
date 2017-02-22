@@ -394,6 +394,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onNewCallTimeOut() {
+        ToastUtil.showNegativeToast("通话已取消");
         if (mCallIntent != null) {
             setIntent(mCallIntent);
             dismissAlert();

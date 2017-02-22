@@ -10,7 +10,6 @@ import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.graphics.ColorUtils;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -41,17 +40,13 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
-import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.ShadowFrameLayout;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.cylan.jiafeigou.widget.textview.WonderfulTitleHead;
-import com.cylan.jiafeigou.widget.wheel.WheelView;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.lang.ref.WeakReference;
@@ -73,9 +68,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         AppBarLayout.OnOffsetChangedListener,
         SharedElementCallBackListener,
         OnActivityReenterListener {
-
-    @BindView(R.id.fl_date_bg_head_wonder)
-    FrameLayout flDateBgHeadWonder;
     @BindView(R.id.rV_wonderful_list)
     RecyclerView rVDevicesList;
     @BindView(R.id.fLayout_main_content_holder)
@@ -89,7 +81,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @BindView(R.id.img_wonderful_title_cover)
     ImageView imgWonderfulTitleCover;
     @BindView(R.id.tv_date_item_head_wonder)
-    WonderfulTitleHead tvDateItemHeadWonder;
+    TextView mHeaderContentTitle;
     @BindView(R.id.imgWonderfulTopBg)
     ImageView imgWonderfulTopBg;
     @BindView(R.id.tv_title_head_wonder)
@@ -101,7 +93,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @BindView(R.id.fragment_wonderful_guide)
     ViewGroup mWonderfulGuideContainer;
 
-    private WeakReference<WonderIndicatorWheelView> wheelViewWeakReference;
     private ShareDialogFragment shareDialogFragment;
     private WeakReference<SimpleDialogFragment> deleteDialogFragmentWeakReference;
 
@@ -112,7 +103,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private HomeWonderfulAdapter homeWonderAdapter;
     private LinearLayoutManager mLinearLayoutManager;
     private ShadowFrameLayout mParent;
-    private boolean isScrollShow = false;
     private boolean mCanRefresh = true;
     private boolean mHasMore;
 
@@ -172,17 +162,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     @Override
-    protected boolean onBackPressed() {
-        if (getWheelView().isShown()) {
-            tvDateItemHeadWonder.setTimeLineShow(!getWheelView().isShown());
-            tvDateItemHeadWonder.setBackgroundToRight();
-            AnimatorUtils.slide(getWheelView());
-            return true;//消费该事件
-        }
-        return false;
-    }
-
-    @Override
     protected HomeWonderfulContract.Presenter onCreatePresenter() {
         return new HomeWonderfulPresenterImpl();
     }
@@ -211,32 +190,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         ViewUtils.setViewMarginStatusBar(tvTitleHeadWonder);
     }
 
-
-    private void showWheelView() {
-        if (!getWheelView().isShown()) {
-            tvDateItemHeadWonder.setTimeLineShow(!getWheelView().isShown());
-            tvDateItemHeadWonder.setBackgroundToRight();
-            AnimatorUtils.slide(getWheelView(), new AnimatorUtils.OnEndListener() {
-                @Override
-                public void onAnimationEnd(boolean gone) {
-                    getWheelView().scrollPositionToCenter();
-                }
-
-                @Override
-                public void onAnimationStart(boolean gone) {
-                }
-            });
-        }
-    }
-
-    private void hideWheelView() {
-        if (getWheelView().isShown()) {
-            tvDateItemHeadWonder.setTimeLineShow(!getWheelView().isShown());
-            tvDateItemHeadWonder.setBackgroundToRight();
-            AnimatorUtils.slide(getWheelView());
-        }
-    }
-
     private void initView() {
         //添加Handler
         srLayoutMainContentHolder.setOnRefreshListener(this);
@@ -250,25 +203,14 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 int visibleItemCount = mLinearLayoutManager.getChildCount();
                 int totalItemCount = mLinearLayoutManager.getItemCount();
                 if (dy > 0) { //check for scroll down
-                    if ((visibleItemCount + pastVisibleItems) >= totalItemCount && homeWonderAdapter.getItem(totalItemCount - 1).msgType != DPWonderItem.TYPE_LOAD) {
 
-                        if (!getWheelView().isShown()) {
-                            isScrollShow = true;
-                            showWheelView();
-                        }
-                    }
-                } else {
-                    if (isScrollShow) {
-                        isScrollShow = false;
-                        hideWheelView();
-                    }
                 }
             }
         });
     }
 
     private void initHeaderView() {
-        tvDateItemHeadWonder.post(() -> tvDateItemHeadWonder.setText(TimeUtils.getTodayString()));
+//        tvDateItemHeadWonder.post(() -> tvDateItemHeadWonder.setText(TimeUtils.getTodayString()));
     }
 
 
@@ -316,12 +258,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onTimeLineRsp(long dayStartTime, boolean b1, boolean b) {
-        getWheelView().notify(dayStartTime, b1, b);
+
     }
 
     @Override
     public void onTimeLineInit(List<WonderIndicatorWheelView.WheelItem> list) {
-        getWheelView().init(list);
+
     }
 
     @Override
@@ -339,13 +281,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onChangeTimeLineDaySuccess(List<DPWonderItem> items) {
-        if (getWheelView().isShown()) {
-            getWheelView().scrollPositionToCenter();
-        }
         homeWonderAdapter.clear();
         if (items.size() > 0)
-            tvDateItemHeadWonder.setText(TimeUtils.getDayString(items.get(0).version));
-        onQueryTimeLineSuccess(items, true);
+            onQueryTimeLineSuccess(items, true);
     }
 
     @SuppressWarnings("deprecation")
@@ -365,11 +303,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onPageScrolled() {
-        final WonderIndicatorWheelView view = getWheelView();
-        if (view != null && view.isShown()) {
-            AppLogger.e("onPageScrolled");
-            AnimatorUtils.slide(view);
-        }
         if (srLayoutMainContentHolder != null)
             srLayoutMainContentHolder.setRefreshing(false);
     }
@@ -527,40 +460,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
     }
 
-    @OnClick(R.id.fLayout_date_head_wonder)
-    public void onClick() {
-        final WonderIndicatorWheelView view = getWheelView();
-        if (view != null && view.hasInit()) {
-            if (view.isShown()) {
-                hideWheelView();
-            } else {
-                showWheelView();
-            }
-        }
-    }
-
-
-    /**
-     * {@link WheelView}
-     *
-     * @return
-     */
-    private WonderIndicatorWheelView getWheelView() {
-        if (wheelViewWeakReference == null || wheelViewWeakReference.get() == null) {
-            if (getActivity() != null) {
-                WonderIndicatorWheelView wheelView = (WonderIndicatorWheelView) getActivity().findViewById(R.id.act_main_wonder_indicator_view);
-                wheelView.setListener(time -> {
-                    isScrollShow = false;
-                    tvDateItemHeadWonder.setText(TimeUtils.getDayString(time));
-                    homeWonderAdapter.clear();
-                    mPresenter.loadSpecificDay(time);
-                });
-                wheelViewWeakReference = new WeakReference<>(wheelView);
-            }
-        }
-        return wheelViewWeakReference.get();
-    }
-
     @Override
     public void onDialogAction(int id, Object value) {
         if (id == R.id.tv_dialog_btn_right)
@@ -588,11 +487,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         final float alpha = 1.0f - ratio;
         if (imgWonderfulTitleCover.getAlpha() != alpha) {
             imgWonderfulTitleCover.setAlpha(alpha);
+            mHeaderContentTitle.setAlpha(alpha);
         }
-        flDateBgHeadWonder.setAlpha(ratio);
-        int i = ColorUtils.blendARGB(Color.WHITE, Color.parseColor("#788291"), ratio);
-        tvDateItemHeadWonder.setTextColor(i);
-        tvDateItemHeadWonder.setTitleHeadIsTop(ratio < 0.1);
     }
 
 

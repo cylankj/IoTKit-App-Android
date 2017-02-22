@@ -32,12 +32,6 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
         registerSubscription(getUnbindDevSub());
     }
 
-    @Override
-    public void onSetContentView() {
-        super.onSetContentView();
-        mView.onShowProperty(mSourceManager.getJFGDevice(mUUID));
-    }
-
     /**
      * 门铃解绑
      *
@@ -98,7 +92,6 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
                     mView.onClearBellRecordFaild();
                     AppLogger.d("清空呼叫记录失败!");
                 });
-
     }
 
 }

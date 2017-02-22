@@ -29,72 +29,13 @@ import rx.schedulers.Schedulers;
  */
 
 public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter {
-
-    //    protected String mInViewCallWay = null;
     protected boolean mIsSpeakerOn = false;
+    protected String mViewLaunchType;
 
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-//        registerSubscription(
-//                getVideoDisconnectedSub(),
-//                getResolutionSub(),
-//                getVideoFlowRspSub()
-//        );
     }
-
-//    protected Subscription getConnectDeviceTimeOutSub() {
-//        AppLogger.e("getConnectDeviceTimeOutSub");
-//        return mConnectDeviceTimeOut = Observable.just(null)
-//                .delay(30, TimeUnit.SECONDS)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(o -> {
-//                    mView.onConnectDeviceTimeOut();
-//                    AppLogger.e("onConnectDeviceTimeOut");
-//                });
-//    }
-
-    protected Subscription getVideoDisconnectedSub() {
-        return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                .subscribeOn(Schedulers.io())
-                .filter(disconnectRsp -> TextUtils.equals(disconnectRsp.remote, onResolveViewIdentify()))
-                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(this::onVideoDisconnected, Throwable::printStackTrace);
-                .subscribe(jfgMsgVideoDisconn -> {
-                    AppLogger.d("视频连接断开了");
-                    onVideoDisconnected(jfgMsgVideoDisconn);
-                }, Throwable::printStackTrace);
-    }
-
-
-    protected Subscription getResolutionSub() {
-        return RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
-                .subscribeOn(Schedulers.io())
-                .filter(videoResolutionRsp -> TextUtils.equals(onResolveViewIdentify(), videoResolutionRsp.peer))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(videoResolutionRsp -> {
-//                    mHasResolution = true;
-                    onVideoResolution(videoResolutionRsp);
-                }, Throwable::printStackTrace);
-    }
-
-    protected Subscription getVideoFlowRspSub() {
-        return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::onVideoFlowRsp, Throwable::printStackTrace);
-    }
-
-    protected void onVideoDisconnected(JFGMsgVideoDisconn disconnect) {
-        AppLogger.e("onVideoDisconnected remote:" + disconnect.remote + ": code:" + disconnect.code);
-        mView.onConnectDeviceTimeOut();
-    }
-
-    protected void onVideoFlowRsp(JFGMsgVideoRtcp flowRsp) {
-        mView.onFlowSpeed(flowRsp.bitRate);
-    }
-
 
     @Override
     public void startViewer() {
@@ -137,6 +78,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     try {
                         AppLogger.d("接收到分辨率消息,准备播放直播");
                         mView.onResolution(rsp);
+                        mViewLaunchType = onResolveViewIdentify();
                         RxBus.getCacheInstance().post(new RxEvent.CallAnswered(true));//发送一条 CallAnswer 消息表明自己成功连接了
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -197,19 +139,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     }
                     return false;
                 });
-    }
-
-
-    protected void onVideoResolution(JFGMsgVideoResolution resolution) {
-//        try {
-////            unSubscribe(mConnectDeviceTimeOut);
-////            mView.onResolution(resolution);
-////            mView.onSpeaker(mIsSpeakerOn);
-////            mHasResolution = true;
-//            setSpeaker(mIsSpeakerOn);
-//        } catch (JfgException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override

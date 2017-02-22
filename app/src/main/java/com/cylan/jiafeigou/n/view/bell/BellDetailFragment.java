@@ -152,6 +152,8 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         String ssid = TextUtils.isEmpty(device.net.$().ssid) ? getString(R.string.OFF_LINE) : device.net.$().ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);
         svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(device.up_time.$()));
+        hardwareUpdatePoint.setVisibility(View.INVISIBLE);
+        svSettingHardwareUpdate.setTvSubTitle(device.device_version.$());
     }
 
     @Override
@@ -163,13 +165,15 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     }
 
     @OnClick(R.id.rl_hardware_update)
-    public void OnClick(){
-        Bundle bundle = new Bundle();
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
-        bundle.putSerializable("version_content",checkDevVersion);
-        HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                hardwareUpdateFragment, android.R.id.content);
+    public void OnClick() {
+        if (checkDevVersion != null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+            bundle.putSerializable("version_content", checkDevVersion);
+            HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
+            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                    hardwareUpdateFragment, android.R.id.content);
+        }
     }
 
     @Override
@@ -182,7 +186,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     @Override
     public void checkResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
         this.checkDevVersion = checkDevVersionRsp;
-        if (checkDevVersionRsp.hasNew){
+        if (checkDevVersionRsp.hasNew) {
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
             svSettingHardwareUpdate.setTvSubTitle("新固件");
         }

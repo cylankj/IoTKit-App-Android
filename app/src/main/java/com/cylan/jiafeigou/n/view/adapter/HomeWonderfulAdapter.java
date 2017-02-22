@@ -71,7 +71,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
         holder.setText(R.id.tv_wonderful_item_date, TimeUtils.getHH_MM(bean.version));
         //来自摄像头
         if (TextUtils.isEmpty(bean.place)) {
-            holder.setVisibility(R.id.tv_wonderful_item_device_name, View.GONE);
+            holder.setVisibility(R.id.tv_wonderful_item_device_name, View.INVISIBLE);
         } else {
             holder.setText(R.id.tv_wonderful_item_device_name, bean.place);
             holder.setVisibility(R.id.tv_wonderful_item_device_name, View.VISIBLE);

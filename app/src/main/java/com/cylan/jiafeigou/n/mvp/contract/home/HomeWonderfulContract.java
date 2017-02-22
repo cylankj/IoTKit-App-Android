@@ -57,11 +57,6 @@ public interface HomeWonderfulContract {
         boolean checkWechat();
 
         void removeGuideAnymore();
-
-        void loadSpecificDay(long timeStamp);
-
-        void queryTimeLine(long start);
-
     }
 
 }

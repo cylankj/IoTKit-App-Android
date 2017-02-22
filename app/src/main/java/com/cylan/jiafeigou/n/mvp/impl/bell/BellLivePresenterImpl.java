@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.graphics.Bitmap;
 
-import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jiafeigou.base.wrapper.BaseCallablePresenter;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -38,10 +37,5 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                 ToastUtil.showNegativeToast("截图失败!");
             }
         });
-    }
-
-    @Override
-    protected void onVideoDisconnected(JFGMsgVideoDisconn disconnect) {
-
     }
 }
