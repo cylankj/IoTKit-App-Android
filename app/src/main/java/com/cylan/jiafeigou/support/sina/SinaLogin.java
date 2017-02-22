@@ -48,6 +48,7 @@ public class SinaLogin {
 //        APP_KEY = PackageUtils.getMetaString(context, "sina_app_key");
         APP_KEY = "1315129656";
         mWeibo = new AuthInfo(context, APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
+        LogUtil.enableLog();
     }
 
     public void login(Context ctx, WeiboAuthListener mAuthListener) {
