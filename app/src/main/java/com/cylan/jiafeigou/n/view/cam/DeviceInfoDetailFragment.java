@@ -7,7 +7,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -179,7 +178,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             }
         }
         if (sdStatus != null && !sdStatus.hasSdcard) {
-            return getString(R.string.SD_ERR_1);
+            return getString(R.string.SD_NO);
         }
         return sdStatus != null ? getString(R.string.SD_NORMAL) : "";
     }
@@ -201,7 +200,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 toEditTimezone();
                 break;
             case R.id.tv_device_sdcard_state:
-                jump2SdcardDetailFragment();
+                DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+                DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
+                if (status.hasSdcard && JFGRules.isDeviceOnline(net))//没有sd卡,胡或者离线,不能点击
+                    jump2SdcardDetailFragment();
                 break;
             case R.id.rl_hardware_update:
                 jump2HardwareUpdateFragment();
@@ -239,11 +241,11 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     /**
-     *格式化SD卡
+     * 格式化SD卡
      */
     private void showClearSDDialog() {
         Bundle bundle = new Bundle();
-        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT,"去格式化");
+        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "去格式化");
         bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "Micro SD卡需要格式化，才能存储视频");
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
@@ -324,7 +326,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     @Override
     public void showLoading() {
-        LoadingDialog.showLoading(getFragmentManager(),"格式化中...");
+        LoadingDialog.showLoading(getFragmentManager(), "格式化中...");
     }
 
     @Override
@@ -335,9 +337,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void clearSdReslut(int code) {
         hideLoading();
-        if (code == 0){
+        if (code == 0) {
             ToastUtil.showPositiveToast("格式化成功");
-        }else {
+        } else {
             ToastUtil.showNegativeToast("格式化失败");
         }
     }

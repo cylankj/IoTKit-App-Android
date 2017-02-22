@@ -1,17 +1,25 @@
 package com.cylan.jiafeigou.n.view.media;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
@@ -23,12 +31,15 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMediaPresenterImpl;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
 
@@ -48,8 +59,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     @BindView(R.id.vp_container)
     HackyViewPager vpContainer;
-    //    @BindView(R.id.tv_big_pic_title)
-//    TextView tvBigPicTitle;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
     @BindView(R.id.fLayout_cam_handle_bar)
@@ -89,16 +98,71 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             }
         });
         decideWhichView();
+        customToolbar.setBackAction(v -> onBackPressed());
     }
 
     private void decideWhichView() {
         if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
             vpContainer.setLocked(true);
+            lLayoutPreview.setVisibility(View.VISIBLE);
+            int count = MiscUtils.getCount(alarmMsg.fileIndex);
+            for (int i = 3; i > count; i--) {
+                View v = lLayoutPreview.getChildAt(i - 1);
+                v.setVisibility(View.GONE);
+            }
+            for (int i = 0; i < count; i++) {
+                final View v = lLayoutPreview.getChildAt(i);
+                final int jjj = i;
+                v.setOnClickListener(view -> updateFocus(true, jjj));
+                //可能出错,不是对应的index
+                GlideUrl url = new CamWarnGlideURL(alarmMsg, i, uuid);
+                Glide.with(ContextUtils.getContext())
+                        .load(url)
+                        .asBitmap()
+                        .format(DecodeFormat.DEFAULT)
+                        .into(new SimpleTarget<Bitmap>(150, 150) {
+                            @Override
+                            public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+                                ((RoundedImageView) v).setImageBitmap(resource);
+                            }
+
+                            @Override
+                            public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                                AppLogger.e("load failed: " + e.getLocalizedMessage());
+                            }
+                        });
+            }
+        } else {
+            //normal view
+            lLayoutPreview.setVisibility(View.GONE);
         }
+        updateFocus(false, currentIndex);
+    }
+
+    private void updateFocus(boolean auto, int index) {
         int count = MiscUtils.getCount(alarmMsg.fileIndex);
-        for (int i = 3; i > count; i--) {
-            View v = lLayoutPreview.getChildAt(i - 1);
-            v.setVisibility(View.GONE);
+        if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
+            //全景需要兼容
+            Fragment fragment = ((CustomAdapter) vpContainer.getAdapter()).getItem(0);
+            if (auto && fragment != null && fragment instanceof PanoramicViewFragment) {
+                ((PanoramicViewFragment) fragment).loadBitmap(currentIndex);
+            }
+        } else {
+            vpContainer.setCurrentItem(index, false);
+        }
+        for (int i = 0; i < count; i++) {
+            RoundedImageView v = (RoundedImageView) lLayoutPreview.getChildAt(i);
+            if (i == index) {
+                v.setBorderColor(getResources().getColor(R.color.color_4b9fd5));
+                v.setAlpha(1.0f);
+                v.setScaleX(1.0f);
+                v.setScaleY(1.0f);
+            } else {
+                v.setBorderColor(getResources().getColor(R.color.color_white));
+                v.setAlpha(0.3f);
+                v.setScaleX(0.8f);
+                v.setScaleY(0.8f);
+            }
         }
     }
 
@@ -110,8 +174,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     @OnClick({R.id.imgV_big_pic_download,
             R.id.imgV_big_pic_share,
-            R.id.imgV_big_pic_collect,
-            R.id.tv_big_pic_close})
+            R.id.imgV_big_pic_collect})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgV_big_pic_download:
@@ -126,9 +189,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             case R.id.imgV_big_pic_collect:
                 if (basePresenter != null)
                     basePresenter.collect(currentIndex, alarmMsg, new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
-                break;
-            case R.id.tv_big_pic_close:
-                onBackPressed();
                 break;
         }
     }
@@ -204,6 +264,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
         @Override
         public int getCount() {
+            //全景图片不适合使用viewpager,虽然用起来很简单,切换的时候有bug.
+//            if (device != null && JFGRules.isNeedPanoramicView(device.pid)) return 1;
+            Log.d("getCount", "getCount: ");
             return MiscUtils.getCount(contents.fileIndex);
         }
 

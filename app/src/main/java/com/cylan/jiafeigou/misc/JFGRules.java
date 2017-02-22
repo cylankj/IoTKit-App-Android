@@ -121,6 +121,7 @@ public class JFGRules {
 
     public static boolean showLedIndicator(int pid) {
         return pid == JConstant.OS_CAMERA_ANDROID_3_0 ||
+                pid == JConstant.OS_CAMERA_ANDROID ||
                 pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
                 pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
                 pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
