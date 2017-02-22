@@ -8,6 +8,7 @@ package com.cylan.jiafeigou.support.log;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
 
 import java.io.File;
@@ -23,7 +24,7 @@ public class AppLogger {
     private static final String tagL = "L:";
     private static final StringBuilder builder = new StringBuilder();
     protected static final String TAG = "CYLAN_TAG";
-    public static boolean DEBUG = true;
+    public static boolean DEBUG = BuildConfig.DEBUG;
 
     private static final String DEFAULT_LOG = JConstant.LOG_PATH + File.separator + "log.txt";
 
