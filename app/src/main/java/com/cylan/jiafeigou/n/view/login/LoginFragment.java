@@ -418,9 +418,17 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 forgetPwd();
                 break;
             case R.id.tv_qqLogin_commit:
+                if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
                 basePresenter.getQQAuthorize(getActivity());
                 break;
             case R.id.tv_xlLogin_commit:
+                if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
                 basePresenter.startSinaAuthorize(getActivity());
                 break;
             case R.id.tv_toolbar_icon:

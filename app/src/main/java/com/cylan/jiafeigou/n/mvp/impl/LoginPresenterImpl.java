@@ -77,8 +77,6 @@ import rx.schedulers.Schedulers;
 public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         implements LoginContract.Presenter {
 
-    private static final String DEFAULT_REQUEST_VALUE = "default_request_value";
-
     private Context ctx;
     //    private CompositeSubscription subscription;
     private SinaLogin sinaUtil;
@@ -159,35 +157,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     if (getView() != null) getView().loginResult(JError.ErrorConnect);
                     Log.d("CYLAN_TAG", "login err: " + throwable.getLocalizedMessage());
                 }));
-    }
-
-    /**
-     * 第三方登录
-     * @param o
-     * @return
-     */
-    private Observable<Object> openLoginObservable(LoginAccountBean o){
-        return Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .map(login -> {
-                    Log.d("CYLAN_TAG", "map executeLogin next");
-                    try {
-                        //非三方登录不执行
-                        if (!o.loginType){
-                            return null;
-                        }
-                        JfgCmdInsurance.getCmd().openLogin(o.userName, "www.cylan.com", o.openLoginType);
-                        //账号和密码
-//                        String hex = AESUtil.encrypt(o.userName + "|" + o.pwd);
-//                        FileUtils.saveDataToFile(getView().getContext(), hex);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(o));
-                    //三方登录的标记
-                    RxBus.getCacheInstance().postSticky(true);
-                    return null;
-                });
     }
 
     @Override
