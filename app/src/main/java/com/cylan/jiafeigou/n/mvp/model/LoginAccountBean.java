@@ -19,6 +19,10 @@ public class LoginAccountBean {
 
     public int event;
 
+    public boolean loginType;  //是否三方登录标记
+
+    public int openLoginType;  //三方登录方式的区分
+
     @Override
     public String toString() {
         return "LoginAccountBean{" +
