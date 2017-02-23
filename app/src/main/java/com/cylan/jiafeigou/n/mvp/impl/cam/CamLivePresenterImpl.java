@@ -395,9 +395,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribe((Object o) -> {
                     byte[] data = JfgCmdInsurance.getCmd().screenshot(false);
                     Bitmap bitmap = BitmapUtils.byte2bitmap(videoResolution[0], videoResolution[1], data);
+                    snapshotResult(bitmap);
                     String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
                     BitmapUtils.saveBitmap2file(bitmap, filePath);
-                    snapshotResult(bitmap);
                 }, (Throwable throwable) -> {
                     AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage());
                 });
@@ -408,9 +408,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         Observable.just(bitmap)
                 .filter((Bitmap bit) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Bitmap b) -> {
-                    getView().onTakeSnapShot(b);
-                });
+                .subscribe((Bitmap b) -> getView().onTakeSnapShot(b),
+                        throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
     }
 
     @Override
@@ -460,6 +459,19 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 }, (Throwable throwable) -> {
                     AppLogger.e(throwable.getLocalizedMessage());
                 });
+    }
+
+    @Override
+    public void startCountForDismissPop() {
+        unSubscribe("count_5_s");
+        addSubscription(Observable.just("count_5_s")
+                        .subscribeOn(Schedulers.newThread())
+                        .delay(5, TimeUnit.SECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .filter(s -> getView() != null)
+                        .subscribe(s -> getView().countdownFinish(),
+                                throwable -> AppLogger.e("countdown finish")),
+                "count_5_s");
     }
 
     @Override

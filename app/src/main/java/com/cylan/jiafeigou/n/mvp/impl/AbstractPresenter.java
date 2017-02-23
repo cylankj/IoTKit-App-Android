@@ -5,6 +5,9 @@ import android.support.annotation.CallSuper;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
@@ -18,6 +21,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     protected T mView;//弱引用会被强制释放,我们的view需要我们手动释放,不适合弱引用
     protected String uuid;
     private CompositeSubscription compositeSubscription;
+    private Map<String, Subscription> refCacheMap = new HashMap<>();
 
     public AbstractPresenter(T view) {
         mView = view;
@@ -61,6 +65,20 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     protected void addSubscription(Subscription subscription) {
         if (subscription != null)
             compositeSubscription.add(subscription);
+    }
+
+    protected void addSubscription(Subscription subscription, String tag) {
+        if (subscription != null)
+            refCacheMap.put(tag, subscription);
+    }
+
+    protected boolean unSubscribe(String tag) {
+        Subscription subscription = refCacheMap.get(tag);
+        if (subscription != null && subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+            return true;
+        }
+        return false;
     }
 
     @CallSuper

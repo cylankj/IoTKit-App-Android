@@ -73,6 +73,8 @@ public interface CamLiveContract {
          * @param start :开始显示loading
          */
         void shouldWaitFor(boolean start);
+
+        void countdownFinish();
     }
 
     interface Presenter extends BasePresenter {
@@ -163,6 +165,7 @@ public interface CamLiveContract {
          * @param id
          */
         void updateInfoReq(Object value, long id);
+        void startCountForDismissPop();
     }
 }
 
