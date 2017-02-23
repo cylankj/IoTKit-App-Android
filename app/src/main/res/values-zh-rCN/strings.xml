@@ -912,4 +912,7 @@
     <string name="Tap2_NoPermissions_FailedDownloadTips">获取SD卡权限失败,已取消下载</string>
     <string name="Tap3_NoPermissions_FailedViewImages">需要获取存储权限才能查看图像</string>
     <string name="help_url_Doby">https://yf.jfgou.com:8081/help/zh&#8211;rCN_doby.html</string>
+    <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
+    <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
+    <string name="P2PSocketError">P2PSocketError</string>
 </resources>

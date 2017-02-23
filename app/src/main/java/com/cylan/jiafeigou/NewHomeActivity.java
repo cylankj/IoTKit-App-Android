@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou;
 
 import android.annotation.TargetApi;
-import android.app.SharedElementCallback;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -10,6 +9,7 @@ import android.support.annotation.UiThread;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,6 +45,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
 
     public static final String KEY_ENTER_ANIM_ID = "key_enter_anim_id";
     public static final String KEY_EXIT_ANIM_ID = "key_exit_anim_id";
+    private SharedElementCallBackListener sharedElementCallBackListener;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +54,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
         setContentView(R.layout.activity_new_home);
         ButterKnife.bind(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-//            initSharedElementCallback();
+            initSharedElementCallback();
 //            setExitSharedElementCallback(mCallback);
         }
         initBottomMenu();
@@ -159,22 +160,23 @@ public class NewHomeActivity extends NeedLoginActivity implements
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void initSharedElementCallback() {
-//        mCallback = new SharedElementCallback() {
-//            @Override
-//            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-//                if (sharedElementCallBackListener != null)
-//                    sharedElementCallBackListener.onSharedElementCallBack(names, sharedElements);
-//            }
-//
-//            @Override
-//            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-//                if (sharedElementCallBackListener != null)
-//                    sharedElementCallBackListener.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
-//            }
-//        };
+        setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+                super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+                sharedElementCallBackListener.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+            }
+
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                super.onMapSharedElements(names, sharedElements);
+                sharedElementCallBackListener.onSharedElementCallBack(names, sharedElements);
+            }
+
+        });
     }
 
-//    private SharedElementCallBackListener sharedElementCallBackListener;
+    //    private SharedElementCallBackListener sharedElementCallBackListener;
     private OnActivityReenterListener onActivityReenterListener;
 
     @Override
@@ -210,8 +212,8 @@ public class NewHomeActivity extends NeedLoginActivity implements
                     bundle.putInt(JConstant.KEY_NEW_HOME_ACTIVITY_BOTTOM_MENU_CONTAINER_ID,
                             bottomMenuContainerId);
                     HomeWonderfulFragmentExt fragment = HomeWonderfulFragmentExt.newInstance(bundle);
-//                    sharedElementCallBackListener = fragment;
-//                    onActivityReenterListener = fragment;
+                    sharedElementCallBackListener = fragment;
+                    onActivityReenterListener = fragment;
 
                     if (fragment != null && fragment.getContext() != null)
                         Toast.makeText(fragment.getContext(), "重新new了。。。2", Toast.LENGTH_SHORT).show();

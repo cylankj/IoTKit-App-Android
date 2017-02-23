@@ -183,11 +183,11 @@ public class DragLayout extends FrameLayout {
      */
     private int needScroll() {
 
-        if (draggedView.getLeft() <= draggedView.getMeasuredWidth()
+        if (draggedView.getLeft() <= getMeasuredWidth() / 2
                 && draggedView.getTop() <= getMeasuredHeight() / 2 + draggedView.getMeasuredHeight() * 3 / 2
                 && draggedView.getTop() >= getMeasuredHeight() / 2 - draggedView.getMeasuredHeight() * 3 / 2)
             return 0;
-        if (draggedView.getLeft() >= getMeasuredWidth() - draggedView.getMeasuredWidth()
+        if (draggedView.getLeft() >= getMeasuredWidth() / 2
                 && draggedView.getTop() <= getMeasuredHeight() / 2 + draggedView.getMeasuredHeight() * 3 / 2
                 && draggedView.getTop() >= getMeasuredHeight() / 2 - draggedView.getMeasuredHeight() * 3 / 2)
             return 1;

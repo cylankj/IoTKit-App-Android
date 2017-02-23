@@ -4,6 +4,8 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
+import android.media.AudioManager;
+import android.media.SoundPool;
 import android.opengl.GLSurfaceView;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
@@ -98,6 +100,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     private boolean isLandMode = false;
     private boolean isLanchFromBellCall = false;
+    private SoundPool soundPool;
+    private int load;
 
 
     @Override
@@ -119,6 +123,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 handlePortClick();
             }
         });
+        soundPool = new SoundPool(10, AudioManager.STREAM_RING, 0);
+        load = soundPool.load(this, R.raw.doorbell_called, 5);
     }
 
     private void handlePortClick() {
@@ -166,12 +172,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         mHolderIntent = intent;
-        setIntent(intent);
         newCall();
     }
 
     private void newCall() {
-        makeViewLayoutFromCall();
         String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
         long time = getIntent().getLongExtra(JConstant.VIEW_CALL_WAY_TIME, System.currentTimeMillis());
         CallablePresenter.Caller caller = new CallablePresenter.Caller();
@@ -179,9 +183,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         caller.picture = extra;
         caller.callTime = time;
         mPresenter.newCall(caller);
-        if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
-            ((GLSurfaceView) mSurfaceView).onResume();
-        }
     }
 
     private void makeViewLayoutFromCall() {
@@ -220,6 +221,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
+        }
+        if (soundPool != null) {
+            soundPool.stop(load);
         }
     }
 
@@ -291,6 +295,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (side == 0) {
             mPresenter.dismiss();
         } else {
+            if (soundPool != null) {
+                soundPool.stop(load);
+            }
             mPresenter.pickup();
         }
     }
@@ -385,9 +392,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onListen() {
-        dLayoutBellHotSeat.setVisibility(View.VISIBLE);
-        fLayoutBellAfterLive.setVisibility(View.GONE);
-        mBellLiveVideoPicture.setVisibility(View.VISIBLE);
+        playSoundEffect();
+        makeViewLayoutFromCall();
         Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
         mBellhandle.startAnimation(shake);
     }
@@ -416,6 +422,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             case JError.ErrorVideoPeerDisconnect://对端断开
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_PEER_DISCONNECTED));
                 break;
+            case JError.ErrorP2PSocket:
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.P2PSocketError));
+                break;
             default:
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
         }
@@ -435,8 +444,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
 
     public void onViewer() {
-        dLayoutBellHotSeat.setVisibility(View.GONE);
-        fLayoutBellAfterLive.setVisibility(View.VISIBLE);
+        makeViewLayoutFromCall();
     }
 
 
@@ -534,5 +542,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void clickText() {
+    }
+
+    @Override
+    public void playSoundEffect() {
+        soundPool.play(load, 1, 1, 5, -1, 1);
     }
 }

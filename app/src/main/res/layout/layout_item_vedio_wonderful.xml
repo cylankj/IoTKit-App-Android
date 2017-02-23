@@ -1,12 +1,12 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:hunt="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/lLayout_item_wonderful"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:orientation="horizontal"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lLayout_item_wonderful"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="horizontal"
+    android:paddingEnd="@dimen/y10"
+    android:paddingStart="@dimen/y10">
 
     <com.cylan.jiafeigou.widget.FateLineView
         android:id="@+id/fl_wonderful_item_time_line"
@@ -14,41 +14,41 @@
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/tv_wonderful_item_footer"
         android:layout_alignTop="@+id/rLayout_wonderful_item_wonder"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="2dp"
+        android:layout_marginEnd="@dimen/y2"
+        android:layout_marginStart="@dimen/y8"
         hunt:dashLineColor="@color/color_e8e8e8"
-        hunt:dashLineWidth="2dp"
+        hunt:dashLineWidth="@dimen/y2"
         hunt:innerCircleColor="@color/color_white"
-        hunt:innerCircleRadius="6dp"
+        hunt:innerCircleRadius="@dimen/y6"
         hunt:outerCircleColor="@color/color_e8e8e8"
-        hunt:outerCircleRadius="10dp"
-        hunt:outerCircleStrokeWidth="4dp"
-        hunt:outerCircleY="12dp"/>
+        hunt:outerCircleRadius="@dimen/y10"
+        hunt:outerCircleStrokeWidth="@dimen/y4"
+        hunt:outerCircleY="@dimen/y12" />
 
     <RelativeLayout
         android:id="@+id/rLayout_wonderful_item_wonder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="@dimen/y4"
         android:layout_toEndOf="@+id/fl_wonderful_item_time_line"
-        android:paddingBottom="8dp">
+        android:paddingBottom="@dimen/y8">
 
         <TextView
             android:id="@+id/tv_wonderful_item_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
+            android:layout_marginTop="@dimen/y14"
             android:gravity="center"
             android:text="Hi~"
             android:textColor="@color/color_666666"
-            android:textSize="13sp"/>
+            android:textSize="@dimen/sp13" />
 
         <com.cylan.jiafeigou.widget.ShadowFrameLayout
             android:id="@+id/ccccc"
             android:layout_width="match_parent"
             android:layout_height="1000000dp"
             android:layout_below="@+id/tv_wonderful_item_date"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="@dimen/y10"
             hunt:fixSize="true">
 
             <ImageView
@@ -57,13 +57,13 @@
                 android:layout_height="match_parent"
                 android:scaleType="fitXY"
                 android:src="@drawable/wonderful_bg_image"
-                android:transitionName="picDetailsFragment"/>
+                android:transitionName="picDetailsFragment" />
 
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:src="@drawable/camera_icon_play"/>
+                android:src="@drawable/camera_icon_play" />
         </com.cylan.jiafeigou.widget.ShadowFrameLayout>
 
         <RelativeLayout
@@ -71,8 +71,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@+id/ccccc"
-            android:paddingBottom="22dp"
-            android:paddingTop="19dp">
+            android:paddingBottom="@dimen/y22"
+            android:paddingTop="@dimen/y19">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -85,17 +85,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:paddingStart="12dp"
-                    android:paddingEnd="10dp"
+                    android:paddingEnd="@dimen/y10"
+                    android:paddingStart="@dimen/y12"
                     android:text="@string/DELETE"
                     android:textColor="@color/color_4b9fd5"
-                    android:textSize="@dimen/sp11"/>
+                    android:textSize="@dimen/sp11" />
 
                 <View
-                    android:layout_width="1dp"
-                    android:layout_height="10dp"
+                    android:layout_width="@dimen/y1"
+                    android:layout_height="@dimen/y10"
                     android:layout_gravity="center_vertical"
-                    android:background="@color/color_e8e8e8"/>
+                    android:background="@color/color_e8e8e8" />
 
                 <TextView
                     android:id="@+id/tv_wonderful_item_device_name"
@@ -104,26 +104,23 @@
                     android:layout_weight="1"
                     android:gravity="center_vertical"
                     android:maxLength="8"
-                    android:paddingLeft="10dp"
-                    android:paddingRight="10dp"
+                    android:paddingEnd="@dimen/y10"
+                    android:paddingStart="@dimen/y10"
                     android:text="@string/Tap2_Index_DemoVideo"
                     android:textColor="@color/color_909090"
-                    android:textSize="@dimen/sp11"/>
+                    android:textSize="@dimen/sp11" />
 
                 <TextView
                     android:id="@+id/tv_wonderful_item_share"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_marginRight="12dp"
-                    android:drawableLeft="@drawable/icon_share_item_wonderful_selector"
+                    android:layout_marginEnd="@dimen/y12"
                     android:drawablePadding="4dp"
                     android:drawableStart="@drawable/icon_share_item_wonderful_selector"
                     android:gravity="center"
                     android:text="@string/Tap3_ShareDevice_Button"
                     android:textColor="@color/color_909090"
-                    android:textSize="11sp"/>
+                    android:textSize="@dimen/sp11" />
             </LinearLayout>
 
 
@@ -132,10 +129,10 @@
 
         <View
             android:layout_width="match_parent"
-            android:layout_height="1dp"
+            android:layout_height="@dimen/y1"
             android:layout_below="@+id/fLayout_wonderful_item_bottom"
             android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8"/>
+            android:background="@color/color_e8e8e8" />
     </RelativeLayout>
 
     <TextView
@@ -146,10 +143,10 @@
         android:layout_centerHorizontal="true"
         android:background="@android:color/white"
 
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
+        android:paddingEnd="@dimen/y5"
+        android:paddingStart="@dimen/y5"
         android:text="@string/MSG_BOTTOM_LINE"
-        android:visibility="gone"
         android:textColor="#333333"
-        android:textSize="@dimen/sp14"/>
+        android:textSize="@dimen/sp14"
+        android:visibility="gone" />
 </RelativeLayout>

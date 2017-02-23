@@ -17,11 +17,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 /**
  * Created by cylan-hunt on 16-8-3.
@@ -42,7 +45,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             ArrayList<JFGDPMsg> params = new ArrayList<>();
             params.add(request);
             try {
-                long seq = JfgCmdInsurance.getCmd().robotGetData(mUUID, params, 20, asc, 0);
+                long seq = getCmd().robotGetData(mUUID, params, 20, asc, 0);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
@@ -76,13 +79,40 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
 
     @Override
     public void deleteBellCallRecord(List<BellCallRecordBean> list) {
-        ArrayList<JFGDPMsg> params = new ArrayList<>(32);
-        JFGDPMsg msg;
-        for (BellCallRecordBean bean : list) {
-            msg = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, bean.version);
-            params.add(msg);
-        }
-        robotDelDataAsync(mUUID, params, 0);
+        Observable.just(list)
+                .subscribeOn(Schedulers.io())
+                .map(items -> {
+                    ArrayList<JFGDPMsg> params = new ArrayList<>();
+                    JFGDPMsg msg;
+                    long seq = -1;
+                    for (BellCallRecordBean bean : list) {
+                        msg = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, bean.version);
+                        params.add(msg);
+                    }
+                    try {
+                        seq = JfgCmdInsurance.getCmd().robotDelData(mUUID, params, 0);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                        AppLogger.d("刪除門鈴呼叫記錄失敗:" + e.getMessage());
+                    }
+                    AppLogger.d("正在刪除門鈴呼叫記錄, seq 為:" + seq);
+                    return seq;
+                })
+                .filter(seq -> seq != -1)
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
+                        .filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(rsp -> {
+                    if (rsp.resultCode == 0) {//刪除成功了
+                        AppLogger.d("刪除門鈴呼叫記錄成功");
+                        mView.onDeleteBellRecordSuccess(list);
+                    }
+                }, e -> {
+                    if (e instanceof TimeoutException) {
+                        AppLogger.d("刪除門鈴呼叫記錄超時");
+                        mView.onDeleteBellCallRecordFailed();
+                    }
+                });
     }
 
 }

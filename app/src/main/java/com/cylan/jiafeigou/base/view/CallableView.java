@@ -17,4 +17,6 @@ public interface CallableView extends ViewableView {
     void onListen();
 
     void onNewCallTimeOut();
+
+    void playSoundEffect();
 }

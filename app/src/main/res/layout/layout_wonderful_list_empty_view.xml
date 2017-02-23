@@ -5,26 +5,23 @@
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true"
+    android:gravity="center_horizontal"
     android:orientation="vertical"
     android:weightSum="3">
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1" />
 
     <ImageView
         android:id="@+id/imgv_empty_layout_icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/y80"
         android:src="@drawable/pic_no_message" />
 
     <TextView
         android:id="@+id/tv_empty_layout_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
+        android:layout_below="@id/imgv_empty_layout_icon"
         android:layout_marginTop="@dimen/y20"
         android:gravity="center_horizontal"
         android:text="@string/NO_CONTENTS_1"

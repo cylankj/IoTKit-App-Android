@@ -247,6 +247,20 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         }
     }
 
+    @Override
+    public void onDeleteBellRecordSuccess(List<BellCallRecordBean> list) {
+        ToastUtil.showPositiveToast("刪除成功");
+        for (BellCallRecordBean bean : list) {
+            bellCallRecordListAdapter.remove(bean);
+        }
+
+    }
+
+    @Override
+    public void onDeleteBellCallRecordFailed() {
+        ToastUtil.showNegativeToast("刪除失敗");
+    }
+
 
     @Override
     public boolean onLongClick(View v) {
@@ -314,9 +328,10 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 }
                 break;
             case R.id.tv_bell_home_list_delete:
-                bellCallRecordListAdapter.remove();
                 List<BellCallRecordBean> list = bellCallRecordListAdapter.getSelectedList();
                 mPresenter.deleteBellCallRecord(list);
+                bellCallRecordListAdapter.setMode(0);
+                showEditBar(false);
                 break;
         }
     }
@@ -364,13 +379,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onShowProperty(JFGDoorBellDevice device) {
-        if (device.battery.$() < 20 || (device.battery.$() < 80 && isFirst)) {
-            isFirst = false;
-            onBellBatteryDrainOut();
-        }
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         cvBellHomeBackground.setState(device.net.$().net);
-
     }
 
 }

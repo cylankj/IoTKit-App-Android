@@ -14,7 +14,7 @@ import java.util.TimeZone;
  * Created by cylan-hunt on 16-7-4.
  */
 public class TimeUtils {
-
+    public static final long DAY_TIME = 24 * 60 * 60 * 1000L;
     public static SimpleDateFormat simpleDateFormat_1 = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
     private static final SimpleDateFormat simpleTestDataFormat = new SimpleDateFormat("yyyyMMdd HH:mm:ss", Locale.getDefault());
 
@@ -254,6 +254,36 @@ public class TimeUtils {
         }
         //按照月.日 时：分显示
         format.applyPattern("MM.dd");
+        return format.format(provide);
+    }
+
+    public static String getWonderTime(long time) {
+
+//        当天内容显示--今天 时：分
+//        昨天内容显示--昨天 时：分
+//        今年内容显示--月/日 时：分
+//        往年内容显示--年/月/日 时：分
+//        若昨天为上个月或去年时，仍显示昨天
+
+        Date today = new Date();
+        Date provide = new Date(time);
+        SimpleDateFormat format = (SimpleDateFormat) SimpleDateFormat.getInstance();
+        if (today.getTime() - provide.getTime() < DAY_TIME) {//今天或者昨天
+            if (today.getDay() == provide.getDay()) {//今天
+                format.applyPattern(ContextUtils.getContext().getString(R.string.WONDER_TODAY_H_M));
+                return format.format(provide);
+            } else {//昨天
+                format.applyPattern(ContextUtils.getContext().getString(R.string.WONDER_YESTERDAY_H_M));
+                return format.format(provide);
+            }
+        }
+
+        if (today.getYear() > provide.getYear()) {//说明不是今年，则按照其他显示年.月.日显示
+            format.applyPattern("yyyy/MM/dd HH:mm");
+            return format.format(provide);
+        }
+        //按照月.日 时：分显示
+        format.applyPattern("MM.dd HH:mm");
         return format.format(provide);
     }
 }

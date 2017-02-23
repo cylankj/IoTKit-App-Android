@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.base.wrapper;
 
 import android.os.SystemClock;
 import android.support.annotation.CallSuper;
-import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -31,6 +30,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public abstract class BaseCallablePresenter<V extends CallableView> extends BaseViewablePresenter<V> implements CallablePresenter {
     protected Caller mCaller;
     protected Caller mHolderCaller;
+    protected boolean mIsInViewerMode = false;
 
     @Override
     @CallSuper
@@ -67,11 +67,11 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     public void newCall(Caller caller) {
         Subscription subscription = Observable.just(mHolderCaller = caller)
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(who -> !(TextUtils.equals(mViewLaunchType, JConstant.VIEW_CALL_WAY_VIEWER)
-                        && TextUtils.equals(mView.onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)))
+                .filter(who -> !mIsInViewerMode)
                 .flatMap(who -> {
                     switch (mView.onResolveViewLaunchType()) {
                         case JConstant.VIEW_CALL_WAY_LISTEN:
+                            mIsInViewerMode = false;
                             if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
                                 mView.onNewCallWhenInLive(mHolderCaller.caller);
                             } else if (mHolderCaller != null) {
@@ -86,6 +86,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         case JConstant.VIEW_CALL_WAY_VIEWER:
                             mCaller = mHolderCaller;
                             mHolderCaller = null;
+                            mIsInViewerMode = true;
                             startViewer();
                             break;
                     }
@@ -116,6 +117,12 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     }
                 });
         registerSubscription(subscription);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        mIsInViewerMode = false;
     }
 
     protected void waitForPicture(String url, JFGView.Action action) {

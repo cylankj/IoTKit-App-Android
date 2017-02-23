@@ -13,7 +13,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
 /**
@@ -57,7 +56,6 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
 
     @Override
     public void setState(int state, CharSequence content) {
-        AppLogger.e("WWWWWWWWWWWWWWW");
         this.state = state;
         switch (state) {
             case STATE_LOADING:

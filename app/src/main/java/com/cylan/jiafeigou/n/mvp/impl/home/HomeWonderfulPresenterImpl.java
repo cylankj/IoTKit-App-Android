@@ -108,12 +108,14 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     mWonderItems.clear();
-                    mView.chooseEmptyView(result.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
                     mWonderItems.addAll(result);
-                    mView.onQueryTimeLineSuccess(result, true);
-                }, e -> e.printStackTrace());
-
-
+                    mView.chooseEmptyView(mWonderItems.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
+                    mView.onQueryTimeLineSuccess(mWonderItems, true);
+                }, e -> {
+                    if (e instanceof TimeoutException) {
+                        mView.onQueryTimeLineTimeOut();
+                    }
+                });
     }
 
     @Override

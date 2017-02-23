@@ -171,6 +171,8 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         initViewAndListener();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             mEnterAnimationFinished = false;
+            mHeaderContainer.setVisibility(View.GONE);
+            mFooterContainer.setVisibility(View.GONE);
             postponeEnterTransition();
             initShareElementCallback();
         }
@@ -251,23 +253,12 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         };
         mAdapter.setPhotoTapListener(this);
         mMediaPager.setPageMargin((int) getResources().getDimension(R.dimen.video_pager_page_margin));
-        mAdapter.setOnInitFinishListener(() -> {
-            AppLogger.e("Glide 加载完成");
-            if (mEnterAnimationFinished) {
-                animateHeaderAndFooter(true, true);
-                return;
-            }
-            mHeaderContainer.setVisibility(View.GONE);
-            mFooterContainer.setVisibility(View.GONE);
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                startPostponedEnterTransition();
-                return;
-            }
-            animateHeaderAndFooter(true, true);
-            if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
-                startPlayVideo();
-            }
-        });
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            mAdapter.setOnInitFinishListener(this::startPostponedEnterTransition);
+        } else {
+            setFooterContent();
+            setHeaderContent();
+        }
         mMediaPager.setAdapter(mAdapter);
         mMediaPager.setCurrentItem(mStartPosition);
         mMediaPager.addOnPageChangeListener(this);
