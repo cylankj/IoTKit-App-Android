@@ -4,6 +4,7 @@ import android.content.res.XmlResourceParser;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
@@ -156,5 +157,29 @@ public class MiscUtils {
             temp = temp.substring(0, len) + "...";
         }
         return temp;
+    }
+
+    public static ArrayList<String> getSharedList(ArrayList<JFGDevice> devices) {
+        if (devices == null)
+            return new ArrayList<>();
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (JFGDevice device : devices) {
+            if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
+                arrayList.add(device.uuid);
+            }
+        }
+        return arrayList;
+    }
+
+    public static ArrayList<String> getNoneSharedList(ArrayList<JFGDevice> devices) {
+        if (devices == null)
+            return new ArrayList<>();
+        ArrayList<String> arrayList = new ArrayList<>();
+        for (JFGDevice device : devices) {
+            if (device != null && TextUtils.isEmpty(device.shareAccount)) {
+                arrayList.add(device.uuid);
+            }
+        }
+        return arrayList;
     }
 }
