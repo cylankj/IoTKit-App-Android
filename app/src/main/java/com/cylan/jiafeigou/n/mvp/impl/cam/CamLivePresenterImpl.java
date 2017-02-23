@@ -393,8 +393,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((Object o) -> {
+                    long time = System.currentTimeMillis();
                     byte[] data = JfgCmdInsurance.getCmd().screenshot(false);
                     Bitmap bitmap = BitmapUtils.byte2bitmap(videoResolution[0], videoResolution[1], data);
+                    AppLogger.i("capture take shot performance: " + (System.currentTimeMillis() - time));
                     snapshotResult(bitmap);
                     String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
                     BitmapUtils.saveBitmap2file(bitmap, filePath);
