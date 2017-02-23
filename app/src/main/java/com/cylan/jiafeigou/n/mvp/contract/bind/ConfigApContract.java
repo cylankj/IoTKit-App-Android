@@ -44,6 +44,7 @@ public interface ConfigApContract {
          * @param state
          */
         void upgradeDogState(int state);
+        void pingFailed();
     }
 
     interface Presenter extends BasePresenter {
