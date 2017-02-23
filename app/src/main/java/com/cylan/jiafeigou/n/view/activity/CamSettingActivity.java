@@ -460,8 +460,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     public void unbindDeviceRsp(int state) {
         if (state == JError.ErrorOK) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
-            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
-            startActivity(new Intent(this, NewHomeActivity.class));
+            Intent intent = new Intent(this, NewHomeActivity.class);
+            intent.putExtra("NewHomeActivity_intent", getString(R.string.DELETED_SUC));
+            startActivity(intent);
         }
     }
 

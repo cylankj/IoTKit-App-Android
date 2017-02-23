@@ -65,6 +65,9 @@ public class NewHomeActivity extends NeedLoginActivity implements
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        if (intent != null && intent.hasExtra("NewHomeActivity_intent")) {
+            ToastUtil.showToast(intent.getStringExtra("NewHomeActivity_intent"));
+        }
     }
 
     /**
@@ -180,7 +183,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
 //        };
     }
 
-//    private SharedElementCallBackListener sharedElementCallBackListener;
+    //    private SharedElementCallBackListener sharedElementCallBackListener;
     private OnActivityReenterListener onActivityReenterListener;
 
     @Override
