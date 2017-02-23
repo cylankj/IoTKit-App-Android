@@ -149,7 +149,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .observeOn(Schedulers.newThread())
                 .subscribe((Object dataStack) -> {
                     //获取设备历史录像
-                    if (!TextUtils.isEmpty(uuid)) {
+                    if (!TextUtils.isEmpty(uuid) && !JFGRules.isShareDevice(uuid)) {
                         RxEvent.JFGHistoryVideoReq req = new RxEvent.JFGHistoryVideoReq();
                         req.uuid = uuid;
                         RxBus.getCacheInstance().post(req);
@@ -163,8 +163,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public boolean isShareDevice() {
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-        return device != null && !TextUtils.isEmpty(device.shareAccount);
+        return JFGRules.isShareDevice(uuid);
     }
 
     @Override
@@ -442,10 +441,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public boolean needShowHistoryWheelView() {
         DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
-        boolean show = net != null && JFGRules.isDeviceOnline(net);
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        boolean show = JFGRules.isDeviceOnline(net)
+                && NetUtils.getJfgNetType(getView().getContext()) != 0
+                && device != null && TextUtils.isEmpty(device.shareAccount);
         AppLogger.i("show: " + show);
-        return net != null && JFGRules.isDeviceOnline(net)
-                && NetUtils.getJfgNetType(getView().getContext()) != 0;
+        return show;
     }
 
     @Override
