@@ -105,9 +105,9 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
 
     private void initTitleBar() {
         ViewUtils.setViewMarginStatusBar(customToolbar);
-        customToolbar.setToolbarTitle(R.string.PASSWORD);
+        customToolbar.setToolbarTitle(R.string.SET_PWD);
         customToolbar.setTvToolbarIcon(R.drawable.nav_icon_back_gary);
-        initNavigateBack();
+//        initNavigateBack();
     }
 
     protected void initNavigateBack() {
@@ -122,7 +122,7 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     private void setupInputBox() {
         EditText editText = (EditText) getView().findViewById(R.id.et_input_box);
         CheckBox checkBox = (CheckBox) getView().findViewById(R.id.cb_show_input_box);
-        editText.setHint(getString(R.string.ENTER_PWD));
+        editText.setHint(getString(R.string.PASSWORD));
         editText.setInputType(EditorInfo.TYPE_TEXT_VARIATION_PASSWORD);
         ViewUtils.setChineseExclude(editText, JConstant.PWD_LEN_MAX);
         ViewUtils.showPwd(etInputBox, checkBox.isChecked());

@@ -62,6 +62,7 @@
                         android:gravity="center"
                         android:hint="请输入手机号/邮箱"
                         android:maxLength="65"
+                        android:singleLine="true"
                         android:textColor="@color/color_666666"
                         android:textColorHint="@color/color_cecece"
                         android:textCursorDrawable="@drawable/bg_common_cursor"
