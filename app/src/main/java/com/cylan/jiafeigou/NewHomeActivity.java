@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.IMEUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
 import java.util.List;
@@ -59,6 +60,11 @@ public class NewHomeActivity extends NeedLoginActivity implements
         initBottomMenu();
         initMainContentAdapter();
         new NewHomeActivityPresenterImpl(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     /**

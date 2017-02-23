@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -17,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
@@ -106,7 +106,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         device = GlobalDataProxy.getInstance().fetch(this.uuid);
         if (TextUtils.isEmpty(uuid)) {
             AppLogger.e("uuid is null");
-            finish();
+            finishExt();
             return;
         }
         basePresenter = new CamSettingPresenterImpl(this, uuid);
@@ -141,10 +141,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private void initBackListener() {
         customToolbar.post(() -> {
             customToolbar.setBackAction((View v) -> {
-                finish();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
-                }
+                finishExt();
             });
         });
     }
@@ -164,10 +161,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             return;
         } else if (checkExtraFragment())
             return;
-        finish();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
-        }
+        finishExt();
     }
 
     /**
@@ -466,9 +460,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     public void unbindDeviceRsp(int state) {
         if (state == JError.ErrorOK) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
-            setResult(RESULT_OK);
             ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
-            finish();
+            startActivity(new Intent(this, NewHomeActivity.class));
         }
     }
 
