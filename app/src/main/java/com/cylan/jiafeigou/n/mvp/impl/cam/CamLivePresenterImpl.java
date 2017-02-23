@@ -1,6 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -53,18 +56,17 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
+import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NERWORK;
 
 /**
  * Created by cylan-hunt on 16-7-27.
  */
 public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View>
-        implements CamLiveContract.Presenter,
-        IFeedRtcp.MonitorListener {
-    //    private DeviceBean bean;
-//    private BeanCamInfo beanCamInfo;
+        implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener {
     private int playType = CamLiveContract.TYPE_LIVE;
     private boolean speakerFlag, micFlag;
     private int[] videoResolution = {0, 0};
@@ -78,7 +80,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     /**
      * 帧率记录
      */
-//    private List<Integer> frameRateList = new ArrayList<>();
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
 
     public CamLivePresenterImpl(CamLiveContract.View view, String uuid) {
@@ -287,7 +288,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .filter(o -> {
                     if (NetUtils.getJfgNetType(getView().getContext()) == 0) {
                         //断网了
-                        setStopReason(JFGRules.PlayErr.ERR_NERWORK);
+                        setStopReason(ERR_NERWORK);
                         stopPlayVideo(getPlayType());
                         AppLogger.i("stop play  video for err network");
                         return false;
@@ -315,7 +316,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         playState = PLAY_STATE_PREPARE;
         if (NetUtils.getJfgNetType(getView().getContext()) == 0) {
             //断网了
-            setStopReason(JFGRules.PlayErr.ERR_NERWORK);
+            setStopReason(ERR_NERWORK);
             stopPlayVideo(getPlayType());
             return;
         }
@@ -546,7 +547,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RxEvent.DataPoolUpdate update) -> {
-                    if (update.id == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
+                    if (update.id == ID_508_CAMERA_STANDBY_FLAG) {
                         boolean flag = MiscUtils.cast(update.value.getValue(), false);
                         getView().onDeviceStandBy(flag);
                     }
@@ -573,5 +574,25 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 }, throwable -> {
                     AppLogger.e("err: " + throwable.getLocalizedMessage());
                 });
+    }
+
+    @Override
+    protected String[] registerNetworkAction() {
+        return new String[]{
+                ConnectivityManager.CONNECTIVITY_ACTION
+        };
+    }
+
+    @Override
+    public void onNetworkChanged(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
+            int type = NetUtils.getNetType(context);
+            if (type == -1) {
+                AppLogger.i("there is no network ");
+                setStopReason(ERR_NERWORK);
+                stopPlayVideo(getPlayType());
+            }
+        }
     }
 }
