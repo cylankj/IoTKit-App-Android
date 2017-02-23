@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.bell;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.os.Bundle;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.widget.LinearLayoutManager;
@@ -36,6 +37,8 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.BellTopBackgroundView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -74,12 +77,14 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private WeakReference<BellSettingFragment> fragmentWeakReference;
     private WeakReference<LBatteryWarnDialog> lBatteryWarnDialog;
     private BellCallRecordListAdapter bellCallRecordListAdapter;
+
+    private SimpleDialogFragment mDeleteDialogFragment;
     /**
      * 加载更多
      */
     private boolean endlessLoading = false;
     private boolean mIsLastLoadFinish = true;
-    private boolean isFirst = true;
+    private boolean mIsShardAccount = false;
 
 
     @Override
@@ -147,7 +152,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     private void startLoadData(boolean asc, long version) {
-        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), true);
+        LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false);
         mIsLastLoadFinish = false;
         mPresenter.fetchBellRecordsList(asc, version);
     }
@@ -264,8 +269,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public boolean onLongClick(View v) {
-//        if (!TextUtils.isEmpty(mPresenter.getBellInfo().deviceBase.shareAccount))//共享账号不可操作
-//            return true;
+        if (mIsShardAccount)//共享账号不可操作
+            return true;
         final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
         if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
             AppLogger.d("position is invalid");
@@ -328,10 +333,23 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 }
                 break;
             case R.id.tv_bell_home_list_delete:
-                List<BellCallRecordBean> list = bellCallRecordListAdapter.getSelectedList();
-                mPresenter.deleteBellCallRecord(list);
-                bellCallRecordListAdapter.setMode(0);
-                showEditBar(false);
+                ViewUtils.deBounceClick(view);
+                if (mDeleteDialogFragment == null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DOOR_COMFIRETOCLEAR));
+                    mDeleteDialogFragment = SimpleDialogFragment.newInstance(bundle);
+                }
+                mDeleteDialogFragment.setAction((id, value) -> {
+                    switch (id) {
+                        case R.id.tv_dialog_btn_left:
+                            List<BellCallRecordBean> list = bellCallRecordListAdapter.getSelectedList();
+                            mPresenter.deleteBellCallRecord(list);
+                            bellCallRecordListAdapter.setMode(0);
+                            showEditBar(false);
+                            LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
+                    }
+                });
+                mDeleteDialogFragment.show(getSupportFragmentManager(), "DoorBellHomeDeleteFragment");
                 break;
         }
     }
@@ -381,6 +399,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onShowProperty(JFGDoorBellDevice device) {
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         cvBellHomeBackground.setState(device.net.$().net);
+        mIsShardAccount = !TextUtils.isEmpty(device.shareAccount);
     }
 
 }

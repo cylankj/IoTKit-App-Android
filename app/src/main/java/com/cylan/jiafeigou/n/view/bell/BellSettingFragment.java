@@ -9,6 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -49,6 +51,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     @BindView(R.id.lLayout_setting_container)
     LinearLayout lLayoutSettingContainer;
     private SimpleDialogFragment simpleDialogFragment;
+    private SimpleDialogFragment mClearRecordFragment;
 
 
     public static BellSettingFragment newInstance(Bundle bundle) {
@@ -117,13 +120,27 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
             case R.id.tv_setting_clear_:
                 ViewUtils.deBounceClick(view);
-                mPresenter.clearBellRecord(mUUID);
+                if (mClearRecordFragment == null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap1_Tipsforclearrecents));
+                    mClearRecordFragment = SimpleDialogFragment.newInstance(bundle);
+                }
+                mClearRecordFragment.setAction((id, value) -> {
+                    switch (id) {
+                        case R.id.tv_dialog_btn_left:
+                            mPresenter.clearBellRecord(mUUID);
+                            LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
+                    }
+                });
+                mClearRecordFragment.show(getActivity().getSupportFragmentManager(), "ClearBellRecordFragment");
                 break;
             case R.id.tv_setting_unbind:
                 ViewUtils.deBounceClick(view);
                 if (simpleDialogFragment == null) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_CID));
+                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+                    String name = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.SURE_DELETE_1, name));
                     simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
                 }
                 simpleDialogFragment.setAction(this);

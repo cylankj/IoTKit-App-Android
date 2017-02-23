@@ -101,6 +101,7 @@ public class JConstant {
     public static final String KEY_SIMPLE_STRING_ITEM = "KEY_SIMPLE_STRING_ITEM";
 
     public static final String KEY_CAM_SIGHT_SETTING = "cam_sight_setting";
+    public static final java.lang.String LAST_ENTER_TIME = "LAST_ENTER_TIME";
     public static int ConfigApStep = 0;
 
 

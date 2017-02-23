@@ -5,12 +5,14 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -37,6 +39,21 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     private static final long todayInMidNight = TimeUtils.getTodayStartTime();
     private static final long yesterdayInMidNight = todayInMidNight - 24 * 60 * 60 * 1000L;
     private List<BellCallRecordBean> mRecords = new ArrayList<>();
+    private boolean isFirst = true;
+
+    private void notifyBellLowBattery() {
+        if (isFirst) {
+            isFirst = false;
+            long lastTime = PreferencesUtils.getLong(JConstant.LAST_ENTER_TIME + mUUID, System.currentTimeMillis());
+            DpMsgDefine.DPPrimary<Integer> battery = mSourceManager.getValue(mUUID, DpMsgMap.ID_206_BATTERY);
+            if (lastTime < todayInMidNight) {//新的一天
+                PreferencesUtils.putLong(JConstant.LAST_ENTER_TIME + mUUID, System.currentTimeMillis());
+                if (battery.$() < 20) {
+                    mView.onBellBatteryDrainOut();
+                }
+            }
+        }
+    }
 
     @Override
     public void fetchBellRecordsList(boolean asc, long time) {
@@ -62,7 +79,10 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                     return parse(records.value);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(items -> mView.onRecordsListRsp((ArrayList<BellCallRecordBean>) items), e -> fetchBellRecordsList(asc, time));
+                .subscribe(items -> {
+                    notifyBellLowBattery();
+                    mView.onRecordsListRsp((ArrayList<BellCallRecordBean>) items);
+                }, e -> fetchBellRecordsList(asc, time));
         registerSubscription(subscription);
     }
 

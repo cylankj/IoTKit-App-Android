@@ -249,26 +249,25 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCallRecord.timeInLong / 1000 + ".jpg");
 
         if (mDownloadFile.exists()) {
-//            ToastUtil.showPositiveToast(getString(R.string.FILE_DOWNLOADED));
+            ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             return;
         }
         Glide.with(this).load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID)).
                 downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-//                        ToastUtil.showPositiveToast(getString(R.string.DOWNLOAD_COMPLETED));
+                        ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
                         FileUtils.copyFile(resource, mDownloadFile);
                         mDownloadFile = null;
                     }
 
                     @Override
                     public void onLoadStarted(Drawable placeholder) {
-//                        ToastUtil.showPositiveToast(getString(R.string.DOWNLOAD_START));
                     }
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        ToastUtil.showNegativeToast(getString(R.string.DELETED_SUC));
+                        ToastUtil.showNegativeToast(getString(R.string.DOWNLOAD_FAILD));
                         mDownloadFile = null;
                     }
                 });

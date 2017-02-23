@@ -131,13 +131,7 @@ public class TimeUtils {
         int hour = temp % 24;
         temp = temp / 24;
         int day = temp;
-        if (day > 0 && hour > 0) {
-            return ContextUtils.getContext().getString(R.string.STANBY_TIME_D_H_M, day, hour, minute);
-        } else if (hour > 0) {
-            return ContextUtils.getContext().getString(R.string.STANBY_TIME_H_M, hour, minute);
-        } else {
-            return ContextUtils.getContext().getString(R.string.STANBY_TIME_M, minute);
-        }
+        return ContextUtils.getContext().getString(R.string.STANBY_TIME_D_H_M, day, hour, minute);
     }
 
     public static String getDayInMonth(long time) {
@@ -246,7 +240,7 @@ public class TimeUtils {
         if (today.getMonth() == provide.getMonth()) {
             if (today.getDay() == provide.getDay()) {//说明是在同一天，则按照今天 时:分显示
 //                format.applyPattern("今天");
-                return ContextUtils.getContext().getString(R.string.DOOR_TODAY);
+                return ContextUtils.getContext().getString(R.string.TODAY);
             }
             if (today.getDay() - provide.getDay() == 1) {//说明是在昨天，则按照昨天 时:分显示
                 return ContextUtils.getContext().getString(R.string.Yesterday);

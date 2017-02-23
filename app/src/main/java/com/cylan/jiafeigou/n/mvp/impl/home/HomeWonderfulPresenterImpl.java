@@ -98,6 +98,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(timeTickEvent -> {
+                    onUnRegisterSubscription();
                     mView.onPageScrolled();
                 });
     }
@@ -131,9 +132,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     public Observable<List<DpMsgDefine.DPWonderItem>> queryTimeLine(long version, int count, boolean asc) {
-        return Observable.just(sendQueryRequest(version, count, asc))
-                .filter(seq -> seq > 0)
+        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            subscriber.onNext(sendQueryRequest(version, count, asc));
+            subscriber.onCompleted();
+        })
                 .subscribeOn(Schedulers.io())
+                .filter(seq -> seq > 0)
                 .flatMap(seq -> RxBus.getCacheInstance()
                         .toObservable(RxEvent.ParseResponseCompleted.class)
                         .filter(rsp -> rsp.seq == seq)

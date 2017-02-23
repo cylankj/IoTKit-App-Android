@@ -43,6 +43,7 @@ import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
@@ -596,7 +597,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         }
 
         if (mDownloadFile.exists()) {
-            Toast.makeText(this, "文件已下载", Toast.LENGTH_SHORT).show();
+            ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             return;
         }
 
@@ -604,19 +605,17 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                 downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
-                        Toast.makeText(MediaActivity.this, "下载完成", Toast.LENGTH_SHORT).show();
+                        ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
                         FileUtils.copyFile(resource, mDownloadFile);
                         mDownloadFile = null;
                     }
 
                     @Override
                     public void onLoadStarted(Drawable placeholder) {
-                        Toast.makeText(MediaActivity.this, "开始下载", Toast.LENGTH_SHORT).show();
                     }
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        Toast.makeText(MediaActivity.this, "下载失败", Toast.LENGTH_SHORT).show();
                         mDownloadFile = null;
                     }
                 });
