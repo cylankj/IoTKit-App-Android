@@ -124,6 +124,7 @@ public class GlobalDataProxy implements IDataProxy {
             }
         dataPointManager.cacheDevice(device);
         DeviceFullParameters.getInstance().getDeviceFullParameters(device);
+        RxBus.getCacheInstance().postSticky(new RxEvent.DeviceListUpdate());
     }
 
     @Override

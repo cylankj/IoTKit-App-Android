@@ -39,7 +39,7 @@ public class DpParserTest {
 //        device.uuid = "20000004958";
 //        ArrayList<JFGDevice> list = new ArrayList<>();
 //        list.add(device);
-//        RxEvent.DeviceList deviceList = new RxEvent.DeviceList(list);
+//        RxEvent.DeviceListUpdate deviceList = new RxEvent.DeviceListUpdate(list);
 //        RxBus.getCacheInstance().post(deviceList);
 //        Thread.sleep(5000);
 

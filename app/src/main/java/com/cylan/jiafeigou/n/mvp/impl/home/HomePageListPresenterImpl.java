@@ -11,7 +11,6 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -57,7 +56,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 getTimeTickEventSub(),
                 getLoginRspSub(),
                 getShareDevicesListRsp(),
-                sdcardStatusSub(),
+                devicesUpdate(),
+                devicesUpdate1(),
                 JFGAccountUpdate()};
     }
 
@@ -89,25 +89,35 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      *
      * @return
      */
-    private Subscription sdcardStatusSub() {
+    private Subscription devicesUpdate() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DataPoolUpdate.class)
                 .filter((RxEvent.DataPoolUpdate data) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<RxEvent.DataPoolUpdate, Boolean>() {
                     @Override
                     public Boolean call(RxEvent.DataPoolUpdate update) {
-                        if (update.id == DpMsgMap.ID_204_SDCARD_STORAGE) {
-                            DpMsgDefine.DPSdStatus sdStatus = update.value.getValue();
-                        } else if (update.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-                            DpMsgDefine.DPSdcardSummary sdcardSummary = update.value.getValue();
-                        } else if (update.id == DpMsgMap.ID_201_NET) {
-                            DpMsgDefine.DPNet net = update.value.getValue();
-                        }
+                        subUuidList();
                         AppLogger.d("data pool update: " + update);
                         return null;
                     }
                 })
-                .retry(new RxHelper.RxException<>("sdcardStatusSub"))
+                .retry(new RxHelper.RxException<>("devicesUpdate"))
+                .subscribe();
+    }
+
+    private Subscription devicesUpdate1() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceListUpdate.class)
+                .filter((RxEvent.DeviceListUpdate data) -> (getView() != null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<RxEvent.DeviceListUpdate, Boolean>() {
+                    @Override
+                    public Boolean call(RxEvent.DeviceListUpdate update) {
+                        subUuidList();
+                        AppLogger.d("data pool update: " + update);
+                        return null;
+                    }
+                })
+                .retry(new RxHelper.RxException<>("devicesUpdate"))
                 .subscribe();
     }
 

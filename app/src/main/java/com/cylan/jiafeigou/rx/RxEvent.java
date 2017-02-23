@@ -22,7 +22,6 @@ import com.cylan.jiafeigou.dp.DataPointManager;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -407,12 +406,7 @@ public class RxEvent {
     /**
      * 获取设备列表
      */
-    public static final class DeviceList {
-        public List<JFGDevice> jfgDevices;
-
-        public DeviceList(List<JFGDevice> jfgDevices) {
-            this.jfgDevices = jfgDevices;
-        }
+    public static final class DeviceListUpdate {
     }
 
 
@@ -749,7 +743,7 @@ public class RxEvent {
 
     }
 
-    public static class SdcardClearRsp{
+    public static class SdcardClearRsp {
         public long seq;
 
         public SdcardClearRsp(long seq, ArrayList<JFGDPMsgRet> arrayList) {
@@ -761,7 +755,7 @@ public class RxEvent {
 
     }
 
-    public static class CheckDevVersionRsp implements Serializable{
+    public static class CheckDevVersionRsp implements Serializable {
         public boolean hasNew;
         public String url;
 
