@@ -287,6 +287,8 @@ public class SimpleBindFlow extends AFullBind {
                     AppLogger.i(BIND_TAG + d);
                     return d;
                 })
+                //1s内
+                .timeout(1000, TimeUnit.MILLISECONDS, timeoutException())
                 .subscribeOn(Schedulers.newThread())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
@@ -299,15 +301,13 @@ public class SimpleBindFlow extends AFullBind {
                     return !needUpdate;
                 })
                 .map((final UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
-                    if (udpDevicePortrait.net == 2) {
+                    if (udpDevicePortrait.net == 3) {
                         iBindResult.isMobileNet();
                         AppLogger.i(BIND_TAG + "is 3G");
                     }
                     setServerLanguage(udpDevicePortrait);
                     return udpDevicePortrait;
                 })
-                .throttleFirst(1, TimeUnit.SECONDS)
-                //1s内
-                .timeout(1000, TimeUnit.MILLISECONDS, timeoutException());
+                .throttleFirst(1, TimeUnit.SECONDS);
     }
 }

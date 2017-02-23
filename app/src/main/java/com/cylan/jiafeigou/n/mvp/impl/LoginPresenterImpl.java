@@ -27,14 +27,12 @@ import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
-import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.google.gson.Gson;
@@ -97,6 +95,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录
+     *
      * @param o
      * @return
      */
@@ -106,9 +105,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .map(login -> {
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
-                        if (o.loginType){
+                        if (o.loginType) {
                             JfgCmdInsurance.getCmd().openLogin(o.userName, "www.cylan.com", o.openLoginType);
-                        }else {
+                        } else {
                             JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
                             //账号和密码
                             String hex = AESUtil.encrypt(o.userName + "|" + o.pwd);
@@ -126,6 +125,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录结果
+     *
      * @return
      */
     private Observable<RxEvent.ResultLogin> loginResultObservable() {
@@ -135,8 +135,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public void executeLogin(final LoginAccountBean login) {
         //加入
-        addSubscription(Observable.zip(loginObservable(login),loginResultObservable(),
-                (Object o,RxEvent.ResultLogin resultLogin) -> {
+        Observable.zip(loginObservable(login), loginResultObservable(),
+                (Object o, RxEvent.ResultLogin resultLogin) -> {
                     Log.d("CYLAN_TAG", "login: " + resultLogin);
                     return resultLogin;
                 })
@@ -156,7 +156,37 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 }, throwable -> {
                     if (getView() != null) getView().loginResult(JError.ErrorConnect);
                     Log.d("CYLAN_TAG", "login err: " + throwable.getLocalizedMessage());
-                }));
+                });
+    }
+
+    /**
+     * 第三方登录
+     *
+     * @param o
+     * @return
+     */
+    private Observable<Object> openLoginObservable(LoginAccountBean o) {
+        return Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .map(login -> {
+                    Log.d("CYLAN_TAG", "map executeLogin next");
+                    try {
+                        //非三方登录不执行
+                        if (!o.loginType) {
+                            return null;
+                        }
+                        JfgCmdInsurance.getCmd().openLogin(o.userName, "www.cylan.com", o.openLoginType);
+                        //账号和密码
+//                        String hex = AESUtil.encrypt(o.userName + "|" + o.pwd);
+//                        FileUtils.saveDataToFile(getView().getContext(), hex);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(o));
+                    //三方登录的标记
+                    RxBus.getCacheInstance().postSticky(true);
+                    return null;
+                });
     }
 
     @Override
@@ -239,7 +269,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             usersAPI.show(uid, sinaRequestListener);
             return;
         }
-
         sinaUtil = new SinaLogin(activity);
         sinaUtil.login(activity, new SinaAuthorizeListener());
     }
@@ -342,6 +371,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, profile_image_url);
                     PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, userAlias);
                 }
+                Log.d(TAG, "sinaRequestListener: " + response);
             } catch (JSONException e) {
                 AppLogger.e(e.toString());
             }
@@ -394,6 +424,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * QQ登录回调解析token
+     *
      * @param response
      */
     private void doComplete(JSONObject response) {
@@ -585,14 +616,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         }
         callbackManager = CallbackManager.Factory.create();
         if (accessToken == null || accessToken.isExpired()) {
-            LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "user_friends","email"));
+            LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "user_friends", "email"));
             fackBookCallBack();
         }
     }
 
-    private void executeOpenLogin(String token,int type) {
+    private void executeOpenLogin(String token, int type) {
         LoginAccountBean login = new LoginAccountBean();
-        login.userName =token;
+        login.userName = token;
         login.openLoginType = type;
         login.loginType = true;
         executeLogin(login);

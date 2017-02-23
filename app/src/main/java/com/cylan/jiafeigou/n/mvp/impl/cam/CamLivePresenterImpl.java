@@ -223,7 +223,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
                 .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS, Observable.just("no rtcp call back")
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .map(s -> {
@@ -233,6 +232,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             AppLogger.e(s);
                             return null;
                         }))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map((JFGMsgVideoRtcp rtcp) -> {
                     try {
                         getView().onRtcp(rtcp);

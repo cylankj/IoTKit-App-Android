@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.udpMsgPack.JfgUdpMsg;
-import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -87,17 +86,28 @@ public class BindUtils {
         return SECURITY_NONE;
     }
 
-    public static final int SECURITY_NONE = 0;
-    static final int SECURITY_WEP = 1;
-    static final int SECURITY_PSK = 2;
-    static final int SECURITY_EAP = 3;
+    private static final int SECURITY_NONE = 0;
+    private static final int SECURITY_WEP = 1;
+    private static final int SECURITY_PSK = 2;
+    private static final int SECURITY_EAP = 3;
 
-    public static String getDigitsString(String string) {
+    /**
+     * cid不全是数字.
+     * 提取后6位
+     *
+     * @param string
+     * @return
+     */
+    public static String filterCylanDeviceShortCid(String string) {
         if (TextUtils.isEmpty(string))
             return "";
-        return string.replaceAll("\\D+", "");
+        return string.replace("DOG-", "").replace("ML-", "").replace("\"", "");
+//        return string.replaceAll("\\D+", "");
     }
 
+    public static String getDigitsString(String content) {
+        return content.replaceAll("\\D+", "");
+    }
 
     public static boolean invalidInfo(WifiConfiguration wifiConfiguration) {
         return wifiConfiguration != null && wifiConfiguration.SSID != null &&
