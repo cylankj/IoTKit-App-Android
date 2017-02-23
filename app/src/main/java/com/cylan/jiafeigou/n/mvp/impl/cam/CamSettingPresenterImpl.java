@@ -10,7 +10,6 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -20,6 +19,7 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -90,6 +90,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 .map((RxEvent.UnBindDeviceEvent unBindDeviceEvent) -> {
                     getView().unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
                     if (unBindDeviceEvent.jfgResult.code == 0) {
+                        time = System.currentTimeMillis();
                         //清理这个订阅
                         RxBus.getCacheInstance().removeStickyEvent(RxEvent.UnBindDeviceEvent.class);
                     }
@@ -178,13 +179,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 + String.format(Locale.getDefault(), ":%02d", (((byte) value << 8) >> 8));
     }
 
-//    @Override
-//    public BeanCamInfo getCamInfoBean() {
-//        if (camInfoBean == null)
-//            camInfoBean = new BeanCamInfo();
-//        return camInfoBean;
-//    }
-
     @Override
     public void updateInfoReq(Object value, long id) {
         Observable.just(value)
@@ -202,11 +196,13 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 });
     }
 
+    private long time = 0;
+
     @Override
     public void unbindDevice() {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe((Object o) -> {
+                .map((Object o) -> {
                     boolean result = GlobalDataProxy.getInstance().remove(uuid);
                     try {
                         JfgCmdInsurance.getCmd().unBindDevice(uuid);
@@ -215,8 +211,16 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         AppLogger.e("" + e.getLocalizedMessage());
                     }
                     AppLogger.i("unbind uuid: " + uuid + " " + result);
-                }, (Throwable throwable) -> {
-                    AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());
-                });
+                    return null;
+                })
+                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .filter(s -> System.currentTimeMillis() - time > 3000)
+                        .map(s -> {
+                            getView().unbindDeviceRsp(-1);
+                            return null;
+                        }))
+                .subscribe();
+
     }
 }

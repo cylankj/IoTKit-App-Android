@@ -263,6 +263,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case R.id.tv_setting_unbind: {
                 Bundle bundle = new Bundle();
                 bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_SURE));
+                bundle.putBoolean(BaseDialog.KEY_TOUCH_OUT_SIDE_DISMISS, true);
                 SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
                 simpleDialogFragment.setAction((int id, Object value) -> {
                     basePresenter.unbindDevice();
@@ -463,6 +464,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             Intent intent = new Intent(this, NewHomeActivity.class);
             intent.putExtra("NewHomeActivity_intent", getString(R.string.DELETED_SUC));
             startActivity(intent);
+        } else if (state == -1) {
+            ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
         }
     }
 
