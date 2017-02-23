@@ -28,7 +28,7 @@ public interface HomePageListContract {
 
         void onItemDelete(int index);
 
-        ArrayList<String> getUuidList();
+//        ArrayList<String> getUuidList();
 
         /**
          * @param greetBean: 从presenter处理后返回.

@@ -308,23 +308,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @UiThread
     @Override
     public void onItemsInsert(List<String> resultList) {
+        homePageListAdapter.clear();//暴力刷新,设备没几个,没关系.
+        homePageListAdapter.addAll(resultList);
         srLayoutMainContentHolder.setNestedScrollingEnabled(resultList.size() > JFGRules.NETSTE_SCROLL_COUNT);
         onRefreshFinish();
-        homePageListAdapter.addAll(filter(resultList));
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
-    }
-
-    private List<String> filter(List<String> origin) {
-        List<String> result = new ArrayList<>(32);
-        List<String> list = homePageListAdapter.getList();
-        if (origin != null) {
-            for (String s : origin) {
-                if (!list.contains(s)) {
-                    result.add(s);
-                }
-            }
-        }
-        return result;
+        Log.d("onItemsInsert", "onItemsInsert: " + resultList);
     }
 
     @Override
@@ -340,10 +329,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     }
 
-    @Override
-    public ArrayList<String> getUuidList() {
-        return homePageListAdapter == null ? null : (ArrayList<String>) homePageListAdapter.getList();
-    }
+//    @Override
+//    public ArrayList<String> getUuidList() {
+//        return homePageListAdapter == null ? null : (ArrayList<String>) homePageListAdapter.getList();
+//    }
 
     @Override
     public void onAccountUpdate(JFGAccount greetBean) {
@@ -472,11 +461,12 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
             return;
         }
-        Toast.makeText(getContext(), "id: " + id + " value:" + value, Toast.LENGTH_SHORT).show();
+        String deleteUUID = homePageListAdapter.getItem((Integer) value);
         homePageListAdapter.remove((Integer) value);
         //刷新需要剩下的item
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
+        basePresenter.deleteItem(deleteUUID);
     }
 
 

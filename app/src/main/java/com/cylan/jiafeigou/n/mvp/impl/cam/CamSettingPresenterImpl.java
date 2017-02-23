@@ -210,6 +210,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     boolean result = GlobalDataProxy.getInstance().remove(uuid);
                     try {
                         JfgCmdInsurance.getCmd().unBindDevice(uuid);
+                        GlobalDataProxy.getInstance().deleteJFGDevice(uuid);
                     } catch (JfgException e) {
                         AppLogger.e("" + e.getLocalizedMessage());
                     }

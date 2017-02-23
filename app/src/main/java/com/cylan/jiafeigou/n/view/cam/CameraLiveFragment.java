@@ -63,6 +63,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
+import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -295,10 +296,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         .setOnClickListener(view -> {
                             Intent intent = new Intent(getActivity(), CamSettingActivity.class);
                             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                            startActivity(intent,
+                            startActivityForResult(intent, REQUEST_CODE,
                                     ActivityOptionsCompat.makeCustomAnimation(getActivity(),
                                             R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
-                            startActivity(new Intent(getActivity(), CamSettingActivity.class));
                         });
             } else v = viewStandbyRef.get();
         }

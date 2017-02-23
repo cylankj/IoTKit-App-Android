@@ -57,25 +57,33 @@ public abstract class EmptyView implements IEmptyView {
     @Override
     public void show(boolean show) {
         if (show) {
-            View view = reInit();
-            if (view != null && !view.isShown()) {
-                if (showAnimation != null) {
-                    showAnimation.start();
-                    return;
-                }
-                view.setVisibility(View.VISIBLE);
-            }
+            reInit().setVisibility(View.VISIBLE);
         } else {
             if (emptyViewRef == null || emptyViewRef.get() == null)
                 return;
-            View view = emptyViewRef.get();
-            if (view.isShown()) {
-                if (hideAnimation != null) {
-                    hideAnimation.start();
-                    return;
-                }
-                view.setVisibility(View.GONE);
-            }
+            emptyViewRef.get().setVisibility(View.GONE);
         }
+//
+//        if (show) {
+//            View view = reInit();
+//            if (view != null && !view.isShown()) {
+//                if (showAnimation != null) {
+//                    showAnimation.start();
+//                    return;
+//                }
+//                view.setVisibility(View.VISIBLE);
+//            }
+//        } else {
+//            if (emptyViewRef == null || emptyViewRef.get() == null)
+//                return;
+//            View view = emptyViewRef.get();
+//            if (view.isShown()) {
+//                if (hideAnimation != null) {
+//                    hideAnimation.start();
+//                    return;
+//                }
+//                view.setVisibility(View.GONE);
+//            }
+//        }
     }
 }

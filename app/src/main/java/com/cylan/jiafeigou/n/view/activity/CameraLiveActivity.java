@@ -14,9 +14,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -36,10 +38,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
+
 
 public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
-    public static final int REQUEST_CODE = 3;
-    public static final int RESULT_CODE = 4;
     @BindView(R.id.imgV_nav_back)
     ImageView imgVNavBack;
     @BindView(R.id.v_indicator)
@@ -85,6 +87,11 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             rLayoutCameraLiveTopBar.setVisibility(isLandScape ? View.GONE : View.VISIBLE);
             vpCameraLive.setPagingEnabled(!isLandScape);
         });
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
     }
 
     @Override
@@ -138,17 +145,17 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     public void onClickSetting() {
         Intent intent = new Intent(this, CamSettingActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        startActivityForResult(intent, REQUEST_CODE,
-                ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
-                        R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+        startActivity(intent, ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
+                R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case REQUEST_CODE:
                 if (resultCode == RESULT_OK) {
-                    finish();
+                    finishExt();
                 }
                 break;
         }
