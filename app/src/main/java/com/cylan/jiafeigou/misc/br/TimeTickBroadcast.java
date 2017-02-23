@@ -16,7 +16,7 @@ public class TimeTickBroadcast extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
         if (RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.TimeTickEvent());
+            RxBus.getCacheInstance().postSticky(new RxEvent.TimeTickEvent());
         }
     }
 

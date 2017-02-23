@@ -157,7 +157,7 @@ public class GlobalDataProxy implements IDataProxy {
     }
 
     @Override
-    public boolean isDeviceShared(String uuid) {
+    public boolean isDeviceSharedTo(String uuid) {
         int size = shareList == null ? 0 : shareList.size();
         for (int i = 0; i < size; i++) {
             JFGShareListInfo info = shareList.get(i);

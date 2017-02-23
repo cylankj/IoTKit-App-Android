@@ -64,6 +64,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
@@ -524,7 +525,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setLiveTime(0);
         switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
-                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+                boolean standby = GlobalDataProxy.getInstance().getValue(uuid, ID_508_CAMERA_STANDBY_FLAG, false);
+                if (standby) break;//
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, "出错了");

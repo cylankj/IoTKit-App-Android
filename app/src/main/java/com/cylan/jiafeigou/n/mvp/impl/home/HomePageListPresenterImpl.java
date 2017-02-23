@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -208,18 +209,17 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         Observable.just(manually)
                 .subscribeOn(Schedulers.newThread())
                 .map((Boolean aBoolean) -> {
-                    ArrayList<String> aList = getUuidList();
-                    if (aList != null) {
-                        for (String uuid : aList)
-                            try {
-                                GlobalDataProxy.getInstance().fetchUnreadCount(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
-                            } catch (JfgException e) {
-                                AppLogger.e("" + e.getLocalizedMessage());
-                            }
-                    }
-                    if (aBoolean) {
-                        JfgCmdInsurance.getCmd().getShareList(getUuidList());
-                    }
+
+                    ArrayList<String> sharedList = MiscUtils.getSharedList(GlobalDataProxy.getInstance().fetchAll());
+                    ArrayList<String> unSharedList = MiscUtils.getNoneSharedList(GlobalDataProxy.getInstance().fetchAll());
+                    //不是分享设备
+                    JfgCmdInsurance.getCmd().getShareList(unSharedList);
+                    for (String uuid : sharedList)
+                        try {
+                            GlobalDataProxy.getInstance().fetchUnreadCount(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+                        } catch (JfgException e) {
+                            AppLogger.e("" + e.getLocalizedMessage());
+                        }
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return null;
                 })

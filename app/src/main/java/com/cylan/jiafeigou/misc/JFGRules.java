@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.misc;
 import android.content.Context;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -137,6 +139,7 @@ public class JFGRules {
     public static boolean showDelayRecordBtn(int pid) {
         return pid == JConstant.OS_CAMERA_ANDROID_3_0;
     }
+
     //freeCam 海思 wifi
     public static boolean showMobileLayout(int pid) {
         switch (pid) {
@@ -226,6 +229,12 @@ public class JFGRules {
 
     public static boolean isDeviceOnline(DpMsgDefine.DPNet net) {
         return net != null && net.net != 0;
+    }
+
+    public static boolean isShareDevice(String uuid) {
+        if (TextUtils.isEmpty(uuid)) return true;
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        return device != null && !TextUtils.isEmpty(device.shareAccount);
     }
 
     /**

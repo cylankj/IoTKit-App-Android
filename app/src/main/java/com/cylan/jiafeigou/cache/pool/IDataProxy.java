@@ -50,12 +50,12 @@ public interface IDataProxy {
     void cacheUnread(String uuid, Pair<Integer, BaseValue> pair);
 
     /**
-     * 该设备是否被分享
+     * 该设备是否已经被分享给其他用户
      *
      * @param uuid
      * @return
      */
-    boolean isDeviceShared(String uuid);
+    boolean isDeviceSharedTo(String uuid);
 
     /**
      * 依赖account
