@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -61,11 +62,17 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public void start() {
         super.start();
-        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_201_NET));
-        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY));
-        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_209_LED_INDICATOR));
-        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE));
-        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG));
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        if (device != null && TextUtils.isEmpty(device.shareAccount)) {
+            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_201_NET));
+            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY));
+            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_209_LED_INDICATOR));
+            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE));
+            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG));
+        } else {
+            //分享设备
+            getView().isSharedDevice();
+        }
     }
 
     /**

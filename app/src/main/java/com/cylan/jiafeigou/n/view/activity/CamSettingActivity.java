@@ -454,7 +454,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     public void isSharedDevice() {
         //分享账号 隐藏
-        if (true) return;//doNothing
         final int count = lLayoutSettingItemContainer.getChildCount();
         for (int i = 2; i < count - 1; i++) {
             View v = lLayoutSettingItemContainer.getChildAt(i);

@@ -134,6 +134,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private void updateDetails() {
+        //是否分享设备
+        if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
+            tvDeviceAlias.showDivider(false);
+            tvDeviceTimeZone.setVisibility(View.GONE);
+            tvDeviceSdcardState.setVisibility(View.GONE);
+            rlHardwareUpdate.setVisibility(View.GONE);
+            getView().findViewById(R.id.tv_storage).setVisibility(View.GONE);
+        }
         //是否显示移动网络
         tvDeviceMobileNet.setVisibility(device != null && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
         MiscUtils.loadTimeZoneList()

@@ -59,6 +59,7 @@
                 hunt:sv_v_divider="false" />
 
             <TextView
+                android:id="@+id/tv_storage"
                 style="@style/information_item"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
