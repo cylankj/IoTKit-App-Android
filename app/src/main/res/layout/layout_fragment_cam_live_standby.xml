@@ -5,22 +5,16 @@
     android:layout_height="match_parent"
     android:background="@color/color_2A3C58">
 
-    <LinearLayout
+
+    <TextView
         android:id="@+id/lLayout_standby_jump_setting"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:orientation="vertical">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:drawablePadding="@dimen/x17"
-            android:drawableTop="@drawable/icon_camera_standby"
-            android:gravity="center"
-            android:text="@string/Tap1_Camera_Video_DormantTips"
-            android:textColor="@android:color/white" />
-
-    </LinearLayout>
+        android:drawablePadding="@dimen/x17"
+        android:drawableTop="@drawable/icon_camera_standby"
+        android:gravity="center"
+        android:text="@string/Tap1_Camera_Video_DormantTips"
+        android:textColor="@android:color/white" />
 
 </FrameLayout>

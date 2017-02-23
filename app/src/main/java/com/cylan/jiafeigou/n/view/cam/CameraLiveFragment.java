@@ -291,7 +291,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 v.setId("showSceneView".hashCode());
                 viewStandbyRef = new WeakReference<>(v);
                 Log.d("showSceneView", "showSceneView: " + (System.currentTimeMillis() - time));
-                fLayoutCamLiveView.addView(v, 0);//最底
+                int index = 0;
+                if (videoView != null)
+                    index = fLayoutCamLiveView.indexOfChild((View) videoView);//view的上面
+                fLayoutCamLiveView.addView(v, index + 1);//最底
                 v.findViewById(R.id.lLayout_standby_jump_setting)//跳转到设置页面
                         .setOnClickListener(view -> {
                             Intent intent = new Intent(getActivity(), CamSettingActivity.class);
