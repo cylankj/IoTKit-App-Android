@@ -24,7 +24,6 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.SdCardInfoPresenterImpl;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -86,7 +85,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        customToolbar.setBackAction(v -> getActivity().getSupportFragmentManager().popBackStack());
+        customToolbar.setBackAction(o -> getFragmentManager().popBackStack());
     }
 
     @Override
@@ -100,7 +99,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
 
     }
 
-    @OnClick(R.id.tv_clecr_sdcard)
+    @OnClick({R.id.tv_clecr_sdcard})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_clecr_sdcard:
@@ -237,4 +236,8 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
         return fileSizeString;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 }
