@@ -106,7 +106,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         tvHardwareNewVersion.setText(sVersion);
 
         // 有新版本
-        if (checkDevVersion.hasNew) {
+        if (checkDevVersion != null && checkDevVersion.hasNew) {
             tvHardwareNewVersion.setText(checkDevVersion.version);
             tvDownloadSoftFile.setText("下载并升级" + "(" + basePresenter.getFileSize() + ")");
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
@@ -242,7 +242,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     public void onDownloadStart() {
         tvDownloadSoftFile.setEnabled(false);
         llDownloadPgContainer.setVisibility(View.VISIBLE);
-        tvLoadingShow.setText("0.0MB"+"/"+basePresenter.getFileSize());
+        tvLoadingShow.setText("0.0MB" + "/" + basePresenter.getFileSize());
         downloadProgress.setProgress(0);
     }
 
@@ -256,7 +256,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         String remoteSSid = net.ssid;
         if (TextUtils.equals(localSSid, remoteSSid)) {
             basePresenter.startUpdate();
-        }else {
+        } else {
             //不在同局域网
             tvDownloadSoftFile.setText("升级");
         }
@@ -264,7 +264,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void onDownloading(double percent, long downloadedLength) {
-        tvLoadingShow.setText(basePresenter.FormetSDcardSize(downloadedLength)+"/"+basePresenter.getFileSize());
+        tvLoadingShow.setText(basePresenter.FormetSDcardSize(downloadedLength) + "/" + basePresenter.getFileSize());
         downloadProgress.setProgress((int) (percent * 100));
     }
 
@@ -275,13 +275,13 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void startUpdate() {
-        tvLoadingShow.setText(0+"%");
+        tvLoadingShow.setText(0 + "%");
         llDownloadPgContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onUpdateing(int percent) {
-        tvLoadingShow.setText(percent+"%");
+        tvLoadingShow.setText(percent + "%");
         downloadProgress.setProgress(percent);
     }
 
