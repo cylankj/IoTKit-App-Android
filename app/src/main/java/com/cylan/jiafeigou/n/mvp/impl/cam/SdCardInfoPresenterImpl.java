@@ -82,7 +82,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                     baseValue.setValue(o);
                     GlobalDataProxy.getInstance().update(uuid, baseValue, true);
                 }, (Throwable throwable) -> {
-                    AppLogger.e(throwable.getLocalizedMessage());
+                    AppLogger.e("clearSDcard"+throwable.getLocalizedMessage());
                 });
     }
 

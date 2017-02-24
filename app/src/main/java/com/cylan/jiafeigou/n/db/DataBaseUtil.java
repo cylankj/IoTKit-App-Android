@@ -6,13 +6,14 @@ import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.DbManagerImpl;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.io.File;
+
 /**
  * 作者：zsl
  * 创建时间：2016/10/11
  * 描述：
  */
 public class DataBaseUtil {
-
 
     private static DataBaseUtil uniqueInstance = null;
 
@@ -37,7 +38,7 @@ public class DataBaseUtil {
         return new DbManager.DaoConfig()
                 .setAllowTransaction(true)
                 .setContext(ContextUtils.getContext())
-                .setDbDir(Environment.getExternalStorageDirectory())
+                .setDbDir(new File(Environment.getExternalStorageDirectory(),"smartFile"))
                 .setDbName(dbName)
                 .setDbVersion(1)
                 .setDbOpenListener(new DbManager.DbOpenListener() {

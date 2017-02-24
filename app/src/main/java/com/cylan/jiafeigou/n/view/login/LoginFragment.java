@@ -343,6 +343,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         if (!TextUtils.isEmpty(etLoginUsername.getText().toString().trim()) && !TextUtils.isEmpty(etLoginPwd.getText().toString().trim())) {
             lbLogin.setEnabled(true);
         }
+
+        if (!TextUtils.isEmpty(etRegisterInputBox.getText().toString().trim())){
+            tvRegisterSubmit.setEnabled(JConstant.PHONE_REG.matcher(etRegisterInputBox.getText().toString().trim()).find());
+        }
     }
 
     /**
@@ -724,8 +728,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 在跳转之前，做一些清理工作
      */
     private void clearSomeThing() {
-        if (verificationCodeLogic != null)
+        if (verificationCodeLogic != null){
             verificationCodeLogic.stop();
+            verificationCodeLogic = null;
+        }
     }
 
     /**
@@ -775,6 +781,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 jump2NextPage();
                 return;
             }
+
+            if (verificationCodeLogic == null)
+                verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
+            verificationCodeLogic.start();
             basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
             //显示验证码输入框
             handleVerificationCodeBox(true);
@@ -812,9 +822,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     return;
                 }
             }
-            if (verificationCodeLogic == null)
-                verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
-            verificationCodeLogic.start();
 
             IMEUtils.hide(getActivity());
             //检测账号是否注册

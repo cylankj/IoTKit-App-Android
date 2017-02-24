@@ -212,7 +212,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             case R.id.tv_device_sdcard_state:
                 DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
                 DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
-                if (status.hasSdcard && JFGRules.isDeviceOnline(net))//没有sd卡,胡或者离线,不能点击
+                if (status.hasSdcard && JFGRules.isDeviceOnline(net))//没有sd卡,或者离线,不能点击
                     jump2SdcardDetailFragment();
                 break;
             case R.id.rl_hardware_update:
