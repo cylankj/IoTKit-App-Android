@@ -57,7 +57,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     @Override
                     public void call(Object o) {
 //                        GlobalDataProxy.getInstance().setJfgAccount(null);
-                        GlobalDataProxy.getInstance().setLoginState(new LogState(LogState.STATE_NONE));
+                        GlobalDataProxy.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
                         GlobalDataProxy.getInstance().setOnline(false);
                         JfgCmdInsurance.getCmd().logout();
                         if (isOpenLogin) {
