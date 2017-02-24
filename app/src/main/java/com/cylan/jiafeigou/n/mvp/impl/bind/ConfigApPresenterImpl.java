@@ -70,12 +70,15 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             getView().lossDogConnection();
             return;
         }
-        aFullBind.getBindObservable(shortCid)
+        aFullBind.getBindObservable(false, shortCid)
                 .subscribeOn(Schedulers.newThread())
+                .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net != 3)
                 .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
                     AppLogger.d(UdpConstant.BIND_TAG + "last state");
-                    if (aFullBind != null)
+                    if (aFullBind != null) {
+                        aFullBind.setServerLanguage(udpDevicePortrait);
                         aFullBind.sendWifiInfo(ssid, pwd, type);
+                    }
                 }, throwable -> {
                     AppLogger.e("err: " + throwable.getLocalizedMessage());
                 });
@@ -90,6 +93,27 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     public void refreshWifiList() {
         WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
         wifiManager.startScan();
+    }
+
+    @Override
+    public void check3GDogCase() {
+        String shortCid = getCurrentBindCidInShort();
+        if (TextUtils.isEmpty(shortCid)) {
+            getView().lossDogConnection();
+            return;
+        }
+        aFullBind.getBindObservable(false, shortCid)
+                .subscribeOn(Schedulers.newThread())
+                //网络为3
+                .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net == 3)
+                .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
+                    AppLogger.d(UdpConstant.BIND_TAG + "start bind 3g last state");
+                    if (aFullBind != null) {
+                        aFullBind.setServerLanguage(udpDevicePortrait);
+                        aFullBind.sendWifiInfo("", "", 0);
+                    }
+                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+        aFullBind.startPingFPing(shortCid);
     }
 
     @Override
@@ -179,19 +203,6 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
                     getView().pingFailed();
-                });
-    }
-
-    @Override
-    public void isMobileNet() {
-        //马上跳转
-        Observable.just(null)
-                .filter((Object o) -> {
-                    return getView() != null;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Object o) -> {
-                    getView().onSetWifiFinished(aFullBind.getDevicePortrait());
                 });
     }
 

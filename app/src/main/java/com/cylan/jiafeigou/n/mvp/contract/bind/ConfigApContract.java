@@ -63,6 +63,7 @@ public interface ConfigApContract {
 
         void refreshWifiList();
 
+        void check3GDogCase();
         /**
          * 先清空其他狗绑定的信息
          */
