@@ -63,7 +63,7 @@ public class BellTopBackgroundView extends FrameLayout {
                 tvStartCalling.setVisibility(VISIBLE);
                 fLayoutBellTopPre.setBackground(getResources().getDrawable(R.drawable.doorbell_bg_top_online));
             } else {
-                tvStartCalling.setVisibility(GONE);
+                tvStartCalling.setVisibility(VISIBLE);
                 fLayoutBellTopPre.setBackground(getResources().getDrawable(R.drawable.doorbell_bg_top_offline));
             }
         } else {

@@ -73,11 +73,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                                 .map(dis -> {
                                     AppLogger.e("视频连接断开了: remote:" + dis.remote + "code:" + dis.code);
                                     mView.onVideoDisconnect(dis.code);
-                                    return new RxEvent.LiveResponse(dis);
+                                    return new RxEvent.LiveResponse<>(dis, false);
                                 })
                 ).first())
                 .filter(response -> response.success)
-                .map(response -> response.resolution)
+                .map(response -> (JFGMsgVideoResolution) response.response)
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(rsp -> {
                     try {

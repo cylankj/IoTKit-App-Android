@@ -50,6 +50,9 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     TextView tvSettingUnbind;
     @BindView(R.id.lLayout_setting_container)
     LinearLayout lLayoutSettingContainer;
+    @BindView(R.id.ll_bell_net_work_container)
+    LinearLayout mNetWorkContainer;
+
     private SimpleDialogFragment simpleDialogFragment;
     private SimpleDialogFragment mClearRecordFragment;
 
@@ -191,5 +194,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
             }
         }
         svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.net));
+        tvSettingClear.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
+        mNetWorkContainer.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
     }
 }

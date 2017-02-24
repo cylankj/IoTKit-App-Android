@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.rx;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -12,8 +13,6 @@ import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
-import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
-import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.dp.BaseValue;
@@ -772,19 +771,23 @@ public class RxEvent {
         public String md5;
     }
 
-    public static class LiveResponse {
+    public static class LiveResponse<T> {
         public boolean success;
-        public JFGMsgVideoResolution resolution;
-        public JFGMsgVideoDisconn disconnect;
+        public T response;
 
-        public LiveResponse(JFGMsgVideoResolution resolution) {
-            success = true;
-            this.resolution = resolution;
+        public LiveResponse(T disconnect, boolean success) {
+            this.success = false;
+            this.response = disconnect;
         }
 
-        public LiveResponse(JFGMsgVideoDisconn disconnect) {
-            success = false;
-            this.disconnect = disconnect;
+        public LiveResponse(T resolution) {
+            this.success = true;
+            this.response = resolution;
         }
+    }
+
+    public static class NetWorkChangeIntent {
+        public boolean available;
+        public Intent intent;
     }
 }
