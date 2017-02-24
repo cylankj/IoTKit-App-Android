@@ -1,9 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
@@ -41,7 +39,7 @@ import rx.schedulers.Schedulers;
 public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.View>
         implements ConfigApContract.Presenter, IBindResult {
 
-    private Network network;
+//    private Network network;
 
     private AFullBind aFullBind;
 
@@ -52,27 +50,13 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     }
 
     @Override
-    public void registerNetworkMonitor() {
-        try {
-            if (network == null) {
-                network = new Network();
-                final IntentFilter filter = new IntentFilter();
-                filter.addAction(WifiManager.RSSI_CHANGED_ACTION);
-                filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-                filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-                filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-                ContextUtils.getContext().registerReceiver(network, filter);
-            }
-        } catch (Exception e) {
-        }
-    }
-
-    @Override
-    public void unregisterNetworkMonitor() {
-        if (network != null) {
-            ContextUtils.getContext().unregisterReceiver(network);
-            network = null;
-        }
+    protected String[] registerNetworkAction() {
+        return new String[]{
+                WifiManager.RSSI_CHANGED_ACTION,
+                WifiManager.SCAN_RESULTS_AVAILABLE_ACTION,
+                WifiManager.NETWORK_STATE_CHANGED_ACTION,
+                ConnectivityManager.CONNECTIVITY_ACTION
+        };
     }
 
     @Override
@@ -132,24 +116,12 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             aFullBind.clean();
     }
 
-
-    @Override
-    public void start() {
-        super.start();
-        registerNetworkMonitor();
-    }
-
-    @Override
-    public void stop() {
-        super.stop();
-        unregisterNetworkMonitor();
-    }
-
-
     /**
      * wifi列表
      */
-    private void updateWifiResults(List<ScanResult> scanResults) {
+    private void updateWifiResults() {
+        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+        List<ScanResult> scanResults = wifiManager.getScanResults();
         Observable.just(scanResults)
                 //别那么频繁
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
@@ -295,27 +267,18 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 }).subscribe();
     }
 
-    private class Network extends BroadcastReceiver {
-
-        private WifiManager wifiManager;
-
-        public Network() {
-            wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
-        }
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (TextUtils.equals(action, WifiManager.RSSI_CHANGED_ACTION)
-                    || TextUtils.equals(action, WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                updateWifiResults(wifiManager.getScanResults());
-            } else if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
-                ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
-                updateConnectivityStatus(status.state);
-            } else if (TextUtils.equals(action, WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
-                NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-                updateConnectInfo(info);
-            }
+    @Override
+    public void onNetworkChanged(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (TextUtils.equals(action, WifiManager.RSSI_CHANGED_ACTION)
+                || TextUtils.equals(action, WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+            updateWifiResults();
+        } else if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
+            ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
+            updateConnectivityStatus(status.state);
+        } else if (TextUtils.equals(action, WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
+            NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+            updateConnectInfo(info);
         }
     }
 

@@ -50,15 +50,6 @@ public interface ConfigApContract {
     interface Presenter extends BasePresenter {
 
         /**
-         * 注册wifi广播
-         * <p>
-         * : this context should be application context
-         */
-        void registerNetworkMonitor();
-
-        void unregisterNetworkMonitor();
-
-        /**
          * @param ssid
          * @param pwd
          * @param type

@@ -135,9 +135,6 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     public void onPause() {
         super.onPause();
         JConstant.ConfigApStep = 3;
-        if (basePresenter != null) {
-            basePresenter.unregisterNetworkMonitor();
-        }
     }
 
     @Override
@@ -186,7 +183,7 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
                 String pwd = ViewUtils.getTextViewContent(etWifiPwd);
                 int type = 0;
                 if (TextUtils.isEmpty(ssid)) {
-                    ToastUtil.showNegativeToast("没有文案:请选择wifi");
+//                    ToastUtil.showNegativeToast("没有文案:请选择wifi");
                     return;
                 }
                 Object o = tvConfigApName.getTag();
@@ -234,9 +231,9 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
         final int count = resultList == null ? 0 : resultList.size();
         if (count == 0) {
             if (Build.VERSION.SDK_INT >= 23) {
-                ToastUtil.showNegativeToast(getString(R.string.turn_on_gps));
+                ToastUtil.showNegativeToast(getString(R.string.GetWifiList_FaiTips));
             } else {
-                ToastUtil.showNegativeToast("请尝试手动开关wifi");
+//                ToastUtil.showNegativeToast("请尝试手动开关wifi");
             }
             return;
         }
