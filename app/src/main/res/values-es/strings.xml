@@ -272,6 +272,7 @@
   <string name="MON_1">Cada lunes</string>
   <string name="MON_2">Uno</string>
   <string name="MSG_BIND">Dispositivos vinculados, ya se puede vigilar su hogar</string>
+  <string name="MSG_BOTTOM_LINE">Fondo</string>
   <string name="MSG_DELETE_TITLE">Una vez borrado, no se puede recuperar, por favor ,reconfirme de Nuevo</string>
   <string name="MSG_DETAILS">Ver</string>
   <string name="MSG_LOW_BATTERY">Dispositivos de poca batería, conecte rápido con la fuente de la alimentación</string>
@@ -422,9 +423,11 @@
   <string name="RET_EUPLOADFILE">Subida de documento fracasada</string>
   <string name="RET_EUPLOADFILE_TOOSS">Subida de documento a OSS fracasada</string>
   <string name="RET_MSG_EDATABASE">Database Error</string>
+  <string name="RET_MSG_EUNKNOWN">Error(%s)</string>
   <string name="RE_ADD_BUTTONG">Añada de nuevo</string>
   <string name="RE_ADD_LABEL">Renovación cumplida</string>
   <string name="RIGN_SUC">Registrado correctamente</string>
+  <string name="Request_TimeOut">Tiempo fuera</string>
   <string name="Reset_Suc">Ya parpadeado en rojo</string>
   <string name="SAT">Sáb</string>
   <string name="SAT_1">Cada sábado</string>
@@ -623,7 +626,7 @@
   <string name="Tap1_DoorFun_VoiceTips">Sonidos estarán fuera del receptor</string>
   <string name="Tap1_DoorFun_Waitting">Esperando&#8230;</string>
   <string name="Tap1_DownloadFirmwareFai">Descargar el firmware falló</string>
-  <string name="Tap1_DownloadFirmwareTips">La descarga comienza en breve,asegúrese de que el teléfono móvil y el dispositivo están conectados con el mismo WIFI</string>
+  <string name="Tap1_DownloadFirmwareTips">Descarga comienza en breve,asegúrese de que el teléfono móvil y el dispositivo están conectados con el mismo WIFI</string>
   <string name="Tap1_FirmwareDownloading">Descargando(%s)</string>
   <string name="Tap1_FirmwareUpdate">Actualización de firmware</string>
   <string name="Tap1_FirmwareUpdateFai">Actualizar fallado</string>
@@ -649,6 +652,7 @@
   <string name="Tap1_TitleName">Casa</string>
   <string name="Tap1_Tosetup">Instaurar</string>
   <string name="Tap1_Update">Actualizar</string>
+  <string name="Tap1_UpdateFirmwareTips">Actualizar comienza en breve,asegúrese de que el teléfono móvil y el dispositivo están conectados con el mismo WIFI</string>
   <string name="Tap1_device_deleted">Este dispositivo ha sido eliminado.</string>
   <string name="Tap1_iHome_Associate">Asociar</string>
   <string name="Tap1_iHome_Associated">Asociado</string>
@@ -738,7 +742,7 @@
   <string name="Tap3_ShareDevice_CanceldeTips">Cancelado</string>
   <string name="Tap3_ShareDevice_CancleShare">Asegúrese de cancelar el intercambio con este usuario</string>
   <string name="Tap3_ShareDevice_Contacts">Lista de contactos.</string>
-  <string name="Tap3_ShareDevice_Delete">Cancelar lo compartido.</string>
+  <string name="Tap3_ShareDevice_Delete">Cancelar</string>
   <string name="Tap3_ShareDevice_DeleteSucces">Ha cancelado.</string>
   <string name="Tap3_ShareDevice_DeleteTips">¿Cancelar el usuario %s?</string>
   <string name="Tap3_ShareDevice_ExceedTips">Comparta hasta un máximo de 5 contactos.</string>
@@ -753,7 +757,7 @@
   <string name="Tap3_ShareDevice_SuccessTips">Ha compartido con éxito.</string>
   <string name="Tap3_ShareDevice_Tips">Este dispositivo no puede ser compartida con más usuarios</string>
   <string name="Tap3_ShareDevice_ToContacts">Compartir con los contactos</string>
-  <string name="Tap3_TitleName">Mía</string>
+  <string name="Tap3_TitleName">Me</string>
   <string name="Tap3_Uploading">Subiendo&#8230;</string>
   <string name="Tap3_UploadingComplete">Sube completa</string>
   <string name="Tap3_UploadingFailed">Subida fallida</string>
@@ -840,7 +844,7 @@
   <string name="getting">Por favor, espere&#8230;</string>
   <string name="has_copy">Copiar el éxito</string>
   <string name="has_not_sdcard">No tarjeta Micro SD disponible</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/es.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/es.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">No se dispone de espacio de la tarjeta Micro SD</string>
   <string name="is_connecting_video">Conectando</string>

@@ -272,6 +272,7 @@
   <string name="MON_1">Montags</string>
   <string name="MON_2">Mo</string>
   <string name="MSG_BIND">Erfolgreich hinzugefügt</string>
+  <string name="MSG_BOTTOM_LINE">Unterseite</string>
   <string name="MSG_DELETE_TITLE">Gelöschte Inhalte nicht zurücksetzbar, bitte wieder prüfen</string>
   <string name="MSG_DETAILS">Details</string>
   <string name="MSG_LOW_BATTERY">Batterie fast leer, bitte rechtzeitig aufladen!</string>
@@ -422,9 +423,11 @@
   <string name="RET_EUPLOADFILE">scheitern Upload&#8211;Datei</string>
   <string name="RET_EUPLOADFILE_TOOSS">Upload fehlgeschlagen</string>
   <string name="RET_MSG_EDATABASE">Database Error</string>
+  <string name="RET_MSG_EUNKNOWN">Error(%s)</string>
   <string name="RE_ADD_BUTTONG">Hinzufügen erneut</string>
   <string name="RE_ADD_LABEL">Die Softwareaktualisierung ist fertig</string>
   <string name="RIGN_SUC">Erfolgreich registriert</string>
+  <string name="Request_TimeOut">Auszeit</string>
   <string name="Reset_Suc">Schon flackerten in rot</string>
   <string name="SAT">Samstag</string>
   <string name="SAT_1">Samtags</string>
@@ -649,6 +652,7 @@
   <string name="Tap1_TitleName">Zuhause</string>
   <string name="Tap1_Tosetup">Einrichten</string>
   <string name="Tap1_Update">Aktualisierung</string>
+  <string name="Tap1_UpdateFirmwareTips">Aktualisierung wird in Kürze starten,stellen Sie sicher,dass Handy und Gerät mit demselben WIFI verbinden</string>
   <string name="Tap1_device_deleted">Dieses Gerät wurde gelöscht.</string>
   <string name="Tap1_iHome_Associate">assoziieren</string>
   <string name="Tap1_iHome_Associated">Dazugehörigen</string>
@@ -738,7 +742,7 @@
   <string name="Tap3_ShareDevice_CanceldeTips">Abgebrochen</string>
   <string name="Tap3_ShareDevice_CancleShare">Sicher, die Freigabe mit diesem Benutzer abzubrechen?</string>
   <string name="Tap3_ShareDevice_Contacts">Kontakte</string>
-  <string name="Tap3_ShareDevice_Delete">Teilen abbrechen</string>
+  <string name="Tap3_ShareDevice_Delete">Abbrechen</string>
   <string name="Tap3_ShareDevice_DeleteSucces">abgebrochen</string>
   <string name="Tap3_ShareDevice_DeleteTips">Möchten Sie das Teilen mit %s löschen?</string>
   <string name="Tap3_ShareDevice_ExceedTips">max. mit fünf Freunde teilen</string>
@@ -753,7 +757,7 @@
   <string name="Tap3_ShareDevice_SuccessTips">erfolgreich geteilt</string>
   <string name="Tap3_ShareDevice_Tips">Dieses Gerät kann nicht mit anderen Benutzern geteilt werden</string>
   <string name="Tap3_ShareDevice_ToContacts">Teilen mit Kontakten</string>
-  <string name="Tap3_TitleName">Meins</string>
+  <string name="Tap3_TitleName">Mich</string>
   <string name="Tap3_Uploading">Hochladen&#8230;</string>
   <string name="Tap3_UploadingComplete">Hochladen abgeschlossen</string>
   <string name="Tap3_UploadingFailed">Hochladen fehlgeschlagen</string>
@@ -840,7 +844,7 @@
   <string name="getting">Einen Moment bitte&#8230;</string>
   <string name="has_copy">Kopiert</string>
   <string name="has_not_sdcard">Keine verfügbare Micro SD&#8211;Karte</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/de.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/de.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Mangel an Speicherplatz</string>
   <string name="is_connecting_video">In Verbindung</string>
@@ -873,5 +877,4 @@
   <string name="web">http://www.cleverdog.com.cn/</string>
   <string name="wifi_authentication">verifizieren%s ist WiFi&#8211;Verbindung</string>
   <string name="wifi_hasnot">Aktuelles WiFi nicht gefunden</string>
-
 </resources>
