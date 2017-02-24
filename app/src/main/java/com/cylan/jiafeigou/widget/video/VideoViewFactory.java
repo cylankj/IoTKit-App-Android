@@ -60,6 +60,9 @@ public class VideoViewFactory {
         void takeSnapshot();
 
         void performTouch();
+
+        void onDestroy();
+
     }
 
     public interface InterActListener {
