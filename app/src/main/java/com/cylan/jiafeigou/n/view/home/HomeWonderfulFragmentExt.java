@@ -38,8 +38,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.ShadowFrameLayout;
@@ -242,9 +240,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         if (homeWonderAdapter.getCount() > 0) {
             srLayoutMainContentHolder.setNestedScrollingEnabled(true);
         }
-        if (resultList.size() == 0) {
-            ToastUtil.showNegativeToast(isRefresh ? "暂无数据!" : "没有更多了");
-        }
     }
 
     @Override
@@ -271,7 +266,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onQueryTimeLineTimeOut() {
-        ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.Clear_Sdcard_tips5));
         srLayoutMainContentHolder.setRefreshing(false);
     }
 

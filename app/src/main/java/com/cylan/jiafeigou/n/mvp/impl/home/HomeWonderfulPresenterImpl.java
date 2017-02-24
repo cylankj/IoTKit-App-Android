@@ -173,7 +173,6 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         AppLogger.e("删除成功");
                         DpMsgDefine.DPWonderItem item = mWonderItems.remove(position);
                         mWonderItems.remove(item);
-                        ToastUtil.showPositiveToast("删除成功");
                         mView.onDeleteWonderSuccess(position);
                         if (mWonderItems.isEmpty()) {//说明当天的已经删完了
                             mView.chooseEmptyView(VIEW_TYPE_EMPTY);
@@ -181,7 +180,6 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
                     } else {
                         AppLogger.e("删除失败");
-                        ToastUtil.showNegativeToast("删除失败");
                     }
                 }, e -> {
                     ToastUtil.showNegativeToast("删除失败!");

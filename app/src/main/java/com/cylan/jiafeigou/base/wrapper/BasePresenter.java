@@ -91,6 +91,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     }
 
 
+//    protected Observable getNetWorkMonitor() {
+//        Observable.
+//    }
+
     /**
      * 如果不需要在onStop中进行反注册,可以重写这个方法,然后在自定义的地方反注册
      */

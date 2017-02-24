@@ -864,7 +864,7 @@
     <string name="DOWNLOAD_NEED_PERMISSION">下载文件需要权限,请手动开启</string>
     <string name="DEVICE">设备</string>
     <string name="CONNECT_TO_BELL_TIME_OUT">连接门铃超时</string>
-    <string name="VIDEO_PEER_IN_CONNECTED">正在查看中,不可重复查看</string>
+    <string name="VIDEO_PEER_IN_CONNECTED">正在连接中，不可多人同时查看</string>
     <string name="VIDEO_PEER_NOT_EXIST">对端不在线</string>
     <string name="VIDEO_NOT_LOGIN">本端未登录</string>
     <string name="VIDEO_PEER_DISCONNECTED">对端断开</string>
