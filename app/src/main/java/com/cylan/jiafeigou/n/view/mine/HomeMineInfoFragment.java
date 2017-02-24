@@ -534,7 +534,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             e.printStackTrace();
         }
         //进入登陆页 login page
-        getActivity().startActivity(new Intent(getContext(), SmartcallActivity.class));
+        Intent intent = new Intent(getContext(), SmartcallActivity.class);
+        intent.putExtra("from_log_out",true);
+        getActivity().startActivity(intent);
         getActivity().finish();
 
     }
