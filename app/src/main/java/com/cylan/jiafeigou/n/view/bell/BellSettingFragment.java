@@ -1,11 +1,7 @@
 package com.cylan.jiafeigou.n.view.bell;
 
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
-import android.provider.Settings;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -14,20 +10,15 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
-import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
-import com.cylan.jiafeigou.n.view.setting.WifiListFragment;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -38,7 +29,6 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 public class BellSettingFragment extends BaseFragment<BellSettingContract.Presenter>
@@ -61,6 +51,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     @BindView(R.id.lLayout_setting_container)
     LinearLayout lLayoutSettingContainer;
     private SimpleDialogFragment simpleDialogFragment;
+    private SimpleDialogFragment mClearRecordFragment;
 
 
     public static BellSettingFragment newInstance(Bundle bundle) {
@@ -117,50 +108,39 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.sv_setting_device_wifi:
-                JFGDoorBellDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
-                if (device != null && JFGRules.isFreeCam(device.pid)) {
-                    Intent intent = new Intent(getContext(), BindDeviceActivity.class);
-                    intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
-                    startActivity(intent);
-                } else {
-                    DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(mUUID, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
-                    if (!JFGRules.isDeviceOnline(net)) {
-                        //设备离线
-                        Intent intent = new Intent(getContext(), BindDeviceActivity.class);
-                        intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
-                        startActivity(intent);
-                    } else {
-                        //设备在线
-                        String localSSid = NetUtils.getNetName(ContextUtils.getContext());
-                        String remoteSSid = net.ssid;
-                        if (!TextUtils.equals(localSSid, remoteSSid)) {
-                            new AlertDialog.Builder(getContext())
-                                    .setMessage(getString(R.string.setwifi_check, remoteSSid))
-                                    .setNegativeButton(getString(R.string.CANCEL), null)
-                                    .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                                    })
-                                    .show();
-                        } else {
-                            //显示列表
-//                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                            Bundle bundle = new Bundle();
-                            bundle.putString(KEY_DEVICE_ITEM_UUID, mUUID);
-                            WifiListFragment fragment = WifiListFragment.getInstance(bundle);
-                            loadFragment(android.R.id.content, getActivity().getSupportFragmentManager(), fragment);
-                        }
-                    }
-                }
+                Bundle setWiFi = new Bundle();
+                BindDoorBellFragment fragment = BindDoorBellFragment.newInstance(setWiFi);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .add(android.R.id.content, fragment)
+                        .addToBackStack("BindDoorBellFragment")
+                        .commit();
                 break;
             case R.id.tv_setting_clear_:
                 ViewUtils.deBounceClick(view);
-                mPresenter.clearBellRecord(mUUID);
+                if (mClearRecordFragment == null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap1_Tipsforclearrecents));
+                    mClearRecordFragment = SimpleDialogFragment.newInstance(bundle);
+                }
+                mClearRecordFragment.setAction((id, value) -> {
+                    switch (id) {
+                        case R.id.tv_dialog_btn_left:
+                            mPresenter.clearBellRecord(mUUID);
+                            LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
+                    }
+                });
+                mClearRecordFragment.show(getActivity().getSupportFragmentManager(), "ClearBellRecordFragment");
                 break;
             case R.id.tv_setting_unbind:
                 ViewUtils.deBounceClick(view);
                 if (simpleDialogFragment == null) {
                     Bundle bundle = new Bundle();
-                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_CID));
+                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+                    String name = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.SURE_DELETE_1, name));
                     simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
                 }
                 simpleDialogFragment.setAction(this);

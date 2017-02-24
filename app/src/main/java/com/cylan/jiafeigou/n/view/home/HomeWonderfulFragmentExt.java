@@ -22,8 +22,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
@@ -72,18 +70,14 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     RecyclerView rVDevicesList;
     @BindView(R.id.fLayout_main_content_holder)
     SwipeRefreshLayout srLayoutMainContentHolder;
-    @BindView(R.id.fLayoutHomeWonderfulHeaderContainer)
-    FrameLayout fLayoutHomeHeaderContainer;
-    @BindView(R.id.fLayout_date_head_wonder)
-    FrameLayout fLayoutDateHeadWonder;
+    //    @BindView(R.id.fLayoutHomeWonderfulHeaderContainer)
+//    FrameLayout fLayoutHomeHeaderContainer;
     @BindView(R.id.rl_top_head_wonder)
     RelativeLayout rlTopHeadWonder;
     @BindView(R.id.img_wonderful_title_cover)
     ImageView imgWonderfulTitleCover;
     @BindView(R.id.tv_date_item_head_wonder)
     TextView mHeaderContentTitle;
-    @BindView(R.id.imgWonderfulTopBg)
-    ImageView imgWonderfulTopBg;
     @BindView(R.id.tv_title_head_wonder)
     TextView tvTitleHeadWonder;
     @BindView(R.id.fLayout_empty_view_container)
@@ -102,7 +96,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     AppBarLayout appbar;
     private HomeWonderfulAdapter homeWonderAdapter;
     private LinearLayoutManager mLinearLayoutManager;
-    private ShadowFrameLayout mParent;
     private boolean mCanRefresh = true;
     private boolean mHasMore;
 
@@ -187,13 +180,16 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     private void initSomeViewMargin() {
-        ViewUtils.setViewMarginStatusBar(tvTitleHeadWonder);
+        ViewUtils.setFitsSystemWindowsCompat(appbar);
+        ViewUtils.setViewPaddingStatusBar(appbar);
     }
 
     private void initView() {
         //添加Handler
         srLayoutMainContentHolder.setOnRefreshListener(this);
-        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        mLinearLayoutManager = new LinearLayoutManager(getContext()) {
+
+        };
         rVDevicesList.setLayoutManager(mLinearLayoutManager);
         rVDevicesList.setAdapter(homeWonderAdapter);
         rVDevicesList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -225,35 +221,35 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onQueryTimeLineSuccess(List<DPWonderItem> resultList, boolean isRefresh) {
         srLayoutMainContentHolder.setRefreshing(false);
-        if (resultList == null || resultList.size() == 0) {
-            ToastUtil.showNegativeToast("暂无数据!");
-            return;
-        }
+        mHasMore = resultList.size() == 20;
+        int lastPosition = homeWonderAdapter.getCount() - 1;
         if (isRefresh) {
-            homeWonderAdapter.addAll(0, resultList);
-            rVDevicesList.scrollToPosition(0);
+            homeWonderAdapter.clear();
+            homeWonderAdapter.addAll(resultList);
+
         } else {
-            int lastPosition = homeWonderAdapter.getCount() - 1;
             DPWonderItem last = homeWonderAdapter.getItem(lastPosition);
             if (last.msgType == 2) {
                 homeWonderAdapter.remove(last);
             }
-            mHasMore = resultList.size() == 21;
-            if (mHasMore) {
-                homeWonderAdapter.addAll(resultList.subList(0, 20));
-                homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
-            } else {
-                homeWonderAdapter.addAll(resultList);
-            }
-            homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
+            homeWonderAdapter.addAll(resultList);
         }
-        homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
-        srLayoutMainContentHolder.setNestedScrollingEnabled(true);
+        if (mHasMore) {
+            homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
+            homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
+            homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
+        }
+        if (homeWonderAdapter.getCount() > 0) {
+            srLayoutMainContentHolder.setNestedScrollingEnabled(true);
+        }
+        if (resultList.size() == 0) {
+            ToastUtil.showNegativeToast(isRefresh ? "暂无数据!" : "没有更多了");
+        }
     }
 
     @Override
     public void onHeadBackgroundChang(int daytime) {
-        imgWonderfulTopBg.setBackgroundResource(daytime == 0 ? R.drawable.bg_wonderful_daytime : R.drawable.wonderful_bg_top_night);
+        appbar.setBackgroundResource(daytime == 0 ? R.drawable.bg_wonderful_daytime : R.drawable.wonderful_bg_top_night);
     }
 
     @Override
@@ -289,15 +285,10 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @SuppressWarnings("deprecation")
     @Override
     public void onTimeTick(int dayTime) {
-
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
                 ? R.drawable.bg_wonderful_daytime : R.drawable.wonderful_bg_top_night;
-        Glide.with(this)
-                .load(drawableId)
-                .asBitmap()
-                .format(DecodeFormat.PREFER_ARGB_8888)
-                .into(imgWonderfulTopBg);
+        appbar.setBackgroundResource(drawableId);
         AppLogger.d("onTimeTick: " + dayTime);
     }
 
@@ -394,8 +385,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         intent.putParcelableArrayListExtra(JConstant.KEY_SHARED_ELEMENT_LIST, list);
         intent.putExtra(JConstant.KEY_SHARED_ELEMENT_STARTED_POSITION, position);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            mParent = (ShadowFrameLayout) v.getParent();
-            mParent.adjustSize(true);
+            ((ShadowFrameLayout) v.getParent()).adjustSize(true);
             ActivityOptionsCompat compat = ActivityOptionsCompat.makeSceneTransitionAnimation(getActivity(), v, v.getTransitionName());
             startActivity(intent, compat.toBundle());
         } else {
@@ -511,12 +501,15 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 newSharedElement = mWonderfulGuideContainer.findViewById(R.id.iv_wonderful_item_content);
             }
             if (newSharedElement == null) return;
-            ShadowFrameLayout parent = (ShadowFrameLayout) newSharedElement.getParent();
-            if (mParent != parent) {
-                mParent.adjustSize(false);
-                int position = ViewUtils.getParentAdapterPosition(rVDevicesList, newSharedElement, R.id.lLayout_item_wonderful);
-                homeWonderAdapter.notifyItemChanged(position);
+            ((ShadowFrameLayout) newSharedElement.getParent()).adjustSize(true);
+            SuperViewHolder holders = (SuperViewHolder) rVDevicesList.findViewHolderForAdapterPosition(currentPosition);
+            View oldView;
+            if (holders != null) {
+                oldView = holders.getView(R.id.iv_wonderful_item_content);
+            } else {
+                oldView = mWonderfulGuideContainer.findViewById(R.id.iv_wonderful_item_content);
             }
+            ((ShadowFrameLayout) oldView.getParent()).adjustSize(false);
             AppLogger.d("transition newTransitionName: " + newTransitionName);
             AppLogger.d("transition newSharedElement: " + newSharedElement);
             names.clear();
@@ -529,23 +522,22 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-        if (sharedElementNames.size() == 0) {
-            if (homeWonderAdapter.getCount() == 0) {
-                mPresenter.startRefresh();
-            }
-            return;
-        }
-        View view = sharedElements.get(0);
-        if (view != null) {
-            final ShadowFrameLayout parent = (ShadowFrameLayout) view.getParent();
-            parent.post(() -> {
-                parent.adjustSize(false);
-                int position = ViewUtils.getParentAdapterPosition(rVDevicesList, view, R.id.lLayout_item_wonderful);
-                if (position >= 0 && position < homeWonderAdapter.getCount()) {
-                    homeWonderAdapter.notifyItemChanged(position);
-                }
-            });
-        }
+        mWonderfulEmptyViewContainer.post(() -> ((ShadowFrameLayout) sharedElements.get(0).getParent()).adjustSize(false));
+//        if (sharedElementNames.size() == 0) {
+//            if (homeWonderAdapter.getCount() == 0) {
+//                mPresenter.startRefresh();
+//            }
+//            return;
+//        }
+//        View view = sharedElements.get(0);
+//        if (view != null) {
+//            ((ShadowFrameLayout) view.getParent()).adjustSize(false);
+//            int position = ViewUtils.getParentAdapterPosition(rVDevicesList, view, R.id.lLayout_item_wonderful);
+//            if (position >= 0 && position < homeWonderAdapter.getCount()) {
+//                homeWonderAdapter.notifyItemChanged(position);
+//            }
+//
+//        }
     }
 
     @Override
@@ -554,14 +546,19 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     @Override
+    public void onSharedElementStart(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
+        ((ShadowFrameLayout) sharedElements.get(0)).adjustSize(true);
+    }
+
+    @Override
     public void onActivityReenter(int requestCode, Intent data) {
         AppLogger.d("transition onActivityReenter");
         mTmpReenterState = new Bundle(data.getExtras());
         int startingPosition = mTmpReenterState.getInt(JConstant.EXTRA_STARTING_ALBUM_POSITION);
         int currentPosition = mTmpReenterState.getInt(JConstant.EXTRA_CURRENT_ALBUM_POSITION);
-        if (startingPosition != currentPosition) {
-            ((LinearLayoutManager) rVDevicesList.getLayoutManager()).scrollToPositionWithOffset(currentPosition, 0);
-        }
+//        if (startingPosition != currentPosition) {
+        ((LinearLayoutManager) rVDevicesList.getLayoutManager()).scrollToPosition(currentPosition);
+//        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().postponeEnterTransition();
         }

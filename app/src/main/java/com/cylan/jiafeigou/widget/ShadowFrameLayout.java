@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.widget.FrameLayout;
@@ -17,7 +16,6 @@ import com.cylan.jiafeigou.R;
 public class ShadowFrameLayout extends FrameLayout {
     Rect mRect = new Rect();
     private boolean mFixSize = false;
-    private boolean mAdjustSize = false;
 
     public ShadowFrameLayout(Context context) {
         this(context, null);
@@ -42,30 +40,17 @@ public class ShadowFrameLayout extends FrameLayout {
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         super.onLayout(changed, left, top, right, bottom);
-        adjustSize(mAdjustSize);
     }
 
     public void adjustSize(boolean adjust) {
-//        if (true) return;
-
         ImageView view = (ImageView) findViewById(R.id.iv_wonderful_item_content);
-
         if (view != null) {
-            view.setTag(null);
             if (adjust) {
                 getLocalVisibleRect(mRect);
-                if (!mAdjustSize) {
-                    view.setDrawingCacheEnabled(true);
-                    Bitmap cache = view.getDrawingCache();
-                    if (cache != null) {
-                        view.setImageBitmap(Bitmap.createBitmap(cache, mRect.left, mRect.top, cache.getWidth(), mRect.top == 0 ? mRect.bottom : cache.getHeight() - mRect.top));
-                    }
-                }
                 view.layout(mRect.left, mRect.top, mRect.right, mRect.bottom);
             } else {
                 view.layout(0, 0, getMeasuredWidth(), getMeasuredHeight());
             }
         }
-        mAdjustSize = adjust;
     }
 }

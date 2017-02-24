@@ -264,8 +264,8 @@
         <item name="android:layout_width">0dp</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_weight">1</item>
-        <item name="android:progressDrawable">@drawable/media_seek_bar_drawable</item>
-        <item name="android:thumb">@drawable/seek_bar_dot_white</item>
+        <!--<item name="android:progressDrawable">@drawable/abc_media_seek_bar_drawable</item>-->
+        <!--<item name="android:thumb">@drawable/abc_seek_bar_dot_white</item>-->
     </style>
 
     <style name="video_opt_play_time">

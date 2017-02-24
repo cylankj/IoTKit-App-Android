@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.base.wrapper;
 
-import android.os.SystemClock;
 import android.support.annotation.CallSuper;
-import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -10,12 +8,10 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
-import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -23,6 +19,7 @@ import java.util.concurrent.TimeoutException;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by yzd on 16-12-30.
@@ -31,6 +28,7 @@ import rx.android.schedulers.AndroidSchedulers;
 public abstract class BaseCallablePresenter<V extends CallableView> extends BaseViewablePresenter<V> implements CallablePresenter {
     protected Caller mCaller;
     protected Caller mHolderCaller;
+    protected boolean mIsInViewerMode = false;
 
     @Override
     @CallSuper
@@ -67,8 +65,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     public void newCall(Caller caller) {
         Subscription subscription = Observable.just(mHolderCaller = caller)
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(who -> !(TextUtils.equals(mViewLaunchType, JConstant.VIEW_CALL_WAY_VIEWER)
-                        && TextUtils.equals(mView.onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)))
+                .filter(who -> !mIsInViewerMode)
                 .flatMap(who -> {
                     switch (mView.onResolveViewLaunchType()) {
                         case JConstant.VIEW_CALL_WAY_LISTEN:
@@ -76,11 +73,24 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                 mView.onNewCallWhenInLive(mHolderCaller.caller);
                             } else if (mHolderCaller != null) {
                                 mView.onListen();
+                                Subscription sub = Observable.interval(1, TimeUnit.SECONDS)
+                                        .subscribeOn(Schedulers.io())
+                                        .map(s -> {
+                                                    preload(mHolderCaller.picture);
+                                                    return s;
+                                                }
+                                        )
+                                        .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class)
+                                                .map(notify -> true)
+                                                .mergeWith(RxBus.getCacheInstance()
+                                                        .toObservable(RxEvent.CallAnswered.class)
+                                                        .map(answered -> true)))
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .subscribe(s -> {
+                                            mView.onPreviewPicture(caller.picture);
+                                        });
+                                registerSubscription(sub);
                                 AppLogger.e("收到门铃呼叫");
-                                waitForPicture(mHolderCaller.picture, () -> {
-                                    if (mView != null)
-                                        mView.onPreviewPicture(mHolderCaller.picture);
-                                });
                             }
                             break;
                         case JConstant.VIEW_CALL_WAY_VIEWER:
@@ -89,13 +99,14 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                             startViewer();
                             break;
                     }
-                    return RxBus.getCacheInstance().toObservable(RxEvent.CallAnswered.class)
-                            .timeout(30, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()); //三十秒超时时间,如果无人接听的话
+                    return
+                            RxBus.getCacheInstance().toObservable(RxEvent.CallAnswered.class)
+                                    .timeout(30, TimeUnit.SECONDS); //三十秒超时时间,如果无人接听的话
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(answer -> {
-                    AppLogger.e("门铃在其他端接听了");
                     if (!answer.self) {//说明不是自己接听的
+                        AppLogger.e("门铃在其他端接听了");
                         if (mCaller == null) {
                             mView.onCallAnswerInOther();
                             mView.onDismiss();
@@ -118,21 +129,29 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         registerSubscription(subscription);
     }
 
-    protected void waitForPicture(String url, JFGView.Action action) {
-        Glide.with(ContextUtils.getContext()).load(url).
-                listener(new RequestListener<String, GlideDrawable>() {
+    @Override
+    public void onStop() {
+        super.onStop();
+        mIsInViewerMode = false;
+    }
+
+    private void preload(String url) {
+        Glide.with(mView.getAppContext()).load(url)
+                .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
                     public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        SystemClock.sleep(200);
-                        waitForPicture(url, action);
                         return false;
                     }
 
                     @Override
                     public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        if (action != null) action.actionDone();
+                        RxBus.getCacheInstance().post(new Notify());
                         return false;
                     }
-                }).preload();
+                })
+                .preload();
+    }
+
+    private static class Notify {
     }
 }

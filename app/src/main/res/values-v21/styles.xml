@@ -98,4 +98,12 @@
         <item name="colorControlNormal">@android:color/holo_blue_dark</item>
         <item name="colorControlActivated">@android:color/holo_green_dark</item>
     </style>
+
+    <style name="video_opt_seek_bar" parent="Widget.AppCompat.SeekBar">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:progressDrawable">@drawable/media_seek_bar_drawable</item>
+        <item name="android:thumb">@drawable/seek_bar_dot_white</item>
+    </style>
 </resources>

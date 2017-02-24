@@ -98,6 +98,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(timeTickEvent -> {
+                    onUnRegisterSubscription();
                     mView.onPageScrolled();
                 });
     }
@@ -108,12 +109,14 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     mWonderItems.clear();
-                    mView.chooseEmptyView(result.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
                     mWonderItems.addAll(result);
-                    mView.onQueryTimeLineSuccess(result, true);
-                }, e -> e.printStackTrace());
-
-
+                    mView.chooseEmptyView(mWonderItems.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
+                    mView.onQueryTimeLineSuccess(mWonderItems, true);
+                }, e -> {
+                    if (e instanceof TimeoutException) {
+                        mView.onQueryTimeLineTimeOut();
+                    }
+                });
     }
 
     @Override
@@ -129,9 +132,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     public Observable<List<DpMsgDefine.DPWonderItem>> queryTimeLine(long version, int count, boolean asc) {
-        return Observable.just(sendQueryRequest(version, count, asc))
-                .filter(seq -> seq > 0)
+        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            subscriber.onNext(sendQueryRequest(version, count, asc));
+            subscriber.onCompleted();
+        })
                 .subscribeOn(Schedulers.io())
+                .filter(seq -> seq > 0)
                 .flatMap(seq -> RxBus.getCacheInstance()
                         .toObservable(RxEvent.ParseResponseCompleted.class)
                         .filter(rsp -> rsp.seq == seq)

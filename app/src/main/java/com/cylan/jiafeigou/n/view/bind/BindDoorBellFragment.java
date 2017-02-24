@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 
@@ -38,7 +39,7 @@ import butterknife.OnClick;
  * Use the {@link BindDoorBellFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class BindDoorBellFragment extends IBaseFragment<BindDeviceContract.Presenter> implements BindDeviceContract.View {
+public class BindDoorBellFragment extends IBaseFragment<BindDeviceContract.Presenter> implements BindDeviceContract.View, View.OnClickListener {
 
     @BindView(R.id.fLayout_flip_before)
     FrameLayout fLayoutFlipBefore;
@@ -58,6 +59,8 @@ public class BindDoorBellFragment extends IBaseFragment<BindDeviceContract.Prese
     ImageView imgVWifiLightRedDotLeft;
     @BindView(R.id.imgV_wifi_light_red_dot_right)
     ImageView imgVWifiLightRedDotRight;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar mCustomToolbar;
 
     public BindDoorBellFragment() {
         // Required empty public constructor
@@ -95,6 +98,7 @@ public class BindDoorBellFragment extends IBaseFragment<BindDeviceContract.Prese
                 initBeforeFlipAnimation();
             }
         }, 500);
+        mCustomToolbar.setBackAction(this);
     }
 
     @Override
@@ -272,5 +276,11 @@ public class BindDoorBellFragment extends IBaseFragment<BindDeviceContract.Prese
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 fragment, android.R.id.content);
         cancelAnimation();
+    }
+
+
+    @Override
+    public void onClick(View v) {
+        getActivity().onBackPressed();
     }
 }

@@ -20,9 +20,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 /**
  * Created by yzd on 16-12-30.
@@ -39,24 +42,26 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void startViewer() {
-        Subscription subscribe = Observable.create((Observable.OnSubscribe<String>) subscriber -> {
-            try {
-                AppLogger.e("正在准备开始直播,对端 cid 为:" + getViewHandler());
-                JfgCmdInsurance.getCmd().playVideo(getViewHandler());
+        Subscription subscribe = Observable.create(new Observable.OnSubscribe<String>() {
+            @Override
+            public void call(Subscriber<? super String> subscriber) {
+                mView.onViewer();
                 subscriber.onNext(getViewHandler());
                 subscriber.onCompleted();
-            } catch (JfgException e) {
-                e.printStackTrace();
-                AppLogger.e("准备开始直播失败!");
-                subscriber.onError(e);
             }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(s -> {
-                    mView.onViewer();
-                    return s;
+        }).subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(Schedulers.io())
+                .map(handle -> {
+                    try {
+                        AppLogger.e("正在准备开始直播,对端 cid 为:" + handle);
+                        JfgCmdInsurance.getCmd().playVideo(handle);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                        AppLogger.e("准备开始直播失败!");
+                    }
+                    return handle;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(s -> Observable.merge(
                         RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
                                 .subscribeOn(Schedulers.io())
@@ -125,7 +130,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .map(handler -> {
                     if (!TextUtils.isEmpty(handler)) {
                         try {
-                            JfgCmdInsurance.getCmd().stopPlay(handler);
+                            getCmd().stopPlay(handler);
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.remote = getViewHandler();
                             disconn.code = -1000000;
@@ -193,8 +198,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected Observable<Boolean> setSpeaker(boolean on) {
         return Observable.just(on).map(s -> {
             AppLogger.e("正在切换 Speaker :" + on);
-            JfgCmdInsurance.getCmd().setAudio(false, on, on);//开启设备的扬声器和麦克风
-            JfgCmdInsurance.getCmd().setAudio(true, on, on);//开启客户端的扬声器和麦克风
+            getCmd().setAudio(false, on, on);//开启设备的扬声器和麦克风
+            getCmd().setAudio(true, on, on);//开启客户端的扬声器和麦克风
             return s;
         }).subscribeOn(Schedulers.io());
     }
