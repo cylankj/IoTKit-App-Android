@@ -26,6 +26,8 @@ import com.cylan.jiafeigou.widget.ImageViewTip;
 import java.util.List;
 import java.util.Locale;
 
+import javax.microedition.khronos.opengles.GL;
+
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.cylan.jiafeigou.misc.JConstant.NET_TYPE_RES;
@@ -67,15 +69,24 @@ public class HomePageListAdapter extends SuperAdapter<String> {
             holder.setImageResource(R.id.img_device_state_0, resIdNet);
         } else holder.setVisibility(R.id.img_device_state_0, GONE);
         //1 已分享的设备,此设备分享给别的账号.
-        if (GlobalDataProxy.getInstance().isDeviceShared(uuid)) {
-            holder.setVisibility(R.id.img_device_state_1, VISIBLE);
-            holder.setImageResource(R.id.img_device_state_1, R.drawable.home_icon_net_link);
-        } else {
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
             holder.setVisibility(R.id.img_device_state_1, GONE);
+        } else {
+            if (GlobalDataProxy.getInstance().isDeviceSharedTo(uuid)) {
+                holder.setVisibility(R.id.img_device_state_1, VISIBLE);
+                holder.setImageResource(R.id.img_device_state_1, R.drawable.home_icon_net_link);
+            } else {
+                holder.setVisibility(R.id.img_device_state_1, GONE);
+            }
         }
         //2 电量
         if (pid == JConstant.OS_DOOR_BELL) {
-
+            int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);
+            if (battery <= 20) {
+                holder.setVisibility(R.id.img_device_state_2, VISIBLE);
+                holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_battery);
+            } else holder.setVisibility(R.id.img_device_state_2, GONE);
         }
         //3 延时摄影
 

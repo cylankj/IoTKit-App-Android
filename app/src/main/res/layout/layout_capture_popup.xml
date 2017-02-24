@@ -1,15 +1,12 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="@dimen/x2"
     tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
 
-    <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
+    <ImageView
         android:id="@+id/imv_capture_popup"
-        android:layout_width="@dimen/x40"
-        android:layout_height="@dimen/y30"
-        hunt:riv_border_color="#36BDFF"
-        hunt:riv_border_width="@dimen/x2" />
-</LinearLayout>
+        android:layout_width="@dimen/x44"
+        android:layout_height="@dimen/y30" />
+</FrameLayout>

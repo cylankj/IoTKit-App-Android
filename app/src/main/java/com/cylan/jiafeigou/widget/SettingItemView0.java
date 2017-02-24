@@ -29,8 +29,10 @@ public class SettingItemView0 extends RelativeLayout {
     TextView tvSubTitle;
 
     ImageView imgvIcon;
+    ImageView imgvRedHint;
 
     SwitchButton switchButton;
+    View v_divider;
 
     public SettingItemView0(Context context) {
         this(context, null);
@@ -47,12 +49,15 @@ public class SettingItemView0 extends RelativeLayout {
         tvTitle = (TextView) view.findViewById(R.id.tv_settings_item_title);
         tvSubTitle = (TextView) view.findViewById(R.id.tv_settings_item_sub_title);
         imgvIcon = (ImageView) view.findViewById(R.id.imgv_item_icon);
+        imgvRedHint = (ImageView) view.findViewById(R.id.imv_item_red_hint);
         imgvIcon.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_image_show, true)
                 ? VISIBLE : GONE);
         switchButton = (SwitchButton) view.findViewById(R.id.btn_item_switch);
         final String title = ta.getString(R.styleable.SettingItemViewStyle_sv_title);
         final String subTitle = ta.getString(R.styleable.SettingItemViewStyle_sv_sub_title);
         final Drawable srcId = ta.getDrawable(R.styleable.SettingItemViewStyle_sv_image_src);
+        boolean show_red_hint = ta.getBoolean(R.styleable.SettingItemViewStyle_sv_red_hint, false);
+        imgvRedHint.setVisibility(show_red_hint ? VISIBLE : GONE);
         imgvIcon.setImageDrawable(srcId);
         tvTitle.setText(title);
         tvSubTitle.setText(subTitle);
@@ -60,7 +65,8 @@ public class SettingItemView0 extends RelativeLayout {
         tvSubTitle.setGravity(subTitleGravity);
         switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_visibility, false)
                 ? VISIBLE : GONE);
-        findViewById(R.id.v_divider).setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_divider, false)
+        v_divider = findViewById(R.id.v_divider);
+        v_divider.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_divider, false)
                 ? VISIBLE : GONE);
         ta.recycle();
     }
@@ -94,5 +100,13 @@ public class SettingItemView0 extends RelativeLayout {
 
     public CharSequence getTitle() {
         return tvTitle.getText();
+    }
+
+    public void showRedHint(boolean show) {
+        imgvRedHint.setVisibility(show ? VISIBLE : GONE);
+    }
+
+    public void showDivider(boolean show) {
+        v_divider.setVisibility(show ? VISIBLE : GONE);
     }
 }

@@ -28,7 +28,6 @@ import com.cylan.entity.jniCall.JFGServerCfg;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.ex.JfgException;
 import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
@@ -53,7 +52,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 
@@ -132,9 +130,6 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         GlobalDataProxy.getInstance().cacheDevice(jfgDevices);
-        if (jfgDevices != null) {
-            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceList(Arrays.asList(jfgDevices)));
-        }
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
     }
 
@@ -191,7 +186,7 @@ public class DataSourceService extends Service implements AppCallBack {
         if (RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(new RxEvent.GetHttpDoneResult(jfgMsgHttpResult));
             RxBus.getCacheInstance().post(jfgMsgHttpResult);
-    }
+        }
     }
 
     @Override
@@ -211,7 +206,7 @@ public class DataSourceService extends Service implements AppCallBack {
         DataSourceManager.getInstance().cacheRobotoGetDataRsp(robotoGetDataRsp);
         if (RxBus.getCacheInstance().hasObservers()) {
             RxBus.getCacheInstance().post(robotoGetDataRsp);
-    }
+        }
     }
 
     @Override
@@ -222,7 +217,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
-        RxBus.getCacheInstance().post(new RxEvent.SdcardClearRsp(l,arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SdcardClearRsp(l, arrayList));
         RxEvent.SetDataRsp rsp = new RxEvent.SetDataRsp();
         rsp.seq = l;
         rsp.rets = arrayList;
@@ -453,7 +448,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnCheckDevVersionRsp(boolean b, String s, String s1, String s2, String s3) {
         AppLogger.d("OnCheckDevVersionRsp :");
         if (RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.CheckDevVersionRsp(b,s,s1,s2,s3));
+            RxBus.getCacheInstance().post(new RxEvent.CheckDevVersionRsp(b, s, s1, s2, s3));
         }
     }
 

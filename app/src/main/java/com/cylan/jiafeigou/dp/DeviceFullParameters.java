@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.dp;
 
+import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
@@ -21,6 +22,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -213,7 +215,8 @@ public class DeviceFullParameters {
                         return;
                     ArrayList<String> uuidList = new ArrayList<>();
                     for (JFGDevice device : devices) {
-                        uuidList.add(device.uuid);
+                        if (device != null && TextUtils.isEmpty(device.shareAccount))
+                            uuidList.add(device.uuid);
                     }
                     JfgCmdInsurance.getCmd().getShareList(uuidList);
                 }, throwable -> {

@@ -6,23 +6,26 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.DecodeFormat;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.panorama.CameraParam;
 import com.cylan.panorama.PanoramicView;
 
@@ -40,12 +43,11 @@ public class PanoramicViewFragment extends IBaseFragment {
 
 
     @BindView(R.id.fLayout_panoramic_container)
-    FrameLayout fLayoutPanoramicContainer;
-    private PanoramicView.MountMode mountMode;
-    private int preIndex;
-    private DpMsgDefine.DPAlarm dpAlarm;
+    FrameLayout mPanoramicContainer;
     private String uuid;
     private PanoramicView panoramicView;
+    private DpMsgDefine.DPAlarm dpAlarm;
+    private PanoramicView.MountMode mountMode;
 
     public PanoramicViewFragment() {
         // Required empty public constructor
@@ -82,19 +84,19 @@ public class PanoramicViewFragment extends IBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         final int screenWidth = DensityUtils.getScreenWidth();
-        ViewGroup.LayoutParams lp = fLayoutPanoramicContainer.getLayoutParams();
+        ViewGroup.LayoutParams lp = mPanoramicContainer.getLayoutParams();
         lp.height = screenWidth;
-        fLayoutPanoramicContainer.setLayoutParams(lp);
-        preIndex = getArguments().getInt("key_index");
-        this.uuid = getArguments().getString("key_uuid");
+        mPanoramicContainer.setLayoutParams(lp);
+        this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
-        loadBitmap();
+        if (getUserVisibleHint()) {//当前页面才显示
+            loadBitmap(getArguments().getInt("key_index", 0));
+        }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        super.onDestroy();
         try {
             if (panoramicView != null) {
                 panoramicView.onDestroy();
@@ -104,38 +106,52 @@ public class PanoramicViewFragment extends IBaseFragment {
         }
     }
 
-    private void loadBitmap() {
-        panoramicView = new PanoramicView(getContext());
-        panoramicView.configV360(CameraParam.getTopPreset());
+    private void showLoading(boolean show) {
+        if (show)
+            LoadingDialog.showLoading(getFragmentManager(), "", true);
+        else LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    public void loadBitmap(int index) {
+        Log.d("panoramicView", "null? " + (panoramicView == null) + " " + (getContext() == null));
+        if (panoramicView == null) {
+            panoramicView = new PanoramicView(getContext());
+            panoramicView.configV360(CameraParam.getTopPreset());
+            ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            mPanoramicContainer.addView(panoramicView, layoutParams);
+        }
         //填满
-        ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        fLayoutPanoramicContainer.addView(panoramicView, layoutParams);
-        GlideUrl url = new CamWarnGlideURL(dpAlarm, preIndex, uuid);
+        GlideUrl url = new CamWarnGlideURL(dpAlarm, index, uuid);
         Glide.with(ContextUtils.getContext())
                 .load(url)
                 .asBitmap()
-                .format(DecodeFormat.DEFAULT)
-                .into(new SimpleTarget<Bitmap>(150, 150) {
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new SimpleTarget<Bitmap>() {
+                    @Override
+                    public void onLoadStarted(Drawable placeholder) {
+                        showLoading(true);
+                    }
+
                     @Override
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
-                        panoramicView.loadImage(resource);
+                        try {
+                            if (resource != null && !resource.isRecycled())
+                                panoramicView.loadImage(resource);
+                            else {
+                                AppLogger.e("bitmap is recycled");
+                            }
+                        } catch (Exception e) {
+                            AppLogger.e("pan view is out date,");
+                        }
+                        showLoading(false);
                     }
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         AppLogger.e("load failed: " + e.getLocalizedMessage());
+                        showLoading(false);
                     }
                 });
-    }
-
-
-    @Override
-    public void onDestroyView() {
-//        super.onDestroyView();
-    }
-
-    public void loadBitmap(int currentIndex) {
-
     }
 }

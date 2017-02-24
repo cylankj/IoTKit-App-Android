@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
@@ -17,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
@@ -106,7 +106,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         device = GlobalDataProxy.getInstance().fetch(this.uuid);
         if (TextUtils.isEmpty(uuid)) {
             AppLogger.e("uuid is null");
-            finish();
+            finishExt();
             return;
         }
         basePresenter = new CamSettingPresenterImpl(this, uuid);
@@ -141,10 +141,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private void initBackListener() {
         customToolbar.post(() -> {
             customToolbar.setBackAction((View v) -> {
-                finish();
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
-                }
+                finishExt();
             });
         });
     }
@@ -164,10 +161,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             return;
         } else if (checkExtraFragment())
             return;
-        finish();
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            overridePendingTransition(R.anim.slide_in_left_without_interpolator, R.anim.slide_out_right_without_interpolator);
-        }
+        finishExt();
     }
 
     /**
@@ -198,7 +192,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                         basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
                     });
-        } else svSettingDeviceMobileNetwork.setVisibility(View.GONE);
+        } else {
+            svSettingDeviceMobileNetwork.setVisibility(View.GONE);
+            svSettingDeviceWifi.showDivider(false);
+        }
     }
 
     private void init110VVoltageBtn() {
@@ -266,6 +263,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case R.id.tv_setting_unbind: {
                 Bundle bundle = new Bundle();
                 bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_SURE));
+                bundle.putBoolean(BaseDialog.KEY_TOUCH_OUT_SIDE_DISMISS, true);
                 SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
                 simpleDialogFragment.setAction((int id, Object value) -> {
                     basePresenter.unbindDevice();
@@ -451,7 +449,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @Override
     public void isSharedDevice() {
         //分享账号 隐藏
-        if (true) return;//doNothing
         final int count = lLayoutSettingItemContainer.getChildCount();
         for (int i = 2; i < count - 1; i++) {
             View v = lLayoutSettingItemContainer.getChildAt(i);
@@ -464,9 +461,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     public void unbindDeviceRsp(int state) {
         if (state == JError.ErrorOK) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
-            setResult(RESULT_OK);
-            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
-            finish();
+            Intent intent = new Intent(this, NewHomeActivity.class);
+            intent.putExtra("NewHomeActivity_intent", getString(R.string.DELETED_SUC));
+            startActivity(intent);
+        } else if (state == -1) {
+            ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
         }
     }
 

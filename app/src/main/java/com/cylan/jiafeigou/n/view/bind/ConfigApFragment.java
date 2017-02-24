@@ -25,7 +25,6 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -116,6 +115,7 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
             tvConfigApName.setTag(new BeanWifiList(cacheList.get(0)));
         }
         customToolbar.setBackAction(v -> getActivity().onBackPressed());
+
     }
 
     @Override
@@ -266,8 +266,6 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     public void lossDogConnection() {
         if (ActivityUtils.isFragmentInTop(getActivity(), R.id.fLayout_submit_bind_info))
             return;
-//        ToastUtil.showNegativeToast("狗丢了....");
-        AppLogger.i("狗丢了");
     }
 
 
@@ -276,7 +274,12 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
         if (vsShowContent.getCurrentView().getId() == R.id.fragment_config_ap_pre) {
             vsShowContent.showNext();
         }
+    }
 
+    @Override
+    public void pingFailed() {
+        ToastUtil.showNegativeToast(getString(R.string.ADD_FAILED));
+        tvWifiPwdSubmit.viewZoomBig();
     }
 
     @Override

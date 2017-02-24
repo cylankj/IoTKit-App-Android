@@ -61,14 +61,14 @@ public class RegisterPwdFragment extends SetupPwdFragment
     public void onResume() {
         super.onResume();
         customToolbar.setBackAction((View v) -> {
-            showSimpleDialog("是否确认退出?", "是", "否", false);
+            showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_Yes), getString(R.string.Button_No), false);
         });
     }
 
     @Override
     public void doAction(String account, String pwd, String code) {
         if (NetUtils.getJfgNetType(getContext()) == 0) {
-            Toast.makeText(getContext(), "bad network", Toast.LENGTH_SHORT).show();
+            ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
         boolean validPhoneNum = JConstant.PHONE_REG.matcher(account).find();
@@ -180,7 +180,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 account);
         ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(content);
         TextView btn = (TextView) mailView.findViewById(R.id.tv_email_confirm);
-        btn.setText("去登录");
+        btn.setText(getString(R.string.Tap0_register_GoToLogin));
         btn.setEnabled(true);
         btn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -229,7 +229,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT, "");
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD, "");
         } else {
-            ToastUtil.showToast("自动登录失败");
+            ToastUtil.showToast(getString(R.string.LOGIN_ERR));
         }
     }
 

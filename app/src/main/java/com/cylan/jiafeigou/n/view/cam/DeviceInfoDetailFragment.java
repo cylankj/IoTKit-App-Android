@@ -7,8 +7,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
@@ -75,12 +73,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     SettingItemView0 tvDeviceBatteryLevel;
     @BindView(R.id.tv_device_uptime)
     SettingItemView0 tvDeviceUptime;
+
     @BindView(R.id.rl_hardware_update)
-    RelativeLayout rlHardwareUpdate;
-    @BindView(R.id.hardware_update_point)
-    View hardwareUpdatePoint;
-    @BindView(R.id.tv_new_software)
-    TextView tvNewSoftware;
+    SettingItemView0 rlHardwareUpdate;
+
+    //    @BindView(R.id.hardware_update_point)
+//    View hardwareUpdatePoint;
+//    @BindView(R.id.tv_new_software)
+//    TextView tvNewSoftware;
     @BindView(R.id.tv_device_cid)
     SettingItemView0 tvDeviceCid;
     private String uuid;
@@ -134,6 +134,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private void updateDetails() {
+        //是否分享设备
+        if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
+            tvDeviceAlias.showDivider(false);
+            tvDeviceTimeZone.setVisibility(View.GONE);
+            tvDeviceSdcardState.setVisibility(View.GONE);
+            rlHardwareUpdate.setVisibility(View.GONE);
+            getView().findViewById(R.id.tv_storage).setVisibility(View.GONE);
+        }
         //是否显示移动网络
         tvDeviceMobileNet.setVisibility(device != null && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
         MiscUtils.loadTimeZoneList()
@@ -167,6 +175,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceSystemVersion.setTvSubTitle(sVersion);
         int uptime = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_210_UP_TIME, 0);
         tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(uptime));
+        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
+        tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
     }
 
     private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {
@@ -318,10 +328,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
         checkDevVersion = checkDevVersionRsp;
-        if (checkDevVersionRsp.hasNew) {
-            hardwareUpdatePoint.setVisibility(View.VISIBLE);
-            tvNewSoftware.setVisibility(View.VISIBLE);
-        }
+        rlHardwareUpdate.setTvSubTitle(getString(checkDevVersionRsp.hasNew ? R.string.Tap1_NewFirmware : R.string.Tap1_LatestVersion));
+        rlHardwareUpdate.showRedHint(checkDevVersionRsp.hasNew);
     }
 
     @Override

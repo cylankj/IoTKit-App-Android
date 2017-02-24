@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -61,11 +62,17 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public void start() {
         super.start();
-        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_201_NET));
-        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY));
-        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_209_LED_INDICATOR));
-        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE));
-        getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG));
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        if (device != null && TextUtils.isEmpty(device.shareAccount)) {
+            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_201_NET));
+            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY));
+            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_209_LED_INDICATOR));
+            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE));
+            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG));
+        } else {
+            //分享设备
+            getView().isSharedDevice();
+        }
     }
 
     /**
@@ -83,6 +90,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 .map((RxEvent.UnBindDeviceEvent unBindDeviceEvent) -> {
                     getView().unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
                     if (unBindDeviceEvent.jfgResult.code == 0) {
+                        time = System.currentTimeMillis();
                         //清理这个订阅
                         RxBus.getCacheInstance().removeStickyEvent(RxEvent.UnBindDeviceEvent.class);
                     }
@@ -171,13 +179,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 + String.format(Locale.getDefault(), ":%02d", (((byte) value << 8) >> 8));
     }
 
-//    @Override
-//    public BeanCamInfo getCamInfoBean() {
-//        if (camInfoBean == null)
-//            camInfoBean = new BeanCamInfo();
-//        return camInfoBean;
-//    }
-
     @Override
     public void updateInfoReq(Object value, long id) {
         Observable.just(value)
@@ -195,20 +196,31 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 });
     }
 
+    private long time = 0;
+
     @Override
     public void unbindDevice() {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe((Object o) -> {
+                .map((Object o) -> {
                     boolean result = GlobalDataProxy.getInstance().remove(uuid);
                     try {
                         JfgCmdInsurance.getCmd().unBindDevice(uuid);
+                        GlobalDataProxy.getInstance().deleteJFGDevice(uuid);
                     } catch (JfgException e) {
                         AppLogger.e("" + e.getLocalizedMessage());
                     }
                     AppLogger.i("unbind uuid: " + uuid + " " + result);
-                }, (Throwable throwable) -> {
-                    AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());
-                });
+                    return null;
+                })
+                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .filter(s -> System.currentTimeMillis() - time > 3000)
+                        .map(s -> {
+                            getView().unbindDeviceRsp(-1);
+                            return null;
+                        }))
+                .subscribe();
+
     }
 }

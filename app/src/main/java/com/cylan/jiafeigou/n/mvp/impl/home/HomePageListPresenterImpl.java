@@ -11,7 +11,6 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -24,6 +23,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -57,47 +57,68 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 getTimeTickEventSub(),
                 getLoginRspSub(),
                 getShareDevicesListRsp(),
-                sdcardStatusSub(),
+                devicesUpdate(),
+                devicesUpdate1(),
                 JFGAccountUpdate()};
     }
 
     private Subscription getShareDevicesListRsp() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
+                .subscribeOn(Schedulers.newThread())
+                .delay(500, TimeUnit.MILLISECONDS)//
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(new RxHelper.Filter<>("getShareDevicesListRsp:", getView() != null))
                 .subscribe((RxEvent.GetShareListRsp getShareListRsp) -> {
-                    getView().onItemsInsert(getView().getUuidList());
+                    getView().onItemsInsert(getUuidList());
                     AppLogger.i("shareListRsp");
                 }, (Throwable throwable) -> {
                     AppLogger.e("" + throwable.getLocalizedMessage());
                 });
     }
 
+    private ArrayList<String> getUuidList() {
+        ArrayList<JFGDevice> devices = GlobalDataProxy.getInstance().fetchAll();
+        ArrayList<String> arrayList = new ArrayList<>(devices == null ? 0 : devices.size());
+        for (JFGDevice device : devices) {
+            arrayList.add(device.uuid);
+        }
+        return arrayList;
+    }
 
     /**
      * sd卡状态更新
      *
      * @return
      */
-    private Subscription sdcardStatusSub() {
+    private Subscription devicesUpdate() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DataPoolUpdate.class)
                 .filter((RxEvent.DataPoolUpdate data) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(new Func1<RxEvent.DataPoolUpdate, Boolean>() {
                     @Override
                     public Boolean call(RxEvent.DataPoolUpdate update) {
-                        if (update.id == DpMsgMap.ID_204_SDCARD_STORAGE) {
-                            DpMsgDefine.DPSdStatus sdStatus = update.value.getValue();
-                        } else if (update.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-                            DpMsgDefine.DPSdcardSummary sdcardSummary = update.value.getValue();
-                        } else if (update.id == DpMsgMap.ID_201_NET) {
-                            DpMsgDefine.DPNet net = update.value.getValue();
-                        }
+                        subUuidList();
                         AppLogger.d("data pool update: " + update);
                         return null;
                     }
                 })
-                .retry(new RxHelper.RxException<>("sdcardStatusSub"))
+                .retry(new RxHelper.RxException<>("devicesUpdate"))
+                .subscribe();
+    }
+
+    private Subscription devicesUpdate1() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceListUpdate.class)
+                .filter((RxEvent.DeviceListUpdate data) -> (getView() != null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(new Func1<RxEvent.DeviceListUpdate, Boolean>() {
+                    @Override
+                    public Boolean call(RxEvent.DeviceListUpdate update) {
+                        subUuidList();
+                        AppLogger.d("data pool update: " + update);
+                        return null;
+                    }
+                })
+                .retry(new RxHelper.RxException<>("devicesUpdate"))
                 .subscribe();
     }
 
@@ -188,18 +209,17 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         Observable.just(manually)
                 .subscribeOn(Schedulers.newThread())
                 .map((Boolean aBoolean) -> {
-                    ArrayList<String> aList = aList();
-                    if (aList != null) {
-                        for (String uuid : aList)
-                            try {
-                                GlobalDataProxy.getInstance().fetchUnreadCount(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
-                            } catch (JfgException e) {
-                                AppLogger.e("" + e.getLocalizedMessage());
-                            }
-                    }
-                    if (aBoolean) {
-                        JfgCmdInsurance.getCmd().getShareList(getView().getUuidList());
-                    }
+
+                    ArrayList<String> sharedList = MiscUtils.getSharedList(GlobalDataProxy.getInstance().fetchAll());
+                    ArrayList<String> unSharedList = MiscUtils.getNoneSharedList(GlobalDataProxy.getInstance().fetchAll());
+                    //不是分享设备
+                    JfgCmdInsurance.getCmd().getShareList(unSharedList);
+                    for (String uuid : sharedList)
+                        try {
+                            GlobalDataProxy.getInstance().fetchUnreadCount(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+                        } catch (JfgException e) {
+                            AppLogger.e("" + e.getLocalizedMessage());
+                        }
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return null;
                 })
@@ -211,14 +231,22 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 });
     }
 
-    private ArrayList<String> aList() {
-        if (getView() == null) return null;
-        return getView().getUuidList();
-    }
-
     @Override
     public void deleteItem(String uuid) {
-
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Object o) -> {
+                    boolean result = GlobalDataProxy.getInstance().remove(uuid);
+                    try {
+                        JfgCmdInsurance.getCmd().unBindDevice(uuid);
+                        GlobalDataProxy.getInstance().deleteJFGDevice(uuid);
+                    } catch (JfgException e) {
+                        AppLogger.e("" + e.getLocalizedMessage());
+                    }
+                    AppLogger.i("unbind uuid: " + uuid + " " + result);
+                }, (Throwable throwable) -> {
+                    AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());
+                });
     }
 
     @Override

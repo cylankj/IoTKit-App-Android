@@ -1,6 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -53,18 +56,17 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
+import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NERWORK;
 
 /**
  * Created by cylan-hunt on 16-7-27.
  */
 public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View>
-        implements CamLiveContract.Presenter,
-        IFeedRtcp.MonitorListener {
-    //    private DeviceBean bean;
-//    private BeanCamInfo beanCamInfo;
+        implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener {
     private int playType = CamLiveContract.TYPE_LIVE;
     private boolean speakerFlag, micFlag;
     private int[] videoResolution = {0, 0};
@@ -78,7 +80,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     /**
      * 帧率记录
      */
-//    private List<Integer> frameRateList = new ArrayList<>();
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
 
     public CamLivePresenterImpl(CamLiveContract.View view, String uuid) {
@@ -149,7 +150,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .observeOn(Schedulers.newThread())
                 .subscribe((Object dataStack) -> {
                     //获取设备历史录像
-                    if (!TextUtils.isEmpty(uuid)) {
+                    if (!TextUtils.isEmpty(uuid) && !JFGRules.isShareDevice(uuid)) {
                         RxEvent.JFGHistoryVideoReq req = new RxEvent.JFGHistoryVideoReq();
                         req.uuid = uuid;
                         RxBus.getCacheInstance().post(req);
@@ -163,8 +164,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public boolean isShareDevice() {
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-        return device != null && !TextUtils.isEmpty(device.shareAccount);
+        return JFGRules.isShareDevice(uuid);
     }
 
     @Override
@@ -223,7 +223,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
                 .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
                 .throttleFirst(500, TimeUnit.MILLISECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .timeout(10, TimeUnit.SECONDS, Observable.just("no rtcp call back")
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .map(s -> {
@@ -233,6 +232,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             AppLogger.e(s);
                             return null;
                         }))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .map((JFGMsgVideoRtcp rtcp) -> {
                     try {
                         getView().onRtcp(rtcp);
@@ -287,7 +288,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .filter(o -> {
                     if (NetUtils.getJfgNetType(getView().getContext()) == 0) {
                         //断网了
-                        setStopReason(JFGRules.PlayErr.ERR_NERWORK);
+                        setStopReason(ERR_NERWORK);
                         stopPlayVideo(getPlayType());
                         AppLogger.i("stop play  video for err network");
                         return false;
@@ -315,7 +316,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         playState = PLAY_STATE_PREPARE;
         if (NetUtils.getJfgNetType(getView().getContext()) == 0) {
             //断网了
-            setStopReason(JFGRules.PlayErr.ERR_NERWORK);
+            setStopReason(ERR_NERWORK);
             stopPlayVideo(getPlayType());
             return;
         }
@@ -392,11 +393,13 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((Object o) -> {
+                    long time = System.currentTimeMillis();
                     byte[] data = JfgCmdInsurance.getCmd().screenshot(false);
                     Bitmap bitmap = BitmapUtils.byte2bitmap(videoResolution[0], videoResolution[1], data);
+                    AppLogger.i("capture take shot performance: " + (System.currentTimeMillis() - time));
+                    snapshotResult(bitmap);
                     String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
                     BitmapUtils.saveBitmap2file(bitmap, filePath);
-                    snapshotResult(bitmap);
                 }, (Throwable throwable) -> {
                     AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage());
                 });
@@ -407,9 +410,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         Observable.just(bitmap)
                 .filter((Bitmap bit) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Bitmap b) -> {
-                    getView().onTakeSnapShot(b);
-                });
+                .subscribe((Bitmap b) -> getView().onTakeSnapShot(b),
+                        throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
     }
 
     @Override
@@ -440,10 +442,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public boolean needShowHistoryWheelView() {
         DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
-        boolean show = net != null && JFGRules.isDeviceOnline(net);
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        boolean show = JFGRules.isDeviceOnline(net)
+                && NetUtils.getJfgNetType(getView().getContext()) != 0
+                && device != null && TextUtils.isEmpty(device.shareAccount);
         AppLogger.i("show: " + show);
-        return net != null && JFGRules.isDeviceOnline(net)
-                && NetUtils.getJfgNetType(getView().getContext()) != 0;
+        return show;
     }
 
     @Override
@@ -459,6 +463,19 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 }, (Throwable throwable) -> {
                     AppLogger.e(throwable.getLocalizedMessage());
                 });
+    }
+
+    @Override
+    public void startCountForDismissPop() {
+        unSubscribe("count_5_s");
+        addSubscription(Observable.just("count_5_s")
+                        .subscribeOn(Schedulers.newThread())
+                        .delay(5, TimeUnit.SECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .filter(s -> getView() != null)
+                        .subscribe(s -> getView().countdownFinish(),
+                                throwable -> AppLogger.e("countdown finish")),
+                "count_5_s");
     }
 
     @Override
@@ -530,7 +547,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RxEvent.DataPoolUpdate update) -> {
-                    if (update.id == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
+                    if (update.id == ID_508_CAMERA_STANDBY_FLAG) {
                         boolean flag = MiscUtils.cast(update.value.getValue(), false);
                         getView().onDeviceStandBy(flag);
                     }
@@ -557,5 +574,25 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 }, throwable -> {
                     AppLogger.e("err: " + throwable.getLocalizedMessage());
                 });
+    }
+
+    @Override
+    protected String[] registerNetworkAction() {
+        return new String[]{
+                ConnectivityManager.CONNECTIVITY_ACTION
+        };
+    }
+
+    @Override
+    public void onNetworkChanged(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
+            int type = NetUtils.getNetType(context);
+            if (type == -1) {
+                AppLogger.i("there is no network ");
+                setStopReason(ERR_NERWORK);
+                stopPlayVideo(getPlayType());
+            }
+        }
     }
 }

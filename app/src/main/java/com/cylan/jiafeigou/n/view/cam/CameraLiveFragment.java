@@ -11,7 +11,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.PopupWindowCompat;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,12 +19,12 @@ import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
@@ -50,19 +49,24 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
+import com.cylan.jiafeigou.widget.glide.RoundedCornersTransformation;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
-import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
+import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
+import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
+import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -218,6 +222,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
+        boolean isStandBY = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+        if (isStandBY) return;
         basePresenter.startPlayVideo(basePresenter.getPlayType());
     }
 
@@ -288,15 +294,17 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 v.setId("showSceneView".hashCode());
                 viewStandbyRef = new WeakReference<>(v);
                 Log.d("showSceneView", "showSceneView: " + (System.currentTimeMillis() - time));
-                fLayoutCamLiveView.addView(v, 0);//最底
+                int index = 0;
+                if (videoView != null)
+                    index = fLayoutCamLiveView.indexOfChild((View) videoView);//view的上面
+                fLayoutCamLiveView.addView(v, index + 1);//最底
                 v.findViewById(R.id.lLayout_standby_jump_setting)//跳转到设置页面
                         .setOnClickListener(view -> {
                             Intent intent = new Intent(getActivity(), CamSettingActivity.class);
                             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                            startActivity(intent,
+                            startActivityForResult(intent, REQUEST_CODE,
                                     ActivityOptionsCompat.makeCustomAnimation(getActivity(),
                                             R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
-                            startActivity(new Intent(getActivity(), CamSettingActivity.class));
                         });
             } else v = viewStandbyRef.get();
         }
@@ -365,7 +373,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         Gravity.END);
                 textView.setGravity(Gravity.CENTER);
-                lp.setMargins(20, DensityUtils.px2dip(14), DensityUtils.px2dip(14), 20);
+                lp.setMargins(20, DensityUtils.px2dip(14), DensityUtils.px2dip(1), 20);
                 fLayoutCamLiveView.addView(textView, lp);
                 tvFlowRef = new WeakReference<>(textView);
             }
@@ -517,7 +525,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setLiveTime(0);
         switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
-                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+                boolean standby = GlobalDataProxy.getInstance().getValue(uuid, ID_508_CAMERA_STANDBY_FLAG, false);
+                if (standby) break;//
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, "出错了");
@@ -560,26 +570,28 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     private void showPopupWindow(Bitmap bitmap) {
         try {
-            int width = bitmap.getWidth();
-            if (popupWindow == null) {
-                View layout = LayoutInflater.from(getContext())
-                        .inflate(R.layout.layout_capture_popup, null, false);
-                // create a 300px width and 470px height PopupWindow
-                popupWindow = new PopupWindow(layout, DensityUtils.px2dip(44), DensityUtils.px2dip(30), true);
-            }
-            PopupWindowCompat.showAsDropDown(popupWindow, imgVCamTriggerCapture,
-                    imgVCamTriggerCapture.getLeft() + (imgVCamTriggerCapture.getWidth() - width) / 2,
-                    -imgVCamTriggerCapture.getHeight() - bitmap.getHeight(), Gravity.CENTER);
-            RoundedImageView v = (RoundedImageView) popupWindow.getContentView().findViewById(R.id.imv_capture_popup);
-            Glide.with(this)
-                    .load(bitmap)
-                    .into(v);
+            roundCardPopup = new RoundCardPopup(getContext(), view -> {
+                if (bitmap != null) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    Glide.with(getContext())
+                            .load(stream.toByteArray())
+                            .placeholder(R.drawable.wonderful_pic_place_holder)
+                            .override((int) getResources().getDimension(R.dimen.x44),
+                                    (int) getResources().getDimension(R.dimen.x30))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 2))
+                            .into(view);
+                }
+            });
+            roundCardPopup.showOnAnchor(imgVCamTriggerCapture, RelativePopupWindow.VerticalPosition.ABOVE, RelativePopupWindow.HorizontalPosition.CENTER);
+            basePresenter.startCountForDismissPop();
         } catch (Exception e) {
-            AppLogger.e("" + e.getLocalizedMessage());
+            AppLogger.e("showPopupWindow: " + e.getLocalizedMessage());
         }
     }
 
-    private PopupWindow popupWindow;
+    private RoundCardPopup roundCardPopup;
 
     @Override
     public void onHistoryLiveStop(int state) {
@@ -597,6 +609,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void shouldWaitFor(boolean start) {
         camLiveController.setLoadingState(start ? ILiveControl.STATE_LOADING : ILiveControl.STATE_IDLE, null);
+    }
+
+    @Override
+    public void countdownFinish() {
+        roundCardPopup.dismiss();//don't need try catch ,it is wrapped by rxjava
     }
 
     @Override

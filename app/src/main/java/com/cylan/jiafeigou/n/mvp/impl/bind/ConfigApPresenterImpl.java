@@ -116,7 +116,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (wifiInfo != null && JFGRules.isCylanDevice(wifiInfo.getSSID()))
-            return BindUtils.getDigitsString(wifiInfo.getSSID());
+            return BindUtils.filterCylanDeviceShortCid(wifiInfo.getSSID());
         else return "";
     }
 
@@ -203,9 +203,10 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .filter((Object o) -> {
                     return getView() != null;
                 })
+                .delay(500, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
-                    getView().lossDogConnection();
+                    getView().pingFailed();
                 });
     }
 

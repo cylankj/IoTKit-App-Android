@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.Converter;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -49,44 +50,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     protected Subscription[] register() {
         return new Subscription[]{sdcardStatusSub()};
     }
-//
-//    /**
-//     * 注册监听
-//     *
-//     * @return
-//     */
-//    private Subscription messageListSub() {
-//        return RxBus.getCacheInstance().toObservable(Long.class)
-//                .subscribeOn(Schedulers.computation())
-//                .filter((Long aLong) -> (aLong != null && aLong == querySeq))
-//                .flatMap(new Func1<Long, Observable<ArrayList<CamMessageBean>>>() {
-//                    @Override
-//                    public Observable<ArrayList<CamMessageBean>> call(Long aLong) {
-//                        ArrayList<BaseValue> allList = new ArrayList<>();
-//                        ArrayList<BaseValue> list_505 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
-//                        ArrayList<BaseValue> list_222 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY);
-//                        if (list_505 != null) allList.addAll(list_505);
-//                        if (list_222 != null) allList.addAll(list_222);
-//                        Collections.sort(allList);//来个排序
-//                        return Observable.just(Converter.convert(uuid, allList));
-//                    }
-//                })
-//                .map((ArrayList<CamMessageBean> camList) -> {
-//                    ArrayList<CamMessageBean> list = new ArrayList<>(getView().getList());
-//                    camList.removeAll(list);//删除重复的
-//                    return camList;
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .filter(new RxHelper.Filter<>("messageListSub()=null?", getView() != null))
-//                .map((ArrayList<CamMessageBean> jfgdpMsgs) -> {
-//                    getView().onMessageListRsp(jfgdpMsgs);
-//                    AppLogger.i("messageListSub+" + jfgdpMsgs.size());
-//                    getView().setRefresh(false);
-//                    return null;
-//                })
-//                .retry(new RxHelper.RxException<>("messageListSub"))
-//                .subscribe();
-//    }
 
     /**
      * sd卡状态更新
@@ -125,6 +88,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     private Observable<Long> makeReq() {
         return Observable.just(null)
                 .subscribeOn(Schedulers.io())
+                .filter(o -> !JFGRules.isShareDevice(uuid))
                 .map(o -> {
                     ArrayList<JFGDPMsg> dps = getReqList(new long[]{0, 0}, new int[]{DpMsgMap.ID_505_CAMERA_ALARM_MSG, DpMsgMap.ID_222_SDCARD_SUMMARY});
                     try {

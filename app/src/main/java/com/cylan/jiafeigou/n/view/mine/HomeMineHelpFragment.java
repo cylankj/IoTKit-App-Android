@@ -78,32 +78,7 @@ public class HomeMineHelpFragment extends Fragment {
      * 当进度条加载完成的时候显示该webView
      */
     private void showWebView() {
-        String agreementUrl;
-        Locale locale = getContext().getResources().getConfiguration().locale;
-        final String c = locale.toString();
-
-        if (c.contains("zh")) {
-            if ((c.contains("TW") || c.contains("HK"))) {
-                agreementUrl = "http://yun.jfgou.com/help/zh-hk.html";
-            } else {
-                agreementUrl = "http://yun.jfgou.com/help/zh-rCN.html";
-            }
-        }else if (c.contains("ja")){
-            agreementUrl = "http://yun.jfgou.com/help/ja.html";
-        }else if(c.contains("fr")){
-            agreementUrl = "http://yun.jfgou.com/help/fr.html";
-        }else if (c.contains("de")){
-            agreementUrl = "http://yun.jfgou.com/help/de.html";
-        }else if (c.contains("ru")){
-            agreementUrl = "http://yun.jfgou.com/help/ru.html";
-        }else if (c.contains("es")){
-            agreementUrl = "http://yun.jfgou.com/help/es.html";
-        }else if (c.contains("pt")){
-            agreementUrl = "http://yun.jfgou.com/help/pt.html";
-        }else {
-            agreementUrl = "http://yun.jfgou.com/help/en.html";
-        }
-
+        String agreementUrl= getString(R.string.help_url);
         WebSettings settings = mWvHelp.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         settings.setLoadWithOverviewMode(true);

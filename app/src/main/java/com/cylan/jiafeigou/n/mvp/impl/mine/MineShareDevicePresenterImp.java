@@ -10,6 +10,7 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
@@ -20,8 +21,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.PackageUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -74,14 +73,11 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public Subscription initData() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceList.class)
-                .flatMap(new Func1<RxEvent.DeviceList, Observable<ArrayList<DeviceBean>>>() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceListUpdate.class)
+                .flatMap(new Func1<RxEvent.DeviceListUpdate, Observable<ArrayList<DeviceBean>>>() {
                     @Override
-                    public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceList deviceList) {
-                        if (deviceList == null || deviceList.jfgDevices == null) {
-                            return Observable.just(null);
-                        }
-                        return Observable.just(getShareDeviceList(deviceList));
+                    public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceListUpdate deviceList) {
+                        return Observable.just(getShareDeviceList());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -92,7 +88,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                             allDevice.clear();
                             ArrayList<String> cidList = new ArrayList<String>();
                             for (DeviceBean bean : deviceList) {
-                                if (TextUtils.isEmpty(bean.shareAccount)){
+                                if (TextUtils.isEmpty(bean.shareAccount)) {
                                     cidList.add(bean.uuid);
                                     allDevice.add(bean);
                                 }
@@ -145,14 +141,12 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     /**
      * desc:获取到分享设备的list集合数据
-     *
-     * @param shareDeviceList
      */
-    private ArrayList<DeviceBean> getShareDeviceList(RxEvent.DeviceList shareDeviceList) {
+    private ArrayList<DeviceBean> getShareDeviceList() {
 
         ArrayList<DeviceBean> list = new ArrayList<>();
-
-        for (JFGDevice info : shareDeviceList.jfgDevices) {
+        ArrayList<JFGDevice> devices = GlobalDataProxy.getInstance().fetchAll();
+        for (JFGDevice info : devices) {
             DeviceBean bean = new DeviceBean();
             bean.alias = info.alias;
             bean.pid = info.pid;

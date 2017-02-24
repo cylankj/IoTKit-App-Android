@@ -75,8 +75,6 @@ import rx.schedulers.Schedulers;
 public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         implements LoginContract.Presenter {
 
-    private static final String DEFAULT_REQUEST_VALUE = "default_request_value";
-
     private Context ctx;
     //    private CompositeSubscription subscription;
     private SinaLogin sinaUtil;
@@ -107,16 +105,20 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .map(login -> {
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
-                        JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
-                        //账号和密码
-                        String hex = AESUtil.encrypt(o.userName + "|" + o.pwd);
-                        FileUtils.saveDataToFile(getView().getContext(), hex);
+                        if (o.loginType) {
+                            JfgCmdInsurance.getCmd().openLogin(o.userName, "www.cylan.com", o.openLoginType);
+                        } else {
+                            JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
+                            //账号和密码
+                            String hex = AESUtil.encrypt(o.userName + "|" + o.pwd);
+                            FileUtils.saveDataToFile(getView().getContext(), hex);
+                        }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     AppLogger.i("LoginAccountBean: " + new Gson().toJson(o));
                     //非三方登录的标记
-                    RxBus.getCacheInstance().postSticky(false);
+                    RxBus.getCacheInstance().postSticky(o.loginType);
                     return null;
                 });
     }
@@ -133,7 +135,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public void executeLogin(final LoginAccountBean login) {
         //加入
-        addSubscription(Observable.zip(loginObservable(login), loginResultObservable(),
+        Observable.zip(loginObservable(login), loginResultObservable(),
                 (Object o, RxEvent.ResultLogin resultLogin) -> {
                     Log.d("CYLAN_TAG", "login: " + resultLogin);
                     return resultLogin;
@@ -154,28 +156,36 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 }, throwable -> {
                     if (getView() != null) getView().loginResult(JError.ErrorConnect);
                     Log.d("CYLAN_TAG", "login err: " + throwable.getLocalizedMessage());
-                }));
+                });
     }
 
     /**
-     * 执行第三方登录
+     * 第三方登录
      *
-     * @param accend_token
+     * @param o
+     * @return
      */
-    @Override
-    public void executeOpenLogin(final String accend_token, int type) {
-        rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe((Object o) -> {
+    private Observable<Object> openLoginObservable(LoginAccountBean o) {
+        return Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .map(login -> {
+                    Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
-                        JfgCmdInsurance.getCmd().openLogin(accend_token, "www.cylan.com", type);
-                    } catch (JfgException e) {
+                        //非三方登录不执行
+                        if (!o.loginType) {
+                            return null;
+                        }
+                        JfgCmdInsurance.getCmd().openLogin(o.userName, "www.cylan.com", o.openLoginType);
+                        //账号和密码
+//                        String hex = AESUtil.encrypt(o.userName + "|" + o.pwd);
+//                        FileUtils.saveDataToFile(getView().getContext(), hex);
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    //第三方登录的标记
+                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(o));
+                    //三方登录的标记
                     RxBus.getCacheInstance().postSticky(true);
-                }, (Throwable throwable) -> {
-                    AppLogger.e("executeOpenLogin" + new Gson().toJson(accend_token));
+                    return null;
                 });
     }
 
@@ -259,7 +269,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
             usersAPI.show(uid, sinaRequestListener);
             return;
         }
-
         sinaUtil = new SinaLogin(activity);
         sinaUtil.login(activity, new SinaAuthorizeListener());
     }
@@ -362,6 +371,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, profile_image_url);
                     PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, userAlias);
                 }
+                Log.d(TAG, "sinaRequestListener: " + response);
             } catch (JSONException e) {
                 AppLogger.e(e.toString());
             }
@@ -546,6 +556,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 TwitterAuthToken token = result.data.getAuthToken();
                 String secret = token.secret;
                 String strToken = token.token;
+
                 executeOpenLogin(strToken, 6);
 
                 // 获取用户的的信息
@@ -601,15 +612,25 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         if (accessToken != null && !accessToken.isExpired()) {
             //直接登录
             executeOpenLogin(accessToken.getToken(), 7);
+            return;
         }
+        callbackManager = CallbackManager.Factory.create();
         if (accessToken == null || accessToken.isExpired()) {
-            LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "user_friends"));
+            LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "user_friends", "email"));
+            fackBookCallBack();
         }
+    }
+
+    private void executeOpenLogin(String token, int type) {
+        LoginAccountBean login = new LoginAccountBean();
+        login.userName = token;
+        login.openLoginType = type;
+        login.loginType = true;
+        executeLogin(login);
     }
 
     @Override
     public void fackBookCallBack() {
-        callbackManager = CallbackManager.Factory.create();
         LoginManager.getInstance().registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -617,27 +638,23 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 GraphRequest request = GraphRequest.newMeRequest(accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        //获取登录成功之后的用户详细信息
-                        String facebook_id = object.optString("id");
-                        String facebook_name = object.optString("name");
-                        String picture = object.optString("picture");
-                        String imageUrl = null;
-                        try {
-                            JSONObject jsonObject = new JSONObject(picture);
-                            String data = jsonObject.getString("data");
-                            imageUrl = new JSONObject(data).getString("url");
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
                         executeOpenLogin(accessToken.getToken(), 7);
-                        // 保存用户信息
-                        PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, imageUrl);
-                        PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, facebook_name);
+                        if (object != null) {
+                            String name = object.optString("name");
+                            //获取用户头像
+                            JSONObject object_pic = object.optJSONObject("picture");
+                            JSONObject object_data = object_pic.optJSONObject("data");
+                            String photo = object_data.optString("url");
+
+                            // 保存用户信息
+                            PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, photo);
+                            PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, name);
+                        }
+
                     }
                 });
-
                 Bundle parameters = new Bundle();
-                parameters.putString("fields", DEFAULT_REQUEST_VALUE);
+                parameters.putString("fields", "id,name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
                 request.setParameters(parameters);
                 request.executeAsync();
             }

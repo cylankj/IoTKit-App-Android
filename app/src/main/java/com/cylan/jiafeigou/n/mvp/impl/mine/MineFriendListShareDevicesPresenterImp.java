@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -56,6 +57,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
 
     @Override
     public void start() {
+        super.start();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         } else {
@@ -69,6 +71,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
 
     @Override
     public void stop() {
+        super.stop();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
@@ -80,14 +83,11 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
      */
     @Override
     public Subscription initDeviceListData() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceList.class)
-                .flatMap(new Func1<RxEvent.DeviceList, Observable<ArrayList<DeviceBean>>>() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceListUpdate.class)
+                .flatMap(new Func1<RxEvent.DeviceListUpdate, Observable<ArrayList<DeviceBean>>>() {
                     @Override
-                    public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceList deviceList) {
-                        if (deviceList == null || deviceList.jfgDevices == null) {
-                            return null;
-                        }
-                        return Observable.just(getShareDeviceList(deviceList));
+                    public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceListUpdate deviceList) {
+                        return Observable.just(getShareDeviceList());
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -225,14 +225,12 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
 
     /**
      * desc:获取到分享设备的list集合数据
-     *
-     * @param shareDeviceList
      */
-    private ArrayList<DeviceBean> getShareDeviceList(RxEvent.DeviceList shareDeviceList) {
+    private ArrayList<DeviceBean> getShareDeviceList() {
 
         ArrayList<DeviceBean> list = new ArrayList<>();
-
-        for (JFGDevice info : shareDeviceList.jfgDevices) {
+        ArrayList<JFGDevice> devices = GlobalDataProxy.getInstance().fetchAll();
+        for (JFGDevice info : devices) {
             DeviceBean bean = new DeviceBean();
             bean.alias = info.alias;
             bean.pid = info.pid;

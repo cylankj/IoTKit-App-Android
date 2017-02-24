@@ -186,9 +186,9 @@ public class JConstant {
     public static final int OS_CAMERA_ANDROID_3_0 = 1071;    //3g狗
 
     public static final int OS_MAX_COUNT = OS_CAMERA_PANORAMA_GUOKE;
-    public static Map<Integer, Integer> onLineIconMap = new HashMap<>();
-    public static Map<Integer, Integer> offLineIconMap = new HashMap<>();
-    public static Map<Integer, Integer> NET_TYPE_RES = new HashMap<>();
+    public static final Map<Integer, Integer> onLineIconMap = new HashMap<>();
+    public static final Map<Integer, Integer> offLineIconMap = new HashMap<>();
+    public static final Map<Integer, Integer> NET_TYPE_RES = new HashMap<>();
 
 
     static {
