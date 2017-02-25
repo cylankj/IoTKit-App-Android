@@ -4,6 +4,7 @@
     android:id="@+id/vs_bell_home_top"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+
     tools:context=".n.view.bell.DoorBellHomeActivity">
 
     <FrameLayout
@@ -38,9 +39,22 @@
         android:background="@drawable/doorbell_bg_top_offline">
 
         <TextView
+            android:id="@+id/tv_start_calling_no_net"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
+            android:layout_gravity="bottom|center_horizontal"
+            android:background="@drawable/btn_bell_make_call_selector"
+            android:gravity="center"
+            android:text="@string/DOOR_BELL_LOOK"
+            android:textColor="@color/color_788291"
+            android:textSize="@dimen/sp14" />
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/y55"
+            android:layout_gravity="center|bottom"
             android:drawablePadding="@dimen/y12"
             android:drawableTop="@drawable/doorbell_pic_top_no_network"
             android:text="@string/OFFLINE_ERR_1"

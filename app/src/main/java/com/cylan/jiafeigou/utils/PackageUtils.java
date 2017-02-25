@@ -14,6 +14,8 @@ import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.jiafeigou.n.base.BaseApplication;
+
 import java.io.File;
 import java.util.List;
 

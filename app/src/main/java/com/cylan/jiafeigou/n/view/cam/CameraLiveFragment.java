@@ -48,6 +48,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
 import com.cylan.jiafeigou.widget.glide.RoundedCornersTransformation;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
@@ -64,6 +65,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.cylan.jiafeigou.R.id.tv_dialog_btn_left;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
@@ -110,6 +112,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     ImageView imgVCamZoomToFullScreen;
     @BindView(R.id.imv_double_sight)
     ImageView imvDoubleSight;
+
+    private SimpleDialogFragment mSimpleDialogFrag;
 
     private CamLiveController camLiveController;
     //    /**
@@ -183,7 +187,26 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setPortSafeSetter(portFlipLayout);
         camLiveController.setPortLiveTimeSetter(liveTimeLayout);
         camLiveController.setActivity(getActivity());
+        camLiveController.setAlertListener(v -> getAlertDialogFrag().show(getActivity().getSupportFragmentManager(), "alert_dialog_fragment"));
+
         liveListener = camLiveController.getLiveStateListener();
+    }
+
+    private SimpleDialogFragment getAlertDialogFrag() {
+        if (mSimpleDialogFrag == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "关闭\"移动侦测\",将停止\"侦测到异常时\"自动录像");
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "继续");
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "取消");
+            mSimpleDialogFrag = SimpleDialogFragment.newInstance(bundle);
+            mSimpleDialogFrag.setAction((id, value) -> {
+                if (id == tv_dialog_btn_left) {
+                    basePresenter.updateInfoReq(false, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                    basePresenter.updateInfoReq(2, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                }
+            });
+        }
+        return mSimpleDialogFrag;
     }
 
     @Override

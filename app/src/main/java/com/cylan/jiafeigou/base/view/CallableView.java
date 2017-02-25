@@ -19,4 +19,6 @@ public interface CallableView extends ViewableView {
     void onNewCallTimeOut();
 
     void playSoundEffect();
+
+    boolean muteAudio(boolean bMute);
 }

@@ -10,6 +10,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -79,6 +80,7 @@ public class CamLiveController implements
     private Context context;
     private static final String TAG = "CamLiveController";
     private String uuid;
+    private View.OnClickListener alertListener;
 
     public CamLiveController(Context context, String uuid) {
         this.context = context;
@@ -559,7 +561,14 @@ public class CamLiveController implements
     public void onClick(FlipImageView view) {
         boolean land = view.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         AppLogger.i("land: " + land + " " + (!view.isFlipped()));
-        if (presenterRef != null && presenterRef.get() != null)
+        DpMsgDefine.DPPrimary<Boolean> alarmFlag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        DpMsgDefine.DPPrimary<Integer> autoVideo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+        if (alarmFlag.$() && autoVideo.$() != 1) {//已开启自动录像和移动侦测
+            AppLogger.d("关闭移动侦测将关闭自动录像功能");
+            if (alertListener != null) {
+                alertListener.onClick(view);
+            }
+        } else if (presenterRef != null && presenterRef.get() != null)
             presenterRef.get().updateInfoReq(!view.isFlipped(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
     }
 
@@ -608,4 +617,7 @@ public class CamLiveController implements
         }
     };
 
+    public void setAlertListener(View.OnClickListener listener) {
+        this.alertListener = listener;
+    }
 }

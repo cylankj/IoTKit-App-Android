@@ -71,12 +71,14 @@ public class DataSourceService extends Service implements AppCallBack {
         GlobalBellCallSource.getInstance().register();
     }
 
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         CacheParser.getDpParser().unregisterDpParser();
         GlobalUdpDataSource.getInstance().unregister();
         GlobalBellCallSource.getInstance().unRegister();
+
     }
 
     @Override
@@ -484,4 +486,6 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnGetVideoShareUrl(String s) {
 
     }
+
+
 }

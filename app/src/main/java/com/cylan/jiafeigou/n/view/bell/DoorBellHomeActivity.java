@@ -1,8 +1,13 @@
 package com.cylan.jiafeigou.n.view.bell;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -22,7 +27,10 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
@@ -77,7 +85,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private WeakReference<BellSettingFragment> fragmentWeakReference;
     private WeakReference<LBatteryWarnDialog> lBatteryWarnDialog;
     private BellCallRecordListAdapter bellCallRecordListAdapter;
-
     private SimpleDialogFragment mDeleteDialogFragment;
     /**
      * 加载更多
@@ -100,6 +107,11 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         startLoadData(false, 0);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        registerNetWorkObserver();
+    }
 
     @Override
     protected void onStop() {
@@ -108,6 +120,9 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 && lBatteryWarnDialog.get() != null
                 && lBatteryWarnDialog.get().isResumed())
             lBatteryWarnDialog.get().dismiss();
+        if (myReceiver != null) {
+            unregisterReceiver(myReceiver);
+        }
     }
 
     @Override
@@ -398,8 +413,54 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void onShowProperty(JFGDoorBellDevice device) {
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
-        cvBellHomeBackground.setState(device.net.$().net);
+        if (isNetworkConnected(this)) {
+            cvBellHomeBackground.setState(device.net.$().net);
+        } else {
+            cvBellHomeBackground.setState(2);
+        }
         mIsShardAccount = !TextUtils.isEmpty(device.shareAccount);
     }
 
+    private void registerNetWorkObserver() {
+        IntentFilter filter = new IntentFilter(ConnectivityManager.CONNECTIVITY_ACTION);
+        myReceiver = new ConnectionChangeReceiver();
+        this.registerReceiver(myReceiver, filter);
+    }
+
+    private ConnectionChangeReceiver myReceiver;
+
+    public class ConnectionChangeReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+            NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+
+            if (!mobNetInfo.isConnected() && !wifiNetInfo.isConnected()) {
+//                BSToast.showLong(context, "网络不可以用");
+                cvBellHomeBackground.setState(2);
+                //改变背景或者 处理网络的全局变量
+            } else {
+                //改变背景或者 处理网络的全局变量
+                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_201_NET);
+                if (net != null) {
+                    cvBellHomeBackground.setState(net.net);
+                } else {
+                    cvBellHomeBackground.setState(0);
+                }
+            }
+        }
+    }
+
+    public boolean isNetworkConnected(Context context) {
+        if (context != null) {
+            ConnectivityManager mConnectivityManager = (ConnectivityManager) context
+                    .getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
+            if (mNetworkInfo != null) {
+                return mNetworkInfo.isAvailable();
+            }
+        }
+        return false;
+    }
 }

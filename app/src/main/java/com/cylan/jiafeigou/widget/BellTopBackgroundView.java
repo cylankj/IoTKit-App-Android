@@ -19,6 +19,7 @@ public class BellTopBackgroundView extends FrameLayout {
     FrameLayout fLayoutBellTopPre;
     FrameLayout fLayoutBellTopNext;
     ViewSwitcher vsBellHomeTop;
+    TextView tvStartCalling_;
 
     private ActionInterface actionInterface;
 
@@ -44,6 +45,12 @@ public class BellTopBackgroundView extends FrameLayout {
         tvStartCalling.setOnClickListener(v1 -> {
             if (actionInterface != null)
                 actionInterface.onMakeCall();
+        });
+        tvStartCalling_ = (TextView) v.findViewById(R.id.tv_start_calling_no_net);
+        tvStartCalling_.setOnClickListener(v1 -> {
+            if (actionInterface != null) {
+                actionInterface.onMakeCall();
+            }
         });
     }
 

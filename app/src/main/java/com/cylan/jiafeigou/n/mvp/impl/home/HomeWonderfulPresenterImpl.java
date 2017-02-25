@@ -116,6 +116,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     if (e instanceof TimeoutException) {
                         mView.onQueryTimeLineTimeOut();
                     }
+                    AppLogger.e("请求数据超时");
                 });
     }
 

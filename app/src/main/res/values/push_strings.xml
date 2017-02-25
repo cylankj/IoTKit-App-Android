@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="setTag">SetTag</string>
+    <string name="delTag">DeleteTag</string>
+    <string name="deleteToken">DeleteToken</string>
+    <string name="tag1">Tag1:</string>
+    <string name="tag2">Tag2:</string>
+    <string name="tag_key">input tag key(not set if empty)</string>
+    <string name="tag_value">input tag value</string>
+    <string name="tag_delete_key">input key to deleted</string>
+    <string name="getTag">GetTag</string>
+    <string name="inputToken">input the token to be deleted:</string>
+
+    <!-- 消息成功率统计： 通道将消息转发给SDK后，SDK通知通道消息已接收到 -->
+    <string name="hwpush_ability_value" translatable="false">successRateAnalytics</string>
+
+</resources>

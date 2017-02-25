@@ -1,9 +1,13 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.graphics.PixelFormat;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.support.annotation.NonNull;
@@ -13,6 +17,7 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
@@ -107,6 +112,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     protected void initViewAndListener() {
+        //锁屏状态下显示门铃呼叫
+        getWindow().addFlags(
+                WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED |               //这个在锁屏状态下
+                        WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
+                        | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
+                        | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
@@ -119,6 +130,53 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 handlePortClick();
             }
         });
+
+        initHeadSetEventReceiver();
+
+    }
+
+    private void initHeadSetEventReceiver() {
+        IntentFilter intentFilter = new IntentFilter();
+        intentFilter.addAction(Intent.ACTION_HEADSET_PLUG);
+        registerReceiver(headsetPlugReceiver, intentFilter);
+
+    }
+
+    private BroadcastReceiver headsetPlugReceiver = new BroadcastReceiver() {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if ("android.intent.action.HEADSET_PLUG".equals(action)) {
+                if (intent.hasExtra("state")) {
+                    if (intent.getIntExtra("state", 0) == 0) {
+                        BellLiveActivityPermissionsDispatcher.handleHeadsetDisconnectedWithCheck(BellLiveActivity.this);
+                    } else if (intent.getIntExtra("state", 0) == 1) {
+                        AppLogger.e("耳机已连接");
+                        handleHeadsetConnected();
+//                        BellLiveActivityPermissionsDispatcher.handleHeadsetConnectedWithCheck(BellLiveActivity.this);
+                    }
+                }
+            }
+        }
+
+    };
+
+    @NeedsPermission(Manifest.permission.MODIFY_AUDIO_SETTINGS)
+    void handleHeadsetConnected() {
+        AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        manager.setMode(AudioManager.MODE_IN_COMMUNICATION);
+//        manager.setSpeakerphoneOn(false);
+
+    }
+
+    @OnPermissionDenied(Manifest.permission.MODIFY_AUDIO_SETTINGS)
+    void onModifyAudioSettingFaild() {
+        AppLogger.e("切换模式失败");
+    }
+
+    @NeedsPermission(Manifest.permission.MODIFY_AUDIO_SETTINGS)
+    void handleHeadsetDisconnected() {
 
     }
 
@@ -189,6 +247,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onStart() {
         super.onStart();
+        muteAudio(true);
         setNormalBackMargin();
         mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
         mVideoViewContainer.postDelayed(mHideStatusBarAction, 3000);
@@ -198,13 +257,14 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onStop() {
         super.onStop();
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+        }
+        muteAudio(false);
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
-        }
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
         }
     }
 
@@ -274,6 +334,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onRelease(int side) {
         if (side == 0) {
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+            }
             mPresenter.dismiss();
         } else {
             if (mediaPlayer != null && mediaPlayer.isPlaying())
@@ -335,7 +398,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (mBellFlow.getVisibility() != View.VISIBLE) {
             mBellFlow.setVisibility(View.VISIBLE);
         }
-        mBellFlow.setText(String.format(Locale.getDefault(), "%sKb/s", speed));
+        mBellFlow.setText(String.format(Locale.getDefault(), "%sK/s", speed / 8));
     }
 
     @Override
@@ -416,13 +479,19 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onPreviewPicture(String URL) {
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
-        Glide.with(this).load(URL).into(mBellLiveVideoPicture);
+        Glide.with(this).load(URL).
+                placeholder(R.drawable.default_diagram_mask)
+                .into(mBellLiveVideoPicture);
     }
 
 
     public void onViewer() {
+        AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
+        int mode = manager.getMode();
+        if (mode != AudioManager.MODE_NORMAL) {
+            handleHeadsetConnected();
+        }
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
-        mBellLiveVideoPicture.setImageResource(R.drawable.default_diagram_mask);
         mVideoPlayController.setState(ILiveControl.STATE_LOADING, null);
         imgvBellLiveCapture.setEnabled(false);
         imgvBellLiveSpeaker.setEnabled(false);
@@ -534,5 +603,30 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         mediaPlayer = MediaPlayer.create(this, R.raw.doorbell_called);
         mediaPlayer.setLooping(true);
         mediaPlayer.start();
+    }
+
+    private final AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        @Override
+        public void onAudioFocusChange(int focusChange) {
+            AppLogger.e("onAudioFocusChange focusChange = " + focusChange);
+            //被其他App切换时，把当前自己的音乐停止
+        }
+    };
+
+    @Override
+    public boolean muteAudio(boolean bMute) {
+        boolean isSuccess = false;
+        AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
+        if (bMute) {
+            int result = am.requestAudioFocus(mOnAudioFocusChangeListener,
+                    AudioManager.STREAM_MUSIC,
+                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+            isSuccess = (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
+        } else {
+            int result = am.abandonAudioFocus(mOnAudioFocusChangeListener);
+            isSuccess = (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
+        }
+        AppLogger.e("pauseMusic bMute=" + bMute + " result=" + isSuccess);
+        return isSuccess;
     }
 }
