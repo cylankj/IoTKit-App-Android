@@ -25,12 +25,23 @@
             hunt:ct_left_title_color="@color/color_white"
             hunt:ct_title_color="@color/color_black" />
 
-        <ImageView
-            android:id="@+id/iv_logon"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y60"
-            android:layout_marginTop="@dimen/y56"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_logon"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y60"
+                android:layout_marginTop="@dimen/y56"
+                android:src="@mipmap/ic_launcher" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y10"
+                android:background="@drawable/little_shape" />
+
+        </FrameLayout>
 
         <TextView
             android:id="@+id/tv_app_version"

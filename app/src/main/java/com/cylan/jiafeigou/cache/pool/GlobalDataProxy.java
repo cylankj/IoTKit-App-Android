@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.dp.IDataPoint;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -71,14 +72,16 @@ public class GlobalDataProxy implements IDataProxy {
 
 
     public void setLoginState(LogState loginState) {
-        JFGAccount account = getJfgAccount();
-        if (account == null || TextUtils.isEmpty(account.getAccount())) {
-            loginState.state = 0;
-        }
         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
-
         if (loginState.state == LogState.STATE_NONE) {
             if (dataPointManager != null) dataPointManager.clear();
+            setJfgAccount(null);
+        } else {
+            JFGAccount account = getJfgAccount();
+            if (account == null || TextUtils.isEmpty(account.getAccount())) {
+                loginState.state = LogState.STATE_NONE;
+                if (dataPointManager != null) dataPointManager.clear();
+            }
         }
         AppLogger.i("logState update: " + loginState.state);
     }
@@ -95,8 +98,9 @@ public class GlobalDataProxy implements IDataProxy {
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
         AppLogger.i("setJfgAccount:" + (jfgAccount == null));
-        if (jfgAccount != null)
+        if (jfgAccount != null) {
             PreferencesUtils.putString(KEY_ACCOUNT, new Gson().toJson(jfgAccount));
+        } else PreferencesUtils.putString(KEY_ACCOUNT, "");
         RxBus.getCacheInstance().post(jfgAccount);
     }
 
@@ -104,7 +108,7 @@ public class GlobalDataProxy implements IDataProxy {
         if (jfgAccount == null || TextUtils.isEmpty(jfgAccount.getAccount())) {
             try {
                 String content = PreferencesUtils.getString(KEY_ACCOUNT);
-                return new Gson().fromJson(content, JFGAccount.class);
+                return jfgAccount = new Gson().fromJson(content, JFGAccount.class);
             } catch (Exception e) {
                 return null;
             }

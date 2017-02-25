@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -25,7 +24,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.SdCardInfoPresenterImpl;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
@@ -44,10 +43,6 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
  */
 public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Presenter> implements SdCardInfoContract.View {
 
-    @BindView(R.id.imgV_top_bar_center)
-    TextView imgVTopBarCenter;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
     @BindView(R.id.tv_sdcard_volume)
     TextView tvSdcardVolume;
     @BindView(R.id.view_has_use_volume)
@@ -60,6 +55,8 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     ImageView ivLoadingRotate;
     @BindView(R.id.tv_clear_restart)
     TextView tvClearRestart;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     private String uuid;
     private SdCardInfoContract.Presenter basePresenter;
@@ -88,7 +85,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(view.findViewById(R.id.fLayout_top_bar_container));
+        customToolbar.setBackAction(o -> getFragmentManager().popBackStack());
     }
 
     @Override
@@ -102,12 +99,9 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
 
     }
 
-    @OnClick({R.id.imgV_top_bar_center, R.id.tv_clecr_sdcard})
+    @OnClick({R.id.tv_clecr_sdcard})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imgV_top_bar_center:
-                getFragmentManager().popBackStack();
-                break;
             case R.id.tv_clecr_sdcard:
                 //格式化SD卡
                 showClearSdDialog();
@@ -242,4 +236,8 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
         return fileSizeString;
     }
 
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
 }

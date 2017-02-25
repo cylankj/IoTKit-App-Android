@@ -100,15 +100,15 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     }
 
     private void initView() {
-        tvDownloadSoftFile.setText("升级");
+        tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
         String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, "");
         tvHardwareNowVersion.setText(sVersion);
         tvHardwareNewVersion.setText(sVersion);
 
         // 有新版本
-        if (checkDevVersion.hasNew) {
+        if (checkDevVersion != null && checkDevVersion.hasNew) {
             tvHardwareNewVersion.setText(checkDevVersion.version);
-            tvDownloadSoftFile.setText("下载并升级" + "(" + basePresenter.getFileSize() + ")");
+            tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), basePresenter.getFileSize()));
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
             tvVersionDescribe.setText(checkDevVersion.tip);
         }
@@ -144,7 +144,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                     return;
                 }
 
-                if (!tvDownloadSoftFile.getText().equals("升级")) {
+                if (!tvDownloadSoftFile.getText().equals(getString(R.string.Tap1_Update))) {
                     handlerDownLoad();
                 } else {
                     handlerUpdate();
@@ -227,13 +227,13 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 ToastUtil.showPositiveToast("固件下载成功");
                 break;
             case 1:
-                ToastUtil.showNegativeToast("固件下载失败");
+                ToastUtil.showNegativeToast(getString(R.string.Tap1_DownloadFirmwareFai));
                 break;
             case 2:
-                ToastUtil.showPositiveToast("固件升级成功");
+                ToastUtil.showPositiveToast(getString(R.string.Tap1_FirmwareUpdateSuc));
                 break;
             case 3:
-                ToastUtil.showPositiveToast("固件升级失败");
+                ToastUtil.showPositiveToast(getString(R.string.Tap1_FirmwareUpdateFai));
                 break;
         }
     }
@@ -242,7 +242,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     public void onDownloadStart() {
         tvDownloadSoftFile.setEnabled(false);
         llDownloadPgContainer.setVisibility(View.VISIBLE);
-        tvLoadingShow.setText("0.0MB"+"/"+basePresenter.getFileSize());
+        tvLoadingShow.setText("0.0MB" + "/" + basePresenter.getFileSize());
         downloadProgress.setProgress(0);
     }
 
@@ -256,15 +256,15 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         String remoteSSid = net.ssid;
         if (TextUtils.equals(localSSid, remoteSSid)) {
             basePresenter.startUpdate();
-        }else {
+        } else {
             //不在同局域网
-            tvDownloadSoftFile.setText("升级");
+            tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
         }
     }
 
     @Override
     public void onDownloading(double percent, long downloadedLength) {
-        tvLoadingShow.setText(basePresenter.FormetSDcardSize(downloadedLength)+"/"+basePresenter.getFileSize());
+        tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareDownloading), basePresenter.FormetSDcardSize(downloadedLength) + "/" + basePresenter.getFileSize()));
         downloadProgress.setProgress((int) (percent * 100));
     }
 
@@ -275,13 +275,13 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void startUpdate() {
-        tvLoadingShow.setText(0+"%");
+        tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareUpdating), 0 + ""));
         llDownloadPgContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onUpdateing(int percent) {
-        tvLoadingShow.setText(percent+"%");
+        tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareUpdating), percent + ""));
         downloadProgress.setProgress(percent);
     }
 
