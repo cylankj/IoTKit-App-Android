@@ -26,6 +26,7 @@
         android:orientation="vertical">
 
         <TextView
+            android:text="Hi"
             android:id="@+id/tvHeaderNickName"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

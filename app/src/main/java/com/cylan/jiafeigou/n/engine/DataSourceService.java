@@ -479,4 +479,9 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnBindDevRsp(int i, String s) {
 
     }
+
+    @Override
+    public void OnGetVideoShareUrl(String s) {
+
+    }
 }

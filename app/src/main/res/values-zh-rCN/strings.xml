@@ -898,6 +898,7 @@
     <string name="Tap1_CurrentVersion">当前版本</string>
     <string name="Tap1_DownloadFirmwareFai">固件下载失败</string>
     <string name="Tap1_DownloadFirmwareTips">即将下载设备固件，升级设备固件时需保持客户端与设备连接于同一网络</string>
+    <string name="Tap1_UpdateFirmwareTips">即将升级设备固件，请保持客户端与设备连接于同一网络</string>
     <string name="Tap1_FirmwareDownloading">正在下载(%s)</string>
     <string name="Tap1_FirmwareUpdate">固件升级</string>
     <string name="Tap1_FirmwareUpdateFai">固件升级失败</string>

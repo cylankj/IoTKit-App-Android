@@ -221,7 +221,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
     /**
      * 跳转到分享管理界面
-     *
      * @param bean
      */
     @Override

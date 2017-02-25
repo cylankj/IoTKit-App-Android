@@ -214,7 +214,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     private void sendSms() {
         Uri smsToUri = Uri.parse("smsto:" + friendAccount);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips));
+        mIntent.putExtra("sms_body", String.format(getString(R.string.Tap1_share_tips),"http://www.jfgou.com/app/download.html"));
         startActivity(mIntent);
     }
 
