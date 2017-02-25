@@ -72,10 +72,12 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     public void setOnline(boolean online) {
-        if (!(isOnline = online)) {//没有登录的话则清除所有的缓存
-            mCachedDeviceMap.clear();
-            mJFGAccount = null;
-        }
+        isOnline = online;
+//        if (!(isOnline = online)) {//没有登录的话则清除所有的缓存
+//            mCachedDeviceMap.clear();
+//            mJFGAccount = null;
+//        }
+        //什么也不做,防止程序崩溃
     }
 
     public boolean isOnline() {
@@ -257,9 +259,9 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     public <T> T getValueWithAccountCheck(T value) {
-        if (mJFGAccount == null || !isOnline) {
-            return null;
-        }
+//        if (mJFGAccount == null || !isOnline) {
+//            return null;
+//        }
         return value;
     }
 

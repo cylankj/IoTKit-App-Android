@@ -12,6 +12,10 @@ import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
 import com.cylan.ext.opt.DebugOptionsImpl;
+import com.cylan.jiafeigou.DaemonReceiver1;
+import com.cylan.jiafeigou.DaemonReceiver2;
+import com.cylan.jiafeigou.DaemonService1;
+import com.cylan.jiafeigou.DaemonService2;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -29,6 +33,8 @@ import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.facebook.FacebookSdk;
+import com.marswin89.marsdaemon.DaemonClient;
+import com.marswin89.marsdaemon.DaemonConfigurations;
 import com.squareup.leakcanary.LeakCanary;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -46,6 +52,46 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     private static final String TWITTER_KEY = "kCEeFDWzz5xHi8Ej9Wx6FWqRL";
     private static final String TWITTER_SECRET = "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5";
+
+    private DaemonClient mDaemonClient;
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        mDaemonClient = new DaemonClient(createDaemonConfigurations());
+        mDaemonClient.onAttachBaseContext(base);
+    }
+
+
+    private DaemonConfigurations createDaemonConfigurations() {
+        DaemonConfigurations.DaemonConfiguration configuration1 = new DaemonConfigurations.DaemonConfiguration(
+                getPackageName() + ":process1",
+                DaemonService1.class.getCanonicalName(),
+                DaemonReceiver1.class.getCanonicalName());
+        DaemonConfigurations.DaemonConfiguration configuration2 = new DaemonConfigurations.DaemonConfiguration(
+                getPackageName() + ":process2",
+                DaemonService2.class.getCanonicalName(),
+                DaemonReceiver2.class.getCanonicalName());
+        DaemonConfigurations.DaemonListener listener = new MyDaemonListener();
+        //return new DaemonConfigurations(configuration1, configuration2);//listener can be null
+        return new DaemonConfigurations(configuration1, configuration2, listener);
+    }
+
+
+    class MyDaemonListener implements DaemonConfigurations.DaemonListener {
+        @Override
+        public void onPersistentStart(Context context) {
+        }
+
+        @Override
+        public void onDaemonAssistantStart(Context context) {
+        }
+
+        @Override
+        public void onWatchDaemonDaed() {
+        }
+    }
+
 
     @Override
     public void onCreate() {
@@ -77,7 +123,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         });
     }
 
-    private void initTwitter(){
+    private void initTwitter() {
         HandlerThreadUtils.postAtFrontOfQueue(new Runnable() {
             @Override
             public void run() {
@@ -86,7 +132,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
             }
         });
     }
-
 
 
     private void initLeakCanary() {

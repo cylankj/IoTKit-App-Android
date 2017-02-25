@@ -162,7 +162,6 @@ dependencies {
     configurations.all {
         resolutionStrategy.force 'com.google.guava:guava:19.0', 'com.android.support:support-annotations:23.3.0'
     }
-
     //////////////test///////////////////////
     //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
     //前者在test/，后者在androidTest
@@ -174,7 +173,7 @@ dependencies {
     androidTestCompile rootProject.ext.testRules
     androidTestCompile rootProject.ext.testRunner
     //强制使用高版本，引用rootProject.ext.annotation，无效
-//    androidTestCompile 'com.android.support:support-annotations:23.3.0'
+    //    androidTestCompile 'com.android.support:support-annotations:23.3.0'
     androidTestCompile(rootProject.ext.testEspresso, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
@@ -190,14 +189,14 @@ dependencies {
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.permis
     annotationProcessor rootProject.ext.permisApt
-//    compile project(':jlib')
+    //    compile project(':jlib')
     compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
-//    compile files('libs/gson-2.2.4.jar')
+    //    compile files('libs/gson-2.2.4.jar')
     compile files('libs/mid-sdk-2.3.jar')
     compile files('libs/mta-android-stat-sdk-2.2.0.jar')
     compile files('libs/nineoldandroids-2.4.0.jar')
-//    compile files('libs/okhttp-3.2.0.jar')
-//    compile files('libs/okio-1.6.0.jar')
+    //    compile files('libs/okhttp-3.2.0.jar')
+    //    compile files('libs/okio-1.6.0.jar')
     compile files('libs/open_sdk_r5756.jar')
     compile files('libs/weiboSDKCore_3.1.4.jar')
     compile files('libs/zxing.jar')
@@ -214,21 +213,22 @@ dependencies {
     //glide
     compile rootProject.ext.glide
     compile(name: rootProject.ext.cySdk, ext: 'aar')
+    //进程保活
+    compile(name: 'LibMarsdaemon-release', ext: 'aar')
+    compile(name: 'HMS-SDK-2.4.0.300', ext: "aar")
     //自己写的 apt
-//    compile project(':annotation')
-//    compile project(':compiler')
-
+    //    compile project(':annotation')
+    //    compile project(':compiler')
     //    https://github.com/cylankj/JFGAndroid-Ext.git
     //
     //渠道包
     //渠道包
-
     // twitter
-//    testCompile 'junit:junit:4.12'
-//    compile fileTree(dir: 'libs', include: ['*.jar'])
-//    compile('com.twitter.sdk.android:twitter:2.3.1@aar') {
-//        transitive = true;
-//    }
+    //    testCompile 'junit:junit:4.12'
+    //    compile fileTree(dir: 'libs', include: ['*.jar'])
+    //    compile('com.twitter.sdk.android:twitter:2.3.1@aar') {
+    //        transitive = true;
+    //    }
     compile 'com.danikula:videocache:2.6.4'
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
@@ -240,7 +240,6 @@ dependencies {
     releaseCompile 'com.cylan.ext:optrelease:0.0.1'
     //渠道包
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
-
     // twitter
     compile(name: 'fabric-1.3.14', ext: 'aar')
     compile(name: 'tweet-composer-2.3.1', ext: 'aar')
@@ -252,6 +251,6 @@ dependencies {
     compile(name: rootProject.ext.facebookSDK, ext: 'aar') {
         transitive = true
     }
-//    compile 'fr.avianey:bolts-android-api:1+'
+    //    compile 'fr.avianey:bolts-android-api:1+'
 }
 

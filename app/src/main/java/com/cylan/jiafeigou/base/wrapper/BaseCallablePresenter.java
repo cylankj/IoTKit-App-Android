@@ -19,7 +19,6 @@ import java.util.concurrent.TimeoutException;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by yzd on 16-12-30.
@@ -63,6 +62,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     public void newCall(Caller caller) {
+        AppLogger.e(caller.picture);
         Subscription subscription = Observable.just(mHolderCaller = caller)
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(who -> !mIsInViewerMode)
@@ -74,17 +74,14 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                             } else if (mHolderCaller != null) {
                                 mView.onListen();
                                 Subscription sub = Observable.interval(1, TimeUnit.SECONDS)
-                                        .subscribeOn(Schedulers.io())
+                                        .subscribeOn(AndroidSchedulers.mainThread())
+                                        .observeOn(AndroidSchedulers.mainThread())
                                         .map(s -> {
-                                                    preload(mHolderCaller.picture);
+                                                    preload(caller.picture);
                                                     return s;
                                                 }
                                         )
-                                        .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class)
-                                                .map(notify -> true)
-                                                .mergeWith(RxBus.getCacheInstance()
-                                                        .toObservable(RxEvent.CallAnswered.class)
-                                                        .map(answered -> true)))
+                                        .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class))
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .subscribe(s -> {
                                             mView.onPreviewPicture(caller.picture);

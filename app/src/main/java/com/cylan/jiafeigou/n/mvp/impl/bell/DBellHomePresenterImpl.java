@@ -56,6 +56,13 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     }
 
     @Override
+    public void onSetContentView() {
+        super.onSetContentView();
+    }
+
+
+
+    @Override
     public void fetchBellRecordsList(boolean asc, long time) {
         Subscription subscription = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             JFGDPMsg request = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, time);

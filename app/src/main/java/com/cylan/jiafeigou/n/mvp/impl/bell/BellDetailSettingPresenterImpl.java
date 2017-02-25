@@ -26,11 +26,6 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
         implements BellDetailContract.Presenter {
 
     private CompositeSubscription subscription;
-    @Override
-    public void onSetContentView() {
-        super.onSetContentView();
-        mView.onShowProperty(mSourceManager.getJFGDevice(mUUID));
-    }
 
     @Override
     protected void onRegisterSubscription() {
@@ -68,7 +63,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
                         String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, "");
                         try {
-                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid,uuid,sVersion);
+                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, sVersion);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -81,7 +76,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
         return RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.CheckDevVersionRsp checkDevVersionRsp) -> {
-                    if (checkDevVersionRsp != null){
+                    if (checkDevVersionRsp != null) {
                         mView.checkResult(checkDevVersionRsp);
                     }
                 });
