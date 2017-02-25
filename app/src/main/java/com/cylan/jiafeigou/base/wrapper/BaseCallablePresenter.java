@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.base.wrapper;
 
 import android.support.annotation.CallSuper;
+import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -73,20 +74,22 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                 mView.onNewCallWhenInLive(mHolderCaller.caller);
                             } else if (mHolderCaller != null) {
                                 mView.onListen();
-                                Subscription sub = Observable.interval(1, TimeUnit.SECONDS)
-                                        .subscribeOn(AndroidSchedulers.mainThread())
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .map(s -> {
-                                                    preload(caller.picture);
-                                                    return s;
-                                                }
-                                        )
-                                        .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class))
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .subscribe(s -> {
-                                            mView.onPreviewPicture(caller.picture);
-                                        });
-                                registerSubscription(sub);
+                                if (!TextUtils.isEmpty(caller.picture)) {//华为呼叫没有图片预览图
+                                    Subscription sub = Observable.interval(1, TimeUnit.SECONDS)
+                                            .subscribeOn(AndroidSchedulers.mainThread())
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .map(s -> {
+                                                        preload(caller.picture);
+                                                        return s;
+                                                    }
+                                            )
+                                            .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class))
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .subscribe(s -> {
+                                                mView.onPreviewPicture(caller.picture);
+                                            });
+                                    registerSubscription(sub);
+                                }
                                 AppLogger.e("收到门铃呼叫");
                             }
                             break;

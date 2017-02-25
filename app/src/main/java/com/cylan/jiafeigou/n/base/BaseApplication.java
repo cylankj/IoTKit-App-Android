@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
@@ -33,6 +34,9 @@ import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.facebook.FacebookSdk;
+import com.huawei.hms.api.ConnectionResult;
+import com.huawei.hms.api.HuaweiApiClient;
+import com.huawei.hms.support.api.push.HuaweiPush;
 import com.marswin89.marsdaemon.DaemonClient;
 import com.marswin89.marsdaemon.DaemonConfigurations;
 import com.squareup.leakcanary.LeakCanary;
@@ -45,7 +49,7 @@ import io.fabric.sdk.android.Fabric;
 /**
  * Created by hunt on 16-5-14.
  */
-public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks {
+public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks, HuaweiApiClient.ConnectionCallbacks, HuaweiApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "BaseApplication";
     private HttpProxyCacheServer proxy;
@@ -54,6 +58,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private static final String TWITTER_SECRET = "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5";
 
     private DaemonClient mDaemonClient;
+    private HuaweiApiClient client;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -75,6 +80,23 @@ public class BaseApplication extends MultiDexApplication implements Application.
         DaemonConfigurations.DaemonListener listener = new MyDaemonListener();
         //return new DaemonConfigurations(configuration1, configuration2);//listener can be null
         return new DaemonConfigurations(configuration1, configuration2, listener);
+    }
+
+    @Override
+    public void onConnected() {
+        AppLogger.d("华为推送连接成功");
+        HuaweiPush.HuaweiPushApi.getToken(client).setResultCallback(result -> {
+        });
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+        AppLogger.d("onConnectionSuspended" + i);
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult result) {
+        AppLogger.d("华为推送连接失败" + result.getErrorCode());
     }
 
 
@@ -112,6 +134,17 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
         initTwitter();
         initFaceBook();
+        initHuaweiPushSDK();
+    }
+
+    private void initHuaweiPushSDK() {
+        AppLogger.d("正在初始化华为推送SDK");
+        client = new HuaweiApiClient.Builder(this)
+                .addApi(HuaweiPush.PUSH_API)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .build();
+        client.connect();
     }
 
     private void initFaceBook() {
@@ -182,6 +215,14 @@ public class BaseApplication extends MultiDexApplication implements Application.
         DebugOptionsImpl.enableCrashHandler(this, PathGetter.createPath(JConstant.CRASH_PATH));
 
         DebugOptionsImpl.enableStrictMode();
+    }
+
+    @Override
+    public void onTerminate() {
+        super.onTerminate();
+        if (client != null && client.isConnected()) {
+            client.disconnect();
+        }
     }
 
     @Override
@@ -259,4 +300,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer.Builder(this).maxCacheSize(Long.MAX_VALUE).maxCacheFilesCount(Integer.MAX_VALUE).build();
     }
+
+
 }

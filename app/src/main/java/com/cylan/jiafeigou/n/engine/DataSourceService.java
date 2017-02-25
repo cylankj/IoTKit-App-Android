@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.IBinder;
 import android.os.Process;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -51,22 +50,17 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
-import com.huawei.hms.api.ConnectionResult;
-import com.huawei.hms.api.HuaweiApiClient;
-import com.huawei.hms.support.api.push.HuaweiPush;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class DataSourceService extends Service implements AppCallBack, HuaweiApiClient.ConnectionCallbacks, HuaweiApiClient.OnConnectionFailedListener {
+public class DataSourceService extends Service implements AppCallBack {
 
     static {
         System.loadLibrary("jfgsdk");
         System.loadLibrary("sqlcipher");
     }
-
-    private HuaweiApiClient client;
 
 
     @Override
@@ -75,18 +69,8 @@ public class DataSourceService extends Service implements AppCallBack, HuaweiApi
         CacheParser.getDpParser().registerDpParser();
         GlobalUdpDataSource.getInstance().register();
         GlobalBellCallSource.getInstance().register();
-        initHuaweiPushSDK();
     }
 
-    private void initHuaweiPushSDK() {
-        AppLogger.d("正在初始化华为推送SDK");
-        client = new HuaweiApiClient.Builder(this)
-                .addApi(HuaweiPush.PUSH_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        client.connect();
-    }
 
     @Override
     public void onDestroy() {
@@ -94,9 +78,7 @@ public class DataSourceService extends Service implements AppCallBack, HuaweiApi
         CacheParser.getDpParser().unregisterDpParser();
         GlobalUdpDataSource.getInstance().unregister();
         GlobalBellCallSource.getInstance().unRegister();
-        if (client != null && client.isConnected()) {
-            client.disconnect();
-        }
+
     }
 
     @Override
@@ -500,20 +482,5 @@ public class DataSourceService extends Service implements AppCallBack, HuaweiApi
 
     }
 
-    @Override
-    public void onConnected() {
-        AppLogger.d("华为推送连接成功");
-        HuaweiPush.HuaweiPushApi.getToken(client).setResultCallback(result -> {
-        });
-    }
 
-    @Override
-    public void onConnectionSuspended(int i) {
-        AppLogger.d("onConnectionSuspended" + i);
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult result) {
-        AppLogger.d("华为推送连接失败" + result.getErrorCode());
-    }
 }

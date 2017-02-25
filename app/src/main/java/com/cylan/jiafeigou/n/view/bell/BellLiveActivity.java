@@ -151,8 +151,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 if (intent.hasExtra("state")) {
                     if (intent.getIntExtra("state", 0) == 0) {
                         BellLiveActivityPermissionsDispatcher.handleHeadsetDisconnectedWithCheck(BellLiveActivity.this);
-                    } else {
-                        BellLiveActivityPermissionsDispatcher.handleHeadsetConnectedWithCheck(BellLiveActivity.this);
+                    } else if (intent.getIntExtra("state", 0) == 1) {
+                        AppLogger.e("耳机已连接");
+                        handleHeadsetConnected();
+//                        BellLiveActivityPermissionsDispatcher.handleHeadsetConnectedWithCheck(BellLiveActivity.this);
                     }
                 }
             }
@@ -164,7 +166,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     void handleHeadsetConnected() {
         AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
         manager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-        manager.setSpeakerphoneOn(false);
+//        manager.setSpeakerphoneOn(false);
 
     }
 
@@ -396,7 +398,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (mBellFlow.getVisibility() != View.VISIBLE) {
             mBellFlow.setVisibility(View.VISIBLE);
         }
-        mBellFlow.setText(String.format(Locale.getDefault(), "%sKb/s", speed));
+        mBellFlow.setText(String.format(Locale.getDefault(), "%sK/s", speed / 8));
     }
 
     @Override
@@ -477,7 +479,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onPreviewPicture(String URL) {
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
-        Glide.with(this).load(URL).into(mBellLiveVideoPicture);
+        Glide.with(this).load(URL).
+                placeholder(R.drawable.default_diagram_mask)
+                .into(mBellLiveVideoPicture);
     }
 
 
