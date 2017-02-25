@@ -237,6 +237,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     idList.add((long) 601);
                     idList.add((long) 603);
                     idList.add((long) 604);
+                    idList.add((long) 701);
                     try {
                         requstId = JfgCmdInsurance.getCmd().robotCountData("", idList, 0);
                     } catch (JfgException e) {
@@ -282,6 +283,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     idList.add((long) 601);
                     idList.add((long) 603);
                     idList.add((long) 604);
+                    idList.add((long) 701);
                     try {
                         JfgCmdInsurance.getCmd().robotCountDataClear(uuid, idList, 0);
                     } catch (JfgException e) {

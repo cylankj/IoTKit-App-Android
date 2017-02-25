@@ -60,6 +60,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                         GlobalDataProxy.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
                         GlobalDataProxy.getInstance().setOnline(false);
                         JfgCmdInsurance.getCmd().logout();
+                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetUserInfo.class);
                         if (isOpenLogin) {
                             AccessTokenKeeper.clear(getView().getContext());
 //                            TencentInstance tencentInstance = new TencentInstance();
