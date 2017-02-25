@@ -22,58 +22,6 @@ public class BindUtils {
     public static final Pattern DOG_REG = Pattern.compile("DOG-\\d{6}");
     public static final Pattern DOG_ML_REG = Pattern.compile("DOG-ML-\\d{6}");
 
-    public static List<ScanResult> transformDogList(List<ScanResult> resultList) {
-        if (resultList == null || resultList.size() == 0)
-            return new ArrayList<>();//return an empty list is better than null
-        List<ScanResult> results = new ArrayList<>();
-        for (ScanResult result : resultList) {
-            if (DOG_REG.matcher(removeDoubleQuotes(result.SSID)).find()) {
-                results.add(result);
-            }
-        }
-        return results;
-    }
-
-    public static List<ScanResult> transformDogList(List<ScanResult> resultList, Pattern pattern) {
-        if (resultList == null || resultList.size() == 0)
-            return new ArrayList<>();//return an empty list is better than null
-        List<ScanResult> results = new ArrayList<>();
-        for (ScanResult result : resultList) {
-            if (pattern == null) {
-                if (TextUtils.equals(INVALID_SSID_0, result.SSID)
-                        || TextUtils.equals(INVALID_SSID_1, result.SSID))
-                    continue;
-            }
-            if (pattern != null
-                    && pattern.matcher(removeDoubleQuotes(result.SSID)).find()) {
-                results.add(result);
-            }
-        }
-        return results;
-    }
-
-    public static List<ScanResult> transformBellList(List<ScanResult> resultList) {
-        if (resultList == null || resultList.size() == 0)
-            return new ArrayList<>();//return an empty list is better than null
-        List<ScanResult> results = new ArrayList<>();
-        for (ScanResult result : resultList) {
-            if (DOG_ML_REG.matcher(removeDoubleQuotes(result.SSID)).find()) {
-                results.add(result);
-            }
-        }
-        return results;
-    }
-
-
-    public static String removeDoubleQuotes(String string) {
-        if (TextUtils.isEmpty(string)) return "";
-        int length = string.length();
-        if ((length > 1) && (string.charAt(0) == '"')
-                && (string.charAt(length - 1) == '"')) {
-            return string.substring(1, length - 1);
-        }
-        return string;
-    }
 
     public static int getSecurity(ScanResult result) {
         if (result.capabilities.contains("WEP")) {
@@ -115,41 +63,6 @@ public class BindUtils {
                         || wifiConfiguration.SSID.contains(INVALID_SSID_1));
     }
 
-//    public static void finalRecoverWifi(AContext binderHandler, WifiManager wifiManager) {
-//        if (binderHandler != null) {
-//            Object o = binderHandler.getCache(AContext.KEY_DISABLED_WIFI_CONFIGS);
-//            if (o != null && o instanceof AContext.DisabledWifiConfig) {
-//                List<WifiConfiguration> wifiConfigurations = ((AContext.DisabledWifiConfig) o).list;
-//                if (wifiConfigurations == null) {
-//                    DswLog.d("finalRecoverWifi list is null");
-//                    return;
-//                }
-//                DswLog.d("finalRecoverWifi list is not null:" + wifiConfigurations);
-//                reEnableTheCacheConfiguration(wifiManager, wifiConfigurations);
-//            } else {
-//                DswLog.d("finalRecoverWifi disable cached is null");
-//            }
-//        } else {
-//            List<WifiConfiguration> wifiConfigurations = wifiManager.getConfiguredNetworks();
-//            reEnableTheCacheConfiguration(wifiManager, wifiConfigurations);
-//        }
-//    }
-
-    private static void reEnableTheCacheConfiguration(WifiManager wifiManager,
-                                                      List<WifiConfiguration> wifiConfigurations) {
-        if (wifiConfigurations != null) {
-            for (WifiConfiguration con : wifiConfigurations) {
-                if (BindUtils.invalidInfo(con))
-                    continue;
-                if (NetUtils.removeDoubleQuotes(con.SSID).startsWith("DOG-")) {
-                    wifiManager.removeNetwork(con.networkId);
-                    continue;
-                }
-//                wifiManager.enableNetwork(con.networkId, false);
-//                DswLog.d("finalRecoverWifi try: " + con.status + " " + con.SSID);
-            }
-        }
-    }
 
     public static UdpConstant.UdpDevicePortrait assemble(JfgUdpMsg.PingAck pingAck, JfgUdpMsg.FPingAck fPingAck) {
         UdpConstant.UdpDevicePortrait devicePortrait = new UdpConstant.UdpDevicePortrait();

@@ -272,6 +272,7 @@
   <string name="MON_1">Mon</string>
   <string name="MON_2">Mon</string>
   <string name="MSG_BIND">Device is added successfully</string>
+  <string name="MSG_BOTTOM_LINE">Bottom</string>
   <string name="MSG_DELETE_TITLE">Can\'t be restored if deleted, please reconfirm.</string>
   <string name="MSG_DETAILS">View</string>
   <string name="MSG_LOW_BATTERY">Low power, please charge.</string>
@@ -422,9 +423,11 @@
   <string name="RET_EUPLOADFILE">Failed to upload</string>
   <string name="RET_EUPLOADFILE_TOOSS">Upload failed</string>
   <string name="RET_MSG_EDATABASE">Database Error</string>
+  <string name="RET_MSG_EUNKNOWN">Unknown error(%s)</string>
   <string name="RE_ADD_BUTTONG">Re&#8211;add</string>
   <string name="RE_ADD_LABEL">Update completed</string>
   <string name="RIGN_SUC">Registered Successfully</string>
+  <string name="Request_TimeOut">Timeout</string>
   <string name="Reset_Suc">Already flickered in red</string>
   <string name="SAT">Saturday</string>
   <string name="SAT_1">Sat</string>
@@ -649,6 +652,7 @@
   <string name="Tap1_TitleName">Home</string>
   <string name="Tap1_Tosetup">Set up</string>
   <string name="Tap1_Update">Update</string>
+  <string name="Tap1_UpdateFirmwareTips">Update will start shortly,please ensure that cellphone and device are connecting with the same WIFI</string>
   <string name="Tap1_device_deleted">This device has been deleted.</string>
   <string name="Tap1_iHome_Associate">Associate</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -738,7 +742,7 @@
   <string name="Tap3_ShareDevice_CanceldeTips">Canceled</string>
   <string name="Tap3_ShareDevice_CancleShare">Sure to cancel the sharing with this user?</string>
   <string name="Tap3_ShareDevice_Contacts">Contacts</string>
-  <string name="Tap3_ShareDevice_Delete">Cancel the sharing</string>
+  <string name="Tap3_ShareDevice_Delete">Cancel</string>
   <string name="Tap3_ShareDevice_DeleteSucces">Cancelled</string>
   <string name="Tap3_ShareDevice_DeleteTips">Cancel the sharing with %s?</string>
   <string name="Tap3_ShareDevice_ExceedTips">Up to 5 users can be shared with</string>
@@ -753,7 +757,7 @@
   <string name="Tap3_ShareDevice_SuccessTips">Shared successfully</string>
   <string name="Tap3_ShareDevice_Tips">This device can\'t be shared with any more users</string>
   <string name="Tap3_ShareDevice_ToContacts">Share with Contacts</string>
-  <string name="Tap3_TitleName">Mine</string>
+  <string name="Tap3_TitleName">Me</string>
   <string name="Tap3_Uploading">Uploading&#8230;</string>
   <string name="Tap3_UploadingComplete">Uploaded</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>
@@ -840,7 +844,7 @@
   <string name="getting">Getting&#8230;</string>
   <string name="has_copy">Replicated</string>
   <string name="has_not_sdcard">Not find Micro SD card</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/en.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/en.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Your SD card is no enough space</string>
   <string name="is_connecting_video">Connecting</string>
@@ -873,9 +877,4 @@
   <string name="web">http://www.cleverdog.com.cn/</string>
   <string name="wifi_authentication">Verify %s WiFi connection</string>
   <string name="wifi_hasnot">Not find this WIFI</string>
-  <string name="MSG_BOTTOM_LINE">Bottom</string>
-  <string name="STANBY_TIME_D_H_M">%1$d天%2$d小时%3$d分</string>
-  <string name="STANBY_TIME_H_M">%1$d小时%2$d分</string>
-  <string name="STANBY_TIME_M">%1$d分</string>
-  <string name="REQUEST_TIME_OUT">请求数据超时</string>
 </resources>

@@ -50,15 +50,6 @@ public interface ConfigApContract {
     interface Presenter extends BasePresenter {
 
         /**
-         * 注册wifi广播
-         * <p>
-         * : this context should be application context
-         */
-        void registerNetworkMonitor();
-
-        void unregisterNetworkMonitor();
-
-        /**
          * @param ssid
          * @param pwd
          * @param type
@@ -72,6 +63,7 @@ public interface ConfigApContract {
 
         void refreshWifiList();
 
+        void check3GDogCase();
         /**
          * 先清空其他狗绑定的信息
          */

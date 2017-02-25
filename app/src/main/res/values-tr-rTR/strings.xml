@@ -272,6 +272,7 @@
   <string name="MON_1">Pazartesi</string>
   <string name="MON_2">Pazartesi</string>
   <string name="MSG_BIND">Cihaz başarılı bir şekilde eklendi</string>
+  <string name="MSG_BOTTOM_LINE">Alttaki</string>
   <string name="MSG_DELETE_TITLE">Silindikten sonra geri çağrılamaz</string>
   <string name="MSG_DETAILS">Görüntüle</string>
   <string name="MSG_LOW_BATTERY">Batarya kapasitesi düşük, lütfen şarj edin.</string>
@@ -422,9 +423,11 @@
   <string name="RET_EUPLOADFILE">Dosya yükleme başarısız</string>
   <string name="RET_EUPLOADFILE_TOOSS">Yükleme başarısız</string>
   <string name="RET_MSG_EDATABASE">Veritabanı hatası</string>
+  <string name="RET_MSG_EUNKNOWN">Hata(%s)</string>
   <string name="RE_ADD_BUTTONG">Tekrar ekle</string>
   <string name="RE_ADD_LABEL">Tüm güncellemeler tamalandığında</string>
   <string name="RIGN_SUC">Başarılı bir şekilde kaydedildi</string>
+  <string name="Request_TimeOut">Zaman aşımı</string>
   <string name="Reset_Suc">Zaten kırmızı çaktı</string>
   <string name="SAT">Cumartesi</string>
   <string name="SAT_1">Cumartesi</string>
@@ -649,6 +652,7 @@
   <string name="Tap1_TitleName">Ev</string>
   <string name="Tap1_Tosetup">Kurulum</string>
   <string name="Tap1_Update">Güncelleştir</string>
+  <string name="Tap1_UpdateFirmwareTips">Güncelleştir kısa bir süre içinde başlayacak,lütfen cep telefonunun ve cihazının aynı WIFI ile bağlantı kurduğundan emin olun</string>
   <string name="Tap1_device_deleted">Bu cihaz silindi</string>
   <string name="Tap1_iHome_Associate">Birleştir</string>
   <string name="Tap1_iHome_Associated">Ilişkili</string>
@@ -738,7 +742,7 @@
   <string name="Tap3_ShareDevice_CanceldeTips">Canceled</string>
   <string name="Tap3_ShareDevice_CancleShare">Bu kullanıcı ile paylaşımı iptal etmek emin değil misiniz?</string>
   <string name="Tap3_ShareDevice_Contacts">Bağlantılar</string>
-  <string name="Tap3_ShareDevice_Delete">Paylaşımı durdur</string>
+  <string name="Tap3_ShareDevice_Delete">İptal et</string>
   <string name="Tap3_ShareDevice_DeleteSucces">Durduruldu</string>
   <string name="Tap3_ShareDevice_DeleteTips">%s ile paylaşımı sil?</string>
   <string name="Tap3_ShareDevice_ExceedTips">En fazla 5 arkadaşla paylaş</string>
@@ -753,7 +757,7 @@
   <string name="Tap3_ShareDevice_SuccessTips">Başarılı olarak paylaşıldı</string>
   <string name="Tap3_ShareDevice_Tips">Bu cihaz, herhangi bir daha fazla kullanıcı ile paylaşılamaz</string>
   <string name="Tap3_ShareDevice_ToContacts">Contacts ile paylaş</string>
-  <string name="Tap3_TitleName">Mayın</string>
+  <string name="Tap3_TitleName">Beni</string>
   <string name="Tap3_Uploading">Uploading&#8230;</string>
   <string name="Tap3_UploadingComplete">Upload complete</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>
@@ -840,7 +844,7 @@
   <string name="getting">Elde ediliyor&#8230;</string>
   <string name="has_copy">Çoğaltılmış</string>
   <string name="has_not_sdcard">Mikro SD kartı bulamadık</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/tr.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/tr.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">SD kartınızda yeterli yer yok</string>
   <string name="is_connecting_video">Bağlanılıyor</string>

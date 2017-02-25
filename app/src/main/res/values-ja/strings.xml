@@ -47,7 +47,7 @@
   <string name="CARRY_ON">継続</string>
   <string name="CHANGE_EMAIL">メールアドレスを変更する</string>
   <string name="CHANGE_PHONE_NUM">携帯電話番号を変更する</string>
-  <string name="CHANGE_PWD">パスワードを変更する</string>
+  <string name="CHANGE_PWD">パスワードの変更</string>
   <string name="CHARGING">充電中  </string>
   <string name="CHOOSE">選択</string>
   <string name="CHOOSE_COVER">表紙選択</string>
@@ -272,6 +272,7 @@
   <string name="MON_1">毎週月曜日</string>
   <string name="MON_2">月曜日</string>
   <string name="MSG_BIND">デバイスのバインディングが成功しました！ハウスキーピングしてあげるよ</string>
+  <string name="MSG_BOTTOM_LINE">ボトム</string>
   <string name="MSG_DELETE_TITLE">削除後戻せないので、再度確認してください。</string>
   <string name="MSG_DETAILS">詳細</string>
   <string name="MSG_LOW_BATTERY">デバイスのバッテリーが不足しています。電源に接続してください。</string>
@@ -333,7 +334,7 @@
   <string name="PASSWORD">パスワード</string>
   <string name="PASSWORD_BIT">新しいパスワードを設定してください</string>
   <string name="PASSWORD_LESSTHAN_SIX">6~12文字でパスワードを入力してください</string>
-  <string name="PHONE_EMAIL">メールアドレス</string>
+  <string name="PHONE_EMAIL">Eメール</string>
   <string name="PHONE_NUMBER">携帯電話番号</string>
   <string name="PHONE_NUMBER_1">携帯電話番号</string>
   <string name="PHONE_NUMBER_2">有効な携帯電話番号を入力してください</string>
@@ -422,9 +423,11 @@
   <string name="RET_EUPLOADFILE">ファイルアップロードができませんでした</string>
   <string name="RET_EUPLOADFILE_TOOSS">OSSにファイルをアップロードできませんでした</string>
   <string name="RET_MSG_EDATABASE">Database Error</string>
+  <string name="RET_MSG_EUNKNOWN">Error(%s)</string>
   <string name="RE_ADD_BUTTONG">再度追加</string>
   <string name="RE_ADD_LABEL">ソフトウェアのアップデートが完了しました</string>
   <string name="RIGN_SUC">登録完了</string>
+  <string name="Request_TimeOut">タイムアウト</string>
   <string name="Reset_Suc">既に赤に点滅</string>
   <string name="SAT">土曜日</string>
   <string name="SAT_1">毎週土曜日</string>
@@ -553,7 +556,7 @@
   <string name="Tap1_AddDevice_DoorbellTipsTitle">3Sのため再起動して、長押しのWiFiボタン</string>
   <string name="Tap1_AddDevice_FindNoResult">設備が見つかりませんでした、もう一度お試しください</string>
   <string name="Tap1_AddDevice_FindingTips">ただいまお近くのデバイスを検索しています。デバイスのWI&#8211;FI設定をオンにしてください</string>
-  <string name="Tap1_AddDevice_QR">スキャンします</string>
+  <string name="Tap1_AddDevice_QR">QRコードのスキャン</string>
   <string name="Tap1_AddDevice_QR_Fail">このデバイスはスキャン機能で追加されることができません</string>
   <string name="Tap1_AddDevice_SetName">デバイスに名前を付けましょう</string>
   <string name="Tap1_AddDevice_TipsE">デバイスのインターネット接続が失敗しました、WI&#8211;FIパスワードを間違えないように大文字と小文字を区別してください。</string>
@@ -649,12 +652,13 @@
   <string name="Tap1_TitleName">ホーム</string>
   <string name="Tap1_Tosetup">設定へ</string>
   <string name="Tap1_Update">更新</string>
+  <string name="Tap1_UpdateFirmwareTips">更新が間もなく開始されます。携帯電話と端末が同じWIFIに接続していることを確認してください</string>
   <string name="Tap1_device_deleted">デバイスを削除されました。</string>
   <string name="Tap1_iHome_Associate">関連</string>
   <string name="Tap1_iHome_Associated">関連する</string>
   <string name="Tap1_iHome_CallDuration">通話時間：%d</string>
   <string name="Tap1_iHome_ClearRecord">レコードをクリア</string>
-  <string name="Tap1_iHome_NotAssociated"></string>
+  <string name="Tap1_iHome_NotAssociated">関連付けられていない</string>
   <string name="Tap1_iHome_disassociate">関連をキャンセルします。</string>
   <string name="Tap1_shareDevice_canceledshare">該当デバイスは共有をキャンセルしました。</string>
   <string name="Tap1_share_tips">私の友人になることを招待しました。 %sをクリックしたら、CleverDog appをインストールできます。</string>
@@ -728,7 +732,7 @@
   <string name="Tap3_Friends_UserInfo_ShareDevice_Select">シェアするデバイスをお選びください</string>
   <string name="Tap3_LogIn">ログイン</string>
   <string name="Tap3_MessageCancel">キャンセル</string>
-  <string name="Tap3_MyQRCode">私の二次元コード</string>
+  <string name="Tap3_MyQRCode">私のQRコード</string>
   <string name="Tap3_NoPermissions_FailedViewImages">画像を表示するには、ストレージにアクセス許可が必要です</string>
   <string name="Tap3_SavePic">写真を保存</string>
   <string name="Tap3_Setting_taptoload">軽く触って、再ダウンロードできます。</string>
@@ -738,7 +742,7 @@
   <string name="Tap3_ShareDevice_CanceldeTips">キャンセル</string>
   <string name="Tap3_ShareDevice_CancleShare">このユーザーとの共有を解除してください？</string>
   <string name="Tap3_ShareDevice_Contacts">連絡先</string>
-  <string name="Tap3_ShareDevice_Delete">シェアを取り消しました</string>
+  <string name="Tap3_ShareDevice_Delete">キャンセル</string>
   <string name="Tap3_ShareDevice_DeleteSucces">すでに取り消しました</string>
   <string name="Tap3_ShareDevice_DeleteTips">%s様へのシェアを取り消しますか</string>
   <string name="Tap3_ShareDevice_ExceedTips">五名以下の友達にシェアできます</string>
@@ -753,7 +757,7 @@
   <string name="Tap3_ShareDevice_SuccessTips">シェア完了</string>
   <string name="Tap3_ShareDevice_Tips">デバイスは共有の最大数に達しました</string>
   <string name="Tap3_ShareDevice_ToContacts">連絡先と共有します</string>
-  <string name="Tap3_TitleName">鉱山</string>
+  <string name="Tap3_TitleName">本人</string>
   <string name="Tap3_Uploading">のアップロード&#8230;</string>
   <string name="Tap3_UploadingComplete">アップロードが完了しました</string>
   <string name="Tap3_UploadingFailed">のアップロード失敗</string>
@@ -840,7 +844,7 @@
   <string name="getting">獲得中&#8230;</string>
   <string name="has_copy">已复制</string>
   <string name="has_not_sdcard">Micro SDカードを検出できません</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/ja.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/ja.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Micro SDカードが使用できるスペースがない場合、古い動画を順番に削除する</string>
   <string name="is_connecting_video">接続中</string>
