@@ -131,6 +131,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private void initSightBtn() {
+        if (JFGRules.isShareDevice(uuid)) {
+            sbtnSettingSight.setVisibility(View.GONE);
+            return;
+        }
         if (device != null && JFGRules.isPanoramicCam(device.pid)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
             int defaultValue = PreferencesUtils.getInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL, 0);
