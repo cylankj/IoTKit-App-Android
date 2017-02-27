@@ -9,7 +9,7 @@
         android:id="@+id/appbar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y163"
-        android:background="@drawable/bg_wonderful_daytime"
+        android:background="@drawable/wonderful_bg_top_daytime"
         android:fitsSystemWindows="true"
         android:theme="@style/AppTheme.PopupOverlay"
         app:statusBarScrim="@android:color/transparent">

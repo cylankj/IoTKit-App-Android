@@ -1,5 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'org.greenrobot.greendao'
+
 
 //apply plugin: 'io.fabric'
 
@@ -251,6 +253,7 @@ dependencies {
     compile(name: rootProject.ext.facebookSDK, ext: 'aar') {
         transitive = true
     }
+    compile 'org.greenrobot:greendao:3.2.0'
     //    compile 'fr.avianey:bolts-android-api:1+'
 }
 

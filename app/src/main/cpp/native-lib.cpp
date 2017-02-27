@@ -73,32 +73,12 @@ extern "C" int JNICALL native_getServerPort(JNIEnv *env, jclass clazz, jstring c
     return 443;
 }
 extern "C" jstring JNICALL native_getVKey(JNIEnv *env, jclass clazz, jstring content_) {
-    const char *content = env->GetStringUTFChars(content_, 0);
-    if (content == NULL) {
-        return NULL;
-    }
-    std::string result = "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G";
-    if (strcmp(content, "zhongxing") == 0) {
-        result = "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1";
-        env->ReleaseStringUTFChars(content_, content);
-        return env->NewStringUTF(result.c_str());
-    }
-    env->ReleaseStringUTFChars(content_, content);
+    std::string result = "DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz";//DOHMVTgJCr0vSE0S5bBB2B3usOgnkbYz
     return env->NewStringUTF(result.c_str());
 }
 //根据包名的后缀,{"":官方版本} {"zhongxing":doby}
 extern "C" jstring JNICALL native_getVId(JNIEnv *env, jclass clazz, jstring content_) {
-    const char *content = env->GetStringUTFChars(content_, 0);
-    if (content == NULL) {
-        return NULL;
-    }
-    std::string result = "0001";
-    if (strcmp(content, "zhongxing") == 0) {
-        result = "0002";
-        env->ReleaseStringUTFChars(content_, content);
-        return env->NewStringUTF(result.c_str());
-    }
-    env->ReleaseStringUTFChars(content_, content);
+    std::string result = "003H";//003H
     return env->NewStringUTF(result.c_str());
 }
 extern "C" jstring JNICALL native_getSinaAppKey(JNIEnv *env, jclass clazz, jstring content_) {
@@ -107,7 +87,7 @@ extern "C" jstring JNICALL native_getSinaAppKey(JNIEnv *env, jclass clazz, jstri
         return NULL;
     }
     std::string result = "1315129656";
-    if (strcmp(content, "") == 0) {
+    if (strcmp(content, "")) {
         result = "1315129656";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
