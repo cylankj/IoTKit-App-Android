@@ -182,7 +182,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {
         //sd卡状态
         if (sdStatus != null) {
-            if (!sdStatus.hasSdcard && sdStatus.err != 0) {
+            if (sdStatus.hasSdcard && sdStatus.err != 0) {
                 //sd初始化失败时候显示
                 return getString(R.string.SD_INIT_ERR, sdStatus.err);
             }
@@ -211,6 +211,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 break;
             case R.id.tv_device_sdcard_state:
                 DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+                if (status == null){
+                    return;
+                }
                 String statusContent = getSdcardState(status);
                 if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
                     showClearSDDialog();
@@ -334,7 +337,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     @Override
     public void showLoading() {
-        LoadingDialog.showLoading(getFragmentManager(), "格式化中...");
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.SD_INFO_2));
     }
 
     @Override
@@ -346,9 +349,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     public void clearSdReslut(int code) {
         hideLoading();
         if (code == 0) {
-            ToastUtil.showPositiveToast("格式化成功");
+            ToastUtil.showPositiveToast(getString(R.string.SD_INFO_3));
         } else {
-            ToastUtil.showNegativeToast("格式化失败");
+            ToastUtil.showNegativeToast(getString(R.string.SD_ERR_3));
         }
     }
 }

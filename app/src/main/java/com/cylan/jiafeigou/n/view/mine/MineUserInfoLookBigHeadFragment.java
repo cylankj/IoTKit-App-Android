@@ -104,11 +104,9 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
                     }
                 })
                 .into(ivUserinfoBigImage);
-
     }
 
     private void initPresenter() {
-
 //        presenter = new MineUserInfoLookBigHeadPresenterIMpl(this);
         presenter = null;
     }
@@ -126,6 +124,8 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     public void showLoadImageProgress() {
         LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
+
+
 
     @Override
     public void hideLoadImageProgress() {

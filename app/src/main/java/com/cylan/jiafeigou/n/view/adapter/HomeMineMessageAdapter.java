@@ -1,11 +1,15 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.text.Html;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
@@ -14,13 +18,40 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
 
     public boolean isShowCheck;
     public boolean checkAll;
+
+    private static Map<Integer, Integer> resMap = new HashMap<>();
+
+    static {
+        //bell
+        resMap.put(JConstant.OS_DOOR_BELL, R.drawable.me_icon_head_ring);
+        //camera
+        resMap.put(JConstant.OS_CAMARA_ANDROID_SERVICE, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_ANDROID, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_ANDROID_4G, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_CC3200, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_PANORAMA_GUOKE, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_PANORAMA_HAISI, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_PANORAMA_QIAOAN, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.me_icon_head_camera);
+        resMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.me_icon_head_camera);
+
+        resMap.put(JConstant.OS_CAMERA_ANDROID_3_0, R.drawable.me_icon_head_camera);
+
+        //MAG
+        resMap.put(JConstant.OS_MAGNET, R.drawable.me_icon_head_magnetometer);
+        //E_FAMILY
+        resMap.put(JConstant.OS_EFAML, R.drawable.me_icon_head_album);
+    }
 
     public OnDeleteCheckChangeListener listener;
 
@@ -63,6 +94,10 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
             deleteCheck.setChecked(false);
         }
 
+        //头像icon
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(item.content);
+//        int iconRes = resMap.get(device.pid);
+//        holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
         //处理消息显示
         holder.setText(R.id.tv_device_name,item.getContent());
 
@@ -77,6 +112,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
                 case 604:
                     holder.setText(R.id.mesg_item_content,"亲友分享了改设备");
                     break;
+
             }
         }else {
             switch (item.type){
@@ -88,6 +124,9 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
                     break;
                 case 604:
                     holder.setText(R.id.mesg_item_content,"亲友取消了分享该设备");
+                    break;
+                case 701:
+                    holder.setText(R.id.mesg_item_content, Html.fromHtml(item.getName()).toString().trim());
                     break;
             }
         }

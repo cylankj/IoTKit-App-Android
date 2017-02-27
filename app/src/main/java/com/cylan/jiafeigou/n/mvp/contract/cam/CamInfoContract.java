@@ -55,9 +55,15 @@ public interface CamInfoContract {
         void clearSdcard();
 
         /**
-         * 清空Sd卡的回调
+         * 发送清空Sd卡请求的回调
          * @return
          */
-        Subscription clearSdcardBack();
+        Subscription clearSdcardReqBack();
+
+        /**
+         * 清空结果回调
+         * @return
+         */
+        Subscription clearSdcardResult();
     }
 }

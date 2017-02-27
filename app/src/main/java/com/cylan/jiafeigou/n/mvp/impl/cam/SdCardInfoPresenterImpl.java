@@ -2,30 +2,24 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
-import com.cylan.entity.jniCall.JFGDevBaseValue;
-import com.cylan.entity.jniCall.JFGDevice;
-import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.R;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.ArrayList;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -47,7 +41,8 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-                onClearSdBack()
+                onClearSdReqBack(),
+                onClearSdResult()
         };
     }
 
@@ -77,21 +72,13 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
         Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
-//                    BaseValue baseValue = new BaseValue();
-//                    baseValue.setId(id);
-//                    baseValue.setValue(o);
-//                    boolean update = GlobalDataProxy.getInstance().update(uuid, baseValue, false);
-//                    AppLogger.d("clearSDcard_req:"+update);
+                    BaseValue baseValue = new BaseValue();
+                    baseValue.setId(id);
+                    baseValue.setVersion(System.currentTimeMillis());
+                    baseValue.setValue(0);
+                    boolean update = GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                    AppLogger.d("clearSDcard_req:"+update);
 
-                    ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
-                    JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD,0);
-                    ipList.add(mesg);
-                    try {
-                        long req = JfgCmdInsurance.getCmd().robotSetData(uuid, ipList);
-                        AppLogger.d("clearSDcard_req:"+req);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
                 }, (Throwable throwable) -> {
                     AppLogger.e("clearSDcard"+throwable.getLocalizedMessage());
                 });
@@ -109,7 +96,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     }
 
     @Override
-    public Subscription onClearSdBack() {
+    public Subscription onClearSdReqBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.SdcardClearRsp sdcardClearRsp)->{
@@ -117,12 +104,30 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                         isClearSucc = true;
                         JFGDPMsgRet jfgdpMsgRet = sdcardClearRsp.arrayList.get(0);
                         if (jfgdpMsgRet.id == 218 && jfgdpMsgRet.ret == 0){
-                            getView().clearSdResult(0);
+                            //
                         }else {
                             getView().clearSdResult(1);
                         }
                     }
                 } );
+    }
+
+    @Override
+    public Subscription onClearSdResult() {
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((RobotoGetDataRsp rsp) ->{
+                    if (rsp != null){
+                        for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
+                            if (entry.getValue() == null) continue;
+                            for (JFGDPMsg dp : entry.getValue()) {
+                                if (dp.id == 204){
+                                    getView().clearSdResult(0);
+                                }
+                            }
+                        }
+                    }
+                });
     }
 
 }

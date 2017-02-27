@@ -209,7 +209,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 是否三方登录的回调
-     *
      * @return
      */
     @Override
@@ -235,8 +234,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe((Object o) -> {
                     ArrayList<Long> idList = new ArrayList<>();
                     idList.add((long) 601);
-                    idList.add((long) 603);
-                    idList.add((long) 604);
                     idList.add((long) 701);
                     try {
                         requstId = JfgCmdInsurance.getCmd().robotCountData("", idList, 0);
@@ -281,8 +278,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe((Object o)->{
                     ArrayList<Long> idList = new ArrayList<>();
                     idList.add((long) 601);
-                    idList.add((long) 603);
-                    idList.add((long) 604);
                     idList.add((long) 701);
                     try {
                         JfgCmdInsurance.getCmd().robotCountDataClear(uuid, idList, 0);

@@ -12,6 +12,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
@@ -22,6 +23,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.SdCardInfoPresenterImpl;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -110,21 +112,25 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     }
 
     private void showClearSdDialog() {
-        DpMsgDefine.DPSdStatus sdStatus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
-        if (sdStatus != null && sdStatus.used == 0) {
-            ToastUtil.showToast(getString(R.string.Clear_Sdcard_tips3));
+        String[] split = tvSdcardVolume.getText().toString().split("/");
+        if (split == null || split.length == 0){
             return;
         }
-        Bundle bundle = new Bundle();
-        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
-        bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Clear_Sdcard_tips));
-        SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
-        simpleDialogFragment.setAction((int id, Object value) -> {
-            basePresenter.clearSDcard(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD);
-            basePresenter.clearCountTime();
-            showLoading();
-        });
-        simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
+        if ("0.0MB".equals(split[0])){
+            Toast.makeText(getContext(),getString(R.string.Clear_Sdcard_tips3),Toast.LENGTH_SHORT).show();
+        }else {
+            Bundle bundle = new Bundle();
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
+            bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Clear_Sdcard_tips));
+            SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
+            simpleDialogFragment.setAction((int id, Object value) -> {
+                basePresenter.clearSDcard(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD);
+                basePresenter.clearCountTime();
+                showLoading();
+            });
+            simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
+        }
+
     }
 
     @Override
