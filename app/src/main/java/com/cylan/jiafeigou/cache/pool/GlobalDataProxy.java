@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.dp.IDataPoint;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -178,17 +177,15 @@ public class GlobalDataProxy implements IDataProxy {
     }
 
     @Override
-    public boolean updateJFGDevice(JFGDevice device) {
-        if (dataPointManager == null) return false;
-        boolean r = dataPointManager.updateJFGDevice(device);
+    public int updateJFGDevice(JFGDevice device) {
+        if (dataPointManager == null) return -1;
+        dataPointManager.updateJFGDevice(device);
         //需要修改
         try {
-            JfgCmdInsurance.getCmd().setAliasByCid(device.uuid, device.alias);
+            return JfgCmdInsurance.getCmd().setAliasByCid(device.uuid, device.alias);
         } catch (JfgException e) {
-            r = false;
+            return -1;
         }
-        AppLogger.i("r:" + r);
-        return r;
     }
 
     @Override

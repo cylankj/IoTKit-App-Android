@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -19,7 +20,9 @@ public interface CamInfoContract {
 
         void hideLoading();
 
-        void clearSdReslut(int code);
+        void clearSdResult(int code);
+
+        void setAliasRsp(int code);
     }
 
     interface Presenter extends BasePresenter {
@@ -45,6 +48,7 @@ public interface CamInfoContract {
 
         /**
          * 新固件检测回调
+         *
          * @return
          */
         Subscription checkNewSoftVersionBack();
@@ -56,8 +60,11 @@ public interface CamInfoContract {
 
         /**
          * 清空Sd卡的回调
+         *
          * @return
          */
         Subscription clearSdcardBack();
+
+        void updateAlias(JFGDevice device);
     }
 }

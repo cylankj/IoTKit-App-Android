@@ -70,7 +70,7 @@ public interface IDataProxy {
      * @param device
      * @return
      */
-    boolean updateJFGDevice(JFGDevice device);
+    int updateJFGDevice(JFGDevice device);
 
     ArrayList<JFGDevice> fetchAll();
 

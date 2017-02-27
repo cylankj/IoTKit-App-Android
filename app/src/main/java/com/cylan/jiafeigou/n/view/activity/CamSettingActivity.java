@@ -427,6 +427,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
         if (id == DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY) {
             boolean flag = MiscUtils.cast(value.getValue(), false);
+            //是否有sim卡
+            svSettingDeviceMobileNetwork.setVisibility(flag ? View.VISIBLE : View.GONE);
             svSettingDeviceMobileNetwork.setSwitchButtonState(flag);
         }
         if (id == DpMsgMap.ID_209_LED_INDICATOR) {

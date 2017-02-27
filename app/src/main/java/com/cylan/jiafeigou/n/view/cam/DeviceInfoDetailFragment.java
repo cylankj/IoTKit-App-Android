@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
@@ -119,11 +120,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
+        boolean showBattery = JFGRules.showBatteryItem(uuid);
         //仅3G摄像头、FreeCam显示此栏
-        if (device != null && (JFGRules.isFreeCam(device.pid) || JFGRules.is3GCam(device.pid))) {
-            tvDeviceBatteryLevel.setVisibility(View.VISIBLE);
-        }
+        tvDeviceBatteryLevel.setVisibility(showBattery ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -182,7 +181,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {
         //sd卡状态
         if (sdStatus != null) {
-            if (!sdStatus.hasSdcard && sdStatus.err != 0) {
+            if (sdStatus.hasSdcard && sdStatus.err != 0) {
                 //sd初始化失败时候显示
                 return getString(R.string.SD_INIT_ERR, sdStatus.err);
             }
@@ -307,7 +306,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 if (!TextUtils.isEmpty(value) && device != null && !TextUtils.equals(value, device.alias)) {
                     device.alias = value;
                     tvDeviceAlias.setTvSubTitle(value);
-                    GlobalDataProxy.getInstance().updateJFGDevice(device);
+                    if (basePresenter != null) basePresenter.updateAlias(device);
                 }
             }
         });
@@ -343,12 +342,19 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     @Override
-    public void clearSdReslut(int code) {
+    public void clearSdResult(int code) {
         hideLoading();
         if (code == 0) {
             ToastUtil.showPositiveToast("格式化成功");
         } else {
             ToastUtil.showNegativeToast("格式化失败");
         }
+    }
+
+    @Override
+    public void setAliasRsp(int code) {
+        if (code == JError.ErrorOK)
+            ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
+        else ToastUtil.showNegativeToast(getString(R.string.set_failed));
     }
 }

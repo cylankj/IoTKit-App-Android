@@ -85,7 +85,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         basePresenter = new CamMediaPresenterImpl(this, uuid);
         alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
-        customAdapter.setContents(alarmMsg);
+        customAdapter.setDpAlarm(alarmMsg);
         vpContainer.setAdapter(customAdapter);
         vpContainer.setCurrentItem(currentIndex = getIntent().getIntExtra(KEY_INDEX, 0));
         customAdapter.setCallback(object -> {
@@ -244,11 +244,11 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     private class CustomAdapter extends FragmentPagerAdapter {
-        private DpMsgDefine.DPAlarm contents;
+        private DpMsgDefine.DPAlarm dpAlarm;
         private NormalMediaFragment.CallBack callBack;
 
-        public void setContents(DpMsgDefine.DPAlarm contents) {
-            this.contents = contents;
+        public void setDpAlarm(DpMsgDefine.DPAlarm dpAlarm) {
+            this.dpAlarm = dpAlarm;
         }
 
         public CustomAdapter(FragmentManager fm) {
@@ -258,10 +258,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         @Override
         public Fragment getItem(int position) {
             Bundle bundle = new Bundle();
-            bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, contents);
+            bundle.putParcelable(KEY_SHARED_ELEMENT_LIST, dpAlarm);
             bundle.putInt(KEY_INDEX, position);
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-            bundle.putInt("totalCount", MiscUtils.getCount(contents.fileIndex));
+            bundle.putInt("totalCount", MiscUtils.getCount(dpAlarm.fileIndex));
             IBaseFragment fragment = null;
             if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
                 fragment = PanoramicViewFragment.newInstance(bundle);
@@ -277,7 +277,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             //全景图片不适合使用viewpager,虽然用起来很简单,切换的时候有bug.
             if (device != null && JFGRules.isNeedPanoramicView(device.pid)) return 1;
             Log.d("getCount", "getCount: ");
-            return MiscUtils.getCount(contents.fileIndex);
+            return MiscUtils.getCount(dpAlarm.fileIndex);
         }
 
         @Override
