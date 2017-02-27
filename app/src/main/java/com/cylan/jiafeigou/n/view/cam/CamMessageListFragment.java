@@ -145,7 +145,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) basePresenter.fetchMessageList(false);
+        if (basePresenter != null) basePresenter.fetchMessageList(false, false);
     }
 
     /**
@@ -165,11 +165,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         });
     }
 
-
-    @Override
-    public void setRefresh(boolean refresh) {
-        srLayoutCamListRefresh.setRefreshing(refresh);
-    }
 
     @Override
     public void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList) {
@@ -222,7 +217,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onRefresh() {
         srLayoutCamListRefresh.setRefreshing(true);
         if (basePresenter != null)
-            basePresenter.fetchMessageList(true);
+            basePresenter.fetchMessageList(true, false);
     }
 
     @OnClick({R.id.tv_cam_message_list_date,

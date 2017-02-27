@@ -664,6 +664,17 @@ public class RxEvent {
         }
     }
 
+    /**
+     * 设置设备别名
+     */
+    public static final class SetAlias {
+        public JFGResult result;
+
+        public SetAlias(JFGResult result) {
+            this.result = result;
+        }
+    }
+
     public static class AppHideEvent {
     }
 

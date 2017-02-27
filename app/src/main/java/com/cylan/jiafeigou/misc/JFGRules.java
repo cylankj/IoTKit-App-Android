@@ -109,6 +109,11 @@ public class JFGRules {
                 pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
     }
 
+    public static boolean showBatteryItem(String uuid) {
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        return device != null && (is3GCam(device.pid) || isFreeCam(device.pid));
+    }
+
     public static boolean isMobileNet(int net) {
         return net >= 3;
     }

@@ -14,11 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -30,6 +28,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
@@ -180,7 +179,12 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             }
             RxEvent.CamLivePageScrolled scrolled = new RxEvent.CamLivePageScrolled();
             scrolled.selected = position == 0;
-            RxBus.getCacheInstance().post(scrolled);
+            if (scrolled.selected) {
+                HandlerThreadUtils.postDelay(() -> {
+                    RxBus.getCacheInstance().post(scrolled);
+                }, 200);
+            } else
+                RxBus.getCacheInstance().post(scrolled);
             AppLogger.d("onPageSelected" + scrolled.selected);
         }
 
