@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -76,11 +77,21 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
         Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
-                    BaseValue baseValue = new BaseValue();
-                    baseValue.setId(id);
-                    baseValue.setVersion(System.currentTimeMillis());
-                    baseValue.setValue(o);
-                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+//                    BaseValue baseValue = new BaseValue();
+//                    baseValue.setId(id);
+//                    baseValue.setValue(o);
+//                    boolean update = GlobalDataProxy.getInstance().update(uuid, baseValue, false);
+//                    AppLogger.d("clearSDcard_req:"+update);
+
+                    ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
+                    JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD,0);
+                    ipList.add(mesg);
+                    try {
+                        long req = JfgCmdInsurance.getCmd().robotSetData(uuid, ipList);
+                        AppLogger.d("clearSDcard_req:"+req);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
                 }, (Throwable throwable) -> {
                     AppLogger.e("clearSDcard"+throwable.getLocalizedMessage());
                 });

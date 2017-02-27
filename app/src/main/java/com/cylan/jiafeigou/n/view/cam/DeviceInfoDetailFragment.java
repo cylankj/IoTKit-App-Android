@@ -210,7 +210,12 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 toEditTimezone();
                 break;
             case R.id.tv_device_sdcard_state:
-                DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+                DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+                String statusContent = getSdcardState(status);
+                if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
+                    showClearSDDialog();
+                    return;
+                }
                 DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
                 if (status.hasSdcard && JFGRules.isDeviceOnline(net))//没有sd卡,或者离线,不能点击
                     jump2SdcardDetailFragment();
@@ -237,12 +242,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      * 显示Sd卡的详情
      */
     private void jump2SdcardDetailFragment() {
-        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
-        String statusContent = getSdcardState(status);
-        if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
-            showClearSDDialog();
-            return;
-        }
+
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
@@ -255,8 +255,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      */
     private void showClearSDDialog() {
         Bundle bundle = new Bundle();
-        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "去格式化");
-        bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "Micro SD卡需要格式化，才能存储视频");
+        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.SD_INIT));
+        bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.VIDEO_SD_DESC));
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
             //开始格式化

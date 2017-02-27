@@ -111,7 +111,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
 
     private void showClearSdDialog() {
         DpMsgDefine.DPSdStatus sdStatus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
-        if (sdStatus.used == 0) {
+        if (sdStatus != null && sdStatus.used == 0) {
             ToastUtil.showToast(getString(R.string.Clear_Sdcard_tips3));
             return;
         }

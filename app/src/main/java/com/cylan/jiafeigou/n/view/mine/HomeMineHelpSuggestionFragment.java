@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
 
@@ -235,15 +236,17 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
 
     @Override
     public void showLoadingDialog() {
-        flLoadingContainer.setVisibility(View.VISIBLE);
-        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.loading_progress_rotate);
-        ivLoadingRotate.startAnimation(animation);
+//        flLoadingContainer.setVisibility(View.VISIBLE);
+//        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.loading_progress_rotate);
+//        ivLoadingRotate.startAnimation(animation);
+        LoadingDialog.showLoading(getFragmentManager());
     }
 
     @Override
     public void hideLoadingDialog() {
-        flLoadingContainer.setVisibility(View.GONE);
-        ivLoadingRotate.clearAnimation();
+//        flLoadingContainer.setVisibility(View.GONE);
+//        ivLoadingRotate.clearAnimation();
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     /**
