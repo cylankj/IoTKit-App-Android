@@ -42,7 +42,7 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 //        Log.e("AAAAA", "开始解析了.......");
 //        long start = System.currentTimeMillis();
 //        for (JFGDPMsg jfgdpMsg : list) {
-////            device.setValue(jfgdpMsg);
+////            device.setPackValue(jfgdpMsg);
 //        }
 //        long end = System.currentTimeMillis();
 //        Log.e("AAAAA", "解析100000条数据共耗时" + (end - start) + "毫秒");

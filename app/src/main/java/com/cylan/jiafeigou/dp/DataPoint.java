@@ -7,6 +7,7 @@ import android.support.v4.util.LongSparseArray;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ext.annotations.DPProperty;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.google.gson.Gson;
 
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Ignore;
@@ -28,6 +29,8 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     @Ignore
     private boolean isNull = false;
+    @Ignore
+    private static Gson mGson = new Gson();
 
     @Ignore
     public static final long MSG_ID_VIRTUAL_START = -888080;
@@ -44,6 +47,11 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     public long version;
     @Ignore
     public long seq;
+
+    @Override
+    public String toString() {
+        return mGson.toJson(this);
+    }
 
     @Ignore
     private LongSparseArray<Field> mDPPropertyArray;

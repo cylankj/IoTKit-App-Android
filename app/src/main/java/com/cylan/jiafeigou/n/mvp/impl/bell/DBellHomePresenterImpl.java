@@ -3,8 +3,10 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.db.BaseDPHelper;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
@@ -12,12 +14,15 @@ import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -61,7 +66,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     }
 
 
-
     @Override
     public void fetchBellRecordsList(boolean asc, long time) {
         Subscription subscription = Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
@@ -88,12 +92,40 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(items -> {
                     notifyBellLowBattery();
-                    mView.onRecordsListRsp((ArrayList<BellCallRecordBean>) items);
-                }, e -> fetchBellRecordsList(asc, time));
+                    mView.onRecordsListRsp(items);
+                }, e -> {
+                    //先判断是否有网络连接,有网络连接则尝试从服务器获取数据,无网络连接则获取缓存
+                    if (NetUtils.isNetworkAvailable(mView.getAppContext())) {
+                        fetchBellRecordsList(asc, time);//有网则重新从服务器获取
+                    } else {
+                        AppLogger.e("当前是无网络状态,正在查询缓存数据!");
+                        BaseDPHelper.getInstance().queryDPMsg(mUUID, Long.MAX_VALUE, DpMsgMap.ID_401_BELL_CALL_STATE, asc, 20)
+                                .flatMap(Observable::from)
+                                .map(item -> {
+                                    DpMsgDefine.DPBellCallRecord record = null;
+                                    try {
+                                        record = DpUtils.unpackData(item.getPackValue(), DpMsgDefine.DPBellCallRecord.class);
+                                        if (record != null) {
+                                            record.version = item.getVersion();
+                                            record.id = item.getMsgId();
+                                        }
+
+                                    } catch (IOException e1) {
+                                        e1.printStackTrace();
+                                    }
+                                    AppLogger.e("查询到缓存数据:" + new Gson().toJson(record));
+                                    return record;
+                                })
+                                .buffer(20)
+                                .map(this::parse)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .subscribe(result -> mView.onRecordsListRsp(result), Throwable::printStackTrace);
+                    }
+                });
         registerSubscription(subscription);
     }
 
-    private List<BellCallRecordBean> parse(TreeSet<DpMsgDefine.DPBellCallRecord> response) {
+    private List<BellCallRecordBean> parse(Collection<DpMsgDefine.DPBellCallRecord> response) {
         List<BellCallRecordBean> result = new ArrayList<>();
         BellCallRecordBean record;
         for (DpMsgDefine.DPBellCallRecord callRecord : response) {

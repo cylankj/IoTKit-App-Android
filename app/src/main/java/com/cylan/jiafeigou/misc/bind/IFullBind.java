@@ -17,12 +17,7 @@ public interface IFullBind extends IBindUdpFlow {
      */
     void startBind(String uuid, String randomCode);
 
-    /**
-     * @param check3G   ：检查是否3G狗
-     * @param shortUUID
-     * @return
-     */
-    Observable<UdpConstant.UdpDevicePortrait> getBindObservable(boolean check3G, String shortUUID);
+    Observable<UdpConstant.UdpDevicePortrait> getBindObservable(String shortUUID);
 
     void clean();
 

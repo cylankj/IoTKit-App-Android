@@ -151,7 +151,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
-    private boolean isRegetCode;
+//    private LoginContract.Presenter basePresenter;
 
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
@@ -283,6 +283,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             etRegisterInputBox.setHint(getString(R.string.EMAIL_1));
             ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 65);
         }
+
     }
 
     @OnFocusChange(R.id.et_login_username)
@@ -515,7 +516,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         }
         IMEUtils.hide(getActivity());
         AnimatorUtils.viewAlpha(tvForgetPwd, false, 300, 0);
-        AnimatorUtils.viewTranslationY(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? rLayoutLoginThirdParty:rLayoutLoginThirdPartyAbroad, false, 100, 0, 800, 500);
+        AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, false, 100, 0, 800, 500);
         lbLogin.viewZoomSmall();
         enableEditTextCursor(false);
         enableOtherBtn(false);
@@ -632,7 +633,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     private void resetView() {
         lbLogin.viewZoomBig();
         AnimatorUtils.viewAlpha(tvForgetPwd, true, 300, 0);
-        AnimatorUtils.viewTranslationY(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? rLayoutLoginThirdParty:rLayoutLoginThirdPartyAbroad, true, 100, 800, 0, 200);
+        AnimatorUtils.viewTranslationY(rLayoutLoginThirdParty, true, 100, 800, 0, 200);
         enableOtherBtn(true);
         enableEditTextCursor(true);
     }
@@ -774,38 +775,22 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void checkAccountResult(RxEvent.CheckRegsiterBack callback) {
         if (callback.jfgResult.code != 0) {
-            boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
+            final boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             registerWay = validPhoneNum ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
             if (registerWay == JConstant.REGISTER_BY_EMAIL) {
                 jump2NextPage();
                 return;
             }
 
-            int codeLen = ViewUtils.getTextViewContent(etVerificationInput).length();
-            boolean validCode = codeLen == JConstant.VALID_VERIFICATION_CODE_LEN;
-            if (fLayoutVerificationCodeInputBox.isShown() && validCode) {
-                //第二次检测账号是否注册返回执行获取校验验证码
-                verifyCode();
-            }else if (isRegetCode){
-                //重新获取验证码也要检测一下账号
-                if (verificationCodeLogic != null)
-                    verificationCodeLogic.start();
-                if (basePresenter != null)
-                    basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
-                isRegetCode = false;
-            }else {
-                //第一次检测账号是否注册返回执行获取验证码
-                if (verificationCodeLogic == null)
-                    verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
-                verificationCodeLogic.start();
-                basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
-                //显示验证码输入框
-                handleVerificationCodeBox(true);
-                tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
-                tvRegisterSubmit.setEnabled(false);
-                lLayoutAgreement.setVisibility(View.GONE);
-            }
-
+            if (verificationCodeLogic == null)
+                verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
+            verificationCodeLogic.start();
+            basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+            //显示验证码输入框
+            handleVerificationCodeBox(true);
+            tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
+            tvRegisterSubmit.setEnabled(false);
+            lLayoutAgreement.setVisibility(View.GONE);
         } else {
             ToastUtil.showToast(getString(R.string.RET_EREGISTER_PHONE_EXIST));
         }
@@ -826,6 +811,18 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         final boolean validPhoneNum = JConstant.PHONE_REG.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
         registerWay = validPhoneNum ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
         if (registerWay == JConstant.REGISTER_BY_PHONE) {
+            final int codeLen = ViewUtils.getTextViewContent(etVerificationInput).length();
+            if (fLayoutVerificationCodeInputBox.isShown()) {
+                boolean validCode = codeLen == JConstant.VALID_VERIFICATION_CODE_LEN;
+                if (validCode && validPhoneNum) {
+                    verifyCode();
+                    return;
+                } else {
+                    Toast.makeText(getActivity(), getString(R.string.RET_ELOGIN_VCODE_ERROR), Toast.LENGTH_SHORT).show();
+                    return;
+                }
+            }
+
             IMEUtils.hide(getActivity());
             //检测账号是否注册
             if (basePresenter != null)
@@ -880,9 +877,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void onClickRegister(View view) {
         switch (view.getId()) {
             case R.id.tv_meter_get_code:
-                isRegetCode = true;
+                if (verificationCodeLogic != null)
+                    verificationCodeLogic.start();
                 if (basePresenter != null)
-                basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
+                    basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
                 break;
             case R.id.tv_register_submit:
                 if (NetUtils.getNetType(getContext()) == 0){

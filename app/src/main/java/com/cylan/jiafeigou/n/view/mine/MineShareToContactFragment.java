@@ -242,7 +242,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public void startSendMesgActivity(String account) {
         Uri smsToUri = Uri.parse("smsto:" + account);
         Intent mIntent = new Intent(Intent.ACTION_SENDTO, smsToUri);
-        mIntent.putExtra("sms_body", String.format(getString(R.string.Tap1_share_tips),"http://www.jfgou.com/app/download.html"));
+        mIntent.putExtra("sms_body", getString(R.string.Tap1_share_tips));
         startActivity(mIntent);
     }
 

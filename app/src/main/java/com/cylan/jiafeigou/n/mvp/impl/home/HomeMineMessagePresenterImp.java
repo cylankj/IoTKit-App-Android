@@ -44,8 +44,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     public HomeMineMessagePresenterImp(HomeMineMessageContract.View view, boolean hasNewMesg) {
         super(view);
         view.setPresenter(this);
-//        this.hasNewMesg = hasNewMesg;
-        this.hasNewMesg = true;
+        this.hasNewMesg = hasNewMesg;
     }
 
     @Override
@@ -169,14 +168,12 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             JFGDPMsg msg1 = new JFGDPMsg(601, 0);
                             JFGDPMsg msg2 = new JFGDPMsg(603, 0);
                             JFGDPMsg msg3 = new JFGDPMsg(604, 0);
-                            JFGDPMsg msg4 = new JFGDPMsg(701, 0);
                             ArrayList<JFGDPMsg> params = new ArrayList<>();
                             params.add(msg1);
                             params.add(msg2);
                             params.add(msg3);
-                            params.add(msg4);
                             seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("",params,100,false,0);
-                            AppLogger.d("getMesgDpData:" + seq);
+                            AppLogger.d("getMesgDpData" + seq);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -201,7 +198,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .map(new Func1<RobotoGetDataRsp, ArrayList<MineMessageBean>>() {
                     @Override
                     public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        AppLogger.d("getMesgDpDataCallBack:"+robotoGetDataRsp.seq+":"+robotoGetDataRsp.identity);
                         if (robotoGetDataRsp != null && robotoGetDataRsp.seq == seq) {
                             results.clear();
                             results.addAll(convertData(robotoGetDataRsp));

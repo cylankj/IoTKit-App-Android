@@ -272,7 +272,6 @@
   <string name="MON_1">Кажд. пн</string>
   <string name="MON_2">Пн</string>
   <string name="MSG_BIND">Оборудование установлено успешно!</string>
-  <string name="MSG_BOTTOM_LINE">Дно</string>
   <string name="MSG_DELETE_TITLE">После удаления невозможно будет восстановить</string>
   <string name="MSG_DETAILS">Подробнее</string>
   <string name="MSG_LOW_BATTERY">Низкий заряд батареи, пожалуйста, зарядите устройство</string>
@@ -423,11 +422,9 @@
   <string name="RET_EUPLOADFILE">Ошибка загрузки</string>
   <string name="RET_EUPLOADFILE_TOOSS">Ошибка загрузки</string>
   <string name="RET_MSG_EDATABASE">Database Error</string>
-  <string name="RET_MSG_EUNKNOWN">Error(%s)</string>
   <string name="RE_ADD_BUTTONG">Добавить снова</string>
   <string name="RE_ADD_LABEL">Обновление программного обеспечения завершено</string>
   <string name="RIGN_SUC">Регистрация прошла успешно</string>
-  <string name="Request_TimeOut">Таймаут</string>
   <string name="Reset_Suc">Уже мелькали в красном</string>
   <string name="SAT">Сб</string>
   <string name="SAT_1">Кажд. сб</string>
@@ -652,7 +649,6 @@
   <string name="Tap1_TitleName">Дома</string>
   <string name="Tap1_Tosetup">Установка</string>
   <string name="Tap1_Update">Обновить</string>
-  <string name="Tap1_UpdateFirmwareTips">Обновить начнется в ближайшее время,пожалуйста, убедитесь,что мобильный телефон и устройство соединяются с той же Wi&#8211;Fi</string>
   <string name="Tap1_device_deleted">Это устройство было удалено.</string>
   <string name="Tap1_iHome_Associate">ассоциировать</string>
   <string name="Tap1_iHome_Associated">ассоциированный</string>
@@ -742,7 +738,7 @@
   <string name="Tap3_ShareDevice_CanceldeTips">Oтменен</string>
   <string name="Tap3_ShareDevice_CancleShare">Уверенный отменить совместное использование с этим пользователем?</string>
   <string name="Tap3_ShareDevice_Contacts">Контакты</string>
-  <string name="Tap3_ShareDevice_Delete">Отмена</string>
+  <string name="Tap3_ShareDevice_Delete">Отменить общий доступ</string>
   <string name="Tap3_ShareDevice_DeleteSucces">Отменено</string>
   <string name="Tap3_ShareDevice_DeleteTips">Отменить общий доступ с пользователем%s ?</string>
   <string name="Tap3_ShareDevice_ExceedTips">Максимально можно поделиться с 5 пользователями</string>
@@ -757,7 +753,7 @@
   <string name="Tap3_ShareDevice_SuccessTips">Общий доступ успешен</string>
   <string name="Tap3_ShareDevice_Tips">Это устройство не может использоваться совместно с любыми несколькими пользователями</string>
   <string name="Tap3_ShareDevice_ToContacts">Поделиться с контактами</string>
-  <string name="Tap3_TitleName">Меня</string>
+  <string name="Tap3_TitleName">Мой</string>
   <string name="Tap3_Uploading">Идет загрузка&#8230;</string>
   <string name="Tap3_UploadingComplete">Загрузка полный</string>
   <string name="Tap3_UploadingFailed">Сбой при загрузке</string>
@@ -844,7 +840,7 @@
   <string name="getting">Пожалуйста, подождите&#8230;</string>
   <string name="has_copy">Скопировано</string>
   <string name="has_not_sdcard">карта памяти microSD не найдена</string>
-  <string name="help_url">https://yf.jfgou.com:8081/helps/ru.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/help/ru.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">На Вашей карте памяти microSD не хватает места</string>
   <string name="is_connecting_video">Подключение к камере</string>

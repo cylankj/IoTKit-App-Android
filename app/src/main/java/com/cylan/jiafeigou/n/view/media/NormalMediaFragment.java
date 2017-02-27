@@ -12,17 +12,13 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
-import com.cylan.jiafeigou.utils.ContextUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-
-import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_LIST;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -77,10 +73,9 @@ public class NormalMediaFragment extends IBaseFragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         int index = getArguments().getInt(KEY_INDEX);
         String uuid = getArguments().getString(KEY_UUID);
-        DpMsgDefine.DPAlarm dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
-        Glide.with(ContextUtils.getContext())
-                .load(new CamWarnGlideURL(dpAlarm, index, uuid))
-                .asBitmap()
+        Glide.with(this)
+                .load(new CamWarnGlideURL(getArguments().getParcelable(JConstant.KEY_SHARED_ELEMENT_LIST),
+                        index, uuid))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgVShowPic);

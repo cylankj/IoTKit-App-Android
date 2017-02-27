@@ -150,6 +150,8 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         }
     }
 
+    ;
+
     /**
      * 弹出对话框
      */

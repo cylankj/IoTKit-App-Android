@@ -5,7 +5,6 @@ import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,7 +20,7 @@ public interface DoorBellHomeContract {
          */
         void onBellBatteryDrainOut();
 
-        void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList);
+        void onRecordsListRsp(List<BellCallRecordBean> beanArrayList);
 
         void onQueryRecordListTimeOut();
 

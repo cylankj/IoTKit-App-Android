@@ -50,7 +50,7 @@ Glide.with(context)
 
 ```java
 <meta-data android:name="com.inthecheesefactory.lab.glidepicasso.GlideConfiguration"
-            android:value="GlideModule"/>
+            android:packValue="GlideModule"/>
 ```
 ##磁盘缓存
  * Glide 缓存的图片和 ImageView 的尺寸相同,如果有多个地方ImageView尺寸不同,会有多次下载,多个缓存尺寸

@@ -107,16 +107,16 @@
         <!-- server address -->
         <!-- <meta-data -->
         <!-- android:name="ServerAddress" -->
-        <!-- android:value="${NICELY_VALUE}" /> -->
+        <!-- android:packValue="${NICELY_VALUE}" /> -->
 
 
         <!-- &lt;!&ndash; your vid getString must "\ " &ndash;&gt; -->
         <!-- <meta-data -->
         <!-- android:name="vid" -->
-        <!-- android:value="${VID}" /> -->
+        <!-- android:packValue="${VID}" /> -->
         <!-- <meta-data -->
         <!-- android:name="vkey" -->
-        <!-- android:value="${VKEY}" /> -->
+        <!-- android:packValue="${VKEY}" /> -->
 
         <activity
             android:name=".SmartcallActivity"

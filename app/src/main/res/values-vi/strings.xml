@@ -272,7 +272,6 @@
   <string name="MON_1">Thứ hai</string>
   <string name="MON_2">Hai</string>
   <string name="MSG_BIND">Thiết bị thêm thành công</string>
-  <string name="MSG_BOTTOM_LINE">Dưới cùng</string>
   <string name="MSG_DELETE_TITLE">Không thể khôi phục sau khi xoá</string>
   <string name="MSG_DETAILS">Xem ảnh kích thước lớn</string>
   <string name="MSG_LOW_BATTERY">Dung lượng pin thấp, hãy sạc điện</string>
@@ -423,11 +422,9 @@
   <string name="RET_EUPLOADFILE">Lỗi tải file lên</string>
   <string name="RET_EUPLOADFILE_TOOSS">Lỗi tải file lên</string>
   <string name="RET_MSG_EDATABASE">Lỗi cơ sở dữ liệu</string>
-  <string name="RET_MSG_EUNKNOWN">Lỗi(%s)</string>
   <string name="RE_ADD_BUTTONG">Thêm lại</string>
   <string name="RE_ADD_LABEL">Khi tất cả cập nhật hoàn thành</string>
   <string name="RIGN_SUC">Đăng ký thành công</string>
-  <string name="Request_TimeOut">Hết giờ</string>
   <string name="Reset_Suc">Đã chập chờn trong màu đỏ</string>
   <string name="SAT">Thứ bảy</string>
   <string name="SAT_1">Thứ bảy</string>
@@ -652,7 +649,6 @@
   <string name="Tap1_TitleName">Nhà</string>
   <string name="Tap1_Tosetup">Thiết lập</string>
   <string name="Tap1_Update">cập nhật</string>
-  <string name="Tap1_UpdateFirmwareTips">Cập nhật sẽ bắt đầu trong thời gian ngắn,hãy đảm bảo rằng điện thoại di động và các thiết bị đang kết nối với WIFI cùng</string>
   <string name="Tap1_device_deleted">Thiết bị đã bị xoá</string>
   <string name="Tap1_iHome_Associate">Kết hợp</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -742,7 +738,7 @@
   <string name="Tap3_ShareDevice_CanceldeTips">bị hủy bỏ</string>
   <string name="Tap3_ShareDevice_CancleShare">Chắc chắn để hủy bỏ việc chia sẻ với người dùng này?</string>
   <string name="Tap3_ShareDevice_Contacts">Liên hệ</string>
-  <string name="Tap3_ShareDevice_Delete">Huỷ</string>
+  <string name="Tap3_ShareDevice_Delete">Dừng chia sẻ</string>
   <string name="Tap3_ShareDevice_DeleteSucces">Đã dừng</string>
   <string name="Tap3_ShareDevice_DeleteTips">Xoá chia sẻ với %s</string>
   <string name="Tap3_ShareDevice_ExceedTips">Chia sẻ tối đa 5 người</string>
@@ -757,7 +753,7 @@
   <string name="Tap3_ShareDevice_SuccessTips">Chia se thành công</string>
   <string name="Tap3_ShareDevice_Tips">Thiết bị này không thể được chia sẻ với bất kỳ người dùng hơn</string>
   <string name="Tap3_ShareDevice_ToContacts">Chia sẻ với Liên</string>
-  <string name="Tap3_TitleName">Tôi</string>
+  <string name="Tap3_TitleName">Mìn</string>
   <string name="Tap3_Uploading">Uploading &#8230;</string>
   <string name="Tap3_UploadingComplete">Upload complete</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>
@@ -844,7 +840,7 @@
   <string name="getting">Đang lấy&#8230;</string>
   <string name="has_copy">Đã nhân bản</string>
   <string name="has_not_sdcard">Không tìm thấy SD card</string>
-  <string name="help_url">https://yf.jfgou.com:8081/helps/vn.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/help/vn.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Thẻ SD không còn đủ dung lượng</string>
   <string name="is_connecting_video">Đang kết nối</string>

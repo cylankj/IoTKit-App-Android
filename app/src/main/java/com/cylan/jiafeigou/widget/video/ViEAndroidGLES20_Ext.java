@@ -106,9 +106,4 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
         // Dispatch touch event to view
         dispatchTouchEvent(motionEvent);
     }
-
-    @Override
-    public void onDestroy() {
-
-    }
 }

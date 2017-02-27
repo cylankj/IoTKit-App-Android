@@ -139,7 +139,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_HEADSET_PLUG);
         registerReceiver(headsetPlugReceiver, intentFilter);
-
     }
 
     private BroadcastReceiver headsetPlugReceiver = new BroadcastReceiver() {
@@ -619,7 +618,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
         if (bMute) {
             int result = am.requestAudioFocus(mOnAudioFocusChangeListener,
-                    AudioManager.STREAM_MUSIC,
+                    AudioManager.STREAM_VOICE_CALL,
                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
             isSuccess = (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
         } else {

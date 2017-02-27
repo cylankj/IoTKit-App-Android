@@ -49,7 +49,6 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -249,7 +248,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    public void onRecordsListRsp(ArrayList<BellCallRecordBean> beanArrayList) {
+    public void onRecordsListRsp(List<BellCallRecordBean> beanArrayList) {
         LoadingDialog.dismissLoading(getSupportFragmentManager());
         if (beanArrayList != null && beanArrayList.size() < 20) endlessLoading = true;
         bellCallRecordListAdapter.addAll(beanArrayList);

@@ -281,7 +281,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     public void onTimeTick(int dayTime) {
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
-                ? R.drawable.bg_wonderful_daytime : R.drawable.wonderful_bg_top_night;
+                ? R.drawable.wonderful_bg_top_daytime : R.drawable.wonderful_bg_top_night;
         appbar.setBackgroundResource(drawableId);
         AppLogger.d("onTimeTick: " + dayTime);
     }
