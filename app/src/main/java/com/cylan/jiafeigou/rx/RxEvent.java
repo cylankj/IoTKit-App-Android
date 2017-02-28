@@ -19,7 +19,6 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DataPointManager;
 
-import java.io.PushbackInputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -748,11 +747,6 @@ public class RxEvent {
             this.position = position;
             success = b;
         }
-    }
-
-    public static class CamLivePageScrolled {
-//        public boolean selected;
-        public Bundle bundle;
     }
 
     public static class SdcardClearRsp {

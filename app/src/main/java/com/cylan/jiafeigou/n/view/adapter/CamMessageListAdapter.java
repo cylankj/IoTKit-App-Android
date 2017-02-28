@@ -200,7 +200,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         DpMsgDefine.DPSdcardSummary sdStatus = item.sdcardSummary;
         if (sdStatus != null && sdStatus.hasSdcard && sdStatus.errCode != 0) {
             holder.setVisibility(R.id.tv_jump_next, View.VISIBLE);
-            holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
+            if (onClickListener != null)
+                holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         } else holder.setVisibility(R.id.tv_jump_next, View.GONE);
     }
 

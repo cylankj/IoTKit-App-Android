@@ -302,7 +302,6 @@ public class JConstant {
     public static final String KEY_AUTO_SHOW_BIND = "auto_jump2_bind";
 
 
-    public static final String KEY_CAM_LIVE_PAGE_SELECTED = "page_select";
     public static final String KEY_CAM_LIVE_PAGE_PLAY_TYPE = "page_play_type";
     public static final String KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME = "page_play_history_time";
     public static final String KEY_JUMP_TO_CAM_DETAIL = "jump_to_cam_detail";

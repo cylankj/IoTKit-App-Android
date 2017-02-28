@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import android.graphics.Bitmap;
-import android.os.Bundle;
 
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
@@ -67,8 +66,6 @@ public interface CamLiveContract {
          * @param state
          */
         void onHistoryLiveStop(int state);
-
-        void onPageSelected(Bundle bundle);
 
         /**
          * @param start :开始显示loading

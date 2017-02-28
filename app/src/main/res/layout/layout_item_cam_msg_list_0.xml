@@ -95,7 +95,6 @@
                     android:drawablePadding="@dimen/x10"
                     android:drawableStart="@drawable/btn_to_live_selector"
                     android:gravity="center"
-                    android:padding="@dimen/x10"
                     android:text="@string/MSG_DETAILS"
                     android:textColor="@color/color_909090"
                     android:textSize="@dimen/sp11" />

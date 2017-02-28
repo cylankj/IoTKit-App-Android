@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -29,9 +30,9 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
+import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -364,26 +365,33 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             case R.id.imgV_cam_message_pic_2:
                 startActivity(getIntent(position, 2));
                 break;
-            case R.id.tv_jump_next:
-                CamMessageBean bean = camMessageListAdapter.getItem(position);
-                boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null;
-                if (jumpNext) {
-                    RxEvent.CamLivePageScrolled scrolled = new RxEvent.CamLivePageScrolled();
-                    scrolled.bundle = new Bundle();
-                    scrolled.bundle.putBoolean(JConstant.KEY_CAM_LIVE_PAGE_SELECTED, position == 0);
-                    scrolled.bundle.putInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE, TYPE_HISTORY);
-                    scrolled.bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, bean.alarmMsg.time);
-                    AppLogger.d("alarm: " + bean);
-                } else {
-                    Intent intent = new Intent(getActivity(), CamSettingActivity.class);
-                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                    intent.putExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, true);
-                    startActivityForResult(intent, REQUEST_CODE,
-                            ActivityOptionsCompat.makeCustomAnimation(getActivity(),
-                                    R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+            case R.id.tv_jump_next: {
+                try {
+                    CamMessageBean bean = camMessageListAdapter.getItem(position);
+                    boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null;
+                    if (jumpNext) {
+                        Activity activity = getActivity();
+                        if (activity != null && activity instanceof CameraLiveActivity) {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE, TYPE_HISTORY);
+                            bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, bean.alarmMsg.time);
+                            ((CameraLiveActivity) activity).setCurrentBundle(bundle);
+                        }
+                        AppLogger.d("alarm: " + bean);
+                    } else {
+                        Intent intent = new Intent(getActivity(), CamSettingActivity.class);
+                        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                        intent.putExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, true);
+                        startActivityForResult(intent, REQUEST_CODE,
+                                ActivityOptionsCompat.makeCustomAnimation(getActivity(),
+                                        R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+                    }
+                    AppLogger.d("jump next: " + jumpNext);
+                } catch (Exception e) {
+                    AppLogger.e("err: " + e.getLocalizedMessage());
                 }
-                AppLogger.d("jump next: " + jumpNext);
                 break;
+            }
         }
     }
 
