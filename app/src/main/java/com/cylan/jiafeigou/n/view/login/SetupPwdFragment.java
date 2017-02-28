@@ -14,6 +14,7 @@ import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -58,6 +59,8 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
     FrameLayout flInputContainer;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.ll_input_pwd_container)
+    LinearLayout llInputPwdContainer;
 
     public SetupPwdFragment() {
         // Required empty public constructor

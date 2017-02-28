@@ -171,7 +171,8 @@ public class RegisterPwdFragment extends SetupPwdFragment
      * 发送验证邮件后view
      */
     private void afterSendMailView(String account) {
-        customToolbar.setToolbarTitle(R.string.CHANGE_EMAIL);
+        vsSetAccountPwd.removeAllViews();
+        customToolbar.setToolbarTitle(R.string.Tap0_register_EmailVerification);
         flInputContainer.setVisibility(View.GONE);
         View mailView = LayoutInflater.from(getActivity())
                 .inflate(R.layout.fragment_forget_pwd_by_email, null);

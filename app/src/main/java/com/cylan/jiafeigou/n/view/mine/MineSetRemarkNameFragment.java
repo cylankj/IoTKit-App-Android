@@ -140,7 +140,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
 
     @Override
     public String getEditName() {
-        return etMineSetRemarknameNewName.getText().toString().trim();
+        return etMineSetRemarknameNewName.getText().toString().trim().replace(" ","");
     }
 
     /**
@@ -157,8 +157,8 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      * 修改完成结果设置
      */
     @Override
-    public void showFinishResult(RxEvent.GetFriendInfoCall getFriendInfoCall) {
-        if (getFriendInfoCall.i == JError.ErrorOK && getEditName().equals(getFriendInfoCall.jfgFriendAccount.markName)) {
+    public void showFinishResult(RxEvent.SetFriendMarkNameBack getFriendInfoCall) {
+        if (getFriendInfoCall.jfgResult.code == JError.ErrorOK ) {
             ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
             if (listener != null) {
                 listener.remarkNameChange(getEditName());

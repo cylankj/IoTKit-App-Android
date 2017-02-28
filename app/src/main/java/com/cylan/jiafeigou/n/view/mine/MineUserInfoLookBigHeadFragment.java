@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,8 +36,6 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     ImageView ivUserinfoBigImage;
 
     private boolean loadResult = false;
-
-    private MineUserInfoLookBigHeadContract.Presenter presenter;
     private String iamgeUrl;
 
     public static MineUserInfoLookBigHeadFragment newInstance(Bundle bundle) {
@@ -52,9 +51,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         View view = inflater.inflate(R.layout.fragment_mine_userinfo_lookbigimagehead, container, false);
         ButterKnife.bind(this, view);
         getArgumentData();
-        initPresenter();
         initImageViewSize();
-        showLoadImageProgress();
         loadBigImage(iamgeUrl);
         return view;
     }
@@ -81,6 +78,10 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     }
 
     private void loadBigImage(String url) {
+        if (TextUtils.isEmpty(url)){
+            return;
+        }
+        showLoadImageProgress();
         Glide.with(getContext())
                 .load(url)
                 .asBitmap()
@@ -104,11 +105,6 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
                     }
                 })
                 .into(ivUserinfoBigImage);
-    }
-
-    private void initPresenter() {
-//        presenter = new MineUserInfoLookBigHeadPresenterIMpl(this);
-        presenter = null;
     }
 
     @OnClick(R.id.iv_userinfo_big_image)

@@ -292,6 +292,9 @@ public class DataSourceService extends Service implements AppCallBack {
             case JResultEvent.JFG_RESULT_CHECK_REGISTER:
                 RxBus.getCacheInstance().post(new RxEvent.CheckRegsiterBack(jfgResult));
                 break;
+            case JResultEvent.JFG_RESULT_SET_FRIEND_MARKNAME:
+                RxBus.getCacheInstance().post(new RxEvent.SetFriendMarkNameBack(jfgResult));
+                break;
         }
         if (login) {
             AfterLoginService.startGetAccountAction(getApplicationContext());

@@ -125,7 +125,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
 
     @Override
     public String getEditName() {
-        return etMinePersonalInformationNewName.getText().toString().trim();
+        return etMinePersonalInformationNewName.getText().toString().trim().replace(" ","");
     }
 
     @Override

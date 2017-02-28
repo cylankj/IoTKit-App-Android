@@ -18,7 +18,7 @@
         android:layout_marginTop="@dimen/y22"
         android:layout_marginLeft="@dimen/x10"
         android:src="@drawable/pic_head"
-        android:layout_width="@dimen/x40"
+        android:layout_width="@dimen/x41"
         android:layout_height="@dimen/y40" />
 
     <TextView

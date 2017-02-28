@@ -65,6 +65,11 @@ public interface MineBindPhoneContract {
          * 网络状态变化
          */
         void onNetStateChanged(int state);
+
+        /**
+         * 获取验证码的结果
+         */
+        void getSmsCodeResult(int code);
     }
 
     interface Presenter extends BasePresenter {

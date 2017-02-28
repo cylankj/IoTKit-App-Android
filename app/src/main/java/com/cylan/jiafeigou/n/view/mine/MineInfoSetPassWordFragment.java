@@ -175,7 +175,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     private void saveNewPassword() {
 
         if (presenter.checkNewPassword(getOldPassword(), getNewPassword())) {
-            ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
+            ToastUtil.showNegativeToast(getString(R.string.RET_ECHANGEPASS_SAME));
             return;
         }
 

@@ -72,8 +72,7 @@ public class AfterLoginService extends IntentService {
 //                PreferencesUtils.putString("wth_p", l.pwd);
 //                //
             } else if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
-                int req = JfgCmdInsurance.getCmd().getAccount();
-                ToastUtil.showToast("req:"+req);
+                JfgCmdInsurance.getCmd().getAccount();
             } else if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
                 OfflineTaskQueue.getInstance().startRolling();
             }

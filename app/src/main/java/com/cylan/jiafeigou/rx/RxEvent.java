@@ -787,4 +787,13 @@ public class RxEvent {
             this.disconnect = disconnect;
         }
     }
+
+
+    public static final class SetFriendMarkNameBack {
+        public JFGResult jfgResult;
+
+        public SetFriendMarkNameBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
 }

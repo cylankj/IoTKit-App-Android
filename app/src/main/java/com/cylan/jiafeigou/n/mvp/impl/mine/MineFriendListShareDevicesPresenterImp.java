@@ -96,10 +96,12 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                     public void call(ArrayList<DeviceBean> deviceList) {
                         if (getView() != null && deviceList != null) {
                             allDevice.clear();
-                            allDevice.addAll(deviceList);
                             ArrayList<String> cidList = new ArrayList<String>();
                             for (DeviceBean bean : deviceList) {
-                                cidList.add(bean.uuid);
+                                if (TextUtils.isEmpty(bean.shareAccount)) {
+                                    cidList.add(bean.uuid);
+                                    allDevice.add(bean);
+                                }
                             }
                             getDeviceInfo(cidList);
                         } else {
