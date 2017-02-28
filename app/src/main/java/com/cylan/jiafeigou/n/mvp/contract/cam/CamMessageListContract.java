@@ -15,8 +15,6 @@ public interface CamMessageListContract {
 
     interface View extends BaseView<Presenter> {
 
-        void setRefresh(boolean refresh);
-
         void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList);
 
         ArrayList<CamMessageBean> getList();
@@ -34,9 +32,9 @@ public interface CamMessageListContract {
         /**
          * @param manually
          */
-        void fetchMessageList(boolean manually);
+        void fetchMessageList(boolean manually, boolean loadMore);
 
-        void loadMore();
+//        void loadMore();
 
         void removeItems(ArrayList<CamMessageBean> beanList);
     }

@@ -103,6 +103,16 @@ public class ShareUtils {
         return false;
     }
 
+    public static boolean isWechatInstalled() {
+        try {
+            return ContextUtils.getContext()
+                    .getPackageManager()
+                    .getPackageInfo("com.tencent.mm", PackageManager.GET_SIGNATURES) != null;
+        } catch (PackageManager.NameNotFoundException e) {
+            return false;
+        }
+    }
+
     public static void shareToFacebook(Activity activity, GlideUrl glideUrl) {
         if (!FacebookSdk.isInitialized()) {
             FacebookSdk.sdkInitialize(activity.getApplicationContext());

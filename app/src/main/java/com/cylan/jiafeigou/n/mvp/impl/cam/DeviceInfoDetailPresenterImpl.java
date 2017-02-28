@@ -7,6 +7,8 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -16,6 +18,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -76,7 +79,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
                         String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, "");
                         try {
-                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid,uuid,sVersion);
+                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, sVersion);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -98,13 +101,15 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     public void clearSdcard() {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe((Object o)->{
-                    BaseValue baseValue = new BaseValue();
-                    baseValue.setId(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD);
-                    baseValue.setVersion(System.currentTimeMillis());
-                    baseValue.setValue(0);
-                    boolean update = GlobalDataProxy.getInstance().update(uuid, baseValue, true);
-                    AppLogger.d("clearSDcard_req:"+update);
+                .subscribe((Object o) -> {
+                    ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
+                    JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
+                    ipList.add(mesg);
+                    try {
+                        requst = JfgCmdInsurance.getCmd().robotSetData(uuid, ipList);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
                 });
     }
 
@@ -112,12 +117,12 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     public Subscription clearSdcardReqBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.SdcardClearRsp respone)->{
-                    if (respone != null && respone.seq == requst ){
-                        if (respone.arrayList.get(0).ret == 0){
-                            //getView().clearSdReslut(0);
-                        }else {
-                            getView().clearSdReslut(1);
+                .subscribe((RxEvent.SdcardClearRsp respone) -> {
+                    if (respone != null && respone.seq == requst) {
+                        if (respone.arrayList.get(0).ret == 0) {
+                            getView().clearSdResult(0);
+                        } else {
+                            getView().clearSdResult(1);
                         }
                     }
                 });
@@ -127,20 +132,25 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     public Subscription clearSdcardResult() {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RobotoGetDataRsp rsp) ->{
-                    if (rsp != null){
+                .subscribe((RobotoGetDataRsp rsp) -> {
+                    if (rsp != null) {
                         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
                             if (entry.getValue() == null) continue;
                             for (JFGDPMsg dp : entry.getValue()) {
-                                if (dp.id == 204){
-                                    getView().clearSdReslut(0);
-                                }else {
-                                    getView().clearSdReslut(1);
+                                if (dp.id == 204) {
+                                    getView().clearSdResult(0);
+                                } else {
+                                    getView().clearSdResult(1);
                                 }
                             }
                         }
                     }
                 });
+    }
+
+    @Override
+    public Subscription clearSdcardBack() {
+        return null;
     }
 
     private ArrayList<JFGDPMsg> getReqList(long[] versions, int[] ids) {
@@ -153,5 +163,27 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
             dps.add(new JFGDPMsg(ids[i], versions[i]));
         }
         return dps;
+    }
+
+    public void updateAlias(JFGDevice device) {
+        Observable.just(device)
+                .map(device1 -> {
+                    GlobalDataProxy.getInstance().updateJFGDevice(device);
+                    return null;
+                })
+                .timeout(1, TimeUnit.SECONDS, Observable.just("setAliasTimeout")
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .map(s -> {
+                            getView().setAliasRsp(-1);
+                            AppLogger.e("timeout: " + s);
+                            return null;
+                        }))
+                .flatMap(dev -> RxBus.getCacheInstance().toObservable(RxEvent.SetAlias.class)
+                        .filter(setAlias -> setAlias.result.event == JResultEvent.JFG_RESULT_SET_DEVICE_ALIAS
+                                && setAlias.result.code == 0))
+                .filter(s -> getView() != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(setAlias -> getView().setAliasRsp(JError.ErrorOK),
+                        throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
     }
 }

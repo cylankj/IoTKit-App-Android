@@ -13,18 +13,18 @@ public class CamMessageBean {
      */
     public DpMsgDefine.DPAlarm alarmMsg;
     //    public ArrayList<String> urlList;//最终的url
-    public DpMsgDefine.DPSdcardSummary content;//204消息
+    public DpMsgDefine.DPSdcardSummary sdcardSummary;//204消息
     public long time;
     public long version;
 
-//    public int viewType = 0;
+    public int viewType = 0;
 
     @Override
     public String toString() {
         return "CamMessageBean{" +
                 "id=" + id +
                 ", alarmMsgs=" + alarmMsg +
-                ", content=" + content +
+                ", sdcardSummary=" + sdcardSummary +
                 ", startTime=" + time +
                 ", version=" + version +
                 '}';

@@ -26,8 +26,6 @@ import com.cylan.jiafeigou.widget.ImageViewTip;
 import java.util.List;
 import java.util.Locale;
 
-import javax.microedition.khronos.opengles.GL;
-
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
 import static com.cylan.jiafeigou.misc.JConstant.NET_TYPE_RES;
@@ -63,7 +61,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
 
     private void setItemState(SuperViewHolder holder, String uuid, int pid, String shareAccount, DpMsgDefine.DPNet net) {
         //0 net type 网络类型
-        int resIdNet = net == null ? -1 : NET_TYPE_RES.get(net.net);
+        int resIdNet = net == null ? -1 : MiscUtils.getValue(NET_TYPE_RES.get(net.net), -1);
         if (resIdNet != -1) {
             holder.setVisibility(R.id.img_device_state_0, VISIBLE);
             holder.setImageResource(R.id.img_device_state_0, resIdNet);
@@ -129,8 +127,9 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         final int onLineState = net != null ? net.net : (pid == JConstant.OS_MAGNET ? 1 : 0);
 //        final int deviceType = bean.pid;
         Log.d("handleState", "handleState: " + uuid + " " + net);
-        int iconRes = (onLineState != 0 && onLineState != -1) ? JConstant.onLineIconMap.get(pid)
-                : JConstant.offLineIconMap.get(pid);
+        int online = MiscUtils.getValue(JConstant.onLineIconMap.get(pid), R.mipmap.ic_launcher);
+        int offline = MiscUtils.getValue(JConstant.offLineIconMap.get(pid), R.mipmap.ic_launcher);
+        int iconRes = (onLineState != 0 && onLineState != -1) ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, MiscUtils.getBeautifulString(TextUtils.isEmpty(alias) ? uuid : alias, 8));
         if (!TextUtils.isEmpty(shareAccount))

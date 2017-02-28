@@ -110,6 +110,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             return;
         }
         basePresenter = new CamSettingPresenterImpl(this, uuid);
+        if (getIntent().getBooleanExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, false)) {
+            jumpDetail();
+        }
     }
 
     @Override
@@ -131,6 +134,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private void initSightBtn() {
+        if (JFGRules.isShareDevice(uuid)) {
+            sbtnSettingSight.setVisibility(View.GONE);
+            return;
+        }
         if (device != null && JFGRules.isPanoramicCam(device.pid)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
             int defaultValue = PreferencesUtils.getInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL, 0);
@@ -237,6 +244,18 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     }
 
+    private void jumpDetail() {
+        initInfoDetailFragment();
+        DeviceInfoDetailFragment fragment = informationWeakReference.get();
+        fragment.setCallBack((Object t) -> {
+            onInfoUpdate(null);
+        });
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
+        fragment.setArguments(bundle);
+        loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
+    }
+
     @OnClick({R.id.sv_setting_device_detail,
             R.id.sv_setting_device_auto_record,
             R.id.sv_setting_safe_protection,
@@ -249,15 +268,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         ViewUtils.deBounceClick(view);
         switch (view.getId()) {
             case R.id.sv_setting_device_detail: {
-                initInfoDetailFragment();
-                DeviceInfoDetailFragment fragment = informationWeakReference.get();
-                fragment.setCallBack((Object t) -> {
-                    onInfoUpdate(null);
-                });
-                Bundle bundle = new Bundle();
-                bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
-                fragment.setArguments(bundle);
-                loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
+                jumpDetail();
             }
             break;
             case R.id.tv_setting_unbind: {
@@ -423,6 +434,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
         if (id == DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY) {
             boolean flag = MiscUtils.cast(value.getValue(), false);
+            //是否有sim卡
+            svSettingDeviceMobileNetwork.setVisibility(flag ? View.VISIBLE : View.GONE);
             svSettingDeviceMobileNetwork.setSwitchButtonState(flag);
         }
         if (id == DpMsgMap.ID_209_LED_INDICATOR) {

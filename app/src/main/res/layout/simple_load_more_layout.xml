@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:orientation="horizontal">
+
+        <com.cylan.jiafeigou.widget.SimpleProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:padding="@dimen/x10"
+            hunt:progress_point_radius="@dimen/x3"
+            hunt:progress_radius="@dimen/x10"
+            hunt:progress_stroke_color="@color/color_cecece" />
+
+        <TextView
+            android:id="@+id/tv_loading_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/LOADING"
+            android:textColor="@color/color_cecece" />
+    </LinearLayout>
+</FrameLayout>
