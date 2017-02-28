@@ -38,6 +38,8 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.ShareUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -192,11 +194,23 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     basePresenter.saveImage(new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
                 break;
             case R.id.imgV_big_pic_share:
+                if (NetUtils.getJfgNetType(getContext()) == 0) {
+                    ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                    return;
+                }
+                if (!ShareUtils.isWechatInstalled()) {
+                    ToastUtil.showToast(getString(R.string.Tap2_share_unabletoshare));
+                    return;
+                }
                 ShareDialogFragment fragment = initShareDialog();
                 fragment.setPictureURL(new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
                 fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.imgV_big_pic_collect:
+                if (NetUtils.getJfgNetType(getContext()) == 0) {
+                    ToastUtil.showToast(getString(R.string.NoNetworkTips));
+                    return;
+                }
                 if (basePresenter != null)
                     basePresenter.collect(currentIndex, alarmMsg, new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
                 break;

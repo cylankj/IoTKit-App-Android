@@ -39,9 +39,9 @@ import java.util.Map;
 public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     /**
-     * 一张图片，两张图片，三张图片，只有文字。
+     * 图片，只有文字,加载。
      */
-    private static final int MAX_TYPE = 4;
+    private static final int MAX_TYPE = 3;
     private String uuid;
     /**
      * 0： 正常，1:编辑
@@ -150,6 +150,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             case 1:
                 handlePicsLayout(holder, item);
                 break;
+            case 2:
+                return;
         }
         if (onClickListener != null)
             holder.setOnClickListener(R.id.lLayout_cam_msg_container, onClickListener);
@@ -308,6 +310,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
             @Override
             public int getItemViewType(int position, CamMessageBean camMessageBean) {
+                if (camMessageBean.viewType == 2) return 2;
                 return camMessageBean.alarmMsg != null && camMessageBean.alarmMsg.fileIndex > 0 && camMessageBean.content == null ? 1 : 0;
             }
 
@@ -319,10 +322,15 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     case 1:
                         return R.layout.layout_item_cam_msg_list_1;
                     default:
-                        return R.layout.layout_wonderful_empty;
+                        return R.layout.simple_load_more_layout;
                 }
             }
         };
+    }
+
+    public boolean hasFooter() {
+        int count = getCount();
+        return count > 0 && getItem(count - 1).viewType == 2;
     }
 
     private RequestListener<CamWarnGlideURL, GlideDrawable> loadListener = new RequestListener<CamWarnGlideURL, GlideDrawable>() {

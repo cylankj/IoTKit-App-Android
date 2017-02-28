@@ -17,7 +17,7 @@ public class CamMessageBean {
     public long time;
     public long version;
 
-//    public int viewType = 0;
+    public int viewType = 0;
 
     @Override
     public String toString() {

@@ -31,7 +31,9 @@ import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
@@ -87,6 +89,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private CamMessageListAdapter camMessageListAdapter;
     private String uuid;
 
+    /**
+     * 加载更多
+     */
+    private boolean endlessLoading = false;
+    private boolean mIsLastLoadFinish = true;
+
     public CamMessageListFragment() {
         // Required empty public constructor
     }
@@ -127,25 +135,52 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         rvCamMessageList.setAdapter(camMessageListAdapter);
         rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                AppLogger.d("newState: " + newState);
-            }
+            int pastVisibleItems, visibleItemCount, totalItemCount;
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 final int fPos = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
                 setCurrentPosition(fPos);
+                if (dy > 0) { //check for scroll down
+                    visibleItemCount = camMessageListAdapter.getLayoutManager().getChildCount();
+                    totalItemCount = camMessageListAdapter.getLayoutManager().getItemCount();
+                    pastVisibleItems = ((LinearLayoutManager) camMessageListAdapter.getLayoutManager()).findFirstVisibleItemPosition();
+                    if (!endlessLoading && mIsLastLoadFinish) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            endlessLoading = true;
+                            mIsLastLoadFinish = false;
+                            Log.d("tag", "tag.....load more");
+                            startRequest(true);
+                        }
+                    }
+                }
             }
         });
         camMessageListAdapter.setOnclickListener(this);
     }
 
+    private void setupFootView() {
+        CamMessageBean bean = new CamMessageBean();
+        bean.viewType = 2;
+        camMessageListAdapter.add(bean);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) basePresenter.fetchMessageList(false, false);
+        startRequest(false);
+    }
+
+
+    private void startRequest(boolean loadMore) {
+        if (loadMore) {
+            setupFootView();
+            if (basePresenter != null) basePresenter.fetchMessageList(false, true);
+        } else {
+            srLayoutCamListRefresh.setRefreshing(true);
+            if (basePresenter != null) basePresenter.fetchMessageList(false, false);
+        }
     }
 
     /**
@@ -154,7 +189,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      * @param position
      */
     private void setCurrentPosition(int position) {
-        if (currentPosition == position && position < 0 || position > camMessageListAdapter.getCount() - 1)
+        if (currentPosition == position || position < 0 || position > camMessageListAdapter.getCount() - 1)
             return;
         currentPosition = position;
         if (getView() != null) getView().post(() -> {
@@ -168,6 +203,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @Override
     public void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList) {
+        if (camMessageListAdapter.hasFooter())
+            camMessageListAdapter.remove(camMessageListAdapter.getItemCount() - 1);
+        endlessLoading = false;
+        mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
         final int count = beanArrayList == null ? 0 : beanArrayList.size();
         if (count == 0) {
@@ -215,9 +254,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @Override
     public void onRefresh() {
+        if (NetUtils.getJfgNetType(getContext()) == 0) {
+            srLayoutCamListRefresh.setRefreshing(false);
+            ToastUtil.showToast(getString(R.string.NoNetworkTips));
+            return;
+        }
         srLayoutCamListRefresh.setRefreshing(true);
-        if (basePresenter != null)
-            basePresenter.fetchMessageList(true, false);
+        startRequest(false);
     }
 
     @OnClick({R.id.tv_cam_message_list_date,

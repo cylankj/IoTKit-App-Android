@@ -24,6 +24,18 @@ public class TimeUtils {
             return new SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault());
         }
     };
+    private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormat_2 = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("MM/dd HH:mm", Locale.getDefault());
+        }
+    };
+    private static final ThreadLocal<SimpleDateFormat> getSimpleDateFormat_3 = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault());
+        }
+    };
 
     private static final ThreadLocal<SimpleDateFormat> sSimpleDateFormatter = new ThreadLocal<SimpleDateFormat>() {
         @Override
@@ -104,9 +116,23 @@ public class TimeUtils {
     }
 
     public static String getMediaPicTimeInString(final long time) {
-        return getSimpleDateFormat_1.get().format(new Date(time));
+        boolean isSameYear = sameYear(System.currentTimeMillis(), time);
+
+        if (isSameYear) {
+            return getSimpleDateFormat_2.get().format(new Date(time));
+        } else {
+            return getSimpleDateFormat_3.get().format(new Date(time));
+        }
     }
 
+    private static boolean sameYear(long time1, long time2) {
+        Calendar cal1 = Calendar.getInstance();
+        Calendar cal2 = Calendar.getInstance();
+        cal1.setTime(new Date(time1));
+        cal2.setTime(new Date(time2));
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR);
+    }
 
     public static String getMediaVideoTimeInString(final long time) {
         return getSimpleDateFormatVideo.get().format(new Date(time));

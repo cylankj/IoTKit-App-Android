@@ -89,7 +89,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     if (list != null)
                         camList.removeAll(list);//删除重复的
                     return camList;
-                }).observeOn(AndroidSchedulers.mainThread())
+                })
+                .delay(1,TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .filter(new RxHelper.Filter<>("messageListSub()=null?", getView() != null))
                 .map((ArrayList<CamMessageBean> jfgdpMsgs) -> {
                     getView().onMessageListRsp(jfgdpMsgs);
