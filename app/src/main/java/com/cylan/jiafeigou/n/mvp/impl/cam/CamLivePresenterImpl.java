@@ -500,7 +500,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.CamLivePageScrolled camLivePageScrolled) -> {
                     if (getView() != null) {
-                        getView().onPageSelected(camLivePageScrolled.selected);
+                        getView().onPageSelected(camLivePageScrolled.bundle);
                     }
                 }, (Throwable throwable) -> {
                     AppLogger.e("err:" + throwable.getLocalizedMessage());

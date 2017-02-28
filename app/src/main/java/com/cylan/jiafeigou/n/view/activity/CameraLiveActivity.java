@@ -37,6 +37,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
 
@@ -178,14 +179,16 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                 }
             }
             RxEvent.CamLivePageScrolled scrolled = new RxEvent.CamLivePageScrolled();
-            scrolled.selected = position == 0;
-            if (scrolled.selected) {
+            scrolled.bundle = new Bundle();
+            scrolled.bundle.putBoolean(JConstant.KEY_CAM_LIVE_PAGE_SELECTED, position == 0);
+            scrolled.bundle.putInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE, TYPE_LIVE);
+            if (position == 0) {
                 HandlerThreadUtils.postDelay(() -> {
                     RxBus.getCacheInstance().post(scrolled);
                 }, 200);
             } else
                 RxBus.getCacheInstance().post(scrolled);
-            AppLogger.d("onPageSelected" + scrolled.selected);
+            AppLogger.d("onPageSelected" + (position == 0));
         }
 
         @Override

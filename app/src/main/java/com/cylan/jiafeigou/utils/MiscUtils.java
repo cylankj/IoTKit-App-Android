@@ -152,6 +152,15 @@ public class MiscUtils {
                 });
     }
 
+    public static <T> T getValue(Object o, T t) {
+        if (o == null) return t;
+        try {
+            return (T) o;
+        } catch (Exception e) {
+            return t;
+        }
+    }
+
     public static String getBeautifulString(String temp, int len) {
         if (!TextUtils.isEmpty(temp) && temp.length() > len) {
             temp = temp.substring(0, len) + "...";

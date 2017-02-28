@@ -172,6 +172,7 @@ public class JFGRules {
             case JConstant.OS_CAMERA_PANORAMA_HAISI:
             case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
             case JConstant.OS_CAMERA_PANORAMA_GUOKE:
+            case JConstant.OS_CAMERA_ANDROID_3_0:
                 return true;
             default:
                 return false;

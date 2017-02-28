@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,8 +28,10 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
+import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -44,9 +47,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_BUNDLE;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_INDEX;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_TIME;
+import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_RIGHT_CONTENT;
@@ -359,7 +364,25 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             case R.id.imgV_cam_message_pic_2:
                 startActivity(getIntent(position, 2));
                 break;
-            case R.id.tv_to_live:
+            case R.id.tv_jump_next:
+                CamMessageBean bean = camMessageListAdapter.getItem(position);
+                boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null;
+                if (jumpNext) {
+                    RxEvent.CamLivePageScrolled scrolled = new RxEvent.CamLivePageScrolled();
+                    scrolled.bundle = new Bundle();
+                    scrolled.bundle.putBoolean(JConstant.KEY_CAM_LIVE_PAGE_SELECTED, position == 0);
+                    scrolled.bundle.putInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE, TYPE_HISTORY);
+                    scrolled.bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, bean.alarmMsg.time);
+                    AppLogger.d("alarm: " + bean);
+                } else {
+                    Intent intent = new Intent(getActivity(), CamSettingActivity.class);
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                    intent.putExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, true);
+                    startActivityForResult(intent, REQUEST_CODE,
+                            ActivityOptionsCompat.makeCustomAnimation(getActivity(),
+                                    R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+                }
+                AppLogger.d("jump next: " + jumpNext);
                 break;
         }
     }

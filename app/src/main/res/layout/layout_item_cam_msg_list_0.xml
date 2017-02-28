@@ -86,6 +86,19 @@
                     android:text="@string/DELETE"
                     android:textColor="@color/color_4b9fd5"
                     android:textSize="@dimen/sp11" />
+
+                <TextView
+                    android:id="@+id/tv_jump_next"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end|center_vertical"
+                    android:drawablePadding="@dimen/x10"
+                    android:drawableStart="@drawable/btn_to_live_selector"
+                    android:gravity="center"
+                    android:padding="@dimen/x10"
+                    android:text="@string/MSG_DETAILS"
+                    android:textColor="@color/color_909090"
+                    android:textSize="@dimen/sp11" />
             </FrameLayout>
 
             <View

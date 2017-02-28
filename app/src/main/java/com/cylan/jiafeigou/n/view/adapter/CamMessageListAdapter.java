@@ -197,6 +197,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                          CamMessageBean item) {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
+        DpMsgDefine.DPSdcardSummary sdStatus = item.sdcardSummary;
+        if (sdStatus != null && sdStatus.hasSdcard && sdStatus.errCode != 0) {
+            holder.setVisibility(R.id.tv_jump_next, View.VISIBLE);
+            holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
+        } else holder.setVisibility(R.id.tv_jump_next, View.GONE);
     }
 
     private void handlePicsLayout(SuperViewHolder holder,
@@ -228,12 +233,12 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
 //        }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
-        holder.setVisibility(R.id.tv_to_live, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
-        holder.setOnClickListener(R.id.tv_to_live, onClickListener);
+        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
+        holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_2, onClickListener);
-        holder.setEnabled(R.id.tv_to_live, deviceOnlineState);
+        holder.setEnabled(R.id.tv_jump_next, deviceOnlineState);
     }
 
 
@@ -289,15 +294,19 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private String getFinalSdcardContent(CamMessageBean bean) {
-        if (bean.id != DpMsgMap.ID_222_SDCARD_SUMMARY || bean.content == null)
+        if (bean.id != DpMsgMap.ID_222_SDCARD_SUMMARY || bean.sdcardSummary == null)
             return "";
-        DpMsgDefine.DPSdcardSummary sdStatus = bean.content;
+        DpMsgDefine.DPSdcardSummary sdStatus = bean.sdcardSummary;
+        if (!sdStatus.hasSdcard) {
+            return getContext().getString(R.string.MSG_SD_OFF);
+        }
         switch (sdStatus.errCode) {
             case 0:
                 return getContext().getString(R.string.MSG_SD_ON);
             default:
                 return getContext().getString(R.string.MSG_SD_ON_1);
         }
+
     }
 
     @Override
@@ -311,7 +320,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             @Override
             public int getItemViewType(int position, CamMessageBean camMessageBean) {
                 if (camMessageBean.viewType == 2) return 2;
-                return camMessageBean.alarmMsg != null && camMessageBean.alarmMsg.fileIndex > 0 && camMessageBean.content == null ? 1 : 0;
+                return camMessageBean.alarmMsg != null && camMessageBean.alarmMsg.fileIndex > 0 && camMessageBean.sdcardSummary == null ? 1 : 0;
             }
 
             @Override

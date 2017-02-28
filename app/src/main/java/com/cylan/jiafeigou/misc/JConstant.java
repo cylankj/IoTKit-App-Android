@@ -8,9 +8,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
@@ -259,26 +257,6 @@ public class JConstant {
         }
     }
 
-    public static List<Integer> CAMERA_OS_LIST = new ArrayList<>();
-
-    static {
-        CAMERA_OS_LIST.add(OS_CAMARA_ANDROID_SERVICE);
-        CAMERA_OS_LIST.add(OS_CAMERA_ANDROID);
-        CAMERA_OS_LIST.add(OS_CAMERA_ANDROID_4G);
-        CAMERA_OS_LIST.add(OS_CAMERA_CC3200);
-        CAMERA_OS_LIST.add(OS_CAMERA_PANORAMA_GUOKE);
-        CAMERA_OS_LIST.add(OS_CAMERA_PANORAMA_HAISI);
-        CAMERA_OS_LIST.add(OS_CAMERA_PANORAMA_QIAOAN);
-        CAMERA_OS_LIST.add(OS_CAMERA_UCOS_V3);
-        CAMERA_OS_LIST.add(OS_CAMERA_UCOS_V2);
-        CAMERA_OS_LIST.add(OS_CAMERA_UCOS);
-        CAMERA_OS_LIST.add(OS_CAMERA_ANDROID_3_0);
-    }
-
-    public static boolean isCamera(int pid) {
-        return CAMERA_OS_LIST.contains(pid);
-    }
-
     public static boolean isBell(int pid) {
         return OS_DOOR_BELL == pid;
     }
@@ -322,4 +300,10 @@ public class JConstant {
     public static final int CLOUD_OUT_CONNECT_FAILED = 4;
 
     public static final String KEY_AUTO_SHOW_BIND = "auto_jump2_bind";
+
+
+    public static final String KEY_CAM_LIVE_PAGE_SELECTED = "page_select";
+    public static final String KEY_CAM_LIVE_PAGE_PLAY_TYPE = "page_play_type";
+    public static final String KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME = "page_play_history_time";
+    public static final String KEY_JUMP_TO_CAM_DETAIL = "jump_to_cam_detail";
 }
