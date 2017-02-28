@@ -26,135 +26,66 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/x16"
-        android:layout_marginStart="@dimen/x16"
+        android:layout_marginEnd="@dimen/x10"
+        android:layout_marginStart="@dimen/x10"
         android:layout_marginTop="@dimen/y12">
 
-        <LinearLayout
+        <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/lLayout_mode_motion"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/y72"
-            android:layout_toStartOf="@+id/rg_auto_record_mode"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/RECORD_MODE"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/RECORD_INFO_0"
-                android:textColor="@color/color_8c8c8c"
-                android:textSize="@dimen/sp13" />
-        </LinearLayout>
-
-        <View
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_below="@+id/lLayout_mode_motion"
-            android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
+            android:layout_height="@dimen/y72"
+            hunt:sv_sub_title="@string/RECORD_INFO_0"
+            hunt:sv_title="@string/RECORD_MODE"
+            hunt:sv_title_paddingEnd="@dimen/x30"
+            hunt:sv_v_divider="true" />
 
-        <LinearLayout
+        <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/lLayout_mode_24_hours"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
             android:layout_below="@+id/lLayout_mode_motion"
-            android:layout_toStartOf="@+id/rg_auto_record_mode"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
+            hunt:sv_sub_title="@string/RECORD_INFO_1"
+            hunt:sv_title="@string/RECORD_MODE_1"
+            hunt:sv_v_divider="true" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/RECORD_MODE_1"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/RECORD_INFO_1"
-                android:textColor="@color/color_8c8c8c"
-                android:textSize="@dimen/sp13" />
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_below="@+id/lLayout_mode_24_hours"
-            android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
-
-        <LinearLayout
+        <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/lLayout_mode_never"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
             android:layout_below="@+id/lLayout_mode_24_hours"
-            android:layout_toStartOf="@+id/rg_auto_record_mode"
-            android:gravity="center_vertical"
-            android:orientation="vertical">
+            hunt:sv_sub_title="@string/RECORD_INFO_2"
+            hunt:sv_title="@string/RECORD_MODE_2" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/RECORD_MODE_2"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/RECORD_INFO_2"
-                android:textColor="@color/color_8c8c8c"
-                android:textSize="@dimen/sp13" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_below="@+id/lLayout_mode_never"
-            android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
 
         <RadioGroup
             android:id="@+id/rg_auto_record_mode"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
-            android:layout_gravity="end">
+            android:layout_gravity="end"
+            android:clickable="false">
 
             <RadioButton
                 android:id="@+id/rb_motion"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
-                android:layout_gravity="end"
-                android:gravity="end|center_vertical"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp14" />
+                android:clickable="false"
+                android:theme="@style/RadioButtonStyle" />
 
             <RadioButton
                 android:id="@+id/rb_24_hours"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y72"
                 android:layout_gravity="end"
-                android:gravity="end|center_vertical"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp14" />
+                android:clickable="false"
+                android:theme="@style/RadioButtonStyle" />
 
             <RadioButton
                 android:id="@+id/rb_never"
                 android:layout_width="wrap_content"
                 android:layout_height="@dimen/y72"
-                android:layout_gravity="end"
-                android:gravity="end|center_vertical"
-                android:textSize="@dimen/sp14" />
+                android:clickable="false"
+                android:theme="@style/RadioButtonStyle" />
         </RadioGroup>
     </RelativeLayout>
 </LinearLayout>

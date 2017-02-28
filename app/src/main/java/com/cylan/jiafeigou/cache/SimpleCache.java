@@ -2,8 +2,6 @@ package com.cylan.jiafeigou.cache;
 
 import android.net.wifi.ScanResult;
 
-import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-
 import java.lang.ref.WeakReference;
 import java.util.List;
 
@@ -27,7 +25,6 @@ public class SimpleCache {
         return weakScanResult;
     }
 
-    public WeakReference<List<TimeZoneBean>> timeZoneCache;
 
     public void setWeakScanResult(List<ScanResult> weakScanResult) {
         if (weakScanResult == null)

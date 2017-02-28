@@ -302,7 +302,6 @@
         <activity
             android:name=".n.view.activity.SightSettingActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />

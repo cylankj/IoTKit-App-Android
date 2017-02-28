@@ -132,9 +132,10 @@
         <attr name="sv_sub_title" format="string|reference" />
         <attr name="sv_sub_title_max_len" format="integer" />
         <attr name="sv_image_src" format="reference" />
-        <attr name="sv_visibility" format="boolean" />
+        <attr name="sv_switch_visibility" format="boolean" />
         <attr name="sv_v_divider" format="boolean" />
         <attr name="sv_v_image_show" format="boolean" />
+        <attr name="sv_title_paddingEnd" format="dimension|reference" />
         <attr name="sv_sub_title_gravity">
             <flag name="bottom" value="80" />
             <flag name="center" value="17" />

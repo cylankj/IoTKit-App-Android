@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDevice;
@@ -17,6 +19,8 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.network.ConnectivityStatus;
+import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -32,9 +36,6 @@ import rx.schedulers.Schedulers;
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
 
-//    private CompositeSubscription compositeSubscription;
-
-    //    private BeanCamInfo camInfoBean;
     private String uuid;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
@@ -57,6 +58,25 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 robotDataSync(),
                 unbindDevSub()
         };
+    }
+
+    @Override
+    protected String[] registerNetworkAction() {
+        return new String[]{ConnectivityManager.CONNECTIVITY_ACTION};
+    }
+
+    @Override
+    public void onNetworkChanged(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
+            ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
+            Observable.just(status)
+                    .throttleFirst(500, TimeUnit.MILLISECONDS)
+                    .subscribeOn(AndroidSchedulers.mainThread())
+                    .subscribe(connectivityStatus ->
+                                    getView().onNetworkChanged(connectivityStatus != null && connectivityStatus.state >= 0),
+                            throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+        }
     }
 
     @Override

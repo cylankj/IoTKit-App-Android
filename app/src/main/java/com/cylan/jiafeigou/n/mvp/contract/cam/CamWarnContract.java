@@ -28,5 +28,6 @@ public interface CamWarnContract {
          */
         void updateInfoReq(Object value, long id);
 
+        void playSound(int id);
     }
 }

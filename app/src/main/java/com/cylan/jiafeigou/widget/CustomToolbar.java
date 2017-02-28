@@ -38,6 +38,7 @@ public class CustomToolbar extends LinearLayout {
 
     public CustomToolbar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        setOrientation(VERTICAL);
         TypedArray
                 at = context.obtainStyledAttributes(attrs, R.styleable.CustomToolbarStyle);
         int bgColor = at.getColor(R.styleable.CustomToolbarStyle_ct_background_color, Color.TRANSPARENT);

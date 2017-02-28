@@ -21,33 +21,42 @@
 
         <RadioGroup
             android:id="@+id/rg_sensitivity"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/y12">
 
             <RadioButton
                 android:id="@+id/rbtn_sensitivity_high"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/y54"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
                 android:text="@string/SENSITIVI_HIGHT"
                 android:textColor="@color/color_black"
-                android:textSize="@dimen/sp14" />
+                android:textSize="@dimen/sp14"
+                android:theme="@style/RadioButtonStyle" />
 
             <RadioButton
                 android:id="@+id/rbtn_sensitivity_middle"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/y54"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
                 android:text="@string/SENSITIVI_STANDARD"
                 android:textColor="@color/color_black"
-                android:textSize="@dimen/sp14" />
+                android:textSize="@dimen/sp14"
+                android:theme="@style/RadioButtonStyle" />
 
             <RadioButton
                 android:id="@+id/rbtn_sensitivity_low"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="@dimen/y54"
+                android:paddingEnd="@dimen/x10"
+                android:paddingStart="@dimen/x10"
                 android:text="@string/SENSITIVI_LOW"
                 android:textColor="@color/color_black"
-                android:textSize="@dimen/sp14" />
+                android:textSize="@dimen/sp14"
+                android:theme="@style/RadioButtonStyle" />
         </RadioGroup>
 
         <TextView

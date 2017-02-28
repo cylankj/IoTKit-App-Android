@@ -14,7 +14,6 @@ import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
@@ -28,7 +27,9 @@ import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.TimePickDialogFragment;
@@ -50,22 +51,22 @@ import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Presenter>
         implements SafeInfoContract.View {
 
-    @BindView(R.id.tv_protection_sensitivity)
-    TextView tvProtectionSensitivity;
-    @BindView(R.id.tv_protection_notification)
-    TextView tvProtectionNotification;
-    @BindView(R.id.tv_protection_start_time)
-    TextView tvProtectionStartTime;
-    @BindView(R.id.tv_protection_end_time)
-    TextView tvProtectionEndTime;
-    @BindView(R.id.tv_protection_repeat_period)
-    TextView tvProtectionRepeatPeriod;
     @BindView(R.id.sw_motion_detection)
     SettingItemView1 swMotionDetection;
     @BindView(R.id.lLayout_safe_container)
     LinearLayout lLayoutSafeContainer;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
+    @BindView(R.id.fLayout_protection_sensitivity)
+    SettingItemView0 fLayoutProtectionSensitivity;
+    @BindView(R.id.fLayout_protection_warn_effect)
+    SettingItemView0 fLayoutProtectionWarnEffect;
+    @BindView(R.id.fLayout_protection_start_time)
+    SettingItemView0 fLayoutProtectionStartTime;
+    @BindView(R.id.fLayout_protection_end_time)
+    SettingItemView0 fLayoutProtectionEndTime;
+    @BindView(R.id.fLayout_protection_repeat_period)
+    SettingItemView0 fLayoutProtectionRepeatPeriod;
     private WeakReference<AlarmSoundEffectFragment> warnEffectFragmentWeakReference;
     private TimePickDialogFragment timePickDialogFragment;
     private String uuid;
@@ -108,32 +109,29 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         });
         JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
         if (device != null && JFGRules.isFreeCam(device.pid)) {
-            view.findViewById(R.id.fLayout_protection_warn_effect).setVisibility(View.GONE);
+            fLayoutProtectionWarnEffect.setVisibility(View.GONE);
         }
-
-        boolean alarm = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch)).setChecked(alarm);
-        ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch))
-                .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                    if (!isChecked) {
-                        new AlertDialog.Builder(getActivity(), R.style.AppCompatAlertDialogStyle)
-                                .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
-                                .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                                    basePresenter.updateInfoReq(false, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-                                    showDetail(false);
-                                    updateDetails();
-                                })
-                                .setNegativeButton(getString(R.string.CANCEL), null)
-                                .show();
-                    } else {
-                        basePresenter.updateInfoReq(true, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-                        showDetail(true);
-                        updateDetails();
-                    }
-                });
-        showDetail(alarm);
-        if (alarm)
-            updateDetails();
+        updateDetails();
+        swMotionDetection.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            if (!isChecked) {
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
+                        .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                            basePresenter.updateInfoReq(false, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                            showDetail(false);
+                            updateDetails();
+                            ToastUtil.showToast(getString(R.string.SCENE_SAVED));
+                        })
+                        .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                            ((SwitchButton) swMotionDetection.findViewById(R.id.btn_item_switch)).setChecked(true);
+                        })
+                        .show();
+            } else {
+                basePresenter.updateInfoReq(true, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                showDetail(true);
+                updateDetails();
+            }
+        });
     }
 
     @Override
@@ -150,7 +148,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         for (int i = 0; i < count; i++) {
             View v = lLayoutSafeContainer.getChildAt(i);
             if (v.getId() == R.id.sw_motion_detection) continue;//不要隐藏自己了
-            if (v instanceof FrameLayout) {
+            if (v instanceof SettingItemView0 || v instanceof FrameLayout) {
                 v.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         }
@@ -165,25 +163,24 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     private void updateDetails() {
         boolean flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        showDetail(flag);
         //移动侦测
-        swMotionDetection.setSwitchButtonState(flag);
+        swMotionDetection.setChecked(flag);
         //提示音
-        DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
-        if (notificationInfo != null) {
-            tvProtectionNotification.setText(getString(notificationInfo.notification == 0
-                    ? R.string.MUTE : (notificationInfo.notification == 1
-                    ? R.string.BARKING : R.string.ALARM)));
-        }
+        DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, DpMsgDefine.DPNotificationInfo.empty);
+        fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
+                ? R.string.MUTE : (notificationInfo.notification == 1
+                ? R.string.BARKING : R.string.ALARM)));
         //灵敏度
         int sensitivity = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY, 0);
-        tvProtectionSensitivity.setText(sensitivity == 0 ? getString(R.string.SENSITIVI_LOW)
+        fLayoutProtectionSensitivity.setTvSubTitle(sensitivity == 0 ? getString(R.string.SENSITIVI_LOW)
                 : (sensitivity == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期
         DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
-        tvProtectionRepeatPeriod.setText(basePresenter.getRepeatMode(getContext()));
+        fLayoutProtectionRepeatPeriod.setTvSubTitle(basePresenter.getRepeatMode(getContext()));
         if (info != null) {
-            tvProtectionStartTime.setText(MiscUtils.parse2Time(info.timeStart));
-            tvProtectionEndTime.setText(MiscUtils.parse2Time(info.timeEnd));
+            fLayoutProtectionStartTime.setTvSubTitle(MiscUtils.parse2Time(info.timeStart));
+            fLayoutProtectionEndTime.setTvSubTitle(MiscUtils.parse2Time(info.timeEnd));
         }
     }
 
@@ -317,12 +314,12 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     }
 
     @Override
-    public void beanUpdate() {
-        updateDetails();
+    public void setPresenter(SafeInfoContract.Presenter presenter) {
+        this.basePresenter = presenter;
     }
 
     @Override
-    public void setPresenter(SafeInfoContract.Presenter presenter) {
-        this.basePresenter = presenter;
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

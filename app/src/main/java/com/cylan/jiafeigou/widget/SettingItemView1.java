@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -38,6 +39,8 @@ public class SettingItemView1 extends FrameLayout {
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_settings_item1, this, true);
         tvTitle = (TextView) view.findViewById(R.id.tv_settings_item_title);
         switchButton = (SwitchButton) view.findViewById(R.id.btn_item_switch);
+        switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_switch_visibility, true)
+                ? VISIBLE : GONE);
         final String title = ta.getString(R.styleable.SettingItemViewStyle_sv_title);
         final Drawable srcId = ta.getDrawable(R.styleable.SettingItemViewStyle_sv_image_src);
         ViewUtils.setDrawablePadding(tvTitle, srcId, 0);
@@ -57,7 +60,19 @@ public class SettingItemView1 extends FrameLayout {
         tvTitle.setText(charSequence);
     }
 
-    public void setSwitchButtonState(boolean checked) {
+    public void setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener listener) {
+        if (listener != null) {
+            switchButton.setOnCheckedChangeListener(listener);
+        }
+    }
+
+    public void setChecked(boolean checked) {
         switchButton.setChecked(checked);
+    }
+
+    @Override
+    public void setAlpha(float alpha) {
+        super.setAlpha(alpha);
+        tvTitle.setAlpha(alpha);
     }
 }

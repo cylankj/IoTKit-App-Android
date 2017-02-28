@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 public interface SafeInfoContract {
 
     interface View extends BaseView<Presenter> {
-        void beanUpdate();
     }
 
     interface Presenter extends BasePresenter {

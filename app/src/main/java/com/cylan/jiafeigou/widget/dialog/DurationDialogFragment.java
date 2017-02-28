@@ -63,43 +63,25 @@ public class DurationDialogFragment extends BaseDialog<Integer> {
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             public int getItemsCount() {
-                return 3;
+                return 14;
             }
 
             @Override
             protected CharSequence getItemText(int index) {
-                return index == 0 ? "0 s" : (index == 1 ? "1 s" : "2 s");
+                return getResources().getString(R.string.SECOND, index + 1);
             }
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
         wheelDurationPick.setViewAdapter(adapter);
-        wheelDurationPick.setCurrentItem(value);
+        wheelDurationPick.setCurrentItem(value - 1);
         wheelDurationPick.addChangingListener(changedListener);
 //        wheelDurationPick.addScrollingListener(scrolledListener);
         wheelDurationPick.setCyclic(false);
         wheelDurationPick.setInterpolator(new AnticipateOvershootInterpolator());
     }
 
-    //    // Wheel scrolled flag
-//    private boolean wheelScrolled = false;
-//
-//    // Wheel scrolled listener
-//    private OnWheelScrollListener scrolledListener = new OnWheelScrollListener() {
-//        public void onScrollingStarted(AbstractWheel wheel) {
-//            wheelScrolled = true;
-//        }
-//
-//        public void onScrollingFinished(AbstractWheel wheel) {
-//            wheelScrolled = false;
-//        }
-//    };
-    // Wheel changed listener
-    private OnWheelChangedListener changedListener = new OnWheelChangedListener() {
-        public void onChanged(AbstractWheel wheel, int oldValue, int newValue) {
-//            if (!wheelScrolled) {
-            DurationDialogFragment.this.newValue = newValue;
-//            }
-        }
+    private OnWheelChangedListener changedListener = (AbstractWheel wheel, int oldValue, int newValue) -> {
+        DurationDialogFragment.this.newValue = newValue + 1;
     };
 
     @OnClick({R.id.tv_dialog_btn_left, R.id.tv_dialog_btn_right})

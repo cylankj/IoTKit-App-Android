@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/x20"
         android:layout_marginRight="@dimen/x20"
-        android:text="基本设置"
+        android:text="@string/SETTINGS"
         android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp15" />
 
@@ -37,85 +37,30 @@
         android:layout_height="@dimen/y54"
         android:layout_marginLeft="@dimen/x20"
         android:layout_marginRight="@dimen/x20"
-        hunt:sv_title="@string/SECURE_TYPE" />
+        hunt:sv_title="@string/SECURE_TYPE"
+        hunt:sv_v_divider="true" />
 
 
-    <FrameLayout
+    <com.cylan.jiafeigou.widget.SettingItemView0
         android:id="@+id/fLayout_protection_sensitivity"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x20"
-        android:layout_marginRight="@dimen/x20">
+        android:layout_marginLeft="@dimen/x10"
+        android:layout_marginRight="@dimen/x10"
+        hunt:sv_title="@string/SECURE_SENSITIVITY"
+        hunt:sv_v_divider="true" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/SECURE_SENSITIVITY"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:id="@+id/tv_protection_sensitivity"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/color_8C8C8C"
-                android:textSize="@dimen/sp13" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
-    </FrameLayout>
-
-
-    <FrameLayout
+    <com.cylan.jiafeigou.widget.SettingItemView0
         android:id="@+id/fLayout_protection_warn_effect"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x20"
-        android:layout_marginRight="@dimen/x20">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="设备提示音"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:id="@+id/tv_protection_notification"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="静音"
-                android:textColor="@color/color_8C8C8C"
-                android:textSize="@dimen/sp13" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
-    </FrameLayout>
+        android:layout_marginLeft="@dimen/x10"
+        android:layout_marginRight="@dimen/x10"
+        hunt:sv_title="@string/SOUNDS" />
 
     <FrameLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
-
 
         <TextView
             android:layout_width="wrap_content"
@@ -128,111 +73,31 @@
             android:textSize="@dimen/sp15" />
     </FrameLayout>
 
-    <FrameLayout
+    <com.cylan.jiafeigou.widget.SettingItemView0
         android:id="@+id/fLayout_protection_start_time"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x20"
-        android:layout_marginRight="@dimen/x20">
+        android:layout_marginLeft="@dimen/x10"
+        android:layout_marginRight="@dimen/x10"
+        hunt:sv_title="@string/FROME"
+        hunt:sv_v_divider="true" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/FROME"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:id="@+id/tv_protection_start_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/color_8C8C8C"
-                android:textSize="@dimen/sp13" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
-    </FrameLayout>
-
-
-    <FrameLayout
+    <com.cylan.jiafeigou.widget.SettingItemView0
         android:id="@+id/fLayout_protection_end_time"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x20"
-        android:layout_marginRight="@dimen/x20">
+        android:layout_marginLeft="@dimen/x10"
+        android:layout_marginRight="@dimen/x10"
+        hunt:sv_title="@string/TO"
+        hunt:sv_v_divider="true" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/TO"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:id="@+id/tv_protection_end_time"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/color_8C8C8C"
-                android:textSize="@dimen/sp13" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
-    </FrameLayout>
-
-
-    <FrameLayout
+    <com.cylan.jiafeigou.widget.SettingItemView0
         android:id="@+id/fLayout_protection_repeat_period"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y54"
-        android:layout_marginLeft="@dimen/x20"
-        android:layout_marginRight="@dimen/x20">
+        android:layout_marginLeft="@dimen/x10"
+        android:layout_marginRight="@dimen/x10"
+        hunt:sv_title="@string/REPEAT" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/REPEAT"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
-
-            <TextView
-                android:id="@+id/tv_protection_repeat_period"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="周一、周二"
-                android:textColor="@color/color_8C8C8C"
-                android:textSize="@dimen/sp13" />
-        </LinearLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_gravity="bottom"
-            android:background="@color/color_e8e8e8" />
-    </FrameLayout>
 </LinearLayout>

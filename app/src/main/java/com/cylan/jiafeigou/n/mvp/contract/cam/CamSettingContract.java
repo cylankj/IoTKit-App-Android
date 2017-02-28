@@ -24,6 +24,8 @@ public interface CamSettingContract {
         void isSharedDevice();
 
         void unbindDeviceRsp(int state);
+
+        void onNetworkChanged(boolean connected);
     }
 
     interface Presenter extends BasePresenter {

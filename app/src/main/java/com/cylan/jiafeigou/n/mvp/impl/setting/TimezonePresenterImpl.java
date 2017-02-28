@@ -1,16 +1,16 @@
 package com.cylan.jiafeigou.n.mvp.impl.setting;
 
-import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.n.mvp.contract.setting.TimezoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 
 /**
  * Created by cylan-hunt on 16-11-26.
@@ -20,6 +20,7 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
         implements TimezoneContract.Presenter {
     private static final String TAG = "TimezonePresenterImpl";
     private String uuid;
+    private List<TimeZoneBean> timeZoneBeenList;
 
     public TimezonePresenterImpl(TimezoneContract.View view, String uuid) {
         super(view);
@@ -30,6 +31,13 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
     public void start() {
         super.start();
         MiscUtils.loadTimeZoneList()
+                .flatMap(new Func1<List<TimeZoneBean>, Observable<List<TimeZoneBean>>>() {
+                    @Override
+                    public Observable<List<TimeZoneBean>> call(List<TimeZoneBean> timeZoneBeen) {
+                        timeZoneBeenList = timeZoneBeen;
+                        return Observable.just(timeZoneBeen);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((List<TimeZoneBean> list) -> {
                     getView().timezoneList(list);
@@ -39,12 +47,10 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
 
     @Override
     public void onSearch(String content) {
-        List<TimeZoneBean> list = SimpleCache.getInstance().timeZoneCache == null ? null :
-                SimpleCache.getInstance().timeZoneCache.get();
-        final int count = list == null ? 0 : list.size();
+        final int count = timeZoneBeenList == null ? 0 : timeZoneBeenList.size();
         List<TimeZoneBean> newList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            TimeZoneBean bean = list.get(i);
+            TimeZoneBean bean = timeZoneBeenList.get(i);
             if (bean.getGmt().contains(content)
                     || bean.getId().contains(content)
                     || bean.getName().contains(content)) {
