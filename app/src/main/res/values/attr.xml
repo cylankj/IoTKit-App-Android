@@ -82,19 +82,19 @@
         <attr name="riv_oval" format="boolean" />
         <attr name="android:scaleType" />
         <attr name="riv_tile_mode">
-            <enum name="clamp" value="0" />
-            <enum name="repeat" value="1" />
-            <enum name="mirror" value="2" />
+            <enum name="clamp" packValue="0" />
+            <enum name="repeat" packValue="1" />
+            <enum name="mirror" packValue="2" />
         </attr>
         <attr name="riv_tile_mode_x">
-            <enum name="clamp" value="0" />
-            <enum name="repeat" value="1" />
-            <enum name="mirror" value="2" />
+            <enum name="clamp" packValue="0" />
+            <enum name="repeat" packValue="1" />
+            <enum name="mirror" packValue="2" />
         </attr>
         <attr name="riv_tile_mode_y">
-            <enum name="clamp" value="0" />
-            <enum name="repeat" value="1" />
-            <enum name="mirror" value="2" />
+            <enum name="clamp" packValue="0" />
+            <enum name="repeat" packValue="1" />
+            <enum name="mirror" packValue="2" />
         </attr>
     </declare-styleable>
     <!--add by hunt -->
@@ -136,20 +136,20 @@
         <attr name="sv_v_divider" format="boolean" />
         <attr name="sv_v_image_show" format="boolean" />
         <attr name="sv_sub_title_gravity">
-            <flag name="bottom" value="80" />
-            <flag name="center" value="17" />
-            <flag name="center_horizontal" value="1" />
-            <flag name="center_vertical" value="16" />
-            <flag name="clip_horizontal" value="8" />
-            <flag name="clip_vertical" value="128" />
-            <flag name="end" value="8388613" />
-            <flag name="fill" value="119" />
-            <flag name="fill_horizontal" value="7" />
-            <flag name="fill_vertical" value="112" />
-            <flag name="left" value="3" />
-            <flag name="right" value="5" />
-            <flag name="start" value="8388611" />
-            <flag name="top" value="48" />
+            <flag name="bottom" packValue="80" />
+            <flag name="center" packValue="17" />
+            <flag name="center_horizontal" packValue="1" />
+            <flag name="center_vertical" packValue="16" />
+            <flag name="clip_horizontal" packValue="8" />
+            <flag name="clip_vertical" packValue="128" />
+            <flag name="end" packValue="8388613" />
+            <flag name="fill" packValue="119" />
+            <flag name="fill_horizontal" packValue="7" />
+            <flag name="fill_vertical" packValue="112" />
+            <flag name="left" packValue="3" />
+            <flag name="right" packValue="5" />
+            <flag name="start" packValue="8388611" />
+            <flag name="top" packValue="48" />
         </attr>
     </declare-styleable>
 
@@ -208,8 +208,8 @@
 
     <declare-styleable name="ClipViewLayout">
         <attr name="clipType" format="enum">
-            <enum name="circle" value="1" />
-            <enum name="rectangle" value="2" />
+            <enum name="circle" packValue="1" />
+            <enum name="rectangle" packValue="2" />
         </attr>
         <attr name="mHorizontalPadding" format="dimension" />
         <attr name="clipBorderWidth" format="dimension" />
@@ -280,9 +280,9 @@
         <attr name="wheel_atmospheric" format="boolean" />
         <attr name="wheel_curved" format="boolean" />
         <attr name="wheel_item_align" format="enum">
-            <enum name="center" value="0" />
-            <enum name="left" value="1" />
-            <enum name="right" value="2" />
+            <enum name="center" packValue="0" />
+            <enum name="left" packValue="1" />
+            <enum name="right" packValue="2" />
         </attr>
         <attr name="wheel_selected_item_text_size" format="dimension" />
     </declare-styleable>

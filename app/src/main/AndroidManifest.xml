@@ -95,7 +95,7 @@
         <!--华为推送 Start-->
         <meta-data
             android:name="com.huawei.hms.client.appid"
-            android:value="10826402" />
+            android:packValue="10826402" />
 
         <provider
             android:name="com.huawei.hms.update.provider.UpdateProvider"
@@ -313,10 +313,10 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="kCEeFDWzz5xHi8Ej9Wx6FWqRL" />
+            android:packValue="kCEeFDWzz5xHi8Ej9Wx6FWqRL" />
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="fb1866682200216878" />
+            android:packValue="fb1866682200216878" />
 
         <activity
             android:name=".n.view.activity.SightSettingActivity"
@@ -363,7 +363,7 @@
             </intent-filter>
             <meta-data
                 android:name="CS_cloud_ablitity"
-                android:value="@string/hwpush_ability_value" />
+                android:packValue="@string/hwpush_ability_value" />
         </receiver>
 
 
