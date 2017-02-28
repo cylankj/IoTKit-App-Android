@@ -192,7 +192,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             case R.id.iv_mine_info_bind_phone:
                 //点击完成
                 if (getInputCheckCode().length() != 6) {
-                    ToastUtil.showToast(getString(R.string.Tap0_wrongcode));
+                    ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
                 } else {
                     presenter.CheckVerifyCode(getInputCheckCode(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                 }
@@ -371,6 +371,11 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             hideLoadingDialog();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
+    }
+
+    @Override
+    public void getSmsCodeResult(int code) {
+        ToastUtil.showNegativeToast("获取验证码失败"+code);
     }
 
     @Override

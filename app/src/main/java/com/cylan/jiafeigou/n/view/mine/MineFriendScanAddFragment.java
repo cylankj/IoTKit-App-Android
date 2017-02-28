@@ -11,11 +11,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -46,6 +48,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     @BindView(R.id.rl_home_mine_relativesandfriends_scan_add)
     FrameLayout rlHomeMineRelativesandfriendsScanAdd;
     private MineFriendScanAddContract.Presenter presenter;
+    private boolean handlerResult;
+
 
     public static MineFriendScanAddFragment newInstance() {
         return new MineFriendScanAddFragment();
@@ -171,21 +175,27 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void hideLoadingPro() {
+        handlerResult = false;
         LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
     public void handleResult(final Result rawResult) {
-        showLoadingPro();
-        if (getView() != null) {
-            getView().postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (presenter != null) {
-                        presenter.checkScanAccount(rawResult.getText());
-                    }
+        String account = GlobalDataProxy.getInstance().getJfgAccount().getAccount();
+        if (rawResult.getText().equals(account)){
+            ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
+        }else {
+            if (NetUtils.getNetType(getContext()) == 0){
+                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+                return;
+            }
+            showLoadingPro();
+            if (getView() != null) {
+                if (presenter != null && !handlerResult) {
+                    presenter.checkScanAccount(rawResult.getText());
+                    handlerResult = true;
                 }
-            }, 2000);
+            }
         }
 
         // Note:

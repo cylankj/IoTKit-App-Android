@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineClipImagePresenterImp;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -132,13 +134,12 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
             }
 
             if (presenter != null) {
+                if (NetUtils.getNetType(ContextUtils.getContext()) == 0){
+                    ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_DOOR));
+                    return;
+                }
                 showUpLoadPro();
-                handler.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        presenter.upLoadUserHeadImag(mSaveUri.getPath());
-                    }
-                }, 2000);
+                presenter.upLoadUserHeadImag(mSaveUri.getPath());
             }
         }
     }
@@ -186,6 +187,11 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
             hideUpLoadPro();
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_1));
         }
+    }
+
+    @Override
+    public void upLoadTimeOut() {
+        ToastUtil.showNegativeToast(getString(R.string.Tips_Device_TimeoutRetry));
     }
 
     @Override

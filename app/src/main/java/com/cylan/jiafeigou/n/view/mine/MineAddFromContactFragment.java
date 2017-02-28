@@ -105,7 +105,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
             ToastUtil.showToast(getString(R.string.Tap3_Added));
             getFragmentManager().popBackStack();
         } else if (callback.i == JError.ErrorFriendToSelf) {
-            ToastUtil.showToast("不能添加自己为好友");
+            ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
         } else {
             presenter.sendRequest(contactItem, getSendMesg());
         }
@@ -136,7 +136,6 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     /**
      * 发送添加请求的结果
-     *
      * @param code
      */
     @Override
@@ -145,7 +144,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
             getFragmentManager().popBackStack();
         } else {
-            ToastUtil.showToast("请求发送失败");
+            ToastUtil.showNegativeToast("请求发送失败");
         }
     }
 
@@ -159,16 +158,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_mine_add_from_contact_send:
-                showSendReqHint();
-                if (getView() != null) {
-                    getView().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            presenter.checkAccount(contactItem);
-                        }
-                    }, 1000);
-                }
-                hideSendReqHint();
+                 presenter.checkAccount(contactItem);
                 break;
             case R.id.iv_mine_add_from_contact_back:
                 getFragmentManager().popBackStack();

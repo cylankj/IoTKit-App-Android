@@ -527,8 +527,10 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void jump2LoginFragment() {
         //账号和密码
         try {
-            String hex = AESUtil.encrypt(argumentData.getAccount() + "|" + "");
-            FileUtils.saveDataToFile(getView().getContext(), hex);
+            if (argumentData != null){
+                String hex = AESUtil.encrypt(argumentData.getAccount() + "|" + "");
+                FileUtils.saveDataToFile(getView().getContext(), hex);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

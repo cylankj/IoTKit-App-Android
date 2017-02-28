@@ -53,7 +53,7 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="@dimen/y13"
                 android:ellipsize="end"
-                android:maxLength="8"
+                android:maxLength="12"
                 android:text="@string/Tap3_LogIn"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp19"

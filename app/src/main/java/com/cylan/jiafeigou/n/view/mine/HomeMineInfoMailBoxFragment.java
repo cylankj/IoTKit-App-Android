@@ -230,7 +230,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
                 if (TextUtils.isEmpty(mailBox)) {
                     return;
                 } else if (!presenter.checkEmail(mailBox)) {
-                    ToastUtil.showToast(getString(R.string.EMAIL_2));
+                    ToastUtil.showNegativeToast(getString(R.string.EMAIL_2));
                     return;
                 } else {
                     presenter.checkEmailIsBinded(mailBox);

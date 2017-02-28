@@ -156,6 +156,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         mineSetRemarkNameFragment.setOnSetRemarkNameListener(new MineSetRemarkNameFragment.OnSetRemarkNameListener() {
             @Override
             public void remarkNameChange(String name) {
+                tvRelativeAndFriendName.setVisibility(View.VISIBLE);
                 tvRelativeAndFriendName.setText(name);
             }
         });
@@ -224,86 +225,17 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
     }
 
-    /**
-     * 删除亲友对话框
-     *
-     * @param bean
-     */
-    public void showDelFriendDialog(View v, RelAndFriendBean bean) {
-        if (popupWindow != null && popupWindow.isShowing()) {
-            return;
-        }
-        //设置PopupWindow的View
-        View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_del_friend_popupwindow, null);
-        popupWindow = new PopupWindow(view, RelativeLayout.LayoutParams.MATCH_PARENT,
-                RelativeLayout.LayoutParams.WRAP_CONTENT);
-        //设置背景
-        popupWindow.setBackgroundDrawable(new BitmapDrawable());
-        //设置点击弹窗外隐藏自身
-        popupWindow.setFocusable(true);
-        popupWindow.setOutsideTouchable(true);
-        //设置动画
-        popupWindow.setAnimationStyle(R.style.PopupWindow);
-        //设置位置
-        popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
-        //设置消失监听
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                setBackgroundAlpha(1);
-            }
-        });
-        //设置PopupWindow的View点击事件
-        setOnPopupViewClick(view, bean);
-        //设置背景色
-        setBackgroundAlpha(0.4f);
-    }
-
-    private void setOnPopupViewClick(View view, RelAndFriendBean bean) {
-        TextView tv_pick_zone, tv_cancel;
-        tv_pick_zone = (TextView) view.findViewById(R.id.tv_del_friend);
-        tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
-
-        tv_pick_zone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
-                    ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
-                    return;
-                }
-                presenter.sendDeleteFriendReq(bean.account);
-                popupWindow.dismiss();
-            }
-        });
-
-        tv_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
-
-    }
-
-
-    //设置屏幕背景透明效果
-    public void setBackgroundAlpha(float alpha) {
-        WindowManager.LayoutParams lp = getActivity().getWindow().getAttributes();
-        lp.alpha = alpha;
-        getActivity().getWindow().setAttributes(lp);
-    }
-
     @Override
     public void handlerDelCallBack(int code) {
         if (code != JError.ErrorOK) {
-            ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
+            ToastUtil.showNegativeToast(getString(R.string.Tips_DeleteFail));
             return;
         }
         if (lisenter != null) {
             Bundle arguments = getArguments();
             int position = arguments.getInt("position");
             lisenter.onDelete(position);
-            ToastUtil.showToast(getString(R.string.DELETED_SUC));
+            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
         }
         getFragmentManager().popBackStack();
     }
