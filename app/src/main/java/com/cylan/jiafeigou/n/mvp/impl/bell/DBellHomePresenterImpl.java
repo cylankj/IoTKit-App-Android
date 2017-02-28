@@ -32,6 +32,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.cache.DBAction.ACTION_NOT_CONFIRM;
 import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 /**
@@ -92,7 +93,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     }
 
     private void syncLocalDataFromServer() {
-        Subscription not_confirm = BaseDPHelper.getInstance().queryUnConfirmDpMsgWithTag(mUUID, DpMsgMap.ID_401_BELL_CALL_STATE, "NOT_CONFIRM")
+        Subscription not_confirm = BaseDPHelper.getInstance().queryUnConfirmDpMsgWithTag(mUUID, DpMsgMap.ID_401_BELL_CALL_STATE, ACTION_NOT_CONFIRM)
                 .filter(items -> {
                     if (items.size() == 0) {
                         AppLogger.d("没有需要同步的数据");
