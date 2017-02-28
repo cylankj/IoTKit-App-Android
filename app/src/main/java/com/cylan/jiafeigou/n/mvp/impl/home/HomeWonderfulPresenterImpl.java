@@ -7,6 +7,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.BaseDPHelper;
+import com.cylan.jiafeigou.cache.db.DPCache;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -19,7 +20,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,6 +32,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_EMPTY;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_GUIDE;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_HIDE;
@@ -49,7 +50,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(getTimeTickEventSub(), getPageScrolledSub());
+        registerSubscription(getTimeTickEventSub(), getPageScrolledSub(), getNetWorkMonitorSub());
     }
 
     @Override
@@ -64,21 +65,73 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         onUnRegisterSubscription();
     }
 
+    private Subscription getNetWorkMonitorSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> {
+                    if (event.available) {
+                        syncLocalDataFromServer();
+                    } else {
+                        mView.onSyncLocalDataRequired();
+                    }
+                }, Throwable::printStackTrace);
+    }
+
+
     private Subscription getDeleteWonderfulSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonder.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleteWonder -> {
-                    AppLogger.e("收到删除请求,正在删除");
+                    AppLogger.d("收到删除请求,正在删除");
                     deleteTimeline(deleteWonder.position);
                 });
     }
 
     @Override
-    public void onSetContentView() {
+    public void onStart() {
+        super.onStart();
         if (showGuidePage()) {
             mView.chooseEmptyView(VIEW_TYPE_GUIDE);
         }
+        if (NetUtils.isNetworkAvailable(mView.getAppContext())) {
+            syncLocalDataFromServer();
+        } else {
+            mView.onSyncLocalDataFinished();//无网络不需要同步
+        }
+    }
+
+    private void syncLocalDataFromServer() {
+        Subscription subscribe = BaseDPHelper.getInstance().queryUnConfirmDpMsgWithTag(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, "DELETED")
+                .filter(items -> {
+                    if (items.size() == 0) {
+                        mView.onSyncLocalDataFinished();
+                    }
+                    return items.size() > 0;
+                })
+                .observeOn(Schedulers.io())
+                .map(items -> {
+                    ArrayList<JFGDPMsg> params = new ArrayList<>();
+                    JFGDPMsg msg;
+                    for (DPCache item : items) {
+                        msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, item.getVersion());
+                        params.add(msg);
+                    }
+                    long seq = -1;
+                    try {
+                        seq = JfgCmdInsurance.getCmd().robotDelData("", params, 0);
+                        AppLogger.d("正在删除未经确认的数据");
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return seq;
+                })
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).onBackpressureBuffer().filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
+                .observeOn(Schedulers.io())
+                .map(rsp -> BaseDPHelper.getInstance().deleteDPMsgWithConfirm(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
+                .subscribe(success -> mView.onSyncLocalDataFinished(), Throwable::printStackTrace);
+        registerSubscription(subscribe);
     }
 
     private boolean showGuidePage() {
@@ -121,12 +174,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     if (e instanceof TimeoutException) {
                         mView.onQueryTimeLineTimeOut();
                     }
-                    AppLogger.e("请求数据超时");
+                    AppLogger.d("请求数据超时");
                 });
     }
 
     private Observable<List<DpMsgDefine.DPWonderItem>> queryTimeLineFromLocal(long version, int count, boolean asc) {
-        return BaseDPHelper.getInstance().queryDPMsg("", version, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, asc, count)
+        return BaseDPHelper.getInstance().queryDPMsg(null, version, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, asc, count)
                 .flatMap(Observable::from)
                 .map(item -> {
                     DpMsgDefine.DPWonderItem wonderItem = null;
@@ -170,7 +223,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         .first()
                         .timeout(10, TimeUnit.SECONDS))
                 .map(rsp -> {
-                    AppLogger.e("收到从服务器返回数据!!!");
+                    AppLogger.d("收到从服务器返回数据!!!");
                     DpMsgDefine.DPSet<DpMsgDefine.DPWonderItem> result = mSourceManager.getValue(mUUID, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, rsp.seq);
                     return result.list();
                 });
@@ -178,13 +231,39 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void deleteTimeline(int position) {
-        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+        Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
+                .flatMap(hasNet -> {
+                    if (hasNet) {
+                        return deleteTimeLineFromServer(position)
+                                .filter(success -> success)
+                                .flatMap(success -> deleteTimeLineFromLocal(position));
+                    } else {
+                        return deleteTimeLineFromLocal(position);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(success -> {
+                    if (success) {
+                        AppLogger.d("删除 TimeLine数据成功: position 为:" + position);
+                        DpMsgDefine.DPWonderItem item = mWonderItems.remove(position);
+                        mWonderItems.remove(item);
+                        mView.onDeleteWonderSuccess(position);
+                        if (mWonderItems.isEmpty()) {//说明当天的已经删完了
+                            mView.chooseEmptyView(VIEW_TYPE_EMPTY);
+                        }
+                        RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
+                    }
+                }, Throwable::printStackTrace);
+    }
+
+    private Observable<Boolean> deleteTimeLineFromServer(int position) {
+        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             ArrayList<JFGDPMsg> params = new ArrayList<>();
             JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, mWonderItems.get(position).version);
             params.add(msg);
             try {
-                AppLogger.e("正在删除!");
-                long seq = JfgCmdInsurance.getCmd().robotDelData("", params, 0);
+                AppLogger.d("正在删除!");
+                long seq = getCmd().robotDelData("", params, 0);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
@@ -193,24 +272,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
             }
         }).subscribeOn(Schedulers.io())
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).onBackpressureBuffer().filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(rsp -> {
-                    if (rsp.resultCode == 0) {//success
-                        AppLogger.e("删除成功");
-                        DpMsgDefine.DPWonderItem item = mWonderItems.remove(position);
-                        mWonderItems.remove(item);
-                        mView.onDeleteWonderSuccess(position);
-                        if (mWonderItems.isEmpty()) {//说明当天的已经删完了
-                            mView.chooseEmptyView(VIEW_TYPE_EMPTY);
-                        }
-                        RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
-                    } else {
-                        AppLogger.e("删除失败");
-                    }
-                }, e -> {
-                    ToastUtil.showNegativeToast("删除失败!");
-                    AppLogger.e(e.getMessage());
-                });
+                .map(rsp -> rsp.resultCode == 0);
+    }
+
+    private Observable<Boolean> deleteTimeLineFromLocal(int position) {
+        return BaseDPHelper.getInstance().deleteDPMsgNotConfirm(null, mWonderItems.get(position).version, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
+                .map(result -> true);
     }
 
     @Override
@@ -233,11 +300,11 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     private long sendQueryRequest(long version, int count, boolean asc) {
         try {
-            AppLogger.e("正在发送查询请求,version:" + version + "count:" + count + "acs:" + asc);
+            AppLogger.d("正在发送查询请求,version:" + version + "count:" + count + "acs:" + asc);
             ArrayList<JFGDPMsg> params = new ArrayList<>();
             JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, version);
             params.add(msg);
-            return JfgCmdInsurance.getCmd().robotGetData("", params, count, asc, 0);//多请求一条数据,用来判断是否是一天最后一条
+            return getCmd().robotGetData("", params, count, asc, 0);//多请求一条数据,用来判断是否是一天最后一条
         } catch (JfgException e) {
             AppLogger.e(e.getMessage());
             return -1;

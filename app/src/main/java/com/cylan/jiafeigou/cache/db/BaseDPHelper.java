@@ -82,11 +82,12 @@ public class BaseDPHelper implements DPHelperInterface {
         return builder.where(DPCacheDao.Properties.Version.eq(version), DPCacheDao.Properties.MsgId.eq(msgId))
                 .rx()
                 .unique()
-                .filter(result -> result != null)
                 .map(result -> {
-                    result.setTag("DELETED");
-                    result.setState("NOT_CONFIRM");
-                    cacheDao.save(result);
+                    if (result != null) {
+                        result.setTag("DELETED");
+                        result.setState("NOT_CONFIRM");
+                        cacheDao.save(result);
+                    }
                     return result;
                 });
     }
@@ -134,6 +135,7 @@ public class BaseDPHelper implements DPHelperInterface {
         QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
         if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
         return builder.where(DPCacheDao.Properties.MsgId.eq(msgId), DPCacheDao.Properties.Tag.eq("DELETED"), DPCacheDao.Properties.State.eq("NOT_CONFIRM"))
+                .orderDesc(DPCacheDao.Properties.Version)
                 .rx()
                 .list();
     }
@@ -143,12 +145,17 @@ public class BaseDPHelper implements DPHelperInterface {
         //先从服务器上查询最新的 version
         QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
         if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
-        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId),
+        builder.where(DPCacheDao.Properties.MsgId.eq(msgId),
                 asc ? DPCacheDao.Properties.Version.ge(version) : DPCacheDao.Properties.Version.le(version), DPCacheDao.Properties.Tag.eq("SAVED")
         )
-                .limit(limit)
-                .rx()
-                .list();
+                .limit(limit);
+        if (asc) {
+            builder.orderAsc(DPCacheDao.Properties.Version);
+        } else {
+            builder.orderDesc(DPCacheDao.Properties.Version);
+        }
+        return builder.rx().list();
+
     }
 
     private Observable<List<DPCache>> sendDPRequest(String uuid, long version, int msgId, boolean asc, int limit) {

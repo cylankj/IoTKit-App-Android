@@ -793,4 +793,12 @@ public class RxEvent {
         public boolean available;
         public Intent intent;
     }
+
+    public static class NetConnectionEvent {
+        public boolean available;
+
+        public NetConnectionEvent(boolean available) {
+            this.available = available;
+        }
+    }
 }

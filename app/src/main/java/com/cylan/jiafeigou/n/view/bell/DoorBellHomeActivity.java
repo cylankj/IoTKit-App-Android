@@ -93,6 +93,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private boolean mIsLastLoadFinish = true;
     private boolean mIsShardAccount = false;
     private long mLastEnterTime;
+    private boolean mHasLoadInited = false;
 
 
     @Override
@@ -248,6 +249,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onRecordsListRsp(List<BellCallRecordBean> beanArrayList) {
+        mHasLoadInited = true;
         LoadingDialog.dismissLoading(getSupportFragmentManager());
         mEmptyView.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 300);//防止 loadingDialog还没添加数据就已经返回了导致dismiss 不掉
         if (beanArrayList != null && beanArrayList.size() < 20) endlessLoading = true;
@@ -283,7 +285,14 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onSyncLocalDataFinished() {
-        startLoadData(false, 0);
+        if (!mHasLoadInited) {
+            startLoadData(false, 0);
+        }
+    }
+
+    @Override
+    public void onSyncLocalDataRequired() {
+        
     }
 
 

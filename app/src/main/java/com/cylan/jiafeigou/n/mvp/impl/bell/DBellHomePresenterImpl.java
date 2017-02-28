@@ -61,10 +61,34 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         }
     }
 
+
     @Override
-    public void onSetContentView() {
-        super.onSetContentView();
-        syncLocalDataFromServer();
+    public void onStart() {
+        super.onStart();
+        if (NetUtils.isNetworkAvailable(mView.getAppContext())) {
+            syncLocalDataFromServer();
+        } else {
+            mView.onSyncLocalDataFinished();//无网络不需要同步
+        }
+    }
+
+    @Override
+    protected void onRegisterSubscription() {
+        super.onRegisterSubscription();
+        registerSubscription(getNetWorkMonitorSub());
+    }
+
+    private Subscription getNetWorkMonitorSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> {
+                    if (event.available) {
+                        syncLocalDataFromServer();
+                    } else {
+                        mView.onSyncLocalDataRequired();
+                    }
+                }, Throwable::printStackTrace);
     }
 
     private void syncLocalDataFromServer() {
