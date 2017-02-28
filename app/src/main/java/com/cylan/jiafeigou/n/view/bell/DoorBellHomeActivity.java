@@ -40,6 +40,7 @@ import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.BellTopBackgroundView;
@@ -91,6 +92,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private boolean endlessLoading = false;
     private boolean mIsLastLoadFinish = true;
     private boolean mIsShardAccount = false;
+    private long mLastEnterTime;
 
 
     @Override
@@ -101,15 +103,10 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-        startLoadData(false, 0);
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         registerNetWorkObserver();
+        mLastEnterTime = PreferencesUtils.getLong("BELL_HOME_LAST_ENTER_TIME");
     }
 
     @Override
@@ -122,6 +119,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         if (myReceiver != null) {
             unregisterReceiver(myReceiver);
         }
+        PreferencesUtils.putLong("BELL_HOME_LAST_ENTER_TIME", System.currentTimeMillis());
     }
 
     @Override
@@ -232,6 +230,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         super.onLoginStateChanged(online);
         if (!online) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
+            mEmptyView.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 300);//防止 loadingDialog还没添加数据就已经返回了导致dismiss 不掉
         }
     }
 
@@ -250,12 +249,12 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void onRecordsListRsp(List<BellCallRecordBean> beanArrayList) {
         LoadingDialog.dismissLoading(getSupportFragmentManager());
+        mEmptyView.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 300);//防止 loadingDialog还没添加数据就已经返回了导致dismiss 不掉
         if (beanArrayList != null && beanArrayList.size() < 20) endlessLoading = true;
         bellCallRecordListAdapter.addAll(beanArrayList);
         mIsLastLoadFinish = true;
         boolean isEmpty = bellCallRecordListAdapter.getList().size() == 0;
         mEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
-        if (isEmpty) ToastUtil.showNegativeToast("暂无数据");
     }
 
     @Override
@@ -269,15 +268,22 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void onDeleteBellRecordSuccess(List<BellCallRecordBean> list) {
         ToastUtil.showPositiveToast("刪除成功");
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
         for (BellCallRecordBean bean : list) {
             bellCallRecordListAdapter.remove(bean);
         }
+
 
     }
 
     @Override
     public void onDeleteBellCallRecordFailed() {
         ToastUtil.showNegativeToast("刪除失敗");
+    }
+
+    @Override
+    public void onSyncLocalDataFinished() {
+        startLoadData(false, 0);
     }
 
 
@@ -392,7 +398,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                         circularBitmapDrawable.setCircular(true);
                         if (imageView instanceof ImageViewTip) {
                             //顺便实现了红点。
-                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, item.answerState == 0);
+                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, item.answerState == 0 && item.timeInLong > mLastEnterTime);
                         }
                     }
                 });

@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.ButterKnife;
@@ -87,16 +86,10 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         view.requestFocus();
         view.setOnKeyListener(this);
         initViewAndListener();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
         if (mPresenter != null) {
             mPresenter.onSetContentView();//有些view会根据一定的条件显示不同的view,可以在这个方法中进行条件判断
         }
     }
-
 
     @Override
     public void onStart() {

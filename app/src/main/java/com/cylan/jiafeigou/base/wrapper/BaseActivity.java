@@ -61,6 +61,9 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
             mPresenter.onViewAttached(this);
         }
         initViewAndListener();
+        if (mPresenter != null) {
+            mPresenter.onSetContentView();//有些view需要根据一定的条件来显示不同的view,可以在这个方法中来选择
+        }
     }
 
     @Override
@@ -78,14 +81,6 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         if (mPresenter != null) {
 
             mPresenter.onStart();
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (mPresenter != null) {
-            mPresenter.onSetContentView();//有些view需要根据一定的条件来显示不同的view,可以在这个方法中来选择
         }
     }
 

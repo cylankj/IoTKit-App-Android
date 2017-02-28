@@ -130,9 +130,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 handlePortClick();
             }
         });
-
-        initHeadSetEventReceiver();
-
     }
 
     private void initHeadSetEventReceiver() {
@@ -164,8 +161,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @NeedsPermission(Manifest.permission.MODIFY_AUDIO_SETTINGS)
     void handleHeadsetConnected() {
         AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        manager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-//        manager.setSpeakerphoneOn(false);
+        manager.setSpeakerphoneOn(false);
 
     }
 
@@ -246,6 +242,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onStart() {
         super.onStart();
+        initHeadSetEventReceiver();
         muteAudio(true);
         setNormalBackMargin();
         mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
@@ -264,6 +261,15 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
+        }
+        clearHeadSetEventReceiver();
+        AudioManager manager = null;
+        finish();
+    }
+
+    private void clearHeadSetEventReceiver() {
+        if (headsetPlugReceiver != null) {
+            unregisterReceiver(headsetPlugReceiver);
         }
     }
 
@@ -435,6 +441,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onListen() {
         dLayoutBellHotSeat.setVisibility(View.VISIBLE);
         fLayoutBellAfterLive.setVisibility(View.GONE);
+        imgvBellLiveSwitchToLand.setEnabled(false);
         playSoundEffect();
         Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
         mBellhandle.startAnimation(shake);

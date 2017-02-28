@@ -7,11 +7,9 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
-import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -262,10 +260,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     @Override
     public void onSetContentView() {
-        if (mView != null && mView instanceof PropertyView) {
-            JFGDPDevice device = mSourceManager.getJFGDevice(mUUID);
-            if (device != null) ((PropertyView) mView).onShowProperty(device);
-        }
     }
 
     /**

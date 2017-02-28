@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
+import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
@@ -14,6 +15,8 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.google.gson.Gson;
+
+import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -54,25 +57,94 @@ public class BaseDPHelper implements DPHelperInterface {
 
     @Override
     public Observable saveDPByte(String uuid, long version, int msgId, byte[] bytes) {
-        AppLogger.e("正在存数据");
+        AppLogger.d("正在存数据,uuid:" + uuid + ",version:" + version + "msgId:" + msgId);
         return cacheDao.queryBuilder()
                 .where(DPCacheDao.Properties.Uuid.eq(uuid), DPCacheDao.Properties.Version.eq(version), DPCacheDao.Properties.MsgId.eq(msgId))
                 .rx()
                 .unique()
-                .filter(result -> result == null)
                 .map(result -> {
-                    result = new DPCache(null, getAccount(), getServer(), uuid, version, msgId, bytes);
+                    if (result != null) {
+                        result.setTag("SAVED");
+                        result.setState("SUCCESS");
+                    } else {
+                        result = new DPCache(null, getAccount(), getServer(), uuid, version, msgId, bytes, "SAVED", "SUCCESS");
+                    }
                     cacheDao.save(result);
                     return result;
                 });
     }
 
     @Override
+    public Observable<DPCache> deleteDPMsgNotConfirm(String uuid, long version, int msgId) {
+        AppLogger.d("正在删除本地数据,deleteDPMsgNotConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
+        QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
+        if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
+        return builder.where(DPCacheDao.Properties.Version.eq(version), DPCacheDao.Properties.MsgId.eq(msgId))
+                .rx()
+                .unique()
+                .filter(result -> result != null)
+                .map(result -> {
+                    result.setTag("DELETED");
+                    result.setState("NOT_CONFIRM");
+                    cacheDao.save(result);
+                    return result;
+                });
+    }
+
+    @Override
+    public Observable<DPCache> deleteDPMsgWithConfirm(String uuid, long version, int msgId) {
+        AppLogger.d("正在删除本地数据,deleteDPMsgWithConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
+        QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
+        if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
+        return builder.where(DPCacheDao.Properties.Version.eq(version), DPCacheDao.Properties.MsgId.eq(msgId))
+                .rx()
+                .unique()
+                .filter(result -> result != null)
+                .map(result -> {
+                    result.setTag("DELETED");
+                    result.setState("SUCCESS");
+                    cacheDao.save(result);
+                    return result;
+                });
+    }
+
+    @Override
+    public Observable<Boolean> deleteDPMsgWithConfirm(String uuid, int msgId) {
+        AppLogger.d("正在删除本地数据,deleteDPMsgWithConfirm,uuid:" + uuid + ",msgId:" + msgId);
+        QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
+        if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
+        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId))
+                .rx()
+                .list()
+                .filter(items -> items.size() > 0)
+                .map(result -> {
+                    for (DPCache cache : result) {
+                        if (TextUtils.equals("NOT_CONFIRM", cache.getTag())) {
+                            cache.setState("SUCCESS");
+                        }
+                    }
+                    cacheDao.saveInTx(result);
+                    return true;
+                });
+    }
+
+    @Override
+    public Observable<List<DPCache>> queryUnConfirmDpMsgWithTag(String uuid, int msgId, String tag) {
+        AppLogger.d("正在查询本地未经确认的数据withTag:" + tag);
+        QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
+        if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
+        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId), DPCacheDao.Properties.Tag.eq("DELETED"), DPCacheDao.Properties.State.eq("NOT_CONFIRM"))
+                .rx()
+                .list();
+    }
+
+    @Override
     public Observable<List<DPCache>> queryDPMsg(String uuid, long version, int msgId, boolean asc, int limit) {
         //先从服务器上查询最新的 version
-        return cacheDao.queryBuilder().where(DPCacheDao.Properties.Uuid.eq(uuid),
-                DPCacheDao.Properties.MsgId.eq(msgId),
-                asc ? DPCacheDao.Properties.Version.ge(version) : DPCacheDao.Properties.Version.le(version)
+        QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
+        if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
+        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId),
+                asc ? DPCacheDao.Properties.Version.ge(version) : DPCacheDao.Properties.Version.le(version), DPCacheDao.Properties.Tag.eq("SAVED")
         )
                 .limit(limit)
                 .rx()
@@ -105,8 +177,8 @@ public class BaseDPHelper implements DPHelperInterface {
                     List<DPCache> result = new ArrayList<>(limit);
                     DPCache item;
                     for (JFGDPMsg msg : rsp.map.get(msgId)) {
-                        item = new DPCache(null, getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue);
-                        result.add(item);
+//                        item = new DPCache(null, getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue);
+//                        result.add(item);
                     }
                     cacheDao.insertInTx(result);
                     return result;

@@ -7,10 +7,10 @@
         <attr name="flipDuration" format="integer" />
         <attr name="flipInterpolator" format="reference" />
         <attr name="flipRotations">
-            <flag name="none" packValue="0" />
-            <flag name="x" packValue="1" />
-            <flag name="y" packValue="2" />
-            <flag name="z" packValue="4" />
+            <flag name="none" value="0" />
+            <flag name="x" value="1" />
+            <flag name="y" value="2" />
+            <flag name="z" value="4" />
         </attr>
         <attr name="reverseRotation" format="boolean" />
     </declare-styleable>

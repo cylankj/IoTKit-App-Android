@@ -6,8 +6,10 @@ import android.content.pm.PackageManager;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.db.BaseDPHelper;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -15,9 +17,11 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -105,7 +109,8 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startRefresh() {
-        queryTimeLine(0, 20, false)
+        Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
+                .flatMap(hasNet -> hasNet ? queryTimeLine(0, 20, false) : queryTimeLineFromLocal(Long.MAX_VALUE, 20, false))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     mWonderItems.clear();
@@ -120,9 +125,29 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 });
     }
 
+    private Observable<List<DpMsgDefine.DPWonderItem>> queryTimeLineFromLocal(long version, int count, boolean asc) {
+        return BaseDPHelper.getInstance().queryDPMsg("", version, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, asc, count)
+                .flatMap(Observable::from)
+                .map(item -> {
+                    DpMsgDefine.DPWonderItem wonderItem = null;
+                    try {
+                        wonderItem = DpUtils.unpackData(item.getBytes(), DpMsgDefine.DPWonderItem.class);
+                        if (wonderItem != null) {
+                            wonderItem.version = item.getVersion();
+                            wonderItem.id = DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG;
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return wonderItem;
+                })
+                .buffer(count);
+    }
+
     @Override
     public void startLoadMore() {
-        queryTimeLine(mWonderItems.get(mWonderItems.size() - 1).version, 20, false)
+        Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
+                .flatMap(hasNet -> hasNet ? queryTimeLine(mWonderItems.get(mWonderItems.size() - 1).version, 20, false) : queryTimeLineFromLocal(mWonderItems.get(mWonderItems.size() - 1).version, 20, false))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                 }, e -> {

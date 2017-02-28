@@ -47,7 +47,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     public void pickup() {
-        AppLogger.e("正在接听");
+        AppLogger.d("正在接听");
         if (mHolderCaller != null) {
             mCaller = mHolderCaller;
             mHolderCaller = null;
@@ -83,14 +83,19 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                                         return s;
                                                     }
                                             )
-                                            .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class))
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .subscribe(s -> {
-                                                mView.onPreviewPicture(caller.picture);
-                                            });
+                                            .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class).first()
+                                                    .observeOn(AndroidSchedulers.mainThread())
+                                                    .map(notify -> {
+                                                        if (notify.success) {
+                                                            mView.onPreviewPicture(caller.picture);
+                                                        }
+                                                        return notify;
+                                                    })
+
+                                            ).subscribe();
                                     registerSubscription(sub);
                                 }
-                                AppLogger.e("收到门铃呼叫");
+                                AppLogger.d("收到门铃呼叫");
                             }
                             break;
                         case JConstant.VIEW_CALL_WAY_VIEWER:
@@ -106,7 +111,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(answer -> {
                     if (!answer.self) {//说明不是自己接听的
-                        AppLogger.e("门铃在其他端接听了");
+                        AppLogger.d("门铃在其他端接听了");
                         if (mCaller == null) {
                             mView.onCallAnswerInOther();
                             mView.onDismiss();
@@ -145,13 +150,18 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
                     @Override
                     public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        RxBus.getCacheInstance().post(new Notify());
+                        RxBus.getCacheInstance().post(new Notify(true));
                         return false;
                     }
                 })
                 .preload();
     }
 
-    private static class Notify {
+    public static class Notify {
+        public boolean success;
+
+        public Notify(boolean success) {
+            this.success = success;
+        }
     }
 }
