@@ -89,9 +89,4 @@ public class SurfaceView_Ext extends SurfaceView implements VideoViewFactory.IVi
         // Dispatch touch event to view
         dispatchTouchEvent(motionEvent);
     }
-
-    @Override
-    public void onDestroy() {
-
-    }
 }

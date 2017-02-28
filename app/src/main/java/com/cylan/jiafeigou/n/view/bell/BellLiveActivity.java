@@ -130,16 +130,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 handlePortClick();
             }
         });
-
-        initHeadSetEventReceiver();
-
     }
 
     private void initHeadSetEventReceiver() {
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(Intent.ACTION_HEADSET_PLUG);
         registerReceiver(headsetPlugReceiver, intentFilter);
-
     }
 
     private BroadcastReceiver headsetPlugReceiver = new BroadcastReceiver() {
@@ -165,8 +161,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @NeedsPermission(Manifest.permission.MODIFY_AUDIO_SETTINGS)
     void handleHeadsetConnected() {
         AudioManager manager = (AudioManager) getSystemService(AUDIO_SERVICE);
-        manager.setMode(AudioManager.MODE_IN_COMMUNICATION);
-//        manager.setSpeakerphoneOn(false);
+        manager.setSpeakerphoneOn(false);
 
     }
 
@@ -247,6 +242,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     protected void onStart() {
         super.onStart();
+        initHeadSetEventReceiver();
         muteAudio(true);
         setNormalBackMargin();
         mVideoViewContainer.removeCallbacks(mHideStatusBarAction);
@@ -265,6 +261,15 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
+        }
+        clearHeadSetEventReceiver();
+        AudioManager manager = null;
+        finish();
+    }
+
+    private void clearHeadSetEventReceiver() {
+        if (headsetPlugReceiver != null) {
+            unregisterReceiver(headsetPlugReceiver);
         }
     }
 
@@ -436,6 +441,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onListen() {
         dLayoutBellHotSeat.setVisibility(View.VISIBLE);
         fLayoutBellAfterLive.setVisibility(View.GONE);
+        imgvBellLiveSwitchToLand.setEnabled(false);
         playSoundEffect();
         Animation shake = AnimationUtils.loadAnimation(this, R.anim.shake);
         mBellhandle.startAnimation(shake);
@@ -619,7 +625,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
         if (bMute) {
             int result = am.requestAudioFocus(mOnAudioFocusChangeListener,
-                    AudioManager.STREAM_MUSIC,
+                    AudioManager.STREAM_VOICE_CALL,
                     AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
             isSuccess = (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
         } else {

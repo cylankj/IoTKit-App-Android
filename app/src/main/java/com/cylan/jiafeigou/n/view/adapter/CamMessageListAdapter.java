@@ -5,7 +5,6 @@ import android.content.res.Resources;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -19,12 +18,13 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
-import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
-import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
+import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
+import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.DensityUtils;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -48,19 +48,18 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private boolean editMode;
     //图片Container的总体宽度,可能有3条,可能有2条.
-    private final int pic_container_width;//宽度是固定的，需要调整高度。
+    private final int pic_container_width;
+    private final int pic_container_height;
     private Map<Integer, Integer> selectedMap = new HashMap<>();
     private Map<Integer, Integer> loadFailedMap = new HashMap<>();
     private boolean hasSdcard;
     private boolean deviceOnlineState;
 
-    private int pic_container_height;//5+26+48
-
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
         super(context, items, mulItemViewType);
         //这个40是根据layout中的marginStart,marginEnd距离提取出来,如果需要修改,参考这个layout
-        pic_container_width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels
-                - getContext().getResources().getDimension(R.dimen.x34));
+        pic_container_width = Resources.getSystem().getDisplayMetrics().widthPixels - DensityUtils.dip2px(40);
+        pic_container_height = DensityUtils.dip2px(225 - 48 - 36 - 5);
         this.uuid = uiid;
         fetchSdcardStatus();
     }
@@ -208,27 +207,19 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private void handlePicsLayout(SuperViewHolder holder,
                                   CamMessageBean item) {
 //        if (!isEditMode()) {
-        int count = MiscUtils.getCount(item.alarmMsg.fileIndex);
-        ViewGroup.LayoutParams containerLp = holder.getView(R.id.lLayout_cam_msg_container).getLayoutParams();
-        containerLp.height = getLayoutHeight(count);
-        holder.getView(R.id.lLayout_cam_msg_container).setLayoutParams(containerLp);
+        final int count = MiscUtils.getCount(item.alarmMsg.fileIndex);
         //根据图片总数,设置view的Gone属性
         for (int i = 2; i >= 0; i--) {
-            View child = holder.getView(R.id.imgV_cam_message_pic_0 + i);
-            child.setVisibility(count - 1 >= i ? View.VISIBLE : View.GONE);
-            if (count - 1 >= i) {
-                ViewGroup.LayoutParams lp = child.getLayoutParams();
-                lp.width = getPicWidth(count);
-                lp.height = getPicHeight(count);
-                child.setLayoutParams(lp);
-            }
+            holder.setVisibility(R.id.imgV_cam_message_pic_0 + i,
+                    count - 1 >= i ? View.VISIBLE : View.GONE);
         }
         for (int i = 0; i < count; i++) {
             Glide.with(getContext())
                     .load(new CamWarnGlideURL(item.alarmMsg, i, uuid))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .override(pic_container_width / count, pic_container_width / count)
+                    .override(pic_container_width / count, pic_container_height)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .centerCrop()
                     .listener(loadListener)
                     .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + i));
         }
@@ -242,29 +233,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         holder.setEnabled(R.id.tv_jump_next, deviceOnlineState);
     }
 
-
-    private int getLayoutHeight(int count) {
-        float static_height = getDimens(R.dimen.x79);
-        return (int) (static_height + (count == 1 ? getDimens(R.dimen.y120)
-                : (count == 2 ? getDimens(R.dimen.x153)
-                : getDimens(R.dimen.x100))));
-    }
-
-    private int getPicWidth(int count) {
-        return count == 1 ? getDimens(R.dimen.x161)
-                : (count == 2 ? getDimens(R.dimen.x153)
-                : getDimens(R.dimen.x100));
-    }
-
-    private int getPicHeight(int count) {
-        return count == 1 ? getDimens(R.dimen.x120)
-                : (count == 2 ? getDimens(R.dimen.x153)
-                : getDimens(R.dimen.x100));
-    }
-
-    private int getDimens(int id) {
-        return (int) getContext().getResources().getDimension(id);
-    }
 
     private View.OnClickListener onClickListener;
 
@@ -282,7 +250,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         long id = bean.id;
         String tContent = TimeUtils.getHH_MM(bean.time);
         if (id == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
-            return tContent + getContext().getString(R.string.MSG_WARNING);
+            return tContent + " 有新的发现";
         }
         return tContent;
     }

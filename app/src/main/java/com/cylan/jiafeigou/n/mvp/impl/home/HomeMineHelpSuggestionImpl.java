@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import android.os.Build;
 import android.os.Environment;
 
 import com.cylan.entity.JfgEnum;
@@ -21,10 +20,7 @@ import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ZipUtils;
 
@@ -225,7 +221,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             getView().showLoadingDialog();
         }
         rx.Observable.just(bean)
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<MineHelpSuggestionBean>() {
                     @Override
                     public void call(MineHelpSuggestionBean bean) {
@@ -332,14 +328,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_UNMOUNTED)){
             return;
         }
-
-        AppLogger.d("AppVersionName:"+PackageUtils.getAppVersionName(ContextUtils.getContext()));
-        AppLogger.d("AppVersionCode:"+PackageUtils.getAppVersionCode(ContextUtils.getContext()));
-        AppLogger.d("ProcessName:"+ ProcessUtils.myProcessName(ContextUtils.getContext()));
-        AppLogger.d("display:"+ Build.DISPLAY);
-        AppLogger.d("model:"+ Build.MODEL);
-        AppLogger.d("sdk_int:"+ Build.VERSION.SDK_INT + " " +Build.VERSION.RELEASE);
-
         File logFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/log");
         File crashFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/crash");
         File outFile = new File(Environment.getExternalStorageDirectory().toString() + "/"+bean.getDate()+"Smarthome.zip");

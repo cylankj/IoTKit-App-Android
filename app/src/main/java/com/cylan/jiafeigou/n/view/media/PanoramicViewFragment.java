@@ -26,8 +26,6 @@ import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.video.PanoramicView_Ext;
-import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CameraParam;
 import com.cylan.panorama.PanoramicView;
 
@@ -47,7 +45,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     @BindView(R.id.fLayout_panoramic_container)
     FrameLayout mPanoramicContainer;
     private String uuid;
-    private VideoViewFactory.IVideoView panoramicView;
+    private PanoramicView panoramicView;
     private DpMsgDefine.DPAlarm dpAlarm;
     private PanoramicView.MountMode mountMode;
 
@@ -117,23 +115,11 @@ public class PanoramicViewFragment extends IBaseFragment {
     public void loadBitmap(int index) {
         Log.d("panoramicView", "null? " + (panoramicView == null) + " " + (getContext() == null));
         if (panoramicView == null) {
-            panoramicView = new PanoramicView_Ext(getContext());
-            panoramicView.config360(CameraParam.getTopPreset());
+            panoramicView = new PanoramicView(getContext());
+            panoramicView.configV360(CameraParam.getTopPreset());
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
-            mPanoramicContainer.addView((View) panoramicView, layoutParams);
-            panoramicView.setInterActListener(new VideoViewFactory.InterActListener() {
-                @Override
-                public boolean onSingleTap(float x, float y) {
-                    if (callBack != null) callBack.callBack(null);
-                    return true;
-                }
-
-                @Override
-                public void onSnapshot(Bitmap bitmap, boolean tag) {
-
-                }
-            });
+            mPanoramicContainer.addView(panoramicView, layoutParams);
         }
         //填满
         GlideUrl url = new CamWarnGlideURL(dpAlarm, index, uuid);
@@ -151,7 +137,7 @@ public class PanoramicViewFragment extends IBaseFragment {
                     public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
                         try {
                             if (resource != null && !resource.isRecycled())
-                                panoramicView.loadBitmap(resource);
+                                panoramicView.loadImage(resource);
                             else {
                                 AppLogger.e("bitmap is recycled");
                             }

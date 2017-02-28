@@ -13,8 +13,8 @@ import android.view.WindowManager;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.utils.DensityUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.ButterKnife;
 
@@ -54,8 +54,9 @@ public class LoadingDialog extends BaseDialog {
 
     public static void dismissLoading(FragmentManager fragmentManager) {
         Fragment dialog = fragmentManager.findFragmentByTag("LoadingDialog");
-        if (dialog != null && dialog.isVisible())
+        if (dialog != null && dialog.isVisible()) {
             ((LoadingDialog) dialog).dismiss();
+        }
     }
 
     @Override

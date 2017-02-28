@@ -56,49 +56,44 @@
             android:textColor="@color/color_666666"
             android:textSize="@dimen/sp13" />
 
-        <!--<LinearLayout-->
-        <!--android:id="@+id/lLayout_cam_msg_pics_container"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="match_parent"-->
-        <!--android:layout_above="@+id/fLayout_cam_message_item_bottom"-->
-        <!--android:layout_below="@+id/tv_cam_message_item_date"-->
-        <!--android:orientation="horizontal">-->
-
-        <ImageView
-            android:id="@+id/imgV_cam_message_pic_0"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/lLayout_cam_msg_pics_container"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/fLayout_cam_message_item_bottom"
             android:layout_below="@+id/tv_cam_message_item_date"
-            android:layout_marginEnd="@dimen/x2"
-            android:layout_marginStart="@dimen/x2"
-            android:scaleType="fitXY"
-            android:src="@drawable/wonderful_pic_place_holder" />
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/imgV_cam_message_pic_1"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/fLayout_cam_message_item_bottom"
-            android:layout_below="@+id/tv_cam_message_item_date"
-            android:layout_marginEnd="@dimen/x2"
-            android:layout_marginStart="@dimen/x2"
-            android:layout_toEndOf="@+id/imgV_cam_message_pic_0"
-            android:scaleType="fitXY"
-            android:src="@drawable/wonderful_pic_place_holder" />
+            <ImageView
+                android:id="@+id/imgV_cam_message_pic_0"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/x2"
+                android:layout_marginStart="@dimen/x2"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/wonderful_pic_place_holder" />
 
-        <ImageView
-            android:id="@+id/imgV_cam_message_pic_2"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_above="@+id/fLayout_cam_message_item_bottom"
-            android:layout_below="@+id/tv_cam_message_item_date"
-            android:layout_marginEnd="@dimen/x2"
-            android:layout_marginStart="@dimen/x2"
-            android:layout_toEndOf="@+id/imgV_cam_message_pic_1"
-            android:scaleType="fitXY"
-            android:src="@drawable/wonderful_pic_place_holder" />
-        <!--</LinearLayout>-->
+            <ImageView
+                android:id="@+id/imgV_cam_message_pic_1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/x2"
+                android:layout_marginStart="@dimen/x2"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/wonderful_pic_place_holder" />
+
+            <ImageView
+                android:id="@+id/imgV_cam_message_pic_2"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="@dimen/x2"
+                android:layout_marginStart="@dimen/x2"
+                android:layout_weight="1"
+                android:scaleType="fitXY"
+                android:src="@drawable/wonderful_pic_place_holder" />
+        </LinearLayout>
 
         <FrameLayout
             android:id="@+id/fLayout_cam_message_item_bottom"

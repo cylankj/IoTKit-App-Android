@@ -7,7 +7,7 @@
     <string name="tag1">Tag1:</string>
     <string name="tag2">Tag2:</string>
     <string name="tag_key">input tag key(not set if empty)</string>
-    <string name="tag_value">input tag value</string>
+    <string name="tag_value">input tag packValue</string>
     <string name="tag_delete_key">input key to deleted</string>
     <string name="getTag">GetTag</string>
     <string name="inputToken">input the token to be deleted:</string>

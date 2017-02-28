@@ -236,14 +236,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             //暂停播放
                             setStopReason(JFGRules.PlayErr.ERR_NOT_FLOW);
                             stopPlayVideo(playType);
-                            AppLogger.e("rtcpNotifySub timeout:" + s);
+                            AppLogger.e(s);
                             return null;
                         }))
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .map(rtcp -> {
-                    feedRtcp.feed(rtcp);
-                    return rtcp;
-                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((JFGMsgVideoRtcp rtcp) -> {
                     try {

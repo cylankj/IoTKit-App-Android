@@ -55,7 +55,6 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -424,7 +423,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
             } else if (JConstant.isBell(pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid).putExtra("HasNewMsg", true));
             } else if (JConstant.isEFamily(pid)) {
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));

@@ -176,7 +176,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                     .show();
         } else {
             new AlertDialog.Builder(getContext())
-                    .setMessage(getString(R.string.Tap1_UpdateFirmwareTips))
+                    .setMessage("即将升级设备固件,请保持客户端与设备连接于同一网络")
                     .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                         dialog.dismiss();
                     })
@@ -197,7 +197,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         //wifi 网络
         if (NetUtils.getNetType(getContext()) == 1) {
             Bundle bundle = new Bundle();
-            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.Tap1_DownloadFirmwareTips));
+            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "即将下载设备固件，升级设备固件时\n" +
+                    "需保持客户端与设备连接于同一网络");
             SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
             simpleDialogFragment.setAction((int id, Object value) -> {
                 //开始下载
@@ -208,7 +209,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         } else if (NetUtils.getNetType(getContext()) == 2) {
             Bundle bundle = new Bundle();
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
-            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.Tap1_Firmware_DataTips));
+            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "当前使用非WiFi网络，继续操作\n" +
+                    "将会产生流量，是否继续？");
             SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
             simpleDialogFragment.setAction((int id, Object value) -> {
                 //开始下载

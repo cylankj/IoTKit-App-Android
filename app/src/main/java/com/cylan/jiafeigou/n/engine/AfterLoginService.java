@@ -9,7 +9,6 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -72,8 +71,7 @@ public class AfterLoginService extends IntentService {
 //                PreferencesUtils.putString("wth_p", l.pwd);
 //                //
             } else if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
-                int req = JfgCmdInsurance.getCmd().getAccount();
-                ToastUtil.showToast("req:"+req);
+                JfgCmdInsurance.getCmd().getAccount();
             } else if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
                 OfflineTaskQueue.getInstance().startRolling();
             }

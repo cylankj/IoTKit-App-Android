@@ -7,6 +7,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.cache.db.BaseDPHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -195,6 +196,7 @@ public class DataSourceManager implements JFGSourceManager {
             if (entry.getValue() == null) continue;
             changed = false;
             for (JFGDPMsg dp : entry.getValue()) {
+                BaseDPHelper.getInstance().saveDPByte(identity, dp.version, (int) dp.id, dp.packValue).subscribe();
                 if (device != null) {//优先尝试写入device中
                     changed |= device.setValue(dp, dataRsp.seq);
                     continue;

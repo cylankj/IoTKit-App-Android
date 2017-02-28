@@ -17,6 +17,7 @@ buildscript {
         classpath 'me.tatarka:gradle-retrolambda:3.4.0'
         //多渠道包
         classpath 'com.mcxiaoke.gradle:packer-ng:1.0.8'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
 //        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
@@ -71,6 +72,6 @@ ext {
     leakcanaryAndroid = 'com.squareup.leakcanary:leakcanary-android:1.5'
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    cySdk = 'JfgAndroidSDK-3.0.160'
-    facebookSDK='facebook-android-sdk-4.19.0'
+    cySdk = 'JfgAndroidSDK-3.0.159'
+    facebookSDK = 'facebook-android-sdk-4.19.0'
 }

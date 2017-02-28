@@ -108,12 +108,12 @@ public class SimpleBindFlow extends AFullBind {
      *
      * @return
      */
-    private Observable<UdpConstant.UdpDevicePortrait> timeoutException(boolean check3G) {
+    private Observable<UdpConstant.UdpDevicePortrait> timeoutException() {
         return Observable.just(null)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .filter((Object o) -> {
                     //没有设备画像
-                    return devicePortrait == null && !check3G;
+                    return devicePortrait == null;
                 })
                 .map(new Func1<Object, UdpConstant.UdpDevicePortrait>() {
                     @Override
@@ -130,7 +130,7 @@ public class SimpleBindFlow extends AFullBind {
      *
      * @param udpDevicePortrait
      */
-    public void setServerLanguage(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
+    private void setServerLanguage(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
         try {
             AppLogger.i(BIND_TAG + udpDevicePortrait);
             //
@@ -277,9 +277,8 @@ public class SimpleBindFlow extends AFullBind {
     }
 
     @Override
-    public Observable<UdpConstant.UdpDevicePortrait> getBindObservable(boolean check3GCase, String shortUUID) {
+    public Observable<UdpConstant.UdpDevicePortrait> getBindObservable(String shortUUID) {
         //zip用法,合并,这里使用了timeout,也就是说,次subscription的生命周期只有1s
-        AppLogger.d(BIND_TAG + "check3GCase:" + check3GCase);
         return Observable.zip(pingObservable(shortUUID),
                 fPingObservable(shortUUID), (JfgUdpMsg.PingAck pingAck, JfgUdpMsg.FPingAck fPingAck) -> {
                     //此处完成了第1和第2步.
@@ -289,7 +288,7 @@ public class SimpleBindFlow extends AFullBind {
                     return d;
                 })
                 //1s内
-                .timeout(1000, TimeUnit.MILLISECONDS, timeoutException(check3GCase))
+                .timeout(1000, TimeUnit.MILLISECONDS, timeoutException())
                 .subscribeOn(Schedulers.newThread())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
@@ -300,6 +299,14 @@ public class SimpleBindFlow extends AFullBind {
                         iBindResult.needToUpgrade();
                     AppLogger.i(BIND_TAG + "need to upgrade: " + needUpdate);
                     return !needUpdate;
+                })
+                .map((final UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
+                    if (udpDevicePortrait.net == 3) {
+                        iBindResult.isMobileNet();
+                        AppLogger.i(BIND_TAG + "is 3G");
+                    }
+                    setServerLanguage(udpDevicePortrait);
+                    return udpDevicePortrait;
                 })
                 .throttleFirst(1, TimeUnit.SECONDS);
     }

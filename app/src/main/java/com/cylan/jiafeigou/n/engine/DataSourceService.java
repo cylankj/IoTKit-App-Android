@@ -485,10 +485,5 @@ public class DataSourceService extends Service implements AppCallBack {
 
     }
 
-    @Override
-    public void OnGetVideoShareUrl(String s) {
-
-    }
-
 
 }

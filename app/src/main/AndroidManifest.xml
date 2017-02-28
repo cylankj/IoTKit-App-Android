@@ -92,7 +92,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
 
-        <!--华为推送 Start-->
+        <!-- 华为推送 Start -->
         <meta-data
             android:name="com.huawei.hms.client.appid"
             android:value="10826402" />
@@ -102,21 +102,22 @@
             android:authorities="com.cylan.jiafeigou.yf.hms.update.provider"
             android:exported="false"
             android:grantUriPermissions="true" />
-        <!--华为推送 End-->
+        <!-- 华为推送 End -->
+
 
         <!-- server address -->
         <!-- <meta-data -->
         <!-- android:name="ServerAddress" -->
-        <!-- android:value="${NICELY_VALUE}" /> -->
+        <!-- android:packValue="${NICELY_VALUE}" /> -->
 
 
         <!-- &lt;!&ndash; your vid getString must "\ " &ndash;&gt; -->
         <!-- <meta-data -->
         <!-- android:name="vid" -->
-        <!-- android:value="${VID}" /> -->
+        <!-- android:packValue="${VID}" /> -->
         <!-- <meta-data -->
         <!-- android:name="vkey" -->
-        <!-- android:value="${VKEY}" /> -->
+        <!-- android:packValue="${VKEY}" /> -->
 
         <activity
             android:name=".SmartcallActivity"
@@ -325,7 +326,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-
         <activity
             android:name=".n.view.bell.BellRecordDetailActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
@@ -334,14 +334,15 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
-
-        <!--进程保活 Start-->
+        <!-- 进程保活 Start -->
         <service
             android:name=".DaemonService1"
             android:process=":process1" />
+
         <receiver
             android:name=".DaemonReceiver1"
             android:process=":process1" />
+
         <service
             android:name=".DaemonService2"
             android:process=":process2" />
@@ -349,10 +350,11 @@
         <receiver
             android:name=".DaemonReceiver2"
             android:process=":process2" />
-        <!--进程保活 End-->
+        <!-- 进程保活 End -->
 
         <receiver android:name=".push.HuaweiPushReceiver">
             <intent-filter>
+
                 <!-- 必须,用于接收token -->
                 <action android:name="com.huawei.android.push.intent.REGISTRATION" /> <!-- 必须，用于接收消息 -->
                 <action android:name="com.huawei.android.push.intent.RECEIVE" />
@@ -361,17 +363,25 @@
                 <!-- 可选，查看push通道是否连接，不查看则不需要 -->
                 <action android:name="com.huawei.intent.action.PUSH_STATE" />
             </intent-filter>
+
             <meta-data
                 android:name="CS_cloud_ablitity"
                 android:value="@string/hwpush_ability_value" />
         </receiver>
-
-
         <receiver android:name="com.huawei.hms.support.api.push.PushEventReceiver">
-
             <intent-filter>
+
                 <!-- 接收通道发来的通知栏消息，兼容老版本Push -->
                 <action android:name="com.huawei.intent.action.PUSH" />
+            </intent-filter>
+        </receiver>
+        <receiver
+            android:name=".base.JFGNetWorkMonitorReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter android:priority="1000">
+                　<!-- 监听的动作类型，这里是监听网络连接的状态  -->
+                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
     </application>

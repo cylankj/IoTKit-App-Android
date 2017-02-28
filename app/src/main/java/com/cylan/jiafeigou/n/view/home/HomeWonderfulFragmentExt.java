@@ -96,6 +96,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private LinearLayoutManager mLinearLayoutManager;
     private boolean mCanRefresh = true;
     private boolean mHasMore;
+    private boolean mHasLocalDataSyncFinished = false;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
         HomeWonderfulFragmentExt fragment = new HomeWonderfulFragmentExt();
@@ -276,12 +277,22 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             onQueryTimeLineSuccess(items, true);
     }
 
+    @Override
+    public void onSyncLocalDataFinished() {
+        mHasLocalDataSyncFinished = true;
+    }
+
+    @Override
+    public void onSyncLocalDataRequired() {
+        mHasLocalDataSyncFinished = false;
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public void onTimeTick(int dayTime) {
         //需要优化
         int drawableId = dayTime == JFGRules.RULE_DAY_TIME
-                ? R.drawable.bg_wonderful_daytime : R.drawable.wonderful_bg_top_night;
+                ? R.drawable.wonderful_bg_top_daytime : R.drawable.wonderful_bg_top_night;
         appbar.setBackgroundResource(drawableId);
         AppLogger.d("onTimeTick: " + dayTime);
     }
@@ -365,7 +376,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onRefresh() {
-        if (mCanRefresh) {
+        if (mCanRefresh && mHasLocalDataSyncFinished) {
             mPresenter.startRefresh();
             srLayoutMainContentHolder.setRefreshing(true);
         } else {

@@ -22,6 +22,7 @@ import java.util.List;
 public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> {
 
     private final Object object = new Object();
+
     /**
      * 正常模式，编辑模式
      */

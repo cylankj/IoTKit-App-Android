@@ -277,10 +277,10 @@ public class GlobalDataProxy implements IDataProxy {
         try {
             if (dataPointManager == null) return null;
             BaseValue base = dataPointManager.fetchLocal(uuid, id);
-            Log.d("getValue", "getValue:" + id + " base:" + base);
+            Log.d("getPackValue", "getPackValue:" + id + " base:" + base);
             return base == null || base.getValue() == null ? defaultValue : base.getValue();
         } catch (Exception c) {
-            Log.e("getValue", "getValue:" + id + " base:" + c.getLocalizedMessage());
+            Log.e("getPackValue", "getPackValue:" + id + " base:" + c.getLocalizedMessage());
             return null;
         }
     }
