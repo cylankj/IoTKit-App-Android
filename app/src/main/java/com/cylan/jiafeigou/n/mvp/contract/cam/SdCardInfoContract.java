@@ -32,6 +32,12 @@ public interface SdCardInfoContract {
 
         void clearCountTime();
 
-        Subscription onClearSdBack();
+        Subscription onClearSdReqBack();
+
+        /**
+         * 请求指令发送成功后等待结果
+         * @return
+         */
+        Subscription onClearSdResult();
     }
 }

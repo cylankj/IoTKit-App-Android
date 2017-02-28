@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -80,58 +81,21 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .subscribe();
     }
 
-    /**
-     * 请求列表
-     *
-     * @return
-     */
-    private Observable<Long> makeReq() {
-        return Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .filter(o -> !JFGRules.isShareDevice(uuid))
-                .map(o -> {
-                    ArrayList<JFGDPMsg> dps = getReqList(new long[]{0, 0}, new int[]{DpMsgMap.ID_505_CAMERA_ALARM_MSG, DpMsgMap.ID_222_SDCARD_SUMMARY});
-                    try {
-                        long req = GlobalDataProxy.getInstance().robotGetDataReq(
-                                uuid,
-                                dps, 20, false, 0);
-                        AppLogger.i("req: " + req);
-                        return req;
-                    } catch (JfgException e) {
-                        AppLogger.e("wth:+" + e.getLocalizedMessage());
-                        return 0L;
-                    }
-                });
-    }
-
     @Override
-    public void fetchMessageList(final boolean manually) {
-        makeReq().flatMap(aLong -> {
-            return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                    .filter(robotoGetDataRsp -> aLong == robotoGetDataRsp.seq);//相同的req
-        }).flatMap(new Func1<RobotoGetDataRsp, Observable<ArrayList<CamMessageBean>>>() {
-            @Override
-            public Observable<ArrayList<CamMessageBean>> call(RobotoGetDataRsp robotoGetDataRsp) {
-                ArrayList<BaseValue> allList = new ArrayList<>();
-                ArrayList<BaseValue> list_505 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
-                ArrayList<BaseValue> list_222 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY);
-                if (list_505 != null) allList.addAll(list_505);
-                if (list_222 != null) allList.addAll(list_222);
-                Collections.sort(allList);//来个排序
-                AppLogger.i("get msgList: " + allList.size());
-                return Observable.just(Converter.convert(uuid, allList));
-            }
-        }).map((ArrayList<CamMessageBean> camList) -> {
-            ArrayList<CamMessageBean> list = getView().getList();
-            if (list != null)
-                camList.removeAll(list);//删除重复的
-            return camList;
-        }).observeOn(AndroidSchedulers.mainThread())
+    public void fetchMessageList(final boolean manually, boolean asc) {
+        queryTimeLine(20, asc)
+                .map((ArrayList<CamMessageBean> camList) -> {
+                    ArrayList<CamMessageBean> list = getView().getList();
+                    if (list != null)
+                        camList.removeAll(list);//删除重复的
+                    return camList;
+                })
+                .delay(1,TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
                 .filter(new RxHelper.Filter<>("messageListSub()=null?", getView() != null))
                 .map((ArrayList<CamMessageBean> jfgdpMsgs) -> {
                     getView().onMessageListRsp(jfgdpMsgs);
                     AppLogger.i("messageListSub+" + jfgdpMsgs.size());
-                    getView().setRefresh(false);
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("messageListSub"))
@@ -140,7 +104,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .filter(s -> (getView() != null))
                         .map(s -> {
-                            getView().setRefresh(false);
+                            getView().onMessageListRsp(null);
                             AppLogger.e(s);
                             return null;
                         }))
@@ -160,24 +124,63 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         return dps;
     }
 
-    @Override
-    public void loadMore() {
-        Observable.just(null)
+    private Observable<ArrayList<CamMessageBean>> queryTimeLine(int count, boolean asc) {
+        return Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .subscribe((Object o) -> {
-                    ArrayList<JFGDPMsg> dps = getReqList(new long[]{0, 0},
+                .filter(o -> !JFGRules.isShareDevice(uuid))
+                .map(o -> {
+                    ArrayList<JFGDPMsg> dps = getReqList(new long[]{getVersion(DpMsgMap.ID_505_CAMERA_ALARM_MSG, asc),
+                                    getVersion(DpMsgMap.ID_222_SDCARD_SUMMARY, asc)},
                             new int[]{DpMsgMap.ID_505_CAMERA_ALARM_MSG, DpMsgMap.ID_222_SDCARD_SUMMARY});
                     try {
-                        querySeq = GlobalDataProxy.getInstance().robotGetDataReq(
-                                uuid,
-                                dps, 20, false, 0);
-                        AppLogger.i("loadMore: " + querySeq);
+                        long req = GlobalDataProxy.getInstance().robotGetDataReq(uuid, dps, count, asc, 0);
+                        AppLogger.i("req: " + req);
+                        return req;
                     } catch (JfgException e) {
                         AppLogger.e("wth:+" + e.getLocalizedMessage());
+                        return 0L;
                     }
-                }, (Throwable throwable) -> {
-                    AppLogger.e("load more:failed:" + throwable.getLocalizedMessage());
+                })
+                .filter(aLong -> aLong > 0)
+                .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                        .filter(robotoGetDataRsp -> aLong == robotoGetDataRsp.seq)
+                        .timeout(100, TimeUnit.MILLISECONDS, Observable.just("makeReq timeout")
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .filter(s -> getView() != null)
+                                .map(s -> {
+//                                    getView().setRefresh(false);
+                                    AppLogger.e(s);
+                                    return null;
+                                }))
+                        .first())
+                .flatMap(new Func1<RobotoGetDataRsp, Observable<ArrayList<CamMessageBean>>>() {
+                    @Override
+                    public Observable<ArrayList<CamMessageBean>> call(RobotoGetDataRsp robotoGetDataRsp) {
+                        ArrayList<BaseValue> allList = new ArrayList<>();
+                        ArrayList<BaseValue> list_505 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+                        ArrayList<BaseValue> list_222 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY);
+                        if (list_505 != null) allList.addAll(list_505);
+                        if (list_222 != null) allList.addAll(list_222);
+                        allList = new ArrayList<>(new HashSet<>(allList));
+                        Collections.sort(allList);//来个排序
+                        AppLogger.i("get msgList: " + allList.size());
+                        return Observable.just(Converter.convert(uuid, allList));
+                    }
                 });
+
+
+    }
+
+    private long getVersion(int id, boolean asc) {
+        ArrayList<BaseValue> list = GlobalDataProxy.getInstance().fetchLocalList(uuid, id);
+        if (list == null) return 0;
+        if (asc) {
+            BaseValue value = Collections.min(list);
+            return value != null ? value.getVersion() : 0;
+        } else {
+            BaseValue value = Collections.max(list);
+            return value != null ? value.getVersion() : 0;
+        }
     }
 
     @Override

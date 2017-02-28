@@ -16,8 +16,8 @@
 //
 //package com.cylan.jiafeigou.widget.roundedimageview;
 //
-//import android.content.res.ColorStateList;
-//import android.content.res.Resources;
+//import android.sdcardSummary.res.ColorStateList;
+//import android.sdcardSummary.res.Resources;
 //import android.graphics.Bitmap;
 //import android.util.DisplayMetrics;
 //import android.util.TypedValue;

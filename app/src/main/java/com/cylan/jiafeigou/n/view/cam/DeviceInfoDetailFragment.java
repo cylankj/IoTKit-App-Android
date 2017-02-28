@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
@@ -119,11 +120,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(this.uuid);
+        boolean showBattery = JFGRules.showBatteryItem(uuid);
         //仅3G摄像头、FreeCam显示此栏
-        if (device != null && (JFGRules.isFreeCam(device.pid) || JFGRules.is3GCam(device.pid))) {
-            tvDeviceBatteryLevel.setVisibility(View.VISIBLE);
-        }
+        tvDeviceBatteryLevel.setVisibility(showBattery ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -182,7 +181,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {
         //sd卡状态
         if (sdStatus != null) {
-            if (!sdStatus.hasSdcard && sdStatus.err != 0) {
+            if (sdStatus.hasSdcard && sdStatus.err != 0) {
                 //sd初始化失败时候显示
                 return getString(R.string.SD_INIT_ERR, sdStatus.err);
             }
@@ -210,7 +209,15 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 toEditTimezone();
                 break;
             case R.id.tv_device_sdcard_state:
-                DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+                DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+                if (status == null){
+                    return;
+                }
+                String statusContent = getSdcardState(status);
+                if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
+                    showClearSDDialog();
+                    return;
+                }
                 DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
                 if (status.hasSdcard && JFGRules.isDeviceOnline(net))//没有sd卡,或者离线,不能点击
                     jump2SdcardDetailFragment();
@@ -237,12 +244,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      * 显示Sd卡的详情
      */
     private void jump2SdcardDetailFragment() {
-        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
-        String statusContent = getSdcardState(status);
-        if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
-            showClearSDDialog();
-            return;
-        }
+
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
@@ -255,8 +257,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      */
     private void showClearSDDialog() {
         Bundle bundle = new Bundle();
-        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "去格式化");
-        bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "Micro SD卡需要格式化，才能存储视频");
+        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.SD_INIT));
+        bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.VIDEO_SD_DESC));
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
             //开始格式化
@@ -307,7 +309,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 if (!TextUtils.isEmpty(value) && device != null && !TextUtils.equals(value, device.alias)) {
                     device.alias = value;
                     tvDeviceAlias.setTvSubTitle(value);
-                    GlobalDataProxy.getInstance().updateJFGDevice(device);
+                    if (basePresenter != null) basePresenter.updateAlias(device);
                 }
             }
         });
@@ -334,7 +336,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     @Override
     public void showLoading() {
-        LoadingDialog.showLoading(getFragmentManager(), "格式化中...");
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.SD_INFO_2));
     }
 
     @Override
@@ -343,12 +345,19 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     @Override
-    public void clearSdReslut(int code) {
+    public void clearSdResult(int code) {
         hideLoading();
         if (code == 0) {
-            ToastUtil.showPositiveToast("格式化成功");
+            ToastUtil.showPositiveToast(getString(R.string.SD_INFO_3));
         } else {
-            ToastUtil.showNegativeToast("格式化失败");
+            ToastUtil.showNegativeToast(getString(R.string.SD_ERR_3));
         }
+    }
+
+    @Override
+    public void setAliasRsp(int code) {
+        if (code == JError.ErrorOK)
+            ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
+        else ToastUtil.showNegativeToast(getString(R.string.set_failed));
     }
 }

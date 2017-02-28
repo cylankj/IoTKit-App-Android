@@ -28,6 +28,8 @@ public class MineMessageBean implements Parcelable {
     public int isDone;
     @Column(name = "isCheck")
     public int isCheck;
+    @Column(name = "sn")
+    public String sn;
 
     public MineMessageBean() {
     }
@@ -37,7 +39,13 @@ public class MineMessageBean implements Parcelable {
         this.type = type;
         this.time = time;
     }
+    public String getSn() {
+        return sn;
+    }
 
+    public void setSn(String sn) {
+        this.sn = sn;
+    }
     public int getId() {
         return id;
     }
@@ -104,6 +112,7 @@ public class MineMessageBean implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.time);
         dest.writeString(this.content);
+        dest.writeString(this.sn);
         dest.writeInt(this.type);
         dest.writeInt(this.id);
         dest.writeInt(this.isCheck);
@@ -114,6 +123,7 @@ public class MineMessageBean implements Parcelable {
         this.name = in.readString();
         this.time = in.readString();
         this.content = in.readString();
+        this.sn = in.readString();
         this.type = in.readInt();
         this.id = in.readInt();
         this.isCheck = in.readByte();

@@ -29,6 +29,7 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -41,6 +42,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
+import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.DensityUtils;
@@ -68,6 +70,8 @@ import butterknife.ButterKnife;
 import static com.cylan.jiafeigou.R.id.tv_dialog_btn_left;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
 /**
@@ -224,9 +228,32 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             //非待机模式
             boolean flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
             if (!flag) {
-                starPlay();
+                startLive();
             }
             onDeviceStandBy(flag);
+        }
+    }
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (basePresenter != null && isVisibleToUser && isResumed() && getActivity() != null && getActivity() instanceof CameraLiveActivity) {
+            Bundle bundle = ((CameraLiveActivity) getActivity()).getCurrentBundle();
+            int playType = bundle == null ? TYPE_LIVE : bundle.getInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE, TYPE_LIVE);
+            if (playType == TYPE_LIVE) {
+                startLive();
+            } else if (playType == TYPE_HISTORY) {
+                long time = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
+                if (time == 0 && BuildConfig.DEBUG)
+                    throw new IllegalArgumentException("play history time is 0");
+                startLiveHistory(time);
+                ((CameraLiveActivity) getActivity()).setCurrentBundle(null);//使用完，清空
+            }
+        } else if (isResumed()) {
+            basePresenter.stopPlayVideo(basePresenter.getPlayType());
+            AppLogger.d("stop play");
+        } else {
+            AppLogger.d("not ready ");
         }
     }
 
@@ -241,13 +268,22 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (videoView != null) ((View) videoView).setVisibility(View.GONE);
     }
 
-    private void starPlay() {
+    private void startLive() {
         View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
         boolean isStandBY = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
         if (isStandBY) return;
-        basePresenter.startPlayVideo(basePresenter.getPlayType());
+        basePresenter.startPlayVideo(TYPE_LIVE);
+    }
+
+    private void startLiveHistory(long time) {
+        View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
+        AppLogger.d("startPlay: old == null: " + (old == null));
+        if (old != null) return;//不用播放
+        boolean isStandBY = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+        if (isStandBY) return;
+        basePresenter.startPlayHistory(time);
     }
 
     /**
@@ -286,7 +322,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 + getString(R.string.Tap1_Camera_OverlookTips));
         view.findViewById(R.id.btn_sight_setting_cancel).setOnClickListener((View v) -> {
             if (layout != null) fLayoutCamLiveView.removeView(layout);
-            starPlay();
+            startLive();
         });
         view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
             if (layout != null) fLayoutCamLiveView.removeView(layout);
@@ -621,13 +657,21 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     }
 
-    @Override
-    public void onPageSelected(boolean checked) {
-        if (basePresenter != null) {
-            if (checked) starPlay();
-            else basePresenter.stopPlayVideo(basePresenter.getPlayType());
-        }
-    }
+//    public void onPageSelected(Bundle bundle) {
+//        boolean checked = bundle.getBoolean(JConstant.KEY_CAM_LIVE_PAGE_SELECTED);
+//        if (basePresenter != null) {
+//            if (checked) {
+//                if (bundle.getInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE) == TYPE_LIVE)
+//                    startLive();
+//                else {
+//                    long time = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
+//                    if (time == 0 && BuildConfig.DEBUG)
+//                        throw new IllegalArgumentException("play history time is 0");
+//                    basePresenter.startPlayHistory(time);
+//                }
+//            } else basePresenter.stopPlayVideo(basePresenter.getPlayType());
+//        }
+//    }
 
     @Override
     public void shouldWaitFor(boolean start) {

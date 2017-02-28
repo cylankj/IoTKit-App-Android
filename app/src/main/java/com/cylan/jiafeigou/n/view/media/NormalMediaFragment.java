@@ -32,7 +32,6 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_LIST;
 public class NormalMediaFragment extends IBaseFragment {
 
     public static final String KEY_INDEX = "key_index";
-    public static final String KEY_UUID = "key_uuid";
     @BindView(R.id.imgV_show_pic)
     PhotoView imgVShowPic;
 
@@ -76,7 +75,7 @@ public class NormalMediaFragment extends IBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         int index = getArguments().getInt(KEY_INDEX);
-        String uuid = getArguments().getString(KEY_UUID);
+        String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         DpMsgDefine.DPAlarm dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         Glide.with(ContextUtils.getContext())
                 .load(new CamWarnGlideURL(dpAlarm, index, uuid))

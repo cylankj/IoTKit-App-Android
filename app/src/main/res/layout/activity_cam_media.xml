@@ -19,7 +19,8 @@
         android:layout_height="wrap_content"
         hunt:ct_enable_shadow="false"
         hunt:ct_fit_system_window="true"
-        hunt:ct_icon="@drawable/background_tab_selector" />
+        hunt:ct_icon="@drawable/nav_tab_back_selector"
+        hunt:ct_title_color="@color/color_white" />
 
     <LinearLayout
         android:id="@+id/lLayout_preview"

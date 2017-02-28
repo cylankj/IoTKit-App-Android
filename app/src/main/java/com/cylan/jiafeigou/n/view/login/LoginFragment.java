@@ -152,6 +152,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     private VerificationCodeLogic verificationCodeLogic;
     private int registerWay = JConstant.REGISTER_BY_PHONE;
     private boolean isRegetCode;
+    private String tempPhone;
 
     public static LoginFragment newInstance(Bundle bundle) {
         LoginFragment fragment = new LoginFragment();
@@ -778,20 +779,26 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             registerWay = validPhoneNum ? JConstant.REGISTER_BY_PHONE : JConstant.REGISTER_BY_EMAIL;
             if (registerWay == JConstant.REGISTER_BY_EMAIL) {
                 jump2NextPage();
+                AppLogger.d("jump_time:"+System.currentTimeMillis());
                 return;
             }
-
             int codeLen = ViewUtils.getTextViewContent(etVerificationInput).length();
             boolean validCode = codeLen == JConstant.VALID_VERIFICATION_CODE_LEN;
             if (fLayoutVerificationCodeInputBox.isShown() && validCode) {
                 //第二次检测账号是否注册返回执行获取校验验证码
-                verifyCode();
+                if (TextUtils.equals(tempPhone,ViewUtils.getTextViewContent(etRegisterInputBox))){
+                    verifyCode();
+                }else {
+                    ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+                }
+
             }else if (isRegetCode){
                 //重新获取验证码也要检测一下账号
                 if (verificationCodeLogic != null)
                     verificationCodeLogic.start();
                 if (basePresenter != null)
                     basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+                tempPhone = ViewUtils.getTextViewContent(etRegisterInputBox);
                 isRegetCode = false;
             }else {
                 //第一次检测账号是否注册返回执行获取验证码
@@ -799,6 +806,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
                 verificationCodeLogic.start();
                 basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
+                tempPhone = ViewUtils.getTextViewContent(etRegisterInputBox);
                 //显示验证码输入框
                 handleVerificationCodeBox(true);
                 tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
@@ -830,7 +838,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             //检测账号是否注册
             if (basePresenter != null)
                 basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
-
         } else {
             final boolean isValidEmail = Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etRegisterInputBox)).find();
             if (!isValidEmail) {

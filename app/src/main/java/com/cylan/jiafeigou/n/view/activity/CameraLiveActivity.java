@@ -14,11 +14,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -26,8 +24,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -38,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
 
@@ -55,6 +52,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     private String uuid;
     private SimplePageListener simpleListener = new SimplePageListener();
 
+    private Bundle currentBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +102,17 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         super.onStop();
     }
 
+    public void setCurrentBundle(Bundle currentBundle) {
+        this.currentBundle = currentBundle;
+        if (vpCameraLive.getCurrentItem() == 0) return;
+        if (currentBundle.getInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE, TYPE_HISTORY) == TYPE_HISTORY) {
+            vpCameraLive.setCurrentItem(0);
+        }
+    }
+
+    public Bundle getCurrentBundle() {
+        return currentBundle;
+    }
 
     private void initAdapter() {
         SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(),
@@ -162,6 +171,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private class SimplePageListener implements ViewPager.OnPageChangeListener {
+
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
 
@@ -178,10 +188,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
                     AppLogger.e("err: " + e.getLocalizedMessage());
                 }
             }
-            RxEvent.CamLivePageScrolled scrolled = new RxEvent.CamLivePageScrolled();
-            scrolled.selected = position == 0;
-            RxBus.getCacheInstance().post(scrolled);
-            AppLogger.d("onPageSelected" + scrolled.selected);
         }
 
         @Override

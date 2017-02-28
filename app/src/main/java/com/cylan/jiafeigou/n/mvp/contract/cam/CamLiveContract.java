@@ -67,8 +67,6 @@ public interface CamLiveContract {
          */
         void onHistoryLiveStop(int state);
 
-        void onPageSelected(boolean checked);
-
         /**
          * @param start :开始显示loading
          */
@@ -165,6 +163,7 @@ public interface CamLiveContract {
          * @param id
          */
         void updateInfoReq(Object value, long id);
+
         void startCountForDismissPop();
     }
 }

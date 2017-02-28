@@ -39,9 +39,9 @@ import java.util.Map;
 public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     /**
-     * 一张图片，两张图片，三张图片，只有文字。
+     * 图片，只有文字,加载。
      */
-    private static final int MAX_TYPE = 4;
+    private static final int MAX_TYPE = 3;
     private String uuid;
     /**
      * 0： 正常，1:编辑
@@ -150,6 +150,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             case 1:
                 handlePicsLayout(holder, item);
                 break;
+            case 2:
+                return;
         }
         if (onClickListener != null)
             holder.setOnClickListener(R.id.lLayout_cam_msg_container, onClickListener);
@@ -195,6 +197,12 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                          CamMessageBean item) {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
+        DpMsgDefine.DPSdcardSummary sdStatus = item.sdcardSummary;
+        if (sdStatus != null && sdStatus.hasSdcard && sdStatus.errCode != 0) {
+            holder.setVisibility(R.id.tv_jump_next, View.VISIBLE);
+            if (onClickListener != null)
+                holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
+        } else holder.setVisibility(R.id.tv_jump_next, View.GONE);
     }
 
     private void handlePicsLayout(SuperViewHolder holder,
@@ -226,12 +234,12 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
 //        }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
-        holder.setVisibility(R.id.tv_to_live, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
-        holder.setOnClickListener(R.id.tv_to_live, onClickListener);
+        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
+        holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_2, onClickListener);
-        holder.setEnabled(R.id.tv_to_live, deviceOnlineState);
+        holder.setEnabled(R.id.tv_jump_next, deviceOnlineState);
     }
 
 
@@ -287,15 +295,19 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private String getFinalSdcardContent(CamMessageBean bean) {
-        if (bean.id != DpMsgMap.ID_222_SDCARD_SUMMARY || bean.content == null)
+        if (bean.id != DpMsgMap.ID_222_SDCARD_SUMMARY || bean.sdcardSummary == null)
             return "";
-        DpMsgDefine.DPSdcardSummary sdStatus = bean.content;
+        DpMsgDefine.DPSdcardSummary sdStatus = bean.sdcardSummary;
+        if (!sdStatus.hasSdcard) {
+            return getContext().getString(R.string.MSG_SD_OFF);
+        }
         switch (sdStatus.errCode) {
             case 0:
                 return getContext().getString(R.string.MSG_SD_ON);
             default:
                 return getContext().getString(R.string.MSG_SD_ON_1);
         }
+
     }
 
     @Override
@@ -308,7 +320,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
             @Override
             public int getItemViewType(int position, CamMessageBean camMessageBean) {
-                return camMessageBean.alarmMsg != null && camMessageBean.alarmMsg.fileIndex > 0 && camMessageBean.content == null ? 1 : 0;
+                if (camMessageBean.viewType == 2) return 2;
+                return camMessageBean.alarmMsg != null && camMessageBean.alarmMsg.fileIndex > 0 && camMessageBean.sdcardSummary == null ? 1 : 0;
             }
 
             @Override
@@ -319,10 +332,15 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     case 1:
                         return R.layout.layout_item_cam_msg_list_1;
                     default:
-                        return R.layout.layout_wonderful_empty;
+                        return R.layout.simple_load_more_layout;
                 }
             }
         };
+    }
+
+    public boolean hasFooter() {
+        int count = getCount();
+        return count > 0 && getItem(count - 1).viewType == 2;
     }
 
     private RequestListener<CamWarnGlideURL, GlideDrawable> loadListener = new RequestListener<CamWarnGlideURL, GlideDrawable>() {

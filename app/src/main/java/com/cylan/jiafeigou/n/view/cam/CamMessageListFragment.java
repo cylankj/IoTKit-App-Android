@@ -1,10 +1,12 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,11 +29,15 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMessageListPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
+import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
+import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wheel.WheelView;
@@ -42,9 +48,11 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_BUNDLE;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_INDEX;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_TIME;
+import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_RIGHT_CONTENT;
@@ -87,6 +95,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private CamMessageListAdapter camMessageListAdapter;
     private String uuid;
 
+    /**
+     * 加载更多
+     */
+    private boolean endlessLoading = false;
+    private boolean mIsLastLoadFinish = true;
+
     public CamMessageListFragment() {
         // Required empty public constructor
     }
@@ -127,25 +141,52 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
         rvCamMessageList.setAdapter(camMessageListAdapter);
         rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                AppLogger.d("newState: " + newState);
-            }
+            int pastVisibleItems, visibleItemCount, totalItemCount;
 
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 final int fPos = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
                 setCurrentPosition(fPos);
+                if (dy > 0) { //check for scroll down
+                    visibleItemCount = camMessageListAdapter.getLayoutManager().getChildCount();
+                    totalItemCount = camMessageListAdapter.getLayoutManager().getItemCount();
+                    pastVisibleItems = ((LinearLayoutManager) camMessageListAdapter.getLayoutManager()).findFirstVisibleItemPosition();
+                    if (!endlessLoading && mIsLastLoadFinish) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            endlessLoading = true;
+                            mIsLastLoadFinish = false;
+                            Log.d("tag", "tag.....load more");
+                            startRequest(true);
+                        }
+                    }
+                }
             }
         });
         camMessageListAdapter.setOnclickListener(this);
     }
 
+    private void setupFootView() {
+        CamMessageBean bean = new CamMessageBean();
+        bean.viewType = 2;
+        camMessageListAdapter.add(bean);
+    }
+
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) basePresenter.fetchMessageList(false);
+        startRequest(false);
+    }
+
+
+    private void startRequest(boolean loadMore) {
+        if (loadMore) {
+            setupFootView();
+            if (basePresenter != null) basePresenter.fetchMessageList(false, true);
+        } else {
+            srLayoutCamListRefresh.setRefreshing(true);
+            if (basePresenter != null) basePresenter.fetchMessageList(false, false);
+        }
     }
 
     /**
@@ -154,7 +195,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      * @param position
      */
     private void setCurrentPosition(int position) {
-        if (currentPosition == position && position < 0 || position > camMessageListAdapter.getCount() - 1)
+        if (currentPosition == position || position < 0 || position > camMessageListAdapter.getCount() - 1)
             return;
         currentPosition = position;
         if (getView() != null) getView().post(() -> {
@@ -167,12 +208,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
 
     @Override
-    public void setRefresh(boolean refresh) {
-        srLayoutCamListRefresh.setRefreshing(refresh);
-    }
-
-    @Override
     public void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList) {
+        if (camMessageListAdapter.hasFooter())
+            camMessageListAdapter.remove(camMessageListAdapter.getItemCount() - 1);
+        endlessLoading = false;
+        mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
         final int count = beanArrayList == null ? 0 : beanArrayList.size();
         if (count == 0) {
@@ -220,9 +260,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @Override
     public void onRefresh() {
+        if (NetUtils.getJfgNetType(getContext()) == 0) {
+            srLayoutCamListRefresh.setRefreshing(false);
+            ToastUtil.showToast(getString(R.string.NoNetworkTips));
+            return;
+        }
         srLayoutCamListRefresh.setRefreshing(true);
-        if (basePresenter != null)
-            basePresenter.fetchMessageList(true);
+        startRequest(false);
     }
 
     @OnClick({R.id.tv_cam_message_list_date,
@@ -321,8 +365,33 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             case R.id.imgV_cam_message_pic_2:
                 startActivity(getIntent(position, 2));
                 break;
-            case R.id.tv_to_live:
+            case R.id.tv_jump_next: {
+                try {
+                    CamMessageBean bean = camMessageListAdapter.getItem(position);
+                    boolean jumpNext = bean != null && bean.alarmMsg != null && bean.sdcardSummary == null;
+                    if (jumpNext) {
+                        Activity activity = getActivity();
+                        if (activity != null && activity instanceof CameraLiveActivity) {
+                            Bundle bundle = new Bundle();
+                            bundle.putInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE, TYPE_HISTORY);
+                            bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, bean.alarmMsg.time);
+                            ((CameraLiveActivity) activity).setCurrentBundle(bundle);
+                        }
+                        AppLogger.d("alarm: " + bean);
+                    } else {
+                        Intent intent = new Intent(getActivity(), CamSettingActivity.class);
+                        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                        intent.putExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, true);
+                        startActivityForResult(intent, REQUEST_CODE,
+                                ActivityOptionsCompat.makeCustomAnimation(getActivity(),
+                                        R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+                    }
+                    AppLogger.d("jump next: " + jumpNext);
+                } catch (Exception e) {
+                    AppLogger.e("err: " + e.getLocalizedMessage());
+                }
                 break;
+            }
         }
     }
 

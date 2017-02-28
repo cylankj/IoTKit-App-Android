@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -20,6 +21,8 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -165,15 +168,10 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     @Override
                     public void call(Object o) {
                         try {
-                            long startTime = TimeUtils.getSpecificDayStartTime(System.currentTimeMillis());
-                            JFGDPMsg msg1 = new JFGDPMsg(601, 0);
-                            JFGDPMsg msg2 = new JFGDPMsg(603, 0);
-                            JFGDPMsg msg3 = new JFGDPMsg(604, 0);
-                            JFGDPMsg msg4 = new JFGDPMsg(701, 0);
+                            JFGDPMsg msg1 = new JFGDPMsg(601, System.currentTimeMillis());
+                            JFGDPMsg msg4 = new JFGDPMsg(701, System.currentTimeMillis());
                             ArrayList<JFGDPMsg> params = new ArrayList<>();
                             params.add(msg1);
-                            params.add(msg2);
-                            params.add(msg3);
                             params.add(msg4);
                             seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("",params,100,false,0);
                             AppLogger.d("getMesgDpData:" + seq);
@@ -231,15 +229,26 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
         ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
         for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
             if (entry.getValue() == null) continue;
-            bean = new MineMessageBean();
-            bean.type = entry.getKey();
             for (JFGDPMsg dp : entry.getValue()) {
+                bean = new MineMessageBean();
+                bean.type = entry.getKey();
                 try {
-                    DpMsgDefine.DPMineMesg mesg = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPMineMesg.class);
-                    bean.name = mesg.account;
-                    bean.isDone = mesg.isDone ? 1:0;
-                    bean.content = mesg.cid;
-                    bean.time = dp.version+"";
+                    if (bean.type == 701){
+                        DpMsgDefine.DPSystemMesg sysMesg = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSystemMesg.class);
+                        if (sysMesg == null)continue;
+                        bean.name = sysMesg.content.trim();
+                        bean.content = sysMesg.title.trim();
+                        bean.time = dp.version+"";
+                        bean.isDone = 0;
+                    }else {
+                        DpMsgDefine.DPMineMesg mesg = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPMineMesg.class);
+                        if (mesg == null)continue;
+                        bean.name = mesg.account.trim();
+                        bean.isDone = mesg.isDone ? 1:0;
+                        bean.content = mesg.cid.trim();
+                        bean.time = dp.version+"";
+                        bean.sn = mesg.sn;
+                    }
                     results.add(bean);
                     saveIntoDb(bean);
                 } catch (IOException e) {
@@ -247,7 +256,21 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 }
             }
         }
-        return results;
+        return sortAddReqList(results);
+    }
+
+
+    public ArrayList<MineMessageBean> sortAddReqList(ArrayList<MineMessageBean> list) {
+        Comparator<MineMessageBean> comparator = new Comparator<MineMessageBean>() {
+            @Override
+            public int compare(MineMessageBean lhs, MineMessageBean rhs) {
+                long oldTime = Long.parseLong(rhs.time + "");
+                long newTime = Long.parseLong(lhs.time + "");
+                return (int) (newTime - oldTime);
+            }
+        };
+        Collections.sort(list, comparator);
+        return list;
     }
 
 }

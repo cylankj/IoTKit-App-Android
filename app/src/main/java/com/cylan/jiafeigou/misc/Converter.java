@@ -24,7 +24,7 @@ public class Converter {
             if (base.getId() == DpMsgMap.ID_505_CAMERA_ALARM_MSG && base.getValue() != null) {
                 bean.alarmMsg = base.getValue();
             } else if (base.getId() == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-                bean.content = base.getValue();
+                bean.sdcardSummary = base.getValue();
             }
             beanArrayList.add(bean);
         }

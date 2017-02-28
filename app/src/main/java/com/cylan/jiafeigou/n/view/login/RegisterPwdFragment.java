@@ -130,6 +130,8 @@ public class RegisterPwdFragment extends SetupPwdFragment
             case JError.ErrorOK:
                 autoLogin();
                 break;
+            default:
+                ToastUtil.showToast("注册失败:"+register.code);
         }
         if (register.code != JError.ErrorOK) {
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT, "");

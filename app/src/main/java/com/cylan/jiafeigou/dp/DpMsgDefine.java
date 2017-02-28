@@ -979,13 +979,31 @@ public class DpMsgDefine {
         public boolean isDone;
         @Index(2)
         public String account;
+        @Index(3)
+        public String sn;
 
         public DPMineMesg(){}
 
-        public DPMineMesg(String cid, boolean isDone, String account) {
+        public DPMineMesg(String cid, boolean isDone, String account,String sn) {
             this.cid = cid;
             this.isDone = isDone;
             this.account = account;
+            this.sn = sn;
+        }
+    }
+
+    @Message
+    public static final class DPSystemMesg{
+        @Index(0)
+        public String title;
+        @Index(1)
+        public String content;
+
+        public DPSystemMesg(){}
+
+        public DPSystemMesg(String title, String content) {
+            this.title = title;
+            this.content = content;
         }
     }
 

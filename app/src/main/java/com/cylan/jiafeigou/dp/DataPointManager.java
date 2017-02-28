@@ -152,7 +152,7 @@ public class DataPointManager implements IParser, IDataPoint {
 
     @Override
     public JFGDevice fetch(String uuid) {
-        Log.d(TAG, "fetch: " + uuid + " " + jfgDeviceMap.get(uuid));
+//        Log.d(TAG, "fetch: " + uuid + " " + jfgDeviceMap.get(uuid));
         return jfgDeviceMap.get(uuid);
     }
 

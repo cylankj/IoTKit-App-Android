@@ -40,7 +40,7 @@
                 android:layout_toRightOf="@id/delete_check"
                 android:id="@+id/iv_mesg_icon"
                 android:src="@drawable/pic_head"
-                android:layout_width="@dimen/x40"
+                android:layout_width="@dimen/x41"
                 android:layout_height="@dimen/y40" />
 
         </RelativeLayout>
