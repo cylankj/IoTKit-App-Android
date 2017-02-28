@@ -19,11 +19,6 @@
         hunt:ct_left_title_color="@color/color_white"
         hunt:ct_title_color="@color/color_black" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y10"
-        android:background="@drawable/little_shape" />
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -31,111 +26,78 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/x24"
-            android:layout_marginRight="@dimen/x24"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y54"
-                android:gravity="center_vertical"
-                android:text="静音"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
-
-            <View
+            <com.cylan.jiafeigou.widget.SettingItemView1
+                android:id="@+id/sv_mode_mute"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y1"
-                android:background="@color/color_e8e8e8" />
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="@dimen/y54"
-                android:gravity="center_vertical"
-                android:text="汪汪声"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
+                hunt:sv_switch_visibility="false"
+                hunt:sv_title="@string/MUTE"
+                hunt:sv_v_divider="true" />
 
-            <View
+            <com.cylan.jiafeigou.widget.SettingItemView1
+                android:id="@+id/sv_mode_bark"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y1"
-                android:background="@color/color_e8e8e8" />
-
-            <TextView
-                android:layout_width="wrap_content"
                 android:layout_height="@dimen/y54"
-                android:gravity="center_vertical"
-                android:text="警报声"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
+                hunt:sv_switch_visibility="false"
+                hunt:sv_title="@string/BARKING"
+                hunt:sv_v_divider="true" />
 
-            <View
+            <com.cylan.jiafeigou.widget.SettingItemView1
+                android:id="@+id/sv_mode_alarm"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y1"
-                android:background="@color/color_e8e8e8" />
+                android:layout_height="@dimen/y54"
+                hunt:sv_switch_visibility="false"
+                hunt:sv_title="@string/ALARM"
+                hunt:sv_v_divider="true" />
+
         </LinearLayout>
 
         <RadioGroup
             android:id="@+id/rg_warn_effect"
-            android:layout_width="@dimen/x54"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="end">
+            android:layout_gravity="end"
+            android:layout_marginLeft="@dimen/x20"
+            android:layout_marginRight="@dimen/x20"
+            android:clickable="false">
 
             <RadioButton
                 android:id="@+id/rb_warn_effect_silence"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y54" />
+                android:layout_height="@dimen/y54"
+                android:clickable="false"
+                android:theme="@style/RadioButtonStyle" />
 
             <RadioButton
                 android:id="@+id/rb_warn_effect_dog_"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y54" />
+                android:layout_height="@dimen/y54"
+                android:clickable="false"
+                android:theme="@style/RadioButtonStyle" />
 
 
             <RadioButton
                 android:id="@+id/rb_warn_effect_waring"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y54" />
+                android:layout_height="@dimen/y54"
+                android:clickable="false"
+                android:theme="@style/RadioButtonStyle" />
 
         </RadioGroup>
     </FrameLayout>
 
-
-    <LinearLayout
-        android:id="@+id/lLayout_warn_repeat_mode"
+    <com.cylan.jiafeigou.widget.SettingItemView0
+        android:id="@+id/sv_warn_repeat_mode"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y72">
+        android:layout_height="@dimen/y72"
+        android:layout_marginLeft="@dimen/x10"
+        android:layout_marginRight="@dimen/x10"
+        hunt:sv_switch_visibility="false"
+        hunt:sv_title="@string/REPEAT_PLAY"
+        hunt:sv_v_divider="false" />
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:orientation="vertical"
-            android:paddingLeft="@dimen/x24"
-            android:paddingRight="@dimen/x24">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="循环播放"
-                android:textColor="@color/color_black"
-                android:textSize="@dimen/sp16" />
-
-
-            <TextView
-                android:id="@+id/tv_warn_repeat_mode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="1s"
-                android:textColor="@color/color_8C8C8C"
-                android:textSize="@dimen/sp13" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y1"
-        android:layout_marginLeft="@dimen/x24"
-        android:layout_marginRight="@dimen/x24"
-        android:background="@color/color_e8e8e8" />
 </LinearLayout>

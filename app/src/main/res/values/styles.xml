@@ -451,4 +451,8 @@
         <item name="android:background">#FFFFFF</item>
     </style>
 
+    <style name="RadioButtonStyle" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/color_4b9fd5</item>
+        <item name="colorControlActivated">@color/color_4b9fd5</item>
+    </style>
 </resources>

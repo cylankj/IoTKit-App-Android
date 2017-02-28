@@ -7,11 +7,13 @@ import android.support.annotation.ColorRes;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.kyleduo.switchbutton.SwitchButton;
 
 /**
@@ -63,11 +65,13 @@ public class SettingItemView0 extends RelativeLayout {
         tvSubTitle.setText(subTitle);
         int subTitleGravity = ta.getInt(R.styleable.SettingItemViewStyle_sv_sub_title_gravity, -1);
         tvSubTitle.setGravity(subTitleGravity);
-        switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_visibility, false)
+        switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_switch_visibility, false)
                 ? VISIBLE : GONE);
         v_divider = findViewById(R.id.v_divider);
         v_divider.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_divider, false)
                 ? VISIBLE : GONE);
+        float d = ta.getDimension(R.styleable.SettingItemViewStyle_sv_title_paddingEnd, 0);
+        ViewUtils.setMargins(tvSubTitle, 0, 0, (int) d, 0);
         ta.recycle();
     }
 
@@ -108,5 +112,30 @@ public class SettingItemView0 extends RelativeLayout {
 
     public void showDivider(boolean show) {
         v_divider.setVisibility(show ? VISIBLE : GONE);
+    }
+
+    public void setOnCheckedChangeListener(CompoundButton.OnCheckedChangeListener listener) {
+        if (listener != null) {
+            switchButton.setOnCheckedChangeListener(listener);
+        }
+    }
+
+    public void setChecked(boolean checked) {
+        switchButton.setChecked(checked);
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        switchButton.setEnabled(enabled);
+    }
+
+    @Override
+    public void setAlpha(float alpha) {
+        super.setAlpha(alpha);
+        tvTitle.setAlpha(alpha);
+        tvSubTitle.setAlpha(alpha);
+        imgvIcon.setAlpha(alpha);
+        imgvRedHint.setAlpha(alpha);
     }
 }

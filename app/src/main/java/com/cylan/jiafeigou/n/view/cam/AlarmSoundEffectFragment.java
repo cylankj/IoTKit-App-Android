@@ -7,11 +7,8 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
-import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
@@ -23,6 +20,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamWarnContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamAlarmPresenterImpl;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.DurationDialogFragment;
 
 import java.util.Locale;
@@ -38,21 +36,20 @@ import butterknife.OnClick;
  */
 public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Presenter> implements CamWarnContract.View {
 
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
+    @BindView(R.id.rg_warn_effect)
+    RadioGroup rgWarnEffect;
     @BindView(R.id.rb_warn_effect_silence)
     RadioButton rbWarnEffectSilence;
     @BindView(R.id.rb_warn_effect_dog_)
     RadioButton rbWarnEffectDog;
     @BindView(R.id.rb_warn_effect_waring)
     RadioButton rbWarnEffectWaring;
-    @BindView(R.id.tv_warn_repeat_mode)
-    TextView tvWarnRepeatMode;
-    @BindView(R.id.lLayout_warn_repeat_mode)
-    LinearLayout lLayoutWarnRepeatMode;
-    @BindView(R.id.rg_warn_effect)
-    RadioGroup rgWarnEffect;
-    @BindView(R.id.custom_toolbar)
-    CustomToolbar customToolbar;
+    @BindView(R.id.sv_warn_repeat_mode)
+    SettingItemView0 svWarnRepeatMode;
     private String uuid;
+    private DpMsgDefine.DPNotificationInfo notificationInfo;
 
     public AlarmSoundEffectFragment() {
         // Required empty public constructor
@@ -95,55 +92,68 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
             if (getActivity() != null)
                 getActivity().getSupportFragmentManager().popBackStack();
         });
-        DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
+        notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
         int effect = notificationInfo.notification;
         final int count = rgWarnEffect.getChildCount();
         for (int i = 0; i < count; i++) {
-            final int index = i;
-            RadioButton box = (RadioButton) rgWarnEffect.getChildAt(i);
-            box.setChecked(i == effect);
-            box.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                if (isChecked) {
-                    notificationInfo.notification = index;
-                    basePresenter.updateInfoReq(notificationInfo, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
-                }
-            });
+            if (effect == i) ((RadioButton) rgWarnEffect.getChildAt(i)).setChecked(true);
         }
-        tvWarnRepeatMode.setText(String.format(Locale.getDefault(), getString(R.string.EFAMILY_CALL_DURATION_S),
+        svWarnRepeatMode.setTvSubTitle(String.format(Locale.getDefault(), getString(R.string.EFAMILY_CALL_DURATION_S),
                 notificationInfo.duration));
+        svWarnRepeatMode.setVisibility(effect == 0 ? View.GONE : View.VISIBLE);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         if (callBack != null) {
-            DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
+            DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, DpMsgDefine.DPNotificationInfo.empty);
             callBack.callBack(notificationInfo);
-        }
-    }
-
-    @OnClick({
-            R.id.lLayout_warn_repeat_mode})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.lLayout_warn_repeat_mode:
-                ViewUtils.deBounceClick(view);
-                DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
-                DurationDialogFragment durationDialogFragment = DurationDialogFragment.newInstance(null);
-                durationDialogFragment.setValue(notificationInfo.duration);
-                durationDialogFragment.setAction((int id, Object value) -> {
-                    tvWarnRepeatMode.setText(String.format(Locale.getDefault(), "%ss", value));
-                    DpMsgDefine.DPNotificationInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, null);
-                    info.duration = (int) value;
-                    basePresenter.updateInfoReq(info, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
-                });
-                durationDialogFragment.show(getActivity().getSupportFragmentManager(), "durationDialogFragment");
-                break;
         }
     }
 
     @Override
     public void setPresenter(CamWarnContract.Presenter presenter) {
         basePresenter = presenter;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    @OnClick({R.id.sv_mode_mute, R.id.sv_mode_bark, R.id.sv_mode_alarm, R.id.sv_warn_repeat_mode})
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.sv_mode_mute:
+                svWarnRepeatMode.setVisibility(View.GONE);
+                rbWarnEffectSilence.setChecked(true);
+                notificationInfo.notification = 0;
+                break;
+            case R.id.sv_mode_bark:
+                svWarnRepeatMode.setVisibility(View.VISIBLE);
+                rbWarnEffectDog.setChecked(true);
+                basePresenter.playSound(R.raw.wangwang_voice);
+                notificationInfo.notification = 1;
+                break;
+            case R.id.sv_mode_alarm:
+                svWarnRepeatMode.setVisibility(View.VISIBLE);
+                rbWarnEffectWaring.setChecked(true);
+                basePresenter.playSound(R.raw.warm_voice);
+                notificationInfo.notification = 2;
+                break;
+            case R.id.sv_warn_repeat_mode:
+                ViewUtils.deBounceClick(view);
+                DurationDialogFragment durationDialogFragment = DurationDialogFragment.newInstance(null);
+                durationDialogFragment.setValue(notificationInfo.duration);
+                durationDialogFragment.setAction((int id, Object value) -> {
+                    svWarnRepeatMode.setTvSubTitle(String.format(Locale.getDefault(), "%ss", value));
+                    notificationInfo.duration = (int) value;
+                    basePresenter.updateInfoReq(notificationInfo, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+                });
+                durationDialogFragment.show(getActivity().getSupportFragmentManager(), "durationDialogFragment");
+                return;
+        }
+        basePresenter.updateInfoReq(notificationInfo, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
     }
 }

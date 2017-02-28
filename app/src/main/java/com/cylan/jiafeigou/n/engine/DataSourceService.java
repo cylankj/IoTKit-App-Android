@@ -459,7 +459,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnNotifyStorageType(int i) {
-        ToastUtil.showToast("biaozhi" + i);
+        AppLogger.d("I:" + i);
     }
 
     @Override

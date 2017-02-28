@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
@@ -28,7 +29,7 @@ import static com.cylan.jiafeigou.misc.INotify.KEY_NEED_EMPTY_NOTIFICATION;
  * Created by cylan-hunt on 16-6-6.
  */
 
-public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends FragmentActivity {
+public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends AppCompatActivity {
 
     protected T basePresenter;
     private SystemBarTintManager tintManager;

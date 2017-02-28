@@ -6,13 +6,11 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -112,10 +110,6 @@ public class MiscUtils {
                 .flatMap(new Func1<Integer, Observable<List<TimeZoneBean>>>() {
                     @Override
                     public Observable<List<TimeZoneBean>> call(Integer integer) {
-                        WeakReference<List<TimeZoneBean>> weakReference = SimpleCache.getInstance().timeZoneCache;
-                        if (weakReference != null && weakReference.get() != null && weakReference.get().size() > 0) {
-                            return Observable.just(weakReference.get());
-                        }
                         XmlResourceParser xrp = ContextUtils.getContext().getResources().getXml(integer);
                         List<TimeZoneBean> list = new ArrayList<>();
                         try {
@@ -141,7 +135,6 @@ public class MiscUtils {
                                 }
                                 xrp.next();
                             }
-                            SimpleCache.getInstance().timeZoneCache = new WeakReference<>(list);
                             Log.d(tag, "timezone: " + list);
                         } catch (XmlPullParserException e) {
                             e.printStackTrace();

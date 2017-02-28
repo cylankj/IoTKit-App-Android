@@ -52,6 +52,14 @@ public class JFGRules {
         return string.replaceAll("\\D+", "");
     }
 
+    public static String getDeviceAlias(JFGDevice device) {
+        if (device == null) return "";
+        String alias = device.alias;
+        if (!TextUtils.isEmpty(alias))
+            return alias;
+        return device.uuid;
+    }
+
     public static final int LANGUAGE_TYPE_SIMPLE_CHINESE = 0;
     public static final int LANGUAGE_TYPE_ENGLISH = 1;
     public static final int LANGUAGE_TYPE_RU = 2;
@@ -124,6 +132,10 @@ public class JFGRules {
 
     public static boolean isFreeCam(int pid) {
         return pid == JConstant.OS_CAMERA_CC3200;
+    }
+
+    public static boolean isFreeCam(JFGDevice jfgDevice) {
+        return jfgDevice != null && jfgDevice.pid == JConstant.OS_CAMERA_CC3200;
     }
 
     public static boolean showLedIndicator(int pid) {

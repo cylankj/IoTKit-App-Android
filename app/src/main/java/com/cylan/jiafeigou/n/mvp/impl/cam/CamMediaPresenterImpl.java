@@ -86,7 +86,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                     JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
                     String alias = device == null ? "" : device.alias;
                     DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
-                    item.cid = uuid;
+                    item.cid = GlobalDataProxy.getInstance().getJfgAccount().getAccount();//02-28，丽工说改的
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                     item.place = alias;
                     item.fileName = alarm.time + "_" + index + ".jpg";

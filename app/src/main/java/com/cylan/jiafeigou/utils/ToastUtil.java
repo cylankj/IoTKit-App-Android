@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -27,6 +28,9 @@ public class ToastUtil {
 
     private static void showToast(Context cxt, String content, int gravity, int duration) {
         try {
+            if (Looper.getMainLooper() != Looper.myLooper()) {
+                throw new NullPointerException("fxxx.");
+            }
             TextView tv = toasterNormalView != null && toasterNormalView.get() != null ?
                     toasterNormalView.get() :
                     (TextView) View.inflate(cxt, R.layout.layout_toaster_normal, null);
@@ -46,6 +50,9 @@ public class ToastUtil {
 
     public static void showPositiveToast(String content) {
         try {
+            if (Looper.getMainLooper() != Looper.myLooper()) {
+                throw new NullPointerException("fxxx.");
+            }
             Context cxt = ContextUtils.getContext();
             TextView tv = toasterPosView != null && toasterPosView.get() != null ?
                     toasterPosView.get() :
@@ -65,6 +72,9 @@ public class ToastUtil {
 
     public static void showNegativeToast(String content) {
         try {
+            if (Looper.getMainLooper() != Looper.myLooper()) {
+                throw new NullPointerException("fxxx.");
+            }
             Context cxt = ContextUtils.getContext();
             TextView tv = toasterNegView != null && toasterNegView.get() != null ?
                     toasterNegView.get() :

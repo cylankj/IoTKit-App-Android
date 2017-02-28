@@ -140,7 +140,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
         if (device != null && JFGRules.isPanoramicCam(device.pid)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
-            int defaultValue = PreferencesUtils.getInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL, 0);
+            int defaultValue = PreferencesUtils.getInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL + uuid, 0);
             sbtnSettingSight.setTvSubTitle(getString(defaultValue == 0 ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
         }
     }
@@ -181,12 +181,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         boolean state = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
         Log.d("initStandbyBtn", "initStandbyBtn: " + state);
         ((SwitchButton) svSettingDeviceStandbyMode.findViewById(R.id.btn_item_switch)).setChecked(state);
-        switchBtn(lLayoutSettingItemContainer, state);
-        ((SwitchButton) svSettingDeviceStandbyMode.findViewById(R.id.btn_item_switch))
-                .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                    basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-                    switchBtn(lLayoutSettingItemContainer, !isChecked);
-                });
+        if (state)
+            switchBtn(lLayoutSettingItemContainer, false);
+        svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+            switchBtn(lLayoutSettingItemContainer, !isChecked);
+        });
     }
 
     private void initMobileNetBtn() {
@@ -194,11 +194,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         DpMsgDefine.DPNet net = baseValue == null ? null : baseValue.getValue();
         if (device != null && JFGRules.is3GCam(device.pid) && net != null && JFGRules.isMobileNet(net.net)) {
             boolean state = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
-            ((SwitchButton) svSettingDeviceMobileNetwork.findViewById(R.id.btn_item_switch)).setChecked(state);
-            ((SwitchButton) svSettingDeviceMobileNetwork.findViewById(R.id.btn_item_switch))
-                    .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                        basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
-                    });
+            svSettingDeviceMobileNetwork.setChecked(state);
+            svSettingDeviceMobileNetwork.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
+            });
         } else {
             svSettingDeviceMobileNetwork.setVisibility(View.GONE);
             svSettingDeviceWifi.showDivider(false);
@@ -208,11 +207,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private void init110VVoltageBtn() {
         if (device != null && (JFGRules.isWifiCam(device.pid) || JFGRules.isPanoramicCam(device.pid))) {
             boolean state = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_216_DEVICE_VOLTAGE, false);
-            ((SwitchButton) sbtnSetting110v.findViewById(R.id.btn_item_switch)).setChecked(state);
-            ((SwitchButton) sbtnSetting110v.findViewById(R.id.btn_item_switch))
-                    .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                        basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_216_DEVICE_VOLTAGE);
-                    });
+            sbtnSetting110v.setChecked(state);
+            sbtnSetting110v.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_216_DEVICE_VOLTAGE);
+            });
         } else sbtnSetting110v.setVisibility(View.GONE);
     }
 
@@ -220,11 +218,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (device != null && JFGRules.showLedIndicator(device.pid)) {
             boolean standby = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
             boolean state = !standby && GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_209_LED_INDICATOR, true);
-            ((SwitchButton) svSettingDeviceIndicator.findViewById(R.id.btn_item_switch)).setChecked(state);
-            ((SwitchButton) svSettingDeviceIndicator.findViewById(R.id.btn_item_switch))
-                    .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                        basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_209_LED_INDICATOR);
-                    });
+            svSettingDeviceIndicator.setChecked(state);
+            svSettingDeviceIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                basePresenter.updateInfoReq(isChecked, DpMsgMap.ID_209_LED_INDICATOR);
+            });
         } else {
             svSettingDeviceIndicator.setVisibility(View.GONE);
         }
@@ -235,11 +232,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDeviceRotate.setVisibility(View.GONE);
         } else {
             int state = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE, 0);
-            ((SwitchButton) svSettingDeviceIndicator.findViewById(R.id.btn_item_switch)).setChecked(state != 0);
-            ((SwitchButton) svSettingDeviceRotate.findViewById(R.id.btn_item_switch))
-                    .setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                        basePresenter.updateInfoReq(isChecked ? 1 : 0, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
-                    });
+            svSettingDeviceIndicator.setChecked(state != 0);
+            svSettingDeviceRotate.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                basePresenter.updateInfoReq(isChecked ? 1 : 0, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
+            });
         }
 
     }
@@ -273,7 +269,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             break;
             case R.id.tv_setting_unbind: {
                 Bundle bundle = new Bundle();
-                bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_SURE));
+                bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)));
                 bundle.putBoolean(BaseDialog.KEY_TOUCH_OUT_SIDE_DISMISS, true);
                 SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
                 simpleDialogFragment.setAction((int id, Object value) -> {
@@ -292,6 +288,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
                     onInfoUpdate(null);
+
                 });
             }
             break;
@@ -375,29 +372,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (view.getId() == R.id.sv_setting_device_standby_mode) {
                 continue;
             }
-            if (view.getId() == R.id.sv_setting_device_mobile_network) {
-                continue;
-            }
-            if (view.getId() == R.id.sv_setting_device_detail) {
-                continue;
-            }
-            if (view.getId() == R.id.sv_setting_device_wifi) {
-                continue;
-            }
-            if (view.getId() == R.id.sv_setting_safe_protection) {
-                continue;
-            }
             if (view.getId() == R.id.tv_setting_unbind) {
                 continue;//解绑按钮
-            }
-            if (view.getId() == R.id.sv_setting_device_auto_record) {
-                continue;//解绑按钮
-            }
-            if (view.getId() == R.id.sbtn_setting_sight) {
-                continue;//解绑按钮
-            }
-            if (view instanceof ViewGroup) {
-                switchBtn((ViewGroup) view, enable);
             }
             view.setEnabled(enable);
         }
@@ -436,19 +412,19 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             boolean flag = MiscUtils.cast(value.getValue(), false);
             //是否有sim卡
             svSettingDeviceMobileNetwork.setVisibility(flag ? View.VISIBLE : View.GONE);
-            svSettingDeviceMobileNetwork.setSwitchButtonState(flag);
+            svSettingDeviceMobileNetwork.setChecked(flag);
         }
         if (id == DpMsgMap.ID_209_LED_INDICATOR) {
             boolean flag = MiscUtils.cast(value.getValue(), false);
-            svSettingDeviceIndicator.setSwitchButtonState(flag);
+            svSettingDeviceIndicator.setChecked(flag);
         }
         if (id == DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE) {
             int rotate = MiscUtils.cast(value.getValue(), 0);
-            svSettingDeviceRotate.setSwitchButtonState(rotate != 0);
+            svSettingDeviceRotate.setChecked(rotate != 0);
         }
         if (id == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
             boolean flag = MiscUtils.cast(value.getValue(), false);
-            svSettingDeviceStandbyMode.setSwitchButtonState(flag);
+            svSettingDeviceStandbyMode.setChecked(flag);
         }
         String detailInfo = basePresenter.getDetailsSubTitle(getContext());
         if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
@@ -480,6 +456,22 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else if (state == -1) {
             ToastUtil.showToast(getString(R.string.Tips_DeleteFail));
             LoadingDialog.dismissLoading(getSupportFragmentManager());
+        }
+    }
+
+    @Override
+    public void onNetworkChanged(boolean connected) {
+        svSettingDeviceMobileNetwork.setEnabled(connected);
+        svSettingDeviceDelayCapture.setEnabled(connected);
+        svSettingDeviceStandbyMode.setEnabled(connected);
+        if (!connected) {
+            svSettingDeviceMobileNetwork.setAlpha(0.6f);
+            svSettingDeviceDelayCapture.setAlpha(0.6f);
+            svSettingDeviceStandbyMode.setAlpha(0.6f);
+        } else {
+            svSettingDeviceMobileNetwork.setAlpha(1.0f);
+            svSettingDeviceDelayCapture.setAlpha(1.0f);
+            svSettingDeviceStandbyMode.setAlpha(1.0f);
         }
     }
 

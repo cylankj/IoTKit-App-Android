@@ -12,7 +12,8 @@
         android:layout_height="match_parent"
         android:layout_marginEnd="@dimen/x24"
         android:layout_marginStart="@dimen/x12"
-        android:clickable="false" />
+        android:clickable="false"
+        android:theme="@style/RadioButtonStyle" />
 
     <TextView
         android:id="@+id/tv_item_ssid"

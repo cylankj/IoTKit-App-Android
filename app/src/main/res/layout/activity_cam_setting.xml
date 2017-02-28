@@ -157,7 +157,7 @@
                 hunt:sv_sub_title="@string/FOOT_TIP_VOTE"
                 hunt:sv_title="@string/HZ_VOTE"
                 hunt:sv_v_divider="false"
-                hunt:sv_visibility="true" />
+                hunt:sv_switch_visibility="true" />
 
 
             <TextView
