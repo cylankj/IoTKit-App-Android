@@ -130,7 +130,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 })
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).onBackpressureBuffer().filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
                 .observeOn(Schedulers.io())
-                .map(rsp -> BaseDPHelper.getInstance().deleteDPMsgWithConfirm(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
+                .map(rsp -> BaseDPHelper.getInstance().deleteDPMsgWithConfirm(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG).subscribe())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(success -> mView.onSyncLocalDataFinished(), Throwable::printStackTrace);
         registerSubscription(subscribe);

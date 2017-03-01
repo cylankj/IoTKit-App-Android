@@ -119,7 +119,9 @@ public class BaseDPHelper implements DPHelperInterface {
         AppLogger.d("正在删除本地数据,deleteDPMsgWithConfirm,uuid:" + uuid + ",msgId:" + msgId);
         QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
         if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
-        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId), DPCacheDao.Properties.State.eq(ACTION_NOT_CONFIRM))
+        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId),
+                DPCacheDao.Properties.Tag.eq(ACTION_DELETED),
+                DPCacheDao.Properties.State.eq(ACTION_NOT_CONFIRM))
                 .rx()
                 .list()
                 .map(result -> {
