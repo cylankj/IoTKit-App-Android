@@ -111,7 +111,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
         basePresenter = new CamSettingPresenterImpl(this, uuid);
         if (getIntent().getBooleanExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, false)) {
-            jumpDetail();
+            jumpDetail(false);
         }
     }
 
@@ -240,7 +240,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     }
 
-    private void jumpDetail() {
+    private void jumpDetail(boolean animation) {
         initInfoDetailFragment();
         DeviceInfoDetailFragment fragment = informationWeakReference.get();
         fragment.setCallBack((Object t) -> {
@@ -249,7 +249,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         Bundle bundle = new Bundle();
         bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
         fragment.setArguments(bundle);
-        loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
+        if (animation) {
+            loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
+        } else {
+            getSupportFragmentManager().beginTransaction()
+                    .add(android.R.id.content, fragment, fragment.getClass().getSimpleName())
+//                    .addToBackStack(fragment.getClass().getSimpleName())
+                    .commit();
+        }
     }
 
     @OnClick({R.id.sv_setting_device_detail,
@@ -264,7 +271,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         ViewUtils.deBounceClick(view);
         switch (view.getId()) {
             case R.id.sv_setting_device_detail: {
-                jumpDetail();
+                jumpDetail(true);
             }
             break;
             case R.id.tv_setting_unbind: {
