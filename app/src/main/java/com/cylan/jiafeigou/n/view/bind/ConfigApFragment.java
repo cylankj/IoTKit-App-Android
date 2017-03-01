@@ -110,6 +110,7 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setChineseExclude(etWifiPwd, 60);
         if (cacheList != null && cacheList.size() > 0) {
             tvConfigApName.setText(cacheList.get(0).SSID);
             tvConfigApName.setTag(new BeanWifiList(cacheList.get(0)));

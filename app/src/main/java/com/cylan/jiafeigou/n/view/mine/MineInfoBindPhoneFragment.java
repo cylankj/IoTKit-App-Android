@@ -82,6 +82,8 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
+        ViewUtils.setChineseExclude(etMineBindPhone, 11);
+
     }
 
     /**
@@ -375,7 +377,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     @Override
     public void getSmsCodeResult(int code) {
-        ToastUtil.showNegativeToast("获取验证码失败"+code);
+        ToastUtil.showNegativeToast("获取验证码失败" + code);
     }
 
     @Override

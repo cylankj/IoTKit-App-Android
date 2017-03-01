@@ -181,6 +181,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     }
 
     private void initView(View view) {
+        ViewUtils.setChineseExclude(etForgetUsername, 65);
+        ViewUtils.setChineseExclude(etVerificationInput, 6);
         etForgetUsername.setEnabled(true);
         ViewUtils.setChineseExclude(etNewPwdInput, JConstant.PWD_LEN_MAX);
         if (acceptType == 1) {
