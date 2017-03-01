@@ -404,6 +404,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 R.id.rLayout_device_item);
         if (position < 0 || position > homePageListAdapter.getCount() - 1) {
             AppLogger.d("woo,position is invalid: " + position);
+            homePageListAdapter.notifyDataSetChanged();
             return;
         }
         String uuid = homePageListAdapter.getItem(position);
