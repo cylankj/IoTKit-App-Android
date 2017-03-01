@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -178,7 +179,13 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             if (getView() != null) {
                                 getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
                                 if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())) {
-                                    userInfo.setAlias(userInfo.getAccount());
+                                    boolean isEmail = JConstant.EMAIL_REG.matcher(userInfo.getAccount()).find();
+                                    if (isEmail){
+                                        String[] split = userInfo.getAccount().split("@");
+                                        userInfo.setAlias(split[0]);
+                                    }else {
+                                        userInfo.setAlias(userInfo.getAccount());
+                                    }
                                 }
                                 getView().setAliasName(userInfo.getAlias());
                             }

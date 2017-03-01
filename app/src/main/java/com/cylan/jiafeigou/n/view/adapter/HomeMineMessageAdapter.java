@@ -95,9 +95,16 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
         }
 
         //头像icon
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(item.content);
-//        int iconRes = resMap.get(device.pid);
-//        holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
+        if (item.content.charAt(0)== '5'){
+            int iconRes = resMap.get(6);
+            holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
+        }else if (item.content.charAt(0)== '7'){
+            int iconRes = resMap.get(11);
+            holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
+        }else {
+            int iconRes = resMap.get(4);
+            holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
+        }
         //处理消息显示
         holder.setText(R.id.tv_device_name,item.getContent());
 

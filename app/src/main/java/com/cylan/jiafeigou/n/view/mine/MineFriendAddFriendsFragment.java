@@ -154,7 +154,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.fragment_container, scanAddFragment, "scanAddFragment")
                 .addToBackStack("mineHelpFragment")
-                .commit();
+                .commitAllowingStateLoss();
 
     }
 

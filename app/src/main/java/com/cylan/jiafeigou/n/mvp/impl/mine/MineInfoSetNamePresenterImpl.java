@@ -38,6 +38,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
     private CompositeSubscription compositeSubscription;
     private JFGAccount jfgAccount;
     private Network network;
+    private boolean isSetAlais;
 
     public MineInfoSetNamePresenterImpl(MineInfoSetNameContract.View view) {
         super(view);
@@ -61,6 +62,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
                         jfgAccount.setAlias(newAliasAccount);
                         try {
                             JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                            isSetAlais = true;
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -93,7 +95,10 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getView() != null) {
                             jfgAccount = getUserInfo.jfgAccount;
-                            getView().handlerResult(getUserInfo);
+                            if (isSetAlais){
+                                getView().handlerResult(getUserInfo);
+                                isSetAlais = false;
+                            }
                         }
                     }
                 });

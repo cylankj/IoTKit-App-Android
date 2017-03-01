@@ -112,7 +112,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
                     public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback) {
+                        if (checkAccountCallback != null) {
                             handlerCheckResult(checkAccountCallback);
                         }
                     }

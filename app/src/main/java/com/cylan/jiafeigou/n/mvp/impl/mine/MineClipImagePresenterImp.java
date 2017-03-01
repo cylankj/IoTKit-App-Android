@@ -7,9 +7,11 @@ import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -19,6 +21,8 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
+
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -76,6 +80,13 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
     @Override
     public Subscription getUpLoadResult() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetHttpDoneResult.class)
+                .timeout(30,TimeUnit.SECONDS, Observable.just(null)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map((Object o) -> {
+                            Log.d("CYLAN_TAG", "upLoadUserHeadImag timeout: ");
+                            if (getView() != null) getView().upLoadTimeOut();
+                            return null;
+                        }))
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetHttpDoneResult>() {
                     @Override

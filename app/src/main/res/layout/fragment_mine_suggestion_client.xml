@@ -25,7 +25,7 @@
             android:layout_marginTop="@dimen/y14"
             android:src="@drawable/img_head"
             android:layout_marginLeft="@dimen/x3"
-            android:layout_width="@dimen/x40"
+            android:layout_width="@dimen/x41"
             android:layout_height="@dimen/y40" />
 
         <LinearLayout

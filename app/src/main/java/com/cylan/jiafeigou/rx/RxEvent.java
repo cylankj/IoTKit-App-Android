@@ -807,4 +807,13 @@ public class RxEvent {
             this.available = available;
         }
     }
+
+
+    public static final class SetFriendMarkNameBack {
+        public JFGResult jfgResult;
+
+        public SetFriendMarkNameBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
 }

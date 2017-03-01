@@ -37,6 +37,8 @@ public interface MineClipImageContract {
          */
         void onNetStateChanged(int state);
 
+        void upLoadTimeOut();
+
     }
 
     interface Presenter extends BasePresenter {

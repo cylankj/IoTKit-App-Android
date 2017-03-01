@@ -37,7 +37,7 @@ public class ToastUtil {
             if (toasterNormalView == null) {
                 toasterNormalView = new SoftReference<>(tv);
             }
-            final Toast toast = new Toast(cxt);
+            final Toast toast = new Toast(cxt.getApplicationContext());
             toast.setGravity(gravity, 0, 0);
             toast.setDuration(duration);
             tv.setText(content);

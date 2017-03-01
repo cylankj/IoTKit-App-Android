@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.MineHasShareAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -213,6 +214,10 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     public void onCancleShare(RelAndFriendBean item) {
         tempBean = item;
         if (getView() != null) {
+            if (NetUtils.getNetType(getContext()) == 0){
+                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+                return;
+            }
             showCancleShareDialog(item);
         }
     }
