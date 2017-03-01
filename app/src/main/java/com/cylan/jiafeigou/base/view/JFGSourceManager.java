@@ -43,4 +43,6 @@ public interface JFGSourceManager {
     void syncAllJFGDeviceProperty();
 
     <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion);
+
+    boolean isOnline();
 }

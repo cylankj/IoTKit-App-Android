@@ -74,6 +74,8 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     if (event.state) {
                         AppLogger.e("收到网络可用的通知,正在同步数据");
                         syncLocalDataFromServer();
+                    } else {
+                        mView.onSyncLocalDataFinished();
                     }
                 }, Throwable::printStackTrace);
     }
@@ -121,17 +123,19 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     long seq = -1;
                     try {
                         seq = JfgCmdInsurance.getCmd().robotDelData("", params, 0);
-                        AppLogger.d("正在删除未经确认的数据");
+                        AppLogger.d("正在删除未经确认的数据" + seq);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                     return seq;
                 })
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).onBackpressureBuffer().filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
+                        .filter(rsp -> rsp.seq == seq)
+                        .first().timeout(30, TimeUnit.SECONDS))
                 .observeOn(Schedulers.io())
                 .map(rsp -> BaseDPHelper.getInstance().deleteDPMsgWithConfirm(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG).subscribe())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(success -> mView.onSyncLocalDataFinished(), Throwable::printStackTrace);
+                .subscribe(success -> mView.onSyncLocalDataFinished(), e -> syncLocalDataFromServer());
         registerSubscription(subscribe);
     }
 
@@ -163,7 +167,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startRefresh() {
-        Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
+        Observable.just(mSourceManager.isOnline())
                 .flatMap(hasNet -> hasNet ? queryTimeLine(0, 20, false) : queryTimeLineFromLocal(Long.MAX_VALUE, 20, false))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -232,7 +236,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void deleteTimeline(int position) {
-        Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
+        Observable.just(mSourceManager.isOnline())
                 .flatMap(hasNet -> {
                     if (hasNet) {
                         return deleteTimeLineFromServer(position)
