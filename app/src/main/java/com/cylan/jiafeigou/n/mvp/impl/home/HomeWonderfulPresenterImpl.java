@@ -6,14 +6,12 @@ import android.content.pm.PackageManager;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.cache.db.BaseDPHelper;
-import com.cylan.jiafeigou.cache.db.DPCache;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPHelper;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -32,7 +30,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.cache.DBAction.ACTION_DELETED;
 import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_EMPTY;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_GUIDE;
@@ -51,7 +48,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(getTimeTickEventSub(), getPageScrolledSub(), getNetWorkMonitorSub());
+        registerSubscription(getTimeTickEventSub(), getPageScrolledSub());
     }
 
     @Override
@@ -66,19 +63,19 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         onUnRegisterSubscription();
     }
 
-    private Subscription getNetWorkMonitorSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event -> {
-                    if (event.state) {
-                        AppLogger.e("收到网络可用的通知,正在同步数据");
-                        syncLocalDataFromServer();
-                    } else {
-                        mView.onSyncLocalDataFinished();
-                    }
-                }, Throwable::printStackTrace);
-    }
+//    private Subscription getNetWorkMonitorSub() {
+//        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(event -> {
+//                    if (event.state) {
+//                        AppLogger.e("收到网络可用的通知,正在同步数据");
+//                        syncLocalDataFromServer();
+//                    } else {
+//                        mView.onSyncLocalDataFinished();
+//                    }
+//                }, Throwable::printStackTrace);
+//    }
 
 
     private Subscription getDeleteWonderfulSub() {
@@ -97,47 +94,47 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         if (showGuidePage()) {
             mView.chooseEmptyView(VIEW_TYPE_GUIDE);
         }
-        if (NetUtils.isNetworkAvailable(mView.getAppContext())) {
-            syncLocalDataFromServer();
-        } else {
-            mView.onSyncLocalDataFinished();//无网络不需要同步
-        }
+//        if (NetUtils.isNetworkAvailable(mView.getAppContext())) {
+//            syncLocalDataFromServer();
+//        } else {
+//            mView.onSyncLocalDataFinished();//无网络不需要同步
+//        }
     }
 
-    private void syncLocalDataFromServer() {
-        Subscription subscribe = BaseDPHelper.getInstance().queryUnConfirmDpMsgWithTag(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, ACTION_DELETED)
-                .filter(items -> {
-                    if (items.size() == 0) {
-                        mView.onSyncLocalDataFinished();
-                    }
-                    return items.size() > 0;
-                })
-                .observeOn(Schedulers.io())
-                .map(items -> {
-                    ArrayList<JFGDPMsg> params = new ArrayList<>();
-                    JFGDPMsg msg;
-                    for (DPCache item : items) {
-                        msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, item.getVersion());
-                        params.add(msg);
-                    }
-                    long seq = -1;
-                    try {
-                        seq = JfgCmdInsurance.getCmd().robotDelData("", params, 0);
-                        AppLogger.d("正在删除未经确认的数据" + seq);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
-                    return seq;
-                })
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
-                        .filter(rsp -> rsp.seq == seq)
-                        .first().timeout(30, TimeUnit.SECONDS))
-                .observeOn(Schedulers.io())
-                .map(rsp -> BaseDPHelper.getInstance().deleteDPMsgWithConfirm(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG).subscribe())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(success -> mView.onSyncLocalDataFinished(), e -> syncLocalDataFromServer());
-        registerSubscription(subscribe);
-    }
+//    private void syncLocalDataFromServer() {
+//        Subscription subscribe = BaseDPHelper.getInstance().queryUnConfirmDpMsgWithTag(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, DBAction.DELETED)
+//                .filter(items -> {
+//                    if (items.size() == 0) {
+//                        mView.onSyncLocalDataFinished();
+//                    }
+//                    return items.size() > 0;
+//                })
+//                .observeOn(Schedulers.io())
+//                .map(items -> {
+//                    ArrayList<JFGDPMsg> params = new ArrayList<>();
+//                    JFGDPMsg msg;
+//                    for (DPCache item : items) {
+//                        msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, item.getVersion());
+//                        params.add(msg);
+//                    }
+//                    long seq = -1;
+//                    try {
+//                        seq = JfgCmdInsurance.getCmd().robotDelData("", params, 0);
+//                        AppLogger.d("正在删除未经确认的数据" + seq);
+//                    } catch (JfgException e) {
+//                        e.printStackTrace();
+//                    }
+//                    return seq;
+//                })
+//                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
+//                        .filter(rsp -> rsp.seq == seq)
+//                        .first().timeout(30, TimeUnit.SECONDS))
+//                .observeOn(Schedulers.io())
+//                .map(rsp -> BaseDPHelper.getInstance().deleteDPMsgWithConfirm(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG).subscribe())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(success -> mView.onSyncLocalDataFinished(), e -> syncLocalDataFromServer());
+//        registerSubscription(subscribe);
+//    }
 
     private boolean showGuidePage() {
         return PreferencesUtils.getBoolean(JConstant.KEY_WONDERFUL_GUIDE, true);

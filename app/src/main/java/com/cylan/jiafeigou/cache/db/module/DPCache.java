@@ -1,4 +1,6 @@
-package com.cylan.jiafeigou.cache.db;
+package com.cylan.jiafeigou.cache.db.module;
+
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -9,7 +11,7 @@ import org.greenrobot.greendao.DaoException;
  * Created by yanzhendong on 2017/2/27.
  */
 @Entity(active = true)
-public class DPCache {
+public class DPCache implements IDPEntity {
     @Id
     private Long id;
     private String account;
@@ -32,8 +34,8 @@ public class DPCache {
     private transient DPCacheDao myDao;
 
     @Generated(hash = 1364992632)
-    public DPCache(Long id, String account, String server, String uuid, Long version,
-            Integer msgId, byte[] bytes, String tag, String state) {
+    public DPCache(Long id, String account, String server, String uuid,
+                   Long version, Integer msgId, byte[] bytes, String tag, String state) {
         this.id = id;
         this.account = account;
         this.server = server;
@@ -105,6 +107,22 @@ public class DPCache {
         this.bytes = bytes;
     }
 
+    public String getTag() {
+        return this.tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
+    }
+
+    public String getState() {
+        return this.state;
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     /**
      * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
      * Entity must attached to an entity context.
@@ -139,22 +157,6 @@ public class DPCache {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
-    }
-
-    public String getTag() {
-        return this.tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public String getState() {
-        return this.state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 
     /** called by internal mechanisms, do not call yourself. */

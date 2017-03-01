@@ -277,14 +277,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             onQueryTimeLineSuccess(items, true);
     }
 
-    @Override
-    public void onSyncLocalDataFinished() {
-    }
-
-    @Override
-    public void onSyncLocalDataRequired() {
-    }
-
     @SuppressWarnings("deprecation")
     @Override
     public void onTimeTick(int dayTime) {

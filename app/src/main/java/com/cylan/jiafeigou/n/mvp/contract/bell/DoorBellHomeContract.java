@@ -27,10 +27,6 @@ public interface DoorBellHomeContract {
         void onDeleteBellRecordSuccess(List<BellCallRecordBean> list);
 
         void onDeleteBellCallRecordFailed();
-
-        void onSyncLocalDataFinished();
-
-        void onSyncLocalDataRequired();
     }
 
     interface Presenter extends JFGPresenter {

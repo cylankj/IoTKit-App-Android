@@ -3,8 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.cache.db.BaseDPHelper;
-import com.cylan.jiafeigou.cache.db.DPCache;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPHelper;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -15,7 +14,6 @@ import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.google.gson.Gson;
@@ -32,7 +30,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.cache.DBAction.ACTION_NOT_CONFIRM;
 import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 /**
@@ -66,72 +63,48 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     @Override
     public void onStart() {
         super.onStart();
-        if (NetUtils.isNetworkAvailable(mView.getAppContext())) {
-            syncLocalDataFromServer();
-        } else {
-            mView.onSyncLocalDataFinished();//无网络不需要同步
-        }
     }
 
-    @Override
-    protected void onRegisterSubscription() {
-        super.onRegisterSubscription();
-        registerSubscription(getNetWorkMonitorSub());
-    }
-
-    private Subscription getNetWorkMonitorSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event -> {
-                    if (event.state) {
-                        syncLocalDataFromServer();
-                    } else {
-                        mView.onSyncLocalDataRequired();
-                    }
-                }, Throwable::printStackTrace);
-    }
-
-    private void syncLocalDataFromServer() {
-        Subscription not_confirm = BaseDPHelper.getInstance().queryUnConfirmDpMsgWithTag(mUUID, DpMsgMap.ID_401_BELL_CALL_STATE, ACTION_NOT_CONFIRM)
-                .filter(items -> {
-                    if (items.size() == 0) {
-                        AppLogger.d("没有需要同步的数据");
-                        mView.onSyncLocalDataFinished();
-                    }
-                    return items.size() > 0;
-                })
-                .observeOn(Schedulers.io())
-                .map(items -> {
-                    ArrayList<JFGDPMsg> params = new ArrayList<>();
-                    JFGDPMsg msg;
-                    long seq = -1;
-                    for (DPCache bean : items) {
-                        msg = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, bean.getVersion());
-                        params.add(msg);
-                    }
-                    try {
-                        seq = JfgCmdInsurance.getCmd().robotDelData(mUUID, params, 0);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                        AppLogger.d("刪除門鈴呼叫記錄失敗:" + e.getMessage());
-                    }
-                    AppLogger.d("正在刪除門鈴呼叫記錄, seq 為:" + seq);
-                    return seq;
-                })
-                .filter(seq -> seq != -1)
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
-                        .filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(rsp -> {
-                    if (rsp.resultCode == 0) {
-                        AppLogger.d("删除未经确认的数据成功");
-                        BaseDPHelper.getInstance().deleteDPMsgWithConfirm(mUUID, DpMsgMap.ID_401_BELL_CALL_STATE).subscribe();
-                    }
-                    mView.onSyncLocalDataFinished();
-                }, Throwable::printStackTrace);
-        registerSubscription(not_confirm);
-    }
+//    private void syncLocalDataFromServer() {
+//        Subscription not_confirm = BaseDPHelper.getInstance().queryUnConfirmDpMsgWithTag(mUUID, DpMsgMap.ID_401_BELL_CALL_STATE, DBAction.DELETED)
+//                .filter(items -> {
+//                    if (items.size() == 0) {
+//                        AppLogger.d("没有需要同步的数据");
+//                        mView.onSyncLocalDataFinished();
+//                    }
+//                    return items.size() > 0;
+//                })
+//                .observeOn(Schedulers.io())
+//                .map(items -> {
+//                    ArrayList<JFGDPMsg> params = new ArrayList<>();
+//                    JFGDPMsg msg;
+//                    long seq = -1;
+//                    for (DPCache bean : items) {
+//                        msg = new JFGDPMsg(DpMsgMap.ID_401_BELL_CALL_STATE, bean.getVersion());
+//                        params.add(msg);
+//                    }
+//                    try {
+//                        seq = JfgCmdInsurance.getCmd().robotDelData(mUUID, params, 0);
+//                    } catch (JfgException e) {
+//                        e.printStackTrace();
+//                        AppLogger.d("刪除門鈴呼叫記錄失敗:" + e.getMessage());
+//                    }
+//                    AppLogger.d("正在刪除門鈴呼叫記錄, seq 為:" + seq);
+//                    return seq;
+//                })
+//                .filter(seq -> seq != -1)
+//                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
+//                        .filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(rsp -> {
+//                    if (rsp.resultCode == 0) {
+//                        AppLogger.d("删除未经确认的数据成功");
+//                        BaseDPHelper.getInstance().deleteDPMsgWithConfirm(mUUID, DpMsgMap.ID_401_BELL_CALL_STATE).subscribe();
+//                    }
+//                    mView.onSyncLocalDataFinished();
+//                }, Throwable::printStackTrace);
+//        registerSubscription(not_confirm);
+//    }
 
 
     @Override
@@ -211,7 +184,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
 
     @Override
     public void deleteBellCallRecord(List<BellCallRecordBean> list) {
-        Subscription subscribe = Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
+        Subscription subscribe = Observable.just(mSourceManager.isOnline())
                 .flatMap(hasNet -> {
                     if (hasNet) {
                         return deleteBellRecordFromServer(list)

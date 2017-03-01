@@ -48,7 +48,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -93,6 +92,7 @@ public class DataSourceService extends Service implements AppCallBack {
             return START_STICKY;
         }
         initNative();
+
         return START_STICKY;
     }
 

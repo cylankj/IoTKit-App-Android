@@ -457,10 +457,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onVideoDisconnect(int code) {
         switch (code) {
             case JError.ErrorVideoPeerInConnect://其他端在查看
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_PEER_IN_CONNECTED));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
                 break;
             case JError.ErrorVideoPeerNotExist://对端不在线
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_PEER_NOT_EXIST));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NOT_ONLINE));
                 break;
             case JError.ErrorVideoNotLogin://本端未登录
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_NOT_LOGIN));
