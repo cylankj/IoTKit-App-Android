@@ -48,7 +48,7 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
 
     @Override
     public void setVisibility(boolean show) {
-        setVisibility(show ? VISIBLE : INVISIBLE);
+        setVisibility(show ? VISIBLE : GONE);
     }
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm",

@@ -12,7 +12,6 @@
         android:background="@drawable/flow_bg"
         android:gravity="center_vertical"
         android:padding="@dimen/x5"
-        android:text="text"
         android:textColor="@color/color_white"
         android:textSize="@dimen/sp11" />
 

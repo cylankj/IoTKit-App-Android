@@ -50,7 +50,6 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
 import com.cylan.jiafeigou.widget.glide.RoundedCornersTransformation;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
@@ -67,7 +66,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static com.cylan.jiafeigou.R.id.tv_dialog_btn_left;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
@@ -105,7 +103,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     FrameLayout fLayoutCamLiveMenu;
 
     @BindView(R.id.cam_live_control_layout)
-    CamLiveControlLayer swCamLiveControlLayer;
+    CamLiveLandControlLayer swCamLiveControlLayer;
 
 
     @BindView(R.id.lLayout_protection)
@@ -117,7 +115,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @BindView(R.id.imv_double_sight)
     ImageView imvDoubleSight;
 
-    private SimpleDialogFragment mSimpleDialogFrag;
 
     private CamLiveController camLiveController;
     //    /**
@@ -184,7 +181,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         imgVCamTriggerCapture.setOnClickListener(this);
         fLayoutCamLiveView.setOnClickListener(this);
         if (camLiveController == null)
-            camLiveController = new CamLiveController(getContext(), uuid);
+            camLiveController = new CamLiveController(getActivity(), uuid);
         camLiveController.setPresenterRef(basePresenter);
         camLiveController.setLiveAction((ILiveControl) vs_control.inflate());
         camLiveController.setCamLiveControlLayer(swCamLiveControlLayer);
@@ -192,27 +189,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setPortSafeSetter(portFlipLayout);
         camLiveController.setPortLiveTimeSetter(liveTimeLayout);
         camLiveController.setActivity(getActivity());
-        camLiveController.setAlertListener(v -> getAlertDialogFrag().show(getActivity().getSupportFragmentManager(), "alert_dialog_fragment"));
-
         liveListener = camLiveController.getLiveStateListener();
     }
 
-    private SimpleDialogFragment getAlertDialogFrag() {
-        if (mSimpleDialogFrag == null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "关闭\"移动侦测\",将停止\"侦测到异常时\"自动录像");
-            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "继续");
-            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "取消");
-            mSimpleDialogFrag = SimpleDialogFragment.newInstance(bundle);
-            mSimpleDialogFrag.setAction((id, value) -> {
-                if (id == tv_dialog_btn_left) {
-                    basePresenter.updateInfoReq(false, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-                    basePresenter.updateInfoReq(2, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-                }
-            });
-        }
-        return mSimpleDialogFrag;
-    }
 
     @Override
     public void onPause() {
@@ -261,6 +240,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onResume() {
         super.onResume();
+        //更新
+        camLiveController.notifyOrientationChange(getResources().getConfiguration().orientation);
     }
 
     @Override
@@ -317,7 +298,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             return;
         }
         View view = LayoutInflater.from(getContext()).inflate(R.layout.cam_sight_setting_overlay, null);
-        fLayoutCamLiveView.addView(view, (fLayoutCamLiveView.getChildCount() == 0 ? 1 : fLayoutCamLiveView.getChildCount()) - 1);//最顶
+        fLayoutCamLiveView.addView(view);//最顶
         View layout = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         ((TextView) (view.findViewById(R.id.tv_sight_setting_content))).setText(getString(R.string.Tap1_Camera_Overlook) + ": "
                 + getString(R.string.Tap1_Camera_OverlookTips));
@@ -358,14 +339,21 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 if (videoView != null)
                     index = fLayoutCamLiveView.indexOfChild((View) videoView);//view的上面
                 fLayoutCamLiveView.addView(v, index + 1);//最底
-                v.findViewById(R.id.lLayout_standby_jump_setting)//跳转到设置页面
-                        .setOnClickListener(view -> {
-                            Intent intent = new Intent(getActivity(), CamSettingActivity.class);
-                            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                            startActivityForResult(intent, REQUEST_CODE,
-                                    ActivityOptionsCompat.makeCustomAnimation(getActivity(),
-                                            R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
-                        });
+                boolean isShareDevice = JFGRules.isShareDevice(uuid);
+                TextView tv = (TextView) v.findViewById(R.id.lLayout_standby_jump_setting);
+                //分享设备显示：已进入待机状态
+                if (isShareDevice) {
+                    tv.setText(getString(R.string.Tap1_Camera_Video_Standby));
+                    return;
+                }
+                //非分享设备显示：已进入待机状态，前往开启，和设置点击事件。跳转到设置页面
+                tv.setOnClickListener(view -> {
+                    Intent intent = new Intent(getActivity(), CamSettingActivity.class);
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                    startActivityForResult(intent, REQUEST_CODE,
+                            ActivityOptionsCompat.makeCustomAnimation(getActivity(),
+                                    R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+                });
             } else v = viewStandbyRef.get();
         }
         v.setVisibility(flag ? View.VISIBLE : View.GONE);
@@ -532,7 +520,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 }
                 break;
             case R.id.imgV_cam_trigger_capture:
-                if (basePresenter != null) basePresenter.takeSnapShot();
+                if (basePresenter != null) basePresenter.takeSnapShot(false);
                 break;
             case R.id.fLayout_cam_live_view:
                 if (videoView != null)

@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -64,7 +65,7 @@ public class MineShareDeviceAdapter extends SuperAdapter<DeviceBean> {
     @Override
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final DeviceBean item) {
         final int deviceType = item.pid;
-        int iconRes = resMap.get(deviceType);
+        int iconRes = MiscUtils.getValue(resMap.get(deviceType), R.mipmap.ic_launcher);
         //昵称
         holder.setText(R.id.tv_share_device_name, TextUtils.isEmpty(item.alias) ? item.uuid : item.alias);
         //图标
