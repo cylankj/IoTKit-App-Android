@@ -1,9 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.setting;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
@@ -36,6 +34,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract.ERR_NO_RAW_LIST;
+
 /**
  * Created by cylan-hunt on 17-2-12.
  */
@@ -43,8 +43,8 @@ import rx.schedulers.Schedulers;
 public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.View>
         implements WifiListContract.Presenter {
     private WifiManager wifiManager;
-    private Network network;
     private String uuid;
+
 
     public WifiListPresenterImpl(WifiListContract.View view, String uuid) {
         super(view);
@@ -60,7 +60,24 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
 
     @Override
     public void startScan() {
-        if (wifiManager != null) wifiManager.startScan();
+        Observable.just("")
+                .map(s -> {
+                    if (wifiManager != null) wifiManager.startScan();
+                    return null;
+                })
+                .timeout(1000, TimeUnit.MILLISECONDS,
+                        Observable.just("timeout")
+                                .filter(s -> getView() != null)
+                                .subscribeOn(AndroidSchedulers.mainThread())
+                                .map(s -> {
+                                    if (wifiManager.getScanResults() == null || wifiManager.getScanResults().size() == 0) {
+                                        getView().onErr(ERR_NO_RAW_LIST);
+                                    }
+                                    return null;
+                                }))
+                .subscribe(o -> {
+                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+
     }
 
     @Override
@@ -113,32 +130,21 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
     }
 
     @Override
-    public void start() {
-        super.start();
-        try {
-            if (network == null) {
-                network = new Network();
-                final IntentFilter filter = new IntentFilter();
-                filter.addAction(WifiManager.RSSI_CHANGED_ACTION);
-                filter.addAction(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION);
-                filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
-                filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
-                ContextUtils.getContext().registerReceiver(network, filter);
-            }
-        } catch (Exception e) {
-        }
+    protected String[] registerNetworkAction() {
+        return new String[]{
+                WifiManager.RSSI_CHANGED_ACTION,
+                WifiManager.SCAN_RESULTS_AVAILABLE_ACTION,
+                WifiManager.NETWORK_STATE_CHANGED_ACTION,
+                ConnectivityManager.CONNECTIVITY_ACTION
+        };
     }
 
     @Override
-    public void stop() {
-        super.stop();
-        try {
-            if (network != null) {
-                ContextUtils.getContext().unregisterReceiver(network);
-                network = null;
-            }
-        } catch (Exception e) {
-
+    public void onNetworkChanged(Context context, Intent intent) {
+        final String action = intent.getAction();
+        if (TextUtils.equals(action, WifiManager.RSSI_CHANGED_ACTION)
+                || TextUtils.equals(action, WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
+            updateWifiResults(wifiManager.getScanResults());
         }
     }
 
@@ -170,17 +176,4 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
                 }, new RxHelper.EmptyException("resultList call"));
     }
 
-    private class Network extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (TextUtils.equals(action, WifiManager.RSSI_CHANGED_ACTION)
-                    || TextUtils.equals(action, WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-                updateWifiResults(wifiManager.getScanResults());
-            } else if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
-            } else if (TextUtils.equals(action, WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
-            }
-        }
-    }
 }
