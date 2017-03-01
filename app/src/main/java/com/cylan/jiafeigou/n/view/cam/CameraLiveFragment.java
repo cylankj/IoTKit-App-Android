@@ -136,6 +136,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     private WeakReference<View> viewStandbyRef;
 
     private String uuid;
+    private boolean isNormalView;
 
     public CameraLiveFragment() {
         // Required empty public constructor
@@ -157,6 +158,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
     }
 
     @Override
@@ -171,10 +174,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-        boolean isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
-        if (device != null)//2w显示双排视图  3.1.0功能
-            imvDoubleSight.setVisibility(isNormalView ? View.GONE : View.VISIBLE);
+        //2w显示双排视图  3.1.0功能
+        imvDoubleSight.setVisibility(isNormalView ? View.GONE : View.VISIBLE);
         checkSightDialog(isNormalView);
         ViewUtils.updateViewHeight(fLayoutCamLiveView, isNormalView ? 0.8f : 1.0f);//720*576
         initBottomBtn(false);
@@ -455,8 +456,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 getActivity().finish();
                 return null;
             }
-            int pid = device.pid;
-            videoView = VideoViewFactory.CreateRendererExt(JFGRules.isNeedPanoramicView(pid),
+            videoView = VideoViewFactory.CreateRendererExt(!isNormalView,
                     getContext(), true);
             ((View) videoView).setId("IVideoView".hashCode());
             videoView.setInterActListener(new VideoViewFactory.InterActListener() {
@@ -489,10 +489,15 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 resolution = (JFGMsgVideoResolution) o;
             } else return;//要是resolution为空,就没必要设置了.
         }
+        //全屏：高度全屏，横屏：普通view根据分辨率；全景高度=宽度
         int height = getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-                ? ViewGroup.LayoutParams.MATCH_PARENT : (int) (Resources.getSystem().getDisplayMetrics().widthPixels * resolution.height / (float) resolution.width);
+                ? ViewGroup.LayoutParams.MATCH_PARENT :
+                (isNormalView ? (int) (Resources.getSystem().getDisplayMetrics().widthPixels * resolution.height / (float) resolution.width)
+                        : Resources.getSystem().getDisplayMetrics().widthPixels);
+        height = isNormalView ? height : Resources.getSystem().getDisplayMetrics().widthPixels;
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, height);
+
         fLayoutCamLiveView.setLayoutParams(lp);
         View view = fLayoutCamLiveView.findViewById("IVideoView".hashCode());
         if (view == null) {
