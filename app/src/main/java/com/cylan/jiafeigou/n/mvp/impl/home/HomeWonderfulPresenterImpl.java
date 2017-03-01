@@ -32,6 +32,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.cache.DBAction.ACTION_DELETED;
 import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_EMPTY;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_GUIDE;
@@ -103,7 +104,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private void syncLocalDataFromServer() {
-        Subscription subscribe = BaseDPHelper.getInstance().queryUnConfirmDpMsgWithTag(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, "DELETED")
+        Subscription subscribe = BaseDPHelper.getInstance().queryUnConfirmDpMsgWithTag(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, ACTION_DELETED)
                 .filter(items -> {
                     if (items.size() == 0) {
                         mView.onSyncLocalDataFinished();
@@ -129,7 +130,8 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 })
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).onBackpressureBuffer().filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
                 .observeOn(Schedulers.io())
-                .map(rsp -> BaseDPHelper.getInstance().deleteDPMsgWithConfirm(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
+                .map(rsp -> BaseDPHelper.getInstance().deleteDPMsgWithConfirm(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG).subscribe())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(success -> mView.onSyncLocalDataFinished(), Throwable::printStackTrace);
         registerSubscription(subscribe);
     }

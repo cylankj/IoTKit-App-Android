@@ -26,6 +26,11 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.cache.DBAction.ACTION_DELETED;
+import static com.cylan.jiafeigou.cache.DBAction.ACTION_NOT_CONFIRM;
+import static com.cylan.jiafeigou.cache.DBAction.ACTION_SAVED;
+import static com.cylan.jiafeigou.cache.DBAction.ACTION_SUCCESS;
+
 
 /**
  * Created by yanzhendong on 2017/2/27.
@@ -64,10 +69,10 @@ public class BaseDPHelper implements DPHelperInterface {
                 .unique()
                 .map(result -> {
                     if (result != null) {
-                        result.setTag("SAVED");
-                        result.setState("SUCCESS");
+                        result.setTag(ACTION_SAVED);
+                        result.setState(ACTION_SUCCESS);
                     } else {
-                        result = new DPCache(null, getAccount(), getServer(), uuid, version, msgId, bytes, "SAVED", "SUCCESS");
+                        result = new DPCache(null, getAccount(), getServer(), uuid, version, msgId, bytes, ACTION_SAVED, ACTION_SUCCESS);
                     }
                     cacheDao.save(result);
                     return result;
@@ -84,8 +89,8 @@ public class BaseDPHelper implements DPHelperInterface {
                 .unique()
                 .map(result -> {
                     if (result != null) {
-                        result.setTag("DELETED");
-                        result.setState("NOT_CONFIRM");
+                        result.setTag(ACTION_DELETED);
+                        result.setState(ACTION_NOT_CONFIRM);
                         cacheDao.save(result);
                     }
                     return result;
@@ -102,8 +107,8 @@ public class BaseDPHelper implements DPHelperInterface {
                 .unique()
                 .filter(result -> result != null)
                 .map(result -> {
-                    result.setTag("DELETED");
-                    result.setState("SUCCESS");
+                    result.setTag(ACTION_DELETED);
+                    result.setState(ACTION_SUCCESS);
                     cacheDao.save(result);
                     return result;
                 });
@@ -114,17 +119,17 @@ public class BaseDPHelper implements DPHelperInterface {
         AppLogger.d("正在删除本地数据,deleteDPMsgWithConfirm,uuid:" + uuid + ",msgId:" + msgId);
         QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
         if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
-        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId))
+        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId),
+                DPCacheDao.Properties.Tag.eq(ACTION_DELETED),
+                DPCacheDao.Properties.State.eq(ACTION_NOT_CONFIRM))
                 .rx()
                 .list()
-                .filter(items -> items.size() > 0)
                 .map(result -> {
+                    AppLogger.d("本地未确认的MSG 个数为:" + result.size() + ",MSGID:" + msgId);
                     for (DPCache cache : result) {
-                        if (TextUtils.equals("NOT_CONFIRM", cache.getTag())) {
-                            cache.setState("SUCCESS");
-                        }
+                        cache.setState(ACTION_SUCCESS);
+                        cache.update();
                     }
-                    cacheDao.saveInTx(result);
                     return true;
                 });
     }
@@ -134,7 +139,7 @@ public class BaseDPHelper implements DPHelperInterface {
         AppLogger.d("正在查询本地未经确认的数据withTag:" + tag);
         QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
         if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
-        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId), DPCacheDao.Properties.Tag.eq("DELETED"), DPCacheDao.Properties.State.eq("NOT_CONFIRM"))
+        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId), DPCacheDao.Properties.Tag.eq(ACTION_DELETED), DPCacheDao.Properties.State.eq(ACTION_NOT_CONFIRM))
                 .orderDesc(DPCacheDao.Properties.Version)
                 .rx()
                 .list();
@@ -146,7 +151,7 @@ public class BaseDPHelper implements DPHelperInterface {
         QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
         if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
         builder.where(DPCacheDao.Properties.MsgId.eq(msgId),
-                asc ? DPCacheDao.Properties.Version.ge(version) : DPCacheDao.Properties.Version.le(version), DPCacheDao.Properties.Tag.eq("SAVED")
+                asc ? DPCacheDao.Properties.Version.ge(version) : DPCacheDao.Properties.Version.le(version), DPCacheDao.Properties.Tag.eq(ACTION_SAVED)
         )
                 .limit(limit);
         if (asc) {
