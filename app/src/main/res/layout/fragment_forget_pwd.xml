@@ -63,6 +63,7 @@
                         android:hint="@string/Tap0_enterphoneoremail"
                         android:maxLength="65"
                         android:singleLine="true"
+                        android:inputType="textVisiblePassword"
                         android:textColor="@color/color_666666"
                         android:textColorHint="@color/color_cecece"
                         android:textCursorDrawable="@drawable/bg_common_cursor"

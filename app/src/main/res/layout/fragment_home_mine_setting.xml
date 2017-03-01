@@ -207,6 +207,31 @@
 
             </RelativeLayout>
 
+
+            <RelativeLayout
+                android:id="@+id/rl_home_setting_recommend"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y54">
+
+                <TextView
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/app_share"
+                    android:textSize="@dimen/sp16"
+                    android:textColor="@color/color_black" />
+
+                <View
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginRight="@dimen/x20"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_width="match_parent"
+                    android:layout_height="1dip"
+                    android:background="@color/color_f2f2f2" />
+
+            </RelativeLayout>
+
             <RelativeLayout
                 android:id="@+id/rl_home_setting_about"
                 android:layout_width="match_parent"

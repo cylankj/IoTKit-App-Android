@@ -88,6 +88,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
         ViewUtils.setChineseExclude(etMinePersonalInformationOldPassword, 12);
+        ivMinePersonalSetpasswordBind.setEnabled(false);
     }
 
     @Override

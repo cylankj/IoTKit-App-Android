@@ -217,9 +217,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public void sendFeedBack(MineHelpSuggestionBean bean) {
-        if (!hasSendLog){
-            getView().showLoadingDialog();
-        }
         rx.Observable.just(bean)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<MineHelpSuggestionBean>() {
@@ -260,7 +257,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
 
     /**
      * 获取系统自动回复的回调
-     *
      * @return
      */
     @Override
@@ -291,7 +287,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<RxEvent.SendFeekBack>() {
                     @Override
                     public void call(RxEvent.SendFeekBack sendFeekBack) {
-                        if (sendFeekBack != null && sendFeekBack instanceof RxEvent.SendFeekBack) {
+                        if (sendFeekBack != null && hasSendLog) {
                             getView().refrshRecycleView(sendFeekBack.jfgResult.code);
                         }
                     }
@@ -362,6 +358,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     if (jfgMsgHttpResult != null){
                         hasSendLog = true;
                         getView().sendLogResult(0);
+                        getView().refrshRecycleView(0);
                     }
                 });
     }

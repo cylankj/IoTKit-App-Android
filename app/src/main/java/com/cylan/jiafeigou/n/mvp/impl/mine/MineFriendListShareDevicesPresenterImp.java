@@ -94,7 +94,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                 .subscribe(new Action1<ArrayList<DeviceBean>>() {
                     @Override
                     public void call(ArrayList<DeviceBean> deviceList) {
-                        if (getView() != null && deviceList != null) {
+                        if (getView() != null && deviceList != null && deviceList.size() != 0) {
                             allDevice.clear();
                             ArrayList<String> cidList = new ArrayList<String>();
                             for (DeviceBean bean : deviceList) {

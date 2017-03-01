@@ -73,14 +73,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     @Override
     public void showMailHasBindDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setMessage(getString(R.string.RET_EEDITUSERINFO_EMAIL))
-                .setPositiveButton(getString(R.string.SURE), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
+        ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_EMAIL));
     }
 
     /**

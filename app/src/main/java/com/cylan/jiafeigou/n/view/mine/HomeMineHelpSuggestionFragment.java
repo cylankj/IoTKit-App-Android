@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 
-import android.app.AlertDialog;
+import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,8 +12,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -34,6 +32,8 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.util.ArrayList;
 
@@ -51,7 +51,7 @@ import butterknife.OnClick;
  * 更新时间   $Date$
  * 更新描述   ${TODO}
  */
-public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMineHelpSuggestionContract.View {
+public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMineHelpSuggestionContract.View, BaseDialog.BaseDialogAction {
 
     @BindView(R.id.rv_home_mine_suggestion)
     RecyclerView mRvMineSuggestion;
@@ -76,6 +76,8 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     private int itemPosition;
     private boolean resendFlag;
     private boolean hasSendLog = false;
+
+    private static final String DIALOG_KEY = "dialogFragment";
 
     public static HomeMineHelpSuggestionFragment newInstance(Bundle bundle) {
         HomeMineHelpSuggestionFragment fragment = new HomeMineHelpSuggestionFragment();
@@ -120,6 +122,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         switch (v.getId()) {
             case R.id.tv_mine_help_suggestion_clear:
                 //弹出对话框
+                if (suggestionAdapter.getItemCount() == 0){
+                    return;
+                }
                 showDialog();
                 break;
             case R.id.tv_home_mine_suggestion:
@@ -140,47 +145,32 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         if (suggestionAdapter.getItemCount() == 0) {
             return;
         }
-        if (suggestionAdapter.getItemCount() != 1) {
+
+        if (suggestionAdapter.getItemCount() == 1 || suggestionAdapter.getItemCount() == 2){
+            addAutoReply();
+        }else {
             if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 2).getDate())) {
                 addAutoReply();
-                presenter.getSystemAutoReply();
             }
-        } else {
-            addAutoReply();
-            presenter.getSystemAutoReply();
         }
     }
-
-    ;
 
     /**
      * 弹出对话框
      */
     private void showDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(getView().getContext());
-        builder.setTitle(getString(R.string.Tap3_Feedback_ClearTips))
-                .setPositiveButton(getString(R.string.Tap3_Feedback_Clear), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        presenter.onClearAllTalk();
-                        showLoadingDialog();
-                        getView().postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                suggestionAdapter.clear();
-                                suggestionAdapter.notifyDataSetHasChanged();
-                                hideLoadingDialog();
-                            }
-                        }, 2000);
-                    }
-                })
-                .setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                }).show();
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
+        if (f == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap3_Feedback_ClearTips));
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.Tap3_Feedback_Clear));
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
+            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+            dialogFragment.setValue("clear");
+            dialogFragment.setAction(this);
+            dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
+        }
     }
 
     /**
@@ -211,14 +201,14 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         String time = System.currentTimeMillis() + "";
         suggestionBean.setDate(time);
 
-        if (suggestionAdapter.getItemCount() != 0) {
+        if (suggestionAdapter.getItemCount() == 0 || suggestionAdapter.getItemCount() == 1){
+            suggestionBean.isShowTime = true;
+        }else {
             if (presenter.checkOver20Min(suggestionAdapter.getList().get(suggestionAdapter.getItemCount() - 1).getDate())) {
                 suggestionBean.isShowTime = true;
             } else {
                 suggestionBean.isShowTime = false;
             }
-        } else {
-            suggestionBean.isShowTime = true;
         }
 
         if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
@@ -238,16 +228,11 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
 
     @Override
     public void showLoadingDialog() {
-//        flLoadingContainer.setVisibility(View.VISIBLE);
-//        Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.loading_progress_rotate);
-//        ivLoadingRotate.startAnimation(animation);
         LoadingDialog.showLoading(getFragmentManager());
     }
 
     @Override
     public void hideLoadingDialog() {
-//        flLoadingContainer.setVisibility(View.GONE);
-//        ivLoadingRotate.clearAnimation();
         LoadingDialog.dismissLoading(getFragmentManager());
     }
 
@@ -267,6 +252,17 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         suggestionAdapter.notifyDataSetHasChanged();
         presenter.saveIntoDb(autoReplyBean);
     }
+
+    public MineHelpSuggestionBean addSystemAutoReply() {
+        MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
+        autoReplyBean.setType(0);
+        autoReplyBean.isShowTime = true;
+        autoReplyBean.setText(getString(R.string.Tap3_Feedback_AutoTips));
+        autoReplyBean.setDate(System.currentTimeMillis() + "");
+        presenter.saveIntoDb(autoReplyBean);
+        return autoReplyBean;
+    }
+
 
     @Override
     public void refrshRecycleView(int code) {
@@ -301,7 +297,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
      */
     @Override
     public void sendLogResult(int code) {
-        hideLoadingDialog();
+//        hideLoadingDialog();
         hasSendLog = true;
     }
 
@@ -312,6 +308,10 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
      */
     @Override
     public void initRecycleView(ArrayList<MineHelpSuggestionBean> list) {
+        if (list.size() == 0){
+            //列表为空插入一条系统提示
+            list.add(addSystemAutoReply());
+        }
         for (MineHelpSuggestionBean bean : list) {
             bean.icon = presenter.getUserPhotoUrl();
         }
@@ -326,14 +326,26 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                     ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
                     return;
                 }
-                itemPosition = position;
-                resendFlag = true;
-                ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);
-                send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
-                presenter.sendFeedBack(item);
-                presenter.deleteOnItemFromDb(item);
+                showResendFeedBackDialog(holder,item,position);
             }
         });
+    }
+
+    private void showResendFeedBackDialog(SuperViewHolder holder, MineHelpSuggestionBean item, int position) {
+        AlertDialog.Builder b = new AlertDialog.Builder(getContext());
+        b.setTitle(getString(R.string.ANEW_SEND));
+        b.setNegativeButton(getString(R.string.Button_No),(DialogInterface dialog, int which)->{
+            dialog.dismiss();
+        });
+        b.setPositiveButton(getString(R.string.Button_Yes),(DialogInterface dialog, int which)->{
+            itemPosition = position;
+            resendFlag = true;
+            ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);
+            send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
+            presenter.sendFeedBack(item);
+            presenter.deleteOnItemFromDb(item);
+            dialog.dismiss();
+        }).show();
     }
 
     @Override
@@ -369,5 +381,20 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 return false;
             }
         });
+    }
+
+    @Override
+    public void onDialogAction(int id, Object value) {
+        Fragment f = getActivity()
+                .getSupportFragmentManager()
+                .findFragmentByTag(DIALOG_KEY);
+        if (f != null && f.isVisible()) {
+            ((SimpleDialogFragment) f).dismiss();
+        }
+        if (id == R.id.tv_dialog_btn_left) {
+            presenter.onClearAllTalk();
+            suggestionAdapter.clear();
+            suggestionAdapter.notifyDataSetHasChanged();
+        }
     }
 }

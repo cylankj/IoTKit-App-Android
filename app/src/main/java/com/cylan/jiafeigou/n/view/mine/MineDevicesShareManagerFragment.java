@@ -118,9 +118,6 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
         switch (view.getId()) {
             case R.id.iv_home_mine_share_devices_manager_back:
                 getFragmentManager().popBackStack();
-                if (listener != null) {
-                    listener.unShareChange(unShareSucNum, unShareAccount);
-                }
                 break;
         }
     }
