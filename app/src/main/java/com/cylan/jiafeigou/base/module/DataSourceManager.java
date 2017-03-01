@@ -81,6 +81,7 @@ public class DataSourceManager implements JFGSourceManager {
         //什么也不做,防止程序崩溃
     }
 
+    @Override
     public boolean isOnline() {
         return isOnline;
     }
