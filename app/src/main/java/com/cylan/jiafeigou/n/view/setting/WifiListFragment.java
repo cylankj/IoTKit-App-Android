@@ -182,10 +182,10 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
             int strength = WifiManager.calculateSignalLevel(item.level, 3);
             if (security == 0) {
                 //open
-                strength += 4;
+                strength += 3;
             } else {
                 //encrypt
-                strength += 1;
+                strength += 0;
             }
             int base = R.drawable.setting_icon_wifi_network_security1;
             return base + strength;
