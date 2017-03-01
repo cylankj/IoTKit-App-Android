@@ -121,17 +121,17 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                     long seq = -1;
                     try {
                         seq = JfgCmdInsurance.getCmd().robotDelData("", params, 0);
-                        AppLogger.d("正在删除未经确认的数据");
+                        AppLogger.d("正在删除未经确认的数据" + seq);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                     return seq;
                 })
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).onBackpressureBuffer().filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).filter(rsp -> rsp.seq == seq).first().timeout(30, TimeUnit.SECONDS))
                 .observeOn(Schedulers.io())
                 .map(rsp -> BaseDPHelper.getInstance().deleteDPMsgWithConfirm(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG).subscribe())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(success -> mView.onSyncLocalDataFinished(), Throwable::printStackTrace);
+                .subscribe(success -> mView.onSyncLocalDataFinished(), e -> syncLocalDataFromServer());
         registerSubscription(subscribe);
     }
 
