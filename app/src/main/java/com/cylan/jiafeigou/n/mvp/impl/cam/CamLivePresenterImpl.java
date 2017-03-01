@@ -351,6 +351,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public void stopPlayVideo(int type) {
+        AppLogger.d("pre play state: " + playState);
         reset();
         Observable.just(uuid)
                 .subscribeOn(Schedulers.newThread())
