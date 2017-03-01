@@ -195,7 +195,7 @@ public class SimpleBindFlow extends AFullBind {
                     return !TextUtils.isEmpty(pingAck.cid)
                             && pingAck.cid.endsWith(ssidInDigits);
                 })
-                .throttleFirst(100, TimeUnit.MILLISECONDS);
+                .first();
     }
 
     /**
@@ -212,7 +212,7 @@ public class SimpleBindFlow extends AFullBind {
                     return !TextUtils.isEmpty(pingAck.cid)
                             && pingAck.cid.endsWith(ssidInDigits);
                 })
-                .throttleFirst(100, TimeUnit.MILLISECONDS);
+                .first();
     }
 
     @Override
@@ -289,7 +289,7 @@ public class SimpleBindFlow extends AFullBind {
                 })
                 //1s内
                 .timeout(1000, TimeUnit.MILLISECONDS, timeoutException())
-                .subscribeOn(Schedulers.newThread())
+//                .subscribeOn(Schedulers.newThread())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
                     boolean needUpdate = BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
