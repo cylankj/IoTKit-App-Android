@@ -82,6 +82,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
+        ivMineInfoBindPhone.setClickable(false);
     }
 
     /**
@@ -89,14 +90,15 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
      */
     @OnTextChanged(R.id.et_verification_input)
     public void initCheckCodeListener(CharSequence s, int start, int before, int count) {
-        if (TextUtils.isEmpty(s)) {
-            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-            ivMineInfoBindPhone.setEnabled(false);
-            vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
-        } else {
+
+        if (s.length() == 6 && getInputPhone().length() == 11){
             ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
-            ivMineInfoBindPhone.setEnabled(true);
+            ivMineInfoBindPhone.setClickable(true);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
+        }else {
+            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
+            ivMineInfoBindPhone.setClickable(false);
+            vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         }
     }
 
@@ -130,6 +132,17 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             ivMineBindPhoneClear.setVisibility(View.VISIBLE);
             viewMinePersonalInformationMailbox.setBackgroundColor(Color.parseColor("#36bdff"));
         }
+
+        if (s.length() == 11 && getInputCheckCode().length() == 6){
+            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
+            ivMineInfoBindPhone.setClickable(true);
+            vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
+        }else {
+            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
+            ivMineInfoBindPhone.setClickable(false);
+            vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
+        }
+
     }
 
     private void initPresenter() {
@@ -277,15 +290,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @Override
     public void handlerCheckPhoneResult(RxEvent.CheckAccountCallback checkAccountCallback) {
         if (getInputPhone().equals(checkAccountCallback.s)) {
-            AlertDialog.Builder hasBineDialog = new AlertDialog.Builder(getContext())
-                    .setTitle(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE))
-                    .setPositiveButton(getString(R.string.I_KNOW), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                        }
-                    });
-            hasBineDialog.show();
+            ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
         } else {
             //显示倒计时
             fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
@@ -339,7 +344,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                     }, 2000);
                 }
             } else {
-                ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
+                ToastUtil.showNegativeToast(getString(R.string.SUBMIT_FAIL));
             }
         }
     }
@@ -381,10 +386,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @Override
     public void onStop() {
         super.onStop();
-        if (countDownTimer != null) {
-            tvMeterGetCode.setVisibility(View.INVISIBLE);
-            countDownTimer.onFinish();
-        }
         if (presenter != null) presenter.stop();
     }
 }

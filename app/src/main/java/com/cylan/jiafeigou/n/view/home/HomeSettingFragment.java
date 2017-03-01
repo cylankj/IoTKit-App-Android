@@ -57,6 +57,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     RelativeLayout rlVibrateContainer;
     @BindView(R.id.rl_title_bar)
     FrameLayout rlTitleBar;
+    @BindView(R.id.rl_home_setting_recommend)
+    RelativeLayout rlHomeSettingRecommend;
 
     private HomeSettingContract.Presenter presenter;
 
@@ -97,7 +99,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         this.presenter = presenter;
     }
 
-    @OnClick({R.id.iv_home_setting_back, R.id.rl_home_setting_about, R.id.rl_home_setting_clear})
+    @OnClick({R.id.iv_home_setting_back, R.id.rl_home_setting_about, R.id.rl_home_setting_clear,R.id.rl_home_setting_recommend})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_setting_back:
@@ -117,6 +119,10 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
             case R.id.rl_home_setting_clear:
                 presenter.clearCache();
+                break;
+
+            case R.id.rl_home_setting_recommend:
+                //TODO 推荐给亲友
                 break;
         }
     }
@@ -217,4 +223,5 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                 break;
         }
     }
+
 }

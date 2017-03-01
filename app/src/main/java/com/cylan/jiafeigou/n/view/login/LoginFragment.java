@@ -423,8 +423,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             case R.id.tv_login_forget_pwd:
                 boolean validAccount = JConstant.PHONE_REG.matcher(etLoginUsername.getText()).find()
                         || JConstant.EMAIL_REG.matcher(etLoginUsername.getText()).find();
-                if (!validAccount && !TextUtils.isEmpty(etLoginUsername.getText()))
-                    ToastUtil.showToast(getString(R.string.ACCOUNT_ERR));
+//                if (!validAccount && !TextUtils.isEmpty(etLoginUsername.getText()))
+//                    ToastUtil.showToast(getString(R.string.ACCOUNT_ERR));
                 forgetPwd();
                 break;
             case R.id.tv_qqLogin_commit:

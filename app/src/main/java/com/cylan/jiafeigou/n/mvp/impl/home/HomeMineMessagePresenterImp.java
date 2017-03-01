@@ -266,7 +266,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
             public int compare(MineMessageBean lhs, MineMessageBean rhs) {
                 long oldTime = Long.parseLong(rhs.time + "");
                 long newTime = Long.parseLong(lhs.time + "");
-                return (int) (newTime - oldTime);
+                return (int) (oldTime - newTime);
             }
         };
         Collections.sort(list, comparator);

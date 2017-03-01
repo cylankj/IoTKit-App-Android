@@ -11,6 +11,7 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.Locale;
 
@@ -26,6 +27,8 @@ public class WebsiteFragement extends Fragment {
 
     @BindView(R.id.wv_website)
     WebView wvWebsite;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     public static WebsiteFragement getInstance(Bundle bundle) {
         WebsiteFragement fragment = new WebsiteFragement();
@@ -39,6 +42,14 @@ public class WebsiteFragement extends Fragment {
         View view = inflater.inflate(R.layout.fragment_website, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        customToolbar.setBackAction((View v)->{
+            getFragmentManager().popBackStack();
+        });
     }
 
     @Override

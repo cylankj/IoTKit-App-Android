@@ -46,7 +46,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     private JFGAccount jfgAccount;
     private Network network;
     private boolean isOpenLogin;
-
+    private boolean sendReq;
     public MineBindPhonePresenterImp(MineBindPhoneContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -123,7 +123,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
                     public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback) {
+                        if (checkAccountCallback != null) {
                             if (getView() != null) {
                                 getView().handlerCheckPhoneResult(checkAccountCallback);
                             }
@@ -146,6 +146,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             account.resetFlag();
                             account.setPhone(getView().getInputPhone(), getView().getInputCheckCode());
                             JfgCmdInsurance.getCmd().setAccount(account);
+                            sendReq = true;
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -171,9 +172,9 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<RxEvent.SmsCodeResult>() {
                     @Override
                     public void call(RxEvent.SmsCodeResult smsCodeResult) {
-                        if (smsCodeResult != null && smsCodeResult instanceof RxEvent.SmsCodeResult) {
+                        if (smsCodeResult != null) {
                             if (smsCodeResult.error == JError.ErrorOK) {
-                                AppLogger.d("jjjjjjjjjjj" + smsCodeResult.token);
+                                AppLogger.d("getCheckCodeCallback" + smsCodeResult.token);
                                 PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
                             }else {
                                 getView().getSmsCodeResult(smsCodeResult.error);
@@ -194,9 +195,12 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getView() != null && getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
+                        if (getView() != null && getUserInfo != null) {
                             jfgAccount = getUserInfo.jfgAccount;
-                            getView().handlerResetPhoneResult(getUserInfo);
+                            if (sendReq){
+                                getView().handlerResetPhoneResult(getUserInfo);
+                                sendReq = false;
+                            }
                         }
                     }
                 });
@@ -214,7 +218,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
                     @Override
                     public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
-                        if (resultVerifyCode != null && resultVerifyCode instanceof RxEvent.ResultVerifyCode) {
+                        if (resultVerifyCode != null) {
                             if (getView() != null) {
                                 getView().handlerCheckCodeResult(resultVerifyCode);
                             }
