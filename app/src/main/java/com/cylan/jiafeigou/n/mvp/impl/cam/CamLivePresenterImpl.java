@@ -352,6 +352,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public void stopPlayVideo(int type) {
         AppLogger.d("pre play state: " + playState);
+        if (playState == PLAY_STATE_PLAYING) {
+            //暂停播放了，还需要截图
+            takeSnapShot(true);
+        }
         reset();
         Observable.just(uuid)
                 .subscribeOn(Schedulers.newThread())
@@ -400,20 +404,36 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public void takeSnapShot() {
+    public void takeSnapShot(boolean forPreview) {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe((Object o) -> {
+                .map(o -> {
+                    Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                     long time = System.currentTimeMillis();
                     byte[] data = JfgCmdInsurance.getCmd().screenshot(false);
+                    if (data == null) {
+                        AppLogger.e("直播黑屏，没有数据");
+                        return null;
+                    }
                     Bitmap bitmap = BitmapUtils.byte2bitmap(videoResolution[0], videoResolution[1], data);
                     AppLogger.i("capture take shot performance: " + (System.currentTimeMillis() - time));
-                    snapshotResult(bitmap);
-                    String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
-                    BitmapUtils.saveBitmap2file(bitmap, filePath);
-                }, (Throwable throwable) -> {
-                    AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage());
-                });
+                    return bitmap;
+                })
+                .filter(bitmap -> bitmap != null)
+                .subscribeOn(Schedulers.io())
+                .subscribe((Bitmap bitmap) -> {
+                    Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
+                    String filePath;
+                    long time = System.currentTimeMillis();
+                    if (forPreview) {
+                        filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + "_";
+                    } else {
+                        snapshotResult(bitmap);
+                        filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
+                        BitmapUtils.saveBitmap2file(bitmap, filePath);
+                    }
+                    AppLogger.i("save take shot performance: " + (System.currentTimeMillis() - time));
+                }, throwable -> AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage()));
     }
 
     private void snapshotResult(Bitmap bitmap) {
@@ -454,9 +474,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     public boolean needShowHistoryWheelView() {
         DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
         JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        DpMsgDefine.DPSdStatus sdStatus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
         boolean show = JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0
-                && device != null && TextUtils.isEmpty(device.shareAccount);
+                && device != null && TextUtils.isEmpty(device.shareAccount)
+                && sdStatus.hasSdcard && sdStatus.err == 0;
         AppLogger.i("show: " + show);
         return show;
     }

@@ -452,7 +452,7 @@
     </style>
 
     <style name="RadioButtonStyle" parent="Theme.AppCompat.Light">
-        <item name="colorControlNormal">@color/color_4b9fd5</item>
+        <item name="colorControlNormal">@color/color_767676</item>
         <item name="colorControlActivated">@color/color_4b9fd5</item>
     </style>
 </resources>

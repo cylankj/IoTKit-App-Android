@@ -83,7 +83,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
             int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);
             if (battery <= 20) {
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
-                holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_battery);
+                holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else holder.setVisibility(R.id.img_device_state_2, GONE);
         }
         //3 延时摄影

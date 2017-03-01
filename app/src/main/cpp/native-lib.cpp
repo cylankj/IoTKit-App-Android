@@ -4,6 +4,7 @@
 #include <assert.h>
 #include <cstring>
 
+#include "constants.h"
 #define LOGV(TAG, ...) __android_log_print(ANDROID_LOG_VERBOSE, TAG,__VA_ARGS__)
 #define LOGD(TAG, ...) __android_log_print(ANDROID_LOG_DEBUG  , TAG,__VA_ARGS__)
 #define LOGI(TAG, ...) __android_log_print(ANDROID_LOG_INFO   , TAG,__VA_ARGS__)
@@ -47,7 +48,7 @@ extern "C" jstring JNICALL native_getWeChatKey(JNIEnv *env, jclass clazz, jstrin
     if (content == NULL) {
         return NULL;
     }
-    std::string result = "wx3081bcdae8a842cf";
+    std::string result = WECHAT_APP_KEY_YUN;
     if (strcmp(content, "test1") == 0) {
         result = "wx7b9d35f344db8841";
         env->ReleaseStringUTFChars(content_, content);
@@ -82,9 +83,9 @@ extern "C" jstring JNICALL native_getVKey(JNIEnv *env, jclass clazz, jstring con
     if (content == NULL) {
         return NULL;
     }
-    std::string result = "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G";
+    std::string result = CYLAN_VKEY;
     if (strcmp(content, "zhongxing") == 0) {
-        result = "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1";
+        result = DOBY_VKEY;
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
@@ -97,9 +98,9 @@ extern "C" jstring JNICALL native_getVId(JNIEnv *env, jclass clazz, jstring cont
     if (content == NULL) {
         return NULL;
     }
-    std::string result = "0001";
+    std::string result = CYLAN_VID;
     if (strcmp(content, "zhongxing") == 0) {
-        result = "0002";
+        result = DOBY_VID;
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }

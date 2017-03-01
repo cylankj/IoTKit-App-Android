@@ -1,16 +1,17 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -67,7 +68,7 @@ public class CamLiveController implements
     private WeakReference<DatePickerDialogFragment> datePickerRef;
     private IData iDataProvider;
     //横屏竖屏的时候,不一样,需要切换.
-    private ISafeStateSetter iSafeStateSetterPort, iSafeStateSetterLand;
+    private ISafeStateSetter iSafeStateSetterPort;
     private LiveTimeSetter liveTimeSetterPort, liveTimeSetterLand;
     private WeakReference<CamLiveContract.Presenter> presenterRef;
     //    /**
@@ -76,22 +77,22 @@ public class CamLiveController implements
     private WeakReference<ILiveControl> iLiveActionViewRef;
 
     //播放控制层面.
-    private CamLiveControlLayer camLiveControlLayer;
+    private CamLiveLandControlLayer camLiveControlLayer;
     private Context context;
     private static final String TAG = "CamLiveController";
     private String uuid;
-    private View.OnClickListener alertListener;
+//    private View.OnClickListener alertListener;
 
     public CamLiveController(Context context, String uuid) {
         this.context = context;
         this.uuid = uuid;
     }
 
-    public void setCamLiveControlLayer(CamLiveControlLayer camLiveControlLayer) {
+    public void setCamLiveControlLayer(CamLiveLandControlLayer camLiveControlLayer) {
         this.camLiveControlLayer = camLiveControlLayer;
         this.camLiveControlLayer.setTopBarAction(this);
-        this.camLiveControlLayer.getImgVCamLiveLandPlay().setOnClickListener(this);
-        this.camLiveControlLayer.getLiveTimeLayout().setOnClickListener(this);
+        this.camLiveControlLayer.setLivePlayBtnClickListener(this);
+        this.camLiveControlLayer.setLiveRectClickListener(this);
         this.camLiveControlLayer.getTvCamLivePortLive().setOnClickListener(this);
     }
 
@@ -157,15 +158,10 @@ public class CamLiveController implements
         //true:绿色,false:setFlipped(true)
         iSafeStateSetterPort.setFlipped(!safe);
         Log.d(TAG, "setFlip: " + safe + " " + uuid);
-    }
-
-    /**
-     * |图标|安全防护
-     *
-     * @param setter
-     */
-    private void setLandSafeSetter(ISafeStateSetter setter) {
-        this.iSafeStateSetterLand = setter;
+        if (presenterRef.get() != null && JFGRules.isShareDevice(uuid)) {
+            setter.setVisibility(false);
+            return;
+        }
     }
 
     /**
@@ -175,6 +171,9 @@ public class CamLiveController implements
      */
     public void setPortLiveTimeSetter(LiveTimeSetter setter) {
         liveTimeSetterPort = setter;
+        if (presenterRef != null && presenterRef.get() != null && presenterRef.get().isShareDevice()) {
+            liveTimeSetterPort.setVisibility(false);
+        }
         ((View) liveTimeSetterPort).setOnClickListener(this);
     }
 
@@ -225,25 +224,22 @@ public class CamLiveController implements
      * 屏幕方向改变.
      */
     public void notifyOrientationChange(final int orientation) {
-        camLiveControlLayer.setOrientation(orientation);
         boolean land = orientation == Configuration.ORIENTATION_LANDSCAPE;
-        if (land && liveTimeSetterLand == null) {
-            liveTimeSetterLand = camLiveControlLayer.getLiveTimeLayout();
-        }
-        if (land && iSafeStateSetterLand == null) {
-            //安全防护
-            setLandSafeSetter(camLiveControlLayer.getFlipLayout());
-            iSafeStateSetterLand.setFlipListener(this);
-            boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-            iSafeStateSetterLand.setFlipped(!safe);
-        }//显示或者隐藏
-        if (liveTimeSetterLand != null) liveTimeSetterLand.setVisibility(land);
+        boolean isShareDevice = presenterRef != null && presenterRef.get() != null && presenterRef.get().isShareDevice();
+        DpMsgDefine.DPSdStatus sd = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+        boolean sdCardStatus = sd.hasSdcard && sd.err == 0;
+        boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+
+        //竖屏事件区域 考虑 分享账号，sd卡
         if (liveTimeSetterPort != null && presenterRef.get().getPlayState() == PLAY_STATE_PLAYING) {
-            liveTimeSetterPort.setVisibility(!land);
+            liveTimeSetterPort.setVisibility(!land && !isShareDevice);
         }
-        if (iSafeStateSetterLand != null) iSafeStateSetterLand.setVisibility(land);
-        if (iSafeStateSetterPort != null) iSafeStateSetterPort.setVisibility(!land);
-        if (!land) camLiveControlLayer.getLandDateContainer().setVisibility(View.GONE);
+        if (iSafeStateSetterPort != null)
+            iSafeStateSetterPort.setVisibility(!land && !isShareDevice);
+        //全屏底部区域
+        camLiveControlLayer.setOrientation(orientation, isShareDevice, sdCardStatus, safe);
+        //安全防护
+        camLiveControlLayer.setLandSafeClickListener(this);
         AppLogger.i("orientation: " + orientation);
     }
 
@@ -266,12 +262,9 @@ public class CamLiveController implements
      * 判断操作栏的动画模式
      */
     public void tapVideoViewAction() {
-        boolean show = false;
         if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null) {
-//            int state = iLiveActionViewRef.get().getState();
             boolean land = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
             if (land) {//横屏不显示?
-//                state = STATE_IDLE;
                 //上下滑动,进场动画.
                 AnimatorUtils.slideAuto(camLiveControlLayer.getLiveLandBottomBar(), false);
                 AnimatorUtils.slideAuto(camLiveControlLayer.getCamLiveLandTopBar(), true);
@@ -303,7 +296,6 @@ public class CamLiveController implements
                     DpMsgMap.ID_201_NET, null);
             boolean deviceState = JFGRules.isDeviceOnline(net);
             //播放状态
-            int playState = presenterRef.get().getPlayState();
             int orientation = context.getResources().getConfiguration().orientation;
             if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 //横屏 slide_out_up  slide_in_up
@@ -319,18 +311,6 @@ public class CamLiveController implements
         }
     }
 
-    /**
-     * 设置安全防护状态
-     *
-     * @param state
-     */
-    public void setProtectionState(boolean state) {
-        if (!check())
-            return;
-        //这个state可根据不同模式
-        if (iSafeStateSetterPort != null) iSafeStateSetterPort.setState(state);
-        if (iSafeStateSetterLand != null) iSafeStateSetterLand.setState(state);
-    }
 
     /**
      * @param time
@@ -363,10 +343,6 @@ public class CamLiveController implements
      */
     public void setScreenZoomer(View view) {
         view.setOnClickListener(this);
-    }
-
-    private boolean check() {
-        return activityWeakReference != null && activityWeakReference.get() != null;
     }
 
     @Override
@@ -416,7 +392,7 @@ public class CamLiveController implements
     @Override
     public void onTriggerCapture(View view) {
         if (presenterRef != null && presenterRef.get() != null)
-            presenterRef.get().takeSnapShot();
+            presenterRef.get().takeSnapShot(false);
     }
 
     @Override
@@ -485,8 +461,8 @@ public class CamLiveController implements
             return;
         }
         if (iDataProvider == null || iDataProvider.getDataCount() == 0) {
+            ToastUtil.showToast(context.getString(R.string.NO_SDCARD));
             AppLogger.d("history data is not prepared");
-            ToastUtil.showToast("没有历史视频...自己加的,,,别点了");
             return;
         }
         boolean land = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
@@ -525,13 +501,8 @@ public class CamLiveController implements
     private void slideLandDatePickView() {
         float x = camLiveControlLayer.getLandDateContainer().getX();
         float left = camLiveControlLayer.getLandDateContainer().getLeft();
-        float translateX = camLiveControlLayer.getLandDateContainer().getTranslationX();
         if (x == left && camLiveControlLayer.getLandDateContainer().isShown())
             AnimatorUtils.slideOutRight(camLiveControlLayer.getLandDateContainer());
-//        else if (translateX + left == x
-//                || x == left + translateX
-//                || !camLiveControlLayer.getLandDateContainer().isShown())
-//            AnimatorUtils.slideInRight(camLiveControlLayer.getLandDateContainer());
     }
 
     /**
@@ -561,13 +532,11 @@ public class CamLiveController implements
     public void onClick(FlipImageView view) {
         boolean land = view.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         AppLogger.i("land: " + land + " " + (!view.isFlipped()));
-        DpMsgDefine.DPPrimary<Boolean> alarmFlag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        DpMsgDefine.DPPrimary<Integer> autoVideo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-        if (alarmFlag.$() && autoVideo.$() != 1) {//已开启自动录像和移动侦测
+        boolean alarmFlag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        int autoVideo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 2);
+        if (alarmFlag && autoVideo != 2) {//已开启自动录像和移动侦测
+            getAlertDialogFrag().show();
             AppLogger.d("关闭移动侦测将关闭自动录像功能");
-            if (alertListener != null) {
-                alertListener.onClick(view);
-            }
         } else if (presenterRef != null && presenterRef.get() != null)
             presenterRef.get().updateInfoReq(!view.isFlipped(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
     }
@@ -617,7 +586,20 @@ public class CamLiveController implements
         }
     };
 
-    public void setAlertListener(View.OnClickListener listener) {
-        this.alertListener = listener;
+    private AlertDialog getAlertDialogFrag() {
+        return new AlertDialog.Builder(context)
+                .setMessage(context.getString(R.string.Tap1_Camera_MotionDetection_OffTips))
+                .setNegativeButton(context.getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    camLiveControlLayer.setLandSafe(false);
+                    if (iSafeStateSetterPort != null) iSafeStateSetterPort.setFlipped(false);
+                })
+                .setPositiveButton(context.getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                    if (presenterRef != null && presenterRef.get() != null)
+                        presenterRef.get().updateInfoReq(false, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                    if (presenterRef != null && presenterRef.get() != null)
+                        presenterRef.get().updateInfoReq(2, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                    camLiveControlLayer.setLandSafe(true);
+                    if (iSafeStateSetterPort != null) iSafeStateSetterPort.setFlipped(true);
+                }).create();
     }
 }

@@ -26,7 +26,7 @@
 
     </FrameLayout>
 
-    <com.cylan.jiafeigou.n.view.cam.CamLiveControlLayer
+    <com.cylan.jiafeigou.n.view.cam.CamLiveLandControlLayer
         android:id="@+id/cam_live_control_layout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y52"

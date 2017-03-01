@@ -44,6 +44,7 @@
                 android:visibility="gone" />
 
             <RelativeLayout
+                android:id="@+id/rLayout_cam_live_land_bottom_second"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="bottom"
@@ -54,42 +55,47 @@
                     android:id="@+id/sw_cam_live_wheel"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_toStartOf="@+id/v_flag"
+                    android:layout_toStartOf="@+id/tv_cam_live_land_bottom"
                     android:clickable="true"
-                    android:visibility="visible"
                     hunt:sw_lineColor="@color/color_FFDEDEDE"
                     hunt:sw_markerColor="@color/color_36BDFF"
                     hunt:sw_maskColor="@color/color_CCE1F0FF"
                     hunt:sw_textColor="@color/color_FFAAAAAA" />
 
-                <View
-                    android:id="@+id/v_flag"
-                    android:layout_width="@dimen/x3"
-                    android:layout_height="match_parent"
-                    android:layout_centerVertical="true"
-                    android:layout_marginBottom="@dimen/y5"
-                    android:layout_marginTop="@dimen/y5"
-                    android:layout_toStartOf="@+id/tv_cam_live_port_live"
-                    android:background="@drawable/little_shape_horizontal" />
-
-                <TextView
-                    android:id="@+id/tv_cam_live_port_live"
+                <LinearLayout
+                    android:id="@+id/tv_cam_live_land_bottom"
                     android:layout_width="wrap_content"
-                    android:layout_height="@dimen/y52"
-                    android:layout_toStartOf="@+id/v_divider"
-                    android:gravity="center"
-                    android:paddingLeft="@dimen/x10"
-                    android:paddingRight="@dimen/x10"
-                    android:text="@string/Tap1_Camera_VideoLive"
-                    android:textColor="@color/color_4b9fd5" />
-
-                <View
-                    android:id="@+id/v_divider"
-                    android:layout_width="@dimen/x2"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_toStartOf="@+id/lLayout_protection"
-                    android:background="@color/color_adadad"
-                    android:visibility="gone" />
+                    android:orientation="horizontal">
+
+                    <View
+                        android:id="@+id/v_flag"
+                        android:layout_width="@dimen/x3"
+                        android:layout_height="match_parent"
+                        android:layout_marginBottom="@dimen/y5"
+                        android:layout_marginTop="@dimen/y5"
+                        android:background="@drawable/little_shape_horizontal" />
+
+                    <TextView
+                        android:id="@+id/tv_cam_live_port_live"
+                        android:layout_width="wrap_content"
+                        android:layout_height="@dimen/y52"
+                        android:gravity="center"
+                        android:paddingLeft="@dimen/x10"
+                        android:paddingRight="@dimen/x10"
+                        android:text="@string/Tap1_Camera_VideoLive"
+                        android:textColor="@color/color_4b9fd5" />
+
+                    <View
+                        android:id="@+id/v_divider"
+                        android:layout_width="@dimen/x2"
+                        android:layout_height="match_parent"
+                        android:background="@color/color_adadad"
+                        android:visibility="gone" />
+                </LinearLayout>
+
 
                 <com.cylan.jiafeigou.widget.flip.FlipLayout
                     android:id="@+id/lLayout_protection"
@@ -97,13 +103,13 @@
                     android:layout_height="match_parent"
                     android:layout_marginEnd="@dimen/x5"
                     android:layout_marginStart="@dimen/x5"
-                    android:layout_toStartOf="@+id/v_right"
+                    android:layout_toStartOf="@+id/v_stander"
                     android:visibility="gone" />
-
+                <!--标杆view-->
                 <View
-                    android:id="@+id/v_right"
-                    android:layout_width="@dimen/x0"
-                    android:layout_height="@dimen/y0"
+                    android:id="@+id/v_stander"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:layout_alignParentEnd="true" />
             </RelativeLayout>
         </LinearLayout>

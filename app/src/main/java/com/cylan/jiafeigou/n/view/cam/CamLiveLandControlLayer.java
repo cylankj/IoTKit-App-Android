@@ -17,10 +17,11 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.adapter.CamLandHistoryDateAdapter;
+import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
+import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
-import com.cylan.jiafeigou.utils.DensityUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +40,7 @@ import static android.widget.RelativeLayout.BELOW;
  * <p>
  * Created by cylan-hunt on 16-7-27.
  */
-public class CamLiveControlLayer extends FrameLayout {
+public class CamLiveLandControlLayer extends FrameLayout {
     /**
      * 显示状态:0:隐藏,1:显示,2:淡入,3:淡出,4:slide_out_up,5:slide_out_down
      */
@@ -52,7 +53,7 @@ public class CamLiveControlLayer extends FrameLayout {
     @BindView(R.id.imgV_cam_live_land_play)
     ImageView imgVCamLiveLandPlay;
     @BindView(R.id.lLayout_protection)
-    FlipLayout lLayoutProtection;
+    FlipLayout flipLayout;
     @BindView(R.id.live_time_layout)
     LiveTimeLayout liveTimeLayout;
     @BindView(R.id.fLayout_cam_live_land_top_bar)
@@ -63,16 +64,20 @@ public class CamLiveControlLayer extends FrameLayout {
     RecyclerView rvLandDateList;
     @BindView(R.id.fLayout_land_date_container)
     FrameLayout fLayoutLandDateContainer;
+    @BindView(R.id.rLayout_cam_live_land_bottom_second)
+    View layout;
+    @BindView(R.id.tv_cam_live_land_bottom)
+    View vLiveRect;
 
-    public CamLiveControlLayer(Context context) {
+    public CamLiveLandControlLayer(Context context) {
         this(context, null);
     }
 
-    public CamLiveControlLayer(Context context, AttributeSet attrs) {
+    public CamLiveLandControlLayer(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public CamLiveControlLayer(Context context, AttributeSet attrs, int defStyleAttr) {
+    public CamLiveLandControlLayer(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         View view = LayoutInflater.from(context).inflate(R.layout.layout_cam_live_control_layer, this, true);
         ButterKnife.bind(view);
@@ -99,12 +104,14 @@ public class CamLiveControlLayer extends FrameLayout {
         return fLayoutCamLiveLandBottomBar;
     }
 
-    public LiveTimeLayout getLiveTimeLayout() {
-        return liveTimeLayout;
+    public void setLiveRectClickListener(OnClickListener clickListener) {
+        if (clickListener != null)
+            liveTimeLayout.setOnClickListener(clickListener);
     }
 
-    public LinearLayout getCamHistoryWheel() {
-        return lLayoutCamHistoryWheel;
+    public void setLivePlayBtnClickListener(OnClickListener clickListener) {
+        if (clickListener != null)
+            imgVCamLiveLandPlay.setOnClickListener(clickListener);
     }
 
     public SuperWheelExt getSwCamLiveWheel() {
@@ -123,43 +130,46 @@ public class CamLiveControlLayer extends FrameLayout {
         return imgVCamLiveLandPlay;
     }
 
-    public FlipLayout getFlipLayout() {
-        return lLayoutProtection;
-    }
-
-    public void setOrientation(int orientation) {
-        post(() -> {
-            setVisibility(VISIBLE);
-            fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-            findViewById(R.id.imgV_cam_live_land_play).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-            findViewById(R.id.v_divider).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-            findViewById(R.id.lLayout_protection).setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-            liveTimeLayout.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-            fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-            fLayoutCamLiveLandBottomBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-            lLayoutCamHistoryWheel.setBackgroundColor(orientation == Configuration.ORIENTATION_LANDSCAPE ? getResources().getColor(R.color.color_4C000000) : Color.TRANSPARENT);
-            RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
-            if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                layoutParams.removeRule(BELOW);
-                layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
-            } else {
-                layoutParams.addRule(BELOW, R.id.fLayout_cam_live_view);
-                layoutParams.height = DensityUtils.dip2px(52);
-            }
-            setLayoutParams(layoutParams);
-        });
+    public void setOrientation(int orientation, boolean isShareDevice, boolean hasSdcard, boolean safe) {
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) setVisibility(VISIBLE);
+        imgVCamLiveLandPlay.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+        fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+        fLayoutCamLiveLandBottomBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+        rvLandDateList.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+        lLayoutCamHistoryWheel.setBackgroundColor(orientation == Configuration.ORIENTATION_LANDSCAPE ? getResources().getColor(R.color.color_4C000000) : Color.TRANSPARENT);
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) getLayoutParams();
+        if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            layoutParams.removeRule(BELOW);
+            layoutParams.height = ViewGroup.LayoutParams.MATCH_PARENT;
+        } else {
+            layoutParams.addRule(BELOW, R.id.fLayout_cam_live_view);
+            layoutParams.height = DensityUtils.dip2px(52);
+        }
+        setLayoutParams(layoutParams);
+        //直播|安全防护
+        layout.setVisibility(isShareDevice ? GONE : VISIBLE);
+        liveTimeLayout.setVisibility(isShareDevice ? GONE : VISIBLE);
+        vLiveRect.setVisibility(isShareDevice && hasSdcard ? VISIBLE : GONE);
+        flipLayout.setFlipped(safe);
     }
 
     public void setTopBarAction(CamLiveLandTopBar.TopBarAction topBarAction) {
         fLayoutCamLiveLandTopBar.setTopBarAction(topBarAction);
     }
 
+    public void setLandSafeClickListener(FlipImageView.OnFlipListener flipListener) {
+        if (flipListener != null)
+            flipLayout.setFlipListener(flipListener);
+    }
+
+    public void setLandSafe(boolean safe) {
+        flipLayout.setFlipped(safe);
+    }
+
     public void showHistoryWheel(boolean port) {
         if (port) {
-//            lLayoutCamHistoryWheel.set
             liveTimeLayout.setVisibility(GONE);
-            imgVCamLiveLandPlay.setVisibility(GONE);
-            lLayoutProtection.setVisibility(GONE);
+            flipLayout.setVisibility(GONE);
             fLayoutCamLiveLandBottomBar.setVisibility(VISIBLE);
             fLayoutCamLiveLandBottomBar.setTop(0);
             fLayoutCamLiveLandBottomBar.setTranslationY(0);
