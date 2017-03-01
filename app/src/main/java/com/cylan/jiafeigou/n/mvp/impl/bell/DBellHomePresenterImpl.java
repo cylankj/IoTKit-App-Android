@@ -136,7 +136,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
 
     @Override
     public void fetchBellRecordsList(boolean asc, long time) {
-        Subscription subscribe = Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
+        Subscription subscribe = Observable.just(mSourceManager.isOnline())
                 .observeOn(Schedulers.io())
                 .flatMap(hasNet -> hasNet ? fetchBellRecordListFromServer(asc, time) : fetchBellRecordListFromLocal(asc, time == 0 ? Long.MAX_VALUE : time))
                 .observeOn(AndroidSchedulers.mainThread())

@@ -67,16 +67,17 @@ public class BaseDPHelper implements DPHelperInterface {
                 .where(DPCacheDao.Properties.Uuid.eq(uuid), DPCacheDao.Properties.Version.eq(version), DPCacheDao.Properties.MsgId.eq(msgId))
                 .rx()
                 .unique()
+                .filter(result -> result == null)
                 .map(result -> {
-                    if (result != null && !ACTION_NOT_CONFIRM.equals(result.getState())) {
-                        result.setTag(ACTION_SAVED);
-                        result.setState(ACTION_SUCCESS);
-                    } else {
-                        result = new DPCache(null, getAccount(), getServer(), uuid, version, msgId, bytes, ACTION_SAVED, ACTION_SUCCESS);
-                    }
+                    result = new DPCache(null, getAccount(), getServer(), uuid, version, msgId, bytes, ACTION_SAVED, ACTION_SUCCESS);
                     cacheDao.save(result);
                     return result;
-                });
+                }).doOnError(e -> {
+                    e.printStackTrace();
+                    AppLogger.e("UUID" + uuid + "version:" + version + "msgId" + msgId);
+
+                })
+                ;
     }
 
     @Override
