@@ -8,6 +8,7 @@ import android.net.NetworkInfo;
 
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 public class JFGNetWorkMonitorReceiver extends BroadcastReceiver {
     public JFGNetWorkMonitorReceiver() {
@@ -21,10 +22,12 @@ public class JFGNetWorkMonitorReceiver extends BroadcastReceiver {
 
         if (!mobNetInfo.isConnected() && !wifiNetInfo.isConnected()) {
 //                BSToast.showLong(context, "网络不可以用");
+            AppLogger.d("当前网络不可用");
             RxBus.getCacheInstance().post(new RxEvent.NetConnectionEvent(false));
             //改变背景或者 处理网络的全局变量
         } else {
             //改变背景或者 处理网络的全局变量
+            AppLogger.d("当前网络可用");
             RxBus.getCacheInstance().post(new RxEvent.NetConnectionEvent(true));
         }
     }

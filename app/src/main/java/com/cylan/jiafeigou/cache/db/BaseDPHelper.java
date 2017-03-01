@@ -68,7 +68,7 @@ public class BaseDPHelper implements DPHelperInterface {
                 .rx()
                 .unique()
                 .map(result -> {
-                    if (result != null) {
+                    if (result != null && !ACTION_NOT_CONFIRM.equals(result.getState())) {
                         result.setTag(ACTION_SAVED);
                         result.setState(ACTION_SUCCESS);
                     } else {
@@ -128,8 +128,8 @@ public class BaseDPHelper implements DPHelperInterface {
                     AppLogger.d("本地未确认的MSG 个数为:" + result.size() + ",MSGID:" + msgId);
                     for (DPCache cache : result) {
                         cache.setState(ACTION_SUCCESS);
-                        cache.update();
                     }
+                    cacheDao.updateInTx(result);
                     return true;
                 });
     }
@@ -139,7 +139,9 @@ public class BaseDPHelper implements DPHelperInterface {
         AppLogger.d("正在查询本地未经确认的数据withTag:" + tag);
         QueryBuilder<DPCache> builder = cacheDao.queryBuilder();
         if (!TextUtils.isEmpty(uuid)) builder.where(DPCacheDao.Properties.Uuid.eq(uuid));
-        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId), DPCacheDao.Properties.Tag.eq(ACTION_DELETED), DPCacheDao.Properties.State.eq(ACTION_NOT_CONFIRM))
+        return builder.where(DPCacheDao.Properties.MsgId.eq(msgId),
+                DPCacheDao.Properties.Tag.eq(ACTION_DELETED),
+                DPCacheDao.Properties.State.eq(ACTION_NOT_CONFIRM))
                 .orderDesc(DPCacheDao.Properties.Version)
                 .rx()
                 .list();
@@ -220,7 +222,11 @@ public class BaseDPHelper implements DPHelperInterface {
          */
         @Override
         public File getDatabasePath(String dbName) {
-            File baseFile = new File(JConstant.ROOT_DIR + "/db", dbName);
+            File baseFile = new File(JConstant.ROOT_DIR + File.separator + "db", dbName);
+            File parentFile = baseFile.getParentFile();
+            if (parentFile != null) {
+                parentFile.mkdirs();
+            }
             return baseFile;
         }
 
