@@ -394,7 +394,7 @@ public class DataPointManager implements IParser, IDataPoint {
         bundleMap.clear();
         jfgDeviceMap.clear();
         bundleSetMap.clear();
-//        unreadMap.clear();
+        unreadMap.clear();
     }
 
 }

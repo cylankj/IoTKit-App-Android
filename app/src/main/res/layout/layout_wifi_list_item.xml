@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/lLayout_wifi_list_item"
     android:layout_width="match_parent"
@@ -9,30 +9,29 @@
     tools:context="com.cylan.jiafeigou.n.view.setting.WifiListFragment">
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <ImageView
+        android:id="@+id/imv_wifi_ssid"
+        android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_centerVertical="true"
+        android:layout_marginEnd="@dimen/x10"
+        android:gravity="center" />
 
-        <ImageView
-            android:id="@+id/imv_wifi_ssid"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="@dimen/x10"
-            android:gravity="center" />
+    <TextView
+        android:id="@+id/tv_wifi_ssid"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_centerVertical="true"
+        android:layout_gravity="center_vertical"
+        android:layout_toEndOf="@+id/imv_wifi_ssid"
+        android:gravity="center"
+        android:textColor="@color/color_black"
+        android:textSize="@dimen/sp16" />
 
-        <TextView
-            android:id="@+id/tv_wifi_ssid"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:gravity="center"
-            android:textColor="@color/color_black"
-            android:textSize="@dimen/sp16" />
-    </LinearLayout>
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
         android:background="@color/color_e8e8e8" />
-</LinearLayout>
+</RelativeLayout>

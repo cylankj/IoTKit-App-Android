@@ -214,7 +214,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private void enableDebugOptions() {
         DebugOptionsImpl.enableCrashHandler(this, PathGetter.createPath(JConstant.CRASH_PATH));
 
-        DebugOptionsImpl.enableStrictMode();
+//        DebugOptionsImpl.enableStrictMode();
     }
 
     @Override

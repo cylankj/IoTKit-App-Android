@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.impl.setting.WifiListPresenterImpl;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
@@ -37,7 +38,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
+import static com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract.ERR_NO_RAW_LIST;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_INPUT_HINT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_SHOW_EDIT;
@@ -107,9 +110,10 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
             final ScanResult item = ((AAdapter) rvWifiList.getAdapter()).getItem(position);
             Bundle bundle = new Bundle();
             final String ssid = item.SSID.replace("\"", "");
-            bundle.putString(KEY_TITLE, String.format(Locale.getDefault(), "给%s输入密码,缺少语言包", ssid));
+            bundle.putString(KEY_TITLE, ssid);
             bundle.putString(KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
             bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+            bundle.putString(KEY_INPUT_HINT, getString(R.string.ENTER_PWD_1));
             final int security = NetUtils.getSecurity(item);
             bundle.putBoolean(KEY_SHOW_EDIT, security != 0);
             EditFragmentDialog dialog = EditFragmentDialog.newInstance(bundle);
@@ -129,31 +133,33 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
 
     @Override
     public void onResults(ArrayList<ScanResult> results) {
-        swRefreshWifi.setRefreshing(false);
         ((AAdapter) rvWifiList.getAdapter()).clear();
         ((AAdapter) rvWifiList.getAdapter()).addAll(results);
+        swRefreshWifi.setRefreshing(false);
     }
 
     @Override
     public void onErr(int err) {
-
+        if (err == ERR_NO_RAW_LIST) {
+            if (Build.VERSION.SDK_INT >= 23) {
+                new AlertDialog.Builder(getContext())
+                        .setMessage(getString(R.string.GetWifiList_FaiTips))
+                        .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                            if (basePresenter != null) basePresenter.startScan();
+                        })
+                        .setNegativeButton(getString(R.string.CALL_CAMERA_NAME), null)
+                        .show();
+            } else {
+                ToastUtil.showNegativeToast(getString(R.string.Tap1_AddDevice_refreshWifi));
+            }
+        }
+        swRefreshWifi.setRefreshing(false);
     }
 
     @Override
     public void onRefresh() {
-        if (Build.VERSION.SDK_INT >= 23) {
-            new AlertDialog.Builder(getContext())
-                    .setMessage("1.允许\"位置信息\"权限\n2.请确保GPS已经打开\n3.不再提醒")
-                    .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                        if (basePresenter != null) basePresenter.startScan();
-                    })
-                    .setNegativeButton(getString(R.string.CALL_CAMERA_NAME), null)
-                    .show();
-            swRefreshWifi.setRefreshing(true);
-        } else {
-            if (basePresenter != null) basePresenter.startScan();
-            swRefreshWifi.setRefreshing(true);
-        }
+        if (basePresenter != null) basePresenter.startScan();
+        swRefreshWifi.setRefreshing(true);
     }
 
     private class AAdapter extends SuperAdapter<ScanResult> {
@@ -176,10 +182,10 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
             int strength = WifiManager.calculateSignalLevel(item.level, 3);
             if (security == 0) {
                 //open
-                strength += 4;
+                strength += 3;
             } else {
                 //encrypt
-                strength += 1;
+                strength += 0;
             }
             int base = R.drawable.setting_icon_wifi_network_security1;
             return base + strength;

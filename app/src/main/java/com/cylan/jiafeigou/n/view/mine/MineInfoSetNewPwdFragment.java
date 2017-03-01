@@ -79,6 +79,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        ViewUtils.setChineseExclude(etMineSetNewpwd, 65);
         ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
@@ -134,6 +135,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
 
     /**
      * 注册结果
+     *
      * @param code
      */
     @Override

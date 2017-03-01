@@ -40,7 +40,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     private void checkShouldJump() {
         Intent intent = getIntent();
         if (intent != null && !TextUtils.isEmpty(intent.getStringExtra(KEY_AUTO_SHOW_BIND))) {
-            jump2Cam();
+            jump2Cam(false);
         }
     }
 
@@ -126,7 +126,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 break;
             }
             case R.id.v_to_bind_camera: {
-                jump2Cam();
+                jump2Cam(true);
                 break;
             }
             case R.id.v_to_bind_doorbell: {
@@ -145,17 +145,25 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         }
     }
 
-    private void jump2Cam() {
+    private void jump2Cam(boolean animation) {
         ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_camera));
         Bundle bundle = new Bundle();
         BindCameraFragment fragment = BindCameraFragment.newInstance(bundle);
-        getSupportFragmentManager()
-                .beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment)
-                .addToBackStack("BindCameraFragment")
-                .commit();
+        if (animation) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, fragment)
+                    .addToBackStack("BindCameraFragment")
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(android.R.id.content, fragment)
+//                    .addToBackStack("BindCameraFragment")
+                    .commit();
+        }
     }
-    
+
 }

@@ -74,9 +74,11 @@ public class GlobalDataProxy implements IDataProxy {
         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
         if (loginState.state == LogState.STATE_NONE) {
             if (dataPointManager != null) dataPointManager.clear();
+            shareList.clear();
             setJfgAccount(null);
         } else if (loginState.state == LogState.STATE_ACCOUNT_OFF) {
             if (dataPointManager != null) dataPointManager.clear();
+            shareList.clear();
         } else {
 
         }

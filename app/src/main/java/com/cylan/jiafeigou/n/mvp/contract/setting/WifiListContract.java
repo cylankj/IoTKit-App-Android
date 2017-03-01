@@ -13,6 +13,8 @@ import java.util.ArrayList;
 
 public interface WifiListContract {
 
+    public static final int ERR_NO_RAW_LIST = -1;
+
     interface View extends BaseView<Presenter> {
         void onResults(ArrayList<ScanResult> results);
 
@@ -22,6 +24,6 @@ public interface WifiListContract {
     interface Presenter extends BasePresenter {
         void startScan();
 
-        void sendWifiInfo(String ssid, String pwd,int security);
+        void sendWifiInfo(String ssid, String pwd, int security);
     }
 }
