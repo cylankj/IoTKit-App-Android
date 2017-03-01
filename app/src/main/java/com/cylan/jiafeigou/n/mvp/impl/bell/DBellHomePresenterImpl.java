@@ -80,11 +80,11 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     }
 
     private Subscription getNetWorkMonitorSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
-                    if (event.available) {
+                    if (event.state) {
                         syncLocalDataFromServer();
                     } else {
                         mView.onSyncLocalDataRequired();

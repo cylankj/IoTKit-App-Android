@@ -67,14 +67,13 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     }
 
     private Subscription getNetWorkMonitorSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(event -> {
-                    if (event.available) {
+                    if (event.state) {
+                        AppLogger.e("收到网络可用的通知,正在同步数据");
                         syncLocalDataFromServer();
-                    } else {
-                        mView.onSyncLocalDataRequired();
                     }
                 }, Throwable::printStackTrace);
     }
