@@ -215,7 +215,11 @@ public class BaseDPHelper implements DPHelperInterface {
          */
         @Override
         public File getDatabasePath(String dbName) {
-            File baseFile = new File(JConstant.ROOT_DIR + "/db", dbName);
+            File file = new File(JConstant.ROOT_DIR + "/db");
+            if (!file.exists()){
+                file.mkdir();
+            }
+            File baseFile = new File(file.getAbsolutePath(), dbName);
             return baseFile;
         }
 
