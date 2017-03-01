@@ -433,7 +433,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         ViewGroup.LayoutParams.WRAP_CONTENT,
                         Gravity.END);
                 textView.setGravity(Gravity.CENTER);
-                lp.setMargins(20, DensityUtils.px2dip(14), DensityUtils.px2dip(1), 20);
+                lp.rightMargin = (int) getResources().getDimension(R.dimen.x14);
+                lp.topMargin = (int) getResources().getDimension(R.dimen.x14);
                 fLayoutCamLiveView.addView(textView, lp);
                 tvFlowRef = new WeakReference<>(textView);
             }
