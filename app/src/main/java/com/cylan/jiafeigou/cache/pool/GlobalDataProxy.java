@@ -40,8 +40,6 @@ public class GlobalDataProxy implements IDataProxy {
      * 根据账号
      */
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
-    @Deprecated
-    private boolean isOnline;
 
     private GlobalDataProxy() {
     }
@@ -57,11 +55,6 @@ public class GlobalDataProxy implements IDataProxy {
 
     public void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
         DeviceFullParameters.getInstance().assembleFullParameters(b, s, arrayList);
-    }
-
-    @Deprecated
-    public void setOnline(boolean online) {
-        isOnline = online;
     }
 
 
