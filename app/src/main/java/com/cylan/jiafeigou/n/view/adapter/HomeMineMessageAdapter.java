@@ -95,18 +95,26 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
         }
 
         //头像icon
-        if (item.content.charAt(0)== '5'){
-            int iconRes = resMap.get(6);
-            holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
-        }else if (item.content.charAt(0)== '7'){
-            int iconRes = resMap.get(11);
-            holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
+
+        if (item.type == 701){
+            //处理消息显示
+            holder.setText(R.id.tv_device_name,ContextUtils.getContext().getString(R.string.Tap3_UserMessage_System));
+            holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(R.drawable.pic_head));
         }else {
-            int iconRes = resMap.get(4);
-            holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
+            //处理消息显示
+            holder.setText(R.id.tv_device_name,item.getContent());
+            char c = item.content.charAt(0);
+            if (c== '5'){
+                int iconRes = resMap.get(6);
+                holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
+            }else if (c == '7'){
+                int iconRes = resMap.get(11);
+                holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
+            }else {
+                int iconRes = resMap.get(4);
+                holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
+            }
         }
-        //处理消息显示
-        holder.setText(R.id.tv_device_name,item.getContent());
 
         if (item.isDone == 1){
             switch (item.type){
@@ -119,7 +127,6 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
                 case 604:
                     holder.setText(R.id.mesg_item_content,"亲友分享了改设备");
                     break;
-
             }
         }else {
             switch (item.type){
@@ -164,7 +171,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
     public String parseTime(String times) {
         long timem = Long.parseLong(times);
         Date time = new Date(timem);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
         String dateString = formatter.format(time);
         return dateString;
     }

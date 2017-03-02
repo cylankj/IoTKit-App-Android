@@ -57,15 +57,15 @@
             <EditText
                 android:id="@+id/et_mine_personal_information_mailbox"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/y48"
                 android:layout_centerVertical="true"
                 android:layout_marginLeft="@dimen/x20"
                 android:layout_marginRight="@dimen/x20"
-                android:background="@null"
                 android:hint="@string/EMAIL_1"
-                android:textCursorDrawable="@drawable/search_friend_cursor_color"
+                android:background="@null"
                 android:maxLength="65"
                 android:singleLine="true"
+                android:inputType="textVisiblePassword"
                 android:ellipsize="start"
                 android:textColor="@color/color_333333"
                 android:textSize="@dimen/sp16" />

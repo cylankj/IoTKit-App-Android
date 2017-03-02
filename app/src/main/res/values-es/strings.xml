@@ -840,7 +840,7 @@
   <string name="getting">Por favor, espere&#8230;</string>
   <string name="has_copy">Copiar el éxito</string>
   <string name="has_not_sdcard">No tarjeta Micro SD disponible</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/es.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/es.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">No se dispone de espacio de la tarjeta Micro SD</string>
   <string name="is_connecting_video">Conectando</string>

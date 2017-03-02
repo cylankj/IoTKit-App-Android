@@ -840,7 +840,7 @@
   <string name="getting">Elde ediliyor&#8230;</string>
   <string name="has_copy">Çoğaltılmış</string>
   <string name="has_not_sdcard">Mikro SD kartı bulamadık</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/tr.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/tr.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">SD kartınızda yeterli yer yok</string>
   <string name="is_connecting_video">Bağlanılıyor</string>

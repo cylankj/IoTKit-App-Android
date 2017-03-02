@@ -840,7 +840,7 @@
   <string name="getting">Đang lấy&#8230;</string>
   <string name="has_copy">Đã nhân bản</string>
   <string name="has_not_sdcard">Không tìm thấy SD card</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/vn.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/vn.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Thẻ SD không còn đủ dung lượng</string>
   <string name="is_connecting_video">Đang kết nối</string>

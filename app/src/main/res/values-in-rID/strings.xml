@@ -840,7 +840,7 @@
   <string name="getting">Mendapatkan&#8230;</string>
   <string name="has_copy">Direplikasi</string>
   <string name="has_not_sdcard">Tidak dapat menemukan Kartu SD</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/id.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/id.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Kartu SD anda tidak cukup ruang</string>
   <string name="is_connecting_video">Sedang menyambungkan&#8230;</string>

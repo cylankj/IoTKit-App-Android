@@ -840,7 +840,7 @@
     <string name="getting">Getting&#8230;</string>
     <string name="has_copy">Replicated</string>
     <string name="has_not_sdcard">Not find Micro SD card</string>
-    <string name="help_url">https://yf.jfgou.com:8081/help/en.html</string>
+    <string name="help_url">https://yf.jfgou.com:8081/helps/en.html</string>
     <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
     <string name="isStorageLow">Your SD card is no enough space</string>
     <string name="is_connecting_video">Connecting</string>

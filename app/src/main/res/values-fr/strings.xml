@@ -840,7 +840,7 @@
   <string name="getting">Recherche&#8230;</string>
   <string name="has_copy">Dupliqué</string>
   <string name="has_not_sdcard">Carte Micro SD non détectée</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/fr.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/fr.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Mémoire insuffisante sur la carte Micro SD</string>
   <string name="is_connecting_video">Connexion en cours</string>

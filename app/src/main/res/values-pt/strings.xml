@@ -840,7 +840,7 @@
   <string name="getting">Obtendo&#8230;</string>
   <string name="has_copy">Copiado</string>
   <string name="has_not_sdcard">Cartão microSD não detectado</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/pt.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/pt.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">microSD sem espaço disponível</string>
   <string name="is_connecting_video">Conectando</string>

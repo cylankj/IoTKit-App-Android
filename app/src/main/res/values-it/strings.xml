@@ -840,7 +840,7 @@
   <string name="getting">Ricezione&#8230;</string>
   <string name="has_copy">Replicato</string>
   <string name="has_not_sdcard">Scheda SD non trovata</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/it.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/it.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Sulla scheda SD non c\'è abbastanza spazio</string>
   <string name="is_connecting_video">Connessione in corso</string>

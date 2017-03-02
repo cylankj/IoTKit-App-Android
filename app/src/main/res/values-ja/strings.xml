@@ -840,7 +840,7 @@
   <string name="getting">獲得中&#8230;</string>
   <string name="has_copy">已复制</string>
   <string name="has_not_sdcard">Micro SDカードを検出できません</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/ja.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/ja.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Micro SDカードが使用できるスペースがない場合、古い動画を順番に削除する</string>
   <string name="is_connecting_video">接続中</string>
