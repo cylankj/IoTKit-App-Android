@@ -4,8 +4,8 @@ import android.content.res.XmlResourceParser;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -154,6 +154,7 @@ public class MiscUtils {
         }
     }
 
+
     public static String getBeautifulString(String temp, int len) {
         if (!TextUtils.isEmpty(temp) && temp.length() > len) {
             temp = temp.substring(0, len) + "...";
@@ -161,11 +162,11 @@ public class MiscUtils {
         return temp;
     }
 
-    public static ArrayList<String> getSharedList(ArrayList<JFGDevice> devices) {
+    public static ArrayList<String> getSharedList(List<JFGDPDevice> devices) {
         if (devices == null)
             return new ArrayList<>();
         ArrayList<String> arrayList = new ArrayList<>();
-        for (JFGDevice device : devices) {
+        for (JFGDPDevice device : devices) {
             if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
                 arrayList.add(device.uuid);
             }
@@ -173,11 +174,11 @@ public class MiscUtils {
         return arrayList;
     }
 
-    public static ArrayList<String> getNoneSharedList(ArrayList<JFGDevice> devices) {
+    public static ArrayList<String> getNoneSharedList(List<JFGDPDevice> devices) {
         if (devices == null)
             return new ArrayList<>();
         ArrayList<String> arrayList = new ArrayList<>();
-        for (JFGDevice device : devices) {
+        for (JFGDPDevice device : devices) {
             if (device != null && TextUtils.isEmpty(device.shareAccount)) {
                 arrayList.add(device.uuid);
             }

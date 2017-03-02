@@ -11,9 +11,10 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -118,12 +119,12 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
     }
 
     private void updateDetails() {
-        String mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC, "");
-        tvDeviceMac.setText(mac);
-        int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);
-        tvDeviceBatteryLevel.setText(battery + "");
+        DpMsgDefine.DPPrimary<String> mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
+        tvDeviceMac.setText(mac.$());
+        DpMsgDefine.DPPrimary<Integer> battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
+        tvDeviceBatteryLevel.setText(battery.$() + "");
 
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
         if (device != null) {
             tvDeviceAlias.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
@@ -164,12 +165,12 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
             @Override
             public void onDialogAction(int id, String value) {
                 if (presenter != null) {
-                    JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+                    JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
                     if (!TextUtils.isEmpty(value)
                             && !TextUtils.equals(device.alias, value)) {
                         tvDeviceAlias.setText(value);
                         device.alias = value;
-//                        presenter.saveMagInfoBean(device, DpMsgMap.ID_2000003_BASE_ALIAS);
+//                        presenter.updateInfoReq(device, DpMsgMap.ID_2000003_BASE_ALIAS);
 //                        updateDetails();
 
                         if (mListener != null) {

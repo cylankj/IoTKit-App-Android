@@ -2,8 +2,8 @@ package com.cylan.jiafeigou.n.mvp.impl.cloud;
 
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
@@ -72,7 +72,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
     }
 
     private void fillData() {
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
         getView().onCloudInfoRsp(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
     }
 
@@ -142,7 +142,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
      */
     @Override
     public String getDeviceName() {
-        JFGDevice jfgDevice = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice jfgDevice = GlobalDataProxy.getInstance().getJFGDevice(uuid);
         if (jfgDevice == null)
             return uuid;
         return TextUtils.isEmpty(jfgDevice.alias) ?

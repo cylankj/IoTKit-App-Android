@@ -114,7 +114,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         mSourceManager = null;
     }
 
-    protected void onLoginStateChanged(RxEvent.LoginRsp loginState) {
+    protected void onLoginStateChanged(RxEvent.OnlineStatusRsp loginState) {
         mView.onLoginStateChanged(loginState.state);
     }
 
@@ -123,7 +123,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
      * 监听登录状态的变化时基本的功能,所以提取到基类中
      */
     private Subscription getLoginStateSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.LoginRsp.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.OnlineStatusRsp.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::onLoginStateChanged, e -> {

@@ -6,10 +6,10 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.cylan.entity.JfgEnum;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import rx.Observable;
 import rx.Subscription;
@@ -145,8 +146,8 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     private ArrayList<DeviceBean> getShareDeviceList() {
 
         ArrayList<DeviceBean> list = new ArrayList<>();
-        ArrayList<JFGDevice> devices = GlobalDataProxy.getInstance().fetchAll();
-        for (JFGDevice info : devices) {
+        List<JFGDPDevice> devices = GlobalDataProxy.getInstance().getAllJFGDevice();
+        for (JFGDPDevice info : devices) {
             DeviceBean bean = new DeviceBean();
             bean.alias = info.alias;
             bean.pid = info.pid;

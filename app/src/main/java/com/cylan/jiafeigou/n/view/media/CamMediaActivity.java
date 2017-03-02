@@ -21,8 +21,8 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.HackyViewPager;
@@ -73,7 +73,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     private int currentIndex = -1, previewFocusIndex = -1;
     private DpMsgDefine.DPAlarm alarmMsg;
     private String uuid;
-    private JFGDevice device;
+    private JFGDPDevice device;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +84,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         setContentView(R.layout.activity_cam_media);
         ButterKnife.bind(this);
         uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        device = GlobalDataProxy.getInstance().fetch(uuid);
+        device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
         basePresenter = new CamMediaPresenterImpl(this, uuid);
         alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());

@@ -78,12 +78,14 @@ public interface ForgetPwdContract {
 
         /**
          * 检测是否已注册
+         *
          * @param account
          */
         void checkIsReg(String account);
 
         /**
          * 检测是否已注册回调
+         *
          * @return
          */
         Subscription checkIsRegBack();

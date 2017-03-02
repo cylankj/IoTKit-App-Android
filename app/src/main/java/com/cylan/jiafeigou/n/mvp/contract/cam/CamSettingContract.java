@@ -2,7 +2,8 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import android.content.Context;
 
-import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.base.module.JFGCameraDevice;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -14,14 +15,7 @@ public interface CamSettingContract {
 
     interface View extends BaseView<Presenter> {
 
-        /**
-         * 设备属性更新了
-         *
-         * @param value
-         */
-        void onInfoUpdate(BaseValue value);
-
-        void isSharedDevice();
+        void deviceUpdate(JFGCameraDevice jfgCameraDevice);
 
         void unbindDeviceRsp(int state);
 
@@ -47,7 +41,8 @@ public interface CamSettingContract {
          * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
          * @param id
          */
-        void updateInfoReq(Object value, long id);
+//        void updateInfoReq(Object value, long id);
+        public <T extends DataPoint> void updateInfoReq(T value, long id);
 
         void unbindDevice();
 

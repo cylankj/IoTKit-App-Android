@@ -27,9 +27,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
@@ -45,16 +45,13 @@ import com.cylan.jiafeigou.n.view.cloud.CloudLiveSettingFragment;
 import com.cylan.jiafeigou.n.view.cloud.CloudMesgBackListener;
 import com.cylan.jiafeigou.n.view.cloud.LayoutIdMapCache;
 import com.cylan.jiafeigou.n.view.cloud.ViewTypeMapCache;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 
-import java.io.Serializable;
 import java.util.List;
 
 import butterknife.BindView;
@@ -118,7 +115,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     }
 
     private void initTitle() {
-        JFGDevice jfgDevice = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice jfgDevice = DataSourceManager.getInstance().getJFGDevice(uuid);
         tvDeviceName.setText(TextUtils.isEmpty(jfgDevice.alias) ? jfgDevice.uuid : jfgDevice.alias);
 //        CloudLiveCallActivity.setOnCloudMesgBackListener(this);
     }
@@ -218,7 +215,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
         Intent intent = new Intent(ContextUtils.getContext(), CloudLiveCallActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         intent.putExtra("call_in_or_out", false);
-        startActivityForResult(intent,1);
+        startActivityForResult(intent, 1);
     }
 
     /**
@@ -511,6 +508,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     /**
      * 添加一条消息
+     *
      * @param bean
      */
     @Override
@@ -520,7 +518,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == 1 && resultCode == 1 && data != null){
+        if (requestCode == 1 && resultCode == 1 && data != null) {
             Bundle callback = data.getBundleExtra("callback");
             CloudLiveBaseBean callbackBean = (CloudLiveBaseBean) callback.getSerializable("callbackBean");
             refreshRecycleView(callbackBean);

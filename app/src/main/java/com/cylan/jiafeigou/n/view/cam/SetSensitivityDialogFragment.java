@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
@@ -77,12 +78,12 @@ public class SetSensitivityDialogFragment extends BaseDialog {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         getDialog().setCanceledOnTouchOutside(false);
-        int level = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY, 0);
+        DpMsgDefine.DPPrimary<Integer> level = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
         final int count = rgSensitivity.getChildCount();
         for (int i = 0; i < count; i++) {
             final int index = i;
             RadioButton box = (RadioButton) rgSensitivity.getChildAt(i);
-            box.setChecked(level == (2 - i));
+            box.setChecked(level.$() == (2 - i));
             box.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 if (isChecked) {
                     if (action != null) action.onDialogAction(0, 2 - index);

@@ -2,45 +2,38 @@ package com.cylan.jiafeigou.base.module;
 
 
 import android.text.TextUtils;
+import android.util.Log;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.BaseDPHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
-import static com.cylan.jiafeigou.misc.JConstant.OS_AIR_DETECTOR;
-import static com.cylan.jiafeigou.misc.JConstant.OS_ANDROID_PHONE;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMARA_ANDROID_SERVICE;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_ANDROID;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_ANDROID_4G;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_CC3200;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_PANORAMA_GUOKE;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_PANORAMA_HAISI;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_PANORAMA_QIAOAN;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS_V2;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS_V3;
-import static com.cylan.jiafeigou.misc.JConstant.OS_DOOR_BELL;
-import static com.cylan.jiafeigou.misc.JConstant.OS_DOOR_BELL_CAM;
-import static com.cylan.jiafeigou.misc.JConstant.OS_DOOR_BELL_V2;
-import static com.cylan.jiafeigou.misc.JConstant.OS_EFAML;
-import static com.cylan.jiafeigou.misc.JConstant.OS_IOS_PHONE;
-import static com.cylan.jiafeigou.misc.JConstant.OS_IR;
-import static com.cylan.jiafeigou.misc.JConstant.OS_MAGNET;
-import static com.cylan.jiafeigou.misc.JConstant.OS_PC;
-import static com.cylan.jiafeigou.misc.JConstant.OS_SERVER;
-import static com.cylan.jiafeigou.misc.JConstant.OS_TEMP_HUMI;
+import rx.exceptions.OnErrorNotImplementedException;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
 
 /**
  * Created by yzd on 16-12-28.
@@ -54,11 +47,12 @@ public class DataSourceManager implements JFGSourceManager {
     private Map<String, JFGDPDevice> mCachedDeviceMap = new HashMap<>();//和uuid相关的数据缓存
     private JFGDPAccount mJFGAccount;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
+    private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private boolean isOnline;
     private JFGDPDevice mFakeDevice = new JFGDPDevice() {
     };
 
-    private DataSourceManager() {
+    public DataSourceManager() {
     }
 
     public static DataSourceManager getInstance() {
@@ -88,7 +82,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public <T extends JFGDPDevice> T getJFGDevice(String uuid) {
-
         JFGDPDevice device = mCachedDeviceMap.get(uuid);
 //        if (device == null&& BuildConfig.DEBUG) throw new IllegalArgumentException("天啊,它真的发生了,你是不是又在乱传参数???");
         return device == null ? null : getValueWithAccountCheck((T) device.$());
@@ -101,6 +94,12 @@ public class DataSourceManager implements JFGSourceManager {
             result.add(getJFGDevice(entry.getKey()));
         }
         return getValueWithAccountCheck(result);
+    }
+
+    @Override
+    public boolean deJFGDevice(String uuid) {
+        throw new OnErrorNotImplementedException(new Throwable("还没实现"));
+//        return false;
     }
 
     public List<JFGDPDevice> getJFGDeviceByPid(int... pids) {
@@ -131,6 +130,7 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
         for (com.cylan.entity.jniCall.JFGDevice device : devices) {
+            Log.d("uuid", "uuid: " + new Gson().toJson(device));
             JFGDPDevice temp = mCachedDeviceMap.get(device.uuid);
             if (temp != null) {//已经存在了,则更新即可
                 temp.setDevice(device);
@@ -144,8 +144,10 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
+        setJfgAccount(account);
         mJFGAccount = new JFGDPAccount().setAccount(account);
         syncAllJFGDeviceProperty();
+        RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
     }
 
 
@@ -160,13 +162,19 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion) {
         List<T> result = new ArrayList<>();
-        DpMsgDefine.DPSet<T> origin = getValue(uuid, msgId);
-        for (T t : origin.value) {
-            if (t.version >= startVersion && t.version < endVersion) {
-                result.add(t);
+        Object origin = getValue(uuid, msgId);
+        if (origin == null)
+            return result;
+        if (origin instanceof DpMsgDefine.DPSet) {
+            DpMsgDefine.DPSet<T> set = (DpMsgDefine.DPSet<T>) origin;
+            if (set.value == null) return result;
+            for (T t : set.value) {
+                if (t.version >= startVersion && t.version < endVersion) {
+                    result.add(t);
+                }
             }
-        }
-        return result;
+            return result;
+        } else return null;
     }
 
     public void syncJFGDeviceProperty(String uuid) {
@@ -184,8 +192,13 @@ public class DataSourceManager implements JFGSourceManager {
 
 
     @Override
-    public JFGDPAccount getJFGAccount() {
+    public JFGDPAccount getAJFGAccount() {
         return mJFGAccount;
+    }
+
+    @Override
+    public JFGAccount getJFGAccount() {
+        return jfgAccount;
     }
 
     @Override
@@ -224,7 +237,7 @@ public class DataSourceManager implements JFGSourceManager {
             if (device != null) device.version = version;
             else if (mJFGAccount != null) mJFGAccount.version = version;
         }
-
+        RxBus.getCacheInstance().post(dataRsp);
     }
 
     @Override
@@ -245,6 +258,20 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public <T extends DataPoint> T getValue(String uuid, long msgId) {
         return getValue(uuid, msgId, -1);
+    }
+
+    @Override
+    public <T extends DataPoint> T getValueSafe(String uuid, long msgId, Object defaultValue) {
+        T object = getValue(uuid, msgId, -1);
+        if (object == null) {
+            if (defaultValue instanceof Set) {
+                return (T) new DpMsgDefine.DPSet(new TreeSet());
+            } else if (!(defaultValue instanceof DataPoint)) {
+                return (T) new DpMsgDefine.DPPrimary(defaultValue);
+            } else {
+                return (T) defaultValue;
+            }
+        } else return object;
     }
 
     public <T extends DataPoint> T getValue(String uuid, long msgId, long seq) {
@@ -270,60 +297,104 @@ public class DataSourceManager implements JFGSourceManager {
 
 
     private JFGDPDevice create(com.cylan.entity.jniCall.JFGDevice device) {
-        JFGDPDevice result = null;
-        switch (device.pid) {
-            case OS_SERVER:
-                break;
-            case OS_IOS_PHONE:
-                break;
-            case OS_PC:
-                break;
-            case OS_ANDROID_PHONE:
-                break;
-
-            //摄像头设备
-            case OS_CAMARA_ANDROID_SERVICE:
-            case OS_CAMERA_ANDROID:
-            case OS_CAMERA_ANDROID_4G:
-            case OS_CAMERA_CC3200:
-            case OS_CAMERA_UCOS:
-            case OS_CAMERA_PANORAMA_HAISI:
-            case OS_CAMERA_PANORAMA_QIAOAN:
-            case OS_CAMERA_PANORAMA_GUOKE:
-            case OS_CAMERA_UCOS_V2:
-            case OS_CAMERA_UCOS_V3:
-                result = new JFGCameraDevice().setDevice(device);
-                break;
-
-            //门铃设备
-            case OS_DOOR_BELL:
-                result = new JFGDoorBellDevice().setDevice(device);
-                break;
-
-            //中控设备
-            case OS_EFAML:
-                result = new JFGEFamilyDevice().setDevice(device);
-                break;
-            case OS_TEMP_HUMI:
-                break;
-            case OS_IR:
-                break;
-
-            //门磁设备
-            case OS_MAGNET:
-                result = new JFGMagnetometerDevice().setDevice(device);
-                break;
-            case OS_AIR_DETECTOR:
-                break;
-
-            case OS_DOOR_BELL_CAM:
-                break;
-            case OS_DOOR_BELL_V2:
-                break;
-            default:
-                result = new JFGDPDevice() {
-                };
+        //摄像头设备
+        if (JFGRules.isCamera(device.pid)) {
+            return new JFGCameraDevice().setDevice(device);
         }
-        return result;
+        //门铃设备
+        if (JFGRules.isBell(device.pid))
+            return new JFGDoorBellDevice().setDevice(device);
+        return new JFGDPDevice() {
+        };
     }
+
+    @Override
+    public void cacheShareList(ArrayList<JFGShareListInfo> arrayList) {
+        if (shareList == null) shareList = new ArrayList<>();
+        shareList.clear();
+        shareList.addAll(arrayList);
+        RxBus.getCacheInstance().post(new RxEvent.GetShareListRsp());
+    }
+
+    @Override
+    public boolean isDeviceSharedTo(String uuid) {
+        int size = shareList == null ? 0 : shareList.size();
+        for (int i = 0; i < size; i++) {
+            JFGShareListInfo info = shareList.get(i);
+            if (TextUtils.equals(uuid, info.cid)) {
+                return info.friends != null && info.friends.size() > 0;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public ArrayList<JFGShareListInfo> getShareList() {
+        return shareList;
+    }
+
+    public void setLoginState(LogState loginState) {
+        PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
+        if (loginState.state == LogState.STATE_NONE) {
+            shareList.clear();
+            setJfgAccount(null);
+        } else if (loginState.state == LogState.STATE_ACCOUNT_OFF) {
+            shareList.clear();
+        } else {
+
+        }
+        AppLogger.i("logState update: " + loginState.state);
+    }
+
+    private JFGAccount jfgAccount;
+
+    public void setJfgAccount(JFGAccount jfgAccount) {
+        this.jfgAccount = jfgAccount;
+        if (jfgAccount != null)
+            this.mJFGAccount = new JFGDPAccount().setAccount(jfgAccount);
+        else this.mJFGAccount = null;
+        AppLogger.i("setJfgAccount:" + (jfgAccount == null));
+        if (jfgAccount != null) {
+            PreferencesUtils.putString(KEY_ACCOUNT, new Gson().toJson(jfgAccount));
+        } else PreferencesUtils.putString(KEY_ACCOUNT, "");
+        RxBus.getCacheInstance().post(jfgAccount);
+    }
+
+    @Override
+    public boolean updateJFGDevice(JFGDPDevice device) {
+        JFGDPDevice temp = mCachedDeviceMap.get(device.uuid);
+        if (temp != null) {
+            //先删除
+            mCachedDeviceMap.remove(device.uuid);
+            if (BuildConfig.DEBUG) AppLogger.i("更新设备属性");
+            return mCachedDeviceMap.put(device.uuid, device) != null;
+        }
+        return false;
+    }
+
+    @Override
+    public <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws IllegalAccessException {
+        JFGDPDevice device = getJFGDevice(uuid);
+        if (device == null) {
+            AppLogger.e("device is null:" + uuid);
+            return false;
+        }
+        return device.updateValue(msgId, value);
+    }
+
+    @Override
+    public boolean deleteByVersions(String uuid, long id, ArrayList<Long> versions) {
+        return false;
+    }
+
+    public int getLoginState() {
+        JFGAccount account = this.getJFGAccount();
+        if (account == null || TextUtils.isEmpty(account.getAccount())) {
+            return 0;//无账号
+        } else {
+            return PreferencesUtils.getInt(KEY_ACCOUNT_LOG_STATE, 0);
+        }
+    }
+
+
 }

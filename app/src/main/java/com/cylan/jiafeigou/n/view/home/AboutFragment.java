@@ -54,6 +54,7 @@ public class AboutFragment extends Fragment {
     private Intent intent;
     private static final String COPY_RIGHT = "Copyright @ 2005-%s Cylan.All Rights Reserved";
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
+
     public static AboutFragment newInstance() {
         return new AboutFragment();
     }

@@ -11,8 +11,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
@@ -120,13 +120,11 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
             @Override
             public void onDialogAction(int id, String value) {
-                JFGDevice device = GlobalDataProxy.getInstance().fetch(mUUID);
+                JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(mUUID);
                 if (!TextUtils.isEmpty(value)
                         && device != null && !TextUtils.equals(device.alias, value)) {
                     device.alias = value;
                     svSettingDeviceAlias.setTvSubTitle(value);
-//                    info.deviceBase.alias = value;
-//                    mPresenter.updateInfoReq(mUUID, value, DpMsgMap.ID_2000003_BASE_ALIAS);
                     GlobalDataProxy.getInstance().updateJFGDevice(device);
                 }
 

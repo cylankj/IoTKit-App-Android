@@ -107,7 +107,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
     public Subscription getFriendRemarkNameCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SetFriendMarkNameBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.SetFriendMarkNameBack rsp)->{
+                .subscribe((RxEvent.SetFriendMarkNameBack rsp) -> {
                     if (rsp != null) {
                         if (getView() != null) {
                             getView().hideSendReqPro();

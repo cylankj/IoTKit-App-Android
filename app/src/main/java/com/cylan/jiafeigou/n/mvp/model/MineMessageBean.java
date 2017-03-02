@@ -39,6 +39,7 @@ public class MineMessageBean implements Parcelable {
         this.type = type;
         this.time = time;
     }
+
     public String getSn() {
         return sn;
     }
@@ -46,6 +47,7 @@ public class MineMessageBean implements Parcelable {
     public void setSn(String sn) {
         this.sn = sn;
     }
+
     public int getId() {
         return id;
     }

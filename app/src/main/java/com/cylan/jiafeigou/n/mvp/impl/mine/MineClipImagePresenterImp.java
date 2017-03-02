@@ -10,8 +10,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -79,8 +79,8 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
      */
     @Override
     public Subscription getUpLoadResult() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetHttpDoneResult.class)
-                .timeout(30,TimeUnit.SECONDS, Observable.just(null)
+        return RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)
+                .timeout(30, TimeUnit.SECONDS, Observable.just(null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map((Object o) -> {
                             Log.d("CYLAN_TAG", "upLoadUserHeadImag timeout: ");
@@ -88,14 +88,12 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                             return null;
                         }))
                 .subscribeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetHttpDoneResult>() {
+                .subscribe(new Action1<JFGMsgHttpResult>() {
                     @Override
-                    public void call(RxEvent.GetHttpDoneResult getHttpDoneResult) {
-                        if (getHttpDoneResult != null && getHttpDoneResult instanceof RxEvent.GetHttpDoneResult) {
-                            getView().hideUpLoadPro();
-                            handlerUploadImage(getHttpDoneResult);
-                            getView().upLoadResultView(getHttpDoneResult.jfgMsgHttpResult.ret);
-                        }
+                    public void call(JFGMsgHttpResult getHttpDoneResult) {
+                        getView().hideUpLoadPro();
+                        handlerUploadImage(getHttpDoneResult);
+                        getView().upLoadResultView(getHttpDoneResult.ret);
                     }
                 });
     }
@@ -105,8 +103,8 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
      *
      * @param getHttpDoneResult
      */
-    private void handlerUploadImage(RxEvent.GetHttpDoneResult getHttpDoneResult) {
-        if (getHttpDoneResult.jfgMsgHttpResult.requestId == 1) {
+    private void handlerUploadImage(JFGMsgHttpResult getHttpDoneResult) {
+        if (getHttpDoneResult.requestId == 1) {
             sendResetUrl();
         }
     }
@@ -214,6 +212,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     @Override
     public void start() {
+        super.start();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         } else {
@@ -226,6 +225,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     @Override
     public void stop() {
+        super.stop();
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }

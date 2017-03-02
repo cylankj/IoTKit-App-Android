@@ -64,7 +64,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     @Override
     public void unbindDevice() {
         post(() -> {
-                    GlobalDataProxy.getInstance().deleteJFGDevice(mUUID);
+                    GlobalDataProxy.getInstance().deJFGDevice(mUUID);
                     AppLogger.i("unbind uuid: " + mUUID);
                 }
         );

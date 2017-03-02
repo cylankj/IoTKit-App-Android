@@ -11,7 +11,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.misc.efamily.MsgpackMsg;
 import com.cylan.jiafeigou.n.mvp.contract.cam.HardwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
@@ -78,9 +77,9 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
 //        downLoadBean.version = "22220000";
 //        downLoadBean.fileName = "22220000";
 
-        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)){
+        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             downLoadBean.savePath = getView().getContext().getFilesDir().getAbsolutePath();
-        }else {
+        } else {
             downLoadBean.savePath = Environment.getExternalStorageDirectory().getAbsolutePath();
         }
         return downLoadBean;
@@ -126,7 +125,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     break;
                 case 2:
                     DownTemp obj = (DownTemp) msg.obj;
-                    getView().onDownloading(obj.percent,obj.length);
+                    getView().onDownloading(obj.percent, obj.length);
                     break;
                 case 3:
                     getView().onDownloadFinish();
@@ -153,16 +152,16 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     public String getFileSize() {
         long length = 0;
         try {
-                URL url = new URL(checkDevVersion.url);
-                HttpURLConnection conn = (HttpURLConnection)url.openConnection();//建立连接
-                conn.setConnectTimeout(6*1000);
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("Charset", "UTF-8");
-                conn.connect();
-                if (conn.getResponseCode()==200) {
-                    length = conn.getContentLength();
-                }
-            } catch (Exception e) {
+            URL url = new URL(checkDevVersion.url);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();//建立连接
+            conn.setConnectTimeout(6 * 1000);
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Charset", "UTF-8");
+            conn.connect();
+            if (conn.getResponseCode() == 200) {
+                length = conn.getContentLength();
+            }
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return FormetSDcardSize(length);
@@ -189,7 +188,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     }
 
 
-    private class DownTemp{
+    private class DownTemp {
         public DownTemp(double percent, long length) {
             this.percent = percent;
             this.length = length;
@@ -200,7 +199,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
 
     }
 
-    private  DownloadManagerListener listener = new DownloadManagerListener() {
+    private DownloadManagerListener listener = new DownloadManagerListener() {
         @Override
         public void onDownloadStarted(long taskId) {
             Message msg = new Message();
@@ -215,7 +214,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
 
         @Override
         public void onDownloadProcess(long taskId, double percent, long downloadedLength) {
-            DownTemp temp = new DownTemp(percent,downloadedLength);
+            DownTemp temp = new DownTemp(percent, downloadedLength);
             Message msg = new Message();
             msg.what = 2;
             msg.obj = temp;
@@ -284,9 +283,9 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     public void startUpdate() {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .subscribe((Object o) ->{
+                .subscribe((Object o) -> {
                     try {
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,UdpConstant.PORT,new UpdatePing(downLoadBean.savePath+"/"+downLoadBean.fileName).toBytes());
+                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(downLoadBean.savePath + "/" + downLoadBean.fileName).toBytes());
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -305,7 +304,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         final String headTag = header.cmd;
                         if (TextUtils.equals(headTag, "f_upgrade")) {
                             getView().handlerResult(2);
-                        }else {
+                        } else {
                             getView().handlerResult(3);
                         }
                     } catch (IOException e) {
@@ -330,6 +329,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     public static class UpdatePing extends JfgUdpMsg.UdpHeader {
         @Index(1)
         public String url;
+
         public UpdatePing(String url) {
             this.url = url;
             this.cmd = "f_upgrade";

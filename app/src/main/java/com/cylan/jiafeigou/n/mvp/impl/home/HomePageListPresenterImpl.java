@@ -7,8 +7,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -77,9 +78,9 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private ArrayList<String> getUuidList() {
-        ArrayList<JFGDevice> devices = GlobalDataProxy.getInstance().fetchAll();
+        List<JFGDPDevice> devices = DataSourceManager.getInstance().getAllJFGDevice();
         ArrayList<String> arrayList = new ArrayList<>(devices == null ? 0 : devices.size());
-        for (JFGDevice device : devices) {
+        for (JFGDPDevice device : devices) {
             arrayList.add(device.uuid);
         }
         return arrayList;
@@ -138,13 +139,13 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private Subscription getLoginRspSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.OnlineStatusRsp.class)
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.LoginRsp o) -> {
-                    JFGAccount account = GlobalDataProxy.getInstance().getJfgAccount();
+                .subscribe((RxEvent.OnlineStatusRsp o) -> {
+                    JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
                     if (account != null && !TextUtils.isEmpty(account.getAccount()))
-                        getView().onAccountUpdate(GlobalDataProxy.getInstance().getJfgAccount());
+                        getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
                 });
     }
 
@@ -172,10 +173,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        List<JFGDevice> deviceList = GlobalDataProxy.getInstance().fetchAll();
+        List<JFGDPDevice> deviceList = DataSourceManager.getInstance().getAllJFGDevice();
         if (deviceList != null) {
             ArrayList<String> uuidList = new ArrayList<>();
-            for (JFGDevice device : deviceList) {
+            for (JFGDPDevice device : deviceList) {
                 uuidList.add(device.uuid);
             }
             getView().onItemsInsert(uuidList);
@@ -193,16 +194,16 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         return null;
                     }
                 })
-                .filter(new RxHelper.Filter<>("", getView() != null && GlobalDataProxy.getInstance().getJfgAccount() != null))
+                .filter(new RxHelper.Filter<>("", getView() != null && DataSourceManager.getInstance().getJFGAccount() != null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((GreetBean greetBean) -> {
-                    getView().onAccountUpdate(GlobalDataProxy.getInstance().getJfgAccount());
+                    getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
                 });
     }
 
     @Override
     public void fetchDeviceList(boolean manually) {
-        int state = GlobalDataProxy.getInstance().getLoginState();
+        int state = DataSourceManager.getInstance().getLoginState();
         if (state != LogState.STATE_ACCOUNT_ON) {
             getView().onLoginState(false);
         }
@@ -210,16 +211,17 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribeOn(Schedulers.newThread())
                 .map((Boolean aBoolean) -> {
 
-                    ArrayList<String> sharedList = MiscUtils.getSharedList(GlobalDataProxy.getInstance().fetchAll());
-                    ArrayList<String> unSharedList = MiscUtils.getNoneSharedList(GlobalDataProxy.getInstance().fetchAll());
+                    ArrayList<String> sharedList = MiscUtils.getSharedList(DataSourceManager.getInstance().getAllJFGDevice());
+                    ArrayList<String> unSharedList = MiscUtils.getNoneSharedList(DataSourceManager.getInstance().getAllJFGDevice());
                     //不是分享设备
                     JfgCmdInsurance.getCmd().getShareList(unSharedList);
-                    for (String uuid : sharedList)
-                        try {
-                            GlobalDataProxy.getInstance().fetchUnreadCount(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
-                        } catch (JfgException e) {
-                            AppLogger.e("" + e.getLocalizedMessage());
-                        }
+                    AppLogger.e("未实现");
+//                    for (String uuid : sharedList)
+//                        try {
+//                            GlobalDataProxy.getInstance().fetchUnreadCount(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+//                        } catch (JfgException e) {
+//                            AppLogger.e("" + e.getLocalizedMessage());
+//                        }
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return null;
                 })
@@ -236,10 +238,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((Object o) -> {
-                    boolean result = GlobalDataProxy.getInstance().remove(uuid);
+                    boolean result = DataSourceManager.getInstance().deJFGDevice(uuid);
                     try {
                         JfgCmdInsurance.getCmd().unBindDevice(uuid);
-                        GlobalDataProxy.getInstance().deleteJFGDevice(uuid);
+                        DataSourceManager.getInstance().deJFGDevice(uuid);
                     } catch (JfgException e) {
                         AppLogger.e("" + e.getLocalizedMessage());
                     }

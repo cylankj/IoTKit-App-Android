@@ -6,6 +6,7 @@ import android.support.v4.util.LongSparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ext.annotations.DPProperty;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
@@ -197,6 +198,15 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
             }
         }
         return mDPPropertyArray;
+    }
+
+    public boolean updateValue(int msgId, Object value) throws IllegalAccessException {
+        Field field = getProperties().get(msgId);
+        if (field != null) {
+            field.set(this, value);
+            return true;
+        } else if (BuildConfig.DEBUG) throw new NullPointerException("empty");
+        return false;
     }
 
     /**

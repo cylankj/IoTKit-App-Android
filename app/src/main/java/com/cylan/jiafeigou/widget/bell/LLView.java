@@ -137,15 +137,15 @@ public class LLView extends View {
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        int w_mode=MeasureSpec.getMode(widthMeasureSpec);
-        int h_mode=MeasureSpec.getMode(heightMeasureSpec);
-        int w_size=MeasureSpec.getSize(widthMeasureSpec);
-        int h_size=MeasureSpec.getSize(heightMeasureSpec);
-        h_size= h_mode==MeasureSpec.AT_MOST? (int) (bORadius * 2 + getPaddingBottom() + getPaddingTop()) :h_size;
-        w_size=w_mode==MeasureSpec.AT_MOST?(int) (getPaddingLeft() + getPaddingRight()
+        int w_mode = MeasureSpec.getMode(widthMeasureSpec);
+        int h_mode = MeasureSpec.getMode(heightMeasureSpec);
+        int w_size = MeasureSpec.getSize(widthMeasureSpec);
+        int h_size = MeasureSpec.getSize(heightMeasureSpec);
+        h_size = h_mode == MeasureSpec.AT_MOST ? (int) (bORadius * 2 + getPaddingBottom() + getPaddingTop()) : h_size;
+        w_size = w_mode == MeasureSpec.AT_MOST ? (int) (getPaddingLeft() + getPaddingRight()
                 + h_size
                 + sRadius * maxCount * 2
-                + (maxCount - 1) * itemInterval):computeWidth(w_size);
+                + (maxCount - 1) * itemInterval) : computeWidth(w_size);
 
         setMeasuredDimension(w_size, h_size);
     }

@@ -1,10 +1,13 @@
 package com.cylan.jiafeigou.base.view;
 
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.JFGDPAccount;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.dp.DataPoint;
 
 import java.util.ArrayList;
@@ -20,17 +23,23 @@ public interface JFGSourceManager {
 
     List<JFGDPDevice> getAllJFGDevice();
 
+    boolean deJFGDevice(String uuid);
+
     void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices);
 
     void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account);
 
-    JFGDPAccount getJFGAccount();
+    JFGDPAccount getAJFGAccount();
+
+    JFGAccount getJFGAccount();
 
     void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp);
 
     void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList);
 
     <T extends DataPoint> T getValue(String uuid, long msgId);
+
+    <T extends DataPoint> T getValueSafe(String uuid, long msgId, Object defaultValue);
 
     <T extends DataPoint> T getValue(String uuid, long msgId, long seq);
 
@@ -45,4 +54,34 @@ public interface JFGSourceManager {
     <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion);
 
     boolean isOnline();
+
+
+    /**
+     * 该设备是否已经被分享给其他用户
+     *
+     * @param uuid
+     * @return
+     */
+    boolean isDeviceSharedTo(String uuid);
+
+    /**
+     * 依赖account
+     *
+     * @return
+     */
+    ArrayList<JFGShareListInfo> getShareList();
+
+    void cacheShareList(ArrayList<JFGShareListInfo> arrayList);
+
+    void setLoginState(LogState loginState);
+
+    int getLoginState();
+
+    void setJfgAccount(JFGAccount jfgAccount);
+
+    boolean updateJFGDevice(JFGDPDevice device);
+
+    <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws IllegalAccessException;
+
+    boolean deleteByVersions(String uuid, long id, ArrayList<Long> versions);
 }

@@ -101,9 +101,9 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     private void initView() {
         tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
-        String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, "");
-        tvHardwareNowVersion.setText(sVersion);
-        tvHardwareNewVersion.setText(sVersion);
+        DpMsgDefine.DPPrimary<String> sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
+        tvHardwareNowVersion.setText(sVersion.$());
+        tvHardwareNewVersion.setText(sVersion.$());
 
         // 有新版本
         if (checkDevVersion != null && checkDevVersion.hasNew) {
@@ -137,7 +137,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                     return;
                 }
 
-                DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
+                DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
                 boolean show = net != null && JFGRules.isDeviceOnline(net);
                 if (!show) {
                     ToastUtil.showNegativeToast(getString(R.string.NOT_ONLINE));
@@ -164,7 +164,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         }
 
         //设备在线
-        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
+        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         String remoteSSid = net.ssid;
         if (!TextUtils.equals(localSSid, remoteSSid)) {
@@ -251,7 +251,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         tvDownloadSoftFile.setEnabled(true);
         llDownloadPgContainer.setVisibility(View.GONE);
         //设备在线
-        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
+        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         String remoteSSid = net.ssid;
         if (TextUtils.equals(localSSid, remoteSSid)) {

@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
@@ -125,7 +124,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
 
     @Override
     public String getEditName() {
-        return etMinePersonalInformationNewName.getText().toString().trim().replace(" ","");
+        return etMinePersonalInformationNewName.getText().toString().trim().replace(" ", "");
     }
 
     @Override

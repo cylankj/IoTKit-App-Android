@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
@@ -85,7 +86,8 @@ public class DelayRecordGuideFragment extends BaseFragment {
     }
 
     private boolean isDeviceSleeping() {
-        return GlobalDataProxy.getInstance().getValue(mUUID, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+        DpMsgDefine.DPPrimary<Boolean> sleep = GlobalDataProxy.getInstance().getValue(mUUID, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+        return sleep.$();
     }
 
     private void initDeviceEnableDialog() {

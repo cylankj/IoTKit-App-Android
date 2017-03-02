@@ -181,11 +181,11 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
 
     @Override
     public void handleResult(final Result rawResult) {
-        String account = GlobalDataProxy.getInstance().getJfgAccount().getAccount();
-        if (rawResult.getText().equals(account)){
+        String account = GlobalDataProxy.getInstance().getJFGAccount().getAccount();
+        if (rawResult.getText().equals(account)) {
             ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
-        }else {
-            if (NetUtils.getNetType(getContext()) == 0){
+        } else {
+            if (NetUtils.getNetType(getContext()) == 0) {
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 return;
             }

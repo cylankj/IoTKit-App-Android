@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mag;
 
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mag.HomeMagLiveContract;
@@ -140,7 +140,7 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
      */
     @Override
     public String getDeviceName() {
-        JFGDevice jfgDevice = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice jfgDevice = GlobalDataProxy.getInstance().getJFGDevice(uuid);
         if (jfgDevice == null)
             return uuid;
         return TextUtils.isEmpty(jfgDevice.alias) ?

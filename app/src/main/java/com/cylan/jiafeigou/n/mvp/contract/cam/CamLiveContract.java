@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
@@ -167,7 +168,7 @@ public interface CamLiveContract {
          * @param value
          * @param id
          */
-        void updateInfoReq(Object value, long id);
+        public <T extends DataPoint> void updateInfoReq(T value, long id);
 
         void startCountForDismissPop();
     }

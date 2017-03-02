@@ -142,8 +142,10 @@ public interface HomeMineHelpSuggestionContract {
          * @return
          */
         Subscription isOpenLogin();
+
         /**
          * 获取本地日志Url
+         *
          * @return
          */
         void upLoadLogFile(MineHelpSuggestionBean bean);

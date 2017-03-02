@@ -292,7 +292,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onSyncLocalDataRequired() {
-        
+
     }
 
 

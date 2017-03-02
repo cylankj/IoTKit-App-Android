@@ -502,12 +502,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public Subscription checkAccountBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegsiterBack.class)
-                .delay(5,TimeUnit.MILLISECONDS)
+                .delay(5, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.CheckRegsiterBack>() {
                     @Override
                     public void call(RxEvent.CheckRegsiterBack checkRegsiterBack) {
-                        if (isReg){
+                        if (isReg) {
                             getView().checkAccountResult(checkRegsiterBack);
                             isReg = false;
                         }

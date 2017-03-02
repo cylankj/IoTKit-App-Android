@@ -15,7 +15,7 @@ import rx.Subscription;
  */
 public interface HardwareUpdateContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
         void handlerResult(int code);
 
@@ -33,7 +33,7 @@ public interface HardwareUpdateContract {
 
     }
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
         UpdateFileBean creatDownLoadBean();
 

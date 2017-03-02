@@ -15,7 +15,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.PackageUtils;
 
 import java.util.ArrayList;
 
@@ -99,9 +98,9 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     @Override
     public boolean checkNetConnetion() {
-        if(NetUtils.getNetType(ContextUtils.getContext()) != 0){
+        if (NetUtils.getNetType(ContextUtils.getContext()) != 0) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }

@@ -1,11 +1,13 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
@@ -52,17 +54,15 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     }
 
     @Override
-    public void updateInfoReq(Object value, long id) {
+    public <T extends DataPoint> void updateInfoReq(T value, long id) {
         Observable.just(value)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
-                    AppLogger.i("save start: " + id + " " + value);
-                    BaseValue baseValue = new BaseValue();
-                    baseValue.setId(id);
-                    baseValue.setVersion(System.currentTimeMillis());
-                    baseValue.setValue(o);
-                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
-                    AppLogger.i("save end: " + id + " " + value);
+                    try {
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                    } catch (IllegalAccessException e) {
+                        AppLogger.e("err: " + e.getLocalizedMessage());
+                    }
                 }, (Throwable throwable) -> {
                     AppLogger.e(throwable.getLocalizedMessage());
                 });
@@ -76,10 +76,10 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-                        String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, "");
+                        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
+                        DpMsgDefine.DPPrimary<String> sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
                         try {
-                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, sVersion);
+                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, sVersion.$());
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -165,7 +165,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
         return dps;
     }
 
-    public void updateAlias(JFGDevice device) {
+    public void updateAlias(JFGDPDevice device) {
         Observable.just(device)
                 .map(device1 -> {
                     GlobalDataProxy.getInstance().updateJFGDevice(device);

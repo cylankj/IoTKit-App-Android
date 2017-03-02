@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -12,9 +13,9 @@ import rx.Subscription;
  */
 public interface SdCardInfoContract {
 
-    interface View extends BaseView<Presenter>{
+    interface View extends BaseView<Presenter> {
 
-        void sdUseDetail(String volume,float data);
+        void sdUseDetail(String volume, float data);
 
         void showLoading();
 
@@ -24,11 +25,11 @@ public interface SdCardInfoContract {
     }
 
 
-    interface Presenter extends BasePresenter{
+    interface Presenter extends BasePresenter {
 
         boolean getSdcardState();
 
-        void clearSDcard(int id);
+        <T extends DataPoint> void updateInfoReq(T value, long id);
 
         void clearCountTime();
 
@@ -36,6 +37,7 @@ public interface SdCardInfoContract {
 
         /**
          * 请求指令发送成功后等待结果
+         *
          * @return
          */
         Subscription onClearSdResult();

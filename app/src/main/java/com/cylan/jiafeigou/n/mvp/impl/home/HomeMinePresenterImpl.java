@@ -6,30 +6,20 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.Random;
 
 import rx.Observable;
@@ -180,10 +170,10 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                                 getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
                                 if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())) {
                                     boolean isEmail = JConstant.EMAIL_REG.matcher(userInfo.getAccount()).find();
-                                    if (isEmail){
+                                    if (isEmail) {
                                         String[] split = userInfo.getAccount().split("@");
                                         userInfo.setAlias(split[0]);
-                                    }else {
+                                    } else {
                                         userInfo.setAlias(userInfo.getAccount());
                                     }
                                 }
@@ -216,6 +206,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 是否三方登录的回调
+     *
      * @return
      */
     @Override
@@ -254,16 +245,16 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     public Subscription unReadMesgBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.UnreadCount unreadCount) ->{
-                    if (unreadCount != null && unreadCount.seq == requstId){
-                        for (JFGDPMsgCount jfgdpMsgCount:unreadCount.msgList){
+                .subscribe((RxEvent.UnreadCount unreadCount) -> {
+                    if (unreadCount != null && unreadCount.seq == requstId) {
+                        for (JFGDPMsgCount jfgdpMsgCount : unreadCount.msgList) {
                             unreadNum += jfgdpMsgCount.count;
                         }
                         getView().setMesgNumber(unreadNum);
-                        if (unreadNum != 0){
+                        if (unreadNum != 0) {
                             hasUnRead = true;
                             markHasRead();
-                        }else {
+                        } else {
                             hasUnRead = false;
                         }
                     }
@@ -282,7 +273,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     public void markHasRead() {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe((Object o)->{
+                .subscribe((Object o) -> {
                     ArrayList<Long> idList = new ArrayList<>();
                     idList.add((long) 601);
                     idList.add((long) 701);

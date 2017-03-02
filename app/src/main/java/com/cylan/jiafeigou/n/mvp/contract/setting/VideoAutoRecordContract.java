@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.setting;
 
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -18,7 +19,7 @@ public interface VideoAutoRecordContract {
          * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
          * @param id
          */
-        void updateInfoReq(Object value, long id);
+        public <T extends DataPoint> void updateInfoReq(T value, long id);
 
     }
 }

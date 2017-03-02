@@ -16,7 +16,7 @@ public class UdpConstant {
     public static final String F_PING_ACK = "f_ping_ack";
     public static final String UPGRADE_VERSION = "0.0.0.0";
     public static final String BIND_TAG = "bindTag:";
-    public static final String DOORBELL_RING="doorbell_ring";
+    public static final String DOORBELL_RING = "doorbell_ring";
 
 
     public static final class PingAckT {

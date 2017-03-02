@@ -28,8 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -409,9 +409,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             return;
         }
         String uuid = homePageListAdapter.getItem(position);
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
         if (device == null) {
-            Log.d("CYLAN_TAG", "devices is null:" + GlobalDataProxy.getInstance().fetchAll());
+            Log.d("CYLAN_TAG", "devices is null:" + GlobalDataProxy.getInstance().getAllJFGDevice());
         }
         int pid = device == null ? 0 : device.pid;
         if (uuid != null) {

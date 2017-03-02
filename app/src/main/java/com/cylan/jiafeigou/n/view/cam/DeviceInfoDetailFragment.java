@@ -8,8 +8,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -87,7 +87,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private String uuid;
     private EditFragmentDialog editDialogFragment;
     private RxEvent.CheckDevVersionRsp checkDevVersion;
-    private JFGDevice device;
+    private JFGDPDevice device;
 
     public static DeviceInfoDetailFragment newInstance(Bundle bundle) {
         DeviceInfoDetailFragment fragment = new DeviceInfoDetailFragment();
@@ -99,7 +99,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     public void onAttach(Context context) {
         super.onAttach(context);
         this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
-        device = GlobalDataProxy.getInstance().fetch(uuid);
+        device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
         basePresenter = new DeviceInfoDetailPresenterImpl(this, uuid);
     }
 
@@ -146,7 +146,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         MiscUtils.loadTimeZoneList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((List<TimeZoneBean> list) -> {
-                    DpMsgDefine.DPTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, DpMsgDefine.DPTimeZone.empty);
+                    DpMsgDefine.DPTimeZone zone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
                     TimeZoneBean bean = new TimeZoneBean();
                     bean.setId(zone.timezone);
                     if (list != null) {
@@ -156,25 +156,25 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                         }
                     }
                 });
-        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         String statusContent = getSdcardState(status);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
             tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
         } else {
             tvDeviceSdcardState.setTvSubTitle(statusContent, R.color.color_8c8c8c);
         }
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
         tvDeviceAlias.setTvSubTitle(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
         tvDeviceCid.setTvSubTitle(uuid);
-        String mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC, "");
-        tvDeviceMac.setTvSubTitle(mac);
-        int battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY, 0);
-        tvDeviceBatteryLevel.setTvSubTitle(String.format(Locale.getDefault(), "%s", battery));
-        String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION, "");
-        tvDeviceSystemVersion.setTvSubTitle(sVersion);
-        int uptime = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_210_UP_TIME, 0);
-        tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(uptime));
-        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
+        DpMsgDefine.DPPrimary<String> mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
+        tvDeviceMac.setTvSubTitle(mac.$());
+        DpMsgDefine.DPPrimary<Integer> battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
+        tvDeviceBatteryLevel.setTvSubTitle(String.format(Locale.getDefault(), "%s", battery.$()));
+        DpMsgDefine.DPPrimary<String> sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION);
+        tvDeviceSystemVersion.setTvSubTitle(sVersion.$());
+        DpMsgDefine.DPPrimary<Integer> uptime = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_210_UP_TIME);
+        tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(uptime.$()));
+        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
     }
 
@@ -209,8 +209,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 toEditTimezone();
                 break;
             case R.id.tv_device_sdcard_state:
-                DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
-                if (status == null){
+                DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+                if (status == null) {
                     return;
                 }
                 String statusContent = getSdcardState(status);
@@ -218,7 +218,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                     showClearSDDialog();
                     return;
                 }
-                DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
+                DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
                 if (status.hasSdcard && JFGRules.isDeviceOnline(net))//没有sd卡,或者离线,不能点击
                     jump2SdcardDetailFragment();
                 break;
@@ -305,7 +305,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
             @Override
             public void onDialogAction(int id, String value) {
-                JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+                JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
                 if (!TextUtils.isEmpty(value) && device != null && !TextUtils.equals(value, device.alias)) {
                     device.alias = value;
                     tvDeviceAlias.setTvSubTitle(value);

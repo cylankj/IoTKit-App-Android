@@ -154,9 +154,9 @@ public class CamLiveController implements
     public void setPortSafeSetter(ISafeStateSetter setter) {
         this.iSafeStateSetterPort = setter;
         iSafeStateSetterPort.setFlipListener(this);
-        boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        DpMsgDefine.DPPrimary<Boolean> safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
         //true:绿色,false:setFlipped(true)
-        iSafeStateSetterPort.setFlipped(!safe);
+        iSafeStateSetterPort.setFlipped(!safe.$());
         Log.d(TAG, "setFlip: " + safe + " " + uuid);
         if (presenterRef.get() != null && JFGRules.isShareDevice(uuid)) {
             setter.setVisibility(false);
@@ -226,9 +226,9 @@ public class CamLiveController implements
     public void notifyOrientationChange(final int orientation) {
         boolean land = orientation == Configuration.ORIENTATION_LANDSCAPE;
         boolean isShareDevice = presenterRef != null && presenterRef.get() != null && presenterRef.get().isShareDevice();
-        DpMsgDefine.DPSdStatus sd = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+        DpMsgDefine.DPSdStatus sd = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         boolean sdCardStatus = sd.hasSdcard && sd.err == 0;
-        boolean safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        DpMsgDefine.DPPrimary<Boolean> safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
 
         //竖屏事件区域 考虑 分享账号，sd卡
         if (liveTimeSetterPort != null && presenterRef.get().getPlayState() == PLAY_STATE_PLAYING) {
@@ -237,7 +237,7 @@ public class CamLiveController implements
         if (iSafeStateSetterPort != null)
             iSafeStateSetterPort.setVisibility(!land && !isShareDevice);
         //全屏底部区域
-        camLiveControlLayer.setOrientation(orientation, isShareDevice, sdCardStatus, safe);
+        camLiveControlLayer.setOrientation(orientation, isShareDevice, sdCardStatus, safe.$());
         //安全防护
         camLiveControlLayer.setLandSafeClickListener(this);
         AppLogger.i("orientation: " + orientation);
@@ -293,7 +293,7 @@ public class CamLiveController implements
                 return;
             }
             DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid,
-                    DpMsgMap.ID_201_NET, null);
+                    DpMsgMap.ID_201_NET);
             boolean deviceState = JFGRules.isDeviceOnline(net);
             //播放状态
             int orientation = context.getResources().getConfiguration().orientation;
@@ -446,14 +446,14 @@ public class CamLiveController implements
             return;
         }
         DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid,
-                DpMsgMap.ID_201_NET, null);
+                DpMsgMap.ID_201_NET);
         if (net != null &&
                 net.net == 0) {
             AppLogger.d("device is offline");
             return;
         }
         DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid,
-                DpMsgMap.ID_204_SDCARD_STORAGE, null);
+                DpMsgMap.ID_204_SDCARD_STORAGE);
         if (status != null && !status.hasSdcard) {
             //没有sd卡
             ToastUtil.showToast(context.getString(R.string.Tap1_Camera_NoSDCardTips));
@@ -532,13 +532,16 @@ public class CamLiveController implements
     public void onClick(FlipImageView view) {
         boolean land = view.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         AppLogger.i("land: " + land + " " + (!view.isFlipped()));
-        boolean alarmFlag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        int autoVideo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 2);
-        if (alarmFlag && autoVideo != 2) {//已开启自动录像和移动侦测
+        DpMsgDefine.DPPrimary<Boolean> alarmFlag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        DpMsgDefine.DPPrimary<Integer> autoVideo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+        if (alarmFlag.$() && autoVideo.$() != 2) {//已开启自动录像和移动侦测
             getAlertDialogFrag().show();
             AppLogger.d("关闭移动侦测将关闭自动录像功能");
-        } else if (presenterRef != null && presenterRef.get() != null)
-            presenterRef.get().updateInfoReq(!view.isFlipped(), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        } else if (presenterRef != null && presenterRef.get() != null) {
+            DpMsgDefine.DPPrimary<Boolean> flipped = new DpMsgDefine.DPPrimary<>();
+            flipped.value = !view.isFlipped();
+            presenterRef.get().updateInfoReq(flipped, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        }
     }
 
     @Override
@@ -594,10 +597,16 @@ public class CamLiveController implements
                     if (iSafeStateSetterPort != null) iSafeStateSetterPort.setFlipped(false);
                 })
                 .setPositiveButton(context.getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                    if (presenterRef != null && presenterRef.get() != null)
-                        presenterRef.get().updateInfoReq(false, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-                    if (presenterRef != null && presenterRef.get() != null)
-                        presenterRef.get().updateInfoReq(2, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                    if (presenterRef != null && presenterRef.get() != null) {
+                        DpMsgDefine.DPPrimary<Boolean> flag = new DpMsgDefine.DPPrimary<>();
+                        flag.value = false;
+                        presenterRef.get().updateInfoReq(flag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                    }
+                    if (presenterRef != null && presenterRef.get() != null) {
+                        DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
+                        flag.value = 2;
+                        presenterRef.get().updateInfoReq(flag, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                    }
                     camLiveControlLayer.setLandSafe(true);
                     if (iSafeStateSetterPort != null) iSafeStateSetterPort.setFlipped(true);
                 }).create();

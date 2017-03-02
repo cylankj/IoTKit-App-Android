@@ -5,8 +5,10 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.Converter;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -65,13 +68,13 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     @Override
                     public Boolean call(RxEvent.DataPoolUpdate update) {
                         if (update.id == DpMsgMap.ID_204_SDCARD_STORAGE) {
-                            DpMsgDefine.DPSdStatus sdStatus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+                            DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
                             getView().deviceInfoChanged(update.id, sdStatus);
                         } else if (update.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-                            DpMsgDefine.DPSdcardSummary sdcardSummary = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY, null);
+                            DpMsgDefine.DPSdcardSummary sdcardSummary = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY);
                             getView().deviceInfoChanged(update.id, sdcardSummary);
                         } else if (update.id == DpMsgMap.ID_201_NET) {
-                            DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
+                            DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
                             getView().deviceInfoChanged(update.id, net);
                         }
                         return null;
@@ -90,7 +93,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         camList.removeAll(list);//删除重复的
                     return camList;
                 })
-                .delay(1,TimeUnit.SECONDS)
+                .delay(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(new RxHelper.Filter<>("messageListSub()=null?", getView() != null))
                 .map((ArrayList<CamMessageBean> jfgdpMsgs) -> {
@@ -156,9 +159,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .flatMap(new Func1<RobotoGetDataRsp, Observable<ArrayList<CamMessageBean>>>() {
                     @Override
                     public Observable<ArrayList<CamMessageBean>> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        ArrayList<BaseValue> allList = new ArrayList<>();
-                        ArrayList<BaseValue> list_505 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
-                        ArrayList<BaseValue> list_222 = GlobalDataProxy.getInstance().fetchLocalList(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY);
+                        ArrayList<DataPoint> allList = new ArrayList<>();
+                        List<DataPoint> list_505 = GlobalDataProxy.getInstance().getValueBetween(uuid, (long) DpMsgMap.ID_505_CAMERA_ALARM_MSG, (long) 0, System.currentTimeMillis());
+                        List<DataPoint> list_222 = GlobalDataProxy.getInstance().getValueBetween(uuid, (long) DpMsgMap.ID_222_SDCARD_SUMMARY, (long) 0, System.currentTimeMillis());
                         if (list_505 != null) allList.addAll(list_505);
                         if (list_222 != null) allList.addAll(list_222);
                         allList = new ArrayList<>(new HashSet<>(allList));
@@ -172,14 +175,14 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     private long getVersion(int id, boolean asc) {
-        ArrayList<BaseValue> list = GlobalDataProxy.getInstance().fetchLocalList(uuid, id);
+        List<DataPoint> list = DataSourceManager.getInstance().getValueBetween(uuid, id, 0, System.currentTimeMillis());
         if (list == null) return 0;
+        Collections.sort(list);
+        int count = list.size();
         if (asc) {
-            BaseValue value = Collections.min(list);
-            return value != null ? value.getVersion() : 0;
+            return list.get(0).version;
         } else {
-            BaseValue value = Collections.max(list);
-            return value != null ? value.getVersion() : 0;
+            return list.get(count - 1).version;
         }
     }
 
@@ -198,7 +201,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         arrayList.add(bean.time);
                     }
                     for (long id : map.keySet()) {
-                        boolean result = GlobalDataProxy.getInstance().deleteAll(uuid, id, map.get(id));
+                        boolean result = GlobalDataProxy.getInstance().deleteByVersions(uuid, id, map.get(id));
                         AppLogger.i("delete: " + result + " id:" + id);
                     }
                 }, (Throwable throwable) -> {

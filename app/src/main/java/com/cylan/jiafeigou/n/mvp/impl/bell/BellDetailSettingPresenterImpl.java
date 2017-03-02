@@ -1,11 +1,13 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
@@ -44,16 +46,22 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     }
 
     @Override
-    public void updateInfoReq(String uuid, Object value, long id) {
+    public <T extends DataPoint> void updateInfoReq(String uuid, T value, long id) {
         Observable.just(value)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     AppLogger.i("save start: " + id + " " + value);
-                    BaseValue baseValue = new BaseValue();
-                    baseValue.setId(id);
-                    baseValue.setVersion(System.currentTimeMillis());
-                    baseValue.setValue(o);
-                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+//                    BaseValue baseValue = new BaseValue();
+//                    baseValue.setId(id);
+//                    baseValue.setVersion(System.currentTimeMillis());
+//                    baseValue.setValue(o);
+//                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+
+                    try {
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                    } catch (IllegalAccessException e) {
+                        AppLogger.e("err: " + e.getLocalizedMessage());
+                    }
                     AppLogger.i("save end: " + id + " " + value);
                 }, (Throwable throwable) -> {
                     AppLogger.e(throwable.getLocalizedMessage());
@@ -68,10 +76,10 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-                        String sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, "");
+                        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
+                        DpMsgDefine.DPPrimary<String> sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
                         try {
-                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, sVersion);
+                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, sVersion.$());
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
