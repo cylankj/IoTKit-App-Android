@@ -55,8 +55,6 @@ public class DataSourceManager implements JFGSourceManager {
     private JFGDPAccount mJFGAccount;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
     private boolean isOnline;
-    private JFGDPDevice mFakeDevice = new JFGDPDevice() {
-    };
 
     private DataSourceManager() {
     }
@@ -88,9 +86,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public <T extends JFGDPDevice> T getJFGDevice(String uuid) {
-
         JFGDPDevice device = mCachedDeviceMap.get(uuid);
-//        if (device == null&& BuildConfig.DEBUG) throw new IllegalArgumentException("天啊,它真的发生了,你是不是又在乱传参数???");
         return device == null ? null : getValueWithAccountCheck((T) device.$());
     }
 

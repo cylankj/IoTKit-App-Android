@@ -10,7 +10,7 @@ import org.greenrobot.greendao.DaoException;
 /**
  * Created by yanzhendong on 2017/2/27.
  */
-@Entity(active = true)
+@Entity(active = true, generateGettersSetters = false)
 public class DPCache implements IDPEntity {
     @Id
     private Long id;
@@ -79,24 +79,27 @@ public class DPCache implements IDPEntity {
         return this.uuid;
     }
 
-    public void setUuid(String uuid) {
+    public IDPEntity setUuid(String uuid) {
         this.uuid = uuid;
+        return this;
     }
 
     public Long getVersion() {
         return this.version;
     }
 
-    public void setVersion(Long version) {
+    public IDPEntity setVersion(Long version) {
         this.version = version;
+        return this;
     }
 
     public Integer getMsgId() {
         return this.msgId;
     }
 
-    public void setMsgId(Integer msgId) {
+    public IDPEntity setMsgId(Integer msgId) {
         this.msgId = msgId;
+        return this;
     }
 
     public byte[] getBytes() {
@@ -111,16 +114,18 @@ public class DPCache implements IDPEntity {
         return this.tag;
     }
 
-    public void setTag(String tag) {
+    public IDPEntity setTag(String tag) {
         this.tag = tag;
+        return this;
     }
 
     public String getState() {
         return this.state;
     }
 
-    public void setState(String state) {
+    public IDPEntity setState(String state) {
         this.state = state;
+        return this;
     }
 
     /**

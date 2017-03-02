@@ -5,23 +5,23 @@ package com.cylan.jiafeigou.cache.db.view;
  */
 
 public interface IDPEntity {
-    void setMsgId(Integer msgId);
+    IDPEntity setMsgId(Integer msgId);
 
     Integer getMsgId();
 
-    void setVersion(Long version);
+    IDPEntity setVersion(Long version);
 
     Long getVersion();
 
-    void setUuid(String uuid);
+    IDPEntity setUuid(String uuid);
 
     String getUuid();
 
-    void setTag(String tag);
+    IDPEntity setTag(String tag);
 
     String getTag();
 
-    void setState(String state);
+    IDPEntity setState(String state);
 
     String getState();
 

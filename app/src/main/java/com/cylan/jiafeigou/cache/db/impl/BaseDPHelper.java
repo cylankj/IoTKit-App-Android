@@ -139,8 +139,9 @@ public class BaseDPHelper implements IDPHelper {
     @Override
     public Observable<List<DPCache>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction... markedAction) {
         return buildQueryBuilder(account, server, uuid, version, msgId)
-                .rx().list().filter(items -> items != null && items.size() > 0)
+                .rx().list()
                 .map(items -> {
+                    if (items == null || items.size() == 0) return items;
                     AppLogger.d("查询到 mark 数据" + items.size());
                     if (markedAction != null) {
                         for (DPCache item : items) {
@@ -157,10 +158,10 @@ public class BaseDPHelper implements IDPHelper {
     private void markDBAction(DPCache cache, DBAction action) {
         switch (action.kind()) {
             case KIND_TAG:
-                cache.setTag(action.name());
+                cache.setTag(action.action());
                 break;
             case KIND_STATE:
-                cache.setState(action.name());
+                cache.setState(action.action());
                 break;
         }
     }
@@ -169,10 +170,10 @@ public class BaseDPHelper implements IDPHelper {
         for (DBAction dbAction : dbActions) {
             switch (dbAction.kind()) {
                 case KIND_STATE:
-                    builder.where(DPCacheDao.Properties.State.eq(dbAction.name()));
+                    builder.where(DPCacheDao.Properties.State.eq(dbAction.action()));
                     break;
                 case KIND_TAG:
-                    builder.where(DPCacheDao.Properties.Tag.eq(dbAction.name()));
+                    builder.where(DPCacheDao.Properties.Tag.eq(dbAction.action()));
                     break;
             }
         }

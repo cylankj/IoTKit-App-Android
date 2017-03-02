@@ -6,8 +6,8 @@ import rx.Observable;
  * Created by yanzhendong on 2017/3/1.
  */
 
-public interface IDPTask {
-    IDPTask init(IDPEntity cache);
+public interface IDPTask<T extends IDPTaskResult> {
+    <R extends IDPTask<T>> R init(IDPEntity cache);
 
-    Observable execute();
+    Observable<T> execute();
 }

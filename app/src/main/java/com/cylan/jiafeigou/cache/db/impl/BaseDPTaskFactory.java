@@ -30,7 +30,7 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
     public IDPTask getDPTask(IDPEntity cache) {
         if (DBAction.DELETED.name().equals(cache.getTag())) {
             return new DPDeleteTask().init(cache);
-        } else if (DBAction.SHARED.name().equals(cache.getTag())) {
+        } else if (DBAction.SHARED.action().equals(cache.getTag())) {
             return new DPSharedTask().init(cache);
         }
         return null;

@@ -14,6 +14,7 @@ public enum DBAction {
     SAVED(KIND_TAG),
     DELETED(KIND_TAG),
     SHARED(KIND_TAG),
+    QUERY(KIND_TAG),
 
     /**
      * STATE Action
@@ -21,6 +22,7 @@ public enum DBAction {
     SUCCESS(KIND_STATE),
     NOT_CONFIRM(KIND_STATE);
     private Kind kind;
+    private String params;
 
     public Kind kind() {
         return kind;
@@ -33,4 +35,15 @@ public enum DBAction {
     public enum Kind {
         KIND_TAG, KIND_STATE;
     }
+
+    public String action() {
+        return name() + params;
+    }
+
+    public DBAction putParams(String params) {
+        this.params = params;
+        return this;
+    }
+
+
 }

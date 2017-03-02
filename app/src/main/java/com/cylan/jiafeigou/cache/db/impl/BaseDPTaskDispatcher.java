@@ -5,23 +5,24 @@ package com.cylan.jiafeigou.cache.db.impl;
  */
 
 
-import com.cylan.jiafeigou.cache.db.view.IClientDBSyncManager;
+import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
 /**
- * 用于客户端和服务器之间同步数据
+ * 用于客户端和服务器之间的数据交互,query task 在无网络时将被丢弃
+ * 其他 task
  */
-public class BaseClientDBSyncManager implements IClientDBSyncManager {
-    private static IClientDBSyncManager instance;
+public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
+    private static IDPTaskDispatcher instance;
     private boolean needSync = true;
 
-    public static IClientDBSyncManager getInstance() {
+    public static IDPTaskDispatcher getInstance() {
         if (instance == null) {
-            synchronized (BaseClientDBSyncManager.class) {
+            synchronized (BaseDPTaskDispatcher.class) {
                 if (instance == null) {
-                    instance = new BaseClientDBSyncManager();
+                    instance = new BaseDPTaskDispatcher();
                 }
             }
         }
@@ -29,7 +30,7 @@ public class BaseClientDBSyncManager implements IClientDBSyncManager {
     }
 
     @Override
-    public void performSyncTask() {
+    public synchronized void perform() {
         Observable.just(needSync).filter(start -> start)
                 .flatMap(start -> BaseDPHelper.getInstance().queryUnConfirmDpMsg(null, null))
                 .observeOn(Schedulers.io())

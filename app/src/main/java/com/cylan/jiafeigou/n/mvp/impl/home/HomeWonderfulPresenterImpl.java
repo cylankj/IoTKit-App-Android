@@ -7,6 +7,8 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPHelper;
+import com.cylan.jiafeigou.cache.db.module.DPCache;
+import com.cylan.jiafeigou.cache.db.module.tasks.DPDeleteTask;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -233,19 +235,15 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void deleteTimeline(int position) {
-        Observable.just(mSourceManager.isOnline())
-                .flatMap(hasNet -> {
-                    if (hasNet) {
-                        return deleteTimeLineFromServer(position)
-                                .filter(success -> success)
-                                .flatMap(success -> deleteTimeLineFromLocal(position));
-                    } else {
-                        return deleteTimeLineFromLocal(position);
-                    }
-                })
+        Observable.just(mWonderItems.get(position).version)
+                .observeOn(Schedulers.io())
+                .map(version -> new DPCache()
+                        .setUuid("")
+                        .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
+                        .setVersion(version)).flatMap(entity -> new DPDeleteTask().init(entity).execute())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(success -> {
-                    if (success) {
+                .subscribe(result -> {
+                    if (result.getResultCode() == 0) {//成功了
                         AppLogger.d("删除 TimeLine数据成功: position 为:" + position);
                         DpMsgDefine.DPWonderItem item = mWonderItems.remove(position);
                         mWonderItems.remove(item);
@@ -255,7 +253,32 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         }
                         RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
                     }
-                }, Throwable::printStackTrace);
+                }, e -> {
+                });
+
+//        Observable.just(mSourceManager.isOnline())
+//                .flatMap(hasNet -> {
+//                    if (hasNet) {
+//                        return deleteTimeLineFromServer(position)
+//                                .filter(success -> success)
+//                                .flatMap(success -> deleteTimeLineFromLocal(position));
+//                    } else {
+//                        return deleteTimeLineFromLocal(position);
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(success -> {
+//                    if (success) {
+//                        AppLogger.d("删除 TimeLine数据成功: position 为:" + position);
+//                        DpMsgDefine.DPWonderItem item = mWonderItems.remove(position);
+//                        mWonderItems.remove(item);
+//                        mView.onDeleteWonderSuccess(position);
+//                        if (mWonderItems.isEmpty()) {//说明当天的已经删完了
+//                            mView.chooseEmptyView(VIEW_TYPE_EMPTY);
+//                        }
+//                        RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
+//                    }
+//                }, Throwable::printStackTrace);
     }
 
     private Observable<Boolean> deleteTimeLineFromServer(int position) {
