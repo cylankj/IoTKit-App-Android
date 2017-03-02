@@ -41,6 +41,8 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.util.List;
 
@@ -56,7 +58,7 @@ import butterknife.OnTextChanged;
  * Created by lxh on 16-6-14.
  */
 
-public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContract.View {
+public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContract.View, BaseDialog.BaseDialogAction {
 
 
     @BindView(R.id.et_forget_username)
@@ -103,9 +105,10 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
      */
     private int acceptType = 0;
     private ForgetPwdContract.Presenter presenter;
-
-
     private CountDownTimer countDownTimer;
+    private String newPwd;
+    private boolean isCheckAgain;
+    private static final String DIALOG_KEY = "dialogFragment";
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -114,7 +117,14 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         acceptType = bundle.getInt(JConstant.KEY_LOCALE);
         List<Fragment> fragmentList = getActivity().getSupportFragmentManager().getFragments();
         Log.d("", "" + fragmentList);
-        initCountDownTimer();
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (isVisible()){
+            initCountDownTimer();
+        }
     }
 
     private void initCountDownTimer() {
@@ -169,7 +179,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         rLayoutForgetPwdToolbar.setBackAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ActivityUtils.justPop(getActivity());
+                showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_Yes), getString(R.string.Button_No), false);
             }
         });
     }
@@ -216,6 +226,10 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @OnClick(R.id.tv_meter_get_code)
     public void reGetVerificationCode() {
+        if (presenter.checkOverCount()){
+            ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+            return;
+        }
         countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
         if (presenter != null)
@@ -425,7 +439,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         sureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String newPwd = et_newpass.getText().toString().trim();
+                newPwd = et_newpass.getText().toString().trim();
                 if (newPwd.length() < 6) {
                     ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
                     return;
@@ -434,8 +448,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
                     return;
                 }
-                presenter.resetPassword(newPwd);
-
+                isCheckAgain = true;
+                presenter.submitPhoneNumAndCode(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT),PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE));
             }
         });
 
@@ -484,14 +498,21 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     @Override
     public void checkSmsCodeResult(int code) {
         if (code == 181) {
-            ToastUtil.showToast(getString(R.string.INVALID_CODE));
+            ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+        } else if (code == 180){
+            ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
         } else if (code == 0) {
             if (!PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT, "").equals(etForgetUsername.getText().toString().trim())) {
                 ToastUtil.showToast(getContext().getResources().getString(R.string.Tap0_wrongcode));
                 return;
             }
-            preparePhoneView();
+            if (isCheckAgain){
+                presenter.resetPassword(newPwd);
+            }else {
+                preparePhoneView();
+            }
         }
+        isCheckAgain = false;
     }
 
     /**
@@ -522,7 +543,12 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     public void checkIsRegReuslt(int code) {
         if (code == 0) {
             if (!Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etForgetUsername)).find()) {
-                start2HandleVerificationCode();
+                if (!presenter.checkOverCount()){
+                    start2HandleVerificationCode();
+                }else {
+                    ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+                    return;
+                }
             }
             presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
         } else {
@@ -566,5 +592,32 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
         }
+    }
+
+    /**
+     * 弹框，{fragment}
+     */
+    private void showSimpleDialog(String title,
+                                  String lContent,
+                                  String rContent,
+                                  boolean dismiss) {
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
+        if (f == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(BaseDialog.KEY_TITLE, title);
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, lContent);
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, rContent);
+            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, dismiss);
+            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+            dialogFragment.setAction(this);
+            dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
+        }
+    }
+
+    @Override
+    public void onDialogAction(int id, Object value) {
+        rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
+        vsSetAccountPwd.removeView(LayoutInflater.from(getContext())
+                .inflate(R.layout.fragment_set_new_pwd, null));
     }
 }

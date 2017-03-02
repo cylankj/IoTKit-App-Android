@@ -167,6 +167,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+        mETMailBox.requestFocus();
     }
 
     private void initPresenter() {

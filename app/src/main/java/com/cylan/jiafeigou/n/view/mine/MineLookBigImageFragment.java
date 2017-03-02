@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -10,7 +11,9 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -39,7 +42,6 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     private MineLookBigImageContract.Presenter presenter;
     private boolean loadResult = false;
     private String imageUrl;
-
     private Bitmap bitmapSource;
 
     public static MineLookBigImageFragment newInstance(Bundle bundle) {
@@ -61,6 +63,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
         View view = inflater.inflate(R.layout.fragment_mine_look_big_image, container, false);
         ButterKnife.bind(this, view);
         initPresenter();
+        initImageViewSize();
         initLongClickListener();
         return view;
     }
@@ -78,6 +81,20 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
             }
         });
     }
+
+    /**
+     * 初始化大图大小
+     */
+    private void initImageViewSize() {
+        WindowManager wm = (WindowManager) getActivity()
+                .getSystemService(Context.WINDOW_SERVICE);
+        int height = wm.getDefaultDisplay().getHeight();
+        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ivLookBigImage.getLayoutParams());
+        lp.height = (int) (height * 0.47);
+        lp.setMargins(0, (int) (height * 0.23), 0, 0);
+        ivLookBigImage.setLayoutParams(lp);
+    }
+
 
     /**
      * desc:保存图片
@@ -99,18 +116,6 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
                 dialog.dismiss();
             }
         }).show();
-    }
-
-    private void initImage() {
-        if (loadResult) {
-
-        } else {
-            //失败只显示200*200
-            ViewGroup.LayoutParams layoutParams = ivLookBigImage.getLayoutParams();
-            layoutParams.width = 200;
-            layoutParams.height = 200;
-            ivLookBigImage.setLayoutParams(layoutParams);
-        }
     }
 
     @Override
@@ -151,7 +156,6 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
                         super.onLoadFailed(e, errorDrawable);
                         hideLoadImageProgress();
                         loadResult = false;
-                        initImage();
                         ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
                     }
                 });
