@@ -52,7 +52,7 @@ public class DataSourceManager implements JFGSourceManager {
     private JFGDPDevice mFakeDevice = new JFGDPDevice() {
     };
 
-    public DataSourceManager() {
+    private DataSourceManager() {
     }
 
     public static DataSourceManager getInstance() {
@@ -82,9 +82,12 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public <T extends JFGDPDevice> T getJFGDevice(String uuid) {
-        JFGDPDevice device = mCachedDeviceMap.get(uuid);
+        Object o = mCachedDeviceMap.get(uuid);
+
+        return (T) o;
+
 //        if (device == null&& BuildConfig.DEBUG) throw new IllegalArgumentException("天啊,它真的发生了,你是不是又在乱传参数???");
-        return device == null ? null : getValueWithAccountCheck((T) device.$());
+//        return device == null ? null : getValueWithAccountCheck((T) device.$());
     }
 
     @Override

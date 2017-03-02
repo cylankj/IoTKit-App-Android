@@ -12,8 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -119,12 +119,12 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
     }
 
     private void updateDetails() {
-        DpMsgDefine.DPPrimary<String> mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
+        DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
         tvDeviceMac.setText(mac.$());
-        DpMsgDefine.DPPrimary<Integer> battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
+        DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
         tvDeviceBatteryLevel.setText(battery.$() + "");
 
-        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device != null) {
             tvDeviceAlias.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
@@ -165,7 +165,7 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
             @Override
             public void onDialogAction(int id, String value) {
                 if (presenter != null) {
-                    JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
+                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
                     if (!TextUtils.isEmpty(value)
                             && !TextUtils.equals(device.alias, value)) {
                         tvDeviceAlias.setText(value);

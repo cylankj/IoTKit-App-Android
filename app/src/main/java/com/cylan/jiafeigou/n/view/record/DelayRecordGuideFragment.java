@@ -5,11 +5,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -86,7 +86,7 @@ public class DelayRecordGuideFragment extends BaseFragment {
     }
 
     private boolean isDeviceSleeping() {
-        DpMsgDefine.DPPrimary<Boolean> sleep = GlobalDataProxy.getInstance().getValue(mUUID, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+        DpMsgDefine.DPPrimary<Boolean> sleep = DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
         return sleep.$();
     }
 

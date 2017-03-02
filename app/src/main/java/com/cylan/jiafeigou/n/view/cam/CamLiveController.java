@@ -12,7 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -154,7 +154,7 @@ public class CamLiveController implements
     public void setPortSafeSetter(ISafeStateSetter setter) {
         this.iSafeStateSetterPort = setter;
         iSafeStateSetterPort.setFlipListener(this);
-        DpMsgDefine.DPPrimary<Boolean> safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        DpMsgDefine.DPPrimary<Boolean> safe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
         //true:绿色,false:setFlipped(true)
         iSafeStateSetterPort.setFlipped(!safe.$());
         Log.d(TAG, "setFlip: " + safe + " " + uuid);
@@ -226,9 +226,9 @@ public class CamLiveController implements
     public void notifyOrientationChange(final int orientation) {
         boolean land = orientation == Configuration.ORIENTATION_LANDSCAPE;
         boolean isShareDevice = presenterRef != null && presenterRef.get() != null && presenterRef.get().isShareDevice();
-        DpMsgDefine.DPSdStatus sd = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+        DpMsgDefine.DPSdStatus sd = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         boolean sdCardStatus = sd.hasSdcard && sd.err == 0;
-        DpMsgDefine.DPPrimary<Boolean> safe = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        DpMsgDefine.DPPrimary<Boolean> safe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
 
         //竖屏事件区域 考虑 分享账号，sd卡
         if (liveTimeSetterPort != null && presenterRef.get().getPlayState() == PLAY_STATE_PLAYING) {
@@ -292,7 +292,7 @@ public class CamLiveController implements
                 AppLogger.i("没有历史视频数据,或者没准备好");
                 return;
             }
-            DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid,
+            DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid,
                     DpMsgMap.ID_201_NET);
             boolean deviceState = JFGRules.isDeviceOnline(net);
             //播放状态
@@ -445,14 +445,14 @@ public class CamLiveController implements
             AppLogger.d("no net work");
             return;
         }
-        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid,
+        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid,
                 DpMsgMap.ID_201_NET);
         if (net != null &&
                 net.net == 0) {
             AppLogger.d("device is offline");
             return;
         }
-        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid,
+        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid,
                 DpMsgMap.ID_204_SDCARD_STORAGE);
         if (status != null && !status.hasSdcard) {
             //没有sd卡
@@ -532,8 +532,8 @@ public class CamLiveController implements
     public void onClick(FlipImageView view) {
         boolean land = view.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         AppLogger.i("land: " + land + " " + (!view.isFlipped()));
-        DpMsgDefine.DPPrimary<Boolean> alarmFlag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        DpMsgDefine.DPPrimary<Integer> autoVideo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+        DpMsgDefine.DPPrimary<Boolean> alarmFlag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        DpMsgDefine.DPPrimary<Integer> autoVideo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
         if (alarmFlag.$() && autoVideo.$() != 2) {//已开启自动录像和移动侦测
             getAlertDialogFrag().show();
             AppLogger.d("关闭移动侦测将关闭自动录像功能");

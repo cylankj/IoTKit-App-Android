@@ -17,7 +17,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -123,7 +122,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         lvTimezoneDetail.setLayoutManager(layoutManager);
         adapter = new DeviceTimeZoneAdapter(getActivity().getApplicationContext());
-        DpMsgDefine.DPTimeZone info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+        DpMsgDefine.DPTimeZone info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
         String timeZoneId = info == null ? "" : info.timezone;
         adapter.setChooseId(timeZoneId);
         Log.d("onViewCreated", "offset: " + timeZoneId);
@@ -137,12 +136,12 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
             simpleDialog.setValue(adapter.getItem(position));
             simpleDialog.setAction((int id, Object value) -> {
                 if (value != null && value instanceof TimeZoneBean) {
-                    DpMsgDefine.DPTimeZone timeZone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+                    DpMsgDefine.DPTimeZone timeZone = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
                     if (!TextUtils.equals(timeZone.timezone, ((TimeZoneBean) value).getId())) {
                         timeZone.timezone = ((TimeZoneBean) value).getId();
                         timeZone.offset = ((TimeZoneBean) value).getOffset();
                         try {
-                            DataSourceManager.getInstance().updateValue(uuid, timeZone, (int) id);
+                            com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().updateValue(uuid, timeZone, (int) id);
                         } catch (IllegalAccessException e) {
                             AppLogger.e("err: " + e.getLocalizedMessage());
                         }

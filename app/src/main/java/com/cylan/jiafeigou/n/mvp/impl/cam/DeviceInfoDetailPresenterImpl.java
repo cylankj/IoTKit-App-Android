@@ -5,7 +5,6 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -59,7 +58,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -76,8 +75,8 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
-                        DpMsgDefine.DPPrimary<String> sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
+                        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
                         try {
                             JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, sVersion.$());
                         } catch (JfgException e) {
@@ -168,7 +167,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     public void updateAlias(JFGDPDevice device) {
         Observable.just(device)
                 .map(device1 -> {
-                    GlobalDataProxy.getInstance().updateJFGDevice(device);
+                    DataSourceManager.getInstance().updateJFGDevice(device);
                     return null;
                 })
                 .timeout(1, TimeUnit.SECONDS, Observable.just("setAliasTimeout")

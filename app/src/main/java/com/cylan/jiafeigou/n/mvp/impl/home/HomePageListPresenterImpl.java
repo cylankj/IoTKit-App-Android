@@ -11,8 +11,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
@@ -218,7 +216,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     AppLogger.e("未实现");
 //                    for (String uuid : sharedList)
 //                        try {
-//                            GlobalDataProxy.getInstance().fetchUnreadCount(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+//                            DataSourceManager.getInstance().fetchUnreadCount(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
 //                        } catch (JfgException e) {
 //                            AppLogger.e("" + e.getLocalizedMessage());
 //                        }

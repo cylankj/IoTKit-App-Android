@@ -14,7 +14,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -87,12 +87,12 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (JFGRules.isFreeCam(GlobalDataProxy.getInstance().getJFGDevice(uuid))) {
+        if (JFGRules.isFreeCam(DataSourceManager.getInstance().getJFGDevice(uuid))) {
             rb24Hours.setVisibility(View.GONE);
             view.findViewById(R.id.lLayout_mode_24_hours).setVisibility(View.GONE);
         }
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
-        DpMsgDefine.DPPrimary<Integer> focus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+        DpMsgDefine.DPPrimary<Integer> focus = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
         oldOption = focus.$();
         rbMotion.setChecked(focus.$() == 0);
         rb24Hours.setChecked(focus.$() == 1);
@@ -102,7 +102,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     @Override
     public void onDetach() {
         super.onDetach();
-        DpMsgDefine.DPPrimary<Integer> auto = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+        DpMsgDefine.DPPrimary<Integer> auto = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
         if (oldOption != auto.$()) {
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
         }
@@ -183,12 +183,12 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     }
 
     private boolean alarmDisable() {
-        DpMsgDefine.DPPrimary<Boolean> alarm = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        DpMsgDefine.DPPrimary<Boolean> alarm = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
         return alarm.$();
     }
 
     private boolean hasSdcard() {
-        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid,
+        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid,
                 DpMsgMap.ID_204_SDCARD_STORAGE);
         return status.hasSdcard && status.err == 0;
     }

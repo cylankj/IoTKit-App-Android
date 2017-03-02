@@ -9,8 +9,8 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
@@ -146,7 +146,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     private ArrayList<DeviceBean> getShareDeviceList() {
 
         ArrayList<DeviceBean> list = new ArrayList<>();
-        List<JFGDPDevice> devices = GlobalDataProxy.getInstance().getAllJFGDevice();
+        List<JFGDPDevice> devices = DataSourceManager.getInstance().getAllJFGDevice();
         for (JFGDPDevice info : devices) {
             DeviceBean bean = new DeviceBean();
             bean.alias = info.alias;

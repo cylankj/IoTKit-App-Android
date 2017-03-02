@@ -9,7 +9,6 @@ import android.view.View;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -67,11 +66,11 @@ public class HomePageListAdapter extends SuperAdapter<String> {
             holder.setImageResource(R.id.img_device_state_0, resIdNet);
         } else holder.setVisibility(R.id.img_device_state_0, GONE);
         //1 已分享的设备,此设备分享给别的账号.
-        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
             holder.setVisibility(R.id.img_device_state_1, GONE);
         } else {
-            if (GlobalDataProxy.getInstance().isDeviceSharedTo(uuid)) {
+            if (DataSourceManager.getInstance().isDeviceSharedTo(uuid)) {
                 holder.setVisibility(R.id.img_device_state_1, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_1, R.drawable.home_icon_net_link);
             } else {
@@ -80,7 +79,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         }
         //2 电量
         if (pid == JConstant.OS_DOOR_BELL) {
-            DpMsgDefine.DPPrimary<Integer> battery = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
+            DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
             if (MiscUtils.getValue(battery.$(), 0) <= 20) {
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
@@ -89,8 +88,8 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         //3 延时摄影
 
         //4 安全防护
-        DpMsgDefine.DPPrimary<Boolean> standby = GlobalDataProxy.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
-        DpMsgDefine.DPPrimary<Boolean> safe = GlobalDataProxy.getInstance().getValueSafe(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        DpMsgDefine.DPPrimary<Boolean> standby = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+        DpMsgDefine.DPPrimary<Boolean> safe = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         if (standby.value && safe.value && JFGRules.isCamera(pid)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
@@ -118,8 +117,8 @@ public class HomePageListAdapter extends SuperAdapter<String> {
      */
 
     private void handleState(SuperViewHolder holder, String uuid) {
-        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
-        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
+        DpMsgDefine.DPNet net = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+        JFGDPDevice device = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getJFGDevice(uuid);
         int pid = device == null ? 0 : device.pid;
         String alias = device == null ? "" : device.alias;
         String shareAccount = device == null ? "" : device.shareAccount;
@@ -161,8 +160,8 @@ public class HomePageListAdapter extends SuperAdapter<String> {
     private long localUnreadCursor;
 
     private Pair<Integer, DataPoint> getPair(String uuid) {
-        List<DataPoint> _505List = DataSourceManager.getInstance().getValueBetween(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG, localUnreadCursor, System.currentTimeMillis());
-        List<DataPoint> _222List = DataSourceManager.getInstance().getValueBetween(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY, localUnreadCursor, System.currentTimeMillis());
+        List<DataPoint> _505List = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getValueBetween(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG, localUnreadCursor, System.currentTimeMillis());
+        List<DataPoint> _222List = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getValueBetween(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY, localUnreadCursor, System.currentTimeMillis());
         int count = ListUtils.getSize(_505List) + ListUtils.getSize(_222List);
 
         return null;

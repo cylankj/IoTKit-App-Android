@@ -16,8 +16,8 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -107,7 +107,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         customToolbar.setBackAction((View v) -> {
             getActivity().getSupportFragmentManager().popBackStack();
         });
-        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(this.uuid);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
         if (device != null && JFGRules.isFreeCam(device.pid)) {
             fLayoutProtectionWarnEffect.setVisibility(View.GONE);
         }
@@ -166,21 +166,21 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     }
 
     private void updateDetails() {
-        DpMsgDefine.DPPrimary<Boolean> flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
         showDetail(flag.$());
         //移动侦测
         swMotionDetection.setChecked(flag.$());
         //提示音
-        DpMsgDefine.DPNotificationInfo notificationInfo = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+        DpMsgDefine.DPNotificationInfo notificationInfo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
         fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
                 ? R.string.MUTE : (notificationInfo.notification == 1
                 ? R.string.BARKING : R.string.ALARM)));
         //灵敏度
-        DpMsgDefine.DPPrimary<Integer> sensitivity = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
+        DpMsgDefine.DPPrimary<Integer> sensitivity = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
         fLayoutProtectionSensitivity.setTvSubTitle(sensitivity.$() == 0 ? getString(R.string.SENSITIVI_LOW)
                 : (sensitivity.$() == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期
-        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+        DpMsgDefine.DPAlarmInfo info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
         fLayoutProtectionRepeatPeriod.setTvSubTitle(basePresenter.getRepeatMode(getContext()));
         if (info != null) {
             fLayoutProtectionStartTime.setTvSubTitle(MiscUtils.parse2Time(info.timeStart));
@@ -227,7 +227,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentStart");
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                        DpMsgDefine.DPAlarmInfo info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         if (info.timeStart != (int) value) {
                             info.timeStart = (int) value;
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
@@ -243,7 +243,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentEnd");
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                        DpMsgDefine.DPAlarmInfo info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         if (info.timeEnd != (int) value) {
                             info.timeEnd = (int) value;
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
@@ -259,7 +259,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 fragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         int result = (int) value;
-                        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
+                        DpMsgDefine.DPAlarmInfo info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
                         DpMsgDefine.DPAlarmInfo alarmInfo = info == null ? new DpMsgDefine.DPAlarmInfo() : info;
                         if (alarmInfo.day != result) {
                             alarmInfo.day = result;

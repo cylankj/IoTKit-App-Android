@@ -12,8 +12,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -105,18 +105,18 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     }
 
     private void updateDetails() {
-        DpMsgDefine.DPPrimary<String> mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
+        DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
         tvDeviceMac.setText(mac.$());
-        DpMsgDefine.DPPrimary<String> version = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
+        DpMsgDefine.DPPrimary<String> version = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
         tvSoftVersion.setText(version.$());
-        DpMsgDefine.DPPrimary<String> sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION);
+        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION);
         tvSystemVersion.setText(sVersion.$());
-        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device != null) {
             tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
         }
-        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         if (status == null || !status.hasSdcard) {
             tvDeviceStorage.setText(getString(R.string.SD_NO));
         } else {
@@ -169,7 +169,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
             @Override
             public void onDialogAction(int id, String value) {
                 if (presenter != null) {
-                    JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
+                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
                     if (!TextUtils.isEmpty(value)
                             && !TextUtils.equals(device.alias, value)) {
                         tvInformationFacilityName.setText(value);

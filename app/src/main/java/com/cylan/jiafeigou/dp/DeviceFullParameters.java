@@ -9,7 +9,7 @@
 //import com.cylan.entity.jniCall.JFGDevice;
 //import com.cylan.entity.jniCall.RobotoGetDataRsp;
 //import com.cylan.ex.JfgException;
-//import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+//import com.cylan.jiafeigou.base.module.DataSourceManager;
 //import com.cylan.jiafeigou.misc.JConstant;
 //import com.cylan.jiafeigou.misc.JFGRules;
 //import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -70,7 +70,7 @@
 //                        int pid = device.pid;
 //                        if (JFGRules.isCamera(pid)) {
 //                            try {
-//                                GlobalDataProxy.getInstance().fetchUnreadCount(device.uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+//                                DataSourceManager.getInstance().fetchUnreadCount(device.uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
 //                            } catch (JfgException e) {
 //                                AppLogger.e("" + e.getLocalizedMessage());
 //                            }
@@ -94,14 +94,14 @@
 //                    String uuid = unreadCount.uuid;
 //                    for (JFGDPMsgCount msg : unreadCount.msgList) {
 //                        int id = msg.id;
-//                        BaseValue base = GlobalDataProxy.getInstance().fetchLocal(uuid, id, true);
+//                        BaseValue base = DataSourceManager.getInstance().fetchLocal(uuid, id, true);
 //                        if (base == null) {
 //                            AppLogger.e(String.format(Locale.getDefault(), "no id:%d BaseValue", id));
 //                            continue;
 //                        }
 //                        if (msg.count == 0) continue;
 //                        Pair<Integer, BaseValue> pair = new Pair<>(msg.count, base);
-//                        GlobalDataProxy.getInstance().cacheUnread(uuid + id, pair);
+//                        DataSourceManager.getInstance().cacheUnread(uuid + id, pair);
 //                        Log.d(TAG, "handleUnreadMessageCount:" + pair);
 //                    }
 //                    return null;
@@ -178,7 +178,7 @@
 //                            base.setId(jfg.id);
 //                            base.setVersion(jfg.version);
 //                            base.setValue(DpUtils.unpackData(jfg.packValue, DpMsgMap.ID_2_CLASS_MAP.get((int) jfg.id)));
-//                            boolean result = GlobalDataProxy.getInstance().update(identity, base, false);
+//                            boolean result = DataSourceManager.getInstance().update(identity, base, false);
 //                            if (result) updatedItems.put(identity, base);
 //                        } catch (Exception e) {
 //                            AppLogger.e("" + jfg.id + " " + e.getLocalizedMessage());

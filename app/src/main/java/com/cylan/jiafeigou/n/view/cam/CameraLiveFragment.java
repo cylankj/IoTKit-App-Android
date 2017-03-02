@@ -30,8 +30,8 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -156,7 +156,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
     }
 
@@ -207,7 +207,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (basePresenter != null) {
             basePresenter.fetchHistoryDataList();
             //非待机模式
-            DpMsgDefine.DPPrimary<Boolean> flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+            DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
             if (!flag.$()) {
                 startLive();
             }
@@ -255,7 +255,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
-        DpMsgDefine.DPPrimary<Boolean> isStandBY = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+        DpMsgDefine.DPPrimary<Boolean> isStandBY = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
         if (isStandBY.$()) return;
         basePresenter.startPlayVideo(TYPE_LIVE);
     }
@@ -264,7 +264,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
-        DpMsgDefine.DPPrimary<Boolean> isStandBY = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+        DpMsgDefine.DPPrimary<Boolean> isStandBY = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
         if (isStandBY.$()) return;
         basePresenter.startPlayHistory(time);
     }
@@ -440,7 +440,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     private VideoViewFactory.IVideoView initVideoView() {
         AppLogger.i("initVideoView:" + (videoView == null));
         if (videoView == null) {
-            JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
+            JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
             if (device == null) {
                 AppLogger.e("device is null");
                 getActivity().finish();
@@ -579,7 +579,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setLiveTime(0);
         switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
-                DpMsgDefine.DPPrimary<Boolean> standby = GlobalDataProxy.getInstance().getValue(uuid, ID_508_CAMERA_STANDBY_FLAG);
+                DpMsgDefine.DPPrimary<Boolean> standby = DataSourceManager.getInstance().getValue(uuid, ID_508_CAMERA_STANDBY_FLAG);
                 if (standby.$()) break;//
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;

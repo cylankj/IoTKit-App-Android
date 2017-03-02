@@ -8,7 +8,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -122,7 +122,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
      * 每次fping都是为了得到最新的mac
      */
     private String getLatestMac() {
-        DpMsgDefine.DPPrimary<String> mac = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
+        DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
         if (JConstant.MAC_REG.matcher(mac.$()).find()) {
             AppLogger.i("get mac from local: " + mac);
             return mac.$();

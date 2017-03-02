@@ -12,10 +12,10 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
@@ -120,12 +120,12 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
             @Override
             public void onDialogAction(int id, String value) {
-                JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(mUUID);
+                JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
                 if (!TextUtils.isEmpty(value)
                         && device != null && !TextUtils.equals(device.alias, value)) {
                     device.alias = value;
                     svSettingDeviceAlias.setTvSubTitle(value);
-                    GlobalDataProxy.getInstance().updateJFGDevice(device);
+                    DataSourceManager.getInstance().updateJFGDevice(device);
                 }
 
             }

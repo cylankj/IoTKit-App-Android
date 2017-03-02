@@ -8,8 +8,8 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -56,8 +56,8 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-//                        GlobalDataProxy.getInstance().setJfgAccount(null);
-                        GlobalDataProxy.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
+//                        DataSourceManager.getInstance().setJfgAccount(null);
+                        DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
                         JfgCmdInsurance.getCmd().logout();
                         if (isOpenLogin) {
                             AccessTokenKeeper.clear(getView().getContext());

@@ -15,8 +15,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -187,20 +187,20 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             showHasNoSdDialog();
             return;
         }
-        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(this.uuid);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
         //仅3G摄像头显示此栏
         if (device != null && JFGRules.is3GCam(device.pid)) {
             tvClearRestart.setVisibility(View.VISIBLE);
         }
 
-        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         boolean show = net != null && JFGRules.isDeviceOnline(net);
         if (!show || NetUtils.getJfgNetType(getContext()) == 0) {
             tvClecrSdcard.setTextColor(Color.parseColor("#8c8c8c"));
             tvClecrSdcard.setEnabled(false);
         }
 
-        DpMsgDefine.DPSdStatus sdStatus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+        DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         if (sdStatus != null) {
             long sdcardTotalCapacity = sdStatus.total;
             long sdcardUsedCapacity = sdStatus.used;

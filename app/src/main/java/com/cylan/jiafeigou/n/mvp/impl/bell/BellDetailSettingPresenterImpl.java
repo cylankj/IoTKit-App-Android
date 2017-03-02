@@ -5,7 +5,6 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -55,10 +54,10 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
 //                    baseValue.setId(id);
 //                    baseValue.setVersion(System.currentTimeMillis());
 //                    baseValue.setValue(o);
-//                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+//                    DataSourceManager.getInstance().update(uuid, baseValue, true);
 
                     try {
-                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -76,8 +75,8 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JFGDPDevice device = GlobalDataProxy.getInstance().getJFGDevice(uuid);
-                        DpMsgDefine.DPPrimary<String> sVersion = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
+                        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
                         try {
                             JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, sVersion.$());
                         } catch (JfgException e) {

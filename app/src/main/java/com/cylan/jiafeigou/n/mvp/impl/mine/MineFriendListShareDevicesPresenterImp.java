@@ -10,8 +10,8 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendListShareDevicesToContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -232,7 +232,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
     private ArrayList<DeviceBean> getShareDeviceList() {
 
         ArrayList<DeviceBean> list = new ArrayList<>();
-        List<JFGDPDevice> devices = GlobalDataProxy.getInstance().getAllJFGDevice();
+        List<JFGDPDevice> devices = DataSourceManager.getInstance().getAllJFGDevice();
         for (JFGDPDevice info : devices) {
             DeviceBean bean = new DeviceBean();
             bean.alias = info.alias;
