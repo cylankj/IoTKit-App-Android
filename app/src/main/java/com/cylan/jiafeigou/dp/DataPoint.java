@@ -10,7 +10,6 @@ import com.cylan.ext.annotations.DPProperty;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
-import org.jetbrains.annotations.Contract;
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Ignore;
 
@@ -320,7 +319,6 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
         return null;
     }
 
-    @Contract(value = "null -> null", pure = true)
     public static final <T> T getValue(Object value) {
         if (value == null) return null;
 
