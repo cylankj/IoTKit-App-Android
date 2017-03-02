@@ -1,4 +1,4 @@
-package com.cylan.jiafeigou.cache.db;
+package com.cylan.jiafeigou.cache.db.module;
 
 import android.util.SparseArray;
 
@@ -13,25 +13,25 @@ public class DPByteParser {
 
     static {
         mElementMap.put(201, com.cylan.jiafeigou.dp.DpMsgDefine.DPNet.class);
-        mElementMap.put(202, java.lang.String.class);
+        mElementMap.put(202, String.class);
         mElementMap.put(204, com.cylan.jiafeigou.dp.DpMsgDefine.DPSdStatus.class);
         mElementMap.put(222, com.cylan.jiafeigou.dp.DpMsgDefine.DPSdcardSummary.class);
         mElementMap.put(205, boolean.class);
         mElementMap.put(206, int.class);
-        mElementMap.put(207, java.lang.String.class);
-        mElementMap.put(208, java.lang.String.class);
+        mElementMap.put(207, String.class);
+        mElementMap.put(208, String.class);
         mElementMap.put(209, boolean.class);
         mElementMap.put(210, int.class);
         mElementMap.put(211, int.class);
-        mElementMap.put(212, java.lang.String.class);
+        mElementMap.put(212, String.class);
         mElementMap.put(213, int.class);
         mElementMap.put(214, com.cylan.jiafeigou.dp.DpMsgDefine.DPTimeZone.class);
         mElementMap.put(215, boolean.class);
         mElementMap.put(216, boolean.class);
         mElementMap.put(217, boolean.class);
-        mElementMap.put(218, java.lang.Void.class);
+        mElementMap.put(218, Void.class);
         mElementMap.put(219, com.cylan.jiafeigou.dp.DpMsgDefine.DPBindLog.class);
-        mElementMap.put(220, java.lang.String.class);
+        mElementMap.put(220, String.class);
         mElementMap.put(301, boolean.class);
         mElementMap.put(302, int.class);
         mElementMap.put(303, int.class);
@@ -47,7 +47,7 @@ public class DPByteParser {
         mElementMap.put(508, boolean.class);
         mElementMap.put(509, int.class);
         mElementMap.put(510, boolean.class);
-        mElementMap.put(601, java.lang.String.class);
+        mElementMap.put(601, String.class);
         mElementMap.put(602, com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem.class);
         mElementMap.put(701, boolean.class);
     }

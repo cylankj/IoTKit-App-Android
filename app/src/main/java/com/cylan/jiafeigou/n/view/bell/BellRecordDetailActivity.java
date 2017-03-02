@@ -58,8 +58,10 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
@@ -88,6 +90,8 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     private BellCallRecordBean mCallRecord;
     private ShareDialogFragment mShareDialog;
     private File mDownloadFile;
+
+    private CompositeSubscription compositeSubscription;
 
     @Override
     protected JFGPresenter onCreatePresenter() {
@@ -149,6 +153,20 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        compositeSubscription = new CompositeSubscription();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
+            compositeSubscription.unsubscribe();
+            compositeSubscription = null;
+        }
+    }
 
     @OnClick(R.id.act_bell_picture_opt_download)
     public void download() {
@@ -166,7 +184,20 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_collection)
     public void collection() {
-        Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
+        if (DataSourceManager.getInstance().isOnline()) {
+            collectionFromServer();
+        } else {
+            collectionFromLocal();
+        }
+    }
+
+    private void collectionFromLocal() {
+
+
+    }
+
+    private void collectionFromServer() {
+        Subscription subscribe = Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
             try {
                 //先设置 robotData
                 DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
@@ -236,6 +267,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                         }
                     }
                 });
+        compositeSubscription.add(subscribe);
     }
 
     @Override

@@ -122,13 +122,8 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                     }
                 }, e -> {
                     if (e instanceof TimeoutException) {
-                        if (mCaller == null) {//没有正在查看的直播,且当前直播接听超时,则直接关闭退出
-                            mView.onNewCallTimeOut();
-                            mView.onDismiss();
-                        } else if (mHolderCaller != null) {
-                            mHolderCaller = null;
-                            mView.onNewCallTimeOut();
-                        }
+                        mHolderCaller = null;
+                        mView.onNewCallTimeOut();
                     }
                 });
         registerSubscription(subscription);

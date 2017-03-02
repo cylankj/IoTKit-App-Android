@@ -1,4 +1,6 @@
-package com.cylan.jiafeigou.cache.db;
+package com.cylan.jiafeigou.cache.db.module;
+
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Id;
@@ -8,8 +10,8 @@ import org.greenrobot.greendao.DaoException;
 /**
  * Created by yanzhendong on 2017/2/27.
  */
-@Entity(active = true)
-public class DPCache {
+@Entity(active = true, generateGettersSetters = false)
+public class DPCache implements IDPEntity {
     @Id
     private Long id;
     private String account;
@@ -32,8 +34,8 @@ public class DPCache {
     private transient DPCacheDao myDao;
 
     @Generated(hash = 1364992632)
-    public DPCache(Long id, String account, String server, String uuid, Long version,
-            Integer msgId, byte[] bytes, String tag, String state) {
+    public DPCache(Long id, String account, String server, String uuid,
+                   Long version, Integer msgId, byte[] bytes, String tag, String state) {
         this.id = id;
         this.account = account;
         this.server = server;
@@ -77,24 +79,27 @@ public class DPCache {
         return this.uuid;
     }
 
-    public void setUuid(String uuid) {
+    public IDPEntity setUuid(String uuid) {
         this.uuid = uuid;
+        return this;
     }
 
     public Long getVersion() {
         return this.version;
     }
 
-    public void setVersion(Long version) {
+    public IDPEntity setVersion(Long version) {
         this.version = version;
+        return this;
     }
 
     public Integer getMsgId() {
         return this.msgId;
     }
 
-    public void setMsgId(Integer msgId) {
+    public IDPEntity setMsgId(Integer msgId) {
         this.msgId = msgId;
+        return this;
     }
 
     public byte[] getBytes() {
@@ -103,6 +108,24 @@ public class DPCache {
 
     public void setBytes(byte[] bytes) {
         this.bytes = bytes;
+    }
+
+    public String getTag() {
+        return this.tag;
+    }
+
+    public IDPEntity setTag(String tag) {
+        this.tag = tag;
+        return this;
+    }
+
+    public String getState() {
+        return this.state;
+    }
+
+    public IDPEntity setState(String state) {
+        this.state = state;
+        return this;
     }
 
     /**
@@ -139,22 +162,6 @@ public class DPCache {
             throw new DaoException("Entity is detached from DAO context");
         }
         myDao.update(this);
-    }
-
-    public String getTag() {
-        return this.tag;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public String getState() {
-        return this.state;
-    }
-
-    public void setState(String state) {
-        this.state = state;
     }
 
     /** called by internal mechanisms, do not call yourself. */

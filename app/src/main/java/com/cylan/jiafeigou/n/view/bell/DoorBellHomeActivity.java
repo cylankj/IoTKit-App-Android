@@ -108,6 +108,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         super.onStart();
         registerNetWorkObserver();
         mLastEnterTime = PreferencesUtils.getLong("BELL_HOME_LAST_ENTER_TIME");
+        startLoadData(false, 0);
     }
 
     @Override
@@ -281,18 +282,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void onDeleteBellCallRecordFailed() {
         ToastUtil.showNegativeToast("刪除失敗");
-    }
-
-    @Override
-    public void onSyncLocalDataFinished() {
-        if (!mHasLoadInited) {
-            startLoadData(false, 0);
-        }
-    }
-
-    @Override
-    public void onSyncLocalDataRequired() {
-        
     }
 
 
