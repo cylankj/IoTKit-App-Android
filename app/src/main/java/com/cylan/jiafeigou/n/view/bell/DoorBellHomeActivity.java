@@ -108,6 +108,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         super.onStart();
         registerNetWorkObserver();
         mLastEnterTime = PreferencesUtils.getLong("BELL_HOME_LAST_ENTER_TIME");
+        startLoadData(false, 0);
     }
 
     @Override
@@ -263,7 +264,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onQueryRecordListTimeOut() {
         if (LoadingDialog.isShowing(getSupportFragmentManager())) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
-            ToastUtil.showNegativeToast(getString(R.string.REQUEST_TIME_OUT));
+            ToastUtil.showNegativeToast(getString(R.string.Request_TimeOut));
         }
     }
 
@@ -281,18 +282,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void onDeleteBellCallRecordFailed() {
         ToastUtil.showNegativeToast("刪除失敗");
-    }
-
-    @Override
-    public void onSyncLocalDataFinished() {
-        if (!mHasLoadInited) {
-            startLoadData(false, 0);
-        }
-    }
-
-    @Override
-    public void onSyncLocalDataRequired() {
-        
     }
 
 

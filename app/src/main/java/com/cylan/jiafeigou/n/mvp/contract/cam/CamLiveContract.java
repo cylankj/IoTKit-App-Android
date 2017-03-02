@@ -129,7 +129,12 @@ public interface CamLiveContract {
          */
         void switchSpeakerMic(final boolean local, final boolean speakerFlag, final boolean micFlag);
 
-        void takeSnapShot();
+        /**
+         * 预览专用？
+         *
+         * @param forPreview
+         */
+        void takeSnapShot(boolean forPreview);
 
         boolean getSpeakerFlag();
 

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.dp;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.support.v4.util.LongSparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -285,6 +286,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
         return getValue(msgId, -1);
     }
 
+    @Nullable
     public final <T extends DataPoint> T getValue(long msgId, long seq) {
         try {
             Field field = getProperties().get(msgId);
