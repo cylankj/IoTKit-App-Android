@@ -29,7 +29,8 @@
             android:id="@+id/act_bell_live_video_play_controller"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center" />
+            android:layout_gravity="center"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/imgv_bell_live_switch_to_land"
@@ -38,6 +39,7 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/y10"
             android:padding="@dimen/y10"
+            android:visibility="invisible"
             android:src="@drawable/icon_port_fullscreen_selector" />
 
         <FrameLayout
@@ -67,7 +69,7 @@
                 android:gravity="center"
                 android:paddingLeft="@dimen/y8"
                 android:paddingRight="@dimen/y8"
-                android:text="0kb"
+                android:text="0K/s"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp13"
                 android:visibility="visible" />

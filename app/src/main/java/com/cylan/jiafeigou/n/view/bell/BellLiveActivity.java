@@ -167,7 +167,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @OnPermissionDenied(Manifest.permission.MODIFY_AUDIO_SETTINGS)
     void onModifyAudioSettingFaild() {
-        AppLogger.e("切换模式失败");
+        AppLogger.d("切换模式失败");
     }
 
     @NeedsPermission(Manifest.permission.MODIFY_AUDIO_SETTINGS)
@@ -393,6 +393,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         imgvBellLiveCapture.setEnabled(true);
         imgvBellLiveSpeaker.setEnabled(true);
         imgvBellLiveSwitchToLand.setEnabled(true);
+        imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
         if (isLanchFromBellCall) {
             BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
         }
@@ -449,18 +450,21 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onNewCallTimeOut() {
-        ToastUtil.showNegativeToast("通话已取消");
-        dismissAlert();
+//        dismissAlert();
+        mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
     }
 
     @Override
     public void onVideoDisconnect(int code) {
+        imgvBellLiveCapture.setEnabled(false);
+        imgvBellLiveSpeaker.setEnabled(false);
+        imgvBellLiveSwitchToLand.setEnabled(false);
         switch (code) {
             case JError.ErrorVideoPeerInConnect://其他端在查看
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
                 break;
             case JError.ErrorVideoPeerNotExist://对端不在线
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_PEER_NOT_EXIST));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NOT_ONLINE));
                 break;
             case JError.ErrorVideoNotLogin://本端未登录
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NOT_ONLINE));
@@ -484,6 +488,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onPreviewPicture(String URL) {
+        mVideoPlayController.setState(ILiveControl.STATE_IDLE, null);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         Glide.with(this).load(URL).
                 placeholder(R.drawable.default_diagram_mask)
@@ -497,7 +502,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (mode != AudioManager.MODE_NORMAL) {
             handleHeadsetConnected();
         }
-        mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         mVideoPlayController.setState(ILiveControl.STATE_LOADING, null);
         imgvBellLiveCapture.setEnabled(false);
         imgvBellLiveSpeaker.setEnabled(false);
@@ -563,6 +567,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onDismiss() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+            mediaPlayer = null;
+        }
         finishExt();
     }
 
@@ -581,7 +590,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (TextUtils.equals(mNewCallHandle, handler)) {
             switch (action) {
                 case VIEW_ACTION_OK:
-                    mPresenter.pickup();
+                    mPresenter.startViewer();
                     break;
                 case VIEW_ACTION_CANCEL:
 
