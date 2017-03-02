@@ -151,8 +151,8 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
-    public JFGDevice fetch(String uuid) {
-//        Log.d(TAG, "fetch: " + uuid + " " + jfgDeviceMap.get(uuid));
+    public JFGDevice getJFGDevice(String uuid) {
+//        Log.d(TAG, "getJFGDevice: " + uuid + " " + jfgDeviceMap.get(uuid));
         return jfgDeviceMap.get(uuid);
     }
 
@@ -169,14 +169,14 @@ public class DataPointManager implements IParser, IDataPoint {
     }
 
     @Override
-    public ArrayList<JFGDevice> fetchAll() {
+    public ArrayList<JFGDevice> getAllJFGDevice() {
         Iterator<String> keySet = jfgDeviceMap.keySet().iterator();
         ArrayList<JFGDevice> allList = new ArrayList<>();
         while (keySet.hasNext()) {
             String key = keySet.next();
             allList.add(jfgDeviceMap.get(key));
         }
-        AppLogger.d("fetchAll:" + allList.size());
+        AppLogger.d("getAllJFGDevice:" + allList.size());
         return allList;
     }
 

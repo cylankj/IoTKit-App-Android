@@ -239,7 +239,6 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnlineStatus(boolean b) {
         AppLogger.d("OnlineStatus :" + b);
-        GlobalDataProxy.getInstance().setOnline(b);
         RxBus.getCacheInstance().post(new RxEvent.LoginRsp(b));
         DataSourceManager.getInstance().setOnline(b);//设置用户在线信息
         GlobalDataProxy.getInstance().setLoginState(new LogState(b ? LogState.STATE_ACCOUNT_ON : LogState.STATE_ACCOUNT_OFF));

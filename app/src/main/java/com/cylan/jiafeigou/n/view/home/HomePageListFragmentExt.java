@@ -30,6 +30,7 @@ import android.widget.Toast;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -269,7 +270,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-        if (!GlobalDataProxy.getInstance().isOnline()) {
+        if (GlobalDataProxy.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
             if (RxBus.getCacheInstance().hasObservers())
                 RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
             return;

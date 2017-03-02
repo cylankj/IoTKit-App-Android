@@ -34,7 +34,7 @@ public interface IDataPoint {
      * @param uuid
      * @return
      */
-    JFGDevice fetch(String uuid);
+    JFGDevice getJFGDevice(String uuid);
 
     /**
      * @param uuid uuid+id
@@ -50,7 +50,7 @@ public interface IDataPoint {
      */
     boolean updateJFGDevice(JFGDevice device);
 
-    ArrayList<JFGDevice> fetchAll();
+    ArrayList<JFGDevice> getAllJFGDevice();
 
     boolean insert(String uuid, BaseValue baseValue);
 

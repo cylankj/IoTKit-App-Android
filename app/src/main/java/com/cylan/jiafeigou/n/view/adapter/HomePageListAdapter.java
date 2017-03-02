@@ -167,7 +167,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
 
 //    @Override
 //    public int getCount() {
-//        return GlobalDataProxy.getInstance().isOnline() ? super.getCount() : 0;
+//        return GlobalDataProxy.getInstance().getLoginState() ? super.getCount() : 0;
 //    }
 
     private String getLastWarnContent(Pair<Integer, BaseValue> msgCountPair, int pid) {

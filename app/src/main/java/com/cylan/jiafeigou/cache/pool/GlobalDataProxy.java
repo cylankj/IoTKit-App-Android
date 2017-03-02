@@ -64,11 +64,6 @@ public class GlobalDataProxy implements IDataProxy {
         isOnline = online;
     }
 
-    @Deprecated
-    public boolean isOnline() {
-        return isOnline;
-    }
-
 
     public void setLoginState(LogState loginState) {
         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
@@ -143,7 +138,7 @@ public class GlobalDataProxy implements IDataProxy {
     @Override
     public JFGDevice fetch(String uuid) {
         if (dataPointManager == null) return null;
-        return dataPointManager.fetch(uuid);
+        return dataPointManager.getJFGDevice(uuid);
     }
 
     @Override
@@ -191,7 +186,7 @@ public class GlobalDataProxy implements IDataProxy {
     @Override
     public ArrayList<JFGDevice> fetchAll() {
         if (dataPointManager == null) return null;
-        return dataPointManager.fetchAll();
+        return dataPointManager.getAllJFGDevice();
     }
 
     @Override

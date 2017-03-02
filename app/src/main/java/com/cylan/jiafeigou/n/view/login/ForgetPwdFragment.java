@@ -320,7 +320,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             Toast.makeText(getContext(), getString(R.string.NO_NETWORK_4), Toast.LENGTH_SHORT).show();
             return;
         }
-//        if (!JCache.isOnline) {
+//        if (!JCache.getLoginState) {
 //            Toast.makeText(getContext(), "连接服务器失败", Toast.LENGTH_SHORT).show();
 //            return;
 //        }
