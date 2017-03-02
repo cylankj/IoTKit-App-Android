@@ -85,6 +85,7 @@
   <string name="DELETE_SURE">Vous êtes sûr de vouloir supprimer ?</string>
   <string name="DELETE_THEME">Supprimer</string>
   <string name="DELETE_THEME_XX">Vous êtes sûr de vouloir supprimer %s ?</string>
+  <string name="DEVICE">Dispositif</string>
   <string name="DEVICES_TIPS_TEXT">Ce processus a besoin:\n 1 l\'appareil connecté au réseau \n 2 enregistrer et activer le CID \n 3 liaison avec le compte actuel</string>
   <string name="DEVICES_TITLE">Ajouter un appareil</string>
   <string name="DEVICES_TITLE_1">Se connecter à l\'appareil</string>
@@ -272,6 +273,7 @@
   <string name="MON_1">Tous Les Lundis</string>
   <string name="MON_2">Lundis</string>
   <string name="MSG_BIND">L\'appareil a été rajouté</string>
+  <string name="MSG_BOTTOM_LINE">Du bas</string>
   <string name="MSG_DELETE_TITLE">On ne peut pas restaurer après avoir supprimé</string>
   <string name="MSG_DETAILS">Détails</string>
   <string name="MSG_LOW_BATTERY">Niveau batterie faible, mettre le chargeur.</string>
@@ -422,9 +424,11 @@
   <string name="RET_EUPLOADFILE">Échec téléchargement du document</string>
   <string name="RET_EUPLOADFILE_TOOSS">Échec téléchargement</string>
   <string name="RET_MSG_EDATABASE">Error</string>
+  <string name="RET_MSG_EUNKNOWN">Error(%s)</string>
   <string name="RE_ADD_BUTTONG">Ajouter de nouveau</string>
   <string name="RE_ADD_LABEL">Mise à jour du logiciel est terminée</string>
   <string name="RIGN_SUC">Inscription réussie</string>
+  <string name="Request_TimeOut">Timeout</string>
   <string name="Reset_Suc">Déjà clignotaient en rouge</string>
   <string name="SAT">Samedi</string>
   <string name="SAT_1">Tous Les Samedis</string>
@@ -623,7 +627,7 @@
   <string name="Tap1_DoorFun_VoiceTips">Sounds seront hors du récepteur</string>
   <string name="Tap1_DoorFun_Waitting">Attendre&#8230;</string>
   <string name="Tap1_DownloadFirmwareFai">Télécharger firmware a échoué</string>
-  <string name="Tap1_DownloadFirmwareTips">Le téléchargement débutera sous peu,veuillez vous assurer que le téléphone portable et le périphérique sont connectés au même WIFI</string>
+  <string name="Tap1_DownloadFirmwareTips">Téléchargement débutera sous peu,veuillez vous assurer que le téléphone portable et le périphérique sont connectés au même WIFI</string>
   <string name="Tap1_FirmwareDownloading">Téléchargement en cours(%s)</string>
   <string name="Tap1_FirmwareUpdate">Mise à jour du firmware</string>
   <string name="Tap1_FirmwareUpdateFai">Mise à jour a échoué</string>
@@ -649,6 +653,7 @@
   <string name="Tap1_TitleName">Maison</string>
   <string name="Tap1_Tosetup">Instaurer</string>
   <string name="Tap1_Update">Mettre à jour</string>
+  <string name="Tap1_UpdateFirmwareTips">Eettre à jour débutera sous peu,veuillez vous assurer que le téléphone portable et le périphérique sont connectés au même WIFI</string>
   <string name="Tap1_device_deleted">Ce dispositif a été supprimé.</string>
   <string name="Tap1_iHome_Associate">Associer</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -738,7 +743,7 @@
   <string name="Tap3_ShareDevice_CanceldeTips">Annulé</string>
   <string name="Tap3_ShareDevice_CancleShare">Bien sûr, pour annuler le partage avec cet utilisateur?</string>
   <string name="Tap3_ShareDevice_Contacts">Contacts</string>
-  <string name="Tap3_ShareDevice_Delete">Annuler le partage</string>
+  <string name="Tap3_ShareDevice_Delete">Annuler</string>
   <string name="Tap3_ShareDevice_DeleteSucces">Annulé</string>
   <string name="Tap3_ShareDevice_DeleteTips">Supprimer le partage à l\'utilisateur %s?</string>
   <string name="Tap3_ShareDevice_ExceedTips">Partager aux cinq amis au maximum</string>
@@ -753,7 +758,7 @@
   <string name="Tap3_ShareDevice_SuccessTips">Partager avec succès</string>
   <string name="Tap3_ShareDevice_Tips">Ce dispositif ne peut pas être partagée avec tous les autres utilisateurs</string>
   <string name="Tap3_ShareDevice_ToContacts">Partager avec Contacts</string>
-  <string name="Tap3_TitleName">Mien</string>
+  <string name="Tap3_TitleName">Moi</string>
   <string name="Tap3_Uploading">Uploading&#8230;</string>
   <string name="Tap3_UploadingComplete">Upload complete</string>
   <string name="Tap3_UploadingFailed">Upload failed</string>
@@ -840,7 +845,7 @@
   <string name="getting">Recherche&#8230;</string>
   <string name="has_copy">Dupliqué</string>
   <string name="has_not_sdcard">Carte Micro SD non détectée</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/fr.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/fr.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Mémoire insuffisante sur la carte Micro SD</string>
   <string name="is_connecting_video">Connexion en cours</string>

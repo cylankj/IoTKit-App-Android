@@ -85,6 +85,7 @@
   <string name="DELETE_SURE">Apakah anda yakin akan menghapus ?</string>
   <string name="DELETE_THEME">Hapus</string>
   <string name="DELETE_THEME_XX">Anda yakin mau menghapus %s?</string>
+  <string name="DEVICE">Perangkat</string>
   <string name="DEVICES_TIPS_TEXT">Proses ini membutuhkan:\n1 . Perangkat yang terhubung ke jaringan \n2. Pendaftaran dan CID Aktif \n3. Dengan Akun yang terhubung</string>
   <string name="DEVICES_TITLE">Tambah perangkat</string>
   <string name="DEVICES_TITLE_1">Terhubung ke perangkat</string>
@@ -272,6 +273,7 @@
   <string name="MON_1">Senin</string>
   <string name="MON_2">Senin</string>
   <string name="MSG_BIND">Perangkat berhasil ditambahkan</string>
+  <string name="MSG_BOTTOM_LINE">Bagian bawah</string>
   <string name="MSG_DELETE_TITLE">Tidak dapat dikembalikan setaelah dihapus</string>
   <string name="MSG_DETAILS">Lihat</string>
   <string name="MSG_LOW_BATTERY">kapasitas baterai rendah , silakan mengisi</string>
@@ -422,9 +424,11 @@
   <string name="RET_EUPLOADFILE">Gagal mengunggah file</string>
   <string name="RET_EUPLOADFILE_TOOSS">Unggahan gagal</string>
   <string name="RET_MSG_EDATABASE">Database error</string>
+  <string name="RET_MSG_EUNKNOWN">Error(%s)</string>
   <string name="RE_ADD_BUTTONG">Menambahkan ulang</string>
   <string name="RE_ADD_LABEL">Ketika semua perbaruan sudah selesai</string>
   <string name="RIGN_SUC">Berhasil mendaftarkan</string>
+  <string name="Request_TimeOut">Time out</string>
   <string name="Reset_Suc">Sudah berkedip&#8211;kedip merah</string>
   <string name="SAT">Sabtu</string>
   <string name="SAT_1">Sabtu</string>
@@ -649,6 +653,7 @@
   <string name="Tap1_TitleName">Rumah</string>
   <string name="Tap1_Tosetup">Persiapkan</string>
   <string name="Tap1_Update">Memperbarui</string>
+  <string name="Tap1_UpdateFirmwareTips">Memperbarui akan segera memulai,pastikan bahwa ponsel dan perangkat terhubung dengan WIFI yang sama</string>
   <string name="Tap1_device_deleted">Perangkat ini sudah dihapus</string>
   <string name="Tap1_iHome_Associate">Tautan</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -738,7 +743,7 @@
   <string name="Tap3_ShareDevice_CanceldeTips">Dibatalkan</string>
   <string name="Tap3_ShareDevice_CancleShare">Tentu untuk membatalkan berbagi dengan pengguna ini?</string>
   <string name="Tap3_ShareDevice_Contacts">Kontak</string>
-  <string name="Tap3_ShareDevice_Delete">Berhenti membagikan</string>
+  <string name="Tap3_ShareDevice_Delete">Batal</string>
   <string name="Tap3_ShareDevice_DeleteSucces">Dihentikan</string>
   <string name="Tap3_ShareDevice_DeleteTips">Membatalkan berbagi dengan %s?</string>
   <string name="Tap3_ShareDevice_ExceedTips">Maksimum bagikan ke 5 orang</string>
@@ -840,7 +845,7 @@
   <string name="getting">Mendapatkan&#8230;</string>
   <string name="has_copy">Direplikasi</string>
   <string name="has_not_sdcard">Tidak dapat menemukan Kartu SD</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/id.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/id.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Kartu SD anda tidak cukup ruang</string>
   <string name="is_connecting_video">Sedang menyambungkan&#8230;</string>
