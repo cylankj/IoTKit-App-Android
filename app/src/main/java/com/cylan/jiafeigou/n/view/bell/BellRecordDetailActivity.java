@@ -267,7 +267,6 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        ToastUtil.showNegativeToast(getString(R.string.DOWNLOAD_FAILD));
                         mDownloadFile = null;
                     }
                 });
