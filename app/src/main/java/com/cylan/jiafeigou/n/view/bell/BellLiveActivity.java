@@ -457,19 +457,19 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onVideoDisconnect(int code) {
         switch (code) {
             case JError.ErrorVideoPeerInConnect://其他端在查看
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_PEER_IN_CONNECTED));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
                 break;
             case JError.ErrorVideoPeerNotExist://对端不在线
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_PEER_NOT_EXIST));
                 break;
             case JError.ErrorVideoNotLogin://本端未登录
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_NOT_LOGIN));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NOT_ONLINE));
                 break;
             case JError.ErrorVideoPeerDisconnect://对端断开
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.VIDEO_PEER_DISCONNECTED));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.EFAMILY_CALL_IGNORED));
                 break;
             case JError.ErrorP2PSocket:
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.P2PSocketError));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NoNetworkTips));
                 break;
             default:
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
@@ -478,7 +478,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onConnectDeviceTimeOut() {
-        ToastUtil.showNegativeToast(getString(R.string.CONNECT_TO_BELL_TIME_OUT));
+        ToastUtil.showNegativeToast(getString(R.string.NETWORK_TIMEOUT));
         mPresenter.dismiss();
     }
 

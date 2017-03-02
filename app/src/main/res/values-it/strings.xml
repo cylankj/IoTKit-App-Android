@@ -85,6 +85,7 @@
   <string name="DELETE_SURE">Sei sicuro di voler cancellara?</string>
   <string name="DELETE_THEME">Cancella</string>
   <string name="DELETE_THEME_XX">Sei sicuro di eliminare %s ?</string>
+  <string name="DEVICE">Dispositivo</string>
   <string name="DEVICES_TIPS_TEXT">Questo fase richiede:\n 1.Dispositivo connesso alla rete Wi&#8211;Fi\n 2.Registrare e attivare un account \n 3.Inserire l\'account.</string>
   <string name="DEVICES_TITLE">Aggiungi Dispositivo</string>
   <string name="DEVICES_TITLE_1">Connetti un dispositivo</string>
@@ -272,6 +273,7 @@
   <string name="MON_1">LUN</string>
   <string name="MON_2">Lun</string>
   <string name="MSG_BIND">Dispositivo aggiunto con successo</string>
+  <string name="MSG_BOTTOM_LINE">Parte inferiore</string>
   <string name="MSG_DELETE_TITLE">I dati non potranno essere recuperati se cancellati, Confermare ?</string>
   <string name="MSG_DETAILS">Dettagli</string>
   <string name="MSG_LOW_BATTERY">Batteria bassa, ricaricare.</string>
@@ -422,9 +424,11 @@
   <string name="RET_EUPLOADFILE">errore nel caricamento</string>
   <string name="RET_EUPLOADFILE_TOOSS">Caricamento fallito</string>
   <string name="RET_MSG_EDATABASE">Database Error</string>
+  <string name="RET_MSG_EUNKNOWN">Errore sconosciuto(%s)</string>
   <string name="RE_ADD_BUTTONG">Riaggiungere</string>
   <string name="RE_ADD_LABEL">Aggiornamento completato</string>
   <string name="RIGN_SUC">Registrazione eseguita</string>
+  <string name="Request_TimeOut">Tempo scaduto</string>
   <string name="Reset_Suc">Reset effettuato</string>
   <string name="SAT">Sabato</string>
   <string name="SAT_1">SAB</string>
@@ -649,6 +653,7 @@
   <string name="Tap1_TitleName">Casa</string>
   <string name="Tap1_Tosetup">Impostare</string>
   <string name="Tap1_Update">Aggiornare</string>
+  <string name="Tap1_UpdateFirmwareTips">Aggiornare inizierà a breve, si prega di accertarsi che il cellulare e il dispositivo si connettono con la stessa WIFI</string>
   <string name="Tap1_device_deleted">Il dispositivo è stato rimosso</string>
   <string name="Tap1_iHome_Associate">Collegato</string>
   <string name="Tap1_iHome_Associated">Associated</string>
@@ -738,7 +743,7 @@
   <string name="Tap3_ShareDevice_CanceldeTips">Annullato</string>
   <string name="Tap3_ShareDevice_CancleShare">Annullare la condivisione con questo utente?</string>
   <string name="Tap3_ShareDevice_Contacts">Contatti</string>
-  <string name="Tap3_ShareDevice_Delete">Cancellare la condivisione</string>
+  <string name="Tap3_ShareDevice_Delete">Annulla</string>
   <string name="Tap3_ShareDevice_DeleteSucces">Cancellazione effettuata</string>
   <string name="Tap3_ShareDevice_DeleteTips">Cancellare la condivisione di %s ?</string>
   <string name="Tap3_ShareDevice_ExceedTips">Puoi effettuare al massimo 5 condivisioni</string>
@@ -753,7 +758,7 @@
   <string name="Tap3_ShareDevice_SuccessTips">Condiviso con successo</string>
   <string name="Tap3_ShareDevice_Tips">Questo dispositivo non può essere condiviso con nessun altro utente</string>
   <string name="Tap3_ShareDevice_ToContacts">Condividi con i contatti</string>
-  <string name="Tap3_TitleName">Mina</string>
+  <string name="Tap3_TitleName">Mi</string>
   <string name="Tap3_Uploading">Caricamento&#8230;</string>
   <string name="Tap3_UploadingComplete">Caricato</string>
   <string name="Tap3_UploadingFailed">Caricamento fallito</string>
@@ -840,7 +845,7 @@
   <string name="getting">Ricezione&#8230;</string>
   <string name="has_copy">Replicato</string>
   <string name="has_not_sdcard">Scheda SD non trovata</string>
-  <string name="help_url">https://yf.jfgou.com:8081/help/it.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/it.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/en_doby.html</string>
   <string name="isStorageLow">Sulla scheda SD non c\'è abbastanza spazio</string>
   <string name="is_connecting_video">Connessione in corso</string>

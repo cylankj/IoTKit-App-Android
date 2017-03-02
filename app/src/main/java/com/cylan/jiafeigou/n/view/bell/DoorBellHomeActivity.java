@@ -263,7 +263,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onQueryRecordListTimeOut() {
         if (LoadingDialog.isShowing(getSupportFragmentManager())) {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
-            ToastUtil.showNegativeToast(getString(R.string.REQUEST_TIME_OUT));
+            ToastUtil.showNegativeToast(getString(R.string.Request_TimeOut));
         }
     }
 
