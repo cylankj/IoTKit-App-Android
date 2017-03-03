@@ -7,12 +7,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -22,7 +20,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -90,12 +87,12 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private Subscription devicesUpdate() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DataPoolUpdate.class)
-                .filter((RxEvent.DataPoolUpdate data) -> (getView() != null))
+        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
+                .filter((RxEvent.ParseResponseCompleted data) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<RxEvent.DataPoolUpdate, Boolean>() {
+                .map(new Func1<RxEvent.ParseResponseCompleted, Boolean>() {
                     @Override
-                    public Boolean call(RxEvent.DataPoolUpdate update) {
+                    public Boolean call(RxEvent.ParseResponseCompleted update) {
                         subUuidList();
                         AppLogger.d("data pool update: " + update);
                         return null;
@@ -106,12 +103,12 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private Subscription devicesUpdate1() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceListUpdate.class)
-                .filter((RxEvent.DeviceListUpdate data) -> (getView() != null))
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceListRsp.class)
+                .filter((RxEvent.DeviceListRsp data) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<RxEvent.DeviceListUpdate, Boolean>() {
+                .map(new Func1<RxEvent.DeviceListRsp, Boolean>() {
                     @Override
-                    public Boolean call(RxEvent.DeviceListUpdate update) {
+                    public Boolean call(RxEvent.DeviceListRsp update) {
                         subUuidList();
                         AppLogger.d("data pool update: " + update);
                         return null;
@@ -208,18 +205,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         Observable.just(manually)
                 .subscribeOn(Schedulers.newThread())
                 .map((Boolean aBoolean) -> {
-
-                    ArrayList<String> sharedList = MiscUtils.getSharedList(DataSourceManager.getInstance().getAllJFGDevice());
-                    ArrayList<String> unSharedList = MiscUtils.getNoneSharedList(DataSourceManager.getInstance().getAllJFGDevice());
-                    //不是分享设备
-                    JfgCmdInsurance.getCmd().getShareList(unSharedList);
-                    AppLogger.e("未实现");
-//                    for (String uuid : sharedList)
-//                        try {
-//                            DataSourceManager.getInstance().fetchUnreadCount(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
-//                        } catch (JfgException e) {
-//                            AppLogger.e("" + e.getLocalizedMessage());
-//                        }
+                    DataSourceManager.getInstance().syncAllJFGDeviceProperty();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return null;
                 })
@@ -233,16 +219,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void deleteItem(String uuid) {
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe((Object o) -> {
-                    boolean result = DataSourceManager.getInstance().deJFGDevice(uuid);
-                    try {
-                        JfgCmdInsurance.getCmd().unBindDevice(uuid);
-                        DataSourceManager.getInstance().deJFGDevice(uuid);
-                    } catch (JfgException e) {
-                        AppLogger.e("" + e.getLocalizedMessage());
-                    }
+        Observable.just(uuid)
+                .subscribeOn(Schedulers.io())
+                .subscribe((String o) -> {
+                    boolean result = DataSourceManager.getInstance().delJFGDevice(uuid);
                     AppLogger.i("unbind uuid: " + uuid + " " + result);
                 }, (Throwable throwable) -> {
                     AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());

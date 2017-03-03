@@ -30,12 +30,10 @@ import rx.schedulers.Schedulers;
 public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContract.View> implements SdCardInfoContract.Presenter {
 
     private boolean isClearSucc;
-    private String uuid;
 
     public SdCardInfoPresenterImpl(SdCardInfoContract.View view, String uuid) {
-        super(view);
+        super(view, uuid);
         view.setPresenter(this);
-        this.uuid = uuid;
     }
 
     @Override

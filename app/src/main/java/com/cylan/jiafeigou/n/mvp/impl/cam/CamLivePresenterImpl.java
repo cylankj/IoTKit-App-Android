@@ -34,7 +34,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
@@ -56,7 +55,6 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -74,7 +72,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private ArrayList<JFGVideo> simpleCache = new ArrayList<>();
     private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
     private IData historyDataProvider;
-    private String uuid;
     private int stopReason = JError.STOP_MAUNALLY;//手动断开
     private CompositeSubscription liveSubscription;
 
@@ -84,9 +81,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
 
     public CamLivePresenterImpl(CamLiveContract.View view, String uuid) {
-        super(view);
+        super(view, uuid);
         view.setPresenter(this);
-        this.uuid = uuid;
         feedRtcp.setMonitorListener(this);
     }
 
@@ -555,16 +551,13 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
      * @return
      */
     private Subscription robotDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DataPoolUpdate.class)
-                .filter((RxEvent.DataPoolUpdate jfgRobotSyncData) -> (
+        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
+                .filter((RxEvent.ParseResponseCompleted jfgRobotSyncData) -> (
                         getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.DataPoolUpdate update) -> {
-                    if (update.id == ID_508_CAMERA_STANDBY_FLAG) {
-                        boolean flag = MiscUtils.cast(update.value.getValue(), false);
-                        getView().onDeviceStandBy(flag);
-                    }
+                .map((RxEvent.ParseResponseCompleted update) -> {
+                    getView().onDeviceInfoChanged();
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
@@ -592,9 +585,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     protected String[] registerNetworkAction() {
-        return new String[]{
-                ConnectivityManager.CONNECTIVITY_ACTION
-        };
+        return new String[]{ConnectivityManager.CONNECTIVITY_ACTION};
     }
 
     @Override

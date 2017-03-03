@@ -40,11 +40,9 @@ import rx.schedulers.Schedulers;
 
 public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.View>
         implements CamMediaContract.Presenter {
-    private String uuid;
 
     public CamMediaPresenterImpl(CamMediaContract.View view, String uuid) {
-        super(view);
-        this.uuid = uuid;
+        super(view, uuid);
         view.setPresenter(this);
     }
 

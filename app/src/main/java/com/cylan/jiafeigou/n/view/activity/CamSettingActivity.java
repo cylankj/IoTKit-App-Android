@@ -442,14 +442,15 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDeviceDetail.setTvSubTitle(basePresenter.getDetailsSubTitle(getContext()), R.color.color_8C8C8C);
         svSettingSafeProtection.setTvSubTitle(basePresenter.getAlarmSubTitle(getContext()));
         svSettingDeviceAutoRecord.setTvSubTitle(basePresenter.getAutoRecordTitle(getContext()));
-        //分享账号 隐藏
-        final int count = lLayoutSettingItemContainer.getChildCount();
-        for (int i = 2; i < count - 1; i++) {
-            View v = lLayoutSettingItemContainer.getChildAt(i);
-            if (v != null)
-                v.setVisibility(View.GONE);
+        if (!TextUtils.isEmpty(device.shareAccount)) {
+            //分享账号 隐藏
+            final int count = lLayoutSettingItemContainer.getChildCount();
+            for (int i = 2; i < count - 1; i++) {
+                View v = lLayoutSettingItemContainer.getChildAt(i);
+                if (v != null)
+                    v.setVisibility(View.GONE);
+            }
         }
-
     }
 
     @Override

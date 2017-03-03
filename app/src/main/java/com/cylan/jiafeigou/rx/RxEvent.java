@@ -14,7 +14,6 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.jiafeigou.dp.BaseValue;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -403,7 +402,8 @@ public class RxEvent {
     /**
      * 获取设备列表
      */
-    public static final class DeviceListUpdate {
+    @Deprecated
+    public static final class DeviceListRsp {
     }
 
 
@@ -424,21 +424,6 @@ public class RxEvent {
         public String identity;
         public boolean state;
         public ArrayList<JFGDPMsg> dataList;
-    }
-
-    public static final class DataPoolUpdate {
-        public String uuid;
-        public int id;
-        public BaseValue value;
-
-        @Override
-        public String toString() {
-            return "DataPoolUpdate{" +
-                    "uuid='" + uuid + '\'' +
-                    ", id=" + id +
-                    ", value=" + value +
-                    '}';
-        }
     }
 
     /**
@@ -685,6 +670,7 @@ public class RxEvent {
 
     public static class ParseResponseCompleted {
         public long seq;
+        public String uuid;
     }
 
     public static class DeviceSyncRsp {

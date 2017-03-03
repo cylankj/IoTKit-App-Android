@@ -17,13 +17,11 @@ import rx.schedulers.Schedulers;
 
 public class CamAlarmPresenterImpl extends AbstractPresenter<CamWarnContract.View> implements
         CamWarnContract.Presenter {
-    private String uuid;
     private MediaPlayer mediaPlayer;
 
     public CamAlarmPresenterImpl(CamWarnContract.View view, String uuid) {
-        super(view);
+        super(view, uuid);
         view.setPresenter(this);
-        this.uuid = uuid;
     }
 
     @Override

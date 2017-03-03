@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -29,8 +30,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-
-import rx.exceptions.OnErrorNotImplementedException;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
@@ -100,9 +99,13 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public boolean deJFGDevice(String uuid) {
-        throw new OnErrorNotImplementedException(new Throwable("还没实现"));
-//        return false;
+    public boolean delJFGDevice(String uuid) {
+        try {
+            JfgCmdInsurance.getCmd().unBindDevice(uuid);
+            return mCachedDeviceMap.remove(uuid) != null;
+        } catch (JfgException e) {
+            return false;
+        }
     }
 
     public List<JFGDPDevice> getJFGDeviceByPid(int... pids) {
@@ -155,10 +158,44 @@ public class DataSourceManager implements JFGSourceManager {
 
 
     //主动发起请求,来获取设备所有的属性
+    @Override
     public void syncAllJFGDeviceProperty() {
         if (mCachedDeviceMap.size() == 0) return;
         for (Map.Entry<String, JFGDPDevice> entry : mCachedDeviceMap.entrySet()) {
             syncJFGDeviceProperty(entry.getKey());
+        }
+//        syncAllJFGCameraWarnMsg(true);
+    }
+
+    /**
+     * 获取所有的报警消息{505,222}，1：保证有最新的报警消息，2.用于显示xx条新消息。
+     *
+     * @param ignoreShareDevice:忽略分享账号，一般都为true
+     */
+    @Override
+    public void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice) {
+        for (Map.Entry<String, JFGDPDevice> entry : mCachedDeviceMap.entrySet()) {
+            JFGDPDevice device = mCachedDeviceMap.get(entry.getKey());
+            if (JFGRules.isShareDevice(device) && ignoreShareDevice) continue;
+            syncJFGCameraWarn(entry.getKey(), false, 100);
+        }
+    }
+
+    /**
+     * 需要暴力操作。
+     * 服务端任务太多，太杂，暂时实现不了。
+     * 自力更生
+     *
+     * @param uuid
+     */
+    @Override
+    public long syncJFGCameraWarn(String uuid, boolean asc, int count) {
+        ArrayList<JFGDPMsg> list = MiscUtils.createGetCameraWarnMsgDp();
+        try {
+            return JfgCmdInsurance.getCmd().robotGetData(uuid, list, count, false, 0);
+        } catch (JfgException e) {
+            AppLogger.e("uuid is null");
+            return 0L;
         }
     }
 
@@ -234,6 +271,7 @@ public class DataSourceManager implements JFGSourceManager {
 
         RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
         completed.seq = dataRsp.seq;
+        completed.uuid = dataRsp.identity;
         RxBus.getCacheInstance().post(completed);
         if (changed) {
             long version = System.currentTimeMillis();

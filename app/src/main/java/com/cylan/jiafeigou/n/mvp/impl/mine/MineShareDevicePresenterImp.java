@@ -74,10 +74,10 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     @Override
     public Subscription initData() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceListUpdate.class)
-                .flatMap(new Func1<RxEvent.DeviceListUpdate, Observable<ArrayList<DeviceBean>>>() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceListRsp.class)
+                .flatMap(new Func1<RxEvent.DeviceListRsp, Observable<ArrayList<DeviceBean>>>() {
                     @Override
-                    public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceListUpdate deviceList) {
+                    public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceListRsp deviceList) {
                         return Observable.just(getShareDeviceList());
                     }
                 })

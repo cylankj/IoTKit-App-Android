@@ -34,10 +34,7 @@ public interface CamLiveContract {
 
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
-        /**
-         * @param state
-         */
-        void onDeviceStandBy(boolean state);
+        void onDeviceInfoChanged();
 
         /**
          * 准备播放

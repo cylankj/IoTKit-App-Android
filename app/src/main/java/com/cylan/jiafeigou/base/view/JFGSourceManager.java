@@ -23,7 +23,13 @@ public interface JFGSourceManager {
 
     List<JFGDPDevice> getAllJFGDevice();
 
-    boolean deJFGDevice(String uuid);
+    /**
+     * 删除设备，解绑设备使用
+     *
+     * @param uuid
+     * @return
+     */
+    boolean delJFGDevice(String uuid);
 
     void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices);
 
@@ -49,6 +55,9 @@ public interface JFGSourceManager {
 
     void syncJFGDeviceProperty(String uuid);
 
+    /**
+     * 刷新设备属性，首页需要
+     */
     void syncAllJFGDeviceProperty();
 
     <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion);
@@ -84,4 +93,19 @@ public interface JFGSourceManager {
     <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws IllegalAccessException;
 
     boolean deleteByVersions(String uuid, long id, ArrayList<Long> versions);
+
+    /**
+     * 获取设备的所有最新的报警消息；1.用于展示最新的报警消息列表，2.根据本地的时间戳游标显示有xx条新消息。
+     *
+     * @param ignoreShareDevice
+     */
+    void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice);
+
+    /**
+     * 查询单个摄像头的报警消息：默认为{505,222}
+     *
+     * @param uuid
+     */
+    long syncJFGCameraWarn(String uuid, boolean asc, int count);
+
 }

@@ -250,9 +250,14 @@ public class JFGRules {
     }
 
     public static boolean isShareDevice(String uuid) {
-        if (TextUtils.isEmpty(uuid)) return true;
+        if (TextUtils.isEmpty(uuid)) return false;
         JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         return device != null && !TextUtils.isEmpty(device.shareAccount);
+    }
+
+    public static boolean isShareDevice(JFGDPDevice device) {
+        if (device == null) return false;
+        return !TextUtils.isEmpty(device.shareAccount);
     }
 
     /**

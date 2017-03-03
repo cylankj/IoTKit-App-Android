@@ -211,7 +211,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             if (!flag.$()) {
                 startLive();
             }
-            onDeviceStandBy(flag.$());
+            onDeviceInfoChanged();
         }
     }
 
@@ -320,7 +320,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      * 根据 待机模式 ,分享用户模式设置一些view的状态
      */
     @Override
-    public void onDeviceStandBy(boolean flag) {
+    public void onDeviceInfoChanged() {
+        DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+        boolean flag = wFlag.$();
         fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
         camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
         showFloatFlowView(false, null);
@@ -358,7 +360,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             } else v = viewStandbyRef.get();
         }
         v.setVisibility(flag ? View.VISIBLE : View.GONE);
-        AppLogger.i("onDeviceStandBy");
+        AppLogger.i("onDeviceInfoChanged");
     }
 
     @Override

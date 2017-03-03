@@ -27,20 +27,11 @@ public interface CamInfoContract {
     }
 
     interface Presenter extends BasePresenter {
-//        /**
-//         * 刷新BeanCamInfo
-//         *
-//         * @param info
-//         */
-//        void saveCamInfoBean(BeanCamInfo info, int id);
-//
-//        BeanCamInfo getBeanCamInfo();
-
         /**
          * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
          * @param id
          */
-        public <T extends DataPoint> void updateInfoReq(T value, long id);
+        <T extends DataPoint> void updateInfoReq(T value, long id);
 
         /**
          * 检测是否有新固件
@@ -66,14 +57,6 @@ public interface CamInfoContract {
          */
         Subscription clearSdcardReqBack();
 
-        /**
-         * 清空结果回调
-         *
-         * @return
-         */
-        Subscription clearSdcardResult();
-
-        Subscription clearSdcardBack();
 
         void updateAlias(JFGDPDevice device);
     }

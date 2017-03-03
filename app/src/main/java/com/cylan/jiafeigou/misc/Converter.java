@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.misc;
 
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 
 public class Converter {
 
-    public static ArrayList<CamMessageBean> convert(String uuid, ArrayList<DataPoint> baseValueList) {
+    public static ArrayList<CamMessageBean> convert(ArrayList<DataPoint> baseValueList) {
         ArrayList<CamMessageBean> beanArrayList = new ArrayList<>();
         if (baseValueList == null)
             return beanArrayList;
@@ -21,10 +22,10 @@ public class Converter {
             bean.time = base.version;
             bean.id = base.id;
             bean.version = base.version;
-            if (base.id == DpMsgMap.ID_505_CAMERA_ALARM_MSG && base.getValue(DpMsgMap.ID_505_CAMERA_ALARM_MSG) != null) {
-                bean.alarmMsg = base.getValue(DpMsgMap.ID_505_CAMERA_ALARM_MSG);
+            if (base.id == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
+                bean.alarmMsg = (DpMsgDefine.DPAlarm) base;
             } else if (base.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
-                bean.sdcardSummary = base.getValue(DpMsgMap.ID_222_SDCARD_SUMMARY);
+                bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) base;
             }
             beanArrayList.add(bean);
         }

@@ -190,7 +190,7 @@
 //                .filter((Map<String, BaseValue> map) -> (map.size() > 0))
 //                .map((Map<String, BaseValue> map) -> {
 //                    for (String uuid : map.keySet()) {
-//                        RxEvent.DataPoolUpdate data = new RxEvent.DataPoolUpdate();
+//                        RxEvent.ParseResponseCompleted data = new RxEvent.ParseResponseCompleted();
 //                        data.id = (int) map.get(uuid).getId();
 //                        data.uuid = uuid;
 //                        data.value = map.get(uuid);

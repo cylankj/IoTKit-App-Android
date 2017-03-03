@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGCameraDevice;
@@ -13,7 +12,6 @@ import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -37,7 +35,6 @@ import rx.schedulers.Schedulers;
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
 
-    private String uuid;
     private JFGCameraDevice device;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
@@ -49,9 +46,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     };
 
     public CamSettingPresenterImpl(CamSettingContract.View view, String uuid) {
-        super(view);
+        super(view, uuid);
         view.setPresenter(this);
-        this.uuid = uuid;
         device = DataSourceManager.getInstance().getJFGDevice(uuid);
     }
 
@@ -120,12 +116,12 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
      * @return
      */
     private Subscription robotDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DataPoolUpdate.class)
-                .filter((RxEvent.DataPoolUpdate jfgRobotSyncData) -> (
+        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
+                .filter((RxEvent.ParseResponseCompleted jfgRobotSyncData) -> (
                         getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.DataPoolUpdate update) -> {
+                .map((RxEvent.ParseResponseCompleted update) -> {
                     getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                     return null;
                 })
@@ -217,13 +213,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map((Object o) -> {
-                    boolean result = DataSourceManager.getInstance().deJFGDevice(uuid);
-                    try {
-                        JfgCmdInsurance.getCmd().unBindDevice(uuid);
-                        DataSourceManager.getInstance().deJFGDevice(uuid);
-                    } catch (JfgException e) {
-                        AppLogger.e("" + e.getLocalizedMessage());
-                    }
+                    boolean result = DataSourceManager.getInstance().delJFGDevice(uuid);
                     AppLogger.i("unbind uuid: " + uuid + " " + result);
                     return null;
                 })

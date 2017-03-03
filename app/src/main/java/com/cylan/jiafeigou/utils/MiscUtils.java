@@ -4,6 +4,7 @@ import android.content.res.XmlResourceParser;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
@@ -184,5 +185,14 @@ public class MiscUtils {
             }
         }
         return arrayList;
+    }
+
+    public static ArrayList<JFGDPMsg> createGetCameraWarnMsgDp() {
+        ArrayList<JFGDPMsg> list = new ArrayList<>();
+        JFGDPMsg _505 = new JFGDPMsg(505, System.currentTimeMillis());
+        JFGDPMsg _222 = new JFGDPMsg(222, System.currentTimeMillis());
+        list.add(_222);
+        list.add(_505);
+        return list;
     }
 }
