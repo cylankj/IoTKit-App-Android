@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -26,7 +27,7 @@ public interface CamWarnContract {
          * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
          * @param id
          */
-        void updateInfoReq(Object value, long id);
+        <T extends DataPoint> void updateInfoReq(T value, long id);
 
         void playSound(int id);
     }

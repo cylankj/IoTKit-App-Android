@@ -19,8 +19,8 @@ import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudCorrelationDoorBellPresenterImp
 import com.cylan.jiafeigou.n.mvp.model.BellBean;
 import com.cylan.jiafeigou.n.view.adapter.RelationDoorBellAdapter;
 import com.cylan.jiafeigou.n.view.adapter.UnRelationDoorBellAdapter;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.util.List;
 

@@ -3,8 +3,8 @@ package com.cylan.jiafeigou.misc;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGDevice;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -52,7 +52,7 @@ public class JFGRules {
         return string.replaceAll("\\D+", "");
     }
 
-    public static String getDeviceAlias(JFGDevice device) {
+    public static String getDeviceAlias(JFGDPDevice device) {
         if (device == null) return "";
         String alias = device.alias;
         if (!TextUtils.isEmpty(alias))
@@ -118,7 +118,7 @@ public class JFGRules {
     }
 
     public static boolean showBatteryItem(String uuid) {
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         return device != null && (is3GCam(device.pid) || isFreeCam(device.pid));
     }
 
@@ -134,7 +134,7 @@ public class JFGRules {
         return pid == JConstant.OS_CAMERA_CC3200;
     }
 
-    public static boolean isFreeCam(JFGDevice jfgDevice) {
+    public static boolean isFreeCam(JFGDPDevice jfgDevice) {
         return jfgDevice != null && jfgDevice.pid == JConstant.OS_CAMERA_CC3200;
     }
 
@@ -250,9 +250,14 @@ public class JFGRules {
     }
 
     public static boolean isShareDevice(String uuid) {
-        if (TextUtils.isEmpty(uuid)) return true;
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        if (TextUtils.isEmpty(uuid)) return false;
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         return device != null && !TextUtils.isEmpty(device.shareAccount);
+    }
+
+    public static boolean isShareDevice(JFGDPDevice device) {
+        if (device == null) return false;
+        return !TextUtils.isEmpty(device.shareAccount);
     }
 
     /**

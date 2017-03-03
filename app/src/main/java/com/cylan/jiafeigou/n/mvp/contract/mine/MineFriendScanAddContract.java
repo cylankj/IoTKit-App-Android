@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
-import android.graphics.Bitmap;
-
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;

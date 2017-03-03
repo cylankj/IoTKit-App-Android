@@ -17,8 +17,8 @@ import com.cylan.jiafeigou.DaemonReceiver1;
 import com.cylan.jiafeigou.DaemonReceiver2;
 import com.cylan.jiafeigou.DaemonService1;
 import com.cylan.jiafeigou.DaemonService2;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -118,7 +118,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onCreate() {
         super.onCreate();
-        GlobalDataProxy.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
+        DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
         enableDebugOptions();
         MtaManager.init(getApplicationContext(), true);
         //每一个新的进程启动时，都会调用onCreate方法。

@@ -6,7 +6,6 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**

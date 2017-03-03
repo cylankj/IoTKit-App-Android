@@ -105,7 +105,7 @@ public class ViewUtils {
         view.setPadding(view.getPaddingLeft(), dp2px(dp_padding), view.getPaddingRight(), view.getPaddingBottom());
     }
 
-    public static void setViewMarginTop(View view,int dp_margin){
+    public static void setViewMarginTop(View view, int dp_margin) {
 
     }
 

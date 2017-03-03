@@ -51,7 +51,7 @@ public class Qrcode {
 
     /**
      * 删除白边
-     * */
+     */
     private static BitMatrix deleteWhite(BitMatrix matrix) {
         int[] rec = matrix.getEnclosingRectangle();
         int resWidth = rec[2] + 1;

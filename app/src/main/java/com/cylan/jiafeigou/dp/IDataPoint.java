@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.dp;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
 
 import java.util.ArrayList;
@@ -14,43 +13,11 @@ import java.util.ArrayList;
 
 public interface IDataPoint {
     /**
-     * Map<account+uuid,JFGDevice>
-     *
-     * @param jfgDevice
-     */
-    void cacheDevice(JFGDevice... jfgDevice);
-
-    /**
-     * 删除对应的JFGDevice
-     *
-     * @param uuid
-     * @return
-     */
-    boolean remove(String uuid);
-
-    /**
-     * 内部转换 Map<account+uuid,JFGDevice>
-     *
-     * @param uuid
-     * @return
-     */
-    JFGDevice fetch(String uuid);
-
-    /**
      * @param uuid uuid+id
      * @param pair
      */
     void cacheUnread(String uuid, Pair<Integer, BaseValue> pair);
 
-    /**
-     * 更新
-     *
-     * @param device
-     * @return
-     */
-    boolean updateJFGDevice(JFGDevice device);
-
-    ArrayList<JFGDevice> fetchAll();
 
     boolean insert(String uuid, BaseValue baseValue);
 
@@ -70,7 +37,6 @@ public interface IDataPoint {
      */
     boolean deleteAll(String uuid);
 
-    boolean deleteJFGDevice(String uuid);
 
     Object delete(String uuid, long id);
 

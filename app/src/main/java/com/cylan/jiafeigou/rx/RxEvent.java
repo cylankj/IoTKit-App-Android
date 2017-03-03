@@ -12,11 +12,8 @@ import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
-import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.jiafeigou.dp.BaseValue;
-import com.cylan.jiafeigou.dp.DataPointManager;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -44,10 +41,10 @@ public class RxEvent {
 
     }
 
-    public static class LoginRsp {
+    public static class OnlineStatusRsp {
         public boolean state;
 
-        public LoginRsp(boolean state) {
+        public OnlineStatusRsp(boolean state) {
             this.state = state;
         }
     }
@@ -294,16 +291,16 @@ public class RxEvent {
         }
     }
 
-    /**
-     * 获取到http请求的结果
-     */
-    public static final class GetHttpDoneResult {
-        public JFGMsgHttpResult jfgMsgHttpResult;
-
-        public GetHttpDoneResult(JFGMsgHttpResult jfgMsgHttpResult) {
-            this.jfgMsgHttpResult = jfgMsgHttpResult;
-        }
-    }
+//    /**
+//     * 获取到http请求的结果
+//     */
+//    public static final class GetHttpDoneResult {
+//        public JFGMsgHttpResult jfgMsgHttpResult;
+//
+//        public GetHttpDoneResult(JFGMsgHttpResult jfgMsgHttpResult) {
+//            this.jfgMsgHttpResult = jfgMsgHttpResult;
+//        }
+//    }
 
     public static final class LocalUdpMsg {
         //消息的时间,可以用来判断有效性.
@@ -405,7 +402,8 @@ public class RxEvent {
     /**
      * 获取设备列表
      */
-    public static final class DeviceListUpdate {
+    @Deprecated
+    public static final class DeviceListRsp {
     }
 
 
@@ -427,35 +425,6 @@ public class RxEvent {
         public boolean state;
         public ArrayList<JFGDPMsg> dataList;
     }
-
-    /**
-     * {@link DataPointManager}消息池,消息已经变化.
-     */
-    public static final class DataPoolUpdate {
-        public String uuid;
-        public int id;
-        public BaseValue value;
-
-        @Override
-        public String toString() {
-            return "DataPoolUpdate{" +
-                    "uuid='" + uuid + '\'' +
-                    ", id=" + id +
-                    ", value=" + value +
-                    '}';
-        }
-    }
-
-//    /**
-//     * 修改设备属性
-//     */
-//    /**
-//     * @Deprecated use {@link com.cylan.jiafeigou.cache.pool.GlobalDataProxy#update(String, BaseValue)}
-//     */
-//    @Deprecated
-//    public static final class JFGAttributeUpdate extends DpMsgDefine.DpMsg {
-//        public String uuid;
-//    }
 
     /**
      * 获取好友的信息回调
@@ -480,7 +449,7 @@ public class RxEvent {
 
     /**
      * 这个消息从{@link com.cylan.jiafeigou.n.engine.DataSourceService#OnRobotCountDataRsp(long, String, ArrayList)}
-     * 传到{@link DataPointManager}
+     * 传到{@link }
      */
     public static final class UnreadCount {
         public String uuid;
@@ -701,6 +670,7 @@ public class RxEvent {
 
     public static class ParseResponseCompleted {
         public long seq;
+        public String uuid;
     }
 
     public static class DeviceSyncRsp {
@@ -722,11 +692,6 @@ public class RxEvent {
             this.peer = s;
             this.resultCode = i;
         }
-    }
-
-    public static class SetDataRsp {
-        public long seq;
-        public ArrayList<JFGDPMsgRet> rets;
     }
 
     public static class ErrorRsp extends RuntimeException {

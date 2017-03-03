@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
@@ -136,6 +135,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     /**
      * 发送添加请求的结果
+     *
      * @param code
      */
     @Override
@@ -158,7 +158,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_mine_add_from_contact_send:
-                 presenter.checkAccount(contactItem);
+                presenter.checkAccount(contactItem);
                 break;
             case R.id.iv_mine_add_from_contact_back:
                 getFragmentManager().popBackStack();

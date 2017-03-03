@@ -7,8 +7,10 @@ import android.support.v4.util.LongSparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ext.annotations.DPProperty;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Ignore;
@@ -31,7 +33,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     @Ignore
     private boolean isNull = false;
     @Ignore
-    private static Gson mGson = new Gson();
+    private static Gson mGson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
     @Ignore
     public static final long MSG_ID_VIRTUAL_START = -888080;
@@ -198,6 +200,15 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
             }
         }
         return mDPPropertyArray;
+    }
+
+    public boolean updateValue(int msgId, Object value) throws IllegalAccessException {
+        Field field = getProperties().get(msgId);
+        if (field != null) {
+            field.set(this, value);
+            return true;
+        } else if (BuildConfig.DEBUG) throw new NullPointerException("empty");
+        return false;
     }
 
     /**

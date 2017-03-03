@@ -2,13 +2,11 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.media.MediaPlayer;
 
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamWarnContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
-
-import java.io.IOException;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -19,25 +17,23 @@ import rx.schedulers.Schedulers;
 
 public class CamAlarmPresenterImpl extends AbstractPresenter<CamWarnContract.View> implements
         CamWarnContract.Presenter {
-    private String uuid;
     private MediaPlayer mediaPlayer;
 
     public CamAlarmPresenterImpl(CamWarnContract.View view, String uuid) {
-        super(view);
+        super(view, uuid);
         view.setPresenter(this);
-        this.uuid = uuid;
     }
 
     @Override
-    public void updateInfoReq(Object value, long id) {
+    public <T extends DataPoint> void updateInfoReq(T value, long id) {
         Observable.just(value)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
-                    BaseValue baseValue = new BaseValue();
-                    baseValue.setId(id);
-                    baseValue.setVersion(System.currentTimeMillis());
-                    baseValue.setValue(o);
-                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                    try {
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                    } catch (IllegalAccessException e) {
+                        AppLogger.e("err: " + e.getLocalizedMessage());
+                    }
                 }, (Throwable throwable) -> {
                     AppLogger.e(throwable.getLocalizedMessage());
                 });

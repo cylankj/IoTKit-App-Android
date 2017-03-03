@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.bell;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.PropertyView;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import rx.Subscription;
@@ -19,7 +20,7 @@ public interface BellDetailContract {
 
     interface Presenter extends JFGPresenter {
         //        void saveBellInfo(BeanBellInfo info, int id);
-        void updateInfoReq(String uuid, Object value, long id);
+        <T extends DataPoint> void updateInfoReq(String uuid, T value, long id);
 
         /**
          * 检测固件新版本

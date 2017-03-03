@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
@@ -10,14 +9,12 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,7 +28,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 /**
  * 作者：zsl
@@ -44,6 +40,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     private DbManager dbManager;
     private ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
     private long seq;
+
     public HomeMineMessagePresenterImp(HomeMineMessageContract.View view, boolean hasNewMesg) {
         super(view);
         view.setPresenter(this);
@@ -64,9 +61,9 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      */
     @Override
     public void initMesgData() {
-        if (hasNewMesg){
+        if (hasNewMesg) {
             getMesgDpData();
-        }else {
+        } else {
             handlerDataResult(findAllFromDb());
         }
     }
@@ -173,7 +170,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             ArrayList<JFGDPMsg> params = new ArrayList<>();
                             params.add(msg1);
                             params.add(msg4);
-                            seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("",params,100,false,0);
+                            seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("", params, 100, false, 0);
                             AppLogger.d("getMesgDpData:" + seq);
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -199,7 +196,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .map(new Func1<RobotoGetDataRsp, ArrayList<MineMessageBean>>() {
                     @Override
                     public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        AppLogger.d("getMesgDpDataCallBack:"+robotoGetDataRsp.seq+":"+robotoGetDataRsp.identity);
+                        AppLogger.d("getMesgDpDataCallBack:" + robotoGetDataRsp.seq + ":" + robotoGetDataRsp.identity);
                         if (robotoGetDataRsp != null && robotoGetDataRsp.seq == seq) {
                             results.clear();
                             results.addAll(convertData(robotoGetDataRsp));
@@ -233,20 +230,20 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 bean = new MineMessageBean();
                 bean.type = entry.getKey();
                 try {
-                    if (bean.type == 701){
+                    if (bean.type == 701) {
                         DpMsgDefine.DPSystemMesg sysMesg = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSystemMesg.class);
-                        if (sysMesg == null)continue;
+                        if (sysMesg == null) continue;
                         bean.name = sysMesg.content.trim();
                         bean.content = sysMesg.title.trim();
-                        bean.time = dp.version+"";
+                        bean.time = dp.version + "";
                         bean.isDone = 0;
-                    }else {
+                    } else {
                         DpMsgDefine.DPMineMesg mesg = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPMineMesg.class);
-                        if (mesg == null)continue;
+                        if (mesg == null) continue;
                         bean.name = mesg.account.trim();
-                        bean.isDone = mesg.isDone ? 1:0;
+                        bean.isDone = mesg.isDone ? 1 : 0;
                         bean.content = mesg.cid.trim();
-                        bean.time = dp.version+"";
+                        bean.time = dp.version + "";
                         bean.sn = mesg.sn;
                     }
                     results.add(bean);

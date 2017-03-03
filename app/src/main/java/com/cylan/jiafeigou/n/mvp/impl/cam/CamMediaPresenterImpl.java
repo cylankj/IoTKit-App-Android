@@ -9,9 +9,9 @@ import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -40,11 +40,9 @@ import rx.schedulers.Schedulers;
 
 public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.View>
         implements CamMediaContract.Presenter {
-    private String uuid;
 
     public CamMediaPresenterImpl(CamMediaContract.View view, String uuid) {
-        super(view);
-        this.uuid = uuid;
+        super(view, uuid);
         view.setPresenter(this);
     }
 
@@ -83,10 +81,10 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
         Observable.just(alarmMsg)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((DpMsgDefine.DPAlarm alarm) -> {
-                    JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
                     String alias = device == null ? "" : device.alias;
                     DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
-                    item.cid = GlobalDataProxy.getInstance().getJfgAccount().getAccount();//02-28，丽工说改的
+                    item.cid = DataSourceManager.getInstance().getJFGAccount().getAccount();//02-28，丽工说改的
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                     item.place = alias;
                     item.fileName = alarm.time + "_" + index + ".jpg";

@@ -247,9 +247,10 @@ public class FastBlurUtil {
 
     /**
      * 高斯模糊一张图片．　先将图片缩小后再进行模糊处理．
-     * @param bkg　bitmap　原图
-     * @param radius　模糊半径
-     * @param scale　缩小原图的倍数
+     *
+     * @param bkg    　bitmap　原图
+     * @param radius 　模糊半径
+     * @param scale  　缩小原图的倍数
      * @return
      */
     public static Bitmap blur(Bitmap bkg, int radius, int scale) {

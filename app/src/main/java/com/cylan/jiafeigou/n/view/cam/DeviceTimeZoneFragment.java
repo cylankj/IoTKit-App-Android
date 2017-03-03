@@ -16,8 +16,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -25,6 +24,7 @@ import com.cylan.jiafeigou.n.mvp.contract.setting.TimezoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.TimezonePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.DeviceTimeZoneAdapter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -122,7 +122,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         lvTimezoneDetail.setLayoutManager(layoutManager);
         adapter = new DeviceTimeZoneAdapter(getActivity().getApplicationContext());
-        DpMsgDefine.DPTimeZone info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, null);
+        DpMsgDefine.DPTimeZone info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
         String timeZoneId = info == null ? "" : info.timezone;
         adapter.setChooseId(timeZoneId);
         Log.d("onViewCreated", "offset: " + timeZoneId);
@@ -136,16 +136,15 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
             simpleDialog.setValue(adapter.getItem(position));
             simpleDialog.setAction((int id, Object value) -> {
                 if (value != null && value instanceof TimeZoneBean) {
-                    DpMsgDefine.DPTimeZone timeZone = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE, DpMsgDefine.DPTimeZone.empty);
-                    int offset = timeZone.offset;
+                    DpMsgDefine.DPTimeZone timeZone = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
                     if (!TextUtils.equals(timeZone.timezone, ((TimeZoneBean) value).getId())) {
                         timeZone.timezone = ((TimeZoneBean) value).getId();
                         timeZone.offset = ((TimeZoneBean) value).getOffset();
-                        BaseValue baseValue = new BaseValue();
-                        baseValue.setValue(timeZone);
-                        baseValue.setId(DpMsgMap.ID_214_DEVICE_TIME_ZONE);
-                        baseValue.setVersion(System.currentTimeMillis());
-                        GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                        try {
+                            com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().updateValue(uuid, timeZone, (int) id);
+                        } catch (IllegalAccessException e) {
+                            AppLogger.e("err: " + e.getLocalizedMessage());
+                        }
                         if (callBack != null)
                             callBack.callBack(timeZone);
                         getActivity().onBackPressed();
