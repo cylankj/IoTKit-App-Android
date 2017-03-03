@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -8,6 +9,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -21,7 +23,6 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -45,8 +46,11 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
+import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -62,13 +66,16 @@ import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
@@ -76,8 +83,9 @@ import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_
 /**
  * A simple {@link Fragment} subclass.
  */
+@RuntimePermissions()
 public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
-        implements CamLandLiveAction, CamLiveContract.View, View.OnClickListener {
+        implements CamLiveContract.View, View.OnClickListener {
 
 
     //    @BindView(R.id.fLayout_live_view_container)
@@ -187,7 +195,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setLiveAction((ILiveControl) vs_control.inflate());
         camLiveController.setCamLiveControlLayer(swCamLiveControlLayer);
         camLiveController.setScreenZoomer(imgVCamZoomToFullScreen);
-        camLiveController.setPortSafeSetter(portFlipLayout);
         camLiveController.setPortLiveTimeSetter(liveTimeLayout);
         camLiveController.setActivity(getActivity());
         liveListener = camLiveController.getLiveStateListener();
@@ -213,6 +220,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             }
             onDeviceInfoChanged();
         }
+        camLiveController.setPortSafeSetter(portFlipLayout);
     }
 
     @Override
@@ -322,9 +330,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onDeviceInfoChanged() {
         DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
-        boolean flag = wFlag.$();
+        boolean flag = wFlag.value;
         fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
-        camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
+        if (flag)
+            camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
+        //安全防护状态。
         showFloatFlowView(false, null);
         //进入待机模式
         View v = fLayoutCamLiveView.findViewById("showSceneView".hashCode());
@@ -377,20 +387,21 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (getView() != null)
             getView().setKeepScreenOn(true);
         initBottomBtn(true);
-        imgVCamSwitchSpeaker.performClick();
-        imgVCamTriggerMic.performClick();
         camLiveController.setLiveType(basePresenter.getPlayType());
         if (liveListener != null) liveListener.liveStateChange();
+        imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_off_selector);
+        imgVCamTriggerMic.setImageResource(R.drawable.icon_port_mic_off_selector);
     }
 
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        boolean port = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        if (!port) {
             // 加入横屏要处理的代码
             fLayoutLiveBottomHandleBar.setVisibility(View.GONE);
             fLayoutCamLiveMenu.setVisibility(View.GONE);
-        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else {
             // 加入竖屏要处理的代码
             fLayoutCamLiveMenu.setVisibility(View.VISIBLE);
             fLayoutLiveBottomHandleBar.setVisibility(View.VISIBLE);
@@ -398,7 +409,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.notifyOrientationChange(this.getResources().getConfiguration().orientation);
         AppLogger.i("onConfigurationChanged");
         updateVideoViewLayoutParameters(null);
+        if (tvFlowRef != null && tvFlowRef.get() != null)
+            ViewUtils.setMargins(tvFlowRef.get(), 0, (int) getResources().getDimension(port ? R.dimen.x14 : R.dimen.x54),
+                    (int) getResources().getDimension(R.dimen.x14), 0);
+        if (port && basePresenter != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING)
+            resetMicSpeakerButton();
     }
+
 
     /**
      * 初始化流量
@@ -503,25 +520,55 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
 
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        CameraLiveFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+    }
+
+    /**
+     * 恢复状态
+     */
+    private void resetMicSpeakerButton() {
+        boolean speakerOn = isLocalSpeakerOn();
+        int sFlag = speakerOn ? R.drawable.icon_port_speaker_on_selector : R.drawable.icon_port_speaker_off_selector;
+        imgVCamSwitchSpeaker.setImageResource(sFlag);
+        boolean micOn = isLocalMicOn();
+        int micFlag = micOn ? R.drawable.icon_port_mic_on_selector : R.drawable.icon_port_mic_off_selector;
+        imgVCamTriggerMic.setImageResource(micFlag);
+        imgVCamSwitchSpeaker.setEnabled(!micOn);
+    }
 
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imgV_cam_switch_speaker:
+            case R.id.imgV_cam_switch_speaker: {
+                CameraLiveFragmentPermissionsDispatcher.audioPermissionGrantWithCheck(this);
+                CameraLiveFragmentPermissionsDispatcher.audioSettingPermissionGrantWithCheck(this);
+                boolean on = isLocalSpeakerOn();
+                int sFlag = on ? R.drawable.icon_port_speaker_off_selector : R.drawable.icon_port_speaker_on_selector;
+                ((ImageView) view).setImageResource(sFlag);
                 if (basePresenter != null) {
-                    basePresenter.switchSpeakerMic(false, !basePresenter.getSpeakerFlag(), basePresenter.getMicFlag());
-                    ((ImageView) view).setImageResource(basePresenter.getSpeakerFlag()
-                            ? R.drawable.icon_port_speaker_off_selector
-                            : R.drawable.icon_port_speaker_on_selector);
+                    basePresenter.switchSpeaker();
                 }
-                break;
-            case R.id.imgV_cam_trigger_mic:
+            }
+            break;
+            case R.id.imgV_cam_trigger_mic: {
+                boolean on = isLocalMicOn();
+                int micFlag = on ? R.drawable.icon_port_mic_off_selector : R.drawable.icon_port_mic_on_selector;
+                ((ImageView) view).setImageResource(micFlag);
+                if (!on) {
+                    //同时设置speaker
+                    imgVCamSwitchSpeaker.setEnabled(false);
+                    imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_on_selector);
+                } else {
+                    imgVCamSwitchSpeaker.setEnabled(true);
+                }
                 if (basePresenter != null) {
-                    basePresenter.switchSpeakerMic(false, basePresenter.getSpeakerFlag(), !basePresenter.getMicFlag());
-                    ((ImageView) view).setImageResource(basePresenter.getMicFlag() ?
-                            R.drawable.icon_port_mic_off_selector : R.drawable.icon_port_mic_on_selector);
+                    basePresenter.switchMic();
                 }
-                break;
+            }
+            break;
             case R.id.imgV_cam_trigger_capture:
                 if (basePresenter != null) basePresenter.takeSnapShot(false);
                 break;
@@ -532,35 +579,14 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         }
     }
 
-
     @Override
-    public void onClickLive() {
+    public boolean isLocalMicOn() {
+        return basePresenter != null && (basePresenter.getMicSpeakerBit() >> 3 & 0x01) == 1;
     }
 
     @Override
-    public void onClickLandPlay(int state) {
-        Toast.makeText(getContext(), "play: ", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onClickLandBack() {
-        Toast.makeText(getContext(), "onBack: ", Toast.LENGTH_SHORT).show();
-        ViewUtils.setRequestedOrientation(getActivity(), ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-    }
-
-    @Override
-    public void onClickLandSwitchSpeaker(int state) {
-        Toast.makeText(getContext(), "onSwitchSpeaker: ", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onClickLandSwitchRecorder(int state) {
-        Toast.makeText(getContext(), "onSwitchRecorder: ", Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onClickLandCapture() {
-        Toast.makeText(getContext(), "onCapture: ", Toast.LENGTH_SHORT).show();
+    public boolean isLocalSpeakerOn() {
+        return basePresenter != null && (basePresenter.getMicSpeakerBit() >> 2 & 0x01) == 1;
     }
 
     @Override
@@ -586,10 +612,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
-                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, "出错了");
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NO_NETWORK_2));
                 break;
             case JFGRules.PlayErr.ERR_LOW_FRAME_RATE:
-                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, "\"帧率太低,不足以播放,重试\"");
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.GLOBAL_NO_NETWORK));
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
             case JError.ErrorVideoPeerNotExist:
@@ -599,7 +625,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             case JError.ErrorVideoPeerInConnect:
                 //正在直播...
                 ToastUtil.showToast(getString(R.string.CONNECTING));
-                camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
                 break;
             case JError.STOP_MAUNALLY:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
@@ -608,7 +634,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NETWORK_TIMEOUT));
                 break;
             default:
-                camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.GLOBAL_NO_NETWORK));
                 break;
         }
         if (liveListener != null) liveListener.liveStateChange();
@@ -639,6 +665,17 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                             .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 2))
                             .into(view);
                 }
+            }, v -> {
+                roundCardPopup.dismiss();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                Bundle bundle = new Bundle();
+                bundle.putByteArray(JConstant.KEY_SHARE_ELEMENT_BYTE, byteArray);
+                NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
+                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment,
+                        android.R.id.content);
+                fragment.setCallBack(t -> getActivity().getSupportFragmentManager().popBackStack());
             });
             roundCardPopup.showOnAnchor(imgVCamTriggerCapture, RelativePopupWindow.VerticalPosition.ABOVE, RelativePopupWindow.HorizontalPosition.CENTER);
             basePresenter.startCountForDismissPop();
@@ -654,22 +691,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     }
 
-//    public void onPageSelected(Bundle bundle) {
-//        boolean checked = bundle.getBoolean(JConstant.KEY_CAM_LIVE_PAGE_SELECTED);
-//        if (basePresenter != null) {
-//            if (checked) {
-//                if (bundle.getInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE) == TYPE_LIVE)
-//                    startLive();
-//                else {
-//                    long time = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
-//                    if (time == 0 && BuildConfig.DEBUG)
-//                        throw new IllegalArgumentException("play history time is 0");
-//                    basePresenter.startPlayHistory(time);
-//                }
-//            } else basePresenter.stopPlayVideo(basePresenter.getPlayType());
-//        }
-//    }
-
     @Override
     public void shouldWaitFor(boolean start) {
         camLiveController.setLoadingState(start ? ILiveControl.STATE_LOADING : ILiveControl.STATE_IDLE, null);
@@ -682,7 +703,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onRtcp(JFGMsgVideoRtcp rtcp) {
-        String content = String.format(Locale.getDefault(), "%sKb/s", rtcp.bitRate);
+        String content = MiscUtils.getByteFromBitRate(rtcp.bitRate);
         showFloatFlowView(true, content);
         if (!basePresenter.isShareDevice())
             camLiveController.setLiveTime(rtcp.timestamp == 0 ? System.currentTimeMillis() : rtcp.timestamp * 1000L);
@@ -700,21 +721,28 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         this.basePresenter = basePresenter;
     }
 
-}
+    @NeedsPermission({Manifest.permission.RECORD_AUDIO})
+    public void audioPermissionGrant() {
+        if (basePresenter != null) {
+            Log.d("NeedsPermission", "audioPermissionGrant");
+        }
+    }
 
+    @NeedsPermission({Manifest.permission.MODIFY_AUDIO_SETTINGS})
+    public void audioSettingPermissionGrant() {
+        if (basePresenter != null) {
+            Log.d("NeedsPermission", "audioSettingPermissionGrant");
+        }
+    }
 
-interface CamLandLiveAction {
+    @OnPermissionDenied({Manifest.permission.RECORD_AUDIO})
+    public void audioPermissionDenied() {
+        Log.d("OnPermissionDenied", "audioPermissionDenied");
+    }
 
-    void onClickLive();
-
-    void onClickLandPlay(int state);
-
-    void onClickLandBack();
-
-    void onClickLandSwitchSpeaker(int state);
-
-    void onClickLandSwitchRecorder(int state);
-
-    void onClickLandCapture();
+    @OnPermissionDenied({Manifest.permission.MODIFY_AUDIO_SETTINGS})
+    public void audioSettingPermissionDenied() {
+        Log.d("OnPermissionDenied", "audioSettingPermissionDenied");
+    }
 
 }

@@ -160,10 +160,6 @@
         </receiver>
 
         <service
-            android:name=".n.engine.DataSourceService"
-            android:enabled="true"
-            android:exported="true" />
-        <service
             android:name=".n.engine.DaemonService"
             android:enabled="true"
             android:exported="true" />

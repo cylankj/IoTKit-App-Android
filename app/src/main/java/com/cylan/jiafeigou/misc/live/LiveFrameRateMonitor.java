@@ -65,7 +65,7 @@ public class LiveFrameRateMonitor implements IFeedRtcp {
                 if (System.currentTimeMillis() - showFailedTime > SHOW_FREQUENCY) {
                     //3s内提醒一次
                     showFailedTime = System.currentTimeMillis();
-                    if (monitorListener != null && !isBad && _10_s_rules) {
+                    if (monitorListener != null && isBad && _10_s_rules) {
                         monitorListener.onFrameFailed();
                     }
                 }

@@ -250,10 +250,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 camMessageListAdapter.notifySdcardStatus(o != null && ((DpMsgDefine.DPSdStatus) o).hasSdcard,
                         lPos);
                 break;
-            case DpMsgMap.ID_222_SDCARD_SUMMARY:
-                camMessageListAdapter.notifySdcardStatus(o != null && ((DpMsgDefine.DPSdcardSummary) o).hasSdcard,
-                        lPos);
-                break;
             case DpMsgMap.ID_201_NET:
                 camMessageListAdapter.notifyDeviceOnlineState(o != null && ((DpMsgDefine.DPNet) o).net != 0,
                         lPos);

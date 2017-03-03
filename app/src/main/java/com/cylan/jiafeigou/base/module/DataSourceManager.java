@@ -6,13 +6,16 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPHelper;
+import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -47,6 +50,7 @@ public class DataSourceManager implements JFGSourceManager {
     private JFGDPAccount mJFGAccount;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
+    @Deprecated
     private boolean isOnline;
 
     private DataSourceManager() {
@@ -63,6 +67,7 @@ public class DataSourceManager implements JFGSourceManager {
         return mDataSourceManager;
     }
 
+    @Deprecated
     public void setOnline(boolean online) {
         isOnline = online;
 //        if (!(getLoginState = online)) {//没有登录的话则清除所有的缓存
@@ -148,6 +153,11 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
+        if (jfgAccount != null)
+            DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
+        else {
+            AppLogger.e("jfgAccount is null");
+        }
         setJfgAccount(account);
         mJFGAccount = new JFGDPAccount().setAccount(account);
         syncAllJFGDeviceProperty();
@@ -195,6 +205,25 @@ public class DataSourceManager implements JFGSourceManager {
             AppLogger.e("uuid is null");
             return 0L;
         }
+    }
+
+    @Override
+    public void queryHistory(String uuid) {
+        try {
+            JfgCmdInsurance.getCmd().getVideoList(uuid);
+        } catch (JfgException e) {
+            AppLogger.e("uuid is null: " + e.getLocalizedMessage());
+        }
+    }
+
+    @Override
+    public void cacheHistoryDataList(JFGHistoryVideo historyVideo) {
+        History.getHistory().cacheHistoryDataList(historyVideo);
+    }
+
+    @Override
+    public ArrayList<JFGVideo> getHistoryList(String uuid) {
+        return History.getHistory().getHistoryList(uuid);
     }
 
     @Override

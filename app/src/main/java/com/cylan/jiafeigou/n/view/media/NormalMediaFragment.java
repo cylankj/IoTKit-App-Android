@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -23,6 +24,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_LIST;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARE_ELEMENT_BYTE;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -74,17 +76,39 @@ public class NormalMediaFragment extends IBaseFragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        int index = getArguments().getInt(KEY_INDEX);
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        int index = getArguments().getInt(KEY_INDEX);
         DpMsgDefine.DPAlarm dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
+        if (dpAlarm != null) {
+            loadBitmap(dpAlarm, index, uuid);
+        } else {
+            byte[] bitmapByte = getArguments().getByteArray(KEY_SHARE_ELEMENT_BYTE);
+            if (bitmapByte == null) {
+                AppLogger.e("byte is null");
+            } else {
+                loadBitmap(bitmapByte);
+            }
+        }
+        imgVShowPic.setOnViewTapListener((View v, float x, float y) -> {
+            if (callBack != null) callBack.callBack(null);
+        });
+    }
+
+    private void loadBitmap(DpMsgDefine.DPAlarm dpAlarm, int index, String uuid) {
         Glide.with(ContextUtils.getContext())
                 .load(new CamWarnGlideURL(dpAlarm, index, uuid))
                 .asBitmap()
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(imgVShowPic);
-        imgVShowPic.setOnViewTapListener((View v, float x, float y) -> {
-            if (callBack != null) callBack.callBack(null);
-        });
+    }
+
+    private void loadBitmap(byte[] bitmapByte) {
+        Glide.with(this)
+                .load(bitmapByte)
+                .asBitmap()
+                .placeholder(R.drawable.wonderful_pic_place_holder)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imgVShowPic);
     }
 }

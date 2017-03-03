@@ -3,7 +3,9 @@ package com.cylan.jiafeigou.base.view;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.JFGDPAccount;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
@@ -108,4 +110,9 @@ public interface JFGSourceManager {
      */
     long syncJFGCameraWarn(String uuid, boolean asc, int count);
 
+    void queryHistory(String uuid);
+
+    void cacheHistoryDataList(JFGHistoryVideo historyVideo);
+
+    ArrayList<JFGVideo> getHistoryList(String uuid);
 }

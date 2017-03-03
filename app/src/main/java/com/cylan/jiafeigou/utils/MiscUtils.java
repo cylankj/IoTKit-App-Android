@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.utils;
 
+import android.content.pm.PackageManager;
 import android.content.res.XmlResourceParser;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,6 +20,8 @@ import java.util.Locale;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.utils.ContextUtils.getContext;
 
 /**
  * Created by cylan-hunt on 16-11-16.
@@ -56,24 +59,33 @@ public class MiscUtils {
                 + String.format(Locale.getDefault(), ":%02d", (((byte) value << 8) >> 8));
     }
 
-    public static String getBit(int flow) {
-        int factor = flow / 1024;
-        if (factor >= 1024) {
-            return "GB";
+    public static String getByteFromBitRate(long bitRate) {
+        bitRate = bitRate / 8;
+        return getResult(bitRate);
+    }
+
+    private static String getResult(long byteData) {
+        if (byteData < 1024)
+            return byteData + "K/s";
+        if (byteData >= 1024 && byteData < 1024 * 1024) {
+            return (byteData >>> 10) + "M/s";
         }
-        if (factor >= 1) {
-            return "Mb";
+        if (byteData >= 1024 * 1024 && byteData < 1024 * 1024 * 1024) {
+            return (byteData >>> 20) + "G/s";
         }
-        return "Kb";
+        if (byteData >= 1024 * 1024 * 1024 && byteData < 1024 * 1024 * 1024 * 1024L) {
+            return (byteData >>> 30) + "T/s";
+        }
+        return "";
     }
 
 //    public static void main(String[] args) {
-//        System.out.println(getBit(1024 * 1024 + 1));
-//        System.out.println(getBit(1024 * 1024));
-//        System.out.println(getBit(1024 * 1024 - 1));
-//        System.out.println(getBit(1025));
-//        System.out.println(getBit(1024));
-//        System.out.println(getBit(1023));
+//        System.out.println(getResult(1024 * 1024 + 1));
+//        System.out.println(getResult(1024 * 1024));
+//        System.out.println(getResult(1024 * 1024 - 1));
+//        System.out.println(getResult(1025));
+//        System.out.println(getResult(1024));
+//        System.out.println(getResult(1023));
 //        System.out.println(getCount(1));
 //        System.out.println(getCount(1));
 //        System.out.println(getCount(1));
@@ -85,7 +97,7 @@ public class MiscUtils {
         for (int i = 0; i < 3; i++) {
             if ((sum >> i & 0x01) == 1) count++;
         }
-        return count;
+        return count == 0 ? 1 : count;
     }
 
     @SuppressWarnings("unchecked")
@@ -111,7 +123,7 @@ public class MiscUtils {
                 .flatMap(new Func1<Integer, Observable<List<TimeZoneBean>>>() {
                     @Override
                     public Observable<List<TimeZoneBean>> call(Integer integer) {
-                        XmlResourceParser xrp = ContextUtils.getContext().getResources().getXml(integer);
+                        XmlResourceParser xrp = getContext().getResources().getXml(integer);
                         List<TimeZoneBean> list = new ArrayList<>();
                         try {
                             final String tag = "timezone";
@@ -194,5 +206,27 @@ public class MiscUtils {
         list.add(_222);
         list.add(_505);
         return list;
+    }
+
+    public static boolean checkWriteExternalPermission() {
+        String permission = "android.permission.WRITE_EXTERNAL_STORAGE";
+        int res = getContext().checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
+    public static boolean checkAudioPermission() {
+        String record = android.Manifest.permission.RECORD_AUDIO;
+        String recordSetting = android.Manifest.permission.MODIFY_AUDIO_SETTINGS;
+        return getContext().checkCallingOrSelfPermission(record) == PackageManager.PERMISSION_GRANTED
+                && getContext().checkCallingOrSelfPermission(recordSetting) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static int setBit(int x, int n, int flag) {
+        if (flag == 1) {
+            x |= (1 << (n - 1));
+        } else if (flag == 0) {
+            x &= ~(1 << (n - 1));
+        }
+        return x;
     }
 }

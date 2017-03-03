@@ -14,6 +14,7 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.jiafeigou.n.engine.DataSource;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class RxEvent {
 
     }
 
+    @Deprecated //账号状态不依据这个消息
     public static class OnlineStatusRsp {
         public boolean state;
 
@@ -448,7 +450,7 @@ public class RxEvent {
 //    }
 
     /**
-     * 这个消息从{@link com.cylan.jiafeigou.n.engine.DataSourceService#OnRobotCountDataRsp(long, String, ArrayList)}
+     * 这个消息从{@link DataSource#OnRobotCountDataRsp(long, String, ArrayList)}
      * 传到{@link }
      */
     public static final class UnreadCount {
@@ -466,28 +468,16 @@ public class RxEvent {
         }
     }
 
-    /**
-     * 未读消息数响应,以uuid为单位
-     */
-    public static final class UnreadCountRsp {
-        public String uuid;
-        public long time;
-        public int count;
-    }
-
-    /**
-     * 历史数据查询,带一个时间戳,m默认一次请求10条.
-     */
-    public static final class JFGHistoryVideoReq {
-        public String uuid;
-        public boolean desc;//降序,逆序
-        public long version;
-    }
 
     /**
      * 历史录像数据响应
      */
-    public static final class JFGHistoryVideoRsp {
+    public static final class JFGHistoryVideoParseRsp {
+        public String uuid;
+
+        public JFGHistoryVideoParseRsp(String uuid) {
+            this.uuid = uuid;
+        }
     }
 
     /**

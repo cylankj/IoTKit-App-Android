@@ -1,9 +1,7 @@
 package com.cylan.jiafeigou.n.engine;
 
-import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.os.IBinder;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,7 +30,6 @@ import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.CacheParser;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -53,65 +50,57 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 
-public class DataSourceService extends Service implements AppCallBack {
+public class DataSource implements AppCallBack {
 
     static {
         System.loadLibrary("jfgsdk");
         System.loadLibrary("sqlcipher");
     }
 
+    private static DataSource instance;
 
-    @Override
+    private DataSource() {
+    }
+
+    public static DataSource getInstance() {
+        if (instance == null) {
+            synchronized (DataSource.class) {
+                if (instance == null)
+                    instance = new DataSource();
+            }
+        }
+        return instance;
+    }
+
     public void onCreate() {
-        super.onCreate();
-        CacheParser.getDpParser().registerDpParser();
+        initNative();
         GlobalUdpDataSource.getInstance().register();
         GlobalBellCallSource.getInstance().register();
     }
 
 
-    @Override
     public void onDestroy() {
-        super.onDestroy();
-        CacheParser.getDpParser().unregisterDpParser();
         GlobalUdpDataSource.getInstance().unregister();
         GlobalBellCallSource.getInstance().unRegister();
-
     }
 
-    @Override
-    public IBinder onBind(Intent intent) {
-        return null;
-    }
 
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        AppLogger.i("onStartCommand initNative:" + (intent == null));
-        if (intent == null) {
-            return START_STICKY;
+    public void initNative() {
+        Context context = ContextUtils.getContext();
+        Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
+        try {
+            JfgAppCmd.initJfgAppCmd(context, DataSource.this);
+            JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
+        } catch (Exception e) {
+            AppLogger.d("let's go err:" + e.getLocalizedMessage());
         }
-        initNative();
-
-        return START_STICKY;
+        try2autoLogin();
+        AppLogger.d("let's go initNative:");
+        MtaManager.customEvent(context, "DataSource", "NativeInit");
     }
 
-    private void initNative() {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
-                try {
-                    JfgAppCmd.initJfgAppCmd(getApplicationContext(), DataSourceService.this);
-                    JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
-                } catch (PackageManager.NameNotFoundException e) {
-                    AppLogger.d("let's go err:" + e.getLocalizedMessage());
-                } catch (Exception e) {
-                    AppLogger.d("let's go err:" + e.getLocalizedMessage());
-                }
-                AppLogger.d("let's go initNative:");
-                MtaManager.customEvent(getApplicationContext(), "DataSourceService", "NativeInit");
-            }
-        }).start();
+    private void try2autoLogin() {
+        AppLogger.d("let's go 还没实现:");
     }
 
     @Override
@@ -142,7 +131,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnUpdateHistoryVideoList(JFGHistoryVideo jfgHistoryVideo) {
         AppLogger.d("OnUpdateHistoryVideoList :" + jfgHistoryVideo.list.size());
-        RxBus.getCacheInstance().post(jfgHistoryVideo);
+        DataSourceManager.getInstance().cacheHistoryDataList(jfgHistoryVideo);
     }
 
     @Override
@@ -158,6 +147,8 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnLogoutByServer(int i) {
         AppLogger.d("OnLocalMessage :" + i);
+        RxBus.getCacheInstance().post(i);
+        DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
     }
 
     @Override
@@ -225,7 +216,6 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d("OnlineStatus :" + b);
         RxBus.getCacheInstance().post(new RxEvent.OnlineStatusRsp(b));
         DataSourceManager.getInstance().setOnline(b);//设置用户在线信息
-        DataSourceManager.getInstance().setLoginState(new LogState(b ? LogState.STATE_ACCOUNT_ON : LogState.STATE_ACCOUNT_OFF));
     }
 
     @Override
@@ -285,8 +275,8 @@ public class DataSourceService extends Service implements AppCallBack {
                 break;
         }
         if (login) {
-            AfterLoginService.startGetAccountAction(getApplicationContext());
-            AfterLoginService.startSaveAccountAction(getApplicationContext());
+            AfterLoginService.startGetAccountAction(ContextUtils.getContext());
+            AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
             AfterLoginService.resumeOfflineRequest();
         }
         AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + "]");
@@ -404,7 +394,7 @@ public class DataSourceService extends Service implements AppCallBack {
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, header.caller);
             intent.putExtra("call_in_or_out", true);
-            startActivity(intent);
+            ContextUtils.getContext().startActivity(intent);
         }
     }
 
