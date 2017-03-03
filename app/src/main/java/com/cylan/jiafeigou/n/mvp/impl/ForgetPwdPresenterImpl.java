@@ -28,7 +28,6 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     private Subscription subscription;
     private CompositeSubscription compositeSubscription;
-    private boolean isCheckAgain;
 
     public ForgetPwdPresenterImpl(ForgetPwdContract.View view) {
         super(view);
@@ -185,7 +184,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         String account = PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT);
                         String code = PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE);
                         try {
-                            JfgCmdInsurance.getCmd().resetPassword(account, s, code);
+                            JfgCmdInsurance.getCmd().resetPassword(account, s, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -210,7 +209,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .subscribe(new Action1<RxEvent.ResetPwdBack>() {
                     @Override
                     public void call(RxEvent.ResetPwdBack resetPwdBack) {
-                        if (resetPwdBack != null && resetPwdBack instanceof RxEvent.ResetPwdBack) {
+                        if (resetPwdBack != null) {
                             getView().resetPwdResult(resetPwdBack.jfgResult.code);
                         }
                     }

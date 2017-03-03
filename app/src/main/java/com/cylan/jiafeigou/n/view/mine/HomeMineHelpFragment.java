@@ -78,8 +78,8 @@ public class HomeMineHelpFragment extends Fragment {
      * 当进度条加载完成的时候显示该webView
      */
     private void showWebView() {
-//        String agreementUrl= getString(R.string.help_url);
-        String agreementUrl= "https://www.baidu.com";
+//        String agreementUrl= "https://yf.jfgou.com:8081/helps/zh-rCN.html";
+        String agreementUrl= getString(R.string.help_url);
         WebSettings settings = mWvHelp.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         settings.setLoadWithOverviewMode(true);
@@ -95,6 +95,7 @@ public class HomeMineHelpFragment extends Fragment {
                 return true;
             }
         });
+        AppLogger.d("url:"+agreementUrl);
         mWvHelp.loadUrl(agreementUrl);
     }
 

@@ -50,45 +50,52 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
+            android:layout_marginTop="@dimen/y8"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y54"
-            android:layout_marginTop="@dimen/y8">
+            android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/et_mine_personal_information_mailbox"
+            <LinearLayout
+                android:id="@+id/ll_input_container"
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y48"
-                android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/x20"
-                android:layout_marginRight="@dimen/x20"
-                android:hint="@string/EMAIL_1"
-                android:background="@null"
-                android:maxLength="65"
-                android:singleLine="true"
-                android:inputType="textVisiblePassword"
-                android:ellipsize="start"
-                android:textColor="@color/color_333333"
-                android:textSize="@dimen/sp16" />
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_mine_personal_information_mailbox"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="@dimen/y48"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x1"
+                    android:hint="@string/EMAIL_1"
+                    android:background="@null"
+                    android:maxLength="65"
+                    android:singleLine="true"
+                    android:inputType="textVisiblePassword"
+                    android:textColor="@color/color_333333"
+                    android:textSize="@dimen/sp16" />
+
+                <ImageView
+                    android:visibility="gone"
+                    android:id="@+id/iv_mine_personal_information_mailbox"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingEnd="@dimen/x20"
+                    android:paddingBottom="@dimen/x10"
+                    android:paddingTop="@dimen/x10"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/icon_clear_text"
+                     />
+            </LinearLayout>
 
             <View
+                android:layout_below="@id/ll_input_container"
                 android:id="@+id/view_mine_personal_information_mailbox"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y1"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="@dimen/y8"
                 android:layout_marginLeft="@dimen/x20"
                 android:layout_marginRight="@dimen/x20"
                 android:background="@color/color_f2f2f2" />
-
-            <ImageView
-                android:id="@+id/iv_mine_personal_information_mailbox"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:layout_marginRight="@dimen/x20"
-                android:src="@drawable/icon_clear_text"
-                android:visibility="gone" />
         </RelativeLayout>
 
         <View
@@ -98,3 +105,4 @@
     </FrameLayout>
 
 </LinearLayout>
+

@@ -22,7 +22,7 @@
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:gravity="center"
-            android:hint="请输入密码"
+            android:hint="@string/ENTER_PWD_1"
             android:inputType="textPassword"
             android:maxLength="12"
             android:paddingLeft="@dimen/x40"
@@ -72,5 +72,5 @@
         style="@style/login_model_commit_style"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/y37"
-        android:text="确认" />
+        android:text="@string/Button_Sure" />
 </LinearLayout>

@@ -206,8 +206,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.ResultVerifyCode resultVerifyCode) -> {
-                    if (isRegSms)
+                    if (isRegSms){
                         getView().verifyCodeResult(resultVerifyCode.code);
+                        isRegSms = false;
+                    }
+
                 }, (Throwable throwable) -> {
                     AppLogger.e("" + throwable.getLocalizedMessage());
                 }, () -> {

@@ -162,7 +162,6 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnLogoutByServer(int i) {
         AppLogger.d("OnLocalMessage :" + i);
-        RxBus.getCacheInstance().post(i);
     }
 
     @Override
