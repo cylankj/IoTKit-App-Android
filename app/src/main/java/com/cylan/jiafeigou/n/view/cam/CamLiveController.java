@@ -237,7 +237,7 @@ public class CamLiveController implements
         if (iSafeStateSetterPort != null)
             iSafeStateSetterPort.setVisibility(!land && !isShareDevice);
         //全屏底部区域
-        camLiveControlLayer.setOrientation(orientation, isShareDevice, sdCardStatus, safe.$());
+        camLiveControlLayer.setOrientation(presenterRef.get().getMicSpeakerBit(), orientation, isShareDevice, sdCardStatus, safe.$());
         //安全防护
         camLiveControlLayer.setLandSafeClickListener(this);
         AppLogger.i("orientation: " + orientation);
@@ -372,20 +372,23 @@ public class CamLiveController implements
     @Override
     public void onSwitchSpeaker(View view) {
         if (presenterRef != null && presenterRef.get() != null) {
-            boolean flag = presenterRef.get().getSpeakerFlag();
+            int bit = presenterRef.get().getMicSpeakerBit();
+            boolean flag = (bit >> 3 & 0x01) == 1;
             ((ImageView) view).setImageResource(flag ?
                     R.drawable.icon_land_speaker_off_selector : R.drawable.icon_land_speaker_on_selector);
-            presenterRef.get().switchSpeakerMic(false, !presenterRef.get().getSpeakerFlag(), presenterRef.get().getMicFlag());
+            presenterRef.get().switchSpeaker();
+            camLiveControlLayer.setLandMicEnable(!flag);
         }
     }
 
     @Override
     public void onTriggerMic(View view) {
         if (presenterRef != null && presenterRef.get() != null) {
-            boolean flag = presenterRef.get().getSpeakerFlag();
+            int bit = presenterRef.get().getMicSpeakerBit();
+            boolean flag = (bit >> 2 & 0x01) == 1;
             ((ImageView) view).setImageResource(flag ?
                     R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
-            presenterRef.get().switchSpeakerMic(false, presenterRef.get().getSpeakerFlag(), !presenterRef.get().getMicFlag());
+            presenterRef.get().switchMic();
         }
     }
 

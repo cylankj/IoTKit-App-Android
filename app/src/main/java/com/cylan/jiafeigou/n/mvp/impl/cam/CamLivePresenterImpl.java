@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
@@ -64,14 +65,13 @@ import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NERWORK;
 public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View>
         implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener {
     private int playType = CamLiveContract.TYPE_LIVE;
-    private boolean speakerFlag, micFlag;
     private int[] videoResolution = {0, 0};
     private int playState = PLAY_STATE_IDLE;
     private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
     private IData historyDataProvider;
     private int stopReason = JError.STOP_MAUNALLY;//手动断开
     private CompositeSubscription liveSubscription;
-
+    private int micSpeakerBit;
     /**
      * 帧率记录
      */
@@ -259,6 +259,13 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribeOn(Schedulers.io())
                 .mergeWith(RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
                         .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
+                        .map(resolution -> {
+                            setMicSpeakerBit(0);
+                            JfgCmdInsurance.getCmd().setAudio(false, false, false);
+                            JfgCmdInsurance.getCmd().setAudio(true, false, false);
+                            AppLogger.d("set default mic n speaker flag");
+                            return resolution;
+                        })
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(resolution -> {
                             AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution) + "," + Thread.currentThread().getName());
@@ -366,7 +373,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
                     getView().onLiveStop(playType, stopReason);
-                    AppLogger.d("live stop");
+                    AppLogger.d("live stop: " + stopReason);
                 }, (Throwable throwable) -> {
                     AppLogger.e("" + throwable.getLocalizedMessage());
                 });
@@ -378,23 +385,74 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
+    public void switchSpeaker() {
+        Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Boolean aBoolean) -> {
+                    boolean localMic = getView().isLocalMicOn();
+                    boolean localSpeaker = getView().isLocalSpeakerOn();
+                    boolean remoteMic = getView().isLocalSpeakerOn();
+                    boolean remoteSpeaker = getView().isLocalMicOn();//imageview 图标状态已经更新了。
+                    if (localSpeaker) {
+
+                    } else {
+                        remoteMic = false;
+                        remoteSpeaker = false;
+                        localSpeaker = false;
+                        localMic = false;
+                    }
+                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 4, localMic ? 0 : 1);
+                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 3, localSpeaker ? 0 : 1);
+                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 2, remoteMic ? 0 : 1);
+                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 1, remoteSpeaker ? 0 : 1);
+                    JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
+                    JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
+                    AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
+                });
+    }
+
+    @Override
+    public void switchMic() {
+        Observable.just(true)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Boolean aBoolean) -> {
+                    boolean localMic = getView().isLocalMicOn();
+                    boolean localSpeaker = getView().isLocalSpeakerOn();
+                    boolean remoteMic = localSpeaker;
+                    boolean remoteSpeaker = localMic;//imageview 图标状态已经更新了。
+                    if (localMic) {
+                        localSpeaker = true;
+                        remoteMic = true;
+                        remoteSpeaker = true;
+                    } else {
+                        remoteSpeaker = false;
+                    }
+                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 4, localMic ? 0 : 1);
+                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 3, localSpeaker ? 0 : 1);
+                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 2, remoteMic ? 0 : 1);
+                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 1, remoteSpeaker ? 0 : 1);
+                    JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
+                    JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
+                    AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
+                });
+    }
+
+    @Override
+    public int getMicSpeakerBit() {
+        return micSpeakerBit;
+    }
+
+    @Override
+    public void setMicSpeakerBit(int bit) {
+        this.micSpeakerBit = bit;
+    }
+
+    @Override
     public void stop() {
         super.stop();
         reset();
     }
 
-    @Override
-    public void switchSpeakerMic(final boolean local, final boolean speakerFlag,
-                                 final boolean micFlag) {
-        this.speakerFlag = speakerFlag;
-        this.micFlag = micFlag;
-        Observable.just(true)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe((Boolean aBoolean) -> {
-                    JfgCmdInsurance.getCmd().setAudio(local, speakerFlag, micFlag);
-                    AppLogger.i(String.format(Locale.getDefault(), "local:%s,speaker:%s,mic:%s", local, speakerFlag, micFlag));
-                });
-    }
 
     @Override
     public void takeSnapShot(boolean forPreview) {
@@ -438,15 +496,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
     }
 
-    @Override
-    public boolean getSpeakerFlag() {
-        return speakerFlag;
-    }
-
-    @Override
-    public boolean getMicFlag() {
-        return micFlag;
-    }
 
     @Override
     public void saveAlarmFlag(boolean flag) {

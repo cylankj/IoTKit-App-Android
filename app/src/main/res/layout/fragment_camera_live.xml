@@ -58,7 +58,7 @@
             android:layout_gravity="center"
             android:clickable="true"
             android:padding="@dimen/x10"
-            android:src="@drawable/icon_port_mic_on_selector" />
+            android:src="@drawable/icon_port_mic_off_selector" />
 
         <ImageView
             android:id="@+id/imgV_cam_trigger_capture"

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.utils;
 
+import android.content.pm.PackageManager;
 import android.content.res.XmlResourceParser;
 import android.text.TextUtils;
 import android.util.Log;
@@ -19,6 +20,8 @@ import java.util.Locale;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.utils.ContextUtils.getContext;
 
 /**
  * Created by cylan-hunt on 16-11-16.
@@ -120,7 +123,7 @@ public class MiscUtils {
                 .flatMap(new Func1<Integer, Observable<List<TimeZoneBean>>>() {
                     @Override
                     public Observable<List<TimeZoneBean>> call(Integer integer) {
-                        XmlResourceParser xrp = ContextUtils.getContext().getResources().getXml(integer);
+                        XmlResourceParser xrp = getContext().getResources().getXml(integer);
                         List<TimeZoneBean> list = new ArrayList<>();
                         try {
                             final String tag = "timezone";
@@ -203,5 +206,27 @@ public class MiscUtils {
         list.add(_222);
         list.add(_505);
         return list;
+    }
+
+    public static boolean checkWriteExternalPermission() {
+        String permission = "android.permission.WRITE_EXTERNAL_STORAGE";
+        int res = getContext().checkCallingOrSelfPermission(permission);
+        return (res == PackageManager.PERMISSION_GRANTED);
+    }
+
+    public static boolean checkAudioPermission() {
+        String record = android.Manifest.permission.RECORD_AUDIO;
+        String recordSetting = android.Manifest.permission.MODIFY_AUDIO_SETTINGS;
+        return getContext().checkCallingOrSelfPermission(record) == PackageManager.PERMISSION_GRANTED
+                && getContext().checkCallingOrSelfPermission(recordSetting) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static int setBit(int x, int n, int flag) {
+        if (flag == 1) {
+            x |= (1 << (n - 1));
+        } else if (flag == 0) {
+            x &= ~(1 << (n - 1));
+        }
+        return x;
     }
 }

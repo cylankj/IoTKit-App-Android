@@ -27,6 +27,9 @@ public interface CamLiveContract {
 
     interface View extends BaseView<Presenter> {
 
+        boolean isLocalMicOn();
+
+        boolean isLocalSpeakerOn();
 
         void onHistoryDataRsp(IData dataProvider);
 
@@ -121,11 +124,20 @@ public interface CamLiveContract {
         String getUuid();
 
         /**
-         * @param local       :true:加菲狗客户端,false:设备端
-         * @param speakerFlag :true:开 false:关
-         * @param micFlag     :true:开 false:关
          */
-        void switchSpeakerMic(final boolean local, final boolean speakerFlag, final boolean micFlag);
+        void switchSpeaker();
+
+        void switchMic();
+
+        /**
+         * 获取本地，远端mic Speaker标志 xxxx
+         * 本地mic，本地Speaker，远端mic，远端speaker
+         *
+         * @return
+         */
+        int getMicSpeakerBit();
+
+        void setMicSpeakerBit(int bit);
 
         /**
          * 预览专用？
@@ -133,10 +145,6 @@ public interface CamLiveContract {
          * @param forPreview
          */
         void takeSnapShot(boolean forPreview);
-
-        boolean getSpeakerFlag();
-
-        boolean getMicFlag();
 
         /**
          * 保存标志
