@@ -5,9 +5,17 @@ package com.cylan.jiafeigou.cache.db.impl;
  */
 
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
+import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
+import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
+
+import java.util.List;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 /**
@@ -16,7 +24,7 @@ import rx.schedulers.Schedulers;
  */
 public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
     private static IDPTaskDispatcher instance;
-    private boolean needSync = true;
+    private IDPTaskFactory mTaskFactory;
 
     public static IDPTaskDispatcher getInstance() {
         if (instance == null) {
@@ -29,18 +37,57 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
         return instance;
     }
 
-    @Override
-    public synchronized void perform() {
-        Observable.just(needSync).filter(start -> start)
-                .flatMap(start -> BaseDPHelper.getInstance().queryUnConfirmDpMsg(null, null))
-                .observeOn(Schedulers.io())
-                .flatMap(Observable::from)
-                .flatMap(cache -> BaseDPTaskFactory.getInstance().getDPTask(cache).execute())
-                .subscribe();
+    public BaseDPTaskDispatcher() {
+        mTaskFactory = BaseDPTaskFactory.getInstance();
     }
 
     @Override
-    public void markSyncNeeded() {
-        needSync = true;
+    public synchronized void perform() {
+        BaseDPHelper.getInstance().queryUnConfirmDpMsg(null, null)
+                .observeOn(Schedulers.io())
+                .flatMap(Observable::from)
+                .subscribe(new Subscriber<DPEntity>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+
+                    }
+
+                    @Override
+                    public void onStart() {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onNext(DPEntity entity) {
+                        BaseDPTaskFactory.getInstance().getTask(entity.ACTION(), false, entity).performServer().subscribe(result -> request(1), e -> request(1));
+                    }
+                });
+    }
+
+    @Override
+    public Observable<IDPTaskResult> perform(IDPEntity entity) {
+        return Observable.just(mTaskFactory.getTask(entity.ACTION(), false, entity))
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(task -> DataSourceManager.getInstance().isOnline()
+                        ? task.performLocal().observeOn(Schedulers.io()).flatMap(result -> task.performServer())
+                        : task.performLocal().observeOn(Schedulers.io())
+                );
+    }
+
+    @Override
+    public Observable<IDPTaskResult> perform(List<? extends IDPEntity> entities) {
+        return Observable.just(mTaskFactory.getTask(entities.get(0).ACTION(), true, entities))
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(task -> DataSourceManager.getInstance().isOnline()
+                        ? task.performLocal().observeOn(Schedulers.io()).flatMap(result -> task.performServer())
+                        : task.performLocal().observeOn(Schedulers.io())
+                );
     }
 }

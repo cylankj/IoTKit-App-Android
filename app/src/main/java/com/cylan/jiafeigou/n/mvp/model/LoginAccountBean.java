@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.model;
 
 /**
  * Created by chen on 5/30/16.
- * modify by lxh on 6/25/16
+ * perform by lxh on 6/25/16
  */
 public class LoginAccountBean {
 

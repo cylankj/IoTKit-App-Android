@@ -256,7 +256,5 @@ dependencies {
 
     compile(name: rootProject.ext.cySdk, ext: 'aar')
     //aar通用依赖，不需要指定名字
-
-    compile 'org.jetbrains:annotations:15.0'
 }
 

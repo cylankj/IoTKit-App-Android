@@ -5,6 +5,8 @@ package com.cylan.jiafeigou.cache.db.view;
  */
 
 public interface IDPEntity {
+
+    //这是表属性
     IDPEntity setMsgId(Integer msgId);
 
     Integer getMsgId();
@@ -17,12 +19,20 @@ public interface IDPEntity {
 
     String getUuid();
 
-    IDPEntity setTag(String tag);
+    IDPEntity setAction(IDPAction action);
 
-    String getTag();
+    String ACTION();
+
+    IDPEntity setAction(String action);
+
+    String getAction();
 
     IDPEntity setState(String state);
 
     String getState();
+
+    byte[] getBytes();
+
+    IDPEntity setBytes(byte[] bytes);
 
 }

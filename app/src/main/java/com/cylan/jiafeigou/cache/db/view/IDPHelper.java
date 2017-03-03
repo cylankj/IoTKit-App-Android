@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.cache.db.view;
 
-import com.cylan.jiafeigou.cache.db.module.DBAction;
-import com.cylan.jiafeigou.cache.db.module.DPCache;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 
 import java.util.List;
 
@@ -17,28 +16,31 @@ public interface IDPHelper {
 
 
     //junk code
-    Observable deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId);
+    Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId);
 
     //junk code
-    Observable deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId);
+    Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId);
 
-    Observable deleteDPMsgWithConfirm(String uuid, Integer msgId);
+    Observable<Boolean> deleteDPMsgWithConfirm(String uuid, Integer msgId);
 
-    Observable queryUnConfirmDpMsgWithTag(String uuid, Integer msgId, DBAction tag);
+    Observable<List<DPEntity>> queryUnConfirmDpMsgWithTag(String uuid, Integer msgId, IDPAction action);
 
-    Observable<List<DPCache>> queryUnConfirmDpMsg(String uuid, Integer msgId);
+    Observable<List<DPEntity>> queryUnConfirmDpMsg(String uuid, Integer msgId);
 
-    Observable<List<DPCache>> markDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBAction tag);
+    Observable<List<DPEntity>> markDPMsgWithConfirm(String uuid, Long version, Integer msgId, IDPAction action);
 
-    Observable<List<DPCache>> markDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBAction tag);
+    Observable<List<DPEntity>> markDPMsgNotConfirm(String uuid, Long version, Integer msgId, IDPAction action);
 
-    Observable queryDPMsg(String uuid, Long version, Integer msgId, Boolean asc, Integer limit);
+    Observable<List<DPEntity>> queryDPMsg(String uuid, Long version, Integer msgId, Boolean asc, Integer limit);
 
 
-    Observable<DPCache> saveDpMsg(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction... dbActions);
+    Observable<DPEntity> saveDpMsg(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, String action, String state);
 
-    Observable<List<DPCache>> queryDPMsg(String account, String server, String uuid, Long version, Integer msgId, Boolean asc, Integer limit, DBAction... dbActions);
+    Observable<DPEntity> saveOrUpdate(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, String action, String state);
 
-    Observable<List<DPCache>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction... markedAction);
+    Observable<List<DPEntity>> queryDPMsg(String account, String server, String uuid, Long version, Integer msgId, Boolean asc, Integer limit, IDPAction action, IDPState state);
 
+    Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, IDPAction action, IDPState state);
+
+    Observable<DPEntity> deleteDPMsgForce(String account, String server, String uuid, Long version, Integer msgId);
 }

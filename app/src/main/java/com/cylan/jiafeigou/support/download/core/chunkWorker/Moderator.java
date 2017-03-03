@@ -82,7 +82,7 @@ public class Moderator {
                     chunkDownloaderThread.start();
                 } else if (!downloaded.equals(totalSize)) {
                     // where it has to begin
-                    // modify start point but i have not save it in Database
+                    // perform start point but i have not save it in Database
                     chunk.begin = chunk.begin + downloaded;
                     // start any of them as AsyncTask
                     Thread chunkDownloaderThread = new AsyncWorker(task, chunk, this);

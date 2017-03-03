@@ -10,6 +10,9 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -22,12 +25,15 @@ import com.cylan.udpMsgPack.JfgUdpMsg;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
 
 /**
  * Created by yzd on 16-12-28.
@@ -228,11 +234,14 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     public boolean hasReadyForExit() {
         return true;
-//        long clickedTime = SystemClock.uptimeMillis();
+    }
 
-//        long duration = clickedTime - mLastClickedTime;
-//        mLastClickedTime = clickedTime;
-//        return duration < 1500;
+    protected Observable<IDPTaskResult> perform(IDPEntity entity) {
+        return BaseDPTaskDispatcher.getInstance().perform(entity);
+    }
+
+    protected Observable<IDPTaskResult> perform(List<IDPEntity> entity) {
+        return BaseDPTaskDispatcher.getInstance().perform(entity);
     }
 
     /**
@@ -274,22 +283,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
      */
     protected void post(Runnable action) {
         HandlerThreadUtils.post(action);
-    }
-
-    protected void postDelay(Runnable action, long delay) {
-        HandlerThreadUtils.postDelay(action, delay);
-    }
-
-    protected void removeCallback(Runnable callback) {
-        HandlerThreadUtils.mHandler.removeCallbacks(callback);
-    }
-
-    protected void registerResponseParser(int msg, ResponseParser parser) {
-        mResponseParserMap.put(msg, parser);
-    }
-
-    protected void registerLocalUDPMessageParser(String cmd, LocalUDPMessageParser parser) {
-        mLocalMessageParserMap.put(cmd, parser);
     }
 
     public interface ResponseParser {
@@ -337,15 +330,4 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         robotGetData(peer, queryDps, limit, asc, timeoutMs, null);
     }
 
-    protected void robotDelDataAsync(String peer, ArrayList<JFGDPMsg> dps, int timeoutMs) {
-        post(() -> {
-            long seq = 0;
-            try {
-                seq = JfgCmdInsurance.getCmd().robotDelData(peer, dps, timeoutMs);
-            } catch (JfgException e) {
-                e.printStackTrace();
-            }
-            mRequestSeqs.add(seq);
-        });
-    }
 }

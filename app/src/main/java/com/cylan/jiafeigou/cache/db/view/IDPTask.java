@@ -7,7 +7,8 @@ import rx.Observable;
  */
 
 public interface IDPTask<T extends IDPTaskResult> {
-    <R extends IDPTask<T>> R init(IDPEntity cache);
 
-    Observable<T> execute();
+    Observable<T> performLocal();
+
+    Observable<T> performServer();
 }

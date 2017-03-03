@@ -1116,7 +1116,7 @@ public class IOUtils {
     /**
      * Writes bytes from a <code>byte[]</code> to an <code>OutputStream</code>.
      *
-     * @param data   the byte array to write, do not modify during output,
+     * @param data   the byte array to write, do not perform during output,
      *               null ignored
      * @param output the <code>OutputStream</code> to write to
      * @throws NullPointerException if output is null
@@ -1136,7 +1136,7 @@ public class IOUtils {
      * <p/>
      * This method uses {@link String#String(byte[])}.
      *
-     * @param data   the byte array to write, do not modify during output,
+     * @param data   the byte array to write, do not perform during output,
      *               null ignored
      * @param output the <code>Writer</code> to write to
      * @throws NullPointerException if output is null
@@ -1153,7 +1153,7 @@ public class IOUtils {
      * <p/>
      * This method uses {@link String#String(byte[], String)}.
      *
-     * @param data     the byte array to write, do not modify during output,
+     * @param data     the byte array to write, do not perform during output,
      *                 null ignored
      * @param output   the <code>Writer</code> to write to
      * @param encoding the encoding to use, null means platform default
@@ -1180,7 +1180,7 @@ public class IOUtils {
      * <p/>
      * This method uses {@link String#String(byte[], String)}.
      *
-     * @param data     the byte array to write, do not modify during output,
+     * @param data     the byte array to write, do not perform during output,
      *                 null ignored
      * @param output   the <code>Writer</code> to write to
      * @param encoding the encoding to use, null means platform default
@@ -1201,7 +1201,7 @@ public class IOUtils {
      * Writes chars from a <code>char[]</code> to a <code>Writer</code>
      * using the default character encoding of the platform.
      *
-     * @param data   the char array to write, do not modify during output,
+     * @param data   the char array to write, do not perform during output,
      *               null ignored
      * @param output the <code>Writer</code> to write to
      * @throws NullPointerException if output is null
@@ -1221,7 +1221,7 @@ public class IOUtils {
      * This method uses {@link String#String(char[])} and
      * {@link String#getBytes()}.
      *
-     * @param data   the char array to write, do not modify during output,
+     * @param data   the char array to write, do not perform during output,
      *               null ignored
      * @param output the <code>OutputStream</code> to write to
      * @throws NullPointerException if output is null
@@ -1240,7 +1240,7 @@ public class IOUtils {
      * This method uses {@link String#String(char[])} and
      * {@link String#getBytes(String)}.
      *
-     * @param data     the char array to write, do not modify during output,
+     * @param data     the char array to write, do not perform during output,
      *                 null ignored
      * @param output   the <code>OutputStream</code> to write to
      * @param encoding the encoding to use, null means platform default
@@ -1264,7 +1264,7 @@ public class IOUtils {
      * This method uses {@link String#String(char[])} and
      * {@link String#getBytes(String)}.
      *
-     * @param data     the char array to write, do not modify during output,
+     * @param data     the char array to write, do not perform during output,
      *                 null ignored
      * @param output   the <code>OutputStream</code> to write to
      * @param encoding the encoding to use, null means platform default

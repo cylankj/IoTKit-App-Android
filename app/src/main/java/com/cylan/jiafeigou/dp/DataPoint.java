@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.dp;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 import android.support.v4.util.LongSparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -10,7 +9,6 @@ import com.cylan.ext.annotations.DPProperty;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
-import org.jetbrains.annotations.Contract;
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Ignore;
 
@@ -287,7 +285,6 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
         return getValue(msgId, -1);
     }
 
-    @Nullable
     public final <T extends DataPoint> T getValue(long msgId, long seq) {
         try {
             Field field = getProperties().get(msgId);
@@ -320,7 +317,6 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
         return null;
     }
 
-    @Contract(value = "null -> null", pure = true)
     public static final <T> T getValue(Object value) {
         if (value == null) return null;
 
