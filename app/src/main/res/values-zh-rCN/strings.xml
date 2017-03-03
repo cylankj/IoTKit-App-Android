@@ -845,7 +845,7 @@
   <string name="getting">获取中&#8230;</string>
   <string name="has_copy">已复制</string>
   <string name="has_not_sdcard">未发现Micro SD卡</string>
-  <string name="help_url">https://yf.jfgou.com:8081/helps/zh&#8211;rCN.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/zh&#045;rCN.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/zh&#8211;rCN_doby.html</string>
   <string name="isStorageLow">Micro SD卡存储空间不足，无法下载。</string>
   <string name="is_connecting_video">正在连接设备</string>

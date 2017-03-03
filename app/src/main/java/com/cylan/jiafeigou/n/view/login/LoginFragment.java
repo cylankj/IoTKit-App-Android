@@ -222,7 +222,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         super.onStop();
         if (basePresenter != null) basePresenter.stop();
         if (lbLogin != null) lbLogin.cancelAnim();
-        clearSomeThing();
 //        if (verificationCodeLogic != null) verificationCodeLogic.stop();
     }
 
@@ -324,7 +323,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         ViewUtils.setChineseExclude(etLoginUsername, 65);
         ViewUtils.setChineseExclude(etLoginPwd, 12);
         ViewUtils.setChineseExclude(etRegisterInputBox, 11);
-        ViewUtils.setChineseExclude(etVerificationInput, 11);
+        ViewUtils.setChineseExclude(etVerificationInput, 6);
         rLayoutLoginToolbar.setBackAction(v -> getActivity().getSupportFragmentManager().popBackStack());
         tvAgreement.setText("《" + getString(R.string.TERM_OF_USE) + "》");
         if (getView() != null)
@@ -512,6 +511,14 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
+
+        boolean b = JConstant.PHONE_REG.matcher(etLoginUsername.getText()).find()
+                || JConstant.EMAIL_REG.matcher(etLoginUsername.getText()).find();
+        if (!b){
+            ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
+            return;
+        }
+
         LoginAccountBean login = new LoginAccountBean();
         login.userName = ViewUtils.getTextViewContent(etLoginUsername);
         login.pwd = ViewUtils.getTextViewContent(etLoginPwd);
@@ -603,7 +610,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             resetView();
             if (code == JError.ErrorAccountNotExist) {
                 //账号未注册
-                showSimpleDialog(getString(R.string.RET_EFORGETPASS_ACCOUNT_NOT_EXIST), " ", getString(R.string.OK), false);
+                ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
+//                showSimpleDialog(getString(R.string.RET_EFORGETPASS_ACCOUNT_NOT_EXIST), " ", getString(R.string.OK), false);
             } else if (code == JError.ErrorLoginInvalidPass) {
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
             } else if (code == 162) {
@@ -725,7 +733,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @OnTextChanged(R.id.et_verification_input)
     public void onRegisterVerificationCodeEtChange(CharSequence s, int start, int before, int count) {
         boolean isValidCode = TextUtils.isDigitsOnly(s) && s.length() == 6;
-        tvRegisterSubmit.setEnabled((!TextUtils.isEmpty(s)) && JConstant.PHONE_REG.matcher(etRegisterInputBox.getText().toString().trim()).find());
+        tvRegisterSubmit.setEnabled(isValidCode && JConstant.PHONE_REG.matcher(etRegisterInputBox.getText().toString().trim()).find());
     }
 
     /**
@@ -773,7 +781,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 是否已注册结果
-     *
      * @param callback
      */
     @Override
@@ -788,15 +795,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             }
             int codeLen = ViewUtils.getTextViewContent(etVerificationInput).length();
             boolean validCode = codeLen == JConstant.VALID_VERIFICATION_CODE_LEN;
-            if (fLayoutVerificationCodeInputBox.isShown() && validCode) {
-                //第二次检测账号是否注册返回执行获取校验验证码
-                if (TextUtils.equals(tempPhone, ViewUtils.getTextViewContent(etRegisterInputBox))) {
-                    verifyCode();
-                } else {
-                    ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
-                }
 
-            } else if (isRegetCode) {
+            if (isRegetCode) {
                 //重新获取验证码也要检测一下账号
                 if (verificationCodeLogic != null)
                     verificationCodeLogic.start();
@@ -804,6 +804,14 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     basePresenter.getCodeByPhone(ViewUtils.getTextViewContent(etRegisterInputBox));
                 tempPhone = ViewUtils.getTextViewContent(etRegisterInputBox);
                 isRegetCode = false;
+            } else if (fLayoutVerificationCodeInputBox.isShown() && validCode) {
+                //第二次检测账号是否注册返回执行获取校验验证码
+                if (TextUtils.equals(tempPhone, ViewUtils.getTextViewContent(etRegisterInputBox))) {
+                    verifyCode();
+                } else {
+                    ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+                }
+
             } else {
                 //第一次检测账号是否注册返回执行获取验证码
                 if (verificationCodeLogic == null)
@@ -821,14 +829,15 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         } else {
             ToastUtil.showToast(getString(R.string.RET_EREGISTER_PHONE_EXIST));
         }
+
     }
 
     /**
      * 验证码输入框
-     *
      * @param show
      */
     private void handleVerificationCodeBox(boolean show) {
+        etVerificationInput.setText("");
         fLayoutVerificationCodeInputBox.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
@@ -940,6 +949,12 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 }
             });
         }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        clearSomeThing();
     }
 
     /**

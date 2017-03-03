@@ -7,13 +7,11 @@
     android:background="@color/color_white"
     android:clickable="true">
 
-
     <FrameLayout
         android:id="@+id/fLayout_account_input_box"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y48"
         android:layout_marginTop="@dimen/y30">
-
 
         <EditText
             android:id="@+id/et_login_username"
