@@ -10,16 +10,11 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
-
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

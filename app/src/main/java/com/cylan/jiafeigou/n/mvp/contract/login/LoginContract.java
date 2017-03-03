@@ -86,6 +86,7 @@ public interface LoginContract {
 
         /**
          * 检测好友回调的结果
+         *
          * @param callback
          */
         void checkAccountResult(RxEvent.CheckRegsiterBack callback);
@@ -133,12 +134,14 @@ public interface LoginContract {
 
         /**
          * 检测账号是否已经注册
+         *
          * @param account
          */
         void checkAccountIsReg(String account);
 
         /**
          * 是否已注册的回调
+         *
          * @return
          */
         Subscription checkAccountBack();
@@ -150,6 +153,7 @@ public interface LoginContract {
 
         /**
          * 账号回显
+         *
          * @return
          */
         String getTempAccPwd();
@@ -157,18 +161,21 @@ public interface LoginContract {
 
         /**
          * 获取twiiter的授权
+         *
          * @param activity
          */
         void getTwitterAuthorize(Activity activity);
 
         /**
          * 获取Twitter的回调对象
+         *
          * @return
          */
         TwitterAuthClient getTwitterBack();
 
         /**
          * 获取Facebook的授权
+         *
          * @param activity
          */
         void getFaceBookAuthorize(Activity activity);
@@ -180,6 +187,7 @@ public interface LoginContract {
 
         /**
          * 获取facebook回调的对象
+         *
          * @return
          */
         CallbackManager getFaceBookBackObj();

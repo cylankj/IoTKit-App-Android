@@ -14,7 +14,7 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -66,9 +66,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private void fetchSdcardStatus() {
-        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         this.hasSdcard |= status != null && status.hasSdcard;
-        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET, null);
+        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET);
         deviceOnlineState = net != null && net.net != 0;
     }
 

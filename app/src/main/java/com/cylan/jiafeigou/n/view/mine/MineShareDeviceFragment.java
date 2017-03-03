@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
@@ -204,7 +203,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         adapter.setOnShareClickListener(new MineShareDeviceAdapter.OnShareClickListener() {
             @Override
             public void onShare(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item) {
-                if (NetUtils.getNetType(getContext()) == 0){
+                if (NetUtils.getNetType(getContext()) == 0) {
                     ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }

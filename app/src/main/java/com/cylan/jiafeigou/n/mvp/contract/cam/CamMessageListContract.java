@@ -17,6 +17,8 @@ public interface CamMessageListContract {
 
         void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList);
 
+        void onMessageBulkInsert(ArrayList<CamMessageBean> beanArrayList, int position);
+
         ArrayList<CamMessageBean> getList();
 
         /**

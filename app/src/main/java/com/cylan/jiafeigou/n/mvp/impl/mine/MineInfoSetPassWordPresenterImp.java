@@ -75,7 +75,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
                     public void call(String s) {
                         try {
                             int i = JfgCmdInsurance.getCmd().changePassword(account, oldPass, newPass);
-                            AppLogger.d("sendChangePassReq:"+i);
+                            AppLogger.d("sendChangePassReq:" + i);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

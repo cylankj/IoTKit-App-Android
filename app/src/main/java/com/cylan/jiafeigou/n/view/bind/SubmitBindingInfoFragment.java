@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;

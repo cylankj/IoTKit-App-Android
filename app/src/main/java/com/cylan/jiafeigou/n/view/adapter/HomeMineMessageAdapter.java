@@ -6,9 +6,7 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;

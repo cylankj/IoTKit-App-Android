@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
@@ -16,8 +15,9 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.HistoryDateFlatten;
@@ -34,7 +34,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
@@ -56,7 +55,6 @@ import rx.functions.Func2;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -74,7 +72,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private ArrayList<JFGVideo> simpleCache = new ArrayList<>();
     private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
     private IData historyDataProvider;
-    private String uuid;
     private int stopReason = JError.STOP_MAUNALLY;//手动断开
     private CompositeSubscription liveSubscription;
 
@@ -84,9 +81,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
 
     public CamLivePresenterImpl(CamLiveContract.View view, String uuid) {
-        super(view);
+        super(view, uuid);
         view.setPresenter(this);
-        this.uuid = uuid;
         feedRtcp.setMonitorListener(this);
     }
 
@@ -472,9 +468,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public boolean needShowHistoryWheelView() {
-        DpMsgDefine.DPNet net = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, null);
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-        DpMsgDefine.DPSdStatus sdStatus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         boolean show = JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0
                 && device != null && TextUtils.isEmpty(device.shareAccount)
@@ -484,19 +480,20 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public void updateInfoReq(Object value, long id) {
+    public <T extends DataPoint> void updateInfoReq(T value, long id) {
         Observable.just(value)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
-                    BaseValue baseValue = new BaseValue();
-                    baseValue.setId(id);
-                    baseValue.setVersion(System.currentTimeMillis());
-                    baseValue.setValue(o);
-                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                    try {
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                    } catch (IllegalAccessException e) {
+                        AppLogger.e("err: " + e.getLocalizedMessage());
+                    }
                 }, (Throwable throwable) -> {
                     AppLogger.e(throwable.getLocalizedMessage());
                 });
     }
+
 
     @Override
     public void startCountForDismissPop() {
@@ -554,16 +551,13 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
      * @return
      */
     private Subscription robotDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DataPoolUpdate.class)
-                .filter((RxEvent.DataPoolUpdate jfgRobotSyncData) -> (
+        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
+                .filter((RxEvent.ParseResponseCompleted jfgRobotSyncData) -> (
                         getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.DataPoolUpdate update) -> {
-                    if (update.id == ID_508_CAMERA_STANDBY_FLAG) {
-                        boolean flag = MiscUtils.cast(update.value.getValue(), false);
-                        getView().onDeviceStandBy(flag);
-                    }
+                .map((RxEvent.ParseResponseCompleted update) -> {
+                    getView().onDeviceInfoChanged();
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
@@ -591,9 +585,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     protected String[] registerNetworkAction() {
-        return new String[]{
-                ConnectivityManager.CONNECTIVITY_ACTION
-        };
+        return new String[]{ConnectivityManager.CONNECTIVITY_ACTION};
     }
 
     @Override

@@ -7,9 +7,6 @@ import android.support.annotation.UiThread;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
-import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
-
-import java.util.ArrayList;
 
 import rx.Subscription;
 
@@ -99,12 +96,14 @@ public interface HomeMineContract {
 
         /**
          * 未读消息的回调
+         *
          * @return
          */
         Subscription unReadMesgBack();
 
         /**
          * 是否有未读消息
+         *
          * @return
          */
         boolean hasUnReadMesg();

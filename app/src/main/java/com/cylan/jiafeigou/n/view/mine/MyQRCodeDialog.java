@@ -22,8 +22,6 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
-import java.io.Serializable;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -78,11 +76,11 @@ public class MyQRCodeDialog extends BaseDialog {
     @Override
     public void onResume() {
         super.onResume();
-        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(jfgaccount.getAccount(),ViewUtils.dp2px(137),ViewUtils.dp2px(137),null));
+        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(jfgaccount.getAccount(), ViewUtils.dp2px(137), ViewUtils.dp2px(137), null));
     }
 
     private void initView() {
-        if (isopenlogin){
+        if (isopenlogin) {
             tvUserAlias.setText(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
             Glide.with(getContext()).load(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON))
                     .asBitmap()

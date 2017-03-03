@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.utils;
 
-import android.app.ActivityManager;
-import android.app.ActivityManager.RunningTaskInfo;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -11,13 +9,9 @@ import android.content.pm.PackageManager.NameNotFoundException;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.jiafeigou.n.base.BaseApplication;
-
 import java.io.File;
-import java.util.List;
 
 /**
  * PackageUtils

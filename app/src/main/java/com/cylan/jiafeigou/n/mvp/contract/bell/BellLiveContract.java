@@ -15,7 +15,6 @@ public interface BellLiveContract {
         void onLiveStop(int errId);
 
 
-
     }
 
     interface Presenter extends CallablePresenter {

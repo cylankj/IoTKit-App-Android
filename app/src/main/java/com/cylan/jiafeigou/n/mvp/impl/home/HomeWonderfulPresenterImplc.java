@@ -334,6 +334,7 @@ public class HomeWonderfulPresenterImplc extends BasePresenter<HomeWonderfulCont
                     }
                 });
     }
+
     public void queryTimeLine(long start) {
         long startTime = TimeUtils.getSpecificDayStartTime(start);
         JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, startTime);

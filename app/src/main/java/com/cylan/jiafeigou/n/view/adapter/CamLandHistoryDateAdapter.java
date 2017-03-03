@@ -6,9 +6,9 @@ import android.util.Log;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.Collections;
 import java.util.List;

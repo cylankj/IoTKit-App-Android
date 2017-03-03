@@ -7,7 +7,7 @@ import java.io.Serializable;
  * 创建时间：2016/10/8
  * 描述：
  */
-public class CloudLiveBaseBean implements Serializable{
+public class CloudLiveBaseBean implements Serializable {
 
     public void setType(int type) {
         this.type = type;

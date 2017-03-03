@@ -20,7 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -101,10 +101,10 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-                    String account = GlobalDataProxy.getInstance().getJfgAccount().getAccount();
-                    if (getInputNum().equals(account)){
+                    String account = DataSourceManager.getInstance().getJFGAccount().getAccount();
+                    if (getInputNum().equals(account)) {
                         ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
-                    }else {
+                    } else {
                         showFindLoading();
                         presenter.checkFriendAccount(getInputNum());
                     }
@@ -139,6 +139,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
 
     /**
      * 用来点击空白处隐藏键盘
+     *
      * @param view
      */
     public void addOnTouchListener(android.view.View view) {

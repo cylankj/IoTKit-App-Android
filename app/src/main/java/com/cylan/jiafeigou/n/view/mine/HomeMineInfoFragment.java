@@ -341,7 +341,8 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                         .into(new BitmapImageViewTarget(userImageHead) {
                             @Override
                             protected void setResource(Bitmap resource) {
-                                if (resource == null) return;
+                                if (resource == null || getContext() == null || getContext().getResources() == null)
+                                    return;
                                 RoundedBitmapDrawable circularBitmapDrawable =
                                         RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
                                 circularBitmapDrawable.setCircular(true);
@@ -527,7 +528,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void jump2LoginFragment() {
         //账号和密码
         try {
-            if (argumentData != null){
+            if (argumentData != null) {
                 String hex = AESUtil.encrypt(argumentData.getAccount() + "|" + "");
                 FileUtils.saveDataToFile(getView().getContext(), hex);
             }

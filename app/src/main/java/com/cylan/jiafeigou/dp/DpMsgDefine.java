@@ -763,6 +763,11 @@ public class DpMsgDefine {
         public DPPrimary() {
         }
 
+        public DPPrimary(Object o) {
+            this.value = (T) o;
+        }
+
+
         @Override
         public T $() {
             return (T) ((DPPrimary) super.$()).value;
@@ -811,6 +816,10 @@ public class DpMsgDefine {
         }
 
         public DPSet() {
+        }
+
+        public DPSet(Object o) {
+            this.value = (TreeSet<T>) o;
         }
 
         protected DPSet(Parcel in) {
@@ -972,7 +981,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPMineMesg{
+    public static final class DPMineMesg {
         @Index(0)
         public String cid;
         @Index(1)
@@ -982,9 +991,10 @@ public class DpMsgDefine {
         @Index(3)
         public String sn;
 
-        public DPMineMesg(){}
+        public DPMineMesg() {
+        }
 
-        public DPMineMesg(String cid, boolean isDone, String account,String sn) {
+        public DPMineMesg(String cid, boolean isDone, String account, String sn) {
             this.cid = cid;
             this.isDone = isDone;
             this.account = account;
@@ -993,13 +1003,14 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPSystemMesg{
+    public static final class DPSystemMesg {
         @Index(0)
         public String title;
         @Index(1)
         public String content;
 
-        public DPSystemMesg(){}
+        public DPSystemMesg() {
+        }
 
         public DPSystemMesg(String title, String content) {
             this.title = title;

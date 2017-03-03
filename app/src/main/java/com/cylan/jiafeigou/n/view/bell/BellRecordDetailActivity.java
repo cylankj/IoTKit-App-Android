@@ -222,9 +222,9 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             }
         }).subscribeOn(Schedulers.io())
                 .timeout(10, TimeUnit.SECONDS)
-                .flatMap(req -> RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class).filter(rsp -> req == (int) rsp.seq).first())
+                .flatMap(req -> RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearRsp.class).filter(rsp -> req == (int) rsp.seq).first())
                 .map(rsp -> {
-                    int code = rsp.rets.get(0).ret;
+                    int code = rsp.arrayList.get(0).ret;
                     if (code != 0) throw new RxEvent.ErrorRsp(code);
                     long result = -1;
                     try {

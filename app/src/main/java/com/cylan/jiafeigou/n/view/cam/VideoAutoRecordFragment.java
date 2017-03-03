@@ -14,7 +14,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -87,22 +87,23 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (JFGRules.isFreeCam(GlobalDataProxy.getInstance().fetch(uuid))) {
+        if (JFGRules.isFreeCam(DataSourceManager.getInstance().getJFGDevice(uuid))) {
             rb24Hours.setVisibility(View.GONE);
             view.findViewById(R.id.lLayout_mode_24_hours).setVisibility(View.GONE);
         }
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
-        int focus = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
-        oldOption = focus;
-        rbMotion.setChecked(focus == 0);
-        rb24Hours.setChecked(focus == 1);
-        rbNever.setChecked(focus == 2);
+        DpMsgDefine.DPPrimary<Integer> focus = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+        oldOption = focus.$();
+        rbMotion.setChecked(focus.$() == 0);
+        rb24Hours.setChecked(focus.$() == 1);
+        rbNever.setChecked(focus.$() == 2);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if (oldOption != GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0)) {
+        DpMsgDefine.DPPrimary<Integer> auto = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+        if (oldOption != auto.$()) {
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
         }
         if (callBack != null)
@@ -118,7 +119,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     @OnClick({R.id.lLayout_mode_motion, R.id.lLayout_mode_24_hours, R.id.lLayout_mode_never})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.lLayout_mode_motion:
+            case R.id.lLayout_mode_motion: {
                 if (!alarmDisable()) {
                     openAlarm(0);
                     return;
@@ -128,9 +129,12 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     return;
                 }
                 rbMotion.setChecked(true);
-                basePresenter.updateInfoReq(0, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-                break;
-            case R.id.lLayout_mode_24_hours:
+                DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
+                flag.value = 0;
+                basePresenter.updateInfoReq(flag, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+            }
+            break;
+            case R.id.lLayout_mode_24_hours: {
                 if (!alarmDisable()) {
                     openAlarm(1);
                     return;
@@ -140,12 +144,18 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     return;
                 }
                 rb24Hours.setChecked(true);
-                basePresenter.updateInfoReq(1, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-                break;
-            case R.id.lLayout_mode_never:
+                DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
+                flag.value = 1;
+                basePresenter.updateInfoReq(flag, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+            }
+            break;
+            case R.id.lLayout_mode_never: {
                 rbNever.setChecked(true);
-                basePresenter.updateInfoReq(2, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-                break;
+                DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
+                flag.value = 2;
+                basePresenter.updateInfoReq(flag, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+            }
+            break;
         }
     }
 
@@ -157,24 +167,29 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                         ToastUtil.showToast(getString(R.string.Tap1_Camera_NoSDCardTips));
                         return;
                     }
-                    basePresenter.updateInfoReq(true, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                    DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
+                    wFlag.value = true;
+                    basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     if (index == 1)
                         rb24Hours.setChecked(true);
                     else rbMotion.setChecked(true);
-                    basePresenter.updateInfoReq(index, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
+                    DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
+                    flag.value = index;
+                    basePresenter.updateInfoReq(flag, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
                 })
                 .setNegativeButton(getString(R.string.CANCEL), null)
                 .show();
     }
 
     private boolean alarmDisable() {
-        return GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        DpMsgDefine.DPPrimary<Boolean> alarm = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        return alarm.$();
     }
 
     private boolean hasSdcard() {
-        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid,
-                DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid,
+                DpMsgMap.ID_204_SDCARD_STORAGE);
         return status.hasSdcard && status.err == 0;
     }
 }

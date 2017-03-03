@@ -78,7 +78,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     }
 
     private void loadBigImage(String url) {
-        if (TextUtils.isEmpty(url)){
+        if (TextUtils.isEmpty(url)) {
             return;
         }
         showLoadImageProgress();
@@ -120,7 +120,6 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     public void showLoadImageProgress() {
         LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
-
 
 
     @Override

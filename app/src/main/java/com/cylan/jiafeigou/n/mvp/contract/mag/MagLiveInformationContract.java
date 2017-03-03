@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.mag;
 
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -28,7 +29,7 @@ public interface MagLiveInformationContract {
          * @param value
          * @param id
          */
-        void saveMagInfoBean(Object value, long id);
+        public <T extends DataPoint> void updateInfoReq(T value, long id);
     }
 
 }

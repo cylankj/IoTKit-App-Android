@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
-import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -26,20 +27,11 @@ public interface CamInfoContract {
     }
 
     interface Presenter extends BasePresenter {
-//        /**
-//         * 刷新BeanCamInfo
-//         *
-//         * @param info
-//         */
-//        void saveCamInfoBean(BeanCamInfo info, int id);
-//
-//        BeanCamInfo getBeanCamInfo();
-
         /**
          * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
          * @param id
          */
-        void updateInfoReq(Object value, long id);
+        <T extends DataPoint> void updateInfoReq(T value, long id);
 
         /**
          * 检测是否有新固件
@@ -65,15 +57,7 @@ public interface CamInfoContract {
          */
         Subscription clearSdcardReqBack();
 
-        /**
-         * 清空结果回调
-         *
-         * @return
-         */
-        Subscription clearSdcardResult();
 
-        Subscription clearSdcardBack();
-
-        void updateAlias(JFGDevice device);
+        void updateAlias(JFGDPDevice device);
     }
 }

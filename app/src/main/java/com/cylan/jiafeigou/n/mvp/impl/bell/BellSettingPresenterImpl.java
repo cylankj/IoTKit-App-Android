@@ -2,9 +2,9 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
@@ -64,7 +64,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     @Override
     public void unbindDevice() {
         post(() -> {
-                    GlobalDataProxy.getInstance().deleteJFGDevice(mUUID);
+                    DataSourceManager.getInstance().delJFGDevice(mUUID);
                     AppLogger.i("unbind uuid: " + mUUID);
                 }
         );

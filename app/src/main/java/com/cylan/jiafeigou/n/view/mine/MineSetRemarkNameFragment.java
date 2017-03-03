@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
@@ -140,7 +139,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
 
     @Override
     public String getEditName() {
-        return etMineSetRemarknameNewName.getText().toString().trim().replace(" ","");
+        return etMineSetRemarknameNewName.getText().toString().trim().replace(" ", "");
     }
 
     /**
@@ -158,7 +157,7 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
      */
     @Override
     public void showFinishResult(RxEvent.SetFriendMarkNameBack getFriendInfoCall) {
-        if (getFriendInfoCall.jfgResult.code == JError.ErrorOK ) {
+        if (getFriendInfoCall.jfgResult.code == JError.ErrorOK) {
             ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
             if (listener != null) {
                 listener.remarkNameChange(getEditName());

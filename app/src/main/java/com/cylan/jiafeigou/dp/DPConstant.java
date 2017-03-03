@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.dp;
 
 import com.cylan.ext.annotations.DPMessage;
 import com.cylan.ext.annotations.DpAnnotation;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import static com.cylan.ext.annotations.DPTarget.ACCOUNT;
 import static com.cylan.ext.annotations.DPTarget.CAMERA;

@@ -19,8 +19,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.engine.DaemonService;
@@ -69,9 +69,9 @@ public class SmartcallActivity extends NeedLoginActivity
         ButterKnife.bind(this);
         initPresenter();
         fullScreen(true);
-        if (!getIntent().getBooleanExtra("from_log_out", false)){
+        if (!getIntent().getBooleanExtra("from_log_out", false)) {
             if (presenter != null) presenter.start();
-        }else {
+        } else {
             splashOver();
         }
 
@@ -151,7 +151,7 @@ public class SmartcallActivity extends NeedLoginActivity
      * pre-登陆
      */
     private void initLoginPage() {
-        int loginState = GlobalDataProxy.getInstance().getLoginState();
+        int loginState = DataSourceManager.getInstance().getLoginState();
         if (loginState == LogState.STATE_ACCOUNT_ON) {        //进去主页 home page
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 startActivity(new Intent(this, NewHomeActivity.class),

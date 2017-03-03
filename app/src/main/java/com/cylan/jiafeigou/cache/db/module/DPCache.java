@@ -2,10 +2,10 @@ package com.cylan.jiafeigou.cache.db.module;
 
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 /**
  * Created by yanzhendong on 2017/2/27.
@@ -34,8 +34,8 @@ public class DPCache implements IDPEntity {
     private transient DPCacheDao myDao;
 
     @Generated(hash = 1364992632)
-    public DPCache(Long id, String account, String server, String uuid,
-                   Long version, Integer msgId, byte[] bytes, String tag, String state) {
+    public DPCache(Long id, String account, String server, String uuid, Long version,
+                   Integer msgId, byte[] bytes, String tag, String state) {
         this.id = id;
         this.account = account;
         this.server = server;

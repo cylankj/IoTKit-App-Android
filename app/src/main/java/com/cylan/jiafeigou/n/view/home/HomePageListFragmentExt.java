@@ -28,9 +28,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -269,7 +270,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-        if (!GlobalDataProxy.getInstance().isOnline()) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
             if (RxBus.getCacheInstance().hasObservers())
                 RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
             return;
@@ -408,9 +409,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             return;
         }
         String uuid = homePageListAdapter.getItem(position);
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device == null) {
-            Log.d("CYLAN_TAG", "devices is null:" + GlobalDataProxy.getInstance().fetchAll());
+            Log.d("CYLAN_TAG", "devices is null:" + DataSourceManager.getInstance().getAllJFGDevice());
         }
         int pid = device == null ? 0 : device.pid;
         if (uuid != null) {

@@ -6,7 +6,7 @@ import android.util.Log;
 import com.cylan.ex.JfgException;
 import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
@@ -157,7 +157,7 @@ public class SimpleBindFlow extends AFullBind {
             AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));
             AppLogger.i(BIND_TAG + "setLanguage: " + new Gson().toJson(setLanguage));
             //增加绑定随机数.
-            bindCode = GlobalDataProxy.getInstance().getJfgAccount().getAccount() + System.currentTimeMillis();
+            bindCode = DataSourceManager.getInstance().getJFGAccount().getAccount() + System.currentTimeMillis();
             JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
                     udpDevicePortrait.uuid, udpDevicePortrait.mac, bindCode);
             try {

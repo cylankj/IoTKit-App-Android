@@ -5,14 +5,13 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGDevice;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.BaseValue;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGCameraDevice;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -36,7 +35,7 @@ import rx.schedulers.Schedulers;
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
 
-    private String uuid;
+    private JFGCameraDevice device;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
             R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
@@ -47,9 +46,9 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     };
 
     public CamSettingPresenterImpl(CamSettingContract.View view, String uuid) {
-        super(view);
+        super(view, uuid);
         view.setPresenter(this);
-        this.uuid = uuid;
+        device = DataSourceManager.getInstance().getJFGDevice(uuid);
     }
 
     @Override
@@ -82,17 +81,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public void start() {
         super.start();
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-        if (device != null && TextUtils.isEmpty(device.shareAccount)) {
-            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_201_NET));
-            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY));
-            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_209_LED_INDICATOR));
-            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE));
-            getView().onInfoUpdate(GlobalDataProxy.getInstance().fetchLocal(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG));
-        } else {
-            //分享设备
-            getView().isSharedDevice();
-        }
+        JFGCameraDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        getView().deviceUpdate(device);
     }
 
     /**
@@ -126,13 +116,13 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
      * @return
      */
     private Subscription robotDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DataPoolUpdate.class)
-                .filter((RxEvent.DataPoolUpdate jfgRobotSyncData) -> (
+        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
+                .filter((RxEvent.ParseResponseCompleted jfgRobotSyncData) -> (
                         getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.DataPoolUpdate update) -> {
-                    getView().onInfoUpdate(update.value);
+                .map((RxEvent.ParseResponseCompleted update) -> {
+                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
@@ -142,25 +132,25 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public String getDetailsSubTitle(Context context) {
         //sd卡状态
-        DpMsgDefine.DPSdStatus status = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, null);
+        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         if (status != null) {
             if (status.hasSdcard && status.err != 0) {
                 //sd初始化失败时候显示
                 return context.getString(R.string.SD_INIT_ERR, status.err);
             }
         }
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         return device != null && TextUtils.isEmpty(device.alias) ?
                 device.uuid : (device != null ? device.alias : "");
     }
 
     @Override
     public String getAlarmSubTitle(Context context) {
-        boolean flag = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        if (!flag) {
+        DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, (long) DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        if (!flag.$()) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);
         }
-        DpMsgDefine.DPAlarmInfo info = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO, null);
+        DpMsgDefine.DPAlarmInfo info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
         int day = info == null ? 0 : info.day;
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < 7; i++) {
@@ -187,33 +177,33 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public String getAutoRecordTitle(Context context) {
-        int deviceAutoVideoRecord = GlobalDataProxy.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
+        int deviceAutoVideoRecord = device.device_auto_video_record.$();
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
         }
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
     }
 
-    public static String parse2Time(int value) {
-        return String.format(Locale.getDefault(), "%02d", value >> 8)
-                + String.format(Locale.getDefault(), ":%02d", (((byte) value << 8) >> 8));
-    }
-
     @Override
-    public void updateInfoReq(Object value, long id) {
+    public <T extends DataPoint> void updateInfoReq(T value, long id) {
         Observable.just(value)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     AppLogger.i("save start: " + id + " " + value);
-                    BaseValue baseValue = new BaseValue();
-                    baseValue.setId(id);
-                    baseValue.setVersion(System.currentTimeMillis());
-                    baseValue.setValue(o);
-                    GlobalDataProxy.getInstance().update(uuid, baseValue, true);
+                    try {
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                    } catch (IllegalAccessException e) {
+                        AppLogger.e("err:" + e.getLocalizedMessage());
+                    }
                     AppLogger.i("save end: " + id + " " + value);
                 }, (Throwable throwable) -> {
                     AppLogger.e(throwable.getLocalizedMessage());
                 });
+    }
+
+    public static String parse2Time(int value) {
+        return String.format(Locale.getDefault(), "%02d", value >> 8)
+                + String.format(Locale.getDefault(), ":%02d", (((byte) value << 8) >> 8));
     }
 
     private long time = 0;
@@ -223,13 +213,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map((Object o) -> {
-                    boolean result = GlobalDataProxy.getInstance().remove(uuid);
-                    try {
-                        JfgCmdInsurance.getCmd().unBindDevice(uuid);
-                        GlobalDataProxy.getInstance().deleteJFGDevice(uuid);
-                    } catch (JfgException e) {
-                        AppLogger.e("" + e.getLocalizedMessage());
-                    }
+                    boolean result = DataSourceManager.getInstance().delJFGDevice(uuid);
                     AppLogger.i("unbind uuid: " + uuid + " " + result);
                     return null;
                 })

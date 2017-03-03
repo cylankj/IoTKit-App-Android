@@ -95,7 +95,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetN
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getView() != null) {
                             jfgAccount = getUserInfo.jfgAccount;
-                            if (isSetAlais){
+                            if (isSetAlais) {
                                 getView().handlerResult(getUserInfo);
                                 isSetAlais = false;
                             }

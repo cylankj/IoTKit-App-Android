@@ -176,7 +176,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             if (smsCodeResult.error == JError.ErrorOK) {
                                 AppLogger.d("getCheckCodeCallback" + smsCodeResult.token);
                                 PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
-                            }else {
+                            } else {
                                 getView().getSmsCodeResult(smsCodeResult.error);
                             }
                         }
@@ -186,6 +186,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     /**
      * 获取到用户信息
+     *
      * @return
      */
     @Override

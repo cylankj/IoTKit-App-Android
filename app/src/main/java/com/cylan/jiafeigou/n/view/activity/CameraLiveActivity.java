@@ -15,11 +15,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.cylan.entity.jniCall.JFGDevice;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
-import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
@@ -180,13 +178,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         @Override
         public void onPageSelected(int position) {
             if (position == 1) {
-                try {
-                    JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
-                    if (device != null && TextUtils.isEmpty(device.shareAccount))//被分享用户,不操作.
-                        GlobalDataProxy.getInstance().markAsRead(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG);
-                } catch (JfgException e) {
-                    AppLogger.e("err: " + e.getLocalizedMessage());
-                }
+                AppLogger.e("未实现");
             }
         }
 
@@ -223,7 +215,7 @@ class SimpleAdapterPager extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        JFGDevice device = GlobalDataProxy.getInstance().fetch(uuid);
+        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         String shareAccount = device == null ? "" : device.shareAccount;
         return !TextUtils.isEmpty(shareAccount) ? 1 : 2;
     }

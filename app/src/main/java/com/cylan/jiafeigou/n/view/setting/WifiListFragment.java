@@ -32,7 +32,6 @@ import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

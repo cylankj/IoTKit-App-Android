@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
@@ -131,7 +130,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 autoLogin();
                 break;
             default:
-                ToastUtil.showToast("注册失败:"+register.code);
+                ToastUtil.showToast("注册失败:" + register.code);
         }
         if (register.code != JError.ErrorOK) {
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT, "");

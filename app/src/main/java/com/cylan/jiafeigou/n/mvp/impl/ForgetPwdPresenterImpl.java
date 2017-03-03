@@ -246,7 +246,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .subscribe(new Action1<RxEvent.CheckRegsiterBack>() {
                     @Override
                     public void call(RxEvent.CheckRegsiterBack checkRegsiterBack) {
-                        if (checkRegsiterBack != null && getView()!= null)
+                        if (checkRegsiterBack != null && getView() != null)
                             getView().checkIsRegReuslt(checkRegsiterBack.jfgResult.code);
                     }
                 });

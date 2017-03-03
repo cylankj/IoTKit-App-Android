@@ -68,7 +68,7 @@ public class AsyncStartDownload extends Thread {
             case TaskStates.READY:
             case TaskStates.PAUSED:
                 // -->-->if it's not resumable
-                //          * fetch chunks
+                //          * getJFGDevice chunks
                 //          * delete it's chunk
                 //          * delete old file
                 //          * insert new chunk
