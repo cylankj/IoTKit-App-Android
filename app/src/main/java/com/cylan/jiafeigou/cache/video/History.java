@@ -2,39 +2,35 @@ package com.cylan.jiafeigou.cache.video;
 
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGVideo;
-import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
-
-import rx.Subscription;
-import rx.schedulers.Schedulers;
 
 /**
  * 历史录像数据管理中心
  * Created by cylan-hunt on 16-12-6.
  */
 
-public class History implements IHistory {
+public class History {
 
     private volatile static History history;
     /**
      * 数据集,不实现Lru逻辑
      */
-    private ArrayList<JFGVideo> dataList;
-    private final Object object = new Object();
+
+    private HashMap<String, ArrayList<JFGVideo>> historyMap = new HashMap<>();
 
     public static History getHistory() {
         if (history == null)
             history = new History();
         return history;
     }
+
 
     private History() {
 
@@ -45,56 +41,29 @@ public class History implements IHistory {
      *
      * @return
      */
-    private Subscription onDataList() {
-        return RxBus.getCacheInstance().toObservable(JFGHistoryVideo.class)
-                .subscribeOn(Schedulers.computation())
-                .map((JFGHistoryVideo jfgHistoryVideo) -> (jfgHistoryVideo.list))
-                .map((ArrayList<JFGVideo> list) -> {
-                    synchronized (object) {
-                        if (dataList == null)
-                            dataList = new ArrayList<>();
-                        dataList.addAll(list);
-                        dataList = new ArrayList<>(new HashSet<>(dataList));
-                        Collections.sort(dataList);
-                        AppLogger.i(String.format(IHistory, dataList.size()));
-                    }
-                    return null;
-                })
-                .retry(new RxHelper.ExceptionFun<>("onDataList"))
-                .subscribe();
+
+    public void cacheHistoryDataList(JFGHistoryVideo historyVideo) {
+        if (historyVideo == null || historyVideo.list == null || historyVideo.list.size() == 0)
+            return;
+        long time = System.currentTimeMillis();
+        String uuid = historyVideo.list.get(0).peer;
+        ArrayList<JFGVideo> list = historyMap.get(uuid);
+        if (list == null)
+            list = new ArrayList<>();
+        list.addAll(historyVideo.list);
+        list = new ArrayList<>(new HashSet<>(list));
+        Collections.sort(list);
+        AppLogger.d("get historyList: " + uuid + (System.currentTimeMillis() - time));
+        RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(uuid));
     }
 
-    /**
-     * 查询历史数据
-     *
-     * @return
-     */
-    private Subscription onQueryDataList() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoReq.class)
-                .subscribeOn(Schedulers.newThread())
-                .map((RxEvent.JFGHistoryVideoReq jfgHistoryVideoReq) -> {
-                    try {
-                        JfgCmdInsurance.getCmd().getVideoList(jfgHistoryVideoReq.uuid);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
-                    AppLogger.i(String.format(IHistory, jfgHistoryVideoReq.uuid));
-                    return null;
-                })
-                .retry(new RxHelper.ExceptionFun<>("onQueryDataList"))
-                .subscribe();
-    }
-
-    @Override
     public void clear() {
-        if (dataList != null)
-            dataList.clear();
+        historyMap.clear();
         history = null;
     }
 
-    @Override
-    public Subscription[] register() {
-        return new Subscription[]{onDataList(), onQueryDataList()};
+    public ArrayList<JFGVideo> getHistoryList(String uuid) {
+        return historyMap.get(uuid);
     }
 
 }

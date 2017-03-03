@@ -56,24 +56,33 @@ public class MiscUtils {
                 + String.format(Locale.getDefault(), ":%02d", (((byte) value << 8) >> 8));
     }
 
-    public static String getBit(int flow) {
-        int factor = flow / 1024;
-        if (factor >= 1024) {
-            return "GB";
+    public static String getByteFromBitRate(long bitRate) {
+        bitRate = bitRate / 8;
+        return getResult(bitRate);
+    }
+
+    private static String getResult(long byteData) {
+        if (byteData < 1024)
+            return byteData + "K/s";
+        if (byteData >= 1024 && byteData < 1024 * 1024) {
+            return (byteData >>> 10) + "M/s";
         }
-        if (factor >= 1) {
-            return "Mb";
+        if (byteData >= 1024 * 1024 && byteData < 1024 * 1024 * 1024) {
+            return (byteData >>> 20) + "G/s";
         }
-        return "Kb";
+        if (byteData >= 1024 * 1024 * 1024 && byteData < 1024 * 1024 * 1024 * 1024L) {
+            return (byteData >>> 30) + "T/s";
+        }
+        return "";
     }
 
 //    public static void main(String[] args) {
-//        System.out.println(getBit(1024 * 1024 + 1));
-//        System.out.println(getBit(1024 * 1024));
-//        System.out.println(getBit(1024 * 1024 - 1));
-//        System.out.println(getBit(1025));
-//        System.out.println(getBit(1024));
-//        System.out.println(getBit(1023));
+//        System.out.println(getResult(1024 * 1024 + 1));
+//        System.out.println(getResult(1024 * 1024));
+//        System.out.println(getResult(1024 * 1024 - 1));
+//        System.out.println(getResult(1025));
+//        System.out.println(getResult(1024));
+//        System.out.println(getResult(1023));
 //        System.out.println(getCount(1));
 //        System.out.println(getCount(1));
 //        System.out.println(getCount(1));
@@ -85,7 +94,7 @@ public class MiscUtils {
         for (int i = 0; i < 3; i++) {
             if ((sum >> i & 0x01) == 1) count++;
         }
-        return count;
+        return count == 0 ? 1 : count;
     }
 
     @SuppressWarnings("unchecked")

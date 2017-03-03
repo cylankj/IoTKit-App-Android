@@ -45,8 +45,11 @@ import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
+import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -62,7 +65,6 @@ import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -187,7 +189,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setLiveAction((ILiveControl) vs_control.inflate());
         camLiveController.setCamLiveControlLayer(swCamLiveControlLayer);
         camLiveController.setScreenZoomer(imgVCamZoomToFullScreen);
-        camLiveController.setPortSafeSetter(portFlipLayout);
         camLiveController.setPortLiveTimeSetter(liveTimeLayout);
         camLiveController.setActivity(getActivity());
         liveListener = camLiveController.getLiveStateListener();
@@ -213,6 +214,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             }
             onDeviceInfoChanged();
         }
+        camLiveController.setPortSafeSetter(portFlipLayout);
     }
 
     @Override
@@ -322,9 +324,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onDeviceInfoChanged() {
         DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
-        boolean flag = wFlag.$();
+        boolean flag = wFlag.value;
         fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
-        camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
+        if (flag)
+            camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
+        //安全防护状态。
         showFloatFlowView(false, null);
         //进入待机模式
         View v = fLayoutCamLiveView.findViewById("showSceneView".hashCode());
@@ -386,11 +390,12 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        boolean port = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        if (!port) {
             // 加入横屏要处理的代码
             fLayoutLiveBottomHandleBar.setVisibility(View.GONE);
             fLayoutCamLiveMenu.setVisibility(View.GONE);
-        } else if (this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else {
             // 加入竖屏要处理的代码
             fLayoutCamLiveMenu.setVisibility(View.VISIBLE);
             fLayoutLiveBottomHandleBar.setVisibility(View.VISIBLE);
@@ -398,6 +403,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.notifyOrientationChange(this.getResources().getConfiguration().orientation);
         AppLogger.i("onConfigurationChanged");
         updateVideoViewLayoutParameters(null);
+        if (tvFlowRef != null && tvFlowRef.get() != null)
+            ViewUtils.setMargins(tvFlowRef.get(), 0, (int) getResources().getDimension(port ? R.dimen.x14 : R.dimen.x54),
+                    (int) getResources().getDimension(R.dimen.x14), 0);
     }
 
     /**
@@ -586,10 +594,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
-                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, "出错了");
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NO_NETWORK_2));
                 break;
             case JFGRules.PlayErr.ERR_LOW_FRAME_RATE:
-                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, "\"帧率太低,不足以播放,重试\"");
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.GLOBAL_NO_NETWORK));
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
             case JError.ErrorVideoPeerNotExist:
@@ -599,7 +607,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             case JError.ErrorVideoPeerInConnect:
                 //正在直播...
                 ToastUtil.showToast(getString(R.string.CONNECTING));
-                camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
                 break;
             case JError.STOP_MAUNALLY:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
@@ -608,7 +616,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NETWORK_TIMEOUT));
                 break;
             default:
-                camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.GLOBAL_NO_NETWORK));
                 break;
         }
         if (liveListener != null) liveListener.liveStateChange();
@@ -639,6 +647,17 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                             .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 2))
                             .into(view);
                 }
+            }, v -> {
+                roundCardPopup.dismiss();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                Bundle bundle = new Bundle();
+                bundle.putByteArray(JConstant.KEY_SHARE_ELEMENT_BYTE, byteArray);
+                NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
+                ActivityUtils.addFragmentSlideInFromRight(getFragmentManager(), fragment,
+                        android.R.id.content);
+                fragment.setCallBack(t -> getFragmentManager().popBackStack());
             });
             roundCardPopup.showOnAnchor(imgVCamTriggerCapture, RelativePopupWindow.VerticalPosition.ABOVE, RelativePopupWindow.HorizontalPosition.CENTER);
             basePresenter.startCountForDismissPop();
@@ -682,7 +701,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onRtcp(JFGMsgVideoRtcp rtcp) {
-        String content = String.format(Locale.getDefault(), "%sKb/s", rtcp.bitRate);
+        String content = MiscUtils.getByteFromBitRate(rtcp.bitRate);
         showFloatFlowView(true, content);
         if (!basePresenter.isShareDevice())
             camLiveController.setLiveTime(rtcp.timestamp == 0 ? System.currentTimeMillis() : rtcp.timestamp * 1000L);

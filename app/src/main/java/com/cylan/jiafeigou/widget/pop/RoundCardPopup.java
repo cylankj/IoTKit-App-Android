@@ -22,8 +22,9 @@ import com.cylan.jiafeigou.R;
 public class RoundCardPopup extends RelativePopupWindow {
     private ShowFinishListener showFinishListener;
 
-    public RoundCardPopup(Context context, ShowFinishListener showFinishListener) {
-        setContentView(LayoutInflater.from(context).inflate(R.layout.layout_capture_popup, null));
+    public RoundCardPopup(Context context, ShowFinishListener showFinishListener, View.OnClickListener clickListener) {
+        View view = LayoutInflater.from(context).inflate(R.layout.layout_capture_popup, null);
+        setContentView(view);
         setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
         setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
         setFocusable(true);
@@ -35,6 +36,8 @@ public class RoundCardPopup extends RelativePopupWindow {
             setAnimationStyle(0);
         }
         this.showFinishListener = showFinishListener;
+        if (clickListener != null)
+            view.setOnClickListener(clickListener);
     }
 
     @Override

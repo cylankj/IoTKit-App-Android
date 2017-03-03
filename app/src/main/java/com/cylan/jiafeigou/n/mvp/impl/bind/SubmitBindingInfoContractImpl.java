@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.SimulatePercent;
+import com.cylan.jiafeigou.n.engine.DataSource;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -71,7 +72,7 @@ public class SubmitBindingInfoContractImpl extends
     }
 
     /**
-     * 绑定结果:通过{@link com.cylan.jiafeigou.n.engine.DataSourceService#OnResult(JFGResult)}
+     * 绑定结果:通过{@link DataSource#OnResult(JFGResult)}
      * {@link com.cylan.jiafeigou.misc.JResultEvent#JFG_RESULT_BINDDEV}
      *
      * @return

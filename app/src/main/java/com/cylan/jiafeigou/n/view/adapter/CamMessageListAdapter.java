@@ -322,7 +322,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             @Override
             public int getItemViewType(int position, CamMessageBean camMessageBean) {
                 if (camMessageBean.viewType == 2) return 2;
-                return camMessageBean.alarmMsg != null && camMessageBean.alarmMsg.fileIndex > 0 && camMessageBean.sdcardSummary == null ? 1 : 0;
+                return camMessageBean.alarmMsg != null && MiscUtils.getCount(camMessageBean.alarmMsg.fileIndex) > 0 && camMessageBean.sdcardSummary == null ? 1 : 0;
             }
 
             @Override

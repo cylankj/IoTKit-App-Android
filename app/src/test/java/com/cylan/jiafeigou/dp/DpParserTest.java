@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.dp;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.MyTestRunner;
-import com.cylan.jiafeigou.cache.CacheParser;
 
 import org.junit.Before;
 import org.junit.Test;

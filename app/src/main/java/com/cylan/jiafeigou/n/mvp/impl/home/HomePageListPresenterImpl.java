@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -51,7 +50,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         subUuidList();
         return new Subscription[]{
                 getTimeTickEventSub(),
-                getLoginRspSub(),
                 getShareDevicesListRsp(),
                 devicesUpdate(),
                 devicesUpdate1(),
@@ -131,17 +129,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     }
                 });
 
-    }
-
-    private Subscription getLoginRspSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.OnlineStatusRsp.class)
-                .throttleFirst(1000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.OnlineStatusRsp o) -> {
-                    JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
-                    if (account != null && !TextUtils.isEmpty(account.getAccount()))
-                        getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
-                });
     }
 
     private Subscription JFGAccountUpdate() {

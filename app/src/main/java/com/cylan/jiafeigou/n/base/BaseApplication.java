@@ -17,10 +17,8 @@ import com.cylan.jiafeigou.DaemonReceiver1;
 import com.cylan.jiafeigou.DaemonReceiver2;
 import com.cylan.jiafeigou.DaemonService1;
 import com.cylan.jiafeigou.DaemonService2;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.engine.DataSourceService;
+import com.cylan.jiafeigou.n.engine.DataSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
@@ -118,17 +116,13 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onCreate() {
         super.onCreate();
-        DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
         enableDebugOptions();
         MtaManager.init(getApplicationContext(), true);
         //每一个新的进程启动时，都会调用onCreate方法。
-//        if (TextUtils.equals(ProcessUtils.myProcessName(getApplicationContext()), getPackageName())) {
-        Log.d("BaseApplication", "BaseApplication..." + ProcessUtils.myProcessName(getApplicationContext()));
-        startService(new Intent(getApplicationContext(), DataSourceService.class));
+        DataSource.getInstance().onCreate();
         initBlockCanary();
         initBugMonitor();
         registerBootComplete();
-//        }
         initLeakCanary();
         registerActivityLifecycleCallbacks(this);
 
@@ -285,9 +279,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public static class BootCompletedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!ProcessUtils.isServiceRunning(context, DataSourceService.class)) {
-                AppLogger.i("start DataSourceService");
-                context.startService(new Intent(context, DataSourceService.class));
+            if (!ProcessUtils.isServiceRunning(context, DataSource.class)) {
+                AppLogger.i("start DataSource");
+                context.startService(new Intent(context, DataSource.class));
             }
         }
     }

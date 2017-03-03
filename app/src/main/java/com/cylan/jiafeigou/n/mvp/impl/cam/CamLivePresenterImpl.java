@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 
-import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
@@ -42,7 +41,6 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -69,7 +67,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private boolean speakerFlag, micFlag;
     private int[] videoResolution = {0, 0};
     private int playState = PLAY_STATE_IDLE;
-    private ArrayList<JFGVideo> simpleCache = new ArrayList<>();
     private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
     private IData historyDataProvider;
     private int stopReason = JError.STOP_MAUNALLY;//手动断开
@@ -144,18 +141,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public void fetchHistoryDataList() {
         Observable.just(null)
+                .filter(o -> !JFGRules.isShareDevice(uuid))//过滤分享设备
                 .observeOn(Schedulers.newThread())
                 .subscribe((Object dataStack) -> {
                     //获取设备历史录像
-                    if (!TextUtils.isEmpty(uuid) && !JFGRules.isShareDevice(uuid)) {
-                        RxEvent.JFGHistoryVideoReq req = new RxEvent.JFGHistoryVideoReq();
-                        req.uuid = uuid;
-                        RxBus.getCacheInstance().post(req);
-                        //不直接使用这个接口,因为在videoList的数据结构中没有uuid标签,只能使用请求的seq来判断.
-                        //所有把它统一放到History类中管理.
-                        //JfgCmdInsurance.getCmd().getVideoList(uuid);
-                        AppLogger.i("getVideoList");
-                    }
+                    //不直接使用这个接口,因为在videoList的数据结构中没有uuid标签,只能使用请求的seq来判断.
+                    //所有把它统一放到History类中管理.
+                    DataSourceManager.getInstance().queryHistory(uuid);
+                    AppLogger.i("getVideoList");
                 });
     }
 
@@ -182,6 +175,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         playState = PLAY_STATE_PREPARE;
         playType = CamLiveContract.TYPE_LIVE;
         reset();
+        //加入管理,如果播放失败,收到disconnect
+        liveSubscription.add(videoDisconnectSub());
         liveSubscription.add(prePlay(s -> {
             try {
                 JfgCmdInsurance.getCmd().playVideo(uuid);
@@ -210,8 +205,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
-        //加入管理,如果播放失败,收到disconnect
-        liveSubscription.add(videoDisconnectSub());
     }
 
     /**
@@ -235,7 +228,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             AppLogger.e(s);
                             return null;
                         }))
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribeOn(Schedulers.newThread())
+                .map(rtcp -> {
+                    feedRtcp.feed(rtcp);
+                    return rtcp;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((JFGMsgVideoRtcp rtcp) -> {
                     try {
@@ -308,6 +305,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         playType = CamLiveContract.TYPE_HISTORY;
         playState = PLAY_STATE_PREPARE;
         reset();
+        //加入管理,如果播放失败,收到disconnect
+        liveSubscription.add(videoDisconnectSub());
         liveSubscription.add(prePlay(s -> {
             try {
                 //先停止播放{历史录像,直播都需要停止播放}
@@ -341,8 +340,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
-        //加入管理,如果播放失败,收到disconnect
-        liveSubscription.add(videoDisconnectSub());
     }
 
     @Override
@@ -519,20 +516,20 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
      * @return
      */
     private Subscription historyDataListSub() {
-        return RxBus.getCacheInstance().toObservable(JFGHistoryVideo.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
+                .filter(historyList -> TextUtils.equals(uuid, historyList.uuid))//过滤uuid
                 .subscribeOn(Schedulers.computation())
-                .map((JFGHistoryVideo jfgHistoryVideo) -> {
+                .map((RxEvent.JFGHistoryVideoParseRsp jfgHistoryVideo) -> {
                     long time = System.currentTimeMillis();
-                    simpleCache.addAll(jfgHistoryVideo.list);
-                    simpleCache = new ArrayList<>(new HashSet<>(simpleCache));
-                    Collections.sort(simpleCache);
-                    if (simpleCache.size() == 0)
+                    ArrayList<JFGVideo> finalList = DataSourceManager.getInstance().getHistoryList(uuid);
+                    if (finalList == null || finalList.size() == 0)
                         return null;
+                    Collections.sort(finalList);
                     AppLogger.d(String.format("performance:%s", (System.currentTimeMillis() - time)));
                     AppLogger.i("historyDataListSub:" + new Gson().toJson(jfgHistoryVideo));
                     IData data = new DataExt();
-                    data.flattenData(simpleCache);
-                    historyDateFlatten.flat(simpleCache);
+                    data.flattenData(finalList);
+                    historyDateFlatten.flat(finalList);
                     return historyDataProvider = data;
                 })
                 .filter((IData dataStack) -> (getView() != null && dataStack != null))
@@ -551,12 +548,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
      * @return
      */
     private Subscription robotDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
-                .filter((RxEvent.ParseResponseCompleted jfgRobotSyncData) -> (
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (
                         getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.ParseResponseCompleted update) -> {
+                .map((RxEvent.DeviceSyncRsp update) -> {
                     getView().onDeviceInfoChanged();
                     return null;
                 })
