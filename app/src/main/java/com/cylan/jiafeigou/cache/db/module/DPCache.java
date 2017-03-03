@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.cache.db.module;
 
-import com.cylan.jiafeigou.cache.db.DPCacheDao;
-import com.cylan.jiafeigou.cache.db.DaoSession;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 
 import org.greenrobot.greendao.DaoException;
@@ -166,9 +164,7 @@ public class DPCache implements IDPEntity {
         myDao.update(this);
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 730875712)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
