@@ -205,15 +205,36 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     @Override
-    public void deleteItem(String uuid) {
-        Observable.just(uuid)
-                .subscribeOn(Schedulers.io())
-                .subscribe((String o) -> {
-                    boolean result = DataSourceManager.getInstance().delJFGDevice(uuid);
+    public void unBindDevReq(String uuid) {
+        addSubscription(Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .map((Object o) -> {
+                    boolean result = DataSourceManager.getInstance().delRemoteJFGDevice(uuid);
                     AppLogger.i("unbind uuid: " + uuid + " " + result);
-                }, (Throwable throwable) -> {
-                    AppLogger.e("delete uuid failed: " + throwable.getLocalizedMessage());
-                });
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.UnBindDeviceEvent.class)
+                                .subscribeOn(Schedulers.newThread())
+                                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
+                                        .subscribeOn(AndroidSchedulers.mainThread())
+                                        .map(s -> {
+                                            getView().unBindDeviceRsp(-1);
+                                            return null;
+                                        }))
+                                .filter(s -> getView() != null)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .filter(unbindEvent -> {
+                                    if (unbindEvent.jfgResult.code != 0)
+                                        getView().unBindDeviceRsp(unbindEvent.jfgResult.code);//失败
+                                    return unbindEvent.jfgResult.code == 0;
+                                }),
+                        (Object o, RxEvent.UnBindDeviceEvent unbindEvent) -> {
+                            getView().unBindDeviceRsp(0);//成功
+                            DataSourceManager.getInstance().delLocalJFGDevice(uuid);
+                            return null;
+                        })
+                .subscribe());
     }
 
     @Override

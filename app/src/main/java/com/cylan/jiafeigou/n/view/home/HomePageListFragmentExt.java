@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
@@ -391,6 +392,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     @Override
+    public void unBindDeviceRsp(int state) {
+        ToastUtil.showToast(getString(state == JError.ErrorOK ? R.string.DELETED_SUC : R.string.Tips_DeleteFail));
+    }
+
+    @Override
     public void onRefresh() {
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
@@ -467,7 +473,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         //刷新需要剩下的item
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
-        basePresenter.deleteItem(deleteUUID);
+        basePresenter.unBindDevReq(deleteUUID);
     }
 
 

@@ -46,6 +46,8 @@ public interface HomePageListContract {
         void onLoginState(boolean state);
 
         void onRefreshFinish();
+
+        void unBindDeviceRsp(int state);
     }
 
     interface Presenter extends BasePresenter {
@@ -53,7 +55,7 @@ public interface HomePageListContract {
 
         void fetchDeviceList(boolean manually);
 
-        void deleteItem(String uuid);
+        void unBindDevReq(String uuid);
 
         void registerWorker();
 

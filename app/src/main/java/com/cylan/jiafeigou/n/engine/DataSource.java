@@ -238,7 +238,7 @@ public class DataSource implements AppCallBack {
                 RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(jfgResult));
                 break;
             case JResultEvent.JFG_RESULT_UNBINDDEV:
-                RxBus.getCacheInstance().postSticky(new RxEvent.UnBindDeviceEvent(jfgResult));
+                RxBus.getCacheInstance().post(new RxEvent.UnBindDeviceEvent(jfgResult));
                 break;
             case JResultEvent.JFG_RESULT_CHANGE_PASS:
                 RxBus.getCacheInstance().post(new RxEvent.ChangePwdBack(jfgResult));
@@ -452,7 +452,7 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnBindDevRsp(int i, String s) {
-
+        AppLogger.d("onBindDev: " + i + " uuid:" + s);
     }
 
     @Override

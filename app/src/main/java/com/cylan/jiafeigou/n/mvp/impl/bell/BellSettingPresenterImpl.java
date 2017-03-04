@@ -10,14 +10,12 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -30,7 +28,6 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(getUnbindDevSub());
     }
 
     @Override
@@ -40,34 +37,38 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
         mView.onShowProperty(device);
     }
 
-    /**
-     * 门铃解绑
-     *
-     * @return
-     */
-    private Subscription getUnbindDevSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.UnBindDeviceEvent.class)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(unBindDeviceEvent -> {
-                    mView.unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
-                    if (unBindDeviceEvent.jfgResult.code == 0) {
-                        //清理这个订阅
-                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.UnBindDeviceEvent.class);
-                    }
-                    return null;
-                })
-                .retry(new RxHelper.RxException<>("getUnbindDevSub"))
-                .subscribe();
-    }
 
     @Override
     public void unbindDevice() {
-        post(() -> {
-                    DataSourceManager.getInstance().delJFGDevice(mUUID);
-                    AppLogger.i("unbind uuid: " + mUUID);
-                }
-        );
+        registerSubscription(Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .map((Object o) -> {
+                    boolean result = DataSourceManager.getInstance().delRemoteJFGDevice(mUUID);
+                    AppLogger.i("unbind uuid: " + mUUID + " " + result);
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.UnBindDeviceEvent.class)
+                                .subscribeOn(Schedulers.newThread())
+                                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
+                                        .subscribeOn(AndroidSchedulers.mainThread())
+                                        .map(s -> {
+                                            mView.unbindDeviceRsp(-1);
+                                            return null;
+                                        }))
+                                .filter(s -> mView != null)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .filter(unbindEvent -> {
+                                    if (unbindEvent.jfgResult.code != 0)
+                                        mView.unbindDeviceRsp(unbindEvent.jfgResult.code);//失败
+                                    return unbindEvent.jfgResult.code == 0;
+                                }),
+                        (Object o, RxEvent.UnBindDeviceEvent unbindEvent) -> {
+                            mView.unbindDeviceRsp(0);//成功
+                            DataSourceManager.getInstance().delLocalJFGDevice(mUUID);
+                            return null;
+                        })
+                .subscribe());
     }
 
     @Override

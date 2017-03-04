@@ -26,12 +26,13 @@ public interface JFGSourceManager {
     List<JFGDPDevice> getAllJFGDevice();
 
     /**
-     * 删除设备，解绑设备使用
+     * 删除设备，解绑设备使用,一般等待服务器返回结果再调用
      *
      * @param uuid
      * @return
      */
-    boolean delJFGDevice(String uuid);
+    boolean delLocalJFGDevice(String uuid);
+    boolean delRemoteJFGDevice(String uuid);
 
     void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices);
 

@@ -102,10 +102,17 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public boolean delJFGDevice(String uuid) {
+    public boolean delLocalJFGDevice(String uuid) {
+        boolean result = mCachedDeviceMap.remove(uuid) != null;
+        AppLogger.d("unbind dev: " + result + " " + uuid);
+        return result;
+    }
+
+    @Override
+    public boolean delRemoteJFGDevice(String uuid) {
         try {
             JfgCmdInsurance.getCmd().unBindDevice(uuid);
-            return mCachedDeviceMap.remove(uuid) != null;
+            return true;
         } catch (JfgException e) {
             return false;
         }

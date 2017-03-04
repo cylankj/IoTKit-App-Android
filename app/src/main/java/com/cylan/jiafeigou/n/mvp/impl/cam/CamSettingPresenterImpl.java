@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.n.engine.DataSource;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -54,8 +55,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-                robotDataSync(),
-                unbindDevSub()
+                robotDataSync()
         };
     }
 
@@ -83,31 +83,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         super.start();
         JFGCameraDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         getView().deviceUpdate(device);
-    }
-
-    /**
-     * 解绑设备
-     *
-     * @return
-     */
-    private Subscription unbindDevSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.UnBindDeviceEvent.class)
-                .subscribeOn(Schedulers.newThread())
-                .filter((RxEvent.UnBindDeviceEvent unBindDeviceEvent) -> {
-                    return getView() != null;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.UnBindDeviceEvent unBindDeviceEvent) -> {
-                    getView().unbindDeviceRsp(unBindDeviceEvent.jfgResult.code);
-                    if (unBindDeviceEvent.jfgResult.code == 0) {
-                        time = System.currentTimeMillis();
-                        //清理这个订阅
-                        RxBus.getCacheInstance().removeStickyEvent(RxEvent.UnBindDeviceEvent.class);
-                    }
-                    return null;
-                })
-                .retry(new RxHelper.RxException<>("unbindDevSub"))
-                .subscribe();
     }
 
     /**
@@ -206,25 +181,36 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 + String.format(Locale.getDefault(), ":%02d", (((byte) value << 8) >> 8));
     }
 
-    private long time = 0;
-
     @Override
     public void unbindDevice() {
-        Observable.just(null)
+        addSubscription(Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map((Object o) -> {
-                    boolean result = DataSourceManager.getInstance().delJFGDevice(uuid);
+                    boolean result = DataSourceManager.getInstance().delRemoteJFGDevice(uuid);
                     AppLogger.i("unbind uuid: " + uuid + " " + result);
                     return null;
                 })
-                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .filter(s -> System.currentTimeMillis() - time > 3000)
-                        .map(s -> {
-                            getView().unbindDeviceRsp(-1);
+                .observeOn(AndroidSchedulers.mainThread())
+                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.UnBindDeviceEvent.class)
+                                .subscribeOn(Schedulers.newThread())
+                                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
+                                        .subscribeOn(AndroidSchedulers.mainThread())
+                                        .map(s -> {
+                                            getView().unbindDeviceRsp(-1);
+                                            return null;
+                                        }))
+                                .filter(s -> getView() != null)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .filter(unbindEvent -> {
+                                    if (unbindEvent.jfgResult.code != 0)
+                                        getView().unbindDeviceRsp(unbindEvent.jfgResult.code);//失败
+                                    return unbindEvent.jfgResult.code == 0;
+                                }),
+                        (Object o, RxEvent.UnBindDeviceEvent unbindEvent) -> {
+                            getView().unbindDeviceRsp(0);//成功
+                            DataSourceManager.getInstance().delLocalJFGDevice(uuid);
                             return null;
-                        }))
-                .subscribe();
-
+                        })
+                .subscribe());
     }
 }
