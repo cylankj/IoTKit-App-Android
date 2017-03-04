@@ -75,6 +75,7 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
@@ -333,10 +334,15 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
         boolean flag = wFlag.value;
         fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
-        if (flag)
+        if (flag) {
             camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
-        //安全防护状态。
-        showFloatFlowView(false, null);
+            //安全防护状态。
+            showFloatFlowView(false, null);
+            //需要断开直播
+            if (basePresenter != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+                basePresenter.stopPlayVideo(basePresenter.getPlayType());
+            }
+        }
         //进入待机模式
         View v = fLayoutCamLiveView.findViewById("showSceneView".hashCode());
         if (v == null && !flag) {

@@ -1030,6 +1030,7 @@ public class DpMsgDefine {
         public boolean hasSdcard;
 
         protected DpSdcardFormatRsp(Parcel in) {
+            super(in);
             storage = in.readLong();
             storageUsed = in.readLong();
             errCode = in.readInt();
@@ -1038,6 +1039,7 @@ public class DpMsgDefine {
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
             dest.writeLong(storage);
             dest.writeLong(storageUsed);
             dest.writeInt(errCode);

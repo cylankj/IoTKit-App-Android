@@ -290,7 +290,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
             }
         } catch (Exception e) {
             if (msg != null)
-                AppLogger.e("err: " + msg.id + " " + e.getLocalizedMessage());
+                AppLogger.e("err: " + msg.id + " " + e);
         }
         return true;
     }
