@@ -244,6 +244,7 @@ public class JFGRules {
          * 设备离线了
          */
         public static final int ERR_DEVICE_OFFLINE = 3;
+        public static final int STOP_MAUNALLY = -3;
 
     }
 

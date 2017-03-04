@@ -177,6 +177,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
                         }
                     })
                     .create();
+            nullCidDialog.show();
         }
     }
 

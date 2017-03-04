@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.HistoryDateFlatten;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
@@ -57,6 +56,7 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NERWORK;
+import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 
 /**
  * Created by cylan-hunt on 16-7-27.
@@ -68,7 +68,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private int playState = PLAY_STATE_IDLE;
     private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
     private IData historyDataProvider;
-    private int stopReason = JError.STOP_MAUNALLY;//手动断开
+    private int stopReason = STOP_MAUNALLY;//手动断开
     private CompositeSubscription liveSubscription;
     /**
      * 帧率记录

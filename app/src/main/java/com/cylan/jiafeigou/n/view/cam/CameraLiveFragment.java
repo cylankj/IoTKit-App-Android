@@ -76,6 +76,7 @@ import permissions.dispatcher.RuntimePermissions;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
+import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
@@ -634,7 +635,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 ToastUtil.showToast(getString(R.string.CONNECTING));
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
                 break;
-            case JError.STOP_MAUNALLY:
+            case STOP_MAUNALLY:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
                 break;
             case JFGRules.PlayErr.ERR_NOT_FLOW:
