@@ -246,6 +246,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
 
     public final boolean setValue(JFGDPMsg msg, long seq) {
         try {
+            if (msg == null || msg.packValue == null) return false;
             Field field = getProperties().get(msg.id);
             if (field == null) return false;
             DataPoint value = (DataPoint) field.get(this);
@@ -288,7 +289,8 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                 field.set(this, value);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            if (msg != null)
+                AppLogger.e("err: " + msg.id + " " + e);
         }
         return true;
     }

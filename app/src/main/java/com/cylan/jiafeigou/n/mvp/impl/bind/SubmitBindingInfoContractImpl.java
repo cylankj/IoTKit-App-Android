@@ -1,11 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
-import android.text.TextUtils;
-
 import com.cylan.entity.jniCall.JFGResult;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.n.engine.DataSource;
@@ -13,36 +8,34 @@ import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.BindUtils;
+
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 16-11-12.
  */
 
-public class SubmitBindingInfoContractImpl extends
-        AbstractPresenter<SubmitBindingInfoContract.View>
-        implements SubmitBindingInfoContract.Presenter,
-        SimulatePercent.OnAction {
-
-    private boolean success = false;
+public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindingInfoContract.View>
+        implements SubmitBindingInfoContract.Presenter, SimulatePercent.OnAction {
 
     private SimulatePercent simulatePercent;
-    //    private CompositeSubscription compositeSubscription;
-    private String uuid;
+    private Subscription subscription;
+    private int bindResult;
 
     public SubmitBindingInfoContractImpl(SubmitBindingInfoContract.View view, String uuid) {
-        super(view);
+        super(view, uuid);
         view.setPresenter(this);
-        this.uuid = uuid;
         simulatePercent = new SimulatePercent();
         simulatePercent.setOnAction(this);
+        bindResult = BindUtils.BIND_PREPARED;
     }
 
     @Override
@@ -58,17 +51,25 @@ public class SubmitBindingInfoContractImpl extends
     }
 
     @Override
-    protected Subscription[] register() {
-        return new Subscription[]{
-                robotSyncDataSub(),
-                bindResultSub(),
-        };
+    public int getBindState() {
+        return bindResult;
+    }
+
+    @Override
+    public void setBindState(int bindState) {
+        this.bindResult = bindState;
     }
 
     @Override
     public void start() {
         super.start();
-        //查询
+        //超时
+        if (bindResult == BindUtils.BIND_PREPARED) {
+            bindResult = BindUtils.BIND_ING;
+            if ((subscription == null || subscription.isUnsubscribed())) {
+                subscription = bindResultSub();
+            }
+        }
     }
 
     /**
@@ -78,57 +79,35 @@ public class SubmitBindingInfoContractImpl extends
      * @return
      */
     private Subscription bindResultSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.BindDeviceEvent.class)
-                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> {
-                    return getView() != null
-                            && bindDeviceEvent.jfgResult.event == JResultEvent.JFG_RESULT_BINDDEV;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.BindDeviceEvent bindDeviceEvent) -> {
-                    if (simulatePercent != null)
+        return RxBus.getCacheInstance().toObservable(RxEvent.BindDeviceEvent.class)
+                .observeOn(Schedulers.newThread())
+                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null && bindDeviceEvent.jfgResult.event == JResultEvent.JFG_RESULT_BINDDEV)
+                .timeout(90, TimeUnit.SECONDS, Observable.just("timeout")
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .filter(s -> getView() != null)
+                        .map(s -> {
+                            bindResult = BindUtils.BIND_TIME_OUT;
+                            getView().bindState(BindUtils.BIND_TIME_OUT);
+                            AppLogger.e("timeout: " + s);
+                            return null;
+                        }))
+                .filter(viceEvent -> getView() != null)
+                .map((RxEvent.BindDeviceEvent result) -> {
+                    bindResult = result.jfgResult.code;
+                    getView().bindState(bindResult);
+                    if (simulatePercent != null && result.jfgResult.code == 0) {
                         simulatePercent.boost();
-                    success = true;
+                    }
                     AppLogger.i("bind success");
-                    RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
                     return null;
                 })
-                .retry(new RxHelper.RxException<>("bindResultSub"))
-                .subscribe();
-    }
-
-
-    /**
-     * 某些设备上线下面,各种状态变化,都是通过{@link com.cylan.jiafeigou.rx.RxEvent.JFGRobotSyncData}
-     *
-     * @return
-     */
-    private Subscription robotSyncDataSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.JFGRobotSyncData.class)
-                .subscribeOn(Schedulers.newThread())
-                .filter((RxEvent.JFGRobotSyncData jfgRobotSyncData) -> {
-                    boolean filter = TextUtils.equals(uuid, jfgRobotSyncData.identity);
-                    AppLogger.i("filter: " + filter);
-                    return filter;
-                })
-                .flatMap(new Func1<RxEvent.JFGRobotSyncData, Observable<Integer>>() {
+                .subscribe(new Action1<Object>() {
                     @Override
-                    public Observable<Integer> call(RxEvent.JFGRobotSyncData jfgRobotSyncData) {
-                        if (jfgRobotSyncData.dataList != null) {
-                            DpMsgDefine.DPNet net = DpUtils.getMsg(jfgRobotSyncData.dataList,
-                                    DpMsgMap.ID_201_NET,
-                                    DpMsgDefine.DPNet.class);
-                            AppLogger.i("yes hit net: " + net);
-                            if (net != null)
-                                return Observable.just(net.net);
-                        }
-                        return null;
+                    public void call(Object o) {
+
                     }
-                })
-                .retry(new RxHelper.RxException<>("robotSyncDataSub"))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Integer integer) -> {
-                    getView().bindState(integer != null ? integer : -1);
-                });
+                }, throwable ->
+                        AppLogger.e("err:" + throwable.getLocalizedMessage()));
     }
 
     @Override
@@ -144,7 +123,7 @@ public class SubmitBindingInfoContractImpl extends
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object integer) -> {
                     AppLogger.i("actionDone: " + integer);
-                    getView().bindState(1);
+                    getView().bindState(BindUtils.BIND_SUC);
                 });
     }
 

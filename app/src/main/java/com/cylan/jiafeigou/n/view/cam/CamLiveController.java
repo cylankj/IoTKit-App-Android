@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
@@ -45,6 +44,7 @@ import java.util.Set;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
+import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.widget.live.ILiveControl.STATE_IDLE;
@@ -149,7 +149,7 @@ public class CamLiveController implements
                     case STATE_PLAYING:
                         //下一步stop
                         if (presenterRef != null && presenterRef.get() != null) {
-                            presenterRef.get().setStopReason(JError.STOP_MAUNALLY);
+                            presenterRef.get().setStopReason(STOP_MAUNALLY);
                             presenterRef.get().stopPlayVideo(presenterRef.get().getPlayType());
                         }
                         break;
@@ -209,7 +209,12 @@ public class CamLiveController implements
         final long time = System.currentTimeMillis();
         camLiveControlLayer.getSwCamLiveWheel().setDataProvider(dataProvider);
         camLiveControlLayer.getSwCamLiveWheel().setWheelRollListener(this);
+        updateLiveButtonState(dataProvider != null && dataProvider.getDataCount() > 0);
         Log.d("performance", "CamLivePortWheel performance: " + (System.currentTimeMillis() - time));
+    }
+
+    public void updateLiveButtonState(boolean show) {
+        camLiveControlLayer.updateLiveButton(show);
     }
 
     /**
@@ -255,7 +260,7 @@ public class CamLiveController implements
         if (iSafeStateSetterPort != null)
             iSafeStateSetterPort.setVisibility(!land && !isShareDevice);
         //全屏底部区域
-        camLiveControlLayer.setOrientation(presenterRef.get().getLocalMicSpeakerBit(), orientation, isShareDevice, sdCardStatus, safe.$());
+        camLiveControlLayer.setOrientation(presenterRef.get().getLocalMicSpeakerBit(), orientation, isShareDevice, sdCardStatus, safe.value);
         //安全防护
         camLiveControlLayer.setLandSafeClickListener(this);
         AppLogger.i("orientation: " + orientation);
@@ -502,7 +507,7 @@ public class CamLiveController implements
             return;
         }
         if (iDataProvider == null || iDataProvider.getDataCount() == 0) {
-            ToastUtil.showToast(context.getString(R.string.NO_SDCARD));
+//            ToastUtil.showToast(context.getString(R.string.NO_SDCARD));
             AppLogger.d("history data is not prepared");
             return;
         }

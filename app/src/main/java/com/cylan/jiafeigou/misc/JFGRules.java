@@ -185,6 +185,8 @@ public class JFGRules {
             case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
             case JConstant.OS_CAMERA_PANORAMA_GUOKE:
             case JConstant.OS_CAMERA_ANDROID_3_0:
+            case JConstant.OS_CAMERA_FXXX_LESHI:
+            case JConstant.OS_CAMERA_FXXX_LESHI_PID:
                 return true;
             default:
                 return false;
@@ -242,6 +244,7 @@ public class JFGRules {
          * 设备离线了
          */
         public static final int ERR_DEVICE_OFFLINE = 3;
+        public static final int STOP_MAUNALLY = -3;
 
     }
 

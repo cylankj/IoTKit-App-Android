@@ -73,9 +73,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void fetchMessageList(final boolean manually, boolean asc) {
+    public void fetchMessageList(final int count, boolean asc) {
         unSubscribe(qeurySub);
-        qeurySub = queryTimeLine(20, asc)
+        qeurySub = queryTimeLine(count, asc)
                 .map((ArrayList<CamMessageBean> camList) -> {
                     ArrayList<CamMessageBean> list = getView().getList();
                     if (list != null)

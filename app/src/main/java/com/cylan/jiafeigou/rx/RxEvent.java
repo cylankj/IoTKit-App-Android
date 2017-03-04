@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevice;
@@ -408,25 +407,6 @@ public class RxEvent {
     public static final class DeviceListRsp {
     }
 
-
-//    /**
-//     * 只有一个属性,设置页面更新的某一个属性
-//     */
-//    public static final class JfgDpMsgUpdate {
-//        public String uuid;
-//        public DpMsgDefine.DpMsg dpMsg;
-//    }
-
-//    public static final class JfgAlarmMsg {
-//        public String uuid;
-//        public ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs;
-//    }
-
-    public static final class JFGRobotSyncData {
-        public String identity;
-        public boolean state;
-        public ArrayList<JFGDPMsg> dataList;
-    }
 
     /**
      * 获取好友的信息回调

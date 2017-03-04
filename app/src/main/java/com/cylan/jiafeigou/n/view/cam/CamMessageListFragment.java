@@ -157,7 +157,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             endlessLoading = true;
                             mIsLastLoadFinish = false;
                             Log.d("tag", "tag.....load more");
-                            startRequest(true);
+                            startRequest(20, true);
                         }
                     }
                 }
@@ -175,17 +175,18 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onStart() {
         super.onStart();
-        startRequest(false);
+        //刚刚进入页面，尽量少点加载
+        startRequest(5, false);
     }
 
 
-    private void startRequest(boolean loadMore) {
+    private void startRequest(int count, boolean loadMore) {
         if (loadMore) {
             setupFootView();
-            if (basePresenter != null) basePresenter.fetchMessageList(false, true);
+            if (basePresenter != null) basePresenter.fetchMessageList(count, true);
         } else {
             srLayoutCamListRefresh.setRefreshing(true);
-            if (basePresenter != null) basePresenter.fetchMessageList(false, false);
+            if (basePresenter != null) basePresenter.fetchMessageList(count, false);
         }
     }
 
@@ -271,7 +272,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             return;
         }
         srLayoutCamListRefresh.setRefreshing(true);
-        startRequest(false);
+        startRequest(20, false);
     }
 
     @OnClick({R.id.tv_cam_message_list_date,

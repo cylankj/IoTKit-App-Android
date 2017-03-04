@@ -12,11 +12,6 @@ public interface IBindResult {
 
 
     /**
-     * 3G狗,会省略掉很多步骤.
-     */
-    void isMobileNet();
-
-    /**
      * 通知ui
      * 设备信息,版本号,mac,全包含在fpong消息里面.
      */

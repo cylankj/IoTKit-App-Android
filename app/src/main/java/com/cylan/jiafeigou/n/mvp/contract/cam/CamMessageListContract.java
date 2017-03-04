@@ -32,9 +32,9 @@ public interface CamMessageListContract {
 
     interface Presenter extends BasePresenter {
         /**
-         * @param manually
+         * @param count
          */
-        void fetchMessageList(boolean manually, boolean loadMore);
+        void fetchMessageList(int count, boolean loadMore);
 
 //        void loadMore();
 

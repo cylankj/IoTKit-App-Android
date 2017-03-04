@@ -47,6 +47,8 @@ public abstract class AFullBind implements IFullBind {
         }
     }
 
+    public abstract void setServerLanguage(UdpConstant.UdpDevicePortrait udpDevicePortrait);
+
     @Override
     public void clean() {
         iBindResult = null;

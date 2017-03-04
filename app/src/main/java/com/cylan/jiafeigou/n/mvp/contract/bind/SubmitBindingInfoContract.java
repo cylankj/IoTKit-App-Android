@@ -11,7 +11,7 @@ public interface SubmitBindingInfoContract {
 
     interface View extends BaseView<Presenter> {
         /**
-         * 绑定状态: -1:连接中,0离线,>0 成功
+         * 绑定状态: -2:超时,-1:连接中,0离线,>1 成功 ,2：已经被绑定
          */
         void bindState(int state);
 
@@ -29,5 +29,9 @@ public interface SubmitBindingInfoContract {
          * 动画结束:
          */
         void endCounting();
+
+        int getBindState();
+
+        void setBindState(int bindState);
     }
 }
