@@ -199,7 +199,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 }), (String s, Object o) -> {
             AppLogger.i("start to receive rtcp");
             //开始接收rtcp
-            liveSubscription.add(rtcpNotifySub().subscribe());
+            liveSubscription.add(rtcpNotifySub()
+                    .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                    .subscribe());
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
@@ -216,7 +218,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private Observable<Object> rtcpNotifySub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
                 .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .onBackpressureBuffer()//防止MissingBackpressureException
                 .timeout(10, TimeUnit.SECONDS, Observable.just("no rtcp call back")
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .map(s -> {
@@ -340,7 +342,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 }), (String s, Object o) -> {
             AppLogger.i("start to receive rtcp");
             //开始接收rtcp
-            liveSubscription.add(rtcpNotifySub().subscribe());
+            liveSubscription.add(rtcpNotifySub()
+                    .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                    .subscribe());
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
@@ -358,22 +362,22 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
                     try {
-                        AppLogger.i("stopPlayVideo:" + s);
                         JfgCmdInsurance.getCmd().stopPlay(s);
                         playType = CamLiveContract.TYPE_NONE;
                         playState = PLAY_STATE_IDLE;
+                        AppLogger.i("stopPlayVideo:" + s);
                     } catch (JfgException e) {
-                        e.printStackTrace();
+                        AppLogger.e("stop play err: " + e.getLocalizedMessage());
                     }
                     return null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Object o) -> {
+                .doOnCompleted(() -> {
                     getView().onLiveStop(playType, stopReason);
                     AppLogger.d("live stop: " + stopReason);
-                }, (Throwable throwable) -> {
-                    AppLogger.e("" + throwable.getLocalizedMessage());
-                });
+                })
+                .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()))
+                .subscribe();
     }
 
     @Override
@@ -562,7 +566,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         return null;
                     Collections.sort(finalList);
                     AppLogger.d(String.format("performance:%s", (System.currentTimeMillis() - time)));
-                    AppLogger.i("historyDataListSub:" + new Gson().toJson(jfgHistoryVideo));
+                    AppLogger.i("performance:" + new Gson().toJson(jfgHistoryVideo));
                     IData data = new DataExt();
                     data.flattenData(finalList);
                     historyDateFlatten.flat(finalList);
@@ -590,7 +594,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RxEvent.DeviceSyncRsp update) -> {
-                    getView().onDeviceInfoChanged();
+                    getView().onDeviceInfoChanged(true);
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))

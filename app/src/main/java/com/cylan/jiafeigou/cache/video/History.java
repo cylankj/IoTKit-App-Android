@@ -53,6 +53,7 @@ public class History {
         list.addAll(historyVideo.list);
         list = new ArrayList<>(new HashSet<>(list));
         Collections.sort(list);
+        historyMap.put(uuid, list);
         AppLogger.d("get historyList: " + uuid + (System.currentTimeMillis() - time));
         RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(uuid));
     }

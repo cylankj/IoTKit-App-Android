@@ -53,7 +53,7 @@ public class CamLiveLandControlLayer extends FrameLayout {
     @BindView(R.id.imgV_cam_live_land_play)
     ImageView imgVCamLiveLandPlay;
     @BindView(R.id.lLayout_protection)
-    FlipLayout flipLayout;
+    FlipLayout flipLandLayout;
     @BindView(R.id.live_time_layout)
     LiveTimeLayout liveTimeLayout;
     @BindView(R.id.fLayout_cam_live_land_top_bar)
@@ -157,8 +157,13 @@ public class CamLiveLandControlLayer extends FrameLayout {
         //直播|安全防护
         layout.setVisibility(isShareDevice ? GONE : VISIBLE);
         liveTimeLayout.setVisibility(isShareDevice ? GONE : VISIBLE);
-        vLiveRect.setVisibility(isShareDevice && hasSdcard ? VISIBLE : GONE);
-        flipLayout.setFlipped(safe);
+        vLiveRect.setVisibility(!isShareDevice && hasSdcard ? VISIBLE : GONE);
+        flipLandLayout.setVisibility(!isShareDevice && hasSdcard ? VISIBLE : GONE);
+        flipLandLayout.setFlipped(!safe);
+    }
+
+    public void updateLiveButton(boolean show) {
+        vLiveRect.setVisibility(show ? VISIBLE : GONE);
     }
 
     public void setTopBarAction(CamLiveLandTopBar.TopBarAction topBarAction) {
@@ -167,17 +172,17 @@ public class CamLiveLandControlLayer extends FrameLayout {
 
     public void setLandSafeClickListener(FlipImageView.OnFlipListener flipListener) {
         if (flipListener != null)
-            flipLayout.setFlipListener(flipListener);
+            flipLandLayout.setFlipListener(flipListener);
     }
 
     public void setLandSafe(boolean safe) {
-        flipLayout.setFlipped(safe);
+        flipLandLayout.setFlipped(safe);
     }
 
     public void showHistoryWheel(boolean port) {
         if (port) {
             liveTimeLayout.setVisibility(GONE);
-            flipLayout.setVisibility(GONE);
+            flipLandLayout.setVisibility(GONE);
             fLayoutCamLiveLandBottomBar.setVisibility(VISIBLE);
             fLayoutCamLiveLandBottomBar.setTop(0);
             fLayoutCamLiveLandBottomBar.setTranslationY(0);

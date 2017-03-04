@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -13,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -65,6 +67,7 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
@@ -125,7 +128,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @BindView(R.id.imv_double_sight)
     ImageView imvDoubleSight;
 
-
+    private SoftReference<AlertDialog> sdcardPulloutDlg;
+    private SoftReference<AlertDialog> sdcardFormatDlg;
     private CamLiveController camLiveController;
     //    /**
 //     * 直播状态监听
@@ -217,7 +221,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (basePresenter != null) {
             basePresenter.fetchHistoryDataList();
             //非待机模式
-            onDeviceInfoChanged();
+            onDeviceInfoChanged(false);
         }
         camLiveController.setPortSafeSetter(portFlipLayout);
     }
@@ -323,11 +327,43 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
     }
 
+    private void initSdcardStateDialog() {
+        if (sdcardPulloutDlg == null || sdcardPulloutDlg.get() == null) {
+            AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.MSG_SD_OFF))
+                    .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.CANCEL), null)
+                    .create();
+            sdcardPulloutDlg = new SoftReference<>(dialog);
+        }
+    }
+
+    private void initSdcardFormatDialog() {
+        if (sdcardFormatDlg == null || sdcardFormatDlg.get() == null) {
+            AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.Clear_Sdcard_tips6))
+                    .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.CANCEL), null)
+                    .create();
+            sdcardFormatDlg = new SoftReference<>(dialog);
+        }
+    }
+
     /**
      * 根据 待机模式 ,分享用户模式设置一些view的状态
      */
     @Override
-    public void onDeviceInfoChanged() {
+    public void onDeviceInfoChanged(boolean fromRemote) {
         DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
         boolean flag = wFlag.value;
         fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
@@ -342,6 +378,17 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         } else {
             startLive();
         }
+        DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+        //sd卡状态变化，
+        camLiveController.updateLiveButtonState(sdStatus != null && sdStatus.hasSdcard);
+        if (fromRemote && (sdStatus == null || !sdStatus.hasSdcard)) {
+            AppLogger.d("sdcard 被拔出");
+            if (sdcardPulloutDlg != null && sdcardPulloutDlg.get() != null && sdcardPulloutDlg.get().isShowing())
+                return;
+            initSdcardStateDialog();
+            sdcardPulloutDlg.get().show();
+        }
+        AppLogger.e("sdcard数据被清空，唐宽，还没实现");
         //进入待机模式
         View v = fLayoutCamLiveView.findViewById("showSceneView".hashCode());
         if (v == null && !flag) {
