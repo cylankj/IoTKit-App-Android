@@ -1018,4 +1018,48 @@ public class DpMsgDefine {
         }
     }
 
+    @Message
+    public static final class DpSdcardFormatRsp extends DPSingle<DpSdcardFormatRsp> implements Parcelable {
+        @Index(0)
+        public long storage;
+        @Index(1)
+        public long storageUsed;
+        @Index(2)
+        public int errCode;
+        @Index(3)
+        public boolean hasSdcard;
+
+        protected DpSdcardFormatRsp(Parcel in) {
+            storage = in.readLong();
+            storageUsed = in.readLong();
+            errCode = in.readInt();
+            hasSdcard = in.readByte() != 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            dest.writeLong(storage);
+            dest.writeLong(storageUsed);
+            dest.writeInt(errCode);
+            dest.writeByte((byte) (hasSdcard ? 1 : 0));
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        public static final Creator<DpSdcardFormatRsp> CREATOR = new Creator<DpSdcardFormatRsp>() {
+            @Override
+            public DpSdcardFormatRsp createFromParcel(Parcel in) {
+                return new DpSdcardFormatRsp(in);
+            }
+
+            @Override
+            public DpSdcardFormatRsp[] newArray(int size) {
+                return new DpSdcardFormatRsp[size];
+            }
+        };
+    }
+
 }
