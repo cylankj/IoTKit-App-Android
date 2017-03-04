@@ -3,10 +3,11 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPHelper;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPByteParser;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.view.IAction;
 import com.cylan.jiafeigou.cache.db.view.IDPAction;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
@@ -34,14 +35,14 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public <R extends IDPSingleTask<BaseDPTaskResult>> R init(IDPEntity cache) {
-        action = IDPAction.BaseDPAction.$(cache.getAction(), IDPAction.DPQueryAction.class);
+        action = IAction.BaseAction.$(cache.getAction(), IDPAction.DPQueryAction.class);
         return super.init(cache);
 
     }
 
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        return BaseDPHelper.getInstance().queryDPMsg(singleEntity.getUuid(), singleEntity.getVersion() == 0 ? Long.MAX_VALUE : singleEntity.getVersion(), singleEntity.getMsgId(), action.asc, action.limit)
+        return BaseDBHelper.getInstance().queryDPMsg(singleEntity.getUuid(), singleEntity.getVersion() == 0 ? Long.MAX_VALUE : singleEntity.getVersion(), singleEntity.getMsgId(), action.asc, action.limit)
                 .map(items -> {
                     List<DataPoint> result = new ArrayList<>();
                     for (DPEntity item : items) {

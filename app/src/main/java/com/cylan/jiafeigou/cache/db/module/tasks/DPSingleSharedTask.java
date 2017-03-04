@@ -4,6 +4,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
+import com.cylan.jiafeigou.cache.db.view.IAction;
 import com.cylan.jiafeigou.cache.db.view.IDPAction;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
@@ -34,7 +35,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public <R extends IDPSingleTask<BaseDPTaskResult>> R init(IDPEntity cache) {
-        action = IDPAction.BaseDPAction.$(cache.getAction(), IDPAction.DPSharedAction.class);
+        action = IAction.BaseAction.$(cache.getAction(), IDPAction.DPSharedAction.class);
         return super.init(cache);
     }
 

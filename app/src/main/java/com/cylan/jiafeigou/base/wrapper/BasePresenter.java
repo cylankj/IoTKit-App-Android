@@ -236,11 +236,11 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         return true;
     }
 
-    protected Observable<IDPTaskResult> perform(IDPEntity entity) {
+    public Observable<IDPTaskResult> perform(IDPEntity entity) {
         return BaseDPTaskDispatcher.getInstance().perform(entity);
     }
 
-    protected Observable<IDPTaskResult> perform(List<IDPEntity> entity) {
+    public Observable<IDPTaskResult> perform(List<? extends IDPEntity> entity) {
         return BaseDPTaskDispatcher.getInstance().perform(entity);
     }
 

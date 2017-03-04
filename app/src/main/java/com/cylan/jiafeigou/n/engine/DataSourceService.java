@@ -34,6 +34,7 @@ import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.CacheParser;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.pool.GlobalDataProxy;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -102,6 +103,7 @@ public class DataSourceService extends Service implements AppCallBack {
             public void run() {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
                 try {
+                    DataSourceManager.getInstance();
                     JfgAppCmd.initJfgAppCmd(getApplicationContext(), DataSourceService.this);
                     JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
                 } catch (PackageManager.NameNotFoundException e) {
@@ -133,6 +135,7 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         GlobalDataProxy.getInstance().cacheDevice(jfgDevices);
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
+        BaseDBHelper.getInstance().updateDevice(jfgDevices).subscribe();
     }
 
     @Override
@@ -141,6 +144,7 @@ public class DataSourceService extends Service implements AppCallBack {
         RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
         DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
         AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
+        BaseDBHelper.getInstance().updateAccount(jfgAccount).subscribe();
     }
 
     @Override

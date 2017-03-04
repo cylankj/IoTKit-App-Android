@@ -1,12 +1,12 @@
 package com.cylan.jiafeigou.cache.db.module;
 
-import com.cylan.jiafeigou.cache.db.view.IDPAction;
+import com.cylan.jiafeigou.cache.db.view.IAction;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 
-import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.DaoException;
+import org.greenrobot.greendao.annotation.Entity;
+import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
 
 /**
  * Created by yanzhendong on 2017/2/27.
@@ -23,16 +23,20 @@ public class DPEntity extends BaseDPEntity {
     private byte[] bytes;
     private String action;
     private String state;
-    /** Used to resolve relations */
+    /**
+     * Used to resolve relations
+     */
     @Generated(hash = 2040040024)
     private transient DaoSession daoSession;
-    /** Used for active entity operations. */
+    /**
+     * Used for active entity operations.
+     */
     @Generated(hash = 1268361579)
     private transient DPEntityDao myDao;
 
     @Generated(hash = 568731944)
     public DPEntity(Long id, String account, String server, String uuid, Long version,
-            Integer msgId, byte[] bytes, String action, String state) {
+                    Integer msgId, byte[] bytes, String action, String state) {
         this.id = id;
         this.account = account;
         this.server = server;
@@ -118,18 +122,18 @@ public class DPEntity extends BaseDPEntity {
     }
 
     @Override
-    public IDPEntity setAction(IDPAction action) {
+    public IDPEntity setAction(IAction action) {
         this.action = action.action();
         return this;
     }
 
     @Override
     public String ACTION() {
-        return IDPAction.BaseDPAction.$(action, IDPAction.BaseDPAction.class).action;
+        return IAction.BaseAction.$(action, IAction.BaseAction.class).ACTION();
     }
 
     @Override
-    public IDPEntity setAction(String action) {
+    public DPEntity setAction(String action) {
         this.action = action;
         return this;
     }
@@ -140,7 +144,7 @@ public class DPEntity extends BaseDPEntity {
     }
 
     @Override
-    public IDPEntity setState(String state) {
+    public DPEntity setState(String state) {
         this.state = state;
         return this;
     }
@@ -192,5 +196,5 @@ public class DPEntity extends BaseDPEntity {
         this.daoSession = daoSession;
         myDao = daoSession != null ? daoSession.getDPEntityDao() : null;
     }
-    
+
 }

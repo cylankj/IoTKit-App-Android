@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
+import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPAction;
@@ -52,6 +53,8 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     @Override
     public void onStart() {
         super.onStart();
+        JFGDoorBellDevice device = mSourceManager.getJFGDevice(mUUID);
+        mView.onShowProperty(device);
     }
 
     @Override
@@ -106,9 +109,8 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
-                .buffer(list.size())
                 .subscribe(result -> {
-                    if (list.size() == result.size()) {
+                    if (result.getResultCode() == 0) {
                         mView.onDeleteBellRecordSuccess(list);
                     }
                 }, e -> {

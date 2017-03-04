@@ -1,51 +1,15 @@
 package com.cylan.jiafeigou.cache.db.view;
 
-import com.google.gson.Gson;
-
 /**
  * Created by yanzhendong on 2017/3/3.
  */
 
-public interface IDPAction {
-    IDPAction DELETED = new DPDeleteAction();
-    IDPAction SAVED = new DPSavedAction();
+public interface IDPAction extends IAction {
     IDPAction SHARED = new DPSharedAction();
     IDPAction QUERY = new DPQueryAction();
+    IDPAction AVAILABLE = new DPAvaliabeAction();
 
-    String action();
-
-    String ACTION();
-
-    abstract class BaseDPAction implements IDPAction {
-        public String action;
-        private static Gson parser = new Gson();
-
-        public BaseDPAction(String action) {
-            this.action = action;
-        }
-
-        @Override
-        public String action() {
-            return parser.toJson(this);
-        }
-
-        @Override
-        public String ACTION() {
-            return action;
-        }
-
-        public static <T extends IDPAction> T $(String action, Class<T> clz) {
-            return parser.fromJson(action, clz);
-        }
-    }
-
-    class DPDeleteAction extends BaseDPAction {
-        public DPDeleteAction() {
-            super("DELETED");
-        }
-    }
-
-    class DPSharedAction extends BaseDPAction {
+    class DPSharedAction extends BaseAction {
         public int type;
         public int flag;
 
@@ -60,7 +24,7 @@ public interface IDPAction {
         }
     }
 
-    class DPQueryAction extends BaseDPAction {
+    class DPQueryAction extends BaseAction {
         public boolean asc = false;
         public int limit = 20;
 
@@ -75,10 +39,15 @@ public interface IDPAction {
         }
     }
 
-    class DPSavedAction extends BaseDPAction {
+    class DPAvaliabeAction extends BaseAction {
 
-        public DPSavedAction() {
-            super("SAVED");
+        public DPAvaliabeAction() {
+            super("DELETED");
+        }
+
+        @Override
+        public OP OP() {
+            return OP.NOT_EQ;
         }
     }
 }

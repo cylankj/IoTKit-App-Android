@@ -5,13 +5,22 @@ import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.cache.db.module.AccountDao;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.DPEntityDao;
 import com.cylan.jiafeigou.cache.db.module.DaoMaster;
 import com.cylan.jiafeigou.cache.db.module.DaoSession;
+import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.DeviceDao;
+import com.cylan.jiafeigou.cache.db.view.IAccountState;
+import com.cylan.jiafeigou.cache.db.view.IAction;
+import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPAction;
-import com.cylan.jiafeigou.cache.db.view.IDPHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPState;
+import com.cylan.jiafeigou.cache.db.view.IState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -22,32 +31,37 @@ import java.io.File;
 import java.util.List;
 
 import rx.Observable;
+import rx.schedulers.Schedulers;
 
 
 /**
  * Created by yanzhendong on 2017/2/27.
  */
 
-public class BaseDPHelper implements IDPHelper {
+public class BaseDBHelper implements IDBHelper {
     private DPEntityDao mEntityDao;
-    private static BaseDPHelper instance;
+    private AccountDao accountDao;
+    private DeviceDao deviceDao;
+    private static BaseDBHelper instance;
 
-    public static BaseDPHelper getInstance() {
+    public static BaseDBHelper getInstance() {
         if (instance == null) {
-            synchronized (BaseDPHelper.class) {
+            synchronized (BaseDBHelper.class) {
                 if (instance == null) {
-                    instance = new BaseDPHelper();
+                    instance = new BaseDBHelper();
                 }
             }
         }
         return instance;
     }
 
-    private BaseDPHelper() {
+    private BaseDBHelper() {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(new GreenDaoContext(), "dp_cache.db");
         DaoMaster master = new DaoMaster(helper.getWritableDb());
         DaoSession daoSession = master.newSession();
         mEntityDao = daoSession.getDPEntityDao();
+        accountDao = daoSession.getAccountDao();
+        deviceDao = daoSession.getDeviceDao();
     }
 
     @Override
@@ -74,7 +88,7 @@ public class BaseDPHelper implements IDPHelper {
     }
 
     @Override
-    public Observable<List<DPEntity>> queryUnConfirmDpMsgWithTag(String uuid, Integer msgId, IDPAction action) {
+    public Observable<List<DPEntity>> queryUnConfirmDpMsgWithTag(String uuid, Integer msgId, IAction action) {
         AppLogger.d("正在根据 action 查询未经确认的 DP 消息,uuid:" + uuid + ",msgId:" + msgId + ",action :" + action);
         return queryDPMsg(getAccount(), getServer(), uuid, null, msgId, null, null, action, IDPState.NOT_CONFIRM);
     }
@@ -85,18 +99,23 @@ public class BaseDPHelper implements IDPHelper {
     }
 
     @Override
-    public Observable<List<DPEntity>> markDPMsgWithConfirm(String uuid, Long version, Integer msgId, IDPAction action) {
+    public Observable<List<DPEntity>> markDPMsgWithConfirm(String uuid, Long version, Integer msgId, IAction action) {
         return markDPMsg(getAccount(), getServer(), uuid, version, msgId, action, IDPState.SUCCESS);
     }
 
     @Override
-    public Observable<List<DPEntity>> markDPMsgNotConfirm(String uuid, Long version, Integer msgId, IDPAction action) {
+    public Observable<List<DPEntity>> markDPMsgNotConfirm(String uuid, Long version, Integer msgId, IAction action) {
         return markDPMsg(getAccount(), getServer(), uuid, version, msgId, action, IDPState.NOT_CONFIRM);
     }
 
     @Override
     public Observable<List<DPEntity>> queryDPMsg(String uuid, Long version, Integer msgId, Boolean asc, Integer limit) {
-        return queryDPMsg(getAccount(), getServer(), uuid, version, msgId, asc, limit, IDPAction.SAVED, IDPState.SUCCESS);
+        return queryDPMsg(getAccount(), getServer(), uuid, version, msgId, asc, limit, IDPAction.AVAILABLE, IDPState.SUCCESS);
+    }
+
+    @Override
+    public Observable<List<DPEntity>> queryDPMsgByUuid(String uuid) {
+        return queryDPMsg(uuid, null, null, null, null);
     }
 
     @Override
@@ -104,7 +123,6 @@ public class BaseDPHelper implements IDPHelper {
         return buildQueryBuilder(account, server, uuid, version, msgId, null, null)
                 .rx().unique().filter(item -> item == null)
                 .map(item -> {
-                    AppLogger.e("正在创建条目");
                     item = new DPEntity(null, account, server, uuid, version, msgId, bytes, action, state);
                     mEntityDao.save(item);
                     return item;
@@ -135,7 +153,7 @@ public class BaseDPHelper implements IDPHelper {
     }
 
     @Override
-    public Observable<List<DPEntity>> queryDPMsg(String account, String server, String uuid, Long version, Integer msgId, Boolean asc, Integer limit, IDPAction action, IDPState state) {
+    public Observable<List<DPEntity>> queryDPMsg(String account, String server, String uuid, Long version, Integer msgId, Boolean asc, Integer limit, IAction action, IState state) {
         QueryBuilder<DPEntity> builder = buildQueryBuilder(account, server, uuid, null, msgId, action, state);
         if (asc != null) {
             builder = asc ? builder.where(DPEntityDao.Properties.Version.ge(version)) : builder.where(DPEntityDao.Properties.Version.le(version));
@@ -147,7 +165,7 @@ public class BaseDPHelper implements IDPHelper {
     }
 
     @Override
-    public Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, IDPAction action, IDPState state) {
+    public Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, IAction action, IState state) {
         AppLogger.d("正在标记本地数据, account:" + account + ",server:" + server + ",uuid:" + uuid + ",version:" + version + ",msgId:" + msgId + ",action:" + action + ",state:" + state);
         return buildQueryBuilder(account, server, uuid, version, msgId, null, null)
                 .rx().list()
@@ -176,7 +194,76 @@ public class BaseDPHelper implements IDPHelper {
                 });
     }
 
-    private QueryBuilder<DPEntity> buildQueryBuilder(String account, String server, String uuid, Long version, Integer msgId, IDPAction action, IDPState state) {
+    @Override
+    public Observable<Account> updateAccount(JFGAccount account) {
+        return accountDao.queryBuilder().where(AccountDao.Properties.Account.notEq(account.getAccount()))
+                .rx().list().flatMap(accounts -> {
+                    if (accounts != null) {
+                        for (Account account1 : accounts) {
+                            account1.setState(IAccountState.NORMAL.state());
+                        }
+                        accountDao.updateInTx(accounts);
+                    }
+                    return accountDao.queryBuilder().where(AccountDao.Properties.Account.eq(account.getAccount()))
+                            .rx().unique().map(account1 -> {
+                                if (account1 == null) {
+                                    account1 = new Account(account);
+                                }
+                                account1.setState(IAccountState.ACTIVE.state());
+                                accountDao.save(account1);
+                                return account1;
+                            });
+                });
+    }
+
+
+    @Override
+    public Observable<Account> getActiveAccount() {
+        return accountDao.queryBuilder().where(AccountDao.Properties.State.eq(IAccountState.ACTIVE.state())).rx().unique();
+    }
+
+    @Override
+    public Observable<Device> updateDevice(JFGDevice[] device) {
+        return Observable.from(device)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(Device::new)
+                .flatMap(device1 -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(device1.getUuid())).rx().unique()
+                        .flatMap(device2 -> {
+                            if (device2 != null) {
+                                deviceDao.delete(device2);
+                            }
+                            device1.setAccount(getAccount());
+                            return deviceDao.rx().save(device1);
+                        }));
+    }
+
+    @Override
+    public Observable<Device> getDevice(String uuid) {
+        return null;
+    }
+
+    @Override
+    public Observable<List<Device>> getAccountDevice(String account) {
+        return deviceDao.queryBuilder().where(DeviceDao.Properties.Account.eq(account)).rx().list();
+    }
+
+    @Override
+    public Observable<List<DPEntity>> getAllSavedDPMsgByAccount(String account) {
+        return mEntityDao.queryBuilder().where(DPEntityDao.Properties.Account.eq(account),
+                DPEntityDao.Properties.State.eq(IState.SUCCESS.state()),
+                DPEntityDao.Properties.Action.notEq(IAction.DELETED.action()))
+                .rx()
+                .list()
+                .observeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<List<DPEntity>> getActiveAccountSavedDPMsg() {
+        return getAllSavedDPMsgByAccount(getAccount());
+    }
+
+    private QueryBuilder<DPEntity> buildQueryBuilder(String account, String server, String uuid, Long version, Integer msgId, IAction action, IState state) {
         QueryBuilder<DPEntity> builder = mEntityDao.queryBuilder();
 
         if (!TextUtils.isEmpty(account)) {
@@ -200,7 +287,11 @@ public class BaseDPHelper implements IDPHelper {
         }
 
         if (action != null) {
-            builder.where(DPEntityDao.Properties.Action.like(action.action()));
+            if (action.OP() == IAction.OP.EQ) {
+                builder.where(DPEntityDao.Properties.Action.like(action.action()));
+            } else if (action.OP() == IAction.OP.NOT_EQ) {
+                builder.where(DPEntityDao.Properties.Action.notEq(action.action()));
+            }
         }
 
         if (state != null) {
@@ -211,7 +302,9 @@ public class BaseDPHelper implements IDPHelper {
     }
 
     private String getAccount() {
-        return null;
+        Account account = accountDao.queryBuilder().where(AccountDao.Properties.State.eq(IAccountState.ACTIVE.state())).unique();
+        if (account == null) return null;
+        return account.getAccount();
     }
 
     private String getServer() {

@@ -2,9 +2,9 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPHelper;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
-import com.cylan.jiafeigou.cache.db.view.IDPHelper;
+import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPMultiTask;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
@@ -23,11 +23,11 @@ import rx.Observable;
 public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTask<T>, IDPMultiTask<T> {
     protected IDPEntity singleEntity;
     protected List<IDPEntity> multiEntity;
-    protected IDPHelper mDPHelper;
+    protected IDBHelper mDPHelper;
 
     @Override
     public <R extends IDPMultiTask<T>> R init(List<IDPEntity> cache) {
-        this.mDPHelper = BaseDPHelper.getInstance();
+        this.mDPHelper = BaseDBHelper.getInstance();
         this.multiEntity = cache;
         this.singleEntity = cache.get(0);
         return (R) this;
@@ -35,7 +35,7 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
 
     @Override
     public <R extends IDPSingleTask<T>> R init(IDPEntity cache) {
-        this.mDPHelper = BaseDPHelper.getInstance();
+        this.mDPHelper = BaseDBHelper.getInstance();
         this.singleEntity = cache;
         return (R) this;
     }

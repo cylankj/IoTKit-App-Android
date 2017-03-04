@@ -43,7 +43,7 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
 
     @Override
     public synchronized void perform() {
-        BaseDPHelper.getInstance().queryUnConfirmDpMsg(null, null)
+        BaseDBHelper.getInstance().queryUnConfirmDpMsg(null, null)
                 .observeOn(Schedulers.io())
                 .flatMap(Observable::from)
                 .subscribe(new Subscriber<DPEntity>() {

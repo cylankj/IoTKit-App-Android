@@ -7,7 +7,9 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPHelper;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -18,6 +20,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.OS_AIR_DETECTOR;
 import static com.cylan.jiafeigou.misc.JConstant.OS_ANDROID_PHONE;
@@ -48,6 +53,8 @@ import static com.cylan.jiafeigou.misc.JConstant.OS_TEMP_HUMI;
 
 public class DataSourceManager implements JFGSourceManager {
     private final String TAG = getClass().getName();
+
+    private IDBHelper dbHelper;
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
@@ -57,6 +64,64 @@ public class DataSourceManager implements JFGSourceManager {
     private boolean isOnline;
 
     private DataSourceManager() {
+        dbHelper = BaseDBHelper.getInstance();
+        initFromDB();
+    }
+
+    private void initFromDB() {
+        dbHelper.getActiveAccount()
+                .observeOn(Schedulers.io())
+                .filter(account -> account != null)
+                .map(account -> {
+                    mJFGAccount = new JFGDPAccount();
+                    mJFGAccount.phone = account.getPhone();
+                    mJFGAccount.token = account.getToken();
+                    mJFGAccount.alias = account.getAlias();
+                    mJFGAccount.enablePush = account.getEnablePush();
+                    mJFGAccount.enableSound = account.getEnableSound();
+                    mJFGAccount.email = account.getEmail();
+                    mJFGAccount.enableVibrate = account.getEnableVibrate();
+                    mJFGAccount.photoUrl = account.getPhotoUrl();
+                    mJFGAccount.account = account.getAccount();
+                    return mJFGAccount;
+                })
+                .flatMap(dpAccount -> dbHelper.queryDPMsgByUuid(null)
+                        .observeOn(Schedulers.io())
+                        .map(dpEntities -> {
+                            JFGDPMsg msg;
+                            for (DPEntity entity : dpEntities) {
+                                msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
+                                msg.packValue = entity.getBytes();
+                                dpAccount.setValue(msg);
+                            }
+                            return dpAccount;
+                        })
+                )
+                .flatMap(account -> dbHelper.getAccountDevice(account.account))
+                .flatMap(Observable::from)
+                .map(device -> {
+                    JFGDPDevice dpDevice = create(device.getPid());
+//                    public String vid = "";
+                    dpDevice.uuid = device.getUuid();
+                    dpDevice.sn = device.getSn();
+                    dpDevice.alias = device.getAlias();
+                    dpDevice.shareAccount = device.getShareAccount();
+                    dpDevice.pid = device.getPid();
+                    mCachedDeviceMap.put(device.getUuid(), dpDevice);
+                    return dpDevice;
+                })
+                .filter(device -> device != null)
+                .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
+                        .observeOn(Schedulers.io())
+                        .map(dpEntities -> {
+                            JFGDPMsg msg;
+                            for (DPEntity entity : dpEntities) {
+                                msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
+                                msg.packValue = entity.getBytes();
+                                device.setValue(msg);
+                            }
+                            return dpEntities;
+                        })).subscribe();
     }
 
     public static DataSourceManager getInstance() {
@@ -126,6 +191,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
+        mCachedDeviceMap.clear();//这个 cache 方法是通过SDK调用的调用到这里说明当前已经是有网状态,则清空之前的数据
         for (com.cylan.entity.jniCall.JFGDevice device : devices) {
             JFGDPDevice temp = mCachedDeviceMap.get(device.uuid);
             if (temp != null) {//已经存在了,则更新即可
@@ -193,7 +259,7 @@ public class DataSourceManager implements JFGSourceManager {
             if (entry.getValue() == null) continue;
             changed = false;
             for (JFGDPMsg dp : entry.getValue()) {
-                BaseDPHelper.getInstance().saveDPByte(identity, dp.version, (int) dp.id, dp.packValue).subscribe();
+                dbHelper.saveDPByte(identity, dp.version, (int) dp.id, dp.packValue).subscribe();
                 if (device != null) {//优先尝试写入device中
                     changed |= device.setValue(dp, dataRsp.seq);
                     continue;
@@ -264,10 +330,13 @@ public class DataSourceManager implements JFGSourceManager {
         return value;
     }
 
-
     private JFGDPDevice create(com.cylan.entity.jniCall.JFGDevice device) {
+        return create(device.pid).setDevice(device);
+    }
+
+    private JFGDPDevice create(int pid) {
         JFGDPDevice result = null;
-        switch (device.pid) {
+        switch (pid) {
             case OS_SERVER:
                 break;
             case OS_IOS_PHONE:
@@ -288,17 +357,17 @@ public class DataSourceManager implements JFGSourceManager {
             case OS_CAMERA_PANORAMA_GUOKE:
             case OS_CAMERA_UCOS_V2:
             case OS_CAMERA_UCOS_V3:
-                result = new JFGCameraDevice().setDevice(device);
+                result = new JFGCameraDevice();
                 break;
 
             //门铃设备
             case OS_DOOR_BELL:
-                result = new JFGDoorBellDevice().setDevice(device);
+                result = new JFGDoorBellDevice();
                 break;
 
             //中控设备
             case OS_EFAML:
-                result = new JFGEFamilyDevice().setDevice(device);
+                result = new JFGEFamilyDevice();
                 break;
             case OS_TEMP_HUMI:
                 break;
@@ -307,7 +376,7 @@ public class DataSourceManager implements JFGSourceManager {
 
             //门磁设备
             case OS_MAGNET:
-                result = new JFGMagnetometerDevice().setDevice(device);
+                result = new JFGMagnetometerDevice();
                 break;
             case OS_AIR_DETECTOR:
                 break;
