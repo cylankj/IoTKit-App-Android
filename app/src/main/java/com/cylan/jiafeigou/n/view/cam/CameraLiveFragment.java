@@ -216,10 +216,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (basePresenter != null) {
             basePresenter.fetchHistoryDataList();
             //非待机模式
-            DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-            if (!flag.$()) {
-                startLive();
-            }
             onDeviceInfoChanged();
         }
         camLiveController.setPortSafeSetter(portFlipLayout);
@@ -342,6 +338,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             if (basePresenter != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
                 basePresenter.stopPlayVideo(basePresenter.getPlayType());
             }
+        } else {
+            startLive();
         }
         //进入待机模式
         View v = fLayoutCamLiveView.findViewById("showSceneView".hashCode());
