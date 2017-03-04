@@ -187,6 +187,9 @@ public class JConstant {
     public static final int OS_CAMERA_PANORAMA_GUOKE = 20;    //国科全景摄像头   4W
     public static final int OS_CAMERA_ANDROID_3_0 = 1071;    //3g狗
 
+    public static final int OS_CAMERA_FXXX_LESHI = 27;
+    public static final int OS_CAMERA_FXXX_LESHI_PID = 1160;
+
     public static final int OS_MAX_COUNT = OS_CAMERA_PANORAMA_GUOKE;
     public static final Map<Integer, Integer> onLineIconMap = new HashMap<>();
     public static final Map<Integer, Integer> offLineIconMap = new HashMap<>();
@@ -218,6 +221,9 @@ public class JConstant {
         onLineIconMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.icon_home_camera_online);
         onLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_online);
 
+        onLineIconMap.put(JConstant.OS_CAMERA_FXXX_LESHI, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.OS_CAMERA_FXXX_LESHI_PID, R.drawable.icon_home_camera_online);
+
         onLineIconMap.put(JConstant.OS_CAMERA_ANDROID_3_0, R.drawable.icon_home_camera_online);
 
         //MAG
@@ -246,6 +252,9 @@ public class JConstant {
         offLineIconMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.icon_home_camera_offline);
         offLineIconMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.icon_home_camera_offline);
         offLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_offline);
+
+        onLineIconMap.put(JConstant.OS_CAMERA_FXXX_LESHI, R.drawable.icon_home_camera_offline);
+        onLineIconMap.put(JConstant.OS_CAMERA_FXXX_LESHI_PID, R.drawable.icon_home_camera_offline);
 
         offLineIconMap.put(JConstant.OS_CAMERA_ANDROID_3_0, R.drawable.icon_home_camera_offline);
 
