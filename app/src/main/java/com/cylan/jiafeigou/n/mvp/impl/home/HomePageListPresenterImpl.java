@@ -128,7 +128,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         AppLogger.i("time tick");
                     }
                 });
-
     }
 
     private Subscription JFGAccountUpdate() {

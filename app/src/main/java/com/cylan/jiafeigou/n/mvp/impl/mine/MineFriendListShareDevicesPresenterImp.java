@@ -84,13 +84,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
      */
     @Override
     public Subscription initDeviceListData() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DeviceListRsp.class)
-                .flatMap(new Func1<RxEvent.DeviceListRsp, Observable<ArrayList<DeviceBean>>>() {
-                    @Override
-                    public Observable<ArrayList<DeviceBean>> call(RxEvent.DeviceListRsp deviceList) {
-                        return Observable.just(getShareDeviceList());
-                    }
-                })
+        return Observable.just(getShareDeviceList())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<ArrayList<DeviceBean>>() {
                     @Override

@@ -57,6 +57,13 @@ public class RegisterPwdFragment extends SetupPwdFragment
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (pwdPresenter != null)
+        pwdPresenter.start();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         customToolbar.setBackAction((View v) -> {
@@ -109,7 +116,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 public void run() {
                     switchResult(register);
                 }
-            }, 500);
+            }, 100);
         } else {
             switchResult(register);
         }
@@ -124,13 +131,13 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 ToastUtil.showToast(getString(R.string.CODE_ERR));
                 break;
             case JError.ErrorSMSCodeTimeout:
-                showSimpleDialog(getString(R.string.INVALID_CODE), "", getString(R.string.I_KNOW), false);
+                showSimpleDialog(getString(R.string.INVALID_CODE), getString(R.string.I_KNOW), " ", false);
                 break;
             case JError.ErrorOK:
                 autoLogin();
                 break;
             default:
-                ToastUtil.showToast("注册失败:" + register.code);
+                ToastUtil.showToast("error:" + register.code);
         }
         if (register.code != JError.ErrorOK) {
             PreferencesUtils.putString(JConstant.AUTO_LOGIN_ACCOUNT, "");
@@ -144,7 +151,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
         login.pwd = PreferencesUtils.getString(JConstant.AUTO_LOGIN_PWD);
         boolean validEmailNum = JConstant.EMAIL_REG.matcher(login.userName).find();
         if (validEmailNum) {
-            // TODO 发送验证邮件
+            //发送验证邮件
             afterSendMailView(login.userName);
             return;
         }
@@ -172,15 +179,15 @@ public class RegisterPwdFragment extends SetupPwdFragment
     private void afterSendMailView(String account) {
         vsSetAccountPwd.removeAllViews();
         customToolbar.setToolbarTitle(R.string.Tap0_register_EmailVerification);
+        customToolbar.setTvToolbarIcon(-1);
         flInputContainer.setVisibility(View.GONE);
         View mailView = LayoutInflater.from(getActivity())
                 .inflate(R.layout.fragment_forget_pwd_by_email, null);
         if (mailView == null) {
             return;
         }
-        final String content = String.format(getString(R.string.EMAIL_RESET_PWD),
-                account);
-        ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(content);
+
+        ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(account);
         TextView btn = (TextView) mailView.findViewById(R.id.tv_email_confirm);
         btn.setText(getString(R.string.Tap0_register_GoToLogin));
         btn.setEnabled(true);

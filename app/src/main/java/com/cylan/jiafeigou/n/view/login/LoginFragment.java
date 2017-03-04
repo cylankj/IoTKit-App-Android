@@ -798,6 +798,12 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
             if (isRegetCode) {
                 //重新获取验证码也要检测一下账号
+                if (basePresenter.checkOverCount()){
+                    ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+                    isRegetCode = false;
+                    return;
+                }
+
                 if (verificationCodeLogic != null)
                     verificationCodeLogic.start();
                 if (basePresenter != null)
@@ -814,6 +820,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
             } else {
                 //第一次检测账号是否注册返回执行获取验证码
+                if (basePresenter.checkOverCount()){
+                    ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+                    return;
+                }
                 if (verificationCodeLogic == null)
                     verificationCodeLogic = new VerificationCodeLogic(tvMeterGetCode);
                 verificationCodeLogic.start();
@@ -906,7 +916,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     basePresenter.checkAccountIsReg(ViewUtils.getTextViewContent(etRegisterInputBox));
                 break;
             case R.id.tv_register_submit:
-                if (NetUtils.getNetType(getContext()) == 0) {
+                if (NetUtils.getNetType(getContext()) == -1) {
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }

@@ -67,7 +67,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     private MineLookBigImageFragment mineLookBigImageFragment;
 
     private MineFriendDetailContract.Presenter presenter;
-    private PopupWindow popupWindow;
     private int navigationHeight;
     public OnDeleteClickLisenter lisenter;
     private RelAndFriendBean frienditembean;
@@ -122,7 +121,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
      */
     private void initData() {
         Bundle bundle = getArguments();
-        frienditembean = (RelAndFriendBean) bundle.getParcelable("frienditembean");
+        frienditembean = bundle.getParcelable("frienditembean");
         if (TextUtils.isEmpty(frienditembean.markName)) {
             tvRelativeAndFriendName.setVisibility(View.GONE);
         } else {
@@ -153,6 +152,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         mineSetRemarkNameFragment.setOnSetRemarkNameListener(new MineSetRemarkNameFragment.OnSetRemarkNameListener() {
             @Override
             public void remarkNameChange(String name) {
+                frienditembean.markName = name;
                 tvRelativeAndFriendName.setVisibility(View.VISIBLE);
                 tvRelativeAndFriendName.setText(name);
             }
@@ -231,8 +231,11 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         if (lisenter != null) {
             Bundle arguments = getArguments();
             int position = arguments.getInt("position");
-            lisenter.onDelete(position);
-            ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
+            if (!(position == -1)){
+                lisenter.onDelete(position);
+                ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
+            }
+
         }
         getFragmentManager().popBackStack();
     }

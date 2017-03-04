@@ -22,7 +22,7 @@ public interface MineFriendScanAddContract {
         /**
          * 跳转到添加人详情页
          */
-        void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean);
+        void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean,boolean isFriend);
 
         /**
          * 已经是好友

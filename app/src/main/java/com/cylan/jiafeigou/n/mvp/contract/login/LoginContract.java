@@ -192,7 +192,11 @@ public interface LoginContract {
          */
         CallbackManager getFaceBookBackObj();
 
-
+        /**
+         * 十分钟是否超过3次获取
+         * @return
+         */
+        boolean checkOverCount();
     }
 
 }

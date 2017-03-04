@@ -687,4 +687,35 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         }
     }
 
+    //计数10分钟3次
+    @Override
+    public boolean checkOverCount() {
+        int count = PreferencesUtils.getInt(JConstant.KEY_REG_GET_SMS_COUNT, 0);
+        long first_time = PreferencesUtils.getLong(JConstant.KEY_REG_FRIST_GET_SMS,0);
+
+        if(count == 0){
+            PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS,System.currentTimeMillis());
+            PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT,count+1);
+            return false;
+        }
+
+        if (count < 3 ){
+            if (System.currentTimeMillis() - first_time < 10*60*1000){
+                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT,count+1);
+            }else {
+                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT,0);
+                PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS,System.currentTimeMillis());
+            }
+            return false;
+        }else {
+            if (System.currentTimeMillis() - first_time < 10*60*1000){
+                return true;
+            }else {
+                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT,0);
+                PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS,System.currentTimeMillis());
+                return false;
+            }
+        }
+    }
+
 }

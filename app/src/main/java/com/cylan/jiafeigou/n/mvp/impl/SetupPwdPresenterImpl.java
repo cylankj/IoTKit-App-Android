@@ -29,45 +29,22 @@ import rx.subscriptions.CompositeSubscription;
 public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.View>
         implements SetupPwdContract.Presenter {
 
-    private Subscription subscription;
-
-    private CompositeSubscription compositeSubscription;
-
     public SetupPwdPresenterImpl(SetupPwdContract.View view) {
         super(view);
         view.setPresenter(this);
-        initComposeSubscription();
-    }
-
-    private void initComposeSubscription() {
-        compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(resultLoginSub());
-        compositeSubscription.add(RxBus.getCacheInstance().toObservable(RxEvent.ResultRegister.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .throttleFirst(1000L, TimeUnit.MICROSECONDS)
-                .subscribe(new Action1<RxEvent.ResultRegister>() {
-                    @Override
-                    public void call(RxEvent.ResultRegister register) {
-                        //注册成功
-                        PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
-                        getView().submitResult(register);
-                    }
-                }));
     }
 
     @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void stop() {
-        unSubscribe(subscription, compositeSubscription);
+    protected Subscription[] register() {
+        return new Subscription[]{
+                resultLoginSub(),
+                registerBack()
+        };
     }
 
     @Override
     public void register(final String account, final String pwd, final int type, final String token) {
-        subscription = Observable.just(null)
+        rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
                     @Override
@@ -105,6 +82,21 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                     }
                 })
                 .subscribe();
+    }
+
+    @Override
+    public Subscription registerBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultRegister.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .throttleFirst(1000L, TimeUnit.MICROSECONDS)
+                .subscribe(new Action1<RxEvent.ResultRegister>() {
+                    @Override
+                    public void call(RxEvent.ResultRegister register) {
+                        //注册成功
+                        PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
+                        getView().submitResult(register);
+                    }
+                });
     }
 
     private Subscription resultLoginSub() {

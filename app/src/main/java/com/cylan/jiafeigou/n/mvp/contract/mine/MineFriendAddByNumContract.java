@@ -43,8 +43,9 @@ public interface MineFriendAddByNumContract {
          * 设置搜索结果
          * isFrom:是否从添加请求界面点击进入
          * hasSendToMe：是否已向我发送请求过
+         * isFriend:是否是亲友
          */
-        void setFindResult(boolean isFrom, MineAddReqBean bean);
+        void setFindResult(boolean isFrom, MineAddReqBean bean,boolean isFriend);
 
         /**
          * 网络状态变化

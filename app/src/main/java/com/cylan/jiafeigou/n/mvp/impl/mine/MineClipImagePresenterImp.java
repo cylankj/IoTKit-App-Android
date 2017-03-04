@@ -42,6 +42,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
     private CompositeSubscription subscription;
     public JFGAccount jfgAccount;
     private Network network;
+    private long req;
 
     public MineClipImagePresenterImp(MineClipImageContract.View view) {
         super(view);
@@ -61,7 +62,8 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                     @Override
                     public void call(String path) {
                         try {
-                            JfgCmdInsurance.getCmd().updateAccountPortrait(path);
+                            req = JfgCmdInsurance.getCmd().updateAccountPortrait(path);
+                            AppLogger.d("upLoadUserHeadImag:"+ req);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -100,11 +102,10 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     /**
      * 处理上传头像文件后
-     *
      * @param getHttpDoneResult
      */
     private void handlerUploadImage(JFGMsgHttpResult getHttpDoneResult) {
-        if (getHttpDoneResult.requestId == 1) {
+        if (getHttpDoneResult.requestId == req && getHttpDoneResult.ret == 200) {
             sendResetUrl();
         }
     }
@@ -122,7 +123,8 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                             try {
                                 jfgAccount.resetFlag();
                                 jfgAccount.setPhoto(true);
-                                JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                                int req = JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                                AppLogger.d("sendResetUrl:"+req);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
@@ -146,7 +148,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
+                        if (getUserInfo != null) {
                             jfgAccount = getUserInfo.jfgAccount;
                         }
                     }
