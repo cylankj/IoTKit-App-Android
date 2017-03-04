@@ -33,7 +33,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
@@ -71,7 +70,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private IData historyDataProvider;
     private int stopReason = JError.STOP_MAUNALLY;//手动断开
     private CompositeSubscription liveSubscription;
-    private int micSpeakerBit;
     /**
      * 帧率记录
      */
@@ -260,7 +258,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .mergeWith(RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
                         .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
                         .map(resolution -> {
-                            setMicSpeakerBit(0);
                             JfgCmdInsurance.getCmd().setAudio(false, false, false);
                             JfgCmdInsurance.getCmd().setAudio(true, false, false);
                             AppLogger.d("set default mic n speaker flag");
@@ -401,10 +398,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         localSpeaker = false;
                         localMic = false;
                     }
-                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 4, localMic ? 0 : 1);
-                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 3, localSpeaker ? 0 : 1);
-                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 2, remoteMic ? 0 : 1);
-                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 1, remoteSpeaker ? 0 : 1);
                     JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
                     JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
                     AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
@@ -427,10 +420,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     } else {
                         remoteSpeaker = false;
                     }
-                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 4, localMic ? 0 : 1);
-                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 3, localSpeaker ? 0 : 1);
-                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 2, remoteMic ? 0 : 1);
-                    micSpeakerBit = MiscUtils.setBit(micSpeakerBit, 1, remoteSpeaker ? 0 : 1);
                     JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
                     JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
                     AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
@@ -438,13 +427,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public int getMicSpeakerBit() {
-        return micSpeakerBit;
-    }
-
-    @Override
-    public void setMicSpeakerBit(int bit) {
-        this.micSpeakerBit = bit;
+    public int getLocalMicSpeakerBit() {
+        if (getView() == null) return 0;
+        int mic = getView().isLocalMicOn() ? 2 : 0;
+        int speaker = getView().isLocalSpeakerOn() ? 1 : 0;
+        return mic + speaker;
     }
 
     @Override

@@ -126,6 +126,14 @@ public class CamLiveLandControlLayer extends FrameLayout {
         return fLayoutCamLiveLandTopBar;
     }
 
+    public ImageView getCamLandImgSpeaker() {
+        return fLayoutCamLiveLandTopBar.getImgVCamSwitchSpeaker();
+    }
+
+    public ImageView getCamLandImgMic() {
+        return fLayoutCamLiveLandTopBar.getImgVCamTriggerMic();
+    }
+
     public ImageView getImgVCamLiveLandPlay() {
         return imgVCamLiveLandPlay;
     }
@@ -134,8 +142,6 @@ public class CamLiveLandControlLayer extends FrameLayout {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) setVisibility(VISIBLE);
         imgVCamLiveLandPlay.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
         fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
-        fLayoutCamLiveLandTopBar.setMicSpeaker(bit);
-        setLandMicEnable(!(((bit >> 2) & 0x01) == 1));//扬声器开启：mic disable不可点击
         fLayoutCamLiveLandBottomBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
         rvLandDateList.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
         lLayoutCamHistoryWheel.setBackgroundColor(orientation == Configuration.ORIENTATION_LANDSCAPE ? getResources().getColor(R.color.color_4C000000) : Color.TRANSPARENT);
@@ -176,9 +182,5 @@ public class CamLiveLandControlLayer extends FrameLayout {
             fLayoutCamLiveLandBottomBar.setTop(0);
             fLayoutCamLiveLandBottomBar.setTranslationY(0);
         }
-    }
-
-    public void setLandMicEnable(boolean enable) {
-        fLayoutCamLiveLandTopBar.getImgVCamSwitchSpeaker().setEnabled(enable);
     }
 }

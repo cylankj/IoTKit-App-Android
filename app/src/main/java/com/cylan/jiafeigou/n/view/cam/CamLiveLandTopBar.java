@@ -75,13 +75,6 @@ public class CamLiveLandTopBar extends FrameLayout {
         return imgVCamSwitchSpeaker;
     }
 
-    public void setMicSpeaker(int bit) {
-        boolean localMicFlag = (bit >> 3 & 0x01) == 1;
-        boolean localSpeakerFlag = (bit >> 2 & 0x01) == 1;
-        imgVCamSwitchSpeaker.setImageResource(localMicFlag ? R.drawable.icon_land_speaker_off_selector : R.drawable.icon_land_speaker_off_selector);
-        imgVCamTriggerMic.setImageResource(localSpeakerFlag ?  R.drawable.icon_land_mic_on_selector : R.drawable.icon_land_mic_off_selector);
-    }
-
     private TopBarAction topBarAction;
 
     public void setTopBarAction(TopBarAction topBarAction) {

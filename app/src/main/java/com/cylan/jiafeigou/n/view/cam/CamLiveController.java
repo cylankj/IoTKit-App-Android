@@ -71,6 +71,24 @@ public class CamLiveController implements
     private ISafeStateSetter iSafeStateSetterPort;
     private LiveTimeSetter liveTimeSetterPort, liveTimeSetterLand;
     private WeakReference<CamLiveContract.Presenter> presenterRef;
+    private ImageView imgPortMic, imgPortSpeaker;
+
+    public void setImgPortMic(ImageView imgPortMic) {
+        this.imgPortMic = imgPortMic;
+    }
+
+    public void setImgPortSpeaker(ImageView imgPortSpeaker) {
+        this.imgPortSpeaker = imgPortSpeaker;
+    }
+
+    public ImageView getImvLandSpeaker() {
+        return camLiveControlLayer.getCamLandImgSpeaker();
+    }
+
+    public ImageView getImvLandMic() {
+        return camLiveControlLayer.getCamLandImgMic();
+    }
+
     //    /**
 //     * 播放,暂停,loading,播放失败提示按钮.
 //     */
@@ -237,7 +255,7 @@ public class CamLiveController implements
         if (iSafeStateSetterPort != null)
             iSafeStateSetterPort.setVisibility(!land && !isShareDevice);
         //全屏底部区域
-        camLiveControlLayer.setOrientation(presenterRef.get().getMicSpeakerBit(), orientation, isShareDevice, sdCardStatus, safe.$());
+        camLiveControlLayer.setOrientation(presenterRef.get().getLocalMicSpeakerBit(), orientation, isShareDevice, sdCardStatus, safe.$());
         //安全防护
         camLiveControlLayer.setLandSafeClickListener(this);
         AppLogger.i("orientation: " + orientation);
@@ -372,22 +390,42 @@ public class CamLiveController implements
     @Override
     public void onSwitchSpeaker(View view) {
         if (presenterRef != null && presenterRef.get() != null) {
-            int bit = presenterRef.get().getMicSpeakerBit();
-            boolean flag = (bit >> 3 & 0x01) == 1;
+            int bit = presenterRef.get().getLocalMicSpeakerBit();
+            boolean flag = bit == 1 || bit == 3;
             ((ImageView) view).setImageResource(flag ?
                     R.drawable.icon_land_speaker_off_selector : R.drawable.icon_land_speaker_on_selector);
+            view.setTag(flag ?
+                    R.drawable.icon_land_speaker_off_selector : R.drawable.icon_land_speaker_on_selector);
+            imgPortSpeaker.setImageResource(flag ?
+                    R.drawable.icon_port_speaker_off_selector : R.drawable.icon_port_speaker_on_selector);
+            imgPortSpeaker.setTag(flag ?
+                    R.drawable.icon_port_speaker_off_selector : R.drawable.icon_port_speaker_on_selector);
             presenterRef.get().switchSpeaker();
-            camLiveControlLayer.setLandMicEnable(!flag);
         }
     }
 
+    //横屏mic设置
     @Override
     public void onTriggerMic(View view) {
         if (presenterRef != null && presenterRef.get() != null) {
-            int bit = presenterRef.get().getMicSpeakerBit();
-            boolean flag = (bit >> 2 & 0x01) == 1;
+            int bit = presenterRef.get().getLocalMicSpeakerBit();
+            boolean flag = bit >= 2;
             ((ImageView) view).setImageResource(flag ?
                     R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
+            view.setTag(flag ?
+                    R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
+            imgPortMic.setImageResource(flag ?
+                    R.drawable.icon_port_mic_off_selector : R.drawable.icon_port_mic_on_selector);
+            imgPortMic.setTag(flag ?
+                    R.drawable.icon_port_mic_off_selector : R.drawable.icon_port_mic_on_selector);
+            if (!flag) {
+                imgPortSpeaker.setImageResource(R.drawable.icon_port_speaker_on_selector);
+                imgPortSpeaker.setTag(R.drawable.icon_port_speaker_on_selector);
+                camLiveControlLayer.getCamLandImgSpeaker().setImageResource(R.drawable.icon_land_speaker_on_selector);
+                camLiveControlLayer.getCamLandImgSpeaker().setTag(R.drawable.icon_land_speaker_on_selector);
+            }
+            camLiveControlLayer.getCamLandImgSpeaker().setEnabled(flag);
+            imgPortSpeaker.setEnabled(flag);
             presenterRef.get().switchMic();
         }
     }

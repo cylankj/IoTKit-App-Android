@@ -75,7 +75,6 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
@@ -197,6 +196,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setScreenZoomer(imgVCamZoomToFullScreen);
         camLiveController.setPortLiveTimeSetter(liveTimeLayout);
         camLiveController.setActivity(getActivity());
+        camLiveController.setImgPortMic(imgVCamTriggerMic);
+        camLiveController.setImgPortSpeaker(imgVCamSwitchSpeaker);
         liveListener = camLiveController.getLiveStateListener();
     }
 
@@ -390,7 +391,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setLiveType(basePresenter.getPlayType());
         if (liveListener != null) liveListener.liveStateChange();
         imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_off_selector);
+        imgVCamSwitchSpeaker.setTag(R.drawable.icon_port_speaker_off_selector);
         imgVCamTriggerMic.setImageResource(R.drawable.icon_port_mic_off_selector);
+        imgVCamTriggerMic.setTag(R.drawable.icon_port_mic_off_selector);
+        camLiveController.getImvLandMic().setImageResource(R.drawable.icon_land_mic_off_selector);
+        camLiveController.getImvLandMic().setTag(R.drawable.icon_land_mic_off_selector);
+        camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_off_selector);
+        camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_off_selector);
     }
 
     @Override
@@ -412,8 +419,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (tvFlowRef != null && tvFlowRef.get() != null)
             ViewUtils.setMargins(tvFlowRef.get(), 0, (int) getResources().getDimension(port ? R.dimen.x14 : R.dimen.x54),
                     (int) getResources().getDimension(R.dimen.x14), 0);
-        if (port && basePresenter != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING)
-            resetMicSpeakerButton();
     }
 
 
@@ -526,19 +531,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         CameraLiveFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
-    /**
-     * 恢复状态
-     */
-    private void resetMicSpeakerButton() {
-        boolean speakerOn = isLocalSpeakerOn();
-        int sFlag = speakerOn ? R.drawable.icon_port_speaker_on_selector : R.drawable.icon_port_speaker_off_selector;
-        imgVCamSwitchSpeaker.setImageResource(sFlag);
-        boolean micOn = isLocalMicOn();
-        int micFlag = micOn ? R.drawable.icon_port_mic_on_selector : R.drawable.icon_port_mic_off_selector;
-        imgVCamTriggerMic.setImageResource(micFlag);
-        imgVCamSwitchSpeaker.setEnabled(!micOn);
-    }
-
     @Override
     public void onClick(View view) {
         switch (view.getId()) {
@@ -548,6 +540,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 boolean on = isLocalSpeakerOn();
                 int sFlag = on ? R.drawable.icon_port_speaker_off_selector : R.drawable.icon_port_speaker_on_selector;
                 ((ImageView) view).setImageResource(sFlag);
+                view.setTag(sFlag);
+                //横屏
+                camLiveController.getImvLandSpeaker().setImageResource(on ? R.drawable.icon_land_speaker_off_selector : R.drawable.icon_land_speaker_on_selector);
+                camLiveController.getImvLandSpeaker().setTag(on ? R.drawable.icon_land_speaker_off_selector : R.drawable.icon_land_speaker_on_selector);
                 if (basePresenter != null) {
                     basePresenter.switchSpeaker();
                 }
@@ -557,12 +553,17 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 boolean on = isLocalMicOn();
                 int micFlag = on ? R.drawable.icon_port_mic_off_selector : R.drawable.icon_port_mic_on_selector;
                 ((ImageView) view).setImageResource(micFlag);
+                view.setTag(micFlag);
+                camLiveController.getImvLandMic().setImageResource(on ? R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
+                camLiveController.getImvLandMic().setTag(on ? R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
+                camLiveController.getImvLandSpeaker().setEnabled(on);
+                imgVCamSwitchSpeaker.setEnabled(on);
                 if (!on) {
                     //同时设置speaker
-                    imgVCamSwitchSpeaker.setEnabled(false);
                     imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_on_selector);
-                } else {
-                    imgVCamSwitchSpeaker.setEnabled(true);
+                    imgVCamSwitchSpeaker.setTag(R.drawable.icon_port_speaker_on_selector);
+                    camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_on_selector);
+                    camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_on_selector);
                 }
                 if (basePresenter != null) {
                     basePresenter.switchMic();
@@ -581,12 +582,14 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public boolean isLocalMicOn() {
-        return basePresenter != null && (basePresenter.getMicSpeakerBit() >> 3 & 0x01) == 1;
+        Object tag = imgVCamTriggerMic.getTag();
+        return tag != null && (int) tag == R.drawable.icon_port_mic_on_selector;
     }
 
     @Override
     public boolean isLocalSpeakerOn() {
-        return basePresenter != null && (basePresenter.getMicSpeakerBit() >> 2 & 0x01) == 1;
+        Object tag = imgVCamSwitchSpeaker.getTag();
+        return tag != null && (int) tag == R.drawable.icon_port_speaker_on_selector;
     }
 
     @Override

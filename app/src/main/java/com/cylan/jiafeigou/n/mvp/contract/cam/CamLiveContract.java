@@ -132,12 +132,11 @@ public interface CamLiveContract {
         /**
          * 获取本地，远端mic Speaker标志 xxxx
          * 本地mic，本地Speaker，远端mic，远端speaker
+         * 从view的icon来判断，更不容易出bug。
          *
          * @return
          */
-        int getMicSpeakerBit();
-
-        void setMicSpeakerBit(int bit);
+        int getLocalMicSpeakerBit();
 
         /**
          * 预览专用？
