@@ -203,7 +203,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         adapter.setOnShareClickListener(new MineShareDeviceAdapter.OnShareClickListener() {
             @Override
             public void onShare(SuperViewHolder holder, int viewType, int layoutPosition, DeviceBean item) {
-                if (NetUtils.getNetType(getContext()) == 0) {
+                if (NetUtils.getNetType(getContext()) == -1) {
                     ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }

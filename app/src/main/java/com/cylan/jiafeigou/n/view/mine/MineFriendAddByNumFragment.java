@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -24,6 +25,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -41,7 +43,7 @@ import butterknife.OnClick;
  */
 public class MineFriendAddByNumFragment extends Fragment implements MineFriendAddByNumContract.View {
 
-    @BindView(R.id.iv_home_mine_relativesandfriends_add_by_num_back)
+    @BindView(R.id.iv_home_mine_friends_add_by_num_back)
     ImageView ivHomeMineRelativesandfriendsAddByNumBack;
     @BindView(R.id.et_add_by_number)
     EditText etAddByNumber;
@@ -102,7 +104,9 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
                     String account = DataSourceManager.getInstance().getJFGAccount().getAccount();
-                    if (getInputNum().equals(account)) {
+                    if (TextUtils.isEmpty(getInputNum())){
+                        ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
+                    }else if (getInputNum().equals(account)) {
                         ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
                     } else {
                         showFindLoading();
@@ -154,10 +158,10 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
         });
     }
 
-    @OnClick(R.id.iv_home_mine_relativesandfriends_add_by_num_back)
+    @OnClick(R.id.iv_home_mine_friends_add_by_num_back)
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_home_mine_relativesandfriends_add_by_num_back:
+            case R.id.iv_home_mine_friends_add_by_num_back:
                 getFragmentManager().popBackStack();
                 break;
         }
@@ -205,17 +209,37 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     }
 
     @Override
-    public void setFindResult(boolean isFrom, MineAddReqBean bean) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("isFrom", isFrom);
-        bundle.putSerializable("addRequestItems", bean);
-        MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
-                .addToBackStack("mineHelpFragment")
-                .commit();
+    public void setFindResult(boolean isFrom, MineAddReqBean bean,boolean isFriend) {
+        if (!isFriend){
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isFrom", isFrom);
+            bundle.putSerializable("addRequestItems", bean);
+            MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
+                    .addToBackStack("mineHelpFragment")
+                    .commit();
+        }else {
+            //已是亲友的跳转到分享
+            RelAndFriendBean friendBean = new RelAndFriendBean();
+            friendBean.account = bean.account;
+            friendBean.alias = bean.alias;
+            friendBean.markName = "";
+            friendBean.iconUrl = bean.iconUrl;
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", -1);
+            bundle.putParcelable("frienditembean", friendBean);
+            MineFriendDetailFragment relativeAndFrienDetialFragment = MineFriendDetailFragment.newInstance(bundle);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, relativeAndFrienDetialFragment, "relativeAndFrienDetialFragment")
+                    .addToBackStack("mineHelpFragment")
+                    .commit();
+        }
+
     }
 
     /**

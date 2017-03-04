@@ -138,7 +138,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                     e.printStackTrace();
                 }
                 getView().hideFindLoading();
-                getView().setFindResult(false, addReqBean);
+                getView().setFindResult(false, addReqBean,checkAccountCallback.b);
             }
         } else {
             //  未注册 无结果

@@ -1,27 +1,44 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     android:background="@android:color/white"
     android:clickable="true">
 
     <TextView
+        android:layout_marginTop="@dimen/y50"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/color_7c7c7c"
+        android:textSize="@dimen/sp15"
+        android:text="@string/Tap0_AlreadyEmailed"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginTop="@dimen/y18"
         android:id="@+id/tv_send_email_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="@dimen/y50"
+        android:layout_gravity="center_horizontal"
         android:gravity="center"
         android:lineSpacingExtra="@dimen/x10"
         android:textColor="@color/color_7c7c7c"
         android:textSize="@dimen/sp15" />
 
     <TextView
+        android:layout_marginTop="@dimen/y18"
+        android:layout_gravity="center_horizontal"
+        android:textColor="@color/color_7c7c7c"
+        android:textSize="@dimen/sp15"
+        android:text="@string/Tap0_Click_ActivateAccount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
         android:id="@+id/tv_email_confirm"
         style="@style/login_model_commit_style"
-        android:layout_below="@+id/tv_send_email_content"
-        android:layout_centerHorizontal="true"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/y37"
         android:text="@string/Button_Sure" />
 
-</RelativeLayout>
+</LinearLayout>

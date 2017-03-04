@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddReqDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -65,6 +66,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     private MineAddFromContactFragment addReqFragment;
 
     private OnAcceptAddListener addListener;
+    private boolean isFrom;
 
     public interface OnAcceptAddListener {
         void onAccept(MineAddReqBean backbean);
@@ -106,7 +108,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
      */
     private void initData() {
         Bundle arguments = getArguments();
-        boolean isFrome = arguments.getBoolean("isFrom");
+        isFrom = arguments.getBoolean("isFrom");
         addRequestItems = (MineAddReqBean) arguments.getSerializable("addRequestItems");
         if (TextUtils.isEmpty(addRequestItems.alias)) {
             tvRelativeAndFriendName.setText("sjd172");
@@ -115,7 +117,8 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         }
         tvRelativeAndFriendLikeName.setText(addRequestItems.account);
         tvAddRequestMesg.setText(addRequestItems.sayHi);
-        showOrHideReqMesg(isFrome);
+        showOrHideReqMesg(isFrom);
+
         //显示头像
         Glide.with(getContext()).load(addRequestItems.iconUrl)
                 .asBitmap()

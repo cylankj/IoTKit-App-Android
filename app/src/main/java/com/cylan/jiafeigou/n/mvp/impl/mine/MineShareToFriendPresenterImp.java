@@ -98,7 +98,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
 
     @Override
     public boolean checkNetConnetion() {
-        if (NetUtils.getNetType(ContextUtils.getContext()) != 0) {
+        if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
             return true;
         } else {
             return false;

@@ -134,7 +134,7 @@ public class ClipImageActivity extends AppCompatActivity implements MineClipImag
             }
 
             if (presenter != null) {
-                if (NetUtils.getNetType(ContextUtils.getContext()) == 0) {
+                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
                     ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_DOOR));
                     return;
                 }

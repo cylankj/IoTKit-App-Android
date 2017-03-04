@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
+import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -120,17 +121,37 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      * 跳转到对方详情页
      */
     @Override
-    public void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean) {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("isFrom", isFrom);
-        bundle.putSerializable("addRequestItems", bean);
-        MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
-                .addToBackStack("mineHelpFragment")
-                .commit();
+    public void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean,boolean isFriend) {
+        if (isFriend){
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isFrom", isFrom);
+            bundle.putSerializable("addRequestItems", bean);
+            MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
+                    .addToBackStack("mineHelpFragment")
+                    .commit();
+        }else {
+            //已是亲友的跳转到分享
+            RelAndFriendBean friendBean = new RelAndFriendBean();
+            friendBean.account = bean.account;
+            friendBean.alias = bean.alias;
+            friendBean.markName = "";
+            friendBean.iconUrl = bean.iconUrl;
+            Bundle bundle = new Bundle();
+            bundle.putInt("position", -1);
+            bundle.putParcelable("frienditembean", friendBean);
+            MineFriendDetailFragment relativeAndFrienDetialFragment = MineFriendDetailFragment.newInstance(bundle);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, relativeAndFrienDetialFragment, "relativeAndFrienDetialFragment")
+                    .addToBackStack("mineHelpFragment")
+                    .commit();
+        }
+
     }
 
     /**

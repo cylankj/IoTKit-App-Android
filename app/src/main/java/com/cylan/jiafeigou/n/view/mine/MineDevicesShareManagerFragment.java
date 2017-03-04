@@ -210,7 +210,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     public void onCancleShare(RelAndFriendBean item) {
         tempBean = item;
         if (getView() != null) {
-            if (NetUtils.getNetType(getContext()) == 0) {
+            if (NetUtils.getNetType(getContext()) == -1) {
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 return;
             }

@@ -159,8 +159,10 @@ public class JConstant {
     public static final String OPEN_DOOR_NOTIFY = "open_door_notify";           //门磁开关提示
 
     public static final String KEY_REGISTER_SMS_TOKEN = "key_token";
-    public static final String KEY_FRIST_GET_SMS_TIME = "key_frist_get_time";
-    public static final String KEY_GET_SMS_COUNT = "key_get_sms_count";
+    public static final String KEY_FORGET_PWD_FRIST_GET_SMS = "key_frist_get_time";
+    public static final String KEY_FORGET_PWD_GET_SMS_COUNT = "key_get_sms_count";
+    public static final String KEY_REG_FRIST_GET_SMS = "key_reg_frist_get_time";
+    public static final String KEY_REG_GET_SMS_COUNT = "key_reg_get_sms_count";
 
     public static final int OS_SERVER = -1; //system message
     public static final int OS_IOS_PHONE = 0;

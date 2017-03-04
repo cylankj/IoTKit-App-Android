@@ -5,6 +5,8 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 
+import rx.Subscription;
+
 /**
  * Created by chen on 5/30/16.
  */
@@ -29,6 +31,8 @@ public interface SetupPwdContract {
         void register(final String account, final String pwd, int type, String token);
 
         void executeLogin(LoginAccountBean login);
+
+        Subscription registerBack();
     }
 
 }

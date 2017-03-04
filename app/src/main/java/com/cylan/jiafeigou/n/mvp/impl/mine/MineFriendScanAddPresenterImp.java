@@ -39,8 +39,6 @@ import rx.subscriptions.CompositeSubscription;
 public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendScanAddContract.View>
         implements MineFriendScanAddContract.Presenter {
 
-    private static final int WHITE = 0xFFFFFFFF;
-    private static final int BLACK = 0xFF000000;
 
     private CompositeSubscription compositeSubscription;
     private Network network;
@@ -174,7 +172,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }
-                getView().jump2FriendDetailFragment(false, resutBean);
+                getView().jump2FriendDetailFragment(false, resutBean,checkAccountCallback.b);
             } else if (checkAccountCallback.i == 241) {
                 // 已经是好友了
                 getView().isMineFriendResult();
