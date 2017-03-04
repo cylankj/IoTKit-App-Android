@@ -16,6 +16,13 @@ import java.util.regex.Pattern;
  * Created by cylan-hunt on 16-8-24.
  */
 public class BindUtils {
+
+    public static final int BIND_PREPARED = 0;
+    public static final int BIND_TIME_OUT = 1;//超时
+    public static final int BIND_ING = 2;//绑定中
+    public static final int BIND_NEED_REBIND = 3;//需要强绑
+    public static final int BIND_FAILED = 4;//失败
+    public static final int BIND_SUC = 5;//成功
     private static final String INVALID_SSID_0 = "<unknown ssid>";
     private static final String INVALID_SSID_1 = "0x";
 

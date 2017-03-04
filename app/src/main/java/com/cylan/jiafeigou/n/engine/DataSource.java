@@ -235,7 +235,7 @@ public class DataSource implements AppCallBack {
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备
-                RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(jfgResult));
+                RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(jfgResult));
                 break;
             case JResultEvent.JFG_RESULT_UNBINDDEV:
                 RxBus.getCacheInstance().post(new RxEvent.UnBindDeviceEvent(jfgResult));
