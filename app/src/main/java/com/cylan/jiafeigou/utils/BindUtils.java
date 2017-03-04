@@ -23,6 +23,7 @@ public class BindUtils {
     public static final int BIND_NEED_REBIND = 3;//需要强绑
     public static final int BIND_FAILED = 4;//失败
     public static final int BIND_SUC = 5;//成功
+    public static final int BIND_NULL = 6;//没有cid
     private static final String INVALID_SSID_0 = "<unknown ssid>";
     private static final String INVALID_SSID_1 = "0x";
 

@@ -52,6 +52,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
 
 
     private AlertDialog needRebindDialog;
+    private AlertDialog nullCidDialog;
 
     public static SubmitBindingInfoFragment newInstance(Bundle bundle) {
         SubmitBindingInfoFragment fragment = new SubmitBindingInfoFragment();
@@ -80,6 +81,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
         adjustViewSize();
         if (basePresenter != null)
             basePresenter.startCounting();
+        customToolbar.setBackAction(v -> getActivity().onBackPressed());
     }
 
     private void adjustViewSize() {
@@ -95,7 +97,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
                     .setMessage(getString(R.string.BIND_NEED_REBIND))
                     .setPositiveButton(getString(R.string.OK), null)
                     .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                        if(getActivity()!=null&&getActivity() instanceof BindDeviceActivity){
+                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
                             ((BindDeviceActivity) getActivity()).finishExt();
                         }
                     })
@@ -155,6 +157,26 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
                     fragment, android.R.id.content);
             if (basePresenter != null)
                 basePresenter.stop();
+        } else if (state == BindUtils.BIND_NULL) {
+            if (nullCidDialog != null && nullCidDialog.isShowing()) return;
+            nullCidDialog = new AlertDialog.Builder(getActivity())
+                    .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                                ((BindDeviceActivity) getActivity()).finishExt();
+                            }
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                                ((BindDeviceActivity) getActivity()).finishExt();
+                            }
+                        }
+                    })
+                    .create();
         }
     }
 

@@ -8,7 +8,6 @@ import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 
@@ -17,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -81,6 +81,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
     private Subscription bindResultSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.BindDeviceEvent.class)
                 .observeOn(Schedulers.newThread())
+                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null && bindDeviceEvent.jfgResult.event == JResultEvent.JFG_RESULT_BINDDEV)
                 .timeout(90, TimeUnit.SECONDS, Observable.just("timeout")
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .filter(s -> getView() != null)
@@ -90,23 +91,23 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                             AppLogger.e("timeout: " + s);
                             return null;
                         }))
-                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> {
-                    if (bindDeviceEvent.jfgResult.event != JResultEvent.JFG_RESULT_BINDDEV) {
-                        bindResult = BindUtils.BIND_FAILED;
-                        getView().bindState(BindUtils.BIND_FAILED);
-                    }
-                    return getView() != null
-                            && bindDeviceEvent.jfgResult.event == JResultEvent.JFG_RESULT_BINDDEV;
-                })
-                .map((RxEvent.BindDeviceEvent bindDeviceEvent) -> {
-                    bindResult = BindUtils.BIND_SUC;
-                    if (simulatePercent != null)
+                .filter(viceEvent -> getView() != null)
+                .map((RxEvent.BindDeviceEvent result) -> {
+                    bindResult = result.jfgResult.code;
+                    getView().bindState(bindResult);
+                    if (simulatePercent != null && result.jfgResult.code == 0) {
                         simulatePercent.boost();
+                    }
                     AppLogger.i("bind success");
                     return null;
                 })
-                .retry(new RxHelper.RxException<>("bindResultSub"))
-                .subscribe();
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+
+                    }
+                }, throwable ->
+                        AppLogger.e("err:" + throwable.getLocalizedMessage()));
     }
 
     @Override
