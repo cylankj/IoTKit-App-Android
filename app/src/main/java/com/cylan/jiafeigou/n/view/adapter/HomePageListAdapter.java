@@ -46,6 +46,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         this.deviceItemClickListener = deviceItemClickListener;
     }
 
+    @Deprecated//原型改了
     public void setDeviceItemLongClickListener(DeviceItemLongClickListener deviceItemLongClickListener) {
         this.deviceItemLongClickListener = deviceItemLongClickListener;
     }
@@ -53,7 +54,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, String item) {
         holder.setOnClickListener(R.id.rLayout_device_item, deviceItemClickListener);
-        holder.setOnLongClickListener(R.id.rLayout_device_item, deviceItemLongClickListener);
+//        holder.setOnLongClickListener(R.id.rLayout_device_item, deviceItemLongClickListener);
         handleState(holder, item);
     }
 
