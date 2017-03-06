@@ -125,7 +125,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                     return;
                 }
                 if (!hasSdcard()) {
-                    ToastUtil.showToast(getString(R.string.Tap1_Camera_NoSDCardTips));
+                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
                     return;
                 }
                 rbMotion.setChecked(true);
@@ -140,7 +140,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 //                    return;
 //                }
                 if (!hasSdcard()) {
-                    ToastUtil.showToast(getString(R.string.Tap1_Camera_NoSDCardTips));
+                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
                     return;
                 }
                 rb24Hours.setChecked(true);
@@ -164,7 +164,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
                 .setMessage(getString(R.string.RECORD_ALARM_OPEN))
                 .setPositiveButton(getString(R.string.OPEN), (DialogInterface dialog, int which) -> {
                     if (index == 0 && !hasSdcard()) {
-                        ToastUtil.showToast(getString(R.string.Tap1_Camera_NoSDCardTips));
+                        ToastUtil.showToast(getString(R.string.has_not_sdcard));
                         return;
                     }
                     DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
