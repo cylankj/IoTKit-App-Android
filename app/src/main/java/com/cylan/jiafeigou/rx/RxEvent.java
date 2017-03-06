@@ -649,6 +649,13 @@ public class RxEvent {
             return this;
         }
 
+        public DeviceSyncRsp setUuid(String uuid, ArrayList<Long> idList) {
+            this.uuid = uuid;
+            this.idList = idList;
+            return this;
+        }
+
+        public ArrayList<Long> idList;
         public String uuid;
     }
 

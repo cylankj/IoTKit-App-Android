@@ -135,10 +135,10 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
             }
             break;
             case R.id.lLayout_mode_24_hours: {
-                if (!alarmDisable()) {
-                    openAlarm(1);
-                    return;
-                }
+//                if (!alarmDisable()) {
+//                    openAlarm(1);
+//                    return;
+//                }
                 if (!hasSdcard()) {
                     ToastUtil.showToast(getString(R.string.Tap1_Camera_NoSDCardTips));
                     return;

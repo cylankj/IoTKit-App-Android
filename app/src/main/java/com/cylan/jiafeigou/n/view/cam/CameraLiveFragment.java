@@ -221,7 +221,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (basePresenter != null) {
             basePresenter.fetchHistoryDataList();
             //非待机模式
-            onDeviceInfoChanged(false);
+            onDeviceInfoChanged(-1);
         }
         camLiveController.setPortSafeSetter(portFlipLayout);
     }
@@ -267,7 +267,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
         DpMsgDefine.DPPrimary<Boolean> isStandBY = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-        if (isStandBY.$()) return;
+        if (isStandBY != null && isStandBY.$()) return;
         basePresenter.startPlayVideo(TYPE_LIVE);
     }
 
@@ -363,32 +363,40 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      * 根据 待机模式 ,分享用户模式设置一些view的状态
      */
     @Override
-    public void onDeviceInfoChanged(boolean fromRemote) {
-        DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
-        boolean flag = wFlag.value;
-        fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
-        if (flag) {
-            camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
-            //安全防护状态。
-            showFloatFlowView(false, null);
-            //需要断开直播
-            if (basePresenter != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                basePresenter.stopPlayVideo(basePresenter.getPlayType());
+    public void onDeviceInfoChanged(long msgId) {
+        if (msgId == -1 || msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
+            DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
+            boolean flag = wFlag.value;
+            fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
+            if (flag) {
+                camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
+                //安全防护状态。
+                showFloatFlowView(false, null);
+                //需要断开直播
+                if (basePresenter != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+                    basePresenter.stopPlayVideo(basePresenter.getPlayType());
+                }
+            } else {
+                startLive();
             }
-        } else {
-            startLive();
+            setupStandByView(flag);
         }
-        DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
-        //sd卡状态变化，
-        camLiveController.updateLiveButtonState(sdStatus != null && sdStatus.hasSdcard);
-        if (fromRemote && (sdStatus == null || !sdStatus.hasSdcard)) {
-            AppLogger.d("sdcard 被拔出");
-            if (sdcardPulloutDlg != null && sdcardPulloutDlg.get() != null && sdcardPulloutDlg.get().isShowing())
-                return;
-            initSdcardStateDialog();
-            sdcardPulloutDlg.get().show();
+        if (msgId == DpMsgMap.ID_204_SDCARD_STORAGE) {
+            DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+            //sd卡状态变化，
+            camLiveController.updateLiveButtonState(sdStatus != null && sdStatus.hasSdcard);
+            if (sdStatus == null || !sdStatus.hasSdcard) {
+                AppLogger.d("sdcard 被拔出");
+                if (sdcardPulloutDlg != null && sdcardPulloutDlg.get() != null && sdcardPulloutDlg.get().isShowing())
+                    return;
+                initSdcardStateDialog();
+                sdcardPulloutDlg.get().show();
+            }
+            AppLogger.e("sdcard数据被清空，唐宽，还没实现");
         }
-        AppLogger.e("sdcard数据被清空，唐宽，还没实现");
+    }
+
+    private void setupStandByView(boolean flag) {
         //进入待机模式
         View v = fLayoutCamLiveView.findViewById("showSceneView".hashCode());
         if (v == null && !flag) {

@@ -37,7 +37,7 @@ public interface CamLiveContract {
 
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
-        void onDeviceInfoChanged(boolean fromRemote);
+        void onDeviceInfoChanged(long id);
 
         /**
          * 准备播放

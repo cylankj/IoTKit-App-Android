@@ -211,6 +211,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                             DataSourceManager.getInstance().delLocalJFGDevice(uuid);
                             return null;
                         })
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe());
     }
 }

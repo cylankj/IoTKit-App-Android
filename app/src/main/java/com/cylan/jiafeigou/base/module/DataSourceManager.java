@@ -319,14 +319,17 @@ public class DataSourceManager implements JFGSourceManager {
     public void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
         JFGDPDevice device = mCachedDeviceMap.get(s);
         if (device != null) {
-            boolean changed = false;
+//            boolean changed = false;//
+            ArrayList<Long> updateIdList = new ArrayList<>();
             for (JFGDPMsg msg : arrayList) {
-                changed |= device.setValue(msg);
+//                changed |= device.setValue(msg);
+                device.setValue(msg);
+                updateIdList.add(msg.id);
             }
-            if (changed) {
-                device.version = System.currentTimeMillis();
-                RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(s));
-            }
+//            if (changed) {//消息量不大，尽可刷新
+            device.version = System.currentTimeMillis();
+            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(s, updateIdList));
+//            }
         }
     }
 

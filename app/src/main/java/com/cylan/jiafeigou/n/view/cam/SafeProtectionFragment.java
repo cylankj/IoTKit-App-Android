@@ -71,6 +71,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     private TimePickDialogFragment timePickDialogFragment;
     private String uuid;
 
+    private JFGDPDevice device;
+
+
     public SafeProtectionFragment() {
         // Required empty public constructor
     }
@@ -99,6 +102,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
     }
 
 
@@ -107,10 +111,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         customToolbar.setBackAction((View v) -> {
             getActivity().getSupportFragmentManager().popBackStack();
         });
-        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
-        if (device != null && JFGRules.isFreeCam(device.pid)) {
-            fLayoutProtectionWarnEffect.setVisibility(View.GONE);
-        }
         updateDetails();
         swMotionDetection.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             if (!isChecked) {
@@ -156,6 +156,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 v.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         }
+        if (show && device != null && JFGRules.isFreeCam(device.pid)) {
+            fLayoutProtectionWarnEffect.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -167,9 +170,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     private void updateDetails() {
         DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        showDetail(flag.$());
+        showDetail(flag != null && flag.$());
         //移动侦测
-        swMotionDetection.setChecked(flag.$());
+        swMotionDetection.setChecked(flag != null && flag.$());
         //提示音
         DpMsgDefine.DPNotificationInfo notificationInfo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
         fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0

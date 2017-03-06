@@ -592,12 +592,20 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (
                         getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
+                .flatMap(new Func1<RxEvent.DeviceSyncRsp, Observable<Long>>() {
+                    @Override
+                    public Observable<Long> call(RxEvent.DeviceSyncRsp deviceSyncRsp) {
+                        AppLogger.d("updateList: " + deviceSyncRsp.idList);
+                        return Observable.from(deviceSyncRsp.idList);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.DeviceSyncRsp update) -> {
-                    getView().onDeviceInfoChanged(true);
+                .map((Long id) -> {
+                    getView().onDeviceInfoChanged(id);
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe();
     }
 
