@@ -751,4 +751,8 @@ public class RxEvent {
             this.jfgResult = jfgResult;
         }
     }
+
+    public static class ReportJFGDevice {
+
+    }
 }

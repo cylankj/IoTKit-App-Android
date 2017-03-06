@@ -45,6 +45,8 @@ public interface HomeWonderfulContract {
         void onQueryTimeLineTimeOut();
 
         void onChangeTimeLineDaySuccess(List<DpMsgDefine.DPWonderItem> items);
+
+        void onQueryTimeLineCompleted();
     }
 
     interface Presenter extends JFGPresenter {

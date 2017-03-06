@@ -16,6 +16,9 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPHelper;
 import com.cylan.jiafeigou.cache.video.History;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -36,6 +39,31 @@ import java.util.TreeSet;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
+import rx.Observable;
+import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.misc.JConstant.OS_AIR_DETECTOR;
+import static com.cylan.jiafeigou.misc.JConstant.OS_ANDROID_PHONE;
+import static com.cylan.jiafeigou.misc.JConstant.OS_CAMARA_ANDROID_SERVICE;
+import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_ANDROID;
+import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_ANDROID_4G;
+import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_CC3200;
+import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_PANORAMA_GUOKE;
+import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_PANORAMA_HAISI;
+import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_PANORAMA_QIAOAN;
+import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS;
+import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS_V2;
+import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS_V3;
+import static com.cylan.jiafeigou.misc.JConstant.OS_DOOR_BELL;
+import static com.cylan.jiafeigou.misc.JConstant.OS_DOOR_BELL_CAM;
+import static com.cylan.jiafeigou.misc.JConstant.OS_DOOR_BELL_V2;
+import static com.cylan.jiafeigou.misc.JConstant.OS_EFAML;
+import static com.cylan.jiafeigou.misc.JConstant.OS_IOS_PHONE;
+import static com.cylan.jiafeigou.misc.JConstant.OS_IR;
+import static com.cylan.jiafeigou.misc.JConstant.OS_MAGNET;
+import static com.cylan.jiafeigou.misc.JConstant.OS_PC;
+import static com.cylan.jiafeigou.misc.JConstant.OS_SERVER;
+import static com.cylan.jiafeigou.misc.JConstant.OS_TEMP_HUMI;
 
 /**
  * Created by yzd on 16-12-28.
@@ -43,6 +71,8 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
 
 public class DataSourceManager implements JFGSourceManager {
     private final String TAG = getClass().getName();
+
+    private IDBHelper dbHelper;
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
@@ -54,6 +84,64 @@ public class DataSourceManager implements JFGSourceManager {
     private boolean isOnline;
 
     private DataSourceManager() {
+        dbHelper = BaseDBHelper.getInstance();
+        initFromDB();
+    }
+
+    private void initFromDB() {
+        dbHelper.getActiveAccount()
+                .observeOn(Schedulers.io())
+                .filter(account -> account != null)
+                .map(account -> {
+                    mJFGAccount = new JFGDPAccount();
+                    mJFGAccount.phone = account.getPhone();
+                    mJFGAccount.token = account.getToken();
+                    mJFGAccount.alias = account.getAlias();
+                    mJFGAccount.enablePush = account.getEnablePush();
+                    mJFGAccount.enableSound = account.getEnableSound();
+                    mJFGAccount.email = account.getEmail();
+                    mJFGAccount.enableVibrate = account.getEnableVibrate();
+                    mJFGAccount.photoUrl = account.getPhotoUrl();
+                    mJFGAccount.account = account.getAccount();
+                    return mJFGAccount;
+                })
+                .flatMap(dpAccount -> dbHelper.queryDPMsgByUuid(null)
+                        .observeOn(Schedulers.io())
+                        .map(dpEntities -> {
+                            JFGDPMsg msg;
+                            for (DPEntity entity : dpEntities) {
+                                msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
+                                msg.packValue = entity.getBytes();
+                                dpAccount.setValue(msg);
+                            }
+                            return dpAccount;
+                        })
+                )
+                .flatMap(account -> dbHelper.getAccountDevice(account.account))
+                .flatMap(Observable::from)
+                .map(device -> {
+                    JFGDPDevice dpDevice = create(device.getPid());
+//                    public String vid = "";
+                    dpDevice.uuid = device.getUuid();
+                    dpDevice.sn = device.getSn();
+                    dpDevice.alias = device.getAlias();
+                    dpDevice.shareAccount = device.getShareAccount();
+                    dpDevice.pid = device.getPid();
+                    mCachedDeviceMap.put(device.getUuid(), dpDevice);
+                    return dpDevice;
+                })
+                .filter(device -> device != null)
+                .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
+                        .observeOn(Schedulers.io())
+                        .map(dpEntities -> {
+                            JFGDPMsg msg;
+                            for (DPEntity entity : dpEntities) {
+                                msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
+                                msg.packValue = entity.getBytes();
+                                device.setValue(msg);
+                            }
+                            return dpEntities;
+                        })).subscribe();
     }
 
     public static DataSourceManager getInstance() {
@@ -145,6 +233,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
+        mCachedDeviceMap.clear();//这个 cache 方法是通过SDK调用的调用到这里说明当前已经是有网状态,则清空之前的数据
         for (com.cylan.entity.jniCall.JFGDevice device : devices) {
             Log.d("uuid", "uuid: " + new Gson().toJson(device));
             JFGDPDevice temp = mCachedDeviceMap.get(device.uuid);
@@ -284,7 +373,7 @@ public class DataSourceManager implements JFGSourceManager {
             if (entry.getValue() == null) continue;
             changed = false;
             for (JFGDPMsg dp : entry.getValue()) {
-                BaseDPHelper.getInstance().saveDPByte(identity, dp.version, (int) dp.id, dp.packValue).subscribe();
+                dbHelper.saveDPByte(identity, dp.version, (int) dp.id, dp.packValue).subscribe();
                 if (device != null) {//优先尝试写入device中
                     changed |= device.setValue(dp, dataRsp.seq);
                     continue;
@@ -370,7 +459,6 @@ public class DataSourceManager implements JFGSourceManager {
         return value;
     }
 
-
     private JFGDPDevice create(com.cylan.entity.jniCall.JFGDevice device) {
         //摄像头设备
         if (JFGRules.isCamera(device.pid)) {
@@ -382,6 +470,39 @@ public class DataSourceManager implements JFGSourceManager {
         return new JFGDPDevice() {
         };
     }
+        return create(device.pid).setDevice(device);
+    }
+
+    private JFGDPDevice create(int pid) {
+        JFGDPDevice result = null;
+        switch (pid) {
+            case OS_SERVER:
+                break;
+            case OS_IOS_PHONE:
+                break;
+            case OS_PC:
+                break;
+            case OS_ANDROID_PHONE:
+                break;
+
+            //摄像头设备
+            case OS_CAMARA_ANDROID_SERVICE:
+            case OS_CAMERA_ANDROID:
+            case OS_CAMERA_ANDROID_4G:
+            case OS_CAMERA_CC3200:
+            case OS_CAMERA_UCOS:
+            case OS_CAMERA_PANORAMA_HAISI:
+            case OS_CAMERA_PANORAMA_QIAOAN:
+            case OS_CAMERA_PANORAMA_GUOKE:
+            case OS_CAMERA_UCOS_V2:
+            case OS_CAMERA_UCOS_V3:
+                result = new JFGCameraDevice();
+                break;
+
+            //门铃设备
+            case OS_DOOR_BELL:
+                result = new JFGDoorBellDevice();
+                break;
 
     @Override
     public void cacheShareList(ArrayList<JFGShareListInfo> arrayList) {
@@ -390,6 +511,14 @@ public class DataSourceManager implements JFGSourceManager {
         shareList.addAll(arrayList);
         RxBus.getCacheInstance().post(new RxEvent.GetShareListRsp());
     }
+            //中控设备
+            case OS_EFAML:
+                result = new JFGEFamilyDevice();
+                break;
+            case OS_TEMP_HUMI:
+                break;
+            case OS_IR:
+                break;
 
     @Override
     public boolean isDeviceSharedTo(String uuid) {
@@ -402,6 +531,12 @@ public class DataSourceManager implements JFGSourceManager {
         }
         return false;
     }
+            //门磁设备
+            case OS_MAGNET:
+                result = new JFGMagnetometerDevice();
+                break;
+            case OS_AIR_DETECTOR:
+                break;
 
     @Override
     public ArrayList<JFGShareListInfo> getShareList() {

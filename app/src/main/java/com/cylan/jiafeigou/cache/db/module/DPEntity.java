@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.cache.db.module;
 
+import com.cylan.jiafeigou.cache.db.view.IAction;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 
 import org.greenrobot.greendao.DaoException;
@@ -11,7 +12,7 @@ import org.greenrobot.greendao.annotation.Id;
  * Created by yanzhendong on 2017/2/27.
  */
 @Entity(active = true, generateGettersSetters = false)
-public class DPCache implements IDPEntity {
+public class DPEntity extends BaseDPEntity {
     @Id
     private Long id;
     private String account;
@@ -20,7 +21,7 @@ public class DPCache implements IDPEntity {
     private Long version;
     private Integer msgId;
     private byte[] bytes;
-    private String tag;
+    private String action;
     private String state;
     /**
      * Used to resolve relations
@@ -30,12 +31,12 @@ public class DPCache implements IDPEntity {
     /**
      * Used for active entity operations.
      */
-    @Generated(hash = 559718613)
-    private transient DPCacheDao myDao;
+    @Generated(hash = 1268361579)
+    private transient DPEntityDao myDao;
 
-    @Generated(hash = 1364992632)
-    public DPCache(Long id, String account, String server, String uuid, Long version,
-                   Integer msgId, byte[] bytes, String tag, String state) {
+    @Generated(hash = 568731944)
+    public DPEntity(Long id, String account, String server, String uuid, Long version,
+                    Integer msgId, byte[] bytes, String action, String state) {
         this.id = id;
         this.account = account;
         this.server = server;
@@ -43,89 +44,114 @@ public class DPCache implements IDPEntity {
         this.version = version;
         this.msgId = msgId;
         this.bytes = bytes;
-        this.tag = tag;
+        this.action = action;
         this.state = state;
     }
 
-    @Generated(hash = 2141781192)
-    public DPCache() {
+    @Generated(hash = 592767460)
+    public DPEntity() {
+    }
+
+    public IDPEntity setId(Long id) {
+        this.id = id;
+        return this;
     }
 
     public Long getId() {
-        return this.id;
+        return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public IDPEntity setAccount(String account) {
+        this.account = account;
+        return this;
     }
 
     public String getAccount() {
-        return this.account;
+        return account;
     }
 
-    public void setAccount(String account) {
-        this.account = account;
+    public IDPEntity setServer(String server) {
+        this.server = server;
+        return this;
     }
 
     public String getServer() {
-        return this.server;
+        return server;
     }
 
-    public void setServer(String server) {
-        this.server = server;
-    }
-
-    public String getUuid() {
-        return this.uuid;
-    }
-
-    public IDPEntity setUuid(String uuid) {
-        this.uuid = uuid;
+    public IDPEntity setBytes(byte[] bytes) {
+        this.bytes = bytes;
         return this;
     }
 
-    public Long getVersion() {
-        return this.version;
+    public byte[] getBytes() {
+        return bytes;
     }
 
-    public IDPEntity setVersion(Long version) {
-        this.version = version;
-        return this;
-    }
-
-    public Integer getMsgId() {
-        return this.msgId;
-    }
-
+    @Override
     public IDPEntity setMsgId(Integer msgId) {
         this.msgId = msgId;
         return this;
     }
 
-    public byte[] getBytes() {
-        return this.bytes;
+    @Override
+    public Integer getMsgId() {
+        return this.msgId;
     }
 
-    public void setBytes(byte[] bytes) {
-        this.bytes = bytes;
-    }
-
-    public String getTag() {
-        return this.tag;
-    }
-
-    public IDPEntity setTag(String tag) {
-        this.tag = tag;
+    @Override
+    public IDPEntity setVersion(Long version) {
+        this.version = version;
         return this;
     }
 
-    public String getState() {
-        return this.state;
+    @Override
+    public Long getVersion() {
+        return this.version;
     }
 
-    public IDPEntity setState(String state) {
+    @Override
+    public IDPEntity setUuid(String uuid) {
+        this.uuid = uuid;
+        return this;
+    }
+
+    @Override
+    public String getUuid() {
+        return this.uuid;
+    }
+
+    @Override
+    public IDPEntity setAction(IAction action) {
+        this.action = action.action();
+        return this;
+    }
+
+    @Override
+    public String ACTION() {
+        return IAction.BaseAction.$(action, IAction.BaseAction.class).ACTION();
+    }
+
+    @Override
+    public DPEntity setAction(String action) {
+        this.action = action;
+        return this;
+    }
+
+    @Override
+    public String getAction() {
+        return this.action;
+    }
+
+    @Override
+    public DPEntity setState(String state) {
         this.state = state;
         return this;
+    }
+
+    @Override
+    public String getState() {
+        return this.state;
     }
 
     /**
@@ -165,9 +191,10 @@ public class DPCache implements IDPEntity {
     }
 
     /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 730875712)
+    @Generated(hash = 69931815)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDPCacheDao() : null;
+        myDao = daoSession != null ? daoSession.getDPEntityDao() : null;
     }
+
 }

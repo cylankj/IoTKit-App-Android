@@ -27,7 +27,7 @@ import java.util.Stack;
  * <li>Fails fast on any mismatched keys.</li>
  * </ul>
  * The constructor parses the original pattern into activity_cloud_live_mesg_call_out_item doubly-linked list of {@link Token}s.
- * These tokens do not modify the original pattern, thus preserving any spans.
+ * These tokens do not perform the original pattern, thus preserving any spans.
  * <p/>
  * The {@link #format()} method iterates over the tokens, replacing and coloring the text as it iterates. The
  * doubly-linked list allows each token to ask its predecessor for the expanded length.

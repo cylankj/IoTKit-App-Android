@@ -12,35 +12,29 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.entity.JfgEnum;
-import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.view.IDPAction;
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.Security;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -48,8 +42,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -58,12 +50,9 @@ import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
 import rx.Observable;
-import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
-
-import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 @RuntimePermissions
 public class BellRecordDetailActivity extends BaseFullScreenActivity {
@@ -184,90 +173,33 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_collection)
     public void collection() {
-        if (DataSourceManager.getInstance().isOnline()) {
-            collectionFromServer();
-        } else {
-            collectionFromLocal();
-        }
-    }
-
-    private void collectionFromLocal() {
-
-
-    }
-
-    private void collectionFromServer() {
-        Subscription subscribe = Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
-            try {
-                //先设置 robotData
-                DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
-                item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
-                item.cid = mUUID;
-                JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
-                item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-                item.fileName = mCallRecord.timeInLong / 1000 + "_1.jpg";
-                item.time = (int) (mCallRecord.timeInLong / 1000);
-                ArrayList<JFGDPMsg> req = new ArrayList<>(1);
-                JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, mCallRecord.timeInLong);
-                msg.packValue = item.toBytes();
-                req.add(msg);
-                long result = JfgCmdInsurance.getCmd().robotSetData(mUUID, req);
-                AppLogger.e(result + "");
-                subscriber.onNext((int) result);
-                subscriber.onCompleted();
-                AppLogger.d("正在设置 robotData:");
-            } catch (Exception e) {
-                e.printStackTrace();
-                subscriber.onError(e);
-            }
-        }).subscribeOn(Schedulers.io())
-                .timeout(10, TimeUnit.SECONDS)
-                .flatMap(req -> RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearRsp.class).filter(rsp -> req == (int) rsp.seq).first())
-                .map(rsp -> {
-                    int code = rsp.arrayList.get(0).ret;
-                    if (code != 0) throw new RxEvent.ErrorRsp(code);
-                    long result = -1;
-                    try {
-                        String remotePath = "/long/" +
-                                Security.getVId(JFGRules.getTrimPackageName()) +
-                                "/" +
-                                mUUID +
-                                "/wonder/" +
-                                mCallRecord.timeInLong / 1000 +
-                                "_1.jpg";
-                        FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                                .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID))
-                                .downloadOnly(100, 100);
-                        result = getCmd().putFileToCloud(remotePath, future.get().getAbsolutePath());
-                        AppLogger.d("正在设置 CloudFile");
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                    return result;
-                })
-                .flatMap(req -> RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class).filter(rsp -> rsp.requestId == req).first())
+        Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
+            DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
+            item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
+            item.cid = mUUID;
+            JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+            item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+            item.fileName = mCallRecord.timeInLong / 1000 + "_1.jpg";
+            item.time = (int) (mCallRecord.timeInLong / 1000);
+            IDPEntity entity = new DPEntity()
+                    .setUuid(mUUID)
+                    .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
+                    .setVersion(mCallRecord.timeInLong)
+                    .setAction(new IDPAction.DPSharedAction(1, 1))
+                    .setBytes(item.toBytes());
+            subscriber.onNext(entity);
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    if (result.ret == 200) {//收藏成功
-                        ToastUtil.showPositiveToast("收藏成功!");
-                        AppLogger.d("收藏成功!");
-                    } else {
-                        ToastUtil.showPositiveToast("收藏失败!");
-                        AppLogger.d("收藏失败!");
+                    if (result.getResultCode() == 200) {
+                        ToastUtil.showPositiveToast(getString(R.string.Tap1_BigPic_FavoriteTips));
+                    } else if (result.getResultCode() == 1050) {
+                        ToastUtil.showNegativeToast(getString(R.string.DailyGreatTips_Full));
                     }
-                }, e -> {
-                    if (e instanceof RxEvent.ErrorRsp) {
-                        RxEvent.ErrorRsp rsp = (RxEvent.ErrorRsp) e;
-                        switch (rsp.code) {
-                            case 1050://收藏达到上限
-                                ToastUtil.showNegativeToast("已达到收藏上限!");
-                                break;
-                            default:
-                                ToastUtil.showNegativeToast("收藏失败!");
-                        }
-                    }
-                });
-        compositeSubscription.add(subscribe);
+                }, e -> e.printStackTrace());
     }
 
     @Override
@@ -299,6 +231,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        ToastUtil.showNegativeToast(getString(R.string.DOWNLOAD_FAILD));
                         mDownloadFile = null;
                     }
                 });

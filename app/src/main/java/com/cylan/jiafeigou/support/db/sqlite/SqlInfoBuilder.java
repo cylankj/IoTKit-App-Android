@@ -126,7 +126,7 @@ public final class SqlInfoBuilder {
         Object idValue = id.getColumnValue(entity);
 
         if (idValue == null) {
-            throw new DbException("this entity[" + table.getEntityType() + "]'s id value is null");
+            throw new DbException("this singleEntity[" + table.getEntityType() + "]'s id value is null");
         }
         StringBuilder builder = new StringBuilder("DELETE FROM ");
         builder.append("\"").append(table.getName()).append("\"");
@@ -143,7 +143,7 @@ public final class SqlInfoBuilder {
         ColumnEntity id = table.getId();
 
         if (idValue == null) {
-            throw new DbException("this entity[" + table.getEntityType() + "]'s id value is null");
+            throw new DbException("this singleEntity[" + table.getEntityType() + "]'s id value is null");
         }
         StringBuilder builder = new StringBuilder("DELETE FROM ");
         builder.append("\"").append(table.getName()).append("\"");
@@ -182,7 +182,7 @@ public final class SqlInfoBuilder {
         Object idValue = id.getColumnValue(entity);
 
         if (idValue == null) {
-            throw new DbException("this entity[" + table.getEntityType() + "]'s id value is null");
+            throw new DbException("this singleEntity[" + table.getEntityType() + "]'s id value is null");
         }
 
         SqlInfo result = new SqlInfo();

@@ -21,6 +21,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 
+
 /**
  * Created by yzd on 16-12-30.
  */
@@ -123,7 +124,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         mHolderCaller = null;
-                        mView.onNewCallTimeOut();
+                        mView.onDismiss();
                     }
                 });
         registerSubscription(subscription);

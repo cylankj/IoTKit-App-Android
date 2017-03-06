@@ -199,7 +199,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 int visibleItemCount = mLinearLayoutManager.getChildCount();
                 int totalItemCount = mLinearLayoutManager.getItemCount();
                 if (dy > 0) { //check for scroll down
-
+                    if (pastVisibleItems + visibleItemCount >= totalItemCount && mHasMore) {
+                        mPresenter.startLoadMore();
+                    }
                 }
             }
         });
@@ -276,6 +278,11 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         homeWonderAdapter.clear();
         if (items.size() > 0)
             onQueryTimeLineSuccess(items, true);
+    }
+
+    @Override
+    public void onQueryTimeLineCompleted() {
+        srLayoutMainContentHolder.setRefreshing(false);
     }
 
     @SuppressWarnings("deprecation")
