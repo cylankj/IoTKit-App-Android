@@ -22,7 +22,7 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
         return Observable.from(multiEntity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(entity -> mDPHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId()))
+                .flatMap(entity -> mDPHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(),null))
                 .buffer(multiEntity.size())
                 .map(items -> new BaseDPTaskResult().setResultCode(0).setResultResponse(items));
     }
@@ -37,10 +37,10 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
                 params.add(msg);
             }
             try {
-                long seq = JfgCmdInsurance.getCmd().robotDelData(singleEntity.getUuid() == null ? "" : singleEntity.getUuid(), params, 0);
+                long seq = JfgCmdInsurance.getCmd().robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
-                AppLogger.d("正在执行批量删除操作, uuid 为:" + singleEntity.getUuid());
+                AppLogger.d("正在执行批量删除操作, uuid 为:" + entity.getUuid());
             } catch (JfgException e) {
                 e.printStackTrace();
                 subscriber.onCompleted();
@@ -50,7 +50,7 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
                 .subscribeOn(Schedulers.io())
                 .flatMap(this::makeDeleteDataRspResponse)
                 .flatMap(rsp -> Observable.from(multiEntity)
-                        .flatMap(entity -> mDPHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId())
+                        .flatMap(entity -> mDPHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(),null)
                                 .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(cache))));
     }
 }

@@ -4,7 +4,7 @@ import com.cylan.jiafeigou.cache.db.module.tasks.DPMultiDeleteTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleDeleteTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleQueryTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleSharedTask;
-import com.cylan.jiafeigou.cache.db.view.IDPAction;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPMultiTask;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
@@ -34,7 +34,7 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
     }
 
     @Override
-    public IDPTask getTask(String action, boolean multi, Object initValue) {
+    public IDPTask getTask(DBAction action, boolean multi, Object initValue) {
         if (multi) {
             return getMultiTask(action).init((List<IDPEntity>) initValue);
         } else {
@@ -42,19 +42,19 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
         }
     }
 
-    private IDPSingleTask getSingleTask(String action) {
-        if (IDPAction.DELETED.ACTION().equals(action)) {
+    private IDPSingleTask getSingleTask(DBAction action) {
+        if (DBAction.DELETED == action) {
             return new DPSingleDeleteTask();
-        } else if (IDPAction.SHARED.ACTION().equals(action)) {
+        } else if (DBAction.SHARED == action) {
             return new DPSingleSharedTask();
-        } else if (IDPAction.QUERY.ACTION().equals(action)) {
+        } else if (DBAction.QUERY == action) {
             return new DPSingleQueryTask();
         }
         return null;
     }
 
-    private IDPMultiTask getMultiTask(String action) {
-        if (IDPAction.DELETED.ACTION().equals(action)) {
+    private IDPMultiTask getMultiTask(DBAction action) {
+        if (DBAction.DELETED == action) {
             return new DPMultiDeleteTask();
         }
         return null;

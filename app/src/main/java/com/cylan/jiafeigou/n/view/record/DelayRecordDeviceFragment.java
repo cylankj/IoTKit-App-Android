@@ -93,7 +93,7 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
 
     @Override
     public void onViewAction(int action, String handler, Object extra) {
-//        if (action == JFGView.VIEW_ACTION_OFFER) {
+//        if (option == JFGView.VIEW_ACTION_OFFER) {
 //            if (TextUtils.equals(handler, "devices")) {
 //                mDeviceEmptyView.setVisibility(View.GONE);
 //                mDeviceAdapter.clear();

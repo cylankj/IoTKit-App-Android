@@ -25,7 +25,8 @@ import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
-import com.cylan.jiafeigou.cache.db.view.IDPAction;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -185,7 +186,8 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     .setUuid(mUUID)
                     .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                     .setVersion(mCallRecord.timeInLong)
-                    .setAction(new IDPAction.DPSharedAction(1, 1))
+                    .setAction(DBAction.SHARED)
+                    .setOption(new DBOption.SingleSharedOption(1, 1))
                     .setBytes(item.toBytes());
             subscriber.onNext(entity);
             subscriber.onCompleted();

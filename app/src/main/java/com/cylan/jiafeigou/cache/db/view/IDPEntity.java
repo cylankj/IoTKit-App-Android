@@ -5,7 +5,7 @@ package com.cylan.jiafeigou.cache.db.view;
  */
 
 public interface IDPEntity extends IEntity<IDPEntity> {
-    //这是表属性
+
     IDPEntity setMsgId(Integer msgId);
 
     Integer getMsgId();

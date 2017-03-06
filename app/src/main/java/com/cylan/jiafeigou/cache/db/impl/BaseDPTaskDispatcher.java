@@ -64,14 +64,14 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
 
                     @Override
                     public void onNext(DPEntity entity) {
-                        BaseDPTaskFactory.getInstance().getTask(entity.ACTION(), false, entity).performServer().subscribe(result -> request(1), e -> request(1));
+                        BaseDPTaskFactory.getInstance().getTask(entity.action(), false, entity).performServer().subscribe(result -> request(1), e -> request(1));
                     }
                 });
     }
 
     @Override
     public Observable<IDPTaskResult> perform(IDPEntity entity) {
-        return Observable.just(mTaskFactory.getTask(entity.ACTION(), false, entity))
+        return Observable.just(mTaskFactory.getTask(entity.action(), false, entity))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(task -> DataSourceManager.getInstance().isOnline()
@@ -82,7 +82,7 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
 
     @Override
     public Observable<IDPTaskResult> perform(List<? extends IDPEntity> entities) {
-        return Observable.just(mTaskFactory.getTask(entities.get(0).ACTION(), true, entities))
+        return Observable.just(mTaskFactory.getTask(entities.get(0).action(), true, entities))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(task -> DataSourceManager.getInstance().isOnline()

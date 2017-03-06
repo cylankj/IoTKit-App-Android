@@ -3,7 +3,8 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
-import com.cylan.jiafeigou.cache.db.view.IDPAction;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -62,7 +63,8 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         Subscription subscribe = Observable.just(new DPEntity()
                 .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
                 .setVersion(time)
-                .setAction(new IDPAction.DPQueryAction(asc, 20))
+                .setAction(DBAction.QUERY)
+                .setOption(new DBOption.SingleQueryOption(asc, 20))
                 .setUuid(mUUID))
                 .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -96,7 +98,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                     .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
                     .setVersion(item.version)
                     .setUuid(mUUID)
-                    .setAction(IDPAction.DELETED);
+                    .setAction(DBAction.DELETED);
             result.add(entity);
         }
         return result;

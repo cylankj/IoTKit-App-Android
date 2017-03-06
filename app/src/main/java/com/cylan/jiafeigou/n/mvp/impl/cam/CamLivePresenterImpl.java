@@ -194,7 +194,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 }))
                 //filter getInterestingOne()
                 .filter(result -> {
-                    AppLogger.d("action: " + result);
+                    AppLogger.d("option: " + result);
                     return TextUtils.equals(result, "JFGMsgVideoResolution");
                 }), (String s, Object o) -> {
             AppLogger.i("start to receive rtcp");
@@ -337,7 +337,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 }))
                 //filter getInterestingOne()
                 .filter(result -> {
-                    AppLogger.d("action: " + result);
+                    AppLogger.d("option: " + result);
                     return TextUtils.equals(result, "JFGMsgVideoResolution");
                 }), (String s, Object o) -> {
             AppLogger.i("start to receive rtcp");

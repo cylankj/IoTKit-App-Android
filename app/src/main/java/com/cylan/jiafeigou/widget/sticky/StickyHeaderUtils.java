@@ -84,7 +84,7 @@ public class StickyHeaderUtils {
 
                             break;
                         case MotionEvent.ACTION_UP:
-                            // when action up, dispatch an action cancel to avoid activity_cloud_live_mesg_call_out_item possible click
+                            // when option up, dispatch an option cancel to avoid activity_cloud_live_mesg_call_out_item possible click
                             final MotionEvent cancelEvent = MotionEvent.obtain(event.getDownTime(), event.getEventTime(), MotionEvent.ACTION_CANCEL, event.getX(), event.getY(), 0);
                             scrollingView.dispatchTouchEvent(cancelEvent);
                             mDownEventDispatched = false;

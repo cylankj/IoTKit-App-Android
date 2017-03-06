@@ -232,7 +232,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void onWriteStoragePermissionsDenied() {
-        // NOTE: Perform action that requires the permission.
+        // NOTE: Perform option that requires the permission.
         // If this is run by PermissionsDispatcher, the permission will have been granted
 //        Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
         if (presenter != null) presenter.finishAppDelay();
@@ -271,7 +271,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @NeedsPermission(Manifest.permission.CAMERA)
     public void showCamera() {
-        // NOTE: Perform action that requires the permission. If this is run by PermissionCheckerUitls, the permission will have been granted
+        // NOTE: Perform option that requires the permission. If this is run by PermissionCheckerUitls, the permission will have been granted
         //do you business
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showCamera");
     }

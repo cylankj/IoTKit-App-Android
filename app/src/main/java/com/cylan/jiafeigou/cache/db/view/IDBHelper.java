@@ -19,33 +19,35 @@ public interface IDBHelper {
     Observable saveDPByte(String uuid, Long version, Integer msgId, byte[] bytes);
 
     //junk code
-    Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId);
+    Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option);
 
     //junk code
-    Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId);
+    Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBOption option);
 
-    Observable<Boolean> deleteDPMsgWithConfirm(String uuid, Integer msgId);
+    Observable<Boolean> deleteDPMsgWithConfirm(String uuid, Integer msgId, DBOption option);
 
-    Observable<List<DPEntity>> queryUnConfirmDpMsgWithTag(String uuid, Integer msgId, IAction action);
+    Observable<List<DPEntity>> queryUnConfirmDpMsgWithTag(String uuid, Integer msgId, DBAction action);
 
     Observable<List<DPEntity>> queryUnConfirmDpMsg(String uuid, Integer msgId);
 
-    Observable<List<DPEntity>> markDPMsgWithConfirm(String uuid, Long version, Integer msgId, IAction action);
+    Observable<List<DPEntity>> markDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBAction action, DBOption option);
 
-    Observable<List<DPEntity>> markDPMsgNotConfirm(String uuid, Long version, Integer msgId, IAction action);
+    Observable<List<DPEntity>> markDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBAction action, DBOption option);
 
     Observable<List<DPEntity>> queryDPMsg(String uuid, Long version, Integer msgId, Boolean asc, Integer limit);
 
     Observable<List<DPEntity>> queryDPMsgByUuid(String uuid);
 
 
-    Observable<DPEntity> saveDpMsg(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, String action, String state);
+    Observable<DPEntity> saveDpMsg(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option);
 
-    Observable<DPEntity> saveOrUpdate(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, String action, String state);
+    Observable<DPEntity> saveOrUpdate(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option);
 
-    Observable<List<DPEntity>> queryDPMsg(String account, String server, String uuid, Long version, Integer msgId, Boolean asc, Integer limit, IAction action, IState state);
+    Observable<DPEntity> saveOrUpdate(String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option);
 
-    Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, IAction action, IState state);
+    Observable<List<DPEntity>> queryDPMsg(String account, String server, String uuid, Long version, Integer msgId, Boolean asc, Integer limit, DBAction action, DBState state, DBOption option);
+
+    Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option);
 
     Observable<DPEntity> deleteDPMsgForce(String account, String server, String uuid, Long version, Integer msgId);
 

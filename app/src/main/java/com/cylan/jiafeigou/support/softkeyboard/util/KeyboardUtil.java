@@ -264,10 +264,10 @@ public class KeyboardUtil {
 
                 if (!isOverlayLayoutDisplayHContainStatusBar) {
                     // in case of the keyboard is hiding, the display height of the
-                    // action-bar-overlay-layout would be possible equal to the screen height.
+                    // option-bar-overlay-layout would be possible equal to the screen height.
 
                     // and if isOverlayLayoutDisplayHContainStatusBar has already been true, the
-                    // display height of action-bar-overlay-layout must include the height of the
+                    // display height of option-bar-overlay-layout must include the height of the
                     // status bar always.
                     isOverlayLayoutDisplayHContainStatusBar = overlayLayoutDisplayHeight == screenHeight;
                 }
@@ -276,7 +276,7 @@ public class KeyboardUtil {
                     // In normal case, we need to plus the status bar height manually.
                     displayHeight = overlayLayoutDisplayHeight + statusBarHeight;
                 } else {
-                    // In some case(such as Samsung S7 edge), the height of the action-bar-overlay-layout
+                    // In some case(such as Samsung S7 edge), the height of the option-bar-overlay-layout
                     // display bound already included the height of the status bar, in this case we
                     // doesn't need to plus the status bar height manually.
                     displayHeight = overlayLayoutDisplayHeight;
@@ -311,7 +311,7 @@ public class KeyboardUtil {
 
                 keyboardHeight = actionBarOverlayLayout.getHeight() - displayHeight;
 
-                Log.d(TAG, String.format("action bar over layout %d display height: %d",
+                Log.d(TAG, String.format("option bar over layout %d display height: %d",
                         ((View) contentView.getParent()).getHeight(), displayHeight));
 
             } else {

@@ -126,9 +126,9 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
+        DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
         BaseDBHelper.getInstance().updateAccount(jfgAccount).subscribe(account -> {
             RxBus.getCacheInstance().post(jfgAccount);
-            DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
         });
         AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
     }
@@ -203,7 +203,7 @@ public class DataSource implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
-        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l,arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SdcardClearRsp(l, arrayList));
     }
 

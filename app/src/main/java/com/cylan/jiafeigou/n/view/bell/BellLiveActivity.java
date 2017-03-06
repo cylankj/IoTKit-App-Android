@@ -143,7 +143,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if ("android.intent.action.HEADSET_PLUG".equals(action)) {
+            if ("android.intent.option.HEADSET_PLUG".equals(action)) {
                 if (intent.hasExtra("state")) {
                     if (intent.getIntExtra("state", 0) == 0) {
                         BellLiveActivityPermissionsDispatcher.handleHeadsetDisconnectedWithCheck(BellLiveActivity.this);

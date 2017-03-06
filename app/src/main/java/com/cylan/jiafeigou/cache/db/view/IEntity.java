@@ -5,15 +5,15 @@ package com.cylan.jiafeigou.cache.db.view;
  */
 
 public interface IEntity<T> {
-    T setAction(IAction action);
+    T setAction(DBAction action);
 
-    String ACTION();
+    DBAction action();
 
-    T setAction(String action);
+    T setState(DBState state);
 
-    String getAction();
+    DBState state();
 
-    T setState(String state);
+    T setOption(DBOption option);
 
-    String getState();
+    <R extends DBOption> R option(Class<R> clz);
 }

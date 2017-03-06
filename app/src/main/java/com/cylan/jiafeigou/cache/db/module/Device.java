@@ -1,10 +1,11 @@
 package com.cylan.jiafeigou.cache.db.module;
 
 import com.cylan.entity.jniCall.JFGDevice;
-import com.cylan.jiafeigou.cache.db.view.IAction;
-import com.cylan.jiafeigou.cache.db.view.IDeviceAction;
-import com.cylan.jiafeigou.cache.db.view.IDeviceState;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
+import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
+import com.google.gson.Gson;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -30,6 +31,7 @@ public class Device implements IEntity<Device> {
     private String account;
     private String action;
     private String state;
+    private String option;
     /**
      * Used to resolve relations
      */
@@ -41,9 +43,9 @@ public class Device implements IEntity<Device> {
     @Generated(hash = 371273952)
     private transient DeviceDao myDao;
 
-    @Generated(hash = 652905847)
+    @Generated(hash = 1616267814)
     public Device(Long id, String uuid, String sn, String alias, String shareAccount, int pid,
-            String vid, String account, String action, String state) {
+                  String vid, String account, String action, String state, String option) {
         this.id = id;
         this.uuid = uuid;
         this.sn = sn;
@@ -54,6 +56,7 @@ public class Device implements IEntity<Device> {
         this.account = account;
         this.action = action;
         this.state = state;
+        this.option = option;
     }
 
     public Device(JFGDevice device) {
@@ -63,43 +66,28 @@ public class Device implements IEntity<Device> {
         this.shareAccount = device.shareAccount;
         this.pid = device.pid;
         this.vid = device.vid;
-        this.action = IDeviceAction.SAVED.action();
-        this.state = IDeviceState.SUCCESS.state();
+        this.action = DBAction.SAVED.action();
+        this.state = DBState.SUCCESS.state();
     }
 
     @Generated(hash = 1469582394)
     public Device() {
     }
 
-    @Override
-    public Device setAction(IAction action) {
-        this.action = action.action();
-        return this;
-    }
-
-    @Override
-    public String ACTION() {
-        return IAction.BaseAction.$(action, IAction.BaseAction.class).ACTION();
-    }
-
-    @Override
     public Device setAction(String action) {
         this.action = action;
         return this;
     }
 
-    @Override
     public String getAction() {
         return this.action;
     }
 
-    @Override
     public Device setState(String state) {
         this.state = state;
         return this;
     }
 
-    @Override
     public String getState() {
         return this.state;
     }
@@ -202,6 +190,53 @@ public class Device implements IEntity<Device> {
 
     public void setAccount(String account) {
         this.account = account;
+    }
+
+    @Override
+    public Device setAction(DBAction action) {
+        if (action != null) {
+            this.action = action.action();
+        }
+        return this;
+    }
+
+    @Override
+    public DBAction action() {
+        return DBAction.valueOf(this.action);
+    }
+
+    @Override
+    public Device setState(DBState state) {
+        if (state != null) {
+            this.state = state.state();
+        }
+        return this;
+    }
+
+    @Override
+    public DBState state() {
+        return DBState.valueOf(this.state);
+    }
+
+    @Override
+    public Device setOption(DBOption option) {
+        if (option != null) {
+            this.option = option.option();
+        }
+        return this;
+    }
+
+    @Override
+    public <R extends DBOption> R option(Class<R> clz) {
+        return new Gson().fromJson(this.option, clz);
+    }
+
+    public String getOption() {
+        return this.option;
+    }
+
+    public void setOption(String option) {
+        this.option = option;
     }
 
     /** called by internal mechanisms, do not call yourself. */

@@ -7,8 +7,8 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPByteParser;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
-import com.cylan.jiafeigou.cache.db.view.IAction;
-import com.cylan.jiafeigou.cache.db.view.IDPAction;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -28,21 +28,22 @@ import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
  */
 
 public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
-    protected IDPAction.DPQueryAction action;
+    private DBOption.SingleQueryOption option;
+
 
     public DPSingleQueryTask() {
     }
 
     @Override
     public <R extends IDPSingleTask<BaseDPTaskResult>> R init(IDPEntity cache) {
-        action = IAction.BaseAction.$(cache.getAction(), IDPAction.DPQueryAction.class);
+        this.option = cache.option(DBOption.SingleQueryOption.class);
         return super.init(cache);
 
     }
 
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        return BaseDBHelper.getInstance().queryDPMsg(singleEntity.getUuid(), singleEntity.getVersion() == 0 ? Long.MAX_VALUE : singleEntity.getVersion(), singleEntity.getMsgId(), action.asc, action.limit)
+        return BaseDBHelper.getInstance().queryDPMsg(entity.getUuid(), entity.getVersion() == 0 ? Long.MAX_VALUE : entity.getVersion(), entity.getMsgId(), option.asc, option.limit)
                 .map(items -> {
                     List<DataPoint> result = new ArrayList<>();
                     for (DPEntity item : items) {
@@ -63,11 +64,11 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
     public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                AppLogger.d("正在发送查询请求,version:" + singleEntity.getVersion() + "count:" + action.asc + "acs:" + action.limit);
+                AppLogger.d("正在发送查询请求,version:" + entity.getVersion() + "count:" + option.asc + "acs:" + option.limit);
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
-                JFGDPMsg msg = new JFGDPMsg(singleEntity.getMsgId(), singleEntity.getVersion());
+                JFGDPMsg msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
                 params.add(msg);
-                long seq = getCmd().robotGetData(singleEntity.getUuid() == null ? "" : singleEntity.getUuid(), params, action.limit, action.asc, 0);//多请求一条数据,用来判断是否是一天最后一条
+                long seq = getCmd().robotGetData(entity.getUuid() == null ? "" : entity.getUuid(), params, option.limit, option.asc, 0);//多请求一条数据,用来判断是否是一天最后一条
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
@@ -78,10 +79,10 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 .subscribeOn(Schedulers.io())
                 .filter(seq -> seq > 0)
                 .flatMap(this::makeGetDataRspResponse)
-                .flatMap(rsp -> mDPHelper.markDPMsgWithConfirm(singleEntity.getUuid(), null, singleEntity.getMsgId(), IDPAction.SAVED).map(entity -> rsp))
+                .flatMap(rsp -> mDPHelper.markDPMsgWithConfirm(entity.getUuid(), null, entity.getMsgId(), DBAction.SAVED,null).map(entity -> rsp))
                 .map(rsp -> {
                     AppLogger.d("收到从服务器返回数据!!!");
-                    DpMsgDefine.DPSet<DpMsgDefine.DPWonderItem> result = DataSourceManager.getInstance().getValue(singleEntity.getUuid(), singleEntity.getMsgId(), rsp.seq);
+                    DpMsgDefine.DPSet<DpMsgDefine.DPWonderItem> result = DataSourceManager.getInstance().getValue(entity.getUuid(), entity.getMsgId(), rsp.seq);
                     return new BaseDPTaskResult().setResultResponse(result.list()).setResultCode(0);
                 });
     }

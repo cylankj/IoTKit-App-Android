@@ -1,9 +1,9 @@
 package com.cylan.jiafeigou.cache.db.module;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.cache.db.view.IAccountAction;
-import com.cylan.jiafeigou.cache.db.view.IAccountState;
-import com.cylan.jiafeigou.cache.db.view.IAction;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
+import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 
 import org.greenrobot.greendao.DaoException;
@@ -32,6 +32,7 @@ public class Account implements IEntity<Account> {
     private String photoUrl;
     private String action;
     private String state;
+    private String option;
 
     /**
      * Used to resolve relations
@@ -44,6 +45,7 @@ public class Account implements IEntity<Account> {
     @Generated(hash = 335469827)
     private transient AccountDao myDao;
 
+
     public Account(JFGAccount account) {
         this.account = account.getAccount();
         this.phone = account.getPhone();
@@ -54,18 +56,18 @@ public class Account implements IEntity<Account> {
         this.email = account.getEmail();
         this.enableVibrate = account.isEnableVibrate();
         this.photoUrl = account.getPhotoUrl();
-        this.action = IAccountAction.SAVED.action();
-        this.state = IAccountState.SUCCESS.state();
+        this.action = DBAction.SAVED.action();
+        this.state = DBState.SUCCESS.state();
     }
 
     @Generated(hash = 882125521)
     public Account() {
     }
 
-    @Generated(hash = 1496705446)
+    @Generated(hash = 139519536)
     public Account(Long id, String account, String phone, String token, String alias,
                    boolean enablePush, boolean enableSound, String email, boolean enableVibrate,
-                   String photoUrl, String action, String state) {
+                   String photoUrl, String action, String state, String option) {
         this.id = id;
         this.account = account;
         this.phone = phone;
@@ -78,6 +80,7 @@ public class Account implements IEntity<Account> {
         this.photoUrl = photoUrl;
         this.action = action;
         this.state = state;
+        this.option = option;
     }
 
     public String getAccount() {
@@ -194,18 +197,56 @@ public class Account implements IEntity<Account> {
 
 
     @Override
-    public Account setAction(IAction action) {
-        this.action = action.action();
+    public Account setAction(DBAction action) {
+        if (action != null) {
+            this.action = action.action();
+        }
         return this;
     }
 
     @Override
-    public String ACTION() {
-        return IAction.BaseAction.$(this.action, IAction.BaseAction.class).ACTION();
+    public DBAction action() {
+        return DBAction.valueOf(this.action);
+    }
+
+    @Override
+    public Account setState(DBState state) {
+        if (state != null) {
+            this.state = state.state();
+        }
+        return this;
+    }
+
+    @Override
+    public DBState state() {
+        return DBState.valueOf(this.state);
+    }
+
+    @Override
+    public Account setOption(DBOption option) {
+        if (option != null) {
+            this.option = option.option();
+        }
+        return this;
+    }
+
+    public String getOption() {
+        return option;
+    }
+
+    public void setOption(String option) {
+        this.option = option;
+    }
+
+    @Override
+    public <R extends DBOption> R option(Class<R> clz) {
+        return null;
     }
 
     public Account setAction(String action) {
-        this.action = action;
+        if (action != null) {
+            this.action = action;
+        }
         return this;
     }
 

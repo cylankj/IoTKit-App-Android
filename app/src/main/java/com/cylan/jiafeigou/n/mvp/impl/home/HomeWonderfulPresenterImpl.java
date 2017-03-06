@@ -5,7 +5,8 @@ import android.content.pm.PackageManager;
 
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
-import com.cylan.jiafeigou.cache.db.view.IDPAction;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -106,7 +107,8 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         Observable.just(new DPEntity()
                 .setUuid("")
                 .setVersion(0L)
-                .setAction(new IDPAction.DPQueryAction(false, 20))
+                .setAction(DBAction.QUERY)
+                .setOption(new DBOption.SingleQueryOption(false, 20))
                 .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
@@ -119,6 +121,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         mView.onQueryTimeLineSuccess(mWonderItems, true);
                     }
                 }, e -> {
+                    e.printStackTrace();
                     AppLogger.d(e.getMessage());
                     mView.onQueryTimeLineCompleted();
                 }, () -> mView.onQueryTimeLineCompleted());
@@ -129,7 +132,8 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         Observable.just(mWonderItems.get(mWonderItems.size() - 1).version)
                 .map(version -> new DPEntity()
                         .setVersion(version)
-                        .setAction(new IDPAction.DPQueryAction(false, 20))
+                        .setAction(DBAction.QUERY)
+                        .setOption(new DBOption.SingleQueryOption(false, 20))
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)
@@ -156,7 +160,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .map(version -> new DPEntity()
                         .setUuid("")
                         .setVersion(version)
-                        .setAction(IDPAction.DELETED.action())
+                        .setAction(DBAction.DELETED)
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
                 .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())

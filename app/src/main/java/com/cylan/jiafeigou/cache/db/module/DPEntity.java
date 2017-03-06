@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.cache.db.module;
 
-import com.cylan.jiafeigou.cache.db.view.IAction;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
+import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 
 import org.greenrobot.greendao.DaoException;
@@ -23,6 +25,7 @@ public class DPEntity extends BaseDPEntity {
     private byte[] bytes;
     private String action;
     private String state;
+    private String option;//json 格式的字符串
     /**
      * Used to resolve relations
      */
@@ -34,9 +37,9 @@ public class DPEntity extends BaseDPEntity {
     @Generated(hash = 1268361579)
     private transient DPEntityDao myDao;
 
-    @Generated(hash = 568731944)
+    @Generated(hash = 1007409977)
     public DPEntity(Long id, String account, String server, String uuid, Long version,
-                    Integer msgId, byte[] bytes, String action, String state) {
+                    Integer msgId, byte[] bytes, String action, String state, String option) {
         this.id = id;
         this.account = account;
         this.server = server;
@@ -46,6 +49,7 @@ public class DPEntity extends BaseDPEntity {
         this.bytes = bytes;
         this.action = action;
         this.state = state;
+        this.option = option;
     }
 
     @Generated(hash = 592767460)
@@ -121,37 +125,68 @@ public class DPEntity extends BaseDPEntity {
         return this.uuid;
     }
 
-    @Override
-    public IDPEntity setAction(IAction action) {
-        this.action = action.action();
+
+    public String getOption() {
+        return option;
+    }
+
+    public IDPEntity setOption(String option) {
+        this.option = option;
         return this;
     }
 
-    @Override
-    public String ACTION() {
-        return IAction.BaseAction.$(action, IAction.BaseAction.class).ACTION();
-    }
-
-    @Override
     public DPEntity setAction(String action) {
         this.action = action;
         return this;
     }
 
     @Override
+    public IDPEntity setAction(DBAction action) {
+        if (action != null) {
+            this.action = action.action();
+        }
+        return this;
+    }
+
+    @Override
+    public DBAction action() {
+        return DBAction.valueOf(this.action);
+    }
+
     public String getAction() {
         return this.action;
     }
 
     @Override
-    public DPEntity setState(String state) {
-        this.state = state;
+    public IDPEntity setState(DBState state) {
+        this.state = state.state();
         return this;
     }
 
     @Override
+    public DBState state() {
+        return DBState.valueOf(this.state);
+    }
+
+    public void setState(String state) {
+        this.state = state;
+    }
+
     public String getState() {
         return this.state;
+    }
+
+    @Override
+    public IDPEntity setOption(DBOption option) {
+        if (option != null) {
+            this.option = option.option();
+        }
+        return this;
+    }
+
+    @Override
+    public <R extends DBOption> R option(Class<R> clz) {
+        return DBOption.BaseDBOption.option(this.option, clz);
     }
 
     /**

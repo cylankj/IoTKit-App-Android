@@ -21,7 +21,7 @@ import rx.Observable;
  */
 
 public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTask<T>, IDPMultiTask<T> {
-    protected IDPEntity singleEntity;
+    protected IDPEntity entity;
     protected List<IDPEntity> multiEntity;
     protected IDBHelper mDPHelper;
 
@@ -29,14 +29,14 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     public <R extends IDPMultiTask<T>> R init(List<IDPEntity> cache) {
         this.mDPHelper = BaseDBHelper.getInstance();
         this.multiEntity = cache;
-        this.singleEntity = cache.get(0);
+        this.entity = cache.get(0);
         return (R) this;
     }
 
     @Override
     public <R extends IDPSingleTask<T>> R init(IDPEntity cache) {
         this.mDPHelper = BaseDBHelper.getInstance();
-        this.singleEntity = cache;
+        this.entity = cache;
         return (R) this;
     }
 
