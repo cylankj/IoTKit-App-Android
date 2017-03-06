@@ -1,9 +1,12 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 
+import android.Manifest;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,36 +17,45 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.google.zxing.Result;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 
-import static com.cylan.jiafeigou.misc.JConstant.EFAMILY_QR_CODE_REG;
-import static com.cylan.jiafeigou.misc.JConstant.EFAMILY_URL_PREFIX;
+import static com.cylan.jiafeigou.misc.JConstant.QR_CODE_REG;
+import static com.cylan.jiafeigou.misc.JConstant.QR_CODE_REG_WITH_SN;
+import static com.cylan.jiafeigou.misc.JError.ErrorCIDBinded;
+import static com.cylan.jiafeigou.misc.JError.ErrorCIDNotBind;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link BindScanFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@RuntimePermissions
 public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> implements ZXingScannerView.ResultHandler, ScanContract.View {
 
     @BindView(R.id.zxV_scan)
     ZXingScannerView zxVScan;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-    private String uuid;
     private SimpleDialogFragment rebindDialog;
-    private Bundle bindBundle;
+    private String uuid;
 
     public BindScanFragment() {
         // Required empty public constructor
@@ -64,8 +76,10 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @Override
     public void onStart() {
         super.onStart();
-        zxVScan.startCamera();
-        zxVScan.setResultHandler(BindScanFragment.this);
+        if (Build.VERSION_CODES.M > Build.VERSION.SDK_INT) {
+            zxVScan.startCamera();
+            zxVScan.setResultHandler(BindScanFragment.this);
+        }
     }
 
     @Override
@@ -85,75 +99,118 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ViewUtils.setViewMarginStatusBar(customToolbar);
-        customToolbar.setBackAction(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (getActivity() != null)
-                    getActivity().getSupportFragmentManager().popBackStack();
-            }
+        customToolbar.setBackAction(v -> {
+            if (getActivity() != null)
+                getActivity().getSupportFragmentManager().popBackStack();
         });
     }
 
+    @NeedsPermission(Manifest.permission.CAMERA)
+    public void onCameraPermission() {
+        zxVScan.startCamera();
+        zxVScan.setResultHandler(BindScanFragment.this);
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    public void onCameraPermissionDenied() {
+        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+            ((BindDeviceActivity) getActivity()).finishExt();
+        }
+    }
 
     @Override
     public void handleResult(Result rawResult) {// Note:
         // * Wait 2 seconds to resume the preview.
         // * On older devices continuously stopping and resuming camera preview can result in freezing the app.
         // * I don't know why this is the case but I don't have the startTime to figure out.
-        if (EFAMILY_QR_CODE_REG.matcher(rawResult.getText().replace(JConstant.EFAMILY_URL_PREFIX, "")).find()) {
+        String result = rawResult.getText().replace(JConstant.EFAMILY_URL_PREFIX, "");
+        if (QR_CODE_REG_WITH_SN.matcher(result).find()) {
             try {
-                String tmp = rawResult.getText().replace(EFAMILY_URL_PREFIX, "").replace("&", "");
-                int indexCid = tmp.indexOf("cid=");
-                int indexMac = tmp.indexOf("mac=");
-                String cid = tmp.substring(indexCid + 4, indexCid + 16);
-                String mac = tmp.substring(indexMac + 4, tmp.length());
-                uuid = cid;
-                bindBundle = new Bundle();
-                bindBundle.putString("cid", cid);
-                bindBundle.putString("mac", mac);
-                bindBundle.putInt("bindWay", 0);
-                bindBundle.putString("alias", getString(R.string.DOOR_MAGNET_NAME));
-                basePresenter.submit(bindBundle);
-                zxVScan.stop();
-                bindBundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, cid);
-                LoadingDialog.showLoading(getActivity().getSupportFragmentManager(),
-                        getString(R.string.PLEASE_WAIT_2), true);
-                AppLogger.i("" + rawResult.getText());
+                handleScanResult(result);
             } catch (Exception e) {
                 AppLogger.e("" + e.getLocalizedMessage());
             }
-        } else if (getView() != null) {
-            ToastUtil.showNegativeToast(getString(R.string.EFAMILY_INVALID_DEVICE));
-            getView().postDelayed(() -> {
-                zxVScan.resumeCameraPreview(BindScanFragment.this);
-            }, 2000);
+        } else if (QR_CODE_REG.matcher(result).find()) {
+            ToastUtil.showNegativeToast(getString(R.string.Tap1_AddDevice_QR_Fail));
+            zxVScan.stopCamera();
+            if (getActivity() instanceof BindDeviceActivity)
+                ((BindDeviceActivity) getActivity()).finishExt();
+        } else {
+            ToastUtil.showToast(getString(R.string.EFAMILY_INVALID_DEVICE));
+            if (getActivity() instanceof BindDeviceActivity)
+                ((BindDeviceActivity) getActivity()).finishExt();
         }
+    }
+
+    private static final Pattern vidReg = Pattern.compile("vid=[0-9a-zA-Z]{0,12}");
+    private static final Pattern pidReg = Pattern.compile("pid=\\d{0,12}");
+    private static final Pattern snReg = Pattern.compile("sn=[0-9a-zA-Z]{0,64}");
+
+    private void handleScanResult(String content) {
+        Matcher matcher = vidReg.matcher(content);
+        String vid = null, pid = null, sn = null;
+        if (matcher.find()) {
+            vid = matcher.group().replace("vid=", "");
+        }
+        matcher = pidReg.matcher(content);
+        if (matcher.find()) {
+            pid = matcher.group().replace("pid=", "");
+        }
+        matcher = snReg.matcher(content);
+        if (matcher.find()) {
+            sn = matcher.group().replace("sn=", "");
+        }
+        if (TextUtils.isEmpty(vid) || TextUtils.isEmpty(pid) || TextUtils.isEmpty(sn)) {
+            ToastUtil.showToast(getString(R.string.EFAMILY_INVALID_DEVICE));
+            return;
+        }
+        int net = NetUtils.getJfgNetType(getActivity());
+        if (net == 0) {
+            ToastUtil.showToast(getString(R.string.NoNetworkTips));
+            return;
+        }
+        uuid = sn;
+        Bundle bundle = new Bundle();
+        bundle.putString("pid", pid);
+        bundle.putString("vid", vid);
+        bundle.putString("sn", sn);
+        basePresenter.submit(bundle);
+        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.PLEASE_WAIT_2));
+        zxVScan.stopCamera();
     }
 
     @Override
     public void onScanRsp(int state) {
         LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
         Log.d(this.getClass().getSimpleName(), "bindResult: " + state);
-        if (state == 0 && getActivity() != null) {
+        if (state == 0) {
             ToastUtil.showPositiveToast(getString(R.string.Added_successfully));
-            getActivity().getSupportFragmentManager().popBackStack();
-        } else if (state == 8) {
-            //需要重复绑定
-            if (rebindDialog != null && rebindDialog.isResumed())
-                return;
-            Bundle bundle = new Bundle();
-            bundle.putString(BaseDialog.KEY_TITLE, "");
-            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
-            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT,
-                    this.getString(R.string.RET_EISBIND_BYOTHER));
-            rebindDialog = SimpleDialogFragment.newInstance(bundle);
-            rebindDialog.setAction((int id, Object value) -> {
-                bindBundle.putInt("bindWay", 1);
-                basePresenter.submit(bindBundle);
-            });
-            rebindDialog.show(getActivity().getSupportFragmentManager(), "rebindDialog");
+        } else if (state == -1) {
+            ToastUtil.showToast(getString(R.string.BIND_FAILED));
+        } else if (state == ErrorCIDBinded) {
+            ToastUtil.showToast(getString(R.string.RET_EISBIND_BYSELF));
+        } else if (state == ErrorCIDNotBind) {
+            ToastUtil.showToast(getString(R.string.RET_ECID_INVALID));
         }
+        getActivity().getSupportFragmentManager().popBackStack();
+        //默认强绑
+//        else if (state == 8) {
+//            //需要重复绑定
+//            if (rebindDialog != null && rebindDialog.isResumed())
+//                return;
+//            Bundle bundle = new Bundle();
+//            bundle.putString(BaseDialog.KEY_TITLE, "");
+//            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
+//            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+//            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT,
+//                    this.getString(R.string.RET_EISBIND_BYOTHER));
+//            rebindDialog = SimpleDialogFragment.newInstance(bundle);
+//            rebindDialog.setAction((int id, Object value) -> {
+//                bindBundle.putInt("bindWay", 1);
+//                basePresenter.submit(bindBundle);
+//            });
+//            rebindDialog.show(getActivity().getSupportFragmentManager(), "rebindDialog");
+//        }
     }
 
     @Override

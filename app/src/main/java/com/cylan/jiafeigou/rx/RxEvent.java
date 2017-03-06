@@ -619,6 +619,7 @@ public class RxEvent {
     public static class AppHideEvent {
     }
 
+    @Deprecated
     public static class EFamilyMsgpack {
         public int msgId;
         public byte[] data;

@@ -33,10 +33,13 @@ public class JConstant {
 
     public static final Pattern MAC_REG = Pattern.compile("([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
     public static final String EFAMILY_URL_PREFIX = "http://www.jfgou.com/app/download.html?";
-    public static final Pattern EFAMILY_QR_CODE_REG = Pattern.compile(
-            "cid=7\\d{11}" +
-                    "&" +
-                    "mac=([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
+    public static final Pattern QR_CODE_REG_WITH_SN = Pattern.compile(
+            "vid=[0-9a-zA-Z]{0,12}" +
+                    "&pid=\\d{0,12}" +
+                    "&sn=[0-9a-zA-Z]{0,64}");
+    public static final Pattern QR_CODE_REG = Pattern.compile(
+            "vid=[0-9a-zA-Z]{0,12}" +
+                    "&pid=\\d{0,12}");
 
 
     //看JConstantTest单元测试

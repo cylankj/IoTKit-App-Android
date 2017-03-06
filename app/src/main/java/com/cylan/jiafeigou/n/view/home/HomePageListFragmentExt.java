@@ -436,7 +436,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
             } else {
-                ToastUtil.showToast("设备没定义");
+                homePageListAdapter.notifyDataSetChanged();
+                AppLogger.e("dis match pid pid: " + pid);
             }
         }
     }
