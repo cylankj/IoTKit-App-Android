@@ -1,12 +1,15 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,8 +17,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -26,6 +29,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
+import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -63,12 +67,12 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
 
     WiFiListDialogFragment fiListDialogFragment;
     @BindView(R.id.rLayout_wifi_pwd_input_box)
-    FrameLayout rLayoutWifiPwdInputBox;
+    RelativeLayout rLayoutWifiPwdInputBox;
     @BindView(R.id.vs_show_content)
     ViewSwitcher vsShowContent;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-
+    private AlertDialog reBingDialog;
 
     private List<ScanResult> cacheList;
 
@@ -157,6 +161,33 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     @Override
     public void onDetach() {
         super.onDetach();
+        dismissDialog();
+    }
+
+
+    private void createDialog() {
+        if (reBingDialog == null) {
+            reBingDialog = new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.Tap1_AddDevice_disconnected))
+                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                            ((BindDeviceActivity) getActivity()).finishExt();
+                        }
+                    })
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        ((BindDeviceActivity) getActivity()).finishExt();
+                        Intent intent = new Intent(getActivity(), BindDeviceActivity.class);
+                        intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
+                        startActivity(intent);
+                    })
+                    .create();
+        }
+        if (reBingDialog.isShowing()) return;
+        reBingDialog.show();
+    }
+
+    private void dismissDialog() {
+        if (reBingDialog != null && reBingDialog.isShowing()) reBingDialog.dismiss();
     }
 
     @OnTextChanged(R.id.et_wifi_pwd)
@@ -177,7 +208,7 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
                 ViewUtils.deBounceClick(view);
                 int currentNet = NetUtils.getJfgNetType(getActivity());
                 if (currentNet != ConnectivityManager.TYPE_WIFI) {
-                    ToastUtil.showToast(getString(R.string.Tap1_AddDevice_disconnected));
+                    createDialog();
                     return;
                 }
                 String ssid = tvConfigApName.getText().toString();
@@ -226,6 +257,9 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     public void onNetStateChanged(int state) {
         if (state != ConnectivityManager.TYPE_WIFI)
             ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
+        else {
+            dismissDialog();
+        }
     }
 
     @Override
