@@ -141,10 +141,11 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         GlobalDataProxy.getInstance().setJfgAccount(jfgAccount);
-        RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
         DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
         AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
-        BaseDBHelper.getInstance().updateAccount(jfgAccount).subscribe();
+        BaseDBHelper.getInstance().updateAccount(jfgAccount).subscribe(account -> {
+            RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
+        });
     }
 
     @Override

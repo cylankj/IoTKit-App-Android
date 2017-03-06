@@ -22,6 +22,8 @@ import com.cylan.jiafeigou.cache.db.view.IDPAction;
 import com.cylan.jiafeigou.cache.db.view.IDPState;
 import com.cylan.jiafeigou.cache.db.view.IState;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
@@ -227,6 +229,7 @@ public class BaseDBHelper implements IDBHelper {
         return Observable.from(device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
+                .flatMap(dev -> RxBus.getCacheInstance().toObservable(RxEvent.GetUserInfo.class).map(getUserInfo -> dev))//延迟写入,等到有账号了才写入数据库
                 .map(Device::new)
                 .flatMap(device1 -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(device1.getUuid())).rx().unique()
                         .flatMap(device2 -> {
