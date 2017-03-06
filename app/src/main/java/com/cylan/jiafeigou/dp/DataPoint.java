@@ -119,60 +119,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
      */
     @Deprecated
     public Object $() {
-//        Object value;
-//        Field field;
-//        LongSparseArray<Field> properties = getProperties();
-//        for (int i = 0; i < properties.size(); i++) {
-//            field = properties.valueAt(i);
-//            try {
-//                value = field.get(this);
-//                if (value == null) {
-//                    value = field.getType().newInstance();
-//                }
-//                field.set(this, value);
-//                if (value instanceof DataPoint) {
-//                    DataPoint temp = (DataPoint) value;
-//                    temp.isNull = true;
-//                    temp.version = Long.MIN_VALUE;//自动生成的wrap使version最小以便随时覆盖
-//                    temp.id = properties.keyAt(i);
-//                }
-//                if (DpMsgDefine.DPPrimary.class.isAssignableFrom(field.getType())) {
-//                    DpMsgDefine.DPPrimary primary = (DpMsgDefine.DPPrimary) value;
-//                    if (primary.value == null) {
-//                        Class<?> paramType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-//                        primary.value = getPrimaryValue(paramType);
-//                    }
-//
-//                } else if (DpMsgDefine.DPSet.class.isAssignableFrom(field.getType())) {
-//                    DpMsgDefine.DPSet set = (DpMsgDefine.DPSet) value;
-//                    if (set.value == null) ((DpMsgDefine.DPSet) value).value = new TreeSet();
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }
         return this;
-    }
-
-    private Object getPrimaryValue(Class clz) {
-        if (Integer.class.equals(clz)) {
-            return 0;
-        } else if (String.class.equals(clz)) {
-            return "";
-        } else if (Byte.class.equals(clz)) {
-            return 0;
-        } else if (Long.class.equals(clz)) {
-            return 0;
-        } else if (Double.class.equals(clz)) {
-            return 0;
-        } else if (Float.class.equals(clz)) {
-            return 0;
-        } else if (Character.class.equals(clz)) {
-            return ' ';
-        } else if (Boolean.class.equals(clz)) {
-            return false;
-        }
-        return null;
     }
 
     protected final LongSparseArray<Field> getProperties() {

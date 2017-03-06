@@ -170,7 +170,7 @@ public class RxPermissions {
         List<String> unrequestedPermissions = new ArrayList<>();
 
         // In case of multiple permissions, we create activity_cloud_live_mesg_call_out_item observable for each of them.
-        // At the end, the observables are combined to have activity_cloud_live_mesg_call_out_item unique response.
+        // At the end, the observables are combined to have activity_cloud_live_mesg_call_out_item unique rets.
         for (String permission : permissions) {
             log("Requesting permission " + permission);
             if (isGranted(permission)) {

@@ -755,4 +755,14 @@ public class RxEvent {
     public static class ReportJFGDevice {
 
     }
+
+    public static class SetDataRsp {
+        public long seq;
+        public ArrayList<JFGDPMsgRet> rets;
+
+        public SetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
+            this.seq = l;
+            this.rets = arrayList;
+        }
+    }
 }

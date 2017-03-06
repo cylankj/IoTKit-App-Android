@@ -31,6 +31,7 @@ import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -120,11 +121,15 @@ public class DataSource implements AppCallBack {
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
+        BaseDBHelper.getInstance().updateDevice(jfgDevices).subscribe();
     }
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-        DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
+        BaseDBHelper.getInstance().updateAccount(jfgAccount).subscribe(account -> {
+            RxBus.getCacheInstance().post(jfgAccount);
+            DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
+        });
         AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
     }
 
@@ -198,6 +203,7 @@ public class DataSource implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l,arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SdcardClearRsp(l, arrayList));
     }
 

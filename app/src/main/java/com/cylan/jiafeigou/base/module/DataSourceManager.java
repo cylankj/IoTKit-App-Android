@@ -14,11 +14,10 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPHelper;
-import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
+import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -37,11 +36,11 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
-import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
 import static com.cylan.jiafeigou.misc.JConstant.OS_AIR_DETECTOR;
 import static com.cylan.jiafeigou.misc.JConstant.OS_ANDROID_PHONE;
 import static com.cylan.jiafeigou.misc.JConstant.OS_CAMARA_ANDROID_SERVICE;
@@ -55,8 +54,6 @@ import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS;
 import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS_V2;
 import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS_V3;
 import static com.cylan.jiafeigou.misc.JConstant.OS_DOOR_BELL;
-import static com.cylan.jiafeigou.misc.JConstant.OS_DOOR_BELL_CAM;
-import static com.cylan.jiafeigou.misc.JConstant.OS_DOOR_BELL_V2;
 import static com.cylan.jiafeigou.misc.JConstant.OS_EFAML;
 import static com.cylan.jiafeigou.misc.JConstant.OS_IOS_PHONE;
 import static com.cylan.jiafeigou.misc.JConstant.OS_IR;
@@ -82,6 +79,7 @@ public class DataSourceManager implements JFGSourceManager {
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     @Deprecated
     private boolean isOnline;
+    private JFGAccount jfgAccount;
 
     private DataSourceManager() {
         dbHelper = BaseDBHelper.getInstance();
@@ -158,11 +156,6 @@ public class DataSourceManager implements JFGSourceManager {
     @Deprecated
     public void setOnline(boolean online) {
         isOnline = online;
-//        if (!(getLoginState = online)) {//没有登录的话则清除所有的缓存
-//            mCachedDeviceMap.clear();
-//            mJFGAccount = null;
-//        }
-        //什么也不做,防止程序崩溃
     }
 
     @Override
@@ -173,11 +166,7 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public <T extends JFGDPDevice> T getJFGDevice(String uuid) {
         Object o = mCachedDeviceMap.get(uuid);
-
         return (T) o;
-
-//        if (device == null&& BuildConfig.DEBUG) throw new IllegalArgumentException("天啊,它真的发生了,你是不是又在乱传参数???");
-//        return device == null ? null : getValueWithAccountCheck((T) device.$());
     }
 
     @Override
@@ -257,7 +246,6 @@ public class DataSourceManager implements JFGSourceManager {
         setJfgAccount(account);
         mJFGAccount = new JFGDPAccount().setAccount(account);
         syncAllJFGDeviceProperty();
-        RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
     }
 
 
@@ -453,9 +441,6 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     public <T> T getValueWithAccountCheck(T value) {
-//        if (mJFGAccount == null || !getLoginState) {
-//            return null;
-//        }
         return value;
     }
 
@@ -470,55 +455,6 @@ public class DataSourceManager implements JFGSourceManager {
         return new JFGDPDevice() {
         };
     }
-        return create(device.pid).setDevice(device);
-    }
-
-    private JFGDPDevice create(int pid) {
-        JFGDPDevice result = null;
-        switch (pid) {
-            case OS_SERVER:
-                break;
-            case OS_IOS_PHONE:
-                break;
-            case OS_PC:
-                break;
-            case OS_ANDROID_PHONE:
-                break;
-
-            //摄像头设备
-            case OS_CAMARA_ANDROID_SERVICE:
-            case OS_CAMERA_ANDROID:
-            case OS_CAMERA_ANDROID_4G:
-            case OS_CAMERA_CC3200:
-            case OS_CAMERA_UCOS:
-            case OS_CAMERA_PANORAMA_HAISI:
-            case OS_CAMERA_PANORAMA_QIAOAN:
-            case OS_CAMERA_PANORAMA_GUOKE:
-            case OS_CAMERA_UCOS_V2:
-            case OS_CAMERA_UCOS_V3:
-                result = new JFGCameraDevice();
-                break;
-
-            //门铃设备
-            case OS_DOOR_BELL:
-                result = new JFGDoorBellDevice();
-                break;
-
-    @Override
-    public void cacheShareList(ArrayList<JFGShareListInfo> arrayList) {
-        if (shareList == null) shareList = new ArrayList<>();
-        shareList.clear();
-        shareList.addAll(arrayList);
-        RxBus.getCacheInstance().post(new RxEvent.GetShareListRsp());
-    }
-            //中控设备
-            case OS_EFAML:
-                result = new JFGEFamilyDevice();
-                break;
-            case OS_TEMP_HUMI:
-                break;
-            case OS_IR:
-                break;
 
     @Override
     public boolean isDeviceSharedTo(String uuid) {
@@ -531,12 +467,14 @@ public class DataSourceManager implements JFGSourceManager {
         }
         return false;
     }
-            //门磁设备
-            case OS_MAGNET:
-                result = new JFGMagnetometerDevice();
-                break;
-            case OS_AIR_DETECTOR:
-                break;
+
+    @Override
+    public void cacheShareList(ArrayList<JFGShareListInfo> arrayList) {
+        if (shareList == null) shareList = new ArrayList<>();
+        shareList.clear();
+        shareList.addAll(arrayList);
+        RxBus.getCacheInstance().post(new RxEvent.GetShareListRsp());
+    }
 
     @Override
     public ArrayList<JFGShareListInfo> getShareList() {
@@ -555,8 +493,6 @@ public class DataSourceManager implements JFGSourceManager {
         }
         AppLogger.i("logState update: " + loginState.state);
     }
-
-    private JFGAccount jfgAccount;
 
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
@@ -583,7 +519,8 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws IllegalAccessException {
+    public <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws
+            IllegalAccessException {
         JFGDPDevice device = getJFGDevice(uuid);
         if (device == null) {
             AppLogger.e("device is null:" + uuid);
@@ -606,5 +543,54 @@ public class DataSourceManager implements JFGSourceManager {
         }
     }
 
+    private JFGDPDevice create(int pid) {
+        JFGDPDevice result = null;
+        switch (pid) {
+            case OS_SERVER:
+                break;
+            case OS_IOS_PHONE:
+                break;
+            case OS_PC:
+                break;
+            case OS_ANDROID_PHONE:
+                break;
+            //摄像头设备
+            case OS_CAMARA_ANDROID_SERVICE:
+            case OS_CAMERA_ANDROID:
+            case OS_CAMERA_ANDROID_4G:
+            case OS_CAMERA_CC3200:
+            case OS_CAMERA_UCOS:
+            case OS_CAMERA_PANORAMA_HAISI:
+            case OS_CAMERA_PANORAMA_QIAOAN:
+            case OS_CAMERA_PANORAMA_GUOKE:
+            case OS_CAMERA_UCOS_V2:
+            case OS_CAMERA_UCOS_V3:
+                result = new JFGCameraDevice();
+                break;
 
+            //门铃设备
+            case OS_DOOR_BELL:
+                result = new JFGDoorBellDevice();
+                break;
+            //中控设备
+            case OS_EFAML:
+                result = new JFGEFamilyDevice();
+                break;
+            case OS_TEMP_HUMI:
+                break;
+            case OS_IR:
+                break;
+            //门磁设备
+            case OS_MAGNET:
+                result = new JFGMagnetometerDevice();
+                break;
+            case OS_AIR_DETECTOR:
+                break;
+            default:
+                result = new JFGDPDevice() {
+                };
+
+        }
+        return result;
+    }
 }
