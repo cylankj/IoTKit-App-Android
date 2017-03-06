@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -24,6 +25,7 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     protected IDPEntity entity;
     protected List<IDPEntity> multiEntity;
     protected IDBHelper mDPHelper;
+    protected static Gson parser = new Gson();
 
     @Override
     public <R extends IDPMultiTask<T>> R init(List<IDPEntity> cache) {

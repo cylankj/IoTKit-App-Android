@@ -14,7 +14,6 @@ import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
-import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -40,10 +39,10 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        AppLogger.e("正在执行离线收藏");
+        AppLogger.d("正在执行离线收藏");
         return mDPHelper.saveOrUpdate(entity.getUuid(), entity.getVersion(), entity.getMsgId(), entity.getBytes(), entity.action(), DBState.NOT_CONFIRM, option)
                 .map(entity -> {
-                    AppLogger.e("离线收藏结果为:" + new Gson().toJson(entity));
+                    AppLogger.d("离线收藏结果为:" + parser.toJson(entity));
                     return new BaseDPTaskResult().setResultCode(200).setResultResponse(entity);
                 });
     }
