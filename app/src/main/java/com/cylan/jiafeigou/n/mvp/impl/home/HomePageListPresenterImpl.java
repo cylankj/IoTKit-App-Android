@@ -59,7 +59,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private Subscription getShareDevicesListRsp() {
         return RxBus.getCacheInstance().toObservable(RxEvent.GetShareListRsp.class)
                 .subscribeOn(Schedulers.newThread())
-                .delay(500, TimeUnit.MILLISECONDS)//
+                .last()
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(new RxHelper.Filter<>("getShareDevicesListRsp:", getView() != null))
                 .subscribe((RxEvent.GetShareListRsp getShareListRsp) -> {

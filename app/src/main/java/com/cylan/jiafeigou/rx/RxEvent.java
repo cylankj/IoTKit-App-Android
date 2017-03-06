@@ -25,14 +25,14 @@ import java.util.Arrays;
  */
 public class RxEvent {
 
-    public static class NeedLoginEvent {
-        public static final String KEY = "show_login_fragment";
-        public Bundle bundle;
-
-        public NeedLoginEvent(Bundle bundle) {
-            this.bundle = bundle;
-        }
-    }
+//    public static class NeedLoginEvent {
+//        public static final String KEY = "show_login_fragment";
+//        public Bundle bundle;
+//
+//        public NeedLoginEvent(Bundle bundle) {
+//            this.bundle = bundle;
+//        }
+//    }
 
     /**
      * 系统TimeTick广播
@@ -339,10 +339,16 @@ public class RxEvent {
     }
 
     public static final class BindDeviceEvent {
-        public JFGResult jfgResult;
+        public int bindResult;
+        public String uuid;
 
-        public BindDeviceEvent(JFGResult jfgResult) {
-            this.jfgResult = jfgResult;
+        public BindDeviceEvent(int jfgResult) {
+            this.bindResult = jfgResult;
+        }
+
+        public BindDeviceEvent(int jfgResult, String uuid) {
+            this.bindResult = jfgResult;
+            this.uuid = uuid;
         }
     }
 
@@ -619,6 +625,7 @@ public class RxEvent {
     public static class AppHideEvent {
     }
 
+    @Deprecated
     public static class EFamilyMsgpack {
         public int msgId;
         public byte[] data;
@@ -649,6 +656,13 @@ public class RxEvent {
             return this;
         }
 
+        public DeviceSyncRsp setUuid(String uuid, ArrayList<Long> idList) {
+            this.uuid = uuid;
+            this.idList = idList;
+            return this;
+        }
+
+        public ArrayList<Long> idList;
         public String uuid;
     }
 

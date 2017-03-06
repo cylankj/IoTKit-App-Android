@@ -92,7 +92,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     private String uuid;
     private JFGDPDevice device;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
-    private WeakReference<SafeProtectionFragment> safeProtectionFragmentWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
 
     @Override
@@ -310,10 +309,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case R.id.sv_setting_safe_protection: {
                 Bundle bundle = new Bundle();
                 bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
-                initSafeProtectionFragment();
-                SafeProtectionFragment fragment = safeProtectionFragmentWeakReference.get();
+                SafeProtectionFragment fragment = SafeProtectionFragment.newInstance(bundle);
                 fragment.setArguments(bundle);
-                loadFragment(android.R.id.content, getSupportFragmentManager(), safeProtectionFragmentWeakReference.get());
+                loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
                     deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                 });
@@ -402,12 +400,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
     }
 
-    private void initSafeProtectionFragment() {
-        //should load
-        if (safeProtectionFragmentWeakReference == null || safeProtectionFragmentWeakReference.get() == null) {
-            safeProtectionFragmentWeakReference = new WeakReference<>(SafeProtectionFragment.newInstance(new Bundle()));
-        }
-    }
 
     private void initVideoAutoRecordFragment() {
         //should load

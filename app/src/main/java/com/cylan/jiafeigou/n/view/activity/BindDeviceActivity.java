@@ -121,7 +121,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .setCustomAnimations(0, R.anim.slide_down_out
                                 , R.anim.slide_in_left, R.anim.slide_out_right)
                         .replace(android.R.id.content, fragment)
-                        .addToBackStack("BindScanFragment")
                         .commit();
                 break;
             }

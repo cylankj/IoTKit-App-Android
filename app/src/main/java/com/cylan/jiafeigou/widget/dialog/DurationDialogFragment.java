@@ -63,7 +63,7 @@ public class DurationDialogFragment extends BaseDialog<Integer> {
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             public int getItemsCount() {
-                return 14;
+                return 15;
             }
 
             @Override

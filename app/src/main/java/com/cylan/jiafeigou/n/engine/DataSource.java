@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.engine;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.Log;
@@ -36,8 +35,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JResultEvent;
-import com.cylan.jiafeigou.misc.efamily.MsgpackMsg;
-import com.cylan.jiafeigou.n.view.cloud.CloudLiveCallActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
@@ -241,7 +238,7 @@ public class DataSource implements AppCallBack {
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备
-                RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(jfgResult));
+//                RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(jfgResult.code));
                 break;
             case JResultEvent.JFG_RESULT_UNBINDDEV:
                 RxBus.getCacheInstance().post(new RxEvent.UnBindDeviceEvent(jfgResult));
@@ -383,25 +380,7 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnEfamilyMsg(byte[] bytes) {
-        MsgpackMsg.MsgHeader header = MsgpackMsg.fromBytes(bytes);
-        if (header == null) {
-            AppLogger.e("err: header is null");
-            return;
-        }
-        RxEvent.EFamilyMsgpack eFamilyMsgpack = new RxEvent.EFamilyMsgpack();
-        eFamilyMsgpack.msgId = header.msgId;
-        eFamilyMsgpack.data = bytes;
-        RxBus.getCacheInstance().post(eFamilyMsgpack);
-        AppLogger.d("OnEfamilyMsg :" + header.msgId);
-
-        //暂try try
-        if ((!TextUtils.isEmpty(header.caller)) && header.msgId == 2529) {
-            Intent intent = new Intent(ContextUtils.getContext(), CloudLiveCallActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, header.caller);
-            intent.putExtra("call_in_or_out", true);
-            ContextUtils.getContext().startActivity(intent);
-        }
+//  删除了中控的所有
     }
 
     @Override
@@ -459,6 +438,7 @@ public class DataSource implements AppCallBack {
     @Override
     public void OnBindDevRsp(int i, String s) {
         AppLogger.d("onBindDev: " + i + " uuid:" + s);
+        RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(i, s));
     }
 
     @Override

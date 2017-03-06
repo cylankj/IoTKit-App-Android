@@ -177,8 +177,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         liveSubscription.add(videoDisconnectSub());
         liveSubscription.add(prePlay(s -> {
             try {
-                JfgCmdInsurance.getCmd().playVideo(uuid);
-                AppLogger.i("play video: " + uuid);
+                int ret = JfgCmdInsurance.getCmd().playVideo(uuid);
+                AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -320,8 +320,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     JfgCmdInsurance.getCmd().stopPlay(uuid);
                     AppLogger.i("stop play history");
                 }
-                JfgCmdInsurance.getCmd().playHistoryVideo(uuid, time / 1000L);
-                AppLogger.i(String.format("play history video:%s,%s ", uuid, time / 1000L));
+                int ret = JfgCmdInsurance.getCmd().playHistoryVideo(uuid, time / 1000L);
+                AppLogger.i(String.format("play history video:%s,%s ", uuid, time / 1000L) + " " + ret);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
@@ -359,7 +359,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         }
         reset();
         Observable.just(uuid)
-                .subscribeOn(Schedulers.newThread())
+//                .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
                     try {
                         JfgCmdInsurance.getCmd().stopPlay(s);
@@ -592,12 +592,20 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (
                         getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
+                .flatMap(new Func1<RxEvent.DeviceSyncRsp, Observable<Long>>() {
+                    @Override
+                    public Observable<Long> call(RxEvent.DeviceSyncRsp deviceSyncRsp) {
+                        AppLogger.d("updateList: " + deviceSyncRsp.idList);
+                        return Observable.from(deviceSyncRsp.idList);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.DeviceSyncRsp update) -> {
-                    getView().onDeviceInfoChanged(true);
+                .map((Long id) -> {
+                    getView().onDeviceInfoChanged(id);
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe();
     }
 

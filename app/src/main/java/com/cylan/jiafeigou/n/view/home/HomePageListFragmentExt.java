@@ -28,6 +28,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
@@ -42,6 +43,7 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.CloudLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
+import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
@@ -57,6 +59,7 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -272,8 +275,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
         if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-            if (RxBus.getCacheInstance().hasObservers())
-                RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
+            ((NeedLoginActivity) getActivity()).signInFirst(null);
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -411,7 +413,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 R.id.rLayout_device_item);
         if (position < 0 || position > homePageListAdapter.getCount() - 1) {
             AppLogger.d("woo,position is invalid: " + position);
-            homePageListAdapter.notifyDataSetChanged();
+            ArrayList<String> list = new ArrayList<>(homePageListAdapter.getList());
+            homePageListAdapter.clear();
+            homePageListAdapter.addAll(list);
             return;
         }
         String uuid = homePageListAdapter.getItem(position);
@@ -436,7 +440,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
             } else {
-                ToastUtil.showToast("设备没定义");
+                homePageListAdapter.notifyDataSetChanged();
+                AppLogger.e("dis match pid pid: " + pid);
             }
         }
     }

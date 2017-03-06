@@ -34,11 +34,39 @@
         android:layout_marginRight="@dimen/x20"
         android:background="@color/color_f2f2f2" />
 
-    <FrameLayout
+    <RelativeLayout
         android:id="@+id/rLayout_wifi_pwd_input_box"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y48"
         android:layout_marginTop="@dimen/y29">
+
+        <LinearLayout
+            android:id="@+id/lLayout_space"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end|center_vertical"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:paddingEnd="@dimen/x7"
+                android:paddingStart="@dimen/x15"
+                android:src="@drawable/icon_clear_text"
+                android:visibility="invisible" />
+
+            <CheckBox
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_marginEnd="@dimen/x20"
+                android:layout_marginStart="@dimen/x7"
+                android:background="@drawable/icon_common_show_pwd_selector"
+                android:button="@null"
+                android:checked="false"
+                android:visibility="invisible" />
+        </LinearLayout>
 
         <EditText
             android:id="@+id/et_wifi_pwd"
@@ -47,6 +75,8 @@
             android:layout_gravity="center"
             android:layout_marginBottom="@dimen/y5"
             android:layout_marginTop="@dimen/y5"
+            android:layout_toEndOf="@+id/lLayout_space"
+            android:layout_toStartOf="@+id/lLayout_action"
             android:background="@null"
             android:focusable="true"
             android:focusableInTouchMode="true"
@@ -54,16 +84,16 @@
             android:hint="@string/ENTER_WIFI_PWD"
             android:inputType="textPassword"
             android:maxLength="60"
-            android:paddingLeft="@dimen/x40"
-            android:paddingRight="@dimen/x40"
             android:textColor="@color/color_666666"
             android:textColorHint="@color/color_cecece"
             android:textCursorDrawable="@drawable/bg_common_cursor"
             android:textSize="@dimen/sp15" />
 
         <LinearLayout
+            android:id="@+id/lLayout_action"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
+            android:layout_alignParentEnd="true"
             android:layout_gravity="end|center_vertical"
             android:orientation="horizontal">
 
@@ -72,8 +102,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_gravity="center_vertical"
-                android:paddingLeft="@dimen/x15"
-                android:paddingRight="@dimen/x7"
+                android:paddingEnd="@dimen/x7"
+                android:paddingStart="@dimen/x15"
                 android:src="@drawable/icon_clear_text"
                 android:visibility="gone" />
 
@@ -82,25 +112,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/x7"
-                android:layout_marginRight="@dimen/x20"
+                android:layout_marginEnd="@dimen/x20"
+                android:layout_marginStart="@dimen/x7"
                 android:background="@drawable/icon_common_show_pwd_selector"
                 android:button="@null"
                 android:checked="false" />
-
-
         </LinearLayout>
 
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/y1"
+            android:layout_alignParentBottom="true"
             android:layout_gravity="bottom"
             android:layout_marginLeft="@dimen/x20"
             android:layout_marginRight="@dimen/x20"
             android:background="@color/color_f2f2f2" />
 
-    </FrameLayout>
+    </RelativeLayout>
 
     <TextView
         android:layout_width="wrap_content"

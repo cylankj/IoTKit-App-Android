@@ -33,10 +33,13 @@ public class JConstant {
 
     public static final Pattern MAC_REG = Pattern.compile("([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
     public static final String EFAMILY_URL_PREFIX = "http://www.jfgou.com/app/download.html?";
-    public static final Pattern EFAMILY_QR_CODE_REG = Pattern.compile(
-            "cid=7\\d{11}" +
-                    "&" +
-                    "mac=([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
+    public static final Pattern QR_CODE_REG_WITH_SN = Pattern.compile(
+            "vid=[0-9a-zA-Z]{0,12}" +
+                    "&pid=\\d{0,12}" +
+                    "&sn=[0-9a-zA-Z]{0,64}");
+    public static final Pattern QR_CODE_REG = Pattern.compile(
+            "vid=[0-9a-zA-Z]{0,12}" +
+                    "&pid=\\d{0,12}");
 
 
     //看JConstantTest单元测试
@@ -187,10 +190,21 @@ public class JConstant {
     public static final int OS_CAMERA_PANORAMA_HAISI = 18;    //海思全景摄像头  2W
     public static final int OS_CAMERA_PANORAMA_QIAOAN = 19;    //乔安全景摄像头  3W
     public static final int OS_CAMERA_PANORAMA_GUOKE = 20;    //国科全景摄像头   4W
-    public static final int OS_CAMERA_ANDROID_3_0 = 1071;    //3g狗
+    public static final int PID_CAMERA_ANDROID_3_0 = 1071;    //3g狗
 
     public static final int OS_CAMERA_FXXX_LESHI = 27;
-    public static final int OS_CAMERA_FXXX_LESHI_PID = 1160;
+    public static final int PID_CAMERA_FXXX_LESHI_PID = 1160;
+
+    public static final int PID_CAMERA_VR_720 = 1080;
+    public static final int PID_CAMERA_CLOUD = 1088;
+    public static final int PID_CAMERA_WIFI_G1 = 1090;//wifi狗
+
+    public static final int PID_CAMERA_PANORAMA_HAISI_1080 = 1092;
+    public static final int PID_CAMERA_PANORAMA_HAISI_960 = 1091;
+
+    public static final int PID_BELL_G_1 = 1093;//门铃1代
+    public static final int PID_BELL_G_2 = 1094;//门铃2代
+
 
     public static final int OS_MAX_COUNT = OS_CAMERA_PANORAMA_GUOKE;
     public static final Map<Integer, Integer> onLineIconMap = new HashMap<>();
@@ -224,9 +238,9 @@ public class JConstant {
         onLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_online);
 
         onLineIconMap.put(JConstant.OS_CAMERA_FXXX_LESHI, R.drawable.icon_home_camera_online);
-        onLineIconMap.put(JConstant.OS_CAMERA_FXXX_LESHI_PID, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.PID_CAMERA_FXXX_LESHI_PID, R.drawable.icon_home_camera_online);
 
-        onLineIconMap.put(JConstant.OS_CAMERA_ANDROID_3_0, R.drawable.icon_home_camera_online);
+        onLineIconMap.put(JConstant.PID_CAMERA_ANDROID_3_0, R.drawable.icon_home_camera_online);
 
         //MAG
         onLineIconMap.put(JConstant.OS_MAGNET, R.drawable.icon_home_magnetic_online);
@@ -256,9 +270,9 @@ public class JConstant {
         offLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_offline);
 
         onLineIconMap.put(JConstant.OS_CAMERA_FXXX_LESHI, R.drawable.icon_home_camera_offline);
-        onLineIconMap.put(JConstant.OS_CAMERA_FXXX_LESHI_PID, R.drawable.icon_home_camera_offline);
+        onLineIconMap.put(JConstant.PID_CAMERA_FXXX_LESHI_PID, R.drawable.icon_home_camera_offline);
 
-        offLineIconMap.put(JConstant.OS_CAMERA_ANDROID_3_0, R.drawable.icon_home_camera_offline);
+        offLineIconMap.put(JConstant.PID_CAMERA_ANDROID_3_0, R.drawable.icon_home_camera_offline);
 
         //MAG
         offLineIconMap.put(JConstant.OS_MAGNET, R.drawable.icon_home_magnetic_offline);

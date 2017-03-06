@@ -20,6 +20,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
@@ -27,6 +28,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineInfoFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
@@ -307,7 +309,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     private boolean needStartLoginFragment() {
         if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON && RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
+            ((NeedLoginActivity) getActivity()).signInFirst(null);
             return true;
         }
         return false;
@@ -430,10 +432,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
+        bundle.putString("show_login_fragment", "show_login_fragment");
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
         bundle.putBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE, true);
-        RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(bundle));
+        ((NeedLoginActivity) getActivity()).signInFirst(bundle);
     }
 
     @Override

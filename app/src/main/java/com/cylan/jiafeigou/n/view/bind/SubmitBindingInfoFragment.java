@@ -32,6 +32,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.misc.JError.ErrorCIDNotExist;
+
 /**
  * Created by cylan-hunt on 16-11-12.
  */
@@ -178,6 +180,8 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
                     })
                     .create();
             nullCidDialog.show();
+            if (basePresenter != null)
+                basePresenter.stop();
         }
     }
 
