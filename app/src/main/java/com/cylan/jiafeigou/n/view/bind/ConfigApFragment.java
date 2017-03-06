@@ -180,7 +180,7 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
                     ToastUtil.showToast(getString(R.string.Tap1_AddDevice_disconnected));
                     return;
                 }
-                String ssid = ViewUtils.getTextViewContent(tvConfigApName);
+                String ssid = tvConfigApName.getText().toString();
                 String pwd = ViewUtils.getTextViewContent(etWifiPwd);
                 int type = 0;
                 if (TextUtils.isEmpty(ssid)) {
