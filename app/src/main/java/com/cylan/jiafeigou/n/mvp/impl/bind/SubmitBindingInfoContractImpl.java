@@ -108,6 +108,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         super.stop();
         if (simulatePercent != null)
             simulatePercent.stop();
+        unSubscribe(subscription);
     }
 
     @Override
