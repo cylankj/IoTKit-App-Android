@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -51,7 +51,7 @@ public class ScanPresenterImpl extends AbstractPresenter<ScanContract.View> impl
                     public Observable<RxEvent.BindDeviceEvent> call(Integer integer) {
                         return RxBus.getCacheInstance().toObservable(RxEvent.BindDeviceEvent.class)
                                 .observeOn(Schedulers.newThread())
-                                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null && bindDeviceEvent.jfgResult.event == JResultEvent.JFG_RESULT_BINDDEV)
+                                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null && TextUtils.equals(getView().getUuid(), bindDeviceEvent.uuid))
                                 .timeout(90, TimeUnit.SECONDS, Observable.just("timeout")
                                         .subscribeOn(AndroidSchedulers.mainThread())
                                         .filter(s -> getView() != null)
@@ -67,7 +67,7 @@ public class ScanPresenterImpl extends AbstractPresenter<ScanContract.View> impl
                 .map(new Func1<RxEvent.BindDeviceEvent, Boolean>() {
                     @Override
                     public Boolean call(RxEvent.BindDeviceEvent bindDeviceEvent) {
-                        getView().onScanRsp(bindDeviceEvent.jfgResult.code);
+                        getView().onScanRsp(bindDeviceEvent.bindResult);
                         return null;
                     }
                 })

@@ -16,7 +16,6 @@ import rx.subjects.Subject;
 public class RxBus implements IEventBus {
 
     private static volatile RxBus mDefaultInstance;
-    private static volatile RxBus mUiInstance;
     private final Subject<Object, Object> mBus;
 
     private final Map<Class<?>, Object> mStickyEventMap;
@@ -42,23 +41,6 @@ public class RxBus implements IEventBus {
             }
         }
         return mDefaultInstance;
-    }
-
-    /**
-     * ui Instance is for ui layer
-     *
-     * @return
-     */
-    @Deprecated
-    public static RxBus getUiInstance() {
-        if (mUiInstance == null) {
-            synchronized (RxBus.class) {
-                if (mUiInstance == null) {
-                    mUiInstance = new RxBus();
-                }
-            }
-        }
-        return mUiInstance;
     }
 
     /**

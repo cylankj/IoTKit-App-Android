@@ -232,7 +232,7 @@ public class DataSource implements AppCallBack {
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备
-                RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(jfgResult));
+//                RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(jfgResult.code));
                 break;
             case JResultEvent.JFG_RESULT_UNBINDDEV:
                 RxBus.getCacheInstance().post(new RxEvent.UnBindDeviceEvent(jfgResult));
@@ -432,6 +432,7 @@ public class DataSource implements AppCallBack {
     @Override
     public void OnBindDevRsp(int i, String s) {
         AppLogger.d("onBindDev: " + i + " uuid:" + s);
+        RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(i, s));
     }
 
     @Override

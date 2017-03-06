@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
@@ -24,7 +25,6 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.google.zxing.Result;
 
@@ -169,19 +169,40 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
             ToastUtil.showToast(getString(R.string.NoNetworkTips));
             return;
         }
-        uuid = sn;
-        Bundle bundle = new Bundle();
-        bundle.putString("pid", pid);
-        bundle.putString("vid", vid);
-        bundle.putString("sn", sn);
-        basePresenter.submit(bundle);
-        LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.PLEASE_WAIT_2));
         zxVScan.stopCamera();
+        try {
+            int iPid = Integer.parseInt(pid);
+            if (JFGRules.isCamera(iPid)) {
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this)
+                        .commitAllowingStateLoss();
+                BindCameraFragment fragment = BindCameraFragment.newInstance(null);
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .replace(android.R.id.content, fragment)
+                        .addToBackStack("BindCameraFragment")
+                        .commit();
+            } else if (JFGRules.isBell(iPid)) {
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this)
+                        .commitAllowingStateLoss();
+                BindDoorBellFragment fragment = BindDoorBellFragment.newInstance(new Bundle());
+                getActivity().getSupportFragmentManager()
+                        .beginTransaction()
+                        .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
+                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .replace(android.R.id.content, fragment)
+                        .addToBackStack("BindDoorBellFragment")
+                        .commit();
+            }
+            zxVScan.stop();
+        } catch (Exception e) {
+
+        }
     }
 
     @Override
     public void onScanRsp(int state) {
-        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
         Log.d(this.getClass().getSimpleName(), "bindResult: " + state);
         if (state == 0) {
             ToastUtil.showPositiveToast(getString(R.string.Added_successfully));

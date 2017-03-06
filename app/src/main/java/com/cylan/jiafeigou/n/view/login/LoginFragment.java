@@ -238,7 +238,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         /**
          * 第三方使用亲友功能跳转到绑定手机这
          */
-        if (bundle != null && bundle.containsKey(RxEvent.NeedLoginEvent.KEY)) {
+        if (bundle != null && bundle.containsKey("show_login_fragment")) {
             if (bundle.getBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE))
                 switchBoxBindPhone();
             else {
@@ -514,7 +514,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
         boolean b = JConstant.PHONE_REG.matcher(etLoginUsername.getText()).find()
                 || JConstant.EMAIL_REG.matcher(etLoginUsername.getText()).find();
-        if (!b){
+        if (!b) {
             ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
             return;
         }
@@ -781,6 +781,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 是否已注册结果
+     *
      * @param callback
      */
     @Override
@@ -798,7 +799,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
             if (isRegetCode) {
                 //重新获取验证码也要检测一下账号
-                if (basePresenter.checkOverCount()){
+                if (basePresenter.checkOverCount()) {
                     ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                     isRegetCode = false;
                     return;
@@ -820,7 +821,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
             } else {
                 //第一次检测账号是否注册返回执行获取验证码
-                if (basePresenter.checkOverCount()){
+                if (basePresenter.checkOverCount()) {
                     ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                     return;
                 }
@@ -844,6 +845,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 验证码输入框
+     *
      * @param show
      */
     private void handleVerificationCodeBox(boolean show) {

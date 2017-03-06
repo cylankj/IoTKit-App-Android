@@ -176,9 +176,19 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void syncAllJFGDeviceProperty() {
         if (mCachedDeviceMap.size() == 0) return;
+        ArrayList<String> uuidList = new ArrayList<>();
         for (Map.Entry<String, JFGDPDevice> entry : mCachedDeviceMap.entrySet()) {
+            JFGDPDevice device = mCachedDeviceMap.get(entry.getKey());
             syncJFGDeviceProperty(entry.getKey());
+            //非分享设备需要一些属性
+            if (!JFGRules.isShareDevice(device)) {
+                uuidList.add(device.uuid);
+            }
         }
+        /**
+         * 设备分享列表
+         */
+        JfgCmdInsurance.getCmd().getShareList(uuidList);
 //        syncAllJFGCameraWarnMsg(true);
     }
 
@@ -254,6 +264,7 @@ public class DataSourceManager implements JFGSourceManager {
     public void syncJFGDeviceProperty(String uuid) {
         if (TextUtils.isEmpty(uuid) || mJFGAccount == null) return;
         JFGDPDevice device = mCachedDeviceMap.get(uuid);
+
         if (device != null) {
             ArrayList<JFGDPMsg> parameters = device.getQueryParameters(false);
             try {
@@ -391,6 +402,7 @@ public class DataSourceManager implements JFGSourceManager {
         if (shareList == null) shareList = new ArrayList<>();
         shareList.clear();
         shareList.addAll(arrayList);
+        Log.d("shareList", "shareList: " + new Gson().toJson(shareList));
         RxBus.getCacheInstance().post(new RxEvent.GetShareListRsp());
     }
 
@@ -414,10 +426,10 @@ public class DataSourceManager implements JFGSourceManager {
     public void setLoginState(LogState loginState) {
         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
         if (loginState.state == LogState.STATE_NONE) {
-            shareList.clear();
+//            shareList.clear();
             setJfgAccount(null);
         } else if (loginState.state == LogState.STATE_ACCOUNT_OFF) {
-            shareList.clear();
+//            shareList.clear();
         } else {
 
         }
