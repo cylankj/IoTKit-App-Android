@@ -768,9 +768,18 @@ public class RxEvent {
 
     public static final class RessetPhoneBack{
         public JFGResult jfgResult;
-
         public RessetPhoneBack(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
+        }
+    }
+
+    public static class SetDataRsp {
+        public long seq;
+        public ArrayList<JFGDPMsgRet> rets;
+
+        public SetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
+            this.seq = l;
+            this.rets = arrayList;
         }
     }
 }
