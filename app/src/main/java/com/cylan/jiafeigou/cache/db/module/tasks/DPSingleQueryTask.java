@@ -7,7 +7,6 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPByteParser;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
-import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
@@ -29,7 +28,6 @@ import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
     private DBOption.SingleQueryOption option;
-
 
     public DPSingleQueryTask() {
     }
@@ -79,11 +77,10 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 .subscribeOn(Schedulers.io())
                 .filter(seq -> seq > 0)
                 .flatMap(this::makeGetDataRspResponse)
-                .flatMap(rsp -> mDPHelper.markDPMsgWithConfirm(entity.getUuid(), null, entity.getMsgId(), DBAction.SAVED,null).map(entity -> rsp))
                 .map(rsp -> {
                     AppLogger.d("收到从服务器返回数据!!!");
                     DpMsgDefine.DPSet<DpMsgDefine.DPWonderItem> result = DataSourceManager.getInstance().getValue(entity.getUuid(), entity.getMsgId(), rsp.seq);
-                    return new BaseDPTaskResult().setResultResponse(result.list()).setResultCode(0);
+                    return new BaseDPTaskResult().setResultResponse(result != null ? result.list() : null).setResultCode(0);
                 });
     }
 }
