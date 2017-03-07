@@ -420,19 +420,19 @@ public class DataSourceManager implements JFGSourceManager {
         return getValue(uuid, msgId, -1);
     }
 
-    @Override
-    public <T extends DataPoint> T getValueSafe(String uuid, long msgId, Object defaultValue) {
-        T object = getValue(uuid, msgId, -1);
-        if (object == null) {
-            if (defaultValue instanceof Set) {
-                return (T) new DpMsgDefine.DPSet(new TreeSet());
-            } else if (!(defaultValue instanceof DataPoint)) {
-                return (T) new DpMsgDefine.DPPrimary(defaultValue);
-            } else {
-                return (T) defaultValue;
-            }
-        } else return object;
-    }
+//    @Override
+//    public <T extends DataPoint> T getValueSafe(String uuid, long msgId, Object defaultValue) {
+//        T object = getValue(uuid, msgId, -1);
+//        if (object == null) {
+//            if (defaultValue instanceof Set) {
+//                return (T) new DpMsgDefine.DPSet(new TreeSet());
+//            } else if (!(defaultValue instanceof DataPoint)) {
+//                return (T) new DpMsgDefine.DPPrimary(defaultValue);
+//            } else {
+//                return (T) defaultValue;
+//            }
+//        } else return object;
+//    }
 
     public <T extends DataPoint> T getValue(String uuid, long msgId, long seq) {
         T result = null;

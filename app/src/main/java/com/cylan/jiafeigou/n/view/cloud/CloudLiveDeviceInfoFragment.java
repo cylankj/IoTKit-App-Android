@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveDeviceInfoPresenterImp;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.text.DecimalFormat;
@@ -106,11 +107,14 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
 
     private void updateDetails() {
         DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
-        tvDeviceMac.setText(mac.$());
+        String m = MiscUtils.safeGet(mac, "");
+        tvDeviceMac.setText(m);
         DpMsgDefine.DPPrimary<String> version = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
-        tvSoftVersion.setText(version.$());
+        String v = MiscUtils.safeGet(version, "");
+        tvSoftVersion.setText(v);
         DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION);
-        tvSystemVersion.setText(sVersion.$());
+        String sv = MiscUtils.safeGet(sVersion, "");
+        tvSystemVersion.setText(sv);
         JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device != null) {
             tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);

@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.MagLiveInformationPresenterImp;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
@@ -120,9 +121,10 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
 
     private void updateDetails() {
         DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
-        tvDeviceMac.setText(mac.$());
+        tvDeviceMac.setText(MiscUtils.safeGet(mac, ""));
         DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
-        tvDeviceBatteryLevel.setText(battery.$() + "");
+        int b = MiscUtils.safeGet(battery, 0);
+        tvDeviceBatteryLevel.setText(b + "");
 
         JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device != null) {

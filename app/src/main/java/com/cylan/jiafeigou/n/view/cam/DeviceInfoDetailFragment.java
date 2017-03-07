@@ -167,13 +167,17 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceAlias.setTvSubTitle(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
         tvDeviceCid.setTvSubTitle(uuid);
         DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
-        tvDeviceMac.setTvSubTitle(mac.$());
+        String m = MiscUtils.safeGet(mac, "");
+        tvDeviceMac.setTvSubTitle(m);
         DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
-        tvDeviceBatteryLevel.setTvSubTitle(String.format(Locale.getDefault(), "%s", battery.$()));
+        int b = MiscUtils.safeGet(battery, 0);
+        tvDeviceBatteryLevel.setTvSubTitle(String.format(Locale.getDefault(), "%s", b));
         DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION);
-        tvDeviceSystemVersion.setTvSubTitle(sVersion.$());
+        String v = MiscUtils.safeGet(sVersion, "");
+        tvDeviceSystemVersion.setTvSubTitle(v);
         DpMsgDefine.DPPrimary<Integer> uptime = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_210_UP_TIME);
-        tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(uptime.$()));
+        int u = MiscUtils.safeGet(uptime, 0);
+        tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(u));
         DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
     }

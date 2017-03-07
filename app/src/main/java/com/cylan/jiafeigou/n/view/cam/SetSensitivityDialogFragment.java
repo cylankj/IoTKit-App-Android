@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
@@ -83,7 +84,8 @@ public class SetSensitivityDialogFragment extends BaseDialog {
         for (int i = 0; i < count; i++) {
             final int index = i;
             RadioButton box = (RadioButton) rgSensitivity.getChildAt(i);
-            box.setChecked(level.$() == (2 - i));
+            int l = MiscUtils.safeGet(level, 0);
+            box.setChecked(l == (2 - i));
             box.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 if (isChecked) {
                     if (action != null) action.onDialogAction(0, 2 - index);

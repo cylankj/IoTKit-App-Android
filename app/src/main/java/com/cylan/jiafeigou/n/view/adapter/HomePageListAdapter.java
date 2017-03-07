@@ -80,7 +80,8 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         //2 电量
         if (pid == JConstant.OS_DOOR_BELL) {
             DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
-            if (battery != null && battery.$() <= 20) {
+            int b = MiscUtils.safeGet(battery, 0);
+            if (battery != null && b <= 20) {
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else holder.setVisibility(R.id.img_device_state_2, GONE);
@@ -88,16 +89,18 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         //3 延时摄影
 
         //4 安全防护
-        DpMsgDefine.DPPrimary<Boolean> standby = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
-        DpMsgDefine.DPPrimary<Boolean> safe = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        if (standby.value && safe.value && JFGRules.isCamera(pid)) {
+        DpMsgDefine.DPPrimary<Boolean> standby = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+        boolean s = MiscUtils.safeGet(standby, false);
+        DpMsgDefine.DPPrimary<Boolean> dpSafe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        boolean safe = MiscUtils.safeGet(dpSafe, false);
+        if (s && safe && JFGRules.isCamera(pid)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {
             holder.setVisibility(R.id.img_device_state_3, GONE);
         }
         //5 安全待机
-        if (standby.value) {
+        if (s) {
             holder.setVisibility(R.id.img_device_state_4, GONE);
             holder.setImageResource(R.id.img_device_state_4, R.drawable.home_icon_net_standby);
         } else holder.setVisibility(R.id.img_device_state_4, GONE);

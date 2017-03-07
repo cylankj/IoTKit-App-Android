@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.VideoAutoRecordPresenterImpl;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
@@ -93,17 +94,18 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         }
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
         DpMsgDefine.DPPrimary<Integer> focus = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-        oldOption = focus.$();
-        rbMotion.setChecked(focus.$() == 0);
-        rb24Hours.setChecked(focus.$() == 1);
-        rbNever.setChecked(focus.$() == 2);
+        oldOption = MiscUtils.safeGet(focus, 0);
+        rbMotion.setChecked(oldOption == 0);
+        rb24Hours.setChecked(oldOption == 1);
+        rbNever.setChecked(oldOption == 2);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         DpMsgDefine.DPPrimary<Integer> auto = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-        if (oldOption != auto.$()) {
+        int a = MiscUtils.safeGet(auto, 0);
+        if (oldOption != a) {
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
         }
         if (callBack != null)
@@ -184,7 +186,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 
     private boolean alarmDisable() {
         DpMsgDefine.DPPrimary<Boolean> alarm = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        return alarm.$();
+        return MiscUtils.safeGet(alarm, false);
     }
 
     private boolean hasSdcard() {

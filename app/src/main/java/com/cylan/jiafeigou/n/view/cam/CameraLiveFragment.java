@@ -267,7 +267,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
         DpMsgDefine.DPPrimary<Boolean> isStandBY = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-        if (isStandBY != null && isStandBY.$()) return;
+        boolean standby = MiscUtils.safeGet(isStandBY, false);
+        if (isStandBY != null && standby) return;
         basePresenter.startPlayVideo(TYPE_LIVE);
     }
 
@@ -276,7 +277,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
         DpMsgDefine.DPPrimary<Boolean> isStandBY = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-        if (isStandBY.$()) return;
+        boolean standby = MiscUtils.safeGet(isStandBY, false);
+        if (standby) return;
         basePresenter.startPlayHistory(time);
     }
 
@@ -365,8 +367,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onDeviceInfoChanged(long msgId) {
         if (msgId == -1 || msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
-            DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
-            boolean flag = wFlag.value;
+            DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+            boolean flag = MiscUtils.safeGet(wFlag, false);
             fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
             if (flag) {
                 camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
@@ -382,7 +384,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             setupStandByView(flag);
         }
         if (msgId == DpMsgMap.ID_204_SDCARD_STORAGE) {
-            DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+            DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
             //sd卡状态变化，
             camLiveController.updateLiveButtonState(sdStatus != null && sdStatus.hasSdcard);
             if (sdStatus == null || !sdStatus.hasSdcard) {
@@ -671,7 +673,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
                 DpMsgDefine.DPPrimary<Boolean> standby = DataSourceManager.getInstance().getValue(uuid, ID_508_CAMERA_STANDBY_FLAG);
-                if (standby.$()) break;//
+                boolean s = MiscUtils.safeGet(standby, false);
+                if (s) break;//
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:

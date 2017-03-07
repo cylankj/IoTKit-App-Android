@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -122,7 +123,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public String getAlarmSubTitle(Context context) {
         DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, (long) DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        if (!flag.$()) {
+        boolean f = MiscUtils.safeGet(flag, false);
+        if (!f) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);
         }
         DpMsgDefine.DPAlarmInfo info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
@@ -152,7 +154,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public String getAutoRecordTitle(Context context) {
-        int deviceAutoVideoRecord = device.device_auto_video_record.$();
+        int deviceAutoVideoRecord = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD), 0);
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
         }

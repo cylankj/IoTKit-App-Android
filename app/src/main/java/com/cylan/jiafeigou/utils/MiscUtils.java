@@ -8,6 +8,8 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -228,5 +230,27 @@ public class MiscUtils {
             x &= ~(1 << (n - 1));
         }
         return x;
+    }
+
+    public static <T> T safeGet(DpMsgDefine.DPPrimary<? extends T> value, T defaultValue) {
+        if (value != null && value.value != null) {
+            try {
+                return value.value;
+            } catch (Exception e) {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
+    public static <T extends DataPoint> T safeGet_(DpMsgDefine.DPSingle<T> value, T defaultValue) {
+        if (value != null && value.$() != null) {
+            try {
+                return value.$();
+            } catch (Exception e) {
+                return defaultValue;
+            }
+        }
+        return defaultValue;
     }
 }

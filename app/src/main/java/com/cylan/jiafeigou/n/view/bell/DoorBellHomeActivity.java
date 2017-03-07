@@ -40,6 +40,7 @@ import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -426,7 +427,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onShowProperty(JFGDoorBellDevice device) {
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         if (isNetworkConnected(this)) {
-            cvBellHomeBackground.setState(device.net.$().net);
+            DpMsgDefine.DPNet net = MiscUtils.safeGet_(device.net, DpMsgDefine.DPNet.empty);
+            cvBellHomeBackground.setState(net.net);
         } else {
             cvBellHomeBackground.setState(2);
         }

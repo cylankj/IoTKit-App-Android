@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -46,7 +47,8 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             DpMsgDefine.DPPrimary<Integer> battery = mSourceManager.getValue(mUUID, DpMsgMap.ID_206_BATTERY);
             if (lastTime < todayInMidNight) {//新的一天
                 PreferencesUtils.putLong(JConstant.LAST_ENTER_TIME + mUUID, System.currentTimeMillis());
-                if (battery.$() < 20) {
+                int b = MiscUtils.safeGet(battery, 0);
+                if (b < 20) {
                     mView.onBellBatteryDrainOut();
                 }
             }
