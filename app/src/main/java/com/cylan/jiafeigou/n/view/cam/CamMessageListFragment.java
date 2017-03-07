@@ -182,7 +182,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (basePresenter != null && getActivity() != null && isResumed()) {
+        if (isVisibleToUser && basePresenter != null && getActivity() != null && isResumed()) {
             startRequest(5, false);
         }
     }

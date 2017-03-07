@@ -256,9 +256,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.e("disconnected: " + new Gson().toJson(disconn));
                     return "JFGMsgVideoDisconn";
                 })
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .mergeWith(RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
                         .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
+                        .observeOn(Schedulers.newThread())
                         .map(resolution -> {
                             JfgCmdInsurance.getCmd().setAudio(false, false, false);
                             JfgCmdInsurance.getCmd().setAudio(true, false, false);
