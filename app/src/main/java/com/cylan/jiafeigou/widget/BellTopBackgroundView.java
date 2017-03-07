@@ -57,7 +57,7 @@ public class BellTopBackgroundView extends FrameLayout {
     public static final int STATE_BELL_OFFLINE = 0;
     public static final int STATE_BELL_ONLINE = 1;
     public static final int STATE_BAD_NETWORK = 2;
-
+    public static final int STATE_LAN_NO_NET = 3;
     public int state = 0;
 
     public void setState(int state) {
@@ -73,9 +73,16 @@ public class BellTopBackgroundView extends FrameLayout {
                 tvStartCalling.setVisibility(VISIBLE);
                 fLayoutBellTopPre.setBackground(getResources().getDrawable(R.drawable.doorbell_bg_top_offline));
             }
-        } else {
+        } else if (state == 2) {
             if (vsBellHomeTop.getCurrentView() != fLayoutBellTopNext) {
                 vsBellHomeTop.showNext();
+                tvStartCalling_.setVisibility(GONE);
+
+            }
+        } else if (state == 3) {
+            if (vsBellHomeTop.getCurrentView() != fLayoutBellTopNext) {
+                vsBellHomeTop.showNext();
+                tvStartCalling_.setVisibility(VISIBLE);
             }
         }
     }

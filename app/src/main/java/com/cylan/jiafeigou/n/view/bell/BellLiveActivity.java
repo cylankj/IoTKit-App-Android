@@ -251,7 +251,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     protected void onStop() {
-        AppLogger.d("SSSSSSSSSSSSSSSSSSS");
         super.onStop();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
