@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveDeviceInfoPresenterImp;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.text.DecimalFormat;
@@ -169,18 +170,19 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
         if (editDialogFragment.isVisible())
             return;
         editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
-        editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
+        editDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
             @Override
-            public void onDialogAction(int id, String value) {
-                if (presenter != null) {
+            public void onDialogAction(int id, Object value) {
+                if (presenter != null && value != null && value instanceof String) {
+                    String content = (String) value;
                     JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                    if (!TextUtils.isEmpty(value)
-                            && !TextUtils.equals(device.alias, value)) {
-                        tvInformationFacilityName.setText(value);
-                        device.alias = value;
+                    if (!TextUtils.isEmpty(content)
+                            && !TextUtils.equals(device.alias, content)) {
+                        tvInformationFacilityName.setText(content);
+                        device.alias = content;
                         updateDetails();
                         if (listener != null) {
-                            listener.changeName(value);
+                            listener.changeName(content);
                         }
 
                     }

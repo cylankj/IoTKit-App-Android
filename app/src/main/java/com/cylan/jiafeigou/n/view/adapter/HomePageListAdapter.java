@@ -77,10 +77,10 @@ public class HomePageListAdapter extends SuperAdapter<String> {
             }
         }
         //2 电量
-        if (pid == JConstant.OS_DOOR_BELL) {
+        if (JFGRules.isBell(pid)) {
             DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
             int b = MiscUtils.safeGet(battery, 0);
-            if (battery != null && b <= 20) {
+            if (battery != null && b <= 20 && (net != null && net.net >= 1)) {//在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else holder.setVisibility(R.id.img_device_state_2, GONE);

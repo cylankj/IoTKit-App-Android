@@ -32,6 +32,7 @@ public interface JFGSourceManager {
      * @return
      */
     boolean delLocalJFGDevice(String uuid);
+
     boolean delRemoteJFGDevice(String uuid);
 
     void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices);
@@ -116,4 +117,6 @@ public interface JFGSourceManager {
     void cacheHistoryDataList(JFGHistoryVideo historyVideo);
 
     ArrayList<JFGVideo> getHistoryList(String uuid);
+
+    void clear();
 }

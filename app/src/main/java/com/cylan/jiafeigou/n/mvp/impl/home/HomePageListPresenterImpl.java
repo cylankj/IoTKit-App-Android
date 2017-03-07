@@ -168,16 +168,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     @Override
     public void fetchGreet() {
         Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .map(new Func1<Object, GreetBean>() {
-                    @Override
-                    public GreetBean call(Object o) {
-                        return null;
-                    }
-                })
-                .filter(new RxHelper.Filter<>("", getView() != null && DataSourceManager.getInstance().getJFGAccount() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((GreetBean greetBean) -> {
+                .subscribe((Object greetBean) -> {
                     getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
                 });
     }

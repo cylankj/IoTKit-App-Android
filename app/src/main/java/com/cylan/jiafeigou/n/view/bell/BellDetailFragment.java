@@ -119,17 +119,19 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         if (editDialogFragment.isVisible())
             return;
         editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
-        editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
+        editDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
             @Override
-            public void onDialogAction(int id, String value) {
-                JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
-                if (!TextUtils.isEmpty(value)
-                        && device != null && !TextUtils.equals(device.alias, value)) {
-                    device.alias = value;
-                    svSettingDeviceAlias.setTvSubTitle(value);
-                    DataSourceManager.getInstance().updateJFGDevice(device);
+            public void onDialogAction(int id, Object value) {
+                if (value != null && value instanceof String) {
+                    String content = (String) value;
+                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+                    if (!TextUtils.isEmpty(content)
+                            && device != null && !TextUtils.equals(device.alias, content)) {
+                        device.alias = content;
+                        svSettingDeviceAlias.setTvSubTitle(content);
+                        DataSourceManager.getInstance().updateJFGDevice(device);
+                    }
                 }
-
             }
         });
     }

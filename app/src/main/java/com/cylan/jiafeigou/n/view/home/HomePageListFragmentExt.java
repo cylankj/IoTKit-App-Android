@@ -37,6 +37,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.n.engine.DataSource;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
@@ -332,10 +333,14 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     }
 
-//    @Override
-//    public ArrayList<String> getUuidList() {
-//        return homePageListAdapter == null ? null : (ArrayList<String>) homePageListAdapter.getList();
-//    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed() && getActivity() != null) {
+            JFGAccount account = DataSourceManager.getInstance().getJFGAccount();
+            onAccountUpdate(account);
+        }
+    }
 
     @Override
     public void onAccountUpdate(JFGAccount greetBean) {

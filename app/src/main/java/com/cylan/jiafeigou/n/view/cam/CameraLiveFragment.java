@@ -53,6 +53,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -384,7 +385,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             setupStandByView(flag);
         }
         if (msgId == DpMsgMap.ID_204_SDCARD_STORAGE) {
-            DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
+            DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
             //sd卡状态变化，
             camLiveController.updateLiveButtonState(sdStatus != null && sdStatus.hasSdcard);
             if (sdStatus == null || !sdStatus.hasSdcard) {
@@ -675,13 +676,14 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 DpMsgDefine.DPPrimary<Boolean> standby = DataSourceManager.getInstance().getValue(uuid, ID_508_CAMERA_STANDBY_FLAG);
                 boolean s = MiscUtils.safeGet(standby, false);
                 if (s) break;//
-                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1), getString(R.string.USER_HELP));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NO_NETWORK_2));
                 break;
             case JFGRules.PlayErr.ERR_LOW_FRAME_RATE:
-                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.GLOBAL_NO_NETWORK));
+                int net = NetUtils.getJfgNetType(getActivity());
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.GLOBAL_NO_NETWORK), net == 0 ? getString(R.string.USER_HELP) : null);
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
             case JError.ErrorVideoPeerNotExist:

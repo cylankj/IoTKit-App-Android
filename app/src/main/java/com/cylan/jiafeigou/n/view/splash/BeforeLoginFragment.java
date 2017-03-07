@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.cache.LogState.STATE_GUEST;
 import static com.cylan.jiafeigou.cache.LogState.STATE_NONE;
 
 
@@ -60,7 +61,8 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
 
     @OnClick(R.id.btn_look_around)
     public void toLookAround(View view) {
-        DataSourceManager.getInstance().setLoginState(new LogState(STATE_NONE));
+        DataSourceManager.getInstance().setLoginState(new LogState(STATE_GUEST));
+        DataSourceManager.getInstance().clear();
         if (getView() != null)
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_look_around));
 //        clearChildren();

@@ -238,12 +238,12 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
+        setJfgAccount(account);
         if (jfgAccount != null)
             setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
         else {
             AppLogger.e("jfgAccount is null");
         }
-        setJfgAccount(account);
         mJFGAccount = new JFGDPAccount().setAccount(account);
         syncAllJFGDeviceProperty();
     }
@@ -318,6 +318,15 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public ArrayList<JFGVideo> getHistoryList(String uuid) {
         return History.getHistory().getHistoryList(uuid);
+    }
+
+    @Override
+    public void clear() {
+        if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
+        isOnline = false;
+        mJFGAccount = null;
+        jfgAccount = null;
+        if (shareList != null) shareList.clear();
     }
 
     @Override

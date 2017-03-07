@@ -7,6 +7,7 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -22,7 +23,9 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.view.adapter.CamLandHistoryDateAdapter;
+import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -75,6 +78,7 @@ public class CamLiveController implements
     private LiveTimeSetter liveTimeSetterPort, liveTimeSetterLand;
     private WeakReference<CamLiveContract.Presenter> presenterRef;
     private ImageView imgPortMic, imgPortSpeaker;
+    private WeakReference<HomeMineHelpFragment> helpPageFragment;
 
     public void setImgPortMic(ImageView imgPortMic) {
         this.imgPortMic = imgPortMic;
@@ -164,6 +168,18 @@ public class CamLiveController implements
             public void clickText() {
 
             }
+
+            @Override
+            public void clickHelp() {
+                if (helpPageFragment == null || helpPageFragment.get() == null) {
+                    helpPageFragment = new WeakReference<>(HomeMineHelpFragment.newInstance(null));
+                }
+                if (helpPageFragment != null && helpPageFragment.get() != null && helpPageFragment.get().isResumed())
+                    return;
+                if (context != null && context instanceof AppCompatActivity)
+                    ActivityUtils.addFragmentSlideInFromRight(((AppCompatActivity) context).getSupportFragmentManager(), helpPageFragment.get(),
+                            android.R.id.content);
+            }
         });
     }
 
@@ -227,13 +243,26 @@ public class CamLiveController implements
      * @param content
      */
     public void setLoadingState(int state, String content) {
+        setLoadingState(state, content, null);
+    }
+
+    /**
+     * loading区域
+     *
+     * @param state
+     * @param content
+     */
+    public void setLoadingState(int state, String content, String help) {
         int playType = presenterRef.get().getPlayType();
         if (playType != TYPE_HISTORY) {
             if (state == STATE_PLAYING || state == STATE_STOP)
                 state = STATE_IDLE;//根据原型,直播没有暂停
         }
-        if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null)
-            iLiveActionViewRef.get().setState(state, content);
+        if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null) {
+            if (!TextUtils.isEmpty(help))
+                iLiveActionViewRef.get().setState(state, content, help);//兼容使用帮助
+            else iLiveActionViewRef.get().setState(state, content);
+        }
     }
 
     /**

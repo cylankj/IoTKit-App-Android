@@ -31,14 +31,17 @@ public class EditFragmentDialog extends BaseDialog {
     TextView tvCancel;
     @BindView(R.id.tv_dialog_title)
     TextView tvDialogTitle;
+    @BindView(R.id.et_input_box)
+    EditText etInputBox;
+
+
     public static final String KEY_TITLE = "key_title";
     public static final String KEY_LEFT_CONTENT = "key_left";
     public static final String KEY_RIGHT_CONTENT = "key_right";
     public static final String KEY_SHOW_EDIT = "key_show_edit";
     public static final String KEY_INPUT_HINT = "key_input_hint";
     public static final String KEY_TOUCH_OUT_SIDE_DISMISS = "key_touch_outside";
-    @BindView(R.id.et_input_box)
-    EditText etInputBox;
+
 
     public static EditFragmentDialog newInstance(Bundle bundle) {
         EditFragmentDialog fragment = new EditFragmentDialog();
@@ -119,15 +122,5 @@ public class EditFragmentDialog extends BaseDialog {
 //                }
                 break;
         }
-    }
-
-    public <T> void setAction(DialogAction<T> action) {
-        this.action = action;
-    }
-
-    private DialogAction action;
-
-    public interface DialogAction<T> {
-        void onDialogAction(int id, T value);
     }
 }

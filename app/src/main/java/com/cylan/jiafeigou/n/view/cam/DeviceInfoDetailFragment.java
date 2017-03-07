@@ -306,13 +306,13 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         if (editDialogFragment.isVisible())
             return;
         editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
-        editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
-            @Override
-            public void onDialogAction(int id, String value) {
+        editDialogFragment.setAction((int id, Object value) -> {
+            if (value != null && value instanceof String) {
+                String content = (String) value;
                 JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                if (!TextUtils.isEmpty(value) && device != null && !TextUtils.equals(value, device.alias)) {
-                    device.alias = value;
-                    tvDeviceAlias.setTvSubTitle(value);
+                if (!TextUtils.isEmpty(content) && device != null && !TextUtils.equals(content, device.alias)) {
+                    device.alias = content;
+                    tvDeviceAlias.setTvSubTitle((CharSequence) value);
                     if (basePresenter != null) basePresenter.updateAlias(device);
                 }
             }

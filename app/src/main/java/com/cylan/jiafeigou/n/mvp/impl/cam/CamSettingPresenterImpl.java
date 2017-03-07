@@ -158,6 +158,9 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
         }
+        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
+        if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0)
+            return "";
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
     }
 

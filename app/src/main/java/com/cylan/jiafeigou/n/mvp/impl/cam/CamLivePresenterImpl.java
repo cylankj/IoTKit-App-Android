@@ -100,7 +100,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             boolean notNull = getView() != null
                                     && TextUtils.equals(uuid, jfgMsgVideoDisconn.remote);
                             if (!notNull) {
-                                AppLogger.e("err: " + uuid);
+                                AppLogger.e("err: " + uuid + " remote:" + jfgMsgVideoDisconn.remote);
                             } else {
                                 AppLogger.i("stop for reason: " + jfgMsgVideoDisconn.code);
                             }

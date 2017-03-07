@@ -616,6 +616,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
+    public void clickHelp() {
+
+    }
+
+    @Override
     public void playSoundEffect() {
         mediaPlayer = MediaPlayer.create(this, R.raw.doorbell_called);
         mediaPlayer.setLooping(true);

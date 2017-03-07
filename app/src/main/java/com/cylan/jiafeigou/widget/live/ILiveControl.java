@@ -23,6 +23,8 @@ public interface ILiveControl {
      */
     void setState(int state, CharSequence content);
 
+    void setState(int state, CharSequence content, String help);
+
     int getState();
 
     void setAction(Action action);
@@ -31,5 +33,7 @@ public interface ILiveControl {
         void clickImage(int state);
 
         void clickText();
+
+        void clickHelp();
     }
 }
