@@ -883,4 +883,5 @@
   <string name="VIDEO_PEER_NOT_EXIST">对端不在线</string>
   <string name="BIND_FAILED">绑定失败</string>
   <string name="BIND_NEED_REBIND">设备已经被绑定，确定强绑？</string>
+  <string name="_720">720全景相机</string>
 </resources>

@@ -14,13 +14,13 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -45,16 +45,19 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void startViewer() {
-        Subscription subscribe = Observable.create(new Observable.OnSubscribe<String>() {
-            @Override
-            public void call(Subscriber<? super String> subscriber) {
-                mView.onViewer();
-                subscriber.onNext(getViewHandler());
-                subscriber.onCompleted();
-            }
-        }).subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(Schedulers.io())
-                .map(handle -> {
+        Subscription subscribe = Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(hasNet -> {
+                    if (hasNet) {
+                        mView.onViewer();
+                        return true;
+                    } else {
+                        mView.onVideoDisconnect(ViewableView.BAD_NET_WORK);
+                        return false;
+                    }
+                }).observeOn(Schedulers.io())
+                .map(hasNet -> {
+                    String handle = getViewHandler();
                     try {
                         AppLogger.d("正在准备开始直播,对端 cid 为:" + handle);
                         int ret = JfgCmdInsurance.getCmd().playVideo(handle);
