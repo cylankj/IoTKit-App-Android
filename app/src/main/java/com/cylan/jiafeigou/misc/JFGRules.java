@@ -188,8 +188,6 @@ public class JFGRules {
             case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
             case JConstant.OS_CAMERA_PANORAMA_GUOKE:
             case JConstant.PID_CAMERA_ANDROID_3_0:
-            case JConstant.OS_CAMERA_FXXX_LESHI:
-            case JConstant.PID_CAMERA_FXXX_LESHI_PID:
                 return true;
             default:
                 return false;
@@ -202,6 +200,8 @@ public class JFGRules {
             case JConstant.OS_DOOR_BELL_V2:
             case JConstant.PID_BELL_G_1:
             case JConstant.PID_BELL_G_2:
+            case JConstant.OS_CAMERA_FXXX_LESHI:
+            case JConstant.PID_CAMERA_FXXX_LESHI_PID:
                 return true;
         }
         return false;
