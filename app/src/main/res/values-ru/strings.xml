@@ -662,7 +662,7 @@
   <string name="Tap1_iHome_NotAssociated">Не ассоциированный</string>
   <string name="Tap1_iHome_disassociate">отмежеваться</string>
   <string name="Tap1_shareDevice_canceledshare">Это устройство отменила совместное использование</string>
-  <string name="Tap1_share_tips">Приглашаем Вас стать моими друзьями, и нажмите %s, чтобы загрузить и установить приложение.</string>
+  <string name="Tap1_share_tips">Приглашаем Вас стать моими друзьями, и нажмите %s , чтобы загрузить и установить приложение.</string>
   <string name="Tap1a_DownloadInstall">Загрузить и установить(%s)</string>
   <string name="Tap2_Index_DemoVideo">Демо&#8211;видео</string>
   <string name="Tap2_Index_Greetings">Ежедневная запись</string>
@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">Зайдите в телефоне в настройки&#8211;>сети WLAN, выберите \"DOG&#8211;ML******\", подключиться. Пароль:11111111</string>
   <string name="WIFI_SET_4">Вернитесь к %s</string>
   <string name="WIFI_SET_5GTIPS">Примечание:5ГГц WiFi сигнал не включен сейчас</string>
+  <string name="WONDER_TODAY_H_M">Сегодня HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">Вчера HH:mm</string>
   <string name="Word_Hours">часов</string>
   <string name="XX_DISCOVERY">%s Перемещение объектов</string>
   <string name="YOUR_FEEDBACK">Оставить отзыв (он очень важен для нас)</string>

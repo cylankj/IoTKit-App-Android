@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">Sur l\'phone via Réglages&#8211;>WLAN, se connecter à DOG&#8211;ML&#8211;******, mot de passe 11111111</string>
   <string name="WIFI_SET_4">Retour à %s</string>
   <string name="WIFI_SET_5GTIPS">Note:Ne supporte pas le WiFi 5G</string>
+  <string name="WONDER_TODAY_H_M">Aujourd\'hui HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">Hier HH:mm</string>
   <string name="Word_Hours">Heure</string>
   <string name="XX_DISCOVERY">%s a découvert du mouvement.</string>
   <string name="YOUR_FEEDBACK">Vos suggestions nous sont précieuses</string>

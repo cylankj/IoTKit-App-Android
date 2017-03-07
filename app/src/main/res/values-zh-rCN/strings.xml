@@ -279,7 +279,7 @@
   <string name="MSG_LOW_BATTERY">设备电量较低，请及时充电</string>
   <string name="MSG_REBIND">设备已被%s用户绑定，如有疑问请联系客服</string>
   <string name="MSG_RECORD">历史视频</string>
-  <string name="MSG_SD_OFF">Micro SD卡被拔出</string>
+  <string name="MSG_SD_OFF">Micro SD卡已被拔出</string>
   <string name="MSG_SD_ON">Micro SD卡已接入，可以保存录像啦</string>
   <string name="MSG_SD_ON_1">检测到新的Micro SD卡，需要先初始化才能存储视频</string>
   <string name="MSG_SHARE">已分享给%s</string>
@@ -662,7 +662,7 @@
   <string name="Tap1_iHome_NotAssociated">未关联</string>
   <string name="Tap1_iHome_disassociate">取消关联</string>
   <string name="Tap1_shareDevice_canceledshare">该设备已取消分享</string>
-  <string name="Tap1_share_tips">邀请你成为我的好友，点击%s下载安装【加菲狗客户端】</string>
+  <string name="Tap1_share_tips">邀请你成为我的好友，点击 %s 下载安装【加菲狗客户端】</string>
   <string name="Tap1a_DownloadInstall">下载并安装(%s)</string>
   <string name="Tap2_Index_DemoVideo">演示视频</string>
   <string name="Tap2_Index_Greetings">每一天的生活，都值得被记录</string>
@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">请在系统设置&#8211;>无线局域网，选择“DOG&#8211;ML&#8211;******”加入，密码8个1</string>
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暂不支持5GHz的WiFi信号</string>
+  <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="Word_Hours">小时</string>
   <string name="XX_DISCOVERY">“%s”有新的发现</string>
   <string name="YOUR_FEEDBACK">聆听每一位用户的意见与建议</string>
@@ -845,7 +847,7 @@
   <string name="getting">获取中&#8230;</string>
   <string name="has_copy">已复制</string>
   <string name="has_not_sdcard">未发现Micro SD卡</string>
-  <string name="help_url">https://yf.jfgou.com:8081/helps/zh&#045;rCN.html</string>
+  <string name="help_url">https://yf.jfgou.com:8081/helps/zh&#8211;rCN.html</string>
   <string name="help_url_Doby">https://yf.jfgou.com:8081/help/zh&#8211;rCN_doby.html</string>
   <string name="isStorageLow">Micro SD卡存储空间不足，无法下载。</string>
   <string name="is_connecting_video">正在连接设备</string>
@@ -878,10 +880,6 @@
   <string name="web">http://www.jfgou.com</string>
   <string name="wifi_authentication">正在验证%s连接</string>
   <string name="wifi_hasnot">未找到此WiFi网络</string>
-  <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
-  <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="VIDEO_PEER_NOT_EXIST">对端不在线</string>
-  <string name="BIND_FAILED">绑定失败</string>
-  <string name="BIND_NEED_REBIND">设备已经被绑定，确定强绑？</string>
   <string name="_720">720全景相机</string>
 </resources>

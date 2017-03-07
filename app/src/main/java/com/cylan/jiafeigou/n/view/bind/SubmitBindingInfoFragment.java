@@ -53,7 +53,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     CustomToolbar customToolbar;
 
 
-    private AlertDialog needRebindDialog;
+//    private AlertDialog needRebindDialog;
     private AlertDialog nullCidDialog;
 
     public static SubmitBindingInfoFragment newInstance(Bundle bundle) {
@@ -93,33 +93,33 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
         progressLoading.setLayoutParams(l);
     }
 
-    private AlertDialog getDialog() {
-        if (needRebindDialog == null)
-            needRebindDialog = new AlertDialog.Builder(getActivity())
-                    .setMessage(getString(R.string.BIND_NEED_REBIND))
-                    .setPositiveButton(getString(R.string.OK), null)
-                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
-                            ((BindDeviceActivity) getActivity()).finishExt();
-                        }
-                    })
-                    .create();
-        needRebindDialog.setOnShowListener(dialog -> {
-            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-            button.setOnClickListener(view -> {
-                int net = NetUtils.getJfgNetType(getActivity());
-                if (net == 0) {
-                    ToastUtil.showToast(getString(R.string.NoNetworkTips));
-                    return;
-                }
-                basePresenter.startCounting();
-                basePresenter.setBindState(BindUtils.BIND_PREPARED);
-                basePresenter.start();
-                ToastUtil.showToast("还没有强绑接口");
-            });
-        });
-        return needRebindDialog;
-    }
+//    private AlertDialog getDialog() {
+//        if (needRebindDialog == null)
+//            needRebindDialog = new AlertDialog.Builder(getActivity())
+//                    .setMessage(getString(R.string.BIND_NEED_REBIND))
+//                    .setPositiveButton(getString(R.string.OK), null)
+//                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+//                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+//                            ((BindDeviceActivity) getActivity()).finishExt();
+//                        }
+//                    })
+//                    .create();
+//        needRebindDialog.setOnShowListener(dialog -> {
+//            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
+//            button.setOnClickListener(view -> {
+//                int net = NetUtils.getJfgNetType(getActivity());
+//                if (net == 0) {
+//                    ToastUtil.showToast(getString(R.string.NoNetworkTips));
+//                    return;
+//                }
+//                basePresenter.startCounting();
+//                basePresenter.setBindState(BindUtils.BIND_PREPARED);
+//                basePresenter.start();
+//                ToastUtil.showToast("还没有强绑接口");
+//            });
+//        });
+//        return needRebindDialog;
+//    }
 
     @Override
     public void onStart() {
@@ -129,12 +129,12 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     @Override
     public void onResume() {
         super.onResume();
-        if (needRebindDialog != null && needRebindDialog.isShowing()) return;
-        int result = basePresenter.getBindState();
-        if (result == BindUtils.BIND_NEED_REBIND) {
-            needRebindDialog = getDialog();
-            needRebindDialog.show();
-        }
+//        if (needRebindDialog != null && needRebindDialog.isShowing()) return;
+//        int result = basePresenter.getBindState();
+//        if (result == BindUtils.BIND_NEED_REBIND) {
+//            needRebindDialog = getDialog();
+//            needRebindDialog.show();
+//        }
     }
 
     @Override
@@ -142,13 +142,13 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
         if (state == BindUtils.BIND_FAILED) {//失败
             //绑定失败
             vsLayoutSwitch.showNext();
-            if (needRebindDialog != null && needRebindDialog.isShowing())
-                needRebindDialog.dismiss();
+//            if (needRebindDialog != null && needRebindDialog.isShowing())
+//                needRebindDialog.dismiss();
         } else if (state == BindUtils.BIND_NEED_REBIND) {//强绑
-            if (needRebindDialog != null && needRebindDialog.isShowing())
-                needRebindDialog.dismiss();
-            getDialog();
-            needRebindDialog.show();
+//            if (needRebindDialog != null && needRebindDialog.isShowing())
+//                needRebindDialog.dismiss();
+//            getDialog();
+//            needRebindDialog.show();
             basePresenter.endCounting();
         } else if (state == BindUtils.BIND_SUC) {//成功
             progressLoading.setVisibility(View.INVISIBLE);
