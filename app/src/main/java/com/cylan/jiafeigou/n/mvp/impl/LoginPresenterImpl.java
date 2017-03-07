@@ -95,7 +95,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录
-     *
      * @param o
      * @return
      */
@@ -161,7 +160,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 第三方登录
-     *
      * @param o
      * @return
      */
@@ -514,7 +512,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             getView().checkAccountResult(checkRegsiterBack);
                             isReg = false;
                         }
-
                     }
                 });
     }

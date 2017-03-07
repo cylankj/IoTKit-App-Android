@@ -250,6 +250,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     @Override
     public void unShareSucceedDel(int position, ArrayList<String> arrayList) {
         Iterator iterator = hasShareFriendList.get(position).friends.iterator();
+        Iterator iterator2 = shareSucceedData.iterator();
         while (iterator.hasNext()) {
             JFGFriendAccount friend = (JFGFriendAccount) iterator.next();
             for (String str : arrayList) {
@@ -258,11 +259,19 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 }
             }
         }
+        while (iterator2.hasNext()) {
+            RelAndFriendBean friend = (RelAndFriendBean) iterator2.next();
+            for (String str : arrayList) {
+                if (friend.account.equals(str)) {
+                    iterator2.remove();
+                }
+            }
+        }
     }
 
     @Override
     public void shareSucceedAdd(ArrayList<RelAndFriendBean> list) {
-        shareSucceedData.clear();
+//        shareSucceedData.clear();
         shareSucceedData.addAll(list);
     }
 

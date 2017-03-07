@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
@@ -103,37 +104,68 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     @NonNull
     public ArrayList<RelAndFriendBean> getAllContactList() {
         ArrayList<RelAndFriendBean> list = new ArrayList<RelAndFriendBean>();
-        Cursor cursor = null;
-        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-        // 这里是获取联系人表的电话里的信息  包括：名字，名字拼音，联系人id,电话号码；
-        // 然后在根据"sort-key"排序
-        cursor = getView().getContext().getContentResolver().query(
-                uri,
-                new String[]{"display_name", "sort_key", "contact_id",
-                        "data1"}, null, null, "sort_key");
+//        Cursor cursor = null;
+//        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+//        // 这里是获取联系人表的电话里的信息  包括：名字，名字拼音，联系人id,电话号码；
+//        // 然后在根据"sort-key"排序
+//        cursor = getView().getContext().getContentResolver().query(
+//                uri,
+//                new String[]{"display_name", "sort_key", "contact_id",
+//                        "data1"}, null, null, "sort_key");
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                RelAndFriendBean friendBean = new RelAndFriendBean();
+//                String contact_phone = cursor
+//                        .getString(cursor
+//                                .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+//                String name = cursor.getString(0);
+//                friendBean.account = contact_phone;
+//                friendBean.alias = name;
+//                if (name != null) {
+//                    if (friendBean.account.startsWith("+86")) {
+//                        friendBean.account = friendBean.account.substring(3);
+//                    } else if (friendBean.account.startsWith("86")) {
+//                        friendBean.account = friendBean.account.substring(2);
+//                    }
+//
+//                    if (JConstant.PHONE_REG.matcher(friendBean.account).find()) {
+//                        list.add(friendBean);
+//                    }
+//                }
+//
+//            } while (cursor.moveToNext());
+//        }
+//        cursor.close();
 
-        if (cursor.moveToFirst()) {
-            do {
+        //得到ContentResolver对象
+        ContentResolver cr = getView().getContext().getContentResolver();
+        //取得电话本中开始一项的光标
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        //向下移动光标
+        while(cursor.moveToNext())
+        {
+            //取得联系人名字
+            int nameFieldColumnIndex = cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME);
+            String contact = cursor.getString(nameFieldColumnIndex);
+            //取得电话号码
+            String ContactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
+            Cursor phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactId, null, null);
+            while(phone.moveToNext())
+            {
                 RelAndFriendBean friendBean = new RelAndFriendBean();
-                String contact_phone = cursor
-                        .getString(cursor
-                                .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                String name = cursor.getString(0);
-                friendBean.account = contact_phone;
-                friendBean.alias = name;
-                if (name != null) {
-                    if (friendBean.account.startsWith("+86")) {
-                        friendBean.account = friendBean.account.substring(3);
-                    } else if (friendBean.account.startsWith("86")) {
-                        friendBean.account = friendBean.account.substring(2);
-                    }
-
-                    if (JConstant.PHONE_REG.matcher(friendBean.account).find()) {
-                        list.add(friendBean);
-                    }
+                friendBean.alias = contact;
+                String PhoneNumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+                PhoneNumber = PhoneNumber.replace("-","");
+                PhoneNumber = PhoneNumber.replace(" ","");
+                friendBean.account = PhoneNumber;
+                if (friendBean.account.startsWith("+86")) {
+                    friendBean.account = friendBean.account.substring(3);
+                } else if (friendBean.account.startsWith("86")) {
+                    friendBean.account = friendBean.account.substring(2);
                 }
-
-            } while (cursor.moveToNext());
+                list.add(friendBean);
+            }
         }
         cursor.close();
         return list;
@@ -193,7 +225,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
                     public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
-                        if (getFriendList != null && getFriendList instanceof RxEvent.GetFriendList) {
+                        if (getFriendList != null) {
                             if (getFriendList.arrayList.size() != 0) {
                                 return Observable.just(converData(getFriendList.arrayList));
                             } else {

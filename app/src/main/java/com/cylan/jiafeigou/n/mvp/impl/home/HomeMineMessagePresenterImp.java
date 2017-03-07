@@ -23,6 +23,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -87,7 +88,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 拿到数据库的操作对象
-     *
      * @return
      */
     @Override
@@ -108,7 +108,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 获取到本地数据库中的所有消息记录
-     *
      * @return
      */
     @Override
@@ -193,12 +192,27 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     public Subscription getMesgDpDataCallBack() {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .subscribeOn(Schedulers.io())
+//                .flatMap(new Func1<RobotoGetDataRsp, Observable<ArrayList<MineMessageBean>>>() {
+//                    @Override
+//                    public Observable<ArrayList<MineMessageBean>> call(RobotoGetDataRsp robotoGetDataRsp) {
+//                        return null;
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(new Action1<ArrayList<MineMessageBean>>() {
+//                    @Override
+//                    public void call(ArrayList<MineMessageBean> list) {
+//
+//                    }
+//                });
+
                 .map(new Func1<RobotoGetDataRsp, ArrayList<MineMessageBean>>() {
                     @Override
                     public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
+                        if (results.size() != 0)
+                        results.clear();
                         AppLogger.d("getMesgDpDataCallBack:" + robotoGetDataRsp.seq + ":" + robotoGetDataRsp.identity);
                         if (robotoGetDataRsp != null && robotoGetDataRsp.seq == seq) {
-                            results.clear();
                             results.addAll(convertData(robotoGetDataRsp));
                         }
                         return results;
@@ -210,6 +224,8 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     public void call(ArrayList<MineMessageBean> list) {
                         if (list.size() != 0) {
                             handlerDataResult(list);
+                        }else {
+                            getView().showNoMesgView();
                         }
                     }
                 });

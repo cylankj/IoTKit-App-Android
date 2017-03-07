@@ -161,7 +161,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
      */
     private void handlerCheckResult(RxEvent.CheckAccountCallback checkAccountCallback) {
         if (getView() != null) {
-            getView().hideLoadingPro();
+//            getView().hideLoadingPro();
             if (checkAccountCallback.i == 0) {
                 // 已注册
                 MineAddReqBean resutBean = new MineAddReqBean();

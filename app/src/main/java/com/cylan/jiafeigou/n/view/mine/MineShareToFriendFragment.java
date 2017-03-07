@@ -57,6 +57,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     private MineShareToFriendContract.Presenter presenter;
     private ShareToFriendsAdapter shareToFriendsAdapter;
     private int hasShareNum;
+    private int hasCheckNum;
     private int shareSucceedNum;
     private ArrayList<RelAndFriendBean> shareSucceedFriend = new ArrayList<>();
 
@@ -114,6 +115,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         super.onStart();
         //第一次进入以分享数显示灰色
         setHasShareFriendNum(false, hasSharefriend.size());
+
     }
 
     @Override
@@ -141,7 +143,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                 break;
 
             case R.id.tv_mine_share_to_relative_friend_true:
-                if (presenter.checkNetConnetion()) {
+                if (!presenter.checkNetConnetion()) {
                     presenter.sendShareToFriendReq(deviceinfo.uuid, isChooseToShareList);
                 } else {
                     ToastUtil.showNegativeToast(getString(R.string.Item_ConnectionFail));
@@ -281,16 +283,23 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         shareToFriendsAdapter.setOnShareCheckListener(new ShareToFriendsAdapter.OnShareCheckListener() {
             @Override
             public void onCheck(boolean isCheckFlag, SuperViewHolder holder, RelAndFriendBean item) {
-                hasShareNum = hasSharefriend.size();
+                if (isCheckFlag && hasShareNum >= 5){
+                    showNumIsOverDialog(holder);
+                    item.isCheckFlag = 2;
+                    return;
+                }
                 boolean numIsChange = false;
                 isChooseToShareList.clear();
+                hasShareNum = hasSharefriend.size();
+                hasCheckNum = 0;
                 for (RelAndFriendBean bean : shareToFriendsAdapter.getList()) {
                     if (bean.isCheckFlag == 1) {
-                        hasShareNum++;
+                        hasCheckNum++;
                         numIsChange = true;
                         isChooseToShareList.add(bean);
                     }
                 }
+                hasShareNum+=hasCheckNum;
                 presenter.checkShareNumIsOver(holder, numIsChange, hasShareNum);
             }
         });

@@ -766,17 +766,11 @@ public class RxEvent {
         }
     }
 
-    public static class ReportJFGDevice {
+    public static final class RessetPhoneBack{
+        public JFGResult jfgResult;
 
-    }
-
-    public static class SetDataRsp {
-        public long seq;
-        public ArrayList<JFGDPMsgRet> rets;
-
-        public SetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
-            this.seq = l;
-            this.rets = arrayList;
+        public RessetPhoneBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
         }
     }
 }
