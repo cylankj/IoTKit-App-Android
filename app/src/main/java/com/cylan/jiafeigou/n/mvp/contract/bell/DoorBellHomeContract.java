@@ -34,6 +34,8 @@ public interface DoorBellHomeContract {
         void fetchBellRecordsList(boolean asc, long time);
 
         void deleteBellCallRecord(List<BellCallRecordBean> list);
+
+        void cancelFetch();
     }
 }
 

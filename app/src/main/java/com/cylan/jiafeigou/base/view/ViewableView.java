@@ -24,4 +24,6 @@ public interface ViewableView extends JFGView {
     void onConnectDeviceTimeOut();
 
     void onVideoDisconnect(int code);
+
+    int BAD_NET_WORK = -1000001;
 }

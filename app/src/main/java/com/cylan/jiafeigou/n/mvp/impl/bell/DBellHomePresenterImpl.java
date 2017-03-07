@@ -11,12 +11,14 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -35,6 +37,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     private static final long yesterdayInMidNight = todayInMidNight - 24 * 60 * 60 * 1000L;
     private List<BellCallRecordBean> mRecords = new ArrayList<>();
     private boolean isFirst = true;
+    private Subscription subscribe;
 
     private void notifyBellLowBattery() {
         if (isFirst) {
@@ -60,7 +63,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
 
     @Override
     public void fetchBellRecordsList(boolean asc, long time) {
-        Subscription subscribe = Observable.just(new DPEntity()
+        subscribe = Observable.just(new DPEntity()
                 .setMsgId(DpMsgMap.ID_401_BELL_CALL_STATE)
                 .setVersion(time)
                 .setAction(DBAction.QUERY)
@@ -74,12 +77,17 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         notifyBellLowBattery();
                     }
                 }, e -> {
-                    fetchBellRecordsList(asc, time);
+                    if (e instanceof TimeoutException) {
+                        fetchBellRecordsList(asc, time);
+                    } else {
+                        AppLogger.e(e.getMessage());
+                    }
                 }, () -> mView.onRecordsListRsp(null));
         registerSubscription(subscribe);
     }
 
     private List<BellCallRecordBean> parse(Collection<DpMsgDefine.DPBellCallRecord> response) {
+        if (response == null) return null;
         List<BellCallRecordBean> result = new ArrayList<>();
         BellCallRecordBean record;
         for (DpMsgDefine.DPBellCallRecord callRecord : response) {
@@ -119,5 +127,12 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                 }, () -> {
                 });
         registerSubscription(subscribe);
+    }
+
+    @Override
+    public void cancelFetch() {
+        if (subscribe != null && subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
+        }
     }
 }

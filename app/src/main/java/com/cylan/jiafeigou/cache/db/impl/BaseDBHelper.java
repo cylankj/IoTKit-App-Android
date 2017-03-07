@@ -64,7 +64,7 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
-    public Observable saveDPByte(String uuid, Long version, Integer msgId, byte[] bytes) {
+    public Observable<DPEntity> saveDPByte(String uuid, Long version, Integer msgId, byte[] bytes) {
         return saveDpMsg(getAccount(), getServer(), uuid, version, msgId, bytes, DBAction.SAVED, DBState.SUCCESS, null);
     }
 
@@ -120,10 +120,17 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<DPEntity> saveDpMsg(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option) {
         return buildQueryBuilder(account, server, uuid, version, msgId, null, null, null)
-                .rx().unique().filter(item -> item == null)
+                .rx().unique().filter(item -> {
+                    if (item != null && DBAction.DELETED.action().equals(item.getAction())) {
+                        return false;
+                    }
+                    return true;
+                })
                 .map(item -> {
-                    item = new DPEntity(null, account, server, uuid, version, msgId, bytes, action == null ? null : action.action(), state == null ? null : state.state(), option == null ? null : option.option());
-                    mEntityDao.save(item);
+                    if (item == null) {
+                        item = new DPEntity(null, account, server, uuid, version, msgId, bytes, action == null ? null : action.action(), state == null ? null : state.state(), option == null ? null : option.option());
+                        mEntityDao.save(item);
+                    }
                     return item;
                 });
     }

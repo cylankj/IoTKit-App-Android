@@ -16,7 +16,7 @@ import rx.Observable;
 
 public interface IDBHelper {
 
-    Observable saveDPByte(String uuid, Long version, Integer msgId, byte[] bytes);
+    Observable<DPEntity> saveDPByte(String uuid, Long version, Integer msgId, byte[] bytes);
 
     //junk code
     Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option);
