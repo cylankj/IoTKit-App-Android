@@ -264,7 +264,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         }
         clearHeadSetEventReceiver();
 
-//        finish();
+        finish();
     }
 
     private void clearHeadSetEventReceiver() {

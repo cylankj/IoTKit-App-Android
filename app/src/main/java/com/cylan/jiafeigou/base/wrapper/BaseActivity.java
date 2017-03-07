@@ -140,7 +140,6 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     public void onLoginStateChanged(boolean online) {
-        showToast("还未登录");
     }
 
     /**

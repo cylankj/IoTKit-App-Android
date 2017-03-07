@@ -94,11 +94,11 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
                         mView.onClearBellRecordSuccess();
                         AppLogger.d("清空呼叫记录成功!");
                     } else {
-                        mView.onClearBellRecordFaild();
+                        mView.onClearBellRecordFailed();
                         AppLogger.d("清空呼叫记录失败");
                     }
                 }, e -> {
-                    mView.onClearBellRecordFaild();
+                    mView.onClearBellRecordFailed();
                     AppLogger.d("清空呼叫记录失败!");
                 });
     }

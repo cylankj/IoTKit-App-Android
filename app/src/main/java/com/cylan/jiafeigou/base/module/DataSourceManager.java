@@ -239,7 +239,7 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
         if (jfgAccount != null)
-            DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
+            setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
         else {
             AppLogger.e("jfgAccount is null");
         }
@@ -354,42 +354,36 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp) {
-        final String identity = dataRsp.identity;
-        JFGDPDevice device = mCachedDeviceMap.get(identity);
-        boolean changed = false;
-        for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
-            if (entry.getValue() == null) continue;
-            changed = false;
-            for (JFGDPMsg dp : entry.getValue()) {
-                dbHelper.saveDPByte(identity, dp.version, (int) dp.id, dp.packValue).subscribe();
-                if (device != null) {//优先尝试写入device中
-                    changed |= device.setValue(dp, dataRsp.seq);
-                    continue;
-                }
-                if (mJFGAccount != null) {//到这里说明无法将数据写入device中,则写入到account中
-                    changed |= mJFGAccount.setValue(dp, dataRsp.seq);
-                    if (changed) mJFGAccount.version = System.currentTimeMillis();
-                }
-            }
-
-            //每一个响应都需要被通知,即使没有数据变化,以免客户端无限等待
-            RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
-            response.changed = changed;
-            response.seq = dataRsp.seq;
-            response.msgId = entry.getKey();
-            RxBus.getCacheInstance().post(response);
-        }
-
-        RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
-        completed.seq = dataRsp.seq;
-        completed.uuid = dataRsp.identity;
-        RxBus.getCacheInstance().post(completed);
-        if (changed) {
-            long version = System.currentTimeMillis();
-            if (device != null) device.version = version;
-            else if (mJFGAccount != null) mJFGAccount.version = version;
-        }
-        RxBus.getCacheInstance().post(dataRsp);
+        Observable.from(dataRsp.map.entrySet())
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(set -> Observable.from(set.getValue())
+                        .flatMap(msg -> dbHelper.saveDPByte(dataRsp.identity, msg.version, (int) msg.id, msg.packValue).map(entity -> {
+                                    JFGDPDevice device = mCachedDeviceMap.get(dataRsp.identity);
+                                    boolean change = false;
+                                    if (device != null) {//优先尝试写入device中
+                                        change = device.setValue(msg, dataRsp.seq);
+                                    }
+                                    if (mJFGAccount != null) {//到这里说明无法将数据写入device中,则写入到account中
+                                        change |= mJFGAccount.setValue(msg, dataRsp.seq);
+                                        if (change) mJFGAccount.version = System.currentTimeMillis();
+                                    }
+                                    return entity;
+                                }).buffer(set.getValue().size())
+                        )
+                        .map(ret -> set))
+                .subscribe(ret -> {
+                    RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
+                    response.seq = dataRsp.seq;
+                    response.msgId = ret.getKey();
+                    RxBus.getCacheInstance().post(response);
+                }, Throwable::printStackTrace, () -> {
+                    RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
+                    completed.seq = dataRsp.seq;
+                    completed.uuid = dataRsp.identity;
+                    RxBus.getCacheInstance().post(completed);
+                    RxBus.getCacheInstance().post(dataRsp);
+                });
     }
 
     @Override

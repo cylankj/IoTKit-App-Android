@@ -20,7 +20,7 @@ public interface BellSettingContract {
 
         void onClearBellRecordSuccess();
 
-        void onClearBellRecordFaild();
+        void onClearBellRecordFailed();
     }
 
     interface Presenter extends JFGPresenter {

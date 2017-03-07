@@ -64,51 +64,35 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     public void newCall(Caller caller) {
-        AppLogger.e(caller.picture);
-        Subscription subscription = Observable.just(mHolderCaller = caller)
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(who -> !mIsInViewerMode)
-                .flatMap(who -> {
-                    switch (mView.onResolveViewLaunchType()) {
-                        case JConstant.VIEW_CALL_WAY_LISTEN:
-                            if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
-                                mView.onNewCallWhenInLive(mHolderCaller.caller);
-                            } else if (mHolderCaller != null) {
-                                mView.onListen();
-                                if (!TextUtils.isEmpty(caller.picture)) {//华为呼叫没有图片预览图
-                                    Subscription sub = Observable.interval(1, TimeUnit.SECONDS)
-                                            .subscribeOn(AndroidSchedulers.mainThread())
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .map(s -> {
-                                                        preload(caller.picture);
-                                                        return s;
-                                                    }
-                                            )
-                                            .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class).first()
-                                                    .observeOn(AndroidSchedulers.mainThread())
-                                                    .map(notify -> {
-                                                        if (notify.success) {
-                                                            mView.onPreviewPicture(caller.picture);
-                                                        }
-                                                        return notify;
-                                                    })
-
-                                            ).subscribe();
-                                    registerSubscription(sub);
-                                }
-                                AppLogger.d("收到门铃呼叫");
-                            }
-                            break;
-                        case JConstant.VIEW_CALL_WAY_VIEWER:
-                            mCaller = mHolderCaller;
-                            mHolderCaller = null;
-                            startViewer();
-                            break;
-                    }
-                    return
-                            RxBus.getCacheInstance().toObservable(RxEvent.CallAnswered.class)
-                                    .timeout(30, TimeUnit.SECONDS); //三十秒超时时间,如果无人接听的话
-                })
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CallAnswered.class)
+                .mergeWith(
+                        Observable.just(mHolderCaller = caller)
+                                .observeOn(AndroidSchedulers.mainThread())
+                                .filter(who -> !mIsInViewerMode)
+                                .flatMap(who -> {
+                                    switch (mView.onResolveViewLaunchType()) {
+                                        case JConstant.VIEW_CALL_WAY_LISTEN:
+                                            if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
+                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
+                                            } else if (mHolderCaller != null) {
+                                                mView.onListen();
+                                                if (!TextUtils.isEmpty(caller.picture)) {
+                                                    registerSubscription(loadPreview(caller.picture).subscribe());
+                                                }
+                                                AppLogger.d("收到门铃呼叫");
+                                            }
+                                            break;
+                                        case JConstant.VIEW_CALL_WAY_VIEWER:
+                                            mCaller = mHolderCaller;
+                                            mHolderCaller = null;
+                                            startViewer();
+                                            break;
+                                    }
+                                    return RxBus.getCacheInstance().toObservable(RxEvent.CallAnswered.class);
+                                })
+                )
+                .first()
+                .timeout(30, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(answer -> {
                     if (!answer.self) {//说明不是自己接听的
@@ -127,13 +111,34 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         mView.onDismiss();
                     }
                 });
-        registerSubscription(subscription);
+        registerSubscription(subscribe);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         mIsInViewerMode = false;
+    }
+
+    protected Observable loadPreview(String url) {
+        return Observable.interval(2, TimeUnit.SECONDS)
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(s -> {
+                            preload(url);
+                            return s;
+                        }
+                )
+                .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class).first()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(notify -> {
+                            if (notify.success) {
+                                mView.onPreviewPicture(url);
+                            }
+                            return notify;
+                        })
+
+                );
     }
 
     private void preload(String url) {
