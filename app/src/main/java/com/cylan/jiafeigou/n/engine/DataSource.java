@@ -273,6 +273,9 @@ public class DataSource implements AppCallBack {
             case JResultEvent.JFG_RESULT_SET_FRIEND_MARKNAME:
                 RxBus.getCacheInstance().post(new RxEvent.SetFriendMarkNameBack(jfgResult));
                 break;
+            case JResultEvent.JFG_RESULT_UPDATE_ACCOUNT:
+                RxBus.getCacheInstance().post(new RxEvent.RessetPhoneBack(jfgResult));
+                break;
         }
         if (login) {
             AfterLoginService.startGetAccountAction(ContextUtils.getContext());

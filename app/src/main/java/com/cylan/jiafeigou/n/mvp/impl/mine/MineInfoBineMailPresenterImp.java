@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -51,10 +52,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
 
     @Override
     public boolean checkEmail(String email) {
-        String str = "^([a-zA-Z0-9_\\-\\.]+)@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.)|(([a-zA-Z0-9\\-]+\\.)+))([a-zA-Z]{2,4}|[0-9]{1,3})(\\]?)$";
-        Pattern p = Pattern.compile(str);
-        Matcher m = p.matcher(email);
-        return m.matches();
+        return JConstant.MAC_REG.matcher(email).find();
     }
 
     @Override

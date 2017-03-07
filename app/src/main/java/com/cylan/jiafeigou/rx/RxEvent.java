@@ -771,4 +771,12 @@ public class RxEvent {
             this.jfgResult = jfgResult;
         }
     }
+
+    public static final class RessetPhoneBack{
+        public JFGResult jfgResult;
+
+        public RessetPhoneBack(JFGResult jfgResult) {
+            this.jfgResult = jfgResult;
+        }
+    }
 }

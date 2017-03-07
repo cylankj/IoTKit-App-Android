@@ -54,7 +54,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
     public OnDeleteCheckChangeListener listener;
 
     public interface OnDeleteCheckChangeListener {
-        public void deleteCheck(boolean isCheck, MineMessageBean item);
+        void deleteCheck(boolean isCheck, MineMessageBean item);
     }
 
     public void setOnDeleteCheckChangeListener(OnDeleteCheckChangeListener listener) {

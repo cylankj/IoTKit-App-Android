@@ -210,7 +210,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 return;
             }
-            showLoadingPro();
+//            showLoadingPro();
             if (getView() != null) {
                 if (presenter != null && !handlerResult) {
                     presenter.checkScanAccount(rawResult.getText());
