@@ -512,6 +512,7 @@ public class DataSourceManager implements JFGSourceManager {
         AppLogger.i("setJfgAccount:" + (jfgAccount == null));
         if (jfgAccount != null) {
             PreferencesUtils.putString(KEY_ACCOUNT, new Gson().toJson(jfgAccount));
+            RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
         } else PreferencesUtils.putString(KEY_ACCOUNT, "");
         RxBus.getCacheInstance().post(jfgAccount);
     }
