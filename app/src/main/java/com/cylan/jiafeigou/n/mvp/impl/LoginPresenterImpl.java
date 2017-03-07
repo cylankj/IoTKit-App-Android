@@ -10,6 +10,7 @@ import android.util.Log;
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -58,6 +59,7 @@ import com.twitter.sdk.android.core.models.User;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
@@ -110,11 +112,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         } else {
                             JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
                             //账号和密码
-                            String hex = AESUtil.encrypt(o.userName + "|" + o.pwd);
-                            FileUtils.saveDataToFile(getView().getContext(), hex);
                         }
+                        AutoSignIn.getInstance().autoSave(o.userName, o.loginType ? 0 : 1, o.pwd)
+                                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                                .subscribe();
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        AppLogger.e("err: " + e.getLocalizedMessage());
                     }
                     AppLogger.i("LoginAccountBean: " + new Gson().toJson(o));
                     //非三方登录的标记
@@ -206,7 +209,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .delay(1000, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.ResultVerifyCode resultVerifyCode) -> {
-                    if (isRegSms){
+                    if (isRegSms) {
                         getView().verifyCodeResult(resultVerifyCode.code);
                         isRegSms = false;
                     }
@@ -536,17 +539,17 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public String getTempAccPwd() {
-        String decrypt = "";
-        String dataFromFile = FileUtils.getDataFromFile(getView().getContext());
+        String path = getView().getContext().getFilesDir().getAbsolutePath();
+        Log.d("path", "path: " + path);
+        StringBuilder dataFromFile = FileUtils.readFile(path + File.separator + "dat", "UTF-8");
         if (TextUtils.isEmpty(dataFromFile)) {
             return "";
         }
         try {
-            decrypt = AESUtil.decrypt(dataFromFile);
+            return AESUtil.decrypt(dataFromFile.toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            return "";
         }
-        return decrypt;
     }
 
     @Override
@@ -691,28 +694,28 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     @Override
     public boolean checkOverCount() {
         int count = PreferencesUtils.getInt(JConstant.KEY_REG_GET_SMS_COUNT, 0);
-        long first_time = PreferencesUtils.getLong(JConstant.KEY_REG_FRIST_GET_SMS,0);
+        long first_time = PreferencesUtils.getLong(JConstant.KEY_REG_FRIST_GET_SMS, 0);
 
-        if(count == 0){
-            PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS,System.currentTimeMillis());
-            PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT,count+1);
+        if (count == 0) {
+            PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
+            PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
             return false;
         }
 
-        if (count < 3 ){
-            if (System.currentTimeMillis() - first_time < 10*60*1000){
-                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT,count+1);
-            }else {
-                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT,0);
-                PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS,System.currentTimeMillis());
+        if (count < 3) {
+            if (System.currentTimeMillis() - first_time < 10 * 60 * 1000) {
+                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
+            } else {
+                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT, 0);
+                PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
             }
             return false;
-        }else {
-            if (System.currentTimeMillis() - first_time < 10*60*1000){
+        } else {
+            if (System.currentTimeMillis() - first_time < 10 * 60 * 1000) {
                 return true;
-            }else {
-                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT,0);
-                PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS,System.currentTimeMillis());
+            } else {
+                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT, 0);
+                PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
                 return false;
             }
         }

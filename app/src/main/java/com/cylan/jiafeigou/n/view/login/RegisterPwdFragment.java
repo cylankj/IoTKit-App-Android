@@ -163,7 +163,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 //账号和密码
                 try {
                     String hex = AESUtil.encrypt(login.userName + "|" + login.pwd);
-                    FileUtils.saveDataToFile(getView().getContext(), hex);
+                    AppLogger.e("保存密码未实现");
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

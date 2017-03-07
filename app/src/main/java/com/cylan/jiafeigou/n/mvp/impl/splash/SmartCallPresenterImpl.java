@@ -1,16 +1,11 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
-import android.text.TextUtils;
-
-import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.AESUtil;
-import com.cylan.jiafeigou.utils.FileUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,6 +23,21 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     public SmartCallPresenterImpl(SplashContract.View splashView) {
         super(splashView);
         splashView.setPresenter(this);
+        RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(resultLogin -> resultLogin.code == 0)
+                .timeout(2, TimeUnit.SECONDS, Observable.just("autoLogTimeout")
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .map(s -> {
+                            AppLogger.e("" + s);
+                            getView().splashOver();
+                            return null;
+                        }))
+                .delay(3000, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .doOnCompleted(() -> getView().loginResult(0))
+                .subscribe();
     }
 
 
@@ -38,57 +48,5 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
         System.exit(0);
     }
 
-    /**
-     * 自动登录
-     */
-    @Override
-    public void autoLogin(LoginAccountBean login) {
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        try {
-                            JfgCmdInsurance.getCmd().login(login.userName, login.pwd);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, (Throwable throwable) -> {
-                    AppLogger.e("autoLogin" + throwable.getLocalizedMessage());
-                });
-    }
-
-    @Override
-    public String getTempAccPwd() {
-        String decrypt = "";
-        String dataFromFile = FileUtils.getDataFromFile(getView().getContext());
-        if (TextUtils.isEmpty(dataFromFile)) {
-            return "";
-        }
-        try {
-            decrypt = AESUtil.decrypt(dataFromFile);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return decrypt;
-
-    }
-
-    @Override
-    public void start() {
-        super.start();
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .delay(2000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        getView().splashOver();
-                    }
-                });
-
-    }
 }
 

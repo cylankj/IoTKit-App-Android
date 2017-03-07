@@ -31,6 +31,7 @@ import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -98,7 +99,9 @@ public class DataSource implements AppCallBack {
     }
 
     private void try2autoLogin() {
-        AppLogger.d("let's go 还没实现:");
+        AutoSignIn.getInstance().autoLoad()
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe();
     }
 
     @Override
@@ -234,7 +237,7 @@ public class DataSource implements AppCallBack {
                 break;
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
-                RxBus.getCacheInstance().post(new RxEvent.ResultLogin(jfgResult.code));
+                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备

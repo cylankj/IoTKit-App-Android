@@ -19,11 +19,8 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
@@ -151,23 +148,11 @@ public class SmartcallActivity extends NeedLoginActivity
      * pre-登陆
      */
     private void initLoginPage() {
-        int loginState = DataSourceManager.getInstance().getLoginState();
-        if (loginState == LogState.STATE_ACCOUNT_ON) {        //进去主页 home page
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                startActivity(new Intent(this, NewHomeActivity.class),
-                        ActivityOptionsCompat.makeCustomAnimation(this, R.anim.alpha_in, R.anim.alpha_out).toBundle());
-            } else {
-                startActivity(new Intent(this, NewHomeActivity.class));
-            }
-            startService(new Intent(getApplicationContext(), DaemonService.class));
-            finish();
-        } else {
-            //进入登陆页 login page
-            getSupportFragmentManager().beginTransaction()
-                    .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
-                    .addToBackStack(BeforeLoginFragment.class.getSimpleName())
-                    .commitAllowingStateLoss();
-        }
+        //进入登陆页 login page
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
+                .addToBackStack(BeforeLoginFragment.class.getSimpleName())
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -198,11 +183,16 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     public void loginResult(int code) {
         if (code == JError.ErrorOK) {
-            startActivity(new Intent(this, NewHomeActivity.class));
-        } else {
-            startActivity(new Intent(this, NewHomeActivity.class));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                startActivity(new Intent(this, NewHomeActivity.class),
+                        ActivityOptionsCompat.makeCustomAnimation(getContext(),
+                                R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+            } else {
+                startActivity(new Intent(this, NewHomeActivity.class));
+            }
+            finish();
         }
-        finish();
+
     }
 
     /**

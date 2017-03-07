@@ -178,6 +178,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         liveSubscription.add(prePlay(s -> {
             try {
                 int ret = JfgCmdInsurance.getCmd().playVideo(uuid);
+                if (ret != 0) {
+                    JfgCmdInsurance.getCmd().stopPlay(uuid);
+                    ret = JfgCmdInsurance.getCmd().playVideo(uuid);
+                }
                 AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
                 e.printStackTrace();
@@ -359,7 +363,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         }
         reset();
         Observable.just(uuid)
-//                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
                     try {
                         JfgCmdInsurance.getCmd().stopPlay(s);

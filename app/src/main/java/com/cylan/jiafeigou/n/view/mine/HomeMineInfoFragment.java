@@ -44,7 +44,6 @@ import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.utils.AESUtil;
-import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -530,7 +529,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         try {
             if (argumentData != null) {
                 String hex = AESUtil.encrypt(argumentData.getAccount() + "|" + "");
-                FileUtils.saveDataToFile(getView().getContext(), hex);
+                AppLogger.e("保存密码未实现");
             }
         } catch (Exception e) {
             e.printStackTrace();
