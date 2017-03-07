@@ -359,7 +359,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         }
         reset();
         Observable.just(uuid)
-//                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
                     try {
                         JfgCmdInsurance.getCmd().stopPlay(s);

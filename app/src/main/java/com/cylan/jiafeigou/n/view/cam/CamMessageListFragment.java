@@ -176,9 +176,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onStart() {
         super.onStart();
         //刚刚进入页面，尽量少点加载
-        startRequest(5, false);
+
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (basePresenter != null && getActivity() != null && isResumed()) {
+            startRequest(5, false);
+        }
+    }
 
     private void startRequest(int count, boolean loadMore) {
         if (loadMore) {
