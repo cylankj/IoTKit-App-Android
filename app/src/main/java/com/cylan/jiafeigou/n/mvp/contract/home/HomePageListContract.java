@@ -47,15 +47,14 @@ public interface HomePageListContract {
 
         void onRefreshFinish();
 
-        void unBindDeviceRsp(int state);
+//        void unBindDeviceRsp(int state);
     }
 
     interface Presenter extends BasePresenter {
-        void fetchGreet();
 
         void fetchDeviceList(boolean manually);
 
-        void unBindDevReq(String uuid);
+//        void unBindDevReq(String uuid);
 
         void registerWorker();
 

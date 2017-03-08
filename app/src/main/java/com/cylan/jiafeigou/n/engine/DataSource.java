@@ -118,15 +118,19 @@ public class DataSource implements AppCallBack {
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
-        BaseDBHelper.getInstance().updateDevice(jfgDevices).subscribe();
+        BaseDBHelper.getInstance().updateDevice(jfgDevices)
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe();
     }
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
-        BaseDBHelper.getInstance().updateAccount(jfgAccount).subscribe(account -> {
-            RxBus.getCacheInstance().post(jfgAccount);
-        });
+        BaseDBHelper.getInstance().updateAccount(jfgAccount)
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe(account -> {
+                    RxBus.getCacheInstance().post(jfgAccount);
+                });
         AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
     }
 

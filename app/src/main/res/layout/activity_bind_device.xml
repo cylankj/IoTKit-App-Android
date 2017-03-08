@@ -30,7 +30,7 @@
             android:background="@color/color_white"
             hunt:leftDrawable="@drawable/icon_scan_code"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="@string/Tap3_FriendsAdd_QR"
+            hunt:text="@string/Tap1_AddDevice_QR"
             hunt:textColor="@color/color_383838"
             hunt:textSize="@dimen/sp16" />
 

@@ -248,7 +248,8 @@ public class BaseDBHelper implements IDBHelper {
                             }
                             device1.setAccount(getAccount());
                             return deviceDao.rx().save(device1);
-                        }));
+                        }))
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
     }
 
     @Override

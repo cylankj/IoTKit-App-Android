@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.n.engine.DataSource;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -204,13 +203,14 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                                             getView().unbindDeviceRsp(-1);
                                             return null;
                                         }))
-                                .filter(s -> getView() != null)
+                                .filter(event -> getView() != null && event != null)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .filter(unbindEvent -> {
                                     if (unbindEvent.jfgResult.code != 0)
                                         getView().unbindDeviceRsp(unbindEvent.jfgResult.code);//失败
                                     return unbindEvent.jfgResult.code == 0;
-                                }),
+                                })
+                                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage())),
                         (Object o, RxEvent.UnBindDeviceEvent unbindEvent) -> {
                             getView().unbindDeviceRsp(0);//成功
                             DataSourceManager.getInstance().delLocalJFGDevice(uuid);
