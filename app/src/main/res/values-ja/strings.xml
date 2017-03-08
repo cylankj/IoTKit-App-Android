@@ -662,7 +662,7 @@
   <string name="Tap1_iHome_NotAssociated">関連付けられていない</string>
   <string name="Tap1_iHome_disassociate">関連をキャンセルします。</string>
   <string name="Tap1_shareDevice_canceledshare">該当デバイスは共有をキャンセルしました。</string>
-  <string name="Tap1_share_tips">私の友人になることを招待しました。 %sをクリックしたら、CleverDog appをインストールできます。</string>
+  <string name="Tap1_share_tips">私の友人になることを招待しました。 %s をクリックしたら、CleverDog appをインストールできます。</string>
   <string name="Tap1a_DownloadInstall">ダウンロードとインストール(%s)</string>
   <string name="Tap2_Index_DemoVideo">デモビデオ</string>
   <string name="Tap2_Index_Greetings">日々のライフは記録されるべく</string>
@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">システム設定&#8211;> WiFiにDOG&#8211;ML &#8211;******を選択し追加してください,パスワード11111111</string>
   <string name="WIFI_SET_4">戻る%s</string>
   <string name="WIFI_SET_5GTIPS">注意：ただいま5GHz式のWi&#8211;Fi電波が適用されません</string>
+  <string name="WONDER_TODAY_H_M">今日 HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">昨日 HH:mm</string>
   <string name="Word_Hours">時間</string>
   <string name="XX_DISCOVERY">\"%s\"に移動する物体があります</string>
   <string name="YOUR_FEEDBACK">すべてのユーザーの意見を伺います</string>

@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
@@ -123,9 +124,10 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
      */
     private String getLatestMac() {
         DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
-        if (JConstant.MAC_REG.matcher(mac.$()).find()) {
+        String m = MiscUtils.safeGet(mac, "");
+        if (JConstant.MAC_REG.matcher(m).find()) {
             AppLogger.i("get mac from local: " + mac);
-            return mac.$();
+            return m;
         }
         return "";
     }

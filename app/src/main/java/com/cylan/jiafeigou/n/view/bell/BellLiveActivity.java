@@ -251,7 +251,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     protected void onStop() {
-        AppLogger.d("SSSSSSSSSSSSSSSSSSS");
         super.onStop();
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
@@ -614,6 +613,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void clickText() {
+    }
+
+    @Override
+    public void clickHelp() {
+
     }
 
     @Override

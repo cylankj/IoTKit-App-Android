@@ -27,7 +27,6 @@ import java.util.Locale;
 
 import static android.view.View.GONE;
 import static android.view.View.VISIBLE;
-import static com.cylan.jiafeigou.misc.JConstant.NET_TYPE_RES;
 
 /**
  * Created by hunt on 16-5-24.
@@ -60,7 +59,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
 
     private void setItemState(SuperViewHolder holder, String uuid, int pid, String shareAccount, DpMsgDefine.DPNet net) {
         //0 net type 网络类型
-        int resIdNet = net == null ? -1 : MiscUtils.getValue(NET_TYPE_RES.get(net.net), -1);
+        int resIdNet = JConstant.getNetTypeRes(net != null ? net.net : -1);
         if (resIdNet != -1) {
             holder.setVisibility(R.id.img_device_state_0, VISIBLE);
             holder.setImageResource(R.id.img_device_state_0, resIdNet);
@@ -78,9 +77,10 @@ public class HomePageListAdapter extends SuperAdapter<String> {
             }
         }
         //2 电量
-        if (pid == JConstant.OS_DOOR_BELL) {
+        if (JFGRules.isBell(pid)) {
             DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
-            if (battery != null && battery.$() <= 20) {
+            int b = MiscUtils.safeGet(battery, 0);
+            if (battery != null && b <= 20 && (net != null && net.net >= 1)) {//在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else holder.setVisibility(R.id.img_device_state_2, GONE);
@@ -88,16 +88,18 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         //3 延时摄影
 
         //4 安全防护
-        DpMsgDefine.DPPrimary<Boolean> standby = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
-        DpMsgDefine.DPPrimary<Boolean> safe = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        if (standby.value && safe.value && JFGRules.isCamera(pid)) {
+        DpMsgDefine.DPPrimary<Boolean> standby = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+        boolean s = MiscUtils.safeGet(standby, false);
+        DpMsgDefine.DPPrimary<Boolean> dpSafe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        boolean safe = MiscUtils.safeGet(dpSafe, false);
+        if (s && safe && JFGRules.isCamera(pid)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {
             holder.setVisibility(R.id.img_device_state_3, GONE);
         }
         //5 安全待机
-        if (standby.value) {
+        if (s) {
             holder.setVisibility(R.id.img_device_state_4, GONE);
             holder.setImageResource(R.id.img_device_state_4, R.drawable.home_icon_net_standby);
         } else holder.setVisibility(R.id.img_device_state_4, GONE);
@@ -122,15 +124,14 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         int pid = device == null ? 0 : device.pid;
         String alias = device == null ? "" : device.alias;
         String shareAccount = device == null ? "" : device.shareAccount;
-        //门磁一直在线状态
         final int onLineState = net != null ? net.net : (pid == JConstant.OS_MAGNET ? 1 : 0);
 //        final int deviceType = bean.pid;
         Log.d("handleState", "handleState: " + uuid + " " + net);
-        int online = MiscUtils.getValue(JConstant.onLineIconMap.get(pid), R.mipmap.ic_launcher);
-        int offline = MiscUtils.getValue(JConstant.offLineIconMap.get(pid), R.mipmap.ic_launcher);
+        int online = JConstant.getOnlineIcon(pid);
+        int offline = JConstant.getOfflineIcon(pid);
         int iconRes = (onLineState != 0 && onLineState != -1) ? online : offline;
         //昵称
-        holder.setText(R.id.tv_device_alias, MiscUtils.getBeautifulString(TextUtils.isEmpty(alias) ? uuid : alias, 8));
+        holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));
         if (!TextUtils.isEmpty(shareAccount))
             holder.setVisibility(R.id.tv_device_share_tag, VISIBLE);
         else holder.setVisibility(R.id.tv_device_share_tag, GONE);
@@ -140,6 +141,16 @@ public class HomePageListAdapter extends SuperAdapter<String> {
             handleMsgCountTime(holder, uuid, pid);
         //右下角状态
         setItemState(holder, uuid, pid, shareAccount, net);
+    }
+
+    private String getAlias(String uuid, String alias) {
+        if (TextUtils.isEmpty(alias)) {
+            return MiscUtils.getBeautifulString(TextUtils.isEmpty(alias) ? uuid : alias, 8);
+        }
+        if (TextUtils.equals(alias, uuid)) {
+            return uuid;
+        }
+        return alias;
     }
 
     private void handleMsgCountTime(SuperViewHolder holder, String uuid, int pid) {

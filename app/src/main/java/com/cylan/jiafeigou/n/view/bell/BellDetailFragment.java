@@ -16,12 +16,14 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
 import com.cylan.jiafeigou.n.view.cam.HardwareUpdateFragment;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView0;
@@ -117,17 +119,19 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         if (editDialogFragment.isVisible())
             return;
         editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
-        editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
+        editDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
             @Override
-            public void onDialogAction(int id, String value) {
-                JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
-                if (!TextUtils.isEmpty(value)
-                        && device != null && !TextUtils.equals(device.alias, value)) {
-                    device.alias = value;
-                    svSettingDeviceAlias.setTvSubTitle(value);
-                    DataSourceManager.getInstance().updateJFGDevice(device);
+            public void onDialogAction(int id, Object value) {
+                if (value != null && value instanceof String) {
+                    String content = (String) value;
+                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+                    if (!TextUtils.isEmpty(content)
+                            && device != null && !TextUtils.equals(device.alias, content)) {
+                        device.alias = content;
+                        svSettingDeviceAlias.setTvSubTitle(content);
+                        DataSourceManager.getInstance().updateJFGDevice(device);
+                    }
                 }
-
             }
         });
     }
@@ -146,12 +150,14 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         svSettingDeviceMac.setTvSubTitle(device.mac.value);
         svSettingDeviceSysVersion.setTvSubTitle(device.device_sys_version.value);
         svSettingDeviceVersion.setTvSubTitle(device.device_version.value);
-        svSettingDeviceBattery.setTvSubTitle(device.battery.$() + "");
-        String ssid = TextUtils.isEmpty(device.net.$().ssid) ? getString(R.string.OFF_LINE) : device.net.$().ssid;
+        int battery = MiscUtils.safeGet(device.battery, 0);
+        svSettingDeviceBattery.setTvSubTitle(battery + "");
+        DpMsgDefine.DPNet net = MiscUtils.safeGet_(device.net, DpMsgDefine.DPNet.empty);
+        String ssid = TextUtils.isEmpty(net.ssid) ? getString(R.string.OFF_LINE) : net.ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);
-        svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(device.up_time.$()));
+        svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(MiscUtils.safeGet(device.up_time, 0)));
         hardwareUpdatePoint.setVisibility(View.INVISIBLE);
-        svSettingHardwareUpdate.setTvSubTitle(device.device_version.$());
+        svSettingHardwareUpdate.setTvSubTitle(MiscUtils.safeGet(device.device_version, ""));
     }
 
     @Override

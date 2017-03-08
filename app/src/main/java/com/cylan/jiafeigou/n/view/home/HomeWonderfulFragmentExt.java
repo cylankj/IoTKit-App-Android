@@ -310,7 +310,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @OnClick(R.id.item_wonderful_to_start)
     public void openWonderful() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {//在线表示已登录
+        if (DataSourceManager.getInstance().getLoginState() == LogState.STATE_ACCOUNT_ON) {//在线表示已登录
             Intent intent = new Intent(getActivityContext(), DelayRecordActivity.class);
             intent.putExtra(JConstant.VIEW_CALL_WAY, VIEW_LAUNCH_WAY_WONDERFUL);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);

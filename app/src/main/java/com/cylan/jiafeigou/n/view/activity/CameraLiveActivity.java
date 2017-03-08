@@ -127,10 +127,10 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     @Override
     public void onBackPressed() {
-//        if (checkExtraChildFragment()) {
-//            return;
-//        } else if (checkExtraFragment())
-//            return;
+        if (checkExtraChildFragment()) {
+            return;
+        } else if (checkExtraFragment())
+            return;
         if (this.getResources().getConfiguration().orientation
                 == Configuration.ORIENTATION_LANDSCAPE) {
             ViewUtils.setRequestedOrientation(this,

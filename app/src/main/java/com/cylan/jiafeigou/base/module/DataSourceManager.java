@@ -238,12 +238,12 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
+        setJfgAccount(account);
         if (jfgAccount != null)
             setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
         else {
             AppLogger.e("jfgAccount is null");
         }
-        setJfgAccount(account);
         mJFGAccount = new JFGDPAccount().setAccount(account);
         syncAllJFGDeviceProperty();
     }
@@ -318,6 +318,15 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public ArrayList<JFGVideo> getHistoryList(String uuid) {
         return History.getHistory().getHistoryList(uuid);
+    }
+
+    @Override
+    public void clear() {
+        if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
+        isOnline = false;
+        mJFGAccount = null;
+        jfgAccount = null;
+        if (shareList != null) shareList.clear();
     }
 
     @Override
@@ -420,19 +429,19 @@ public class DataSourceManager implements JFGSourceManager {
         return getValue(uuid, msgId, -1);
     }
 
-    @Override
-    public <T extends DataPoint> T getValueSafe(String uuid, long msgId, Object defaultValue) {
-        T object = getValue(uuid, msgId, -1);
-        if (object == null) {
-            if (defaultValue instanceof Set) {
-                return (T) new DpMsgDefine.DPSet(new TreeSet());
-            } else if (!(defaultValue instanceof DataPoint)) {
-                return (T) new DpMsgDefine.DPPrimary(defaultValue);
-            } else {
-                return (T) defaultValue;
-            }
-        } else return object;
-    }
+//    @Override
+//    public <T extends DataPoint> T getValueSafe(String uuid, long msgId, Object defaultValue) {
+//        T object = getValue(uuid, msgId, -1);
+//        if (object == null) {
+//            if (defaultValue instanceof Set) {
+//                return (T) new DpMsgDefine.DPSet(new TreeSet());
+//            } else if (!(defaultValue instanceof DataPoint)) {
+//                return (T) new DpMsgDefine.DPPrimary(defaultValue);
+//            } else {
+//                return (T) defaultValue;
+//            }
+//        } else return object;
+//    }
 
     public <T extends DataPoint> T getValue(String uuid, long msgId, long seq) {
         T result = null;
@@ -512,6 +521,7 @@ public class DataSourceManager implements JFGSourceManager {
         AppLogger.i("setJfgAccount:" + (jfgAccount == null));
         if (jfgAccount != null) {
             PreferencesUtils.putString(KEY_ACCOUNT, new Gson().toJson(jfgAccount));
+            RxBus.getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
         } else PreferencesUtils.putString(KEY_ACCOUNT, "");
         RxBus.getCacheInstance().post(jfgAccount);
     }

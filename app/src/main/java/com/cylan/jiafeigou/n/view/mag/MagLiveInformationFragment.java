@@ -20,7 +20,9 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.MagLiveInformationPresenterImp;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import butterknife.BindView;
@@ -120,9 +122,10 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
 
     private void updateDetails() {
         DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
-        tvDeviceMac.setText(mac.$());
+        tvDeviceMac.setText(MiscUtils.safeGet(mac, ""));
         DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
-        tvDeviceBatteryLevel.setText(battery.$() + "");
+        int b = MiscUtils.safeGet(battery, 0);
+        tvDeviceBatteryLevel.setText(b + "");
 
         JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device != null) {
@@ -161,20 +164,21 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
         if (editDialogFragment.isVisible())
             return;
         editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
-        editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
+        editDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
             @Override
-            public void onDialogAction(int id, String value) {
-                if (presenter != null) {
+            public void onDialogAction(int id, Object value) {
+                if (presenter != null && value != null && value instanceof String) {
+                    String content = (String) value;
                     JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                    if (!TextUtils.isEmpty(value)
-                            && !TextUtils.equals(device.alias, value)) {
-                        tvDeviceAlias.setText(value);
-                        device.alias = value;
+                    if (!TextUtils.isEmpty(content)
+                            && !TextUtils.equals(device.alias, content)) {
+                        tvDeviceAlias.setText(content);
+                        device.alias = content;
 //                        presenter.updateInfoReq(device, DpMsgMap.ID_2000003_BASE_ALIAS);
 //                        updateDetails();
 
                         if (mListener != null) {
-                            mListener.magLiveDataChange(value);
+                            mListener.magLiveDataChange(content);
                         }
 
                     }

@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
@@ -87,7 +88,7 @@ public class DelayRecordGuideFragment extends BaseFragment {
 
     private boolean isDeviceSleeping() {
         DpMsgDefine.DPPrimary<Boolean> sleep = DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-        return sleep.$();
+        return MiscUtils.safeGet(sleep, false);
     }
 
     private void initDeviceEnableDialog() {

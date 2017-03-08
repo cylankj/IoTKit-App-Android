@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <FrameLayout
+            android:id="@+id/fLayout_top_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_0ba8cf">
+
+            <TextView
+                android:id="@+id/tv_top_bar_left"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:drawablePadding="@dimen/y15"
+                android:drawableStart="@drawable/nav_tab_back_selector"
+                android:padding="@dimen/y15"
+                android:text="@string/_720"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp16" />
+
+            <ImageView
+                android:id="@+id/imgv_toolbar_right"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:padding="@dimen/y14"
+                android:src="@drawable/icon_setting" />
+        </FrameLayout>
+    </LinearLayout>
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y138"
+        android:layout_alignParentBottom="true"
+        android:background="@color/color_F2333333">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/y32"
+            android:layout_marginEnd="@dimen/y62"
+            android:layout_toStartOf="@+id/act_panorama_camera_photograph"
+            android:src="@drawable/camera720_icon_album_selector" />
+
+        <ImageView
+            android:id="@+id/act_panorama_camera_photograph"
+            android:layout_width="@dimen/y70"
+            android:layout_height="@dimen/y70"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="@dimen/y18"
+            android:src="@drawable/camera720_icon_photograph_selector" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/y32"
+            android:layout_marginStart="@dimen/y62"
+            android:layout_toEndOf="@id/act_panorama_camera_photograph"
+            android:src="@drawable/camera720_icon_more_selector" />
+
+    </RelativeLayout>
+</RelativeLayout>

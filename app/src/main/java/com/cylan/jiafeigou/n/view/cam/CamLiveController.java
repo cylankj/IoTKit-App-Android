@@ -7,9 +7,12 @@ import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -20,8 +23,11 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.view.adapter.CamLandHistoryDateAdapter;
+import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -72,6 +78,7 @@ public class CamLiveController implements
     private LiveTimeSetter liveTimeSetterPort, liveTimeSetterLand;
     private WeakReference<CamLiveContract.Presenter> presenterRef;
     private ImageView imgPortMic, imgPortSpeaker;
+    private WeakReference<HomeMineHelpFragment> helpPageFragment;
 
     public void setImgPortMic(ImageView imgPortMic) {
         this.imgPortMic = imgPortMic;
@@ -161,6 +168,18 @@ public class CamLiveController implements
             public void clickText() {
 
             }
+
+            @Override
+            public void clickHelp() {
+                if (helpPageFragment == null || helpPageFragment.get() == null) {
+                    helpPageFragment = new WeakReference<>(HomeMineHelpFragment.newInstance(null));
+                }
+                if (helpPageFragment != null && helpPageFragment.get() != null && helpPageFragment.get().isResumed())
+                    return;
+                if (context != null && context instanceof AppCompatActivity)
+                    ActivityUtils.addFragmentSlideInFromRight(((AppCompatActivity) context).getSupportFragmentManager(), helpPageFragment.get(),
+                            android.R.id.content);
+            }
         });
     }
 
@@ -172,9 +191,9 @@ public class CamLiveController implements
     public void setPortSafeSetter(ISafeStateSetter setter) {
         this.iSafeStateSetterPort = setter;
         iSafeStateSetterPort.setFlipListener(this);
-        DpMsgDefine.DPPrimary<Boolean> safe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        //true:绿色,false:setFlipped(true)
-        iSafeStateSetterPort.setFlipped(!safe.$());
+        DpMsgDefine.DPPrimary<Boolean> dpSafe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        boolean safe = MiscUtils.safeGet(dpSafe, false);
+        iSafeStateSetterPort.setFlipped(!safe);
         Log.d(TAG, "setFlip: " + safe + " " + uuid);
         if (presenterRef.get() != null && JFGRules.isShareDevice(uuid)) {
             setter.setVisibility(false);
@@ -224,13 +243,26 @@ public class CamLiveController implements
      * @param content
      */
     public void setLoadingState(int state, String content) {
+        setLoadingState(state, content, null);
+    }
+
+    /**
+     * loading区域
+     *
+     * @param state
+     * @param content
+     */
+    public void setLoadingState(int state, String content, String help) {
         int playType = presenterRef.get().getPlayType();
         if (playType != TYPE_HISTORY) {
             if (state == STATE_PLAYING || state == STATE_STOP)
                 state = STATE_IDLE;//根据原型,直播没有暂停
         }
-        if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null)
-            iLiveActionViewRef.get().setState(state, content);
+        if (iLiveActionViewRef != null && iLiveActionViewRef.get() != null) {
+            if (!TextUtils.isEmpty(help))
+                iLiveActionViewRef.get().setState(state, content, help);//兼容使用帮助
+            else iLiveActionViewRef.get().setState(state, content);
+        }
     }
 
     /**
@@ -260,7 +292,7 @@ public class CamLiveController implements
         if (iSafeStateSetterPort != null)
             iSafeStateSetterPort.setVisibility(!land && !isShareDevice);
         //全屏底部区域
-        camLiveControlLayer.setOrientation(presenterRef.get().getLocalMicSpeakerBit(), orientation, isShareDevice, sdCardStatus, safe.value);
+        camLiveControlLayer.setOrientation(presenterRef.get().getLocalMicSpeakerBit(), orientation, isShareDevice, sdCardStatus, MiscUtils.safeGet(safe, false));
         //安全防护
         camLiveControlLayer.setLandSafeClickListener(this);
         AppLogger.i("orientation: " + orientation);
@@ -445,6 +477,25 @@ public class CamLiveController implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_cam_live_port_live:
+                String content = ((TextView) view).getText().toString();
+                if (TextUtils.equals(content, view.getContext().getString(R.string.BACK))) {
+                    //
+                    AppLogger.d("live now: " + presenterRef.get().getPlayType());
+                    ((TextView) view).setText(view.getContext().getString(R.string.Tap1_Camera_VideoLive));
+                    if (presenterRef != null && presenterRef.get() != null) {
+                        presenterRef.get().stopPlayVideo(TYPE_LIVE);
+                        presenterRef.get().startPlayHistory(camLiveControlLayer.getSwCamLiveWheel()
+                                .getCurrentFocusTime());
+                        AppLogger.d("history now: " + presenterRef.get().getPlayType());
+                    }
+                } else if (TextUtils.equals(content, view.getContext().getString(R.string.Tap1_Camera_VideoLive))) {
+                    if (presenterRef != null && presenterRef.get() != null) {
+                        presenterRef.get().stopPlayVideo(TYPE_HISTORY);
+                        presenterRef.get().startPlayVideo(TYPE_LIVE);
+                        AppLogger.d("history now: " + presenterRef.get().getPlayType());
+                    }
+                    ((TextView) view).setText(view.getContext().getString(R.string.BACK));
+                }
                 break;
             case R.id.imgV_cam_live_land_play:
                 if (presenterRef != null && presenterRef.get() != null) {
@@ -579,8 +630,10 @@ public class CamLiveController implements
         boolean land = view.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         AppLogger.i("land: " + land + " " + (!view.isFlipped()));
         DpMsgDefine.DPPrimary<Boolean> alarmFlag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        boolean aFlag = MiscUtils.safeGet(alarmFlag, false);
         DpMsgDefine.DPPrimary<Integer> autoVideo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-        if (alarmFlag.$() && autoVideo.$() != 2) {//已开启自动录像和移动侦测
+        int aVideo = MiscUtils.safeGet(autoVideo, 0);
+        if (aFlag && aVideo != 2) {//已开启自动录像和移动侦测
             getAlertDialogFrag().show();
             AppLogger.d("关闭移动侦测将关闭自动录像功能");
         } else if (presenterRef != null && presenterRef.get() != null) {

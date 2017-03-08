@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -74,7 +75,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
                         DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
                         try {
-                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, sVersion.$());
+                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, ""));
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

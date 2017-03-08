@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.util.ArrayList;
@@ -116,7 +117,7 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
             final int security = NetUtils.getSecurity(item);
             bundle.putBoolean(KEY_SHOW_EDIT, security != 0);
             EditFragmentDialog dialog = EditFragmentDialog.newInstance(bundle);
-            dialog.setAction(new EditFragmentDialog.DialogAction<Object>() {
+            dialog.setAction(new BaseDialog.BaseDialogAction() {
                 @Override
                 public void onDialogAction(int id, Object value) {
                     if (value != null && value instanceof String) {

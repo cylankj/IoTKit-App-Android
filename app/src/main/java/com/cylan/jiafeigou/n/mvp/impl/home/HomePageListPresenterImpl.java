@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -13,13 +12,11 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.n.mvp.model.GreetBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +44,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     protected Subscription[] register() {
-        subUuidList();
         return new Subscription[]{
                 getTimeTickEventSub(),
                 getShareDevicesListRsp(),
@@ -133,14 +129,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private Subscription JFGAccountUpdate() {
         return RxBus.getCacheInstance().toObservable(JFGAccount.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((JFGAccount jfgAccount) -> {
-                    Log.d("CYLAN_TAG", "onAccountUpdate rsp:" + new Gson().toJson(jfgAccount));
+                .flatMap(jfgAccount -> {
                     getView().onAccountUpdate(jfgAccount);
-                    return null;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(o -> {
-                    Log.d("CYLAN_TAG", "JFGAccount rsp:");
                     subUuidList();
                     return null;
                 })
@@ -168,16 +158,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     @Override
     public void fetchGreet() {
         Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .map(new Func1<Object, GreetBean>() {
-                    @Override
-                    public GreetBean call(Object o) {
-                        return null;
-                    }
-                })
-                .filter(new RxHelper.Filter<>("", getView() != null && DataSourceManager.getInstance().getJFGAccount() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((GreetBean greetBean) -> {
+                .subscribe((Object greetBean) -> {
                     getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
                 });
     }

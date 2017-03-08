@@ -18,9 +18,9 @@ public class JfgCmdInsurance {
     public static JfgAppCmd getCmd() {
         JfgAppCmd jfgAppCmd = JfgAppCmd.getInstance();
         if (jfgAppCmd == null) {
-            AppLogger.e("jfgAppCmd is null");
             DataSource.getInstance().initNative();
             jfgAppCmd = JfgAppCmd.getInstance();
+            AppLogger.e("jfgAppCmd is null: " + jfgAppCmd);
         } else return jfgAppCmd;
         return jfgAppCmd;
     }

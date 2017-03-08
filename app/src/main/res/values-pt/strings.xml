@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">Por favor, selecione \"DOG&#8211;ML******\" na definições de Wi&#8211;Fi. Se precisar de senha, digite 11111111</string>
   <string name="WIFI_SET_4">Retorne para o %s</string>
   <string name="WIFI_SET_5GTIPS">Nota:Wi&#8211;Fi em 5GHz não é suportado</string>
+  <string name="WONDER_TODAY_H_M">Hoje HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">Ontem HH:mm</string>
   <string name="Word_Hours">hora</string>
   <string name="XX_DISCOVERY">%s registrou novas descobertas</string>
   <string name="YOUR_FEEDBACK">Seus comentários são importantes para nós</string>

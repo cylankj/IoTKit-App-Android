@@ -100,7 +100,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             boolean notNull = getView() != null
                                     && TextUtils.equals(uuid, jfgMsgVideoDisconn.remote);
                             if (!notNull) {
-                                AppLogger.e("err: " + uuid);
+                                AppLogger.e("err: " + uuid + " remote:" + jfgMsgVideoDisconn.remote);
                             } else {
                                 AppLogger.i("stop for reason: " + jfgMsgVideoDisconn.code);
                             }
@@ -260,9 +260,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.e("disconnected: " + new Gson().toJson(disconn));
                     return "JFGMsgVideoDisconn";
                 })
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .mergeWith(RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
                         .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
+                        .observeOn(Schedulers.newThread())
                         .map(resolution -> {
                             JfgCmdInsurance.getCmd().setAudio(false, false, false);
                             JfgCmdInsurance.getCmd().setAudio(true, false, false);

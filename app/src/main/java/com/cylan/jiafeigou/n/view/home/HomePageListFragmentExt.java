@@ -28,7 +28,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
@@ -48,8 +47,6 @@ import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -314,9 +311,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         homePageListAdapter.clear();//暴力刷新,设备没几个,没关系.
         homePageListAdapter.addAll(resultList);
         srLayoutMainContentHolder.setNestedScrollingEnabled(resultList.size() > JFGRules.NETSTE_SCROLL_COUNT);
-        onRefreshFinish();
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
-        Log.d("onItemsInsert", "onItemsInsert: " + resultList);
+        onRefreshFinish();
+        basePresenter.fetchGreet();
     }
 
     @Override
@@ -332,17 +329,21 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     }
 
-//    @Override
-//    public ArrayList<String> getUuidList() {
-//        return homePageListAdapter == null ? null : (ArrayList<String>) homePageListAdapter.getList();
-//    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed() && getActivity() != null) {
+        }
+    }
 
     @Override
     public void onAccountUpdate(JFGAccount greetBean) {
-        tvHeaderNickName.setText(String.format("Hi,%s",
-                getBeautifulAlias(greetBean)));
-        tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
-                : getString(R.string.Tap1_Index_NightGreetings));
+        tvHeaderNickName.post(() -> {
+            tvHeaderNickName.setText(String.format("Hi,%s", getBeautifulAlias(greetBean)));
+            tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
+                    : getString(R.string.Tap1_Index_NightGreetings));
+            tvHeaderNickName.requestLayout();
+        });
     }
 
     /**

@@ -19,6 +19,8 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveDeviceInfoPresenterImp;
+import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.text.DecimalFormat;
@@ -106,11 +108,14 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
 
     private void updateDetails() {
         DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
-        tvDeviceMac.setText(mac.$());
+        String m = MiscUtils.safeGet(mac, "");
+        tvDeviceMac.setText(m);
         DpMsgDefine.DPPrimary<String> version = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
-        tvSoftVersion.setText(version.$());
+        String v = MiscUtils.safeGet(version, "");
+        tvSoftVersion.setText(v);
         DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION);
-        tvSystemVersion.setText(sVersion.$());
+        String sv = MiscUtils.safeGet(sVersion, "");
+        tvSystemVersion.setText(sv);
         JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device != null) {
             tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
@@ -165,18 +170,19 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
         if (editDialogFragment.isVisible())
             return;
         editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
-        editDialogFragment.setAction(new EditFragmentDialog.DialogAction<String>() {
+        editDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
             @Override
-            public void onDialogAction(int id, String value) {
-                if (presenter != null) {
+            public void onDialogAction(int id, Object value) {
+                if (presenter != null && value != null && value instanceof String) {
+                    String content = (String) value;
                     JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                    if (!TextUtils.isEmpty(value)
-                            && !TextUtils.equals(device.alias, value)) {
-                        tvInformationFacilityName.setText(value);
-                        device.alias = value;
+                    if (!TextUtils.isEmpty(content)
+                            && !TextUtils.equals(device.alias, content)) {
+                        tvInformationFacilityName.setText(content);
+                        device.alias = content;
                         updateDetails();
                         if (listener != null) {
-                            listener.changeName(value);
+                            listener.changeName(content);
                         }
 
                     }

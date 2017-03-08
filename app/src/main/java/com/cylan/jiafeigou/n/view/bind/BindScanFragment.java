@@ -207,7 +207,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         if (state == 0) {
             ToastUtil.showPositiveToast(getString(R.string.Added_successfully));
         } else if (state == -1) {
-            ToastUtil.showToast(getString(R.string.BIND_FAILED));
+            ToastUtil.showToast(getString(R.string.ADD_FAILED));
         } else if (state == ErrorCIDBinded) {
             ToastUtil.showToast(getString(R.string.RET_EISBIND_BYSELF));
         } else if (state == ErrorCIDNotBind) {

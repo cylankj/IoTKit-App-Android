@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">Lütfen Ayarlamalar&#8211;>WLAN aracaılığıyla DOG&#8211;ML&#8211;****** yi seçin, phone\'nuzdan katılın, şifre 11111111</string>
   <string name="WIFI_SET_4">%s e geri dön</string>
   <string name="WIFI_SET_5GTIPS">İpuçları:5Ghz WiFi sinyali şu an izinsiz</string>
+  <string name="WONDER_TODAY_H_M">Bugün HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">Dün HH:mm</string>
   <string name="Word_Hours">saat</string>
   <string name="XX_DISCOVERY">%s in yeni bir keşfi var</string>
   <string name="YOUR_FEEDBACK">Geri dönüşünüz bizim için önemlidir</string>
