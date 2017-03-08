@@ -166,10 +166,15 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .map((Boolean aBoolean) -> {
                     DataSourceManager.getInstance().syncAllJFGDeviceProperty();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
-                    return null;
+                    return aBoolean;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Object aBoolean) -> RxBus.getCacheInstance().post(new InternalHelp()),
+                .map(aBoolean -> {
+                    RxBus.getCacheInstance().post(new InternalHelp());
+                    return aBoolean;
+                })
+                .filter(aBoolean -> aBoolean)//手动刷新，需要停止刷新
+                .subscribe((Object aBoolean) -> AppLogger.d("refresh"),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
     }
 

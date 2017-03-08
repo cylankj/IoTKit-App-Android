@@ -133,7 +133,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
         if (basePresenter != null) {
-            basePresenter.fetchDeviceList(true);
+            basePresenter.fetchDeviceList(false);
         }
     }
 
