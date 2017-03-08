@@ -455,7 +455,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             AppLogger.d("woo,position is invalid: " + position);
             return false;
         }
-        deleteItem(position);
+//        deleteItem(position);
         return true;
     }
 
