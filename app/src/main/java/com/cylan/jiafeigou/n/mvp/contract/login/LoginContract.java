@@ -76,8 +76,9 @@ public interface LoginContract {
          */
         void checkAccountResult(RxEvent.CheckRegsiterBack callback);
 
-
         void authorizeResult();
+
+        void reShowAccount(String account);
     }
 
     interface Presenter extends BasePresenter {
@@ -131,6 +132,12 @@ public interface LoginContract {
          * @return
          */
         Subscription thirdAuthorizeBack();
+
+        /**
+         * 回显账号
+         * @return
+         */
+        Subscription reShowAccount();
     }
 
 }

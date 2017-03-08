@@ -152,7 +152,6 @@ public class OpenLoginHelper {
                     String code = bundle.getString("code", "");
                     AppLogger.d("sina_code" + code);
                 }
-
             }
 
             @Override

@@ -400,6 +400,15 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     @Override
+    public void autoLoginTip(int code) {
+        if (code == JError.LoginTimeOut){
+            ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
+        }else if (code == JError.NoNet){
+            ToastUtil.showNegativeToast(getString(R.string.GLOBAL_NO_NETWORK));
+        }
+    }
+
+    @Override
     public void onRefresh() {
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);

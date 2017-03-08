@@ -26,8 +26,6 @@ import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -70,12 +68,6 @@ public class SmartcallActivity extends NeedLoginActivity
         ButterKnife.bind(this);
         initPresenter();
         fullScreen(true);
-        if (!getIntent().getBooleanExtra("from_log_out", false)) {
-            if (presenter != null) presenter.start();
-        } else {
-            splashOver();
-        }
-
     }
 
     /**
@@ -98,6 +90,11 @@ public class SmartcallActivity extends NeedLoginActivity
     protected void onStart() {
         super.onStart();
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+        if (!getIntent().getBooleanExtra("from_log_out", false)) {
+            if (presenter != null) presenter.start();
+        } else {
+            splashOver();
+        }
     }
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
@@ -313,5 +310,4 @@ public class SmartcallActivity extends NeedLoginActivity
     public Context getContext() {
         return getApplicationContext();
     }
-
 }

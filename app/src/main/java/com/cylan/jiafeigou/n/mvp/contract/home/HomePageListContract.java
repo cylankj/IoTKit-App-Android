@@ -48,6 +48,8 @@ public interface HomePageListContract {
         void onRefreshFinish();
 
         void unBindDeviceRsp(int state);
+
+        void autoLoginTip(int code);
     }
 
     interface Presenter extends BasePresenter {
@@ -60,5 +62,6 @@ public interface HomePageListContract {
         void registerWorker();
 
         void unRegisterWorker();
+
     }
 }

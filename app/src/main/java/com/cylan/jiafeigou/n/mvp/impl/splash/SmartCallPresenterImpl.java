@@ -14,6 +14,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -22,34 +23,27 @@ import rx.schedulers.Schedulers;
 public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.View>
         implements SplashContract.Presenter {
 
+    private Subscription subscription;
+
     public SmartCallPresenterImpl(SplashContract.View splashView) {
         super(splashView);
         splashView.setPresenter(this);
-//        RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
-//                .subscribeOn(Schedulers.newThread())
-//                .filter(resultLogin -> resultLogin.code == 0)
-//                .timeout(2, TimeUnit.SECONDS, Observable.just("autoLogTimeout")
-//                        .subscribeOn(AndroidSchedulers.mainThread())
-//                        .map(s -> {
-//                            AppLogger.e("" + s);
-//                            getView().splashOver();
-//                            return null;
-//                        }))
-//                .delay(3000, TimeUnit.MILLISECONDS)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-////                .doOnCompleted(() -> getView().loginResult(0))
-//                .subscribe(resultLogin1 -> {
-//                    getView().loginResult(0);
-//                });
-
-        RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
+        subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resultLogin -> {
+                    if (resultLogin != null)
                     getView().loginResult(resultLogin.code);
                 });
     }
 
+
+    @Override
+    public void stop() {
+        super.stop();
+        if (subscription != null && !subscription.isUnsubscribed()){
+            subscription.unsubscribe();
+        }
+    }
 
     @Override
     public void finishAppDelay() {

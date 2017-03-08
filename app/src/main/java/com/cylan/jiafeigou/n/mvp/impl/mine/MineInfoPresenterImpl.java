@@ -10,6 +10,8 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.misc.AutoSignIn;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -50,7 +52,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      * 退出登录
      */
     @Override
-    public void logOut() {
+    public void logOut(String account) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
@@ -60,13 +62,11 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                         DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
                         JfgCmdInsurance.getCmd().logout();
                         RxBus.getCacheInstance().removeAllStickyEvents();
-                        if (isOpenLogin) {
-                            AccessTokenKeeper.clear(getView().getContext());
-//                            TencentInstance tencentInstance = new TencentInstance();
-//                            if (tencentInstance.mTencent.isSessionValid()){
-//                                tencentInstance.mTencent.logout(getView().getContext());
-//                            }
-                        }
+                        AutoSignIn.getInstance().autoSave(account,1, "")
+                                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                                .subscribe();
+                        //emit failed event.
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                     }
                 }, new Action1<Throwable>() {
                     @Override

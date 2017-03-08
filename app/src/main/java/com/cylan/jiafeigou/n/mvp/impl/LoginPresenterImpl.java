@@ -25,6 +25,7 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -119,7 +120,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 switchBoxSub(),
                 loginPopBackSub(),
                 checkAccountBack(),
-                thirdAuthorizeBack()
+                thirdAuthorizeBack(),
+                reShowAccount()
         };
     }
 
@@ -308,6 +310,36 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         executeLogin(loginAccountBean);
                     }else {
                         getView().authorizeResult();
+                    }
+                });
+    }
+
+    @Override
+    public Subscription reShowAccount() {
+        return Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<Object, Observable<String>>() {
+                    @Override
+                    public Observable<String> call(Object o) {
+                        try {
+                            String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
+                            if (TextUtils.isEmpty(aesAccount)) {
+                                AppLogger.d("reShowAccount:aes account is null");
+                                return Observable.just(null);
+                            }
+                            String decryption = AESUtil.decrypt(aesAccount);
+                            AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
+                            return Observable.just(signType.account);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return null;
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    if (s != null && !TextUtils.isEmpty(s)){
+                        getView().reShowAccount(s);
                     }
                 });
     }

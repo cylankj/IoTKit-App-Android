@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.support.facebook.FacebookInstance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
@@ -13,8 +14,14 @@ import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
+import com.twitter.sdk.android.Twitter;
+import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterApiClient;
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterSession;
 
 import java.io.File;
 
@@ -64,7 +71,7 @@ public class AutoSignIn {
                     @Override
                     public Observable<Integer> call(String s) {
                         try {
-                            String aesAccount = PreferencesUtils.getString(KEY);
+                            String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
                             if (TextUtils.isEmpty(aesAccount)) {
                                 Log.d(TAG, "aes account is null");
                                 return Observable.just(-1);
@@ -102,7 +109,7 @@ public class AutoSignIn {
                     @Override
                     public Observable<Integer> call(String s) {
                         try {
-                            String aesAccount = PreferencesUtils.getString(KEY);
+                            String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
                             if (TextUtils.isEmpty(aesAccount)) {
                                 Log.d(TAG, "aes account is null");
                                 return Observable.just(-1);
@@ -150,11 +157,13 @@ public class AutoSignIn {
                 isOut = !(oauth2AccessToken != null && oauth2AccessToken.isSessionValid());
                 break;
             case 6:
-
+//                TwitterSession activeSession = Twitter.getSessionManager().getActiveSession();
+//                TwitterAuthToken authToken = activeSession.getAuthToken();
+//                if (authToken != null)
+//                isOut = !authToken.isExpired();
                 break;
-
             case 7:
-
+//                isOut = !AccessToken.getCurrentAccessToken().isExpired();
                 break;
         }
         return isOut;
@@ -171,7 +180,7 @@ public class AutoSignIn {
                         signType.type = type;
                         //1.account的aes
                         String aes = AESUtil.encrypt(new Gson().toJson(signType));
-                        PreferencesUtils.putString(KEY, aes);
+                        PreferencesUtils.putString(JConstant.AUTO_SIGNIN_KEY, aes);
                         Log.d(TAG, "account aes: " + aes.length());
                         //2.保存密码
                         FileUtils.writeFile(ContextUtils.getContext().getFilesDir() + File.separator + aes + ".dat", AESUtil.encrypt(pwd));

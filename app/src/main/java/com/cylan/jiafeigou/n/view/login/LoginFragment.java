@@ -341,13 +341,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         etLoginUsername.setHint(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN
                 ? getString(R.string.SHARE_E_MAIL) : getString(R.string.EMAIL));
 
-        //回显
-        String tempAccPwd = basePresenter.getTempAccPwd();
-        if (!TextUtils.isEmpty(tempAccPwd)) {
-            int i = tempAccPwd.indexOf("|");
-            etLoginUsername.setText(tempAccPwd.substring(0, i));
-            etLoginPwd.setText(tempAccPwd.substring(i + 1));
-        }
 
         if (!TextUtils.isEmpty(etLoginUsername.getText().toString().trim()) && !TextUtils.isEmpty(etLoginPwd.getText().toString().trim())) {
             lbLogin.setEnabled(true);
@@ -842,6 +835,12 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void authorizeResult() {
         ToastUtil.showNegativeToast("authorize failed");
+    }
+
+    //回显
+    @Override
+    public void reShowAccount(String account) {
+        etLoginUsername.setText(account);
     }
 
     /**

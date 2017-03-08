@@ -113,7 +113,7 @@ public class DataSource implements AppCallBack {
                         if(integer==0)
                         RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                                 .subscribeOn(Schedulers.newThread())
-                                .timeout(5, TimeUnit.SECONDS,Observable.just("autoSign in timeout")
+                                .timeout(4, TimeUnit.SECONDS,Observable.just("autoSign in timeout")
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .map(s->{
                                             AppLogger.d("net type: "+ NetUtils.getNetType(ContextUtils.getContext()));
@@ -123,7 +123,8 @@ public class DataSource implements AppCallBack {
                                                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
                                             }
                                             return null;
-                                        }));
+                                        }))
+                                .subscribe();
                         else if(integer==-1){
                             //emit failed event.
                             RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));

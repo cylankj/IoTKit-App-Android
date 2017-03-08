@@ -525,15 +525,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      * 跳转到登录页
      */
     private void jump2LoginFragment() {
-        //账号和密码
-        try {
-            if (argumentData != null) {
-                String hex = AESUtil.encrypt(argumentData.getAccount() + "|" + "");
-                AppLogger.e("保存密码未实现");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         //进入登陆页 login page
         Intent intent = new Intent(getContext(), SmartcallActivity.class);
         intent.putExtra("from_log_out", true);
@@ -596,7 +587,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             public void onClick(View v) {
                 popupWindow.dismiss();
                 if (getView() != null) {
-                    presenter.logOut();
+                    presenter.logOut(argumentData.getAccount());
                     jump2LoginFragment();
                 }
             }
