@@ -82,7 +82,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
      * @return
      */
     private Observable<RxEvent.ResultLogin> loginResultObservable() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class);
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class);
     }
 
     @Override

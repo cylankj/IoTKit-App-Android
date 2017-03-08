@@ -123,7 +123,7 @@ public class OpenLoginHelper {
             @Override
             public void onError(UiError uiError) {
                 LoginAccountBean login = null;
-                RxBus.getCacheInstance().post(login);
+                RxBus.getCacheInstance().postSticky(login);
                 AppLogger.d("QQGetUserInfo error:"+uiError.errorMessage);
             }
 
@@ -157,7 +157,7 @@ public class OpenLoginHelper {
             @Override
             public void onWeiboException(WeiboException e) {
                 LoginAccountBean login = null;
-                RxBus.getCacheInstance().post(login);
+                RxBus.getCacheInstance().postSticky(login);
                 AppLogger.e("sinaAuthorize:"+e.getLocalizedMessage());
             }
 
@@ -222,7 +222,7 @@ public class OpenLoginHelper {
                     @Override
                     public void failure(TwitterException e) {
                         LoginAccountBean login = null;
-                        RxBus.getCacheInstance().post(login);
+                        RxBus.getCacheInstance().postSticky(login);
                         AppLogger.e("twitterAuthorize:"+e.getLocalizedMessage());
                     }
                 });
@@ -282,7 +282,7 @@ public class OpenLoginHelper {
                     @Override
                     public void onError(FacebookException e) {
                         LoginAccountBean login = null;
-                        RxBus.getCacheInstance().post(login);
+                        RxBus.getCacheInstance().postSticky(login);
                         AppLogger.e("facebookAuthorize:"+e.getLocalizedMessage());
                     }
                 });
