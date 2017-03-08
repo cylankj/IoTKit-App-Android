@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 
 import java.io.File;
 
@@ -66,7 +65,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                                 .subscribe();
                         //emit failed event.
-                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultAutoLogin(JError.StartLoginPage));
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -218,13 +217,10 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      */
     @Override
     public Subscription isOpenLoginBack() {
-        return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        isOpenLogin = aBoolean;
-                    }
+                .subscribe(thirdLoginTab -> {
+                    isOpenLogin = thirdLoginTab.isThird;
                 });
     }
 

@@ -19,7 +19,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 ;
 
@@ -101,14 +100,14 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
 
     private Subscription resultLoginSub() {
         //sdk中，登陆失败的话，自动一分钟登录一次。
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultAutoLogin.class)
                 .delay(500, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ResultLogin>() {
+                .subscribe(new Action1<RxEvent.ResultAutoLogin>() {
                     @Override
-                    public void call(RxEvent.ResultLogin resultLogin) {
+                    public void call(RxEvent.ResultAutoLogin resultAutoLogin) {
                         if (getView() != null) {
-                            getView().loginResult(resultLogin.code);
+                            getView().loginResult(resultAutoLogin.code);
                         }
                     }
                 }, new Action1<Throwable>() {

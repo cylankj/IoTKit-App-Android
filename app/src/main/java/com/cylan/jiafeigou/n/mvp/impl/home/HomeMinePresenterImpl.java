@@ -54,17 +54,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     @Override
     public void start() {
         super.start();
-/*        onRefreshSubscription = Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .delay(3000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        if (getView() != null)
-                            getView().onPortraitUpdate(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""));
-                    }
-                });*/
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
@@ -211,13 +200,12 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
      */
     @Override
     public Subscription checkIsOpenLoginCallBack() {
-        return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        isOpenLogin = aBoolean;
-                        subscription.add(initData(aBoolean));
+                .subscribe(thirdLoginTab -> {
+                    if (thirdLoginTab != null){
+                        isOpenLogin = thirdLoginTab.isThird;
+                        subscription.add(initData(thirdLoginTab.isThird));
                     }
                 });
     }

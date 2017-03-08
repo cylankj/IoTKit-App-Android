@@ -82,16 +82,16 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
      * @return
      */
     private Observable<RxEvent.ResultLogin> loginResultObservable() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class);
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class);
     }
 
     @Override
     public void executeLogin(final LoginAccountBean login) {
         //加入
         Observable.zip(loginObservable(login), loginResultObservable(),
-                (Object o, RxEvent.ResultLogin resultLogin) -> {
-                    Log.d("CYLAN_TAG", "login: " + resultLogin);
-                    return resultLogin;
+                (Object o, RxEvent.ResultLogin resultAutoLogin) -> {
+                    Log.d("CYLAN_TAG", "login: " + resultAutoLogin);
+                    return resultAutoLogin;
                 })
                 .timeout(30 * 1000L, TimeUnit.SECONDS, Observable.just(null)
                         .observeOn(AndroidSchedulers.mainThread())

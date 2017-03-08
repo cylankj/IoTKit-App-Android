@@ -108,7 +108,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     private EmptyViewState emptyViewState;
 
-
     public static HomePageListFragmentExt newInstance(Bundle bundle) {
         HomePageListFragmentExt fragment = new HomePageListFragmentExt();
         fragment.setArguments(bundle);

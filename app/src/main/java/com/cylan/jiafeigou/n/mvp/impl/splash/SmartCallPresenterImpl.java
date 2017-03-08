@@ -1,21 +1,14 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
-import java.util.concurrent.TimeUnit;
-
-import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by hunt on 16-5-14.
@@ -28,7 +21,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     public SmartCallPresenterImpl(SplashContract.View splashView) {
         super(splashView);
         splashView.setPresenter(this);
-        subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
+        subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultAutoLogin.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resultLogin -> {
                     if (resultLogin != null)

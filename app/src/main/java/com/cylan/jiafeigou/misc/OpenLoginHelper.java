@@ -9,9 +9,11 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.facebook.FacebookInstance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
+import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.support.sina.SinaLogin;
 import com.cylan.jiafeigou.support.sina.UsersAPI;
 import com.cylan.jiafeigou.support.twitter.TwitterInstance;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.facebook.AccessToken;
@@ -51,7 +53,6 @@ import retrofit2.Call;
  */
 public class OpenLoginHelper {
 
-    private static LoginAccountBean loginBean;
     private static OpenLoginHelper instance;
 
     private static final String TWITTER_KEY = "kCEeFDWzz5xHi8Ej9Wx6FWqRL";
@@ -146,6 +147,7 @@ public class OpenLoginHelper {
                 Long uid = Long.parseLong(accessToken.getUid());
                 usersAPI.show(uid, sinaRequestListener);
                 if(accessToken != null && accessToken.isSessionValid()) {
+                    AccessTokenKeeper.writeAccessToken(ContextUtils.getContext(),accessToken);
                     //post 结果
                     postAuthorizeResult(accessToken.getToken(),4);
                 } else {

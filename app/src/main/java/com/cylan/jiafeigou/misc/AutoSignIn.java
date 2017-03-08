@@ -4,6 +4,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.facebook.FacebookInstance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
@@ -34,9 +36,6 @@ import rx.schedulers.Schedulers;
  */
 
 public class AutoSignIn {
-
-    private static final int FIRST_SIGN_IN = -1;
-    private static final int HAS_ACCOUNT = 0;
 
     private JFGAccount jfgAccount;
     private static final String TAG = "AutoSignIn";
@@ -81,6 +80,7 @@ public class AutoSignIn {
                             Log.d(TAG, "signType: " + signType);
                             if (signType != null) {
                                 StringBuilder pwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + aesAccount + ".dat", "UTF-8");
+                                AppLogger.d("pwd111："+pwd);
                                 if (!TextUtils.isEmpty(pwd)) {
                                     String finalPwd = AESUtil.decrypt(pwd.toString());
                                     if (signType.type == 1)
@@ -121,14 +121,17 @@ public class AutoSignIn {
                                 StringBuilder pwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + aesAccount + ".dat", "UTF-8");
                                 if (!TextUtils.isEmpty(pwd)) {
                                     String finalPwd = AESUtil.decrypt(pwd.toString());
-                                    if (signType.type == 1)
+                                    if (signType.type == 1){
                                         JfgCmdInsurance.getCmd().login(signType.account, finalPwd);
+                                        RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
+                                    }
                                     else if (signType.type >= 3) {
                                         //效验本地token是否过期
                                         if(checkTokenOut(signType.type)){
                                             return Observable.just(-1);
                                         }else {
                                             JfgCmdInsurance.getCmd().openLogin(signType.account, finalPwd, signType.type);
+                                            RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         }
                                     }
                                     AppLogger.d("log type: " + signType);

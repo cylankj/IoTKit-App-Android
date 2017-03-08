@@ -163,6 +163,21 @@ public class RxEvent {
         }
     }
 
+    public static final class ResultAutoLogin {
+        public int code;
+
+        public ResultAutoLogin(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String toString() {
+            return "ResultAutoLogin{" +
+                    "code=" + code +
+                    '}';
+        }
+    }
+
     public static final class ResultLogin {
         public int code;
 
@@ -177,6 +192,7 @@ public class RxEvent {
                     '}';
         }
     }
+
 
     public static final class ResultBind {
         public int code;
@@ -781,5 +797,14 @@ public class RxEvent {
             this.seq = l;
             this.rets = arrayList;
         }
+    }
+
+    public static class ThirdLoginTab{
+        public boolean isThird;
+
+        public ThirdLoginTab(boolean isThird) {
+            this.isThird = isThird;
+        }
+
     }
 }

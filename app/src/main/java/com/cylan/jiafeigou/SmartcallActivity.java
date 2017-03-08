@@ -26,6 +26,8 @@ import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -194,6 +196,7 @@ public class SmartcallActivity extends NeedLoginActivity
             finish();
         }else if(code == JError.StartLoginPage && !frist){
             splashOver();
+            RxBus.getCacheInstance().removeStickyEvent(RxEvent.ResultAutoLogin.class);
             frist = true;
         }else if (code == JError.ErrorAccountNotExist){
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));

@@ -50,7 +50,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 devicesUpdate(),
                 devicesUpdate1(),
                 JFGAccountUpdate(),
-                autoLoginTip()};
+//                autoLoginTip()
+        };
     }
 
     private Subscription getShareDevicesListRsp() {
@@ -244,7 +245,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
 
     private Subscription autoLoginTip(){
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultAutoLogin.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resultLogin -> {
                     if(resultLogin != null)
