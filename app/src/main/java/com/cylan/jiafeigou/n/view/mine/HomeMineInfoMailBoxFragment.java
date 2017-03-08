@@ -31,7 +31,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
-
 /**
  * 创建者     谢坤
  * 创建时间   2016/8/10 15:37

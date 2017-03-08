@@ -54,7 +54,6 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     RelativeLayout rlHomeMineRelativesandfriendsScanAdd;
 
     private MineFriendAddFromContactContract.Presenter presenter;
-    private MineAddFromContactFragment mineAddFromContactFragment;
     private FriendAddFromContactAdapter contactListAdapter;
 
     private String friendAccount;
@@ -72,8 +71,8 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     public void onStart() {
         super.onStart();
         if (presenter != null) {
-            presenter.getFriendListData();
             presenter.start();
+            presenter.getFriendListData();
         }
     }
 
@@ -141,7 +140,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     public void jump2SendAddMesgFragment() {
         Bundle bundle = new Bundle();
         bundle.putString("account", friendAccount);
-        mineAddFromContactFragment = MineAddFromContactFragment.newInstance(bundle);
+        MineAddFromContactFragment mineAddFromContactFragment = MineAddFromContactFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)

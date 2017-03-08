@@ -27,7 +27,6 @@ public class BaseDialog<T> extends DialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NORMAL, R.style.l_style_dialog);
-        setCancelable(true);
         maxWidth = (int) (DensityUtils.getScreenWidth() * 0.78f);
         minHeight = (int) (DensityUtils.getScreenHeight() * MIN_HEIGHT);
     }

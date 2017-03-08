@@ -35,6 +35,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected boolean mIsSpeakerOn = false;
     protected String mViewLaunchType;
 
+    protected boolean hasResolution = false;
+
+
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
@@ -54,7 +57,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .map(handle -> {
                     try {
                         AppLogger.d("正在准备开始直播,对端 cid 为:" + handle);
-                        JfgCmdInsurance.getCmd().playVideo(handle);
+                        int ret = JfgCmdInsurance.getCmd().playVideo(handle);
+                        if (ret != 0) {
+                            JfgCmdInsurance.getCmd().stopPlay(handle);
+                            JfgCmdInsurance.getCmd().playVideo(handle);
+                        }
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.d("准备开始直播失败!");
@@ -62,26 +69,14 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     return handle;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .flatMap(s -> Observable.merge(
-                        RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
-                                .subscribeOn(Schedulers.io())
-                                .filter(rsp -> TextUtils.equals(rsp.peer, s)).timeout(30, TimeUnit.SECONDS)
-                                .first().map(RxEvent.LiveResponse::new),
-                        RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .map(dis -> {
-                                    AppLogger.d("视频连接断开了: remote:" + dis.remote + "code:" + dis.code);
-                                    mView.onVideoDisconnect(dis.code);
-                                    return new RxEvent.LiveResponse<>(dis, false);
-                                })
-                ).first())
+                .flatMap(this::handleVideoResponse)
                 .filter(response -> response.success)
                 .map(response -> (JFGMsgVideoResolution) response.response)
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(rsp -> {
                     try {
                         AppLogger.d("接收到分辨率消息,准备播放直播");
+                        hasResolution = true;
                         mView.onResolution(rsp);
                         mViewLaunchType = onResolveViewIdentify();
                         RxBus.getCacheInstance().post(new BaseCallablePresenter.Notify(false));//发送一条 Notify 消息表明不需要再查询预览图了
@@ -90,21 +85,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         e.printStackTrace();
                     }
                     return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
-                            .takeUntil(
-                                    RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                                            .filter(dis -> TextUtils.equals(dis.remote, rsp.peer))
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .map(dis -> {
-                                                AppLogger.d("视频连接断开了,错误码为:" + dis.code);
-                                                switch (dis.code) {
-                                                    case -1000000://dismiss 掉的,属于正常关闭
-                                                        break;
-                                                    default:
-                                                        mView.onVideoDisconnect(dis.code);
-                                                }
-                                                return dis;
-                                            })
-                            );
+                            .takeUntil(handleVideoRTCP(rsp));
                 })
                 .doOnUnsubscribe(() -> AppLogger.d("直播链取消订阅了"))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -114,7 +95,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         AppLogger.d("连接设备超时,即将退出!");
-                        mView.onConnectDeviceTimeOut();
+                        if (hasResolution) {
+                            mView.onVideoDisconnect(ViewableView.BAD_NET_WORK);
+                        } else {
+                            mView.onConnectDeviceTimeOut();
+                        }
                     }
                 });
         registerSubscription(subscribe);
@@ -145,6 +130,51 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     }
                     return false;
                 });
+    }
+
+    protected Observable<RxEvent.LiveResponse> handleVideoResponse(String peer) {
+        return Observable.merge(
+                RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
+                        .subscribeOn(Schedulers.io())
+                        .filter(rsp -> TextUtils.equals(rsp.peer, peer))
+                        .timeout(30, TimeUnit.SECONDS)
+                        .map(RxEvent.LiveResponse::new),
+                RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(dis -> {
+                            AppLogger.d("视频连接断开了: remote:" + dis.remote + "code:" + dis.code);
+                            mView.onVideoDisconnect(dis.code);
+                            return new RxEvent.LiveResponse(dis, false);
+                        })
+        ).first();
+    }
+
+    protected Observable<JFGMsgVideoDisconn> handleVideoRTCP(JFGMsgVideoResolution resolution) {
+        return
+                RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+                        .filter(dis -> TextUtils.equals(dis.remote, resolution.peer))
+                        .mergeWith(
+                                RxBus.getCacheInstance().toObservable(RxEvent.OnlineStatusRsp.class)
+                                        .filter(event -> !event.state).map(event -> {
+                                    JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                                    disconn.code = ViewableView.BAD_NET_WORK;
+                                    disconn.remote = getViewHandler();
+                                    return disconn;
+                                }))
+                        .first()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(dis -> {
+                            AppLogger.e(dis.code + "AAA");
+                            switch (dis.code) {
+                                case ViewableView.BAD_NET_WORK:
+                                    mView.onVideoDisconnect(dis.code);
+                                    break;
+                                case -100000:
+                                    break;
+                            }
+                            return dis;
+                        });
     }
 
     @Override

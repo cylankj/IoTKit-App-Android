@@ -113,7 +113,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
 
     /**
      * 获取到检测账号的回调
-     *
      * @return
      */
     @Override
@@ -136,7 +135,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
      * 发送修改phone的请求
      */
     @Override
-    public void sendChangePhoneReq() {
+    public void sendChangePhoneReq(String newPhone,String token) {
         rx.Observable.just(jfgAccount)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<JFGAccount>() {
@@ -144,10 +143,12 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                     public void call(JFGAccount account) {
                         try {
                             account.resetFlag();
-                            account.setPhone(getView().getInputPhone(), getView().getInputCheckCode());
-                            JfgCmdInsurance.getCmd().setAccount(account);
+                            account.setPhone(newPhone, token);
+                            int req = JfgCmdInsurance.getCmd().setAccount(account);
                             sendReq = true;
+                            AppLogger.d("sendChangePhoneReq:"+req+":"+newPhone+":"+token);
                         } catch (JfgException e) {
+                            AppLogger.d("sendChangePhoneReq:"+e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }
@@ -234,14 +235,14 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
      * @param code
      */
     @Override
-    public void CheckVerifyCode(final String inputCode, String code) {
+    public void CheckVerifyCode(String phone,final String inputCode, String code) {
         rx.Observable.just(code)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String code) {
                         try {
-                            JfgCmdInsurance.getCmd().verifySMS(jfgAccount.getAccount(), inputCode, code);
+                            JfgCmdInsurance.getCmd().verifySMS(phone,inputCode, code);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

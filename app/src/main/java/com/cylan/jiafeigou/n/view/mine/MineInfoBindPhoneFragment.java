@@ -83,7 +83,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
         ViewUtils.setChineseExclude(etMineBindPhone, 11);
-
         ivMineInfoBindPhone.setClickable(false);
     }
 
@@ -114,8 +113,10 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
             @Override
             public void onFinish() {
-                tvMeterGetCode.setText(getString(R.string.Button_ReObtain));
-                tvMeterGetCode.setEnabled(true);
+                if (isAdded()){
+                    tvMeterGetCode.setText(getString(R.string.Button_ReObtain));
+                    tvMeterGetCode.setEnabled(true);
+                }
             }
         };
     }
@@ -156,13 +157,8 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         super.onStart();
         if (presenter != null) {
             presenter.isBindOrChange(userinfo);
+            presenter.start();
         }
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        presenter.start();
     }
 
     /**
@@ -206,10 +202,14 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
             case R.id.iv_mine_info_bind_phone:
                 //点击完成
+                if (!JConstant.PHONE_REG.matcher(getInputPhone()).find()){
+                    ToastUtil.showNegativeToast(getString(R.string.PHONE_NUMBER_2));
+                    return;
+                }
                 if (getInputCheckCode().length() != 6) {
                     ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
                 } else {
-                    presenter.CheckVerifyCode(getInputCheckCode(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                    presenter.CheckVerifyCode(etMineBindPhone.getText().toString().trim(),getInputCheckCode(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                 }
                 break;
         }
@@ -249,7 +249,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 if (!tvMeterGetCode.getText().toString().equals(getString(R.string.Button_ReObtain))) {
                     userinfo.setPhone(getInputPhone(), getInputCheckCode());
                     userinfo.resetFlag();
-                    presenter.sendChangePhoneReq();
+                    presenter.sendChangePhoneReq(getInputPhone(),PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                 } else {
                     ToastUtil.showToast(getString(R.string.Tap0_invaildcode));
                 }
@@ -319,10 +319,12 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 }
             }
             showLoadingDialog();
-            presenter.sendChangePhoneReq();
-        } else {
+            presenter.sendChangePhoneReq(getInputPhone(),PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+        } else if (resultVerifyCode.code == JError.ErrorSMSCodeTimeout){
             hideLoadingDialog();
-            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_FALSE));
+            ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
+        }else {
+            ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
         }
     }
 
@@ -338,12 +340,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             if (getInputPhone().equals(getUserInfo.jfgAccount.getPhone())) {
                 ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
                 if (getView() != null) {
-                    getView().postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            getFragmentManager().popBackStack();
-                        }
-                    }, 2000);
+                    getFragmentManager().popBackStack();
                 }
             } else {
                 ToastUtil.showNegativeToast(getString(R.string.SUBMIT_FAIL));
@@ -382,12 +379,21 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     @Override
     public void getSmsCodeResult(int code) {
-        ToastUtil.showNegativeToast("获取验证码失败" + code);
+        ToastUtil.showNegativeToast("error:" + code);
     }
 
     @Override
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (countDownTimer != null){
+            countDownTimer.cancel();
+            countDownTimer = null;
+        }
     }
 }

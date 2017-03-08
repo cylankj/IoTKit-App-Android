@@ -77,6 +77,10 @@ public class MineShareDeviceAdapter extends SuperAdapter<DeviceBean> {
             holder.setBackgroundResource(R.id.tv_share_device_btn, R.drawable.btn_accept_add_request_shape_gray);
             holder.setTextColor(R.id.tv_share_device_btn, Color.parseColor("#504b9fd5"));
             holder.setEnabled(R.id.tv_share_device_btn, false);
+        }else {
+            holder.setBackgroundResource(R.id.tv_share_device_btn, R.drawable.btn_accept_add_request_shape);
+            holder.setTextColor(R.id.tv_share_device_btn, Color.parseColor("#4b9fd5"));
+            holder.setEnabled(R.id.tv_share_device_btn, true);
         }
 
         holder.setOnClickListener(R.id.tv_share_device_btn, new View.OnClickListener() {

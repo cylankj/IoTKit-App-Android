@@ -163,12 +163,14 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
 
     @Override
     public void onClearBellRecordSuccess() {
-        ToastUtil.showPositiveToast("清空呼叫记录成功!");
+        ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override
-    public void onClearBellRecordFaild() {
-        ToastUtil.showNegativeToast("清空呼叫记录失败!");
+    public void onClearBellRecordFailed() {
+        ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override

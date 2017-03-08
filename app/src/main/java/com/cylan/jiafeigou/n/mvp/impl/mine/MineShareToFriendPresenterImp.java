@@ -113,11 +113,12 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
      */
     @Override
     public void checkShareNumIsOver(SuperViewHolder holder, boolean isChange, int number) {
-        if (number > 5 && getView() != null) {
-            getView().showNumIsOverDialog(holder);
-        } else {
-            getView().setHasShareFriendNum(isChange, number);
-        }
+        getView().setHasShareFriendNum(isChange, number);
+//        if (number > 5 && getView() != null) {
+//            getView().showNumIsOverDialog(holder);
+//        } else {
+//            getView().setHasShareFriendNum(isChange, number);
+//        }
     }
 
     /**
