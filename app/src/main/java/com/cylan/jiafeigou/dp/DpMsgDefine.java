@@ -4,10 +4,15 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
+
+import org.msgpack.MessagePack;
 import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -747,6 +752,7 @@ public class DpMsgDefine {
     }
 
     public static final class DPPrimary<T> extends DataPoint {
+        @Index(0)
         public T value;
 
         @Override
@@ -761,6 +767,11 @@ public class DpMsgDefine {
         }
 
         public DPPrimary() {
+        }
+
+        @Override
+        public byte[] toBytes() {
+            return DpUtils.pack(value);
         }
 
         public DPPrimary(Object o) {

@@ -12,6 +12,7 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
@@ -571,7 +572,17 @@ public class DataSourceManager implements JFGSourceManager {
             AppLogger.e("device is null:" + uuid);
             return false;
         }
-        return device.updateValue(msgId, value);
+        boolean update = device.updateValue(msgId, value);
+        ArrayList<JFGDPMsg> list = new ArrayList<>();
+        JFGDPMsg msg = new JFGDPMsg(msgId, System.currentTimeMillis());
+        msg.packValue = value.toBytes();
+        list.add(msg);
+        try {
+            JfgAppCmd.getInstance().robotSetData(uuid, list);
+            return true;
+        } catch (JfgException e) {
+            return false;
+        }
     }
 
     @Override

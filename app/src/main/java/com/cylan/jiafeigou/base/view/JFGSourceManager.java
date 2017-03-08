@@ -102,6 +102,16 @@ public interface JFGSourceManager {
 
     boolean updateJFGDevice(JFGDPDevice device);
 
+    /**
+     * 本地和远程
+     *
+     * @param uuid
+     * @param value
+     * @param msgId
+     * @param <T>
+     * @return
+     * @throws IllegalAccessException
+     */
     <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws IllegalAccessException;
 
     boolean deleteByVersions(String uuid, long id, ArrayList<Long> versions);
