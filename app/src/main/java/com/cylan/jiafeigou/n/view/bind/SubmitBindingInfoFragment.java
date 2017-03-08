@@ -20,6 +20,8 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -53,7 +55,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     CustomToolbar customToolbar;
 
 
-//    private AlertDialog needRebindDialog;
+    //    private AlertDialog needRebindDialog;
     private AlertDialog nullCidDialog;
 
     public static SubmitBindingInfoFragment newInstance(Bundle bundle) {
@@ -84,6 +86,16 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
         if (basePresenter != null)
             basePresenter.startCounting();
         customToolbar.setBackAction(v -> getActivity().onBackPressed());
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (basePresenter != null) {
+            basePresenter.clean();
+        } else {
+            RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
+        }
     }
 
     private void adjustViewSize() {

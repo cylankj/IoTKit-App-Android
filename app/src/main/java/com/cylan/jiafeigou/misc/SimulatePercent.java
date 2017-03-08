@@ -58,6 +58,14 @@ public class SimulatePercent implements Handler.Callback {
         handler.sendEmptyMessage(MSG_STEP_1);
     }
 
+    public void resume() {
+
+    }
+
+    public void pause() {
+
+    }
+
     private int delay;
 
     private long getRandomDelay() {

@@ -437,7 +437,7 @@ public class DataSource implements AppCallBack {
     @Override
     public void OnBindDevRsp(int i, String s) {
         AppLogger.d("onBindDev: " + i + " uuid:" + s);
-        RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(i, s));
+        RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(i, s));
     }
 
     @Override

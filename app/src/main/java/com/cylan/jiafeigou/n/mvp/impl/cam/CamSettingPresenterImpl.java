@@ -191,7 +191,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 .subscribeOn(Schedulers.newThread())
                 .map((Object o) -> {
                     boolean result = DataSourceManager.getInstance().delRemoteJFGDevice(uuid);
-                    AppLogger.i("unbind uuid: " + uuid + " " + result);
+                    AppLogger.i("unbind remote action uuid: " + uuid + " " + result);
                     return null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
