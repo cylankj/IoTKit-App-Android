@@ -88,8 +88,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.account = jfgFriendRequest.account;
             emMessage.time = jfgFriendRequest.time;
             try {
-                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, jfgFriendRequest.account + ".jpg", "",
-                        Security.getVId(JFGRules.getTrimPackageName()));
+                emMessage.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, jfgFriendRequest.account + ".jpg");
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -108,8 +107,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.account = account.account;
             emMessage.alias = account.alias;
             try {
-                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, account.account + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
-            } catch (JfgException e) {
+//                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, account.account + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
+            } catch (Exception e) {
                 e.printStackTrace();
             }
             list.add(emMessage);

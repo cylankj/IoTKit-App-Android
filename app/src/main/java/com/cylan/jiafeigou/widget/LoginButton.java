@@ -123,23 +123,7 @@ public class LoginButton extends TextView {
 //            return;
         }
         if (viewH != viewW) {
-            path.reset();
-            path.moveTo(viewH / 2 + strokeWidth / 2, outerCircleRadius);
-            path.lineTo(viewW - viewH / 2 + outerCircleRadius / 2, outerCircleRadius);
-            rectFL.left = viewW - viewH;
-            rectFL.top = outerCircleRadius;
-            rectFL.right = viewW - outerCircleRadius / 2 - strokeWidth / 2;
-            rectFL.bottom = viewH - outerCircleRadius;
-            path.arcTo(rectFL, -90, 180, false);
-            path.lineTo(viewH / 2, viewH - outerCircleRadius);
-            rectFL.left = outerCircleRadius;
-            rectFL.top = outerCircleRadius;
-            rectFL.right = viewH;
-            rectFL.bottom = viewH - outerCircleRadius;
-            path.arcTo(rectFL, 90, 180, false);
-            path.close();
-            paint.setStyle(Paint.Style.STROKE);
-            canvas.drawPath(path, paint);
+            drawPathCompat(canvas);
         }
         if (viewH == viewW) {
             canvas.save();
@@ -155,6 +139,61 @@ public class LoginButton extends TextView {
         }
     }
 
+    /**
+     * path close有bug,不同手机可能出现fill的现象
+     *
+     * @param canvas
+     */
+    private void drawPathNormal(Canvas canvas) {
+        path.reset();
+        path.moveTo(viewH / 2 + strokeWidth / 2, outerCircleRadius);
+        path.lineTo(viewW - viewH / 2 + outerCircleRadius / 2, outerCircleRadius);
+        rectFL.left = viewW - viewH;
+        rectFL.top = outerCircleRadius;
+        rectFL.right = viewW - outerCircleRadius / 2 - strokeWidth / 2;
+        rectFL.bottom = viewH - outerCircleRadius;
+        path.arcTo(rectFL, -90, 180, false);
+        path.lineTo(viewH / 2, viewH - outerCircleRadius);
+        rectFL.left = outerCircleRadius;
+        rectFL.top = outerCircleRadius;
+        rectFL.right = viewH;
+        rectFL.bottom = viewH - outerCircleRadius;
+        path.arcTo(rectFL, 90, 180, false);
+        path.close();
+        paint.setStyle(Paint.Style.STROKE);
+        canvas.drawPath(path, paint);
+    }
+
+    private void drawPathCompat(Canvas canvas) {
+        canvas.drawLine(viewH / 2 + strokeWidth / 2,
+                outerCircleRadius,
+                viewW - viewH / 2 + outerCircleRadius / 2,
+                outerCircleRadius,
+                paint);
+        rectFL.left = viewW - viewH;
+        rectFL.top = outerCircleRadius;
+        rectFL.right = viewW - outerCircleRadius / 2 - strokeWidth / 2;
+        rectFL.bottom = viewH - outerCircleRadius;
+        canvas.drawArc(rectFL,
+                -90,
+                180,
+                false,
+                paint);
+        canvas.drawLine(viewW - viewH / 2 + outerCircleRadius / 2,
+                viewH - outerCircleRadius,
+                viewH / 2,
+                viewH - outerCircleRadius,
+                paint);
+        rectFL.left = outerCircleRadius;
+        rectFL.top = outerCircleRadius;
+        rectFL.right = viewH;
+        rectFL.bottom = viewH - outerCircleRadius;
+        canvas.drawArc(rectFL,
+                90,
+                180,
+                false,
+                paint);
+    }
 
     public void viewZoomSmall() {
         if (viewW < viewH) {

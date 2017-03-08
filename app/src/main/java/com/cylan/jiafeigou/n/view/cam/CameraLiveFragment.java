@@ -65,6 +65,7 @@ import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
+import com.cylan.panorama.CameraParam;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
@@ -550,6 +551,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 }
             });
         }
+        videoView.config360(CameraParam.getTopPreset());
         return videoView;
     }
 

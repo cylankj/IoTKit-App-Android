@@ -393,7 +393,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void loadMedia(final BellCallRecordBean item, final ImageView imageView) {
         Glide.with(this)
-                .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, item.type, item.timeInLong / 1000 + ".jpg", mUUID))
+                .load(new JFGGlideURL(mUUID, JfgEnum.JFG_URL.WARNING, item.type, item.timeInLong / 1000 + ".jpg", mUUID))
                 .asBitmap()
                 .placeholder(R.drawable.pic_head_normal240px)
                 .centerCrop()

@@ -52,7 +52,7 @@ public class DataSource implements AppCallBack {
 
     static {
         System.loadLibrary("jfgsdk");
-        System.loadLibrary("sqlcipher");
+//        System.loadLibrary("sqlcipher");
     }
 
     private static DataSource instance;
@@ -87,7 +87,16 @@ public class DataSource implements AppCallBack {
         Context context = ContextUtils.getContext();
         Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
         try {
-            JfgAppCmd.initJfgAppCmd(context, DataSource.this);
+            String trimPackageName = JFGRules.getTrimPackageName();
+            //读取Smarthome/log/config.txt的内容
+            String extra = DebugOptionsImpl.getServer();
+            //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
+            String serverAddress = (TextUtils.equals(trimPackageName, "yf") && !TextUtils.isEmpty(extra))
+                    ? extra : Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
+            String vid = Security.getVId(trimPackageName);
+            String vKey = Security.getVKey(trimPackageName);
+            JfgAppCmd.getInstance().setCallBack(DataSource.this);
+            JfgAppCmd.getInstance().initNativeParam(vid, vKey, serverAddress);
             JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
         } catch (Exception e) {
             AppLogger.d("let's go err:" + e.getLocalizedMessage());
@@ -385,10 +394,6 @@ public class DataSource implements AppCallBack {
         PreferencesUtils.putInt(JConstant.KEY_NTP_INTERVAL, (int) (System.currentTimeMillis() / 1000 - l));
     }
 
-    @Override
-    public void OnEfamilyMsg(byte[] bytes) {
-//  删除了中控的所有
-    }
 
     @Override
     public void OnForgetPassByEmailRsp(int i, String s) {
@@ -426,20 +431,7 @@ public class DataSource implements AppCallBack {
 
     @Override
     public HashMap<String, String> getAppParameter() {
-        String trimPackageName = JFGRules.getTrimPackageName();
-        //读取Smarthome/log/config.txt的内容
-        String extra = DebugOptionsImpl.getServer();
-        //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
-        String serverAddress = (TextUtils.equals(trimPackageName, "yf") && !TextUtils.isEmpty(extra))
-                ? extra : Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
-        String vid = Security.getVId(trimPackageName);
-        String vKey = Security.getVKey(trimPackageName);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("vid", vid);
-        map.put("vkey", vKey);
-        map.put("ServerAddress", serverAddress);
-        Log.d("getAppParameter", "getAppParameter:" + map);
-        return map;
+        return new HashMap<>();
     }
 
     @Override
