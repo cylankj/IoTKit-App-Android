@@ -64,7 +64,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     public void newCall(Caller caller) {
-        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CallAnswered.class)
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class)
                 .mergeWith(
                         Observable.just(mHolderCaller = caller)
                                 .observeOn(AndroidSchedulers.mainThread())
@@ -88,7 +88,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                             startViewer();
                                             break;
                                     }
-                                    return RxBus.getCacheInstance().toObservable(RxEvent.CallAnswered.class);
+                                    return RxBus.getCacheInstance().toObservable(RxEvent.CallResponse.class);
                                 })
                 )
                 .first()

@@ -1,74 +1,329 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <LinearLayout
+
+    <FrameLayout
+        android:id="@+id/act_panorama_camera_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
+        android:background="@color/color_0ba8cf">
 
-        <FrameLayout
-            android:id="@+id/fLayout_top_bar_container"
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/tv_top_bar_left"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/color_0ba8cf">
+            android:background="@android:color/transparent"
+            android:drawablePadding="@dimen/y15"
+            android:drawableStart="@drawable/nav_tab_back_selector"
+            android:padding="@dimen/y15"
+            android:text="@string/_720"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp16" />
 
-            <TextView
-                android:id="@+id/tv_top_bar_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:drawablePadding="@dimen/y15"
-                android:drawableStart="@drawable/nav_tab_back_selector"
-                android:padding="@dimen/y15"
-                android:text="@string/_720"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp16" />
-
-            <ImageView
-                android:id="@+id/imgv_toolbar_right"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="end"
-                android:padding="@dimen/y14"
-                android:src="@drawable/icon_setting" />
-        </FrameLayout>
-    </LinearLayout>
-
+        <ImageButton
+            android:id="@+id/imgv_toolbar_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end|center_vertical"
+            android:background="@android:color/transparent"
+            android:padding="@dimen/y14"
+            android:src="@drawable/icon_setting" />
+    </FrameLayout>
 
     <RelativeLayout
+        android:id="@+id/act_panorama_camera_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@id/act_panorama_camera_toolbar">
+
+
+        <ViewSwitcher
+            android:id="@+id/act_panorama_camera_banner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RelativeLayout
+                android:id="@+id/act_panorama_camera_banner_information"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y31"
+                android:background="@color/color_33000000">
+
+                <ImageView
+                    android:id="@+id/act_panorama_camera_banner_information_connection_icon"
+                    android:layout_width="@dimen/y17"
+                    android:layout_height="@dimen/y17"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/y16"
+                    android:layout_marginStart="@dimen/y16"
+                    android:src="@drawable/camera720_icon_wifi" />
+
+                <TextView
+                    android:id="@+id/act_panorama_camera_banner_information_connection_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/y10"
+                    android:layout_toEndOf="@+id/act_panorama_camera_banner_information_connection_icon"
+                    android:text="WiFi连接"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/sp12" />
+
+                <ImageView
+                    android:id="@+id/act_panorama_camera_banner_information_charge_icon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/y5"
+                    android:layout_toStartOf="@+id/act_panorama_camera_banner_information_charge_text"
+                    android:src="@drawable/camera720_icon_electricity_charge" />
+
+                <TextView
+                    android:id="@+id/act_panorama_camera_banner_information_charge_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/y15"
+                    android:drawablePadding="@dimen/y5"
+                    android:text="25%"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/sp12" />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:id="@+id/act_panorama_camera_banner_bad_net_work"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y42"
+                android:background="#FFFCE1"
+                android:visibility="invisible">
+
+                <ImageView
+                    android:id="@+id/act_panorama_camera_banner_bad_net_work_caution"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/y28"
+                    android:src="@drawable/album_icon_caution" />
+
+                <TextView
+                    android:id="@+id/act_panorama_camera_banner_bad_net_work_configure"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/y15"
+                    android:layout_toEndOf="@+id/act_panorama_camera_banner_bad_net_work_caution"
+                    android:text="设备离线,请重新配置连接>>"
+                    android:textColor="@color/color_888888"
+                    android:textSize="@dimen/sp15" />
+
+                <ImageView
+                    android:id="@+id/act_panorama_camera_banner_bad_net_work_close"
+                    android:layout_width="@dimen/y23"
+                    android:layout_height="@dimen/y23"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/y13"
+                    android:src="@drawable/icon_close" />
+
+            </RelativeLayout>
+
+
+        </ViewSwitcher>
+
+        <TextView
+            android:id="@+id/act_panorama_camera_flow_speed"
+            android:layout_width="@dimen/y52"
+            android:layout_height="@dimen/y21"
+            android:layout_alignParentEnd="true"
+            android:layout_below="@id/act_panorama_camera_banner"
+            android:layout_marginEnd="@dimen/y14"
+            android:layout_marginTop="@dimen/y4"
+            android:background="@color/color_33000000"
+            android:gravity="center"
+            android:text="295K/s"
+            android:textColor="#FFFFFF" />
+
+        <com.cylan.jiafeigou.widget.SimpleProgressBar
+            android:id="@+id/vv_play_loading"
+            android:layout_width="@dimen/y48"
+            android:layout_height="@dimen/y48"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/y184"
+            android:padding="@dimen/y10"
+            android:visibility="visible"
+            app:progress_point_radius="@dimen/y3"
+            app:progress_radius="@dimen/y50"
+            app:progress_stroke_color="@color/color_cecece" />
+
+
+    </RelativeLayout>
+
+
+    <LinearLayout
+        android:id="@+id/act_panorama_camera_quick_menu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/act_panorama_camera_bottom_panel"
+        android:layout_alignParentEnd="true"
+        android:layout_marginBottom="@dimen/y15"
+        android:layout_marginEnd="@dimen/y15"
+        android:alpha="0"
+        android:gravity="end"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/act_panorama_camera_quick_menu_item1_mic"
+            android:layout_width="@dimen/y42"
+            android:layout_height="@dimen/y42"
+            android:src="@drawable/camera720_icon_no_talk_selector" />
+
+        <ImageView
+            android:id="@+id/act_panorama_camera_quick_menu_item2_voice"
+            android:layout_width="@dimen/y42"
+            android:layout_height="@dimen/y42"
+            android:layout_marginBottom="@dimen/y15"
+            android:layout_marginTop="@dimen/y15"
+            android:src="@drawable/camera720_icon_voice_selector" />
+
+        <RelativeLayout
+            android:layout_width="@dimen/y138"
+            android:layout_height="@dimen/y42"
+            android:background="@drawable/panorama_camera_quick_menu_item3">
+
+            <ImageView
+                android:id="@+id/act_panorama_camera_quick_menu_item3_left"
+                android:layout_width="@dimen/y24"
+                android:layout_height="@dimen/y24"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="@dimen/y9"
+                android:src="@drawable/btn_leftkey_selector" />
+
+            <TextView
+                android:id="@+id/act_panorama_camera_quick_menu_item3_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="速率:自动"
+                android:textColor="#FFFFFF"
+                android:textSize="@dimen/sp15" />
+
+            <ImageView
+                android:id="@+id/act_panorama_camera_quick_menu_item3_right"
+                android:layout_width="@dimen/y24"
+                android:layout_height="@dimen/y24"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/y9"
+                android:src="@drawable/btn_rightkey_selector" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/act_panorama_camera_bottom_panel"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y138"
         android:layout_alignParentBottom="true"
         android:background="@color/color_F2333333">
 
-        <ImageView
+
+
+
+        <ViewSwitcher
+            android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/act_panorama_bottom_panel_camera_photograph"
+            android:layout_centerHorizontal="true">
+
+            <RadioGroup
+                android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom"
+                android:layout_marginBottom="@dimen/y16"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/act_panorama_camera_bottom_panel_picture"
+                    android:layout_width="@dimen/y26"
+                    android:layout_height="@dimen/y26"
+                    android:button="@drawable/camera720_icon_camera_selector"
+                    android:checked="true" />
+
+                <RadioButton
+                    android:id="@+id/act_panorama_camera_bottom_panel_video"
+                    android:layout_width="@dimen/y26"
+                    android:layout_height="@dimen/y26"
+                    android:layout_marginStart="@dimen/y19"
+                    android:button="@drawable/camera720_icon_video_selector" />
+            </RadioGroup>
+
+            <RelativeLayout
+                android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_red_dot"
+                    android:layout_width="@dimen/y8"
+                    android:layout_height="@dimen/y8" />
+
+                <TextView
+                    android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/y17"
+                    android:layout_marginTop="@dimen/y18"
+                    android:text="00:08:07"
+                    android:textColor="#FFFFFF"
+                    android:textSize="@dimen/sp16" />
+            </RelativeLayout>
+
+        </ViewSwitcher>
+
+        <ImageButton
+            android:id="@+id/act_panorama_camera_bottom_panel_album"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/y32"
             android:layout_marginEnd="@dimen/y62"
-            android:layout_toStartOf="@+id/act_panorama_camera_photograph"
+            android:layout_toStartOf="@+id/act_panorama_bottom_panel_camera_photograph"
+            android:background="@android:color/transparent"
             android:src="@drawable/camera720_icon_album_selector" />
 
-        <ImageView
-            android:id="@+id/act_panorama_camera_photograph"
+        <ImageButton
+            android:id="@+id/act_panorama_bottom_panel_camera_photograph"
             android:layout_width="@dimen/y70"
             android:layout_height="@dimen/y70"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/y18"
+            android:background="@android:color/transparent"
             android:src="@drawable/camera720_icon_photograph_selector" />
 
-        <ImageView
+        <ImageButton
+            android:id="@+id/act_panorama_camera_bottom_panel_more"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/y32"
             android:layout_marginStart="@dimen/y62"
-            android:layout_toEndOf="@id/act_panorama_camera_photograph"
+            android:layout_toEndOf="@+id/act_panorama_bottom_panel_camera_photograph"
+            android:background="@android:color/transparent"
             android:src="@drawable/camera720_icon_more_selector" />
 
     </RelativeLayout>

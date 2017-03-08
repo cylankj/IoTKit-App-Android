@@ -5,7 +5,7 @@ package com.cylan.jiafeigou.cache.db.view;
  */
 
 public enum DBAction {
-    SAVED(), DELETED(), SHARED(), AVAILABLE(OP.NOT_EQ, DELETED.name()), QUERY();
+    SAVED, DELETED, SHARED, QUERY, CLEARED, AVAILABLE(OP.NOT_EQS, DELETED.name() + "," + CLEARED.name());
     private OP op;//op 只是在查询时有用,并不会保存到数据库
     private String action;
 
@@ -28,6 +28,6 @@ public enum DBAction {
     }
 
     public enum OP {
-        BETWEEN, EQ, GE, GT, IN, IS_NOTNULL, IS_NULL, LE, LIKE, LT, NOT_EQ, NOT_IN
+        BETWEEN, EQ, GE, GT, IN, IS_NOTNULL, IS_NULL, LE, LIKE, LT, NOT_EQ, NOT_IN, NOT_EQS
     }
 }

@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.rx;
 
 import android.content.Intent;
-import android.os.Bundle;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
@@ -631,8 +630,8 @@ public class RxEvent {
         public byte[] data;
     }
 
-    public static class CallAnswered {
-        public CallAnswered(boolean self) {
+    public static class CallResponse {
+        public CallResponse(boolean self) {
             this.self = self;
         }
 
@@ -729,16 +728,16 @@ public class RxEvent {
         public String md5;
     }
 
-    public static class LiveResponse<T> {
+    public static class LiveResponse {
         public boolean success;
-        public T response;
+        public Object response;
 
-        public LiveResponse(T disconnect, boolean success) {
+        public LiveResponse(Object disconnect, boolean success) {
             this.success = false;
             this.response = disconnect;
         }
 
-        public LiveResponse(T resolution) {
+        public LiveResponse(Object resolution) {
             this.success = true;
             this.response = resolution;
         }
@@ -777,6 +776,14 @@ public class RxEvent {
         public SetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
             this.seq = l;
             this.rets = arrayList;
+        }
+    }
+
+    public static class ClearDataEvent {
+        public int msgId;
+
+        public ClearDataEvent(int msgId) {
+            this.msgId = msgId;
         }
     }
 }

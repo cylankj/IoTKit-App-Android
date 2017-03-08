@@ -177,6 +177,8 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
                     }
                 }, e -> {
+                    e.printStackTrace();
+                    AppLogger.d(e.getMessage());
                 });
         registerSubscription(subscribe);
     }

@@ -32,10 +32,11 @@ import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
  */
 
 public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter {
-    protected boolean mIsSpeakerOn = false;
-    protected String mViewLaunchType;
-
+    protected boolean mIsMicrophoneOn = false;
     protected boolean hasResolution = false;
+    protected boolean mIsSpeakerOn = false;
+
+    protected String mViewLaunchType;
 
 
     @Override
@@ -83,7 +84,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         mView.onResolution(rsp);
                         mViewLaunchType = onResolveViewIdentify();
                         RxBus.getCacheInstance().post(new BaseCallablePresenter.Notify(false));//发送一条 Notify 消息表明不需要再查询预览图了
-                        RxBus.getCacheInstance().post(new RxEvent.CallAnswered(true));//发送一条 CallAnswer 消息表明自己成功连接了
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -150,7 +150,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                             mView.onVideoDisconnect(dis.code);
                             return new RxEvent.LiveResponse(dis, false);
                         })
-        ).first();
+        ).first().map(rsp -> {
+            RxBus.getCacheInstance().post(new RxEvent.CallResponse(true));//发送一条 CallAnswer 消息表明不需要再等待门铃超时了
+            return rsp;
+        });
     }
 
     protected Observable<JFGMsgVideoDisconn> handleVideoRTCP(JFGMsgVideoResolution resolution) {
@@ -188,6 +191,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     public void onScreenRotationChanged(boolean land) {
         mView.onSpeaker(mIsSpeakerOn);
+        mView.onMicrophone(mIsMicrophoneOn);
     }
 
     @Override
@@ -230,14 +234,35 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .subscribe(on -> mView.onSpeaker(on), Throwable::printStackTrace);
     }
 
-    protected Observable<Boolean> setSpeaker(boolean on) {
+    @Override
+    public void switchMicrophone() {
+        setMicrophone(mIsMicrophoneOn = !mIsMicrophoneOn).observeOn(AndroidSchedulers.mainThread())
+                .subscribe(on -> mView.onMicrophone(on), Throwable::printStackTrace);
+    }
+
+    private Observable<Boolean> setMicrophone(boolean on) {
         return Observable.just(on).map(s -> {
             AppLogger.d("正在切换 Speaker :" + on);
-            getCmd().setAudio(false, on, on);//开启设备的扬声器和麦克风
-            getCmd().setAudio(true, on, on);//开启客户端的扬声器和麦克风
+            mIsMicrophoneOn = on;
+            switchSpeakAndMicroPhone();
             return s;
         }).subscribeOn(Schedulers.io());
     }
+
+    protected Observable<Boolean> setSpeaker(boolean on) {
+        return Observable.just(on).map(s -> {
+            AppLogger.d("正在切换 Speaker :" + on);
+            mIsSpeakerOn = on;
+            switchSpeakAndMicroPhone();
+            return s;
+        }).subscribeOn(Schedulers.io());
+    }
+
+    protected void switchSpeakAndMicroPhone() {
+        getCmd().setAudio(true, mIsSpeakerOn, mIsMicrophoneOn);//开启客户端的扬声器和麦克风
+        getCmd().setAudio(false, mIsMicrophoneOn, mIsSpeakerOn);//开启设备的扬声器和麦克风
+    }
+
 
     @Override
     public SurfaceView getViewerInstance() {

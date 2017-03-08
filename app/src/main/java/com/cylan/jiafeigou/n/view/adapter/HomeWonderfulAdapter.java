@@ -89,9 +89,9 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
         }
-
-
     }
+
+
 
     @Override
     protected IMulItemViewType<DpMsgDefine.DPWonderItem> offerMultiItemViewType() {

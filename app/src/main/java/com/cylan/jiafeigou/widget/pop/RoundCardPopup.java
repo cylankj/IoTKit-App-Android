@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.R;
 
 public class RoundCardPopup extends RelativePopupWindow {
     private ShowFinishListener showFinishListener;
+    private long dismissTime = -1;
 
     public RoundCardPopup(Context context, ShowFinishListener showFinishListener, View.OnClickListener clickListener) {
         View view = LayoutInflater.from(context).inflate(R.layout.layout_capture_popup, null);
@@ -46,8 +47,14 @@ public class RoundCardPopup extends RelativePopupWindow {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             circularReveal(anchor);
         }
+        if (dismissTime != -1)
+            getContentView().postDelayed(this::dismiss, dismissTime);
         if (showFinishListener != null)
             showFinishListener.showFinish((ImageView) getContentView().findViewById(R.id.imv_capture_popup));
+    }
+
+    public void setAutoDismissTime(long time) {
+        this.dismissTime = time;
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)

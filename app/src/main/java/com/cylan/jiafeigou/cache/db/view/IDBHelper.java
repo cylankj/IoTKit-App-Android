@@ -24,7 +24,9 @@ public interface IDBHelper {
     //junk code
     Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBOption option);
 
-    Observable<Boolean> deleteDPMsgWithConfirm(String uuid, Integer msgId, DBOption option);
+    Observable<List<DPEntity>> deleteDPMsgWithConfirm(String uuid, Integer msgId, DBOption option);
+
+    Observable<List<DPEntity>> deleteDPMsgNotConfirm(String uuid, Integer msgId, DBOption option);
 
     Observable<List<DPEntity>> queryUnConfirmDpMsgWithTag(String uuid, Integer msgId, DBAction action);
 

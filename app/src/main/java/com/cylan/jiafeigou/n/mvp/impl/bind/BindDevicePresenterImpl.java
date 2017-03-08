@@ -48,53 +48,42 @@ public class BindDevicePresenterImpl extends AbstractPresenter<BindDeviceContrac
                         false)
                 .subscribeOn(Schedulers.io())
                 .throttleFirst(1000, TimeUnit.MILLISECONDS)
-                .map(new Func1<List<ScanResult>, Result>() {
-                    @Override
-                    public Result call(List<ScanResult> resultList) {
-                        resultList = new ArrayList<>(scanResultListFilter.extractPretty(resultList));
-                        SimpleCache.getInstance().setWeakScanResult(resultList);
-                        Result result = new Result();
-                        result.errState = resultList.size() == 0 ? BindDeviceContract.STATE_NO_RESULT : BindDeviceContract.STATE_HAS_RESULT;
-                        if (result.errState == BindDeviceContract.STATE_NO_RESULT) {
-                            return result;
-                        }
-                        List<ScanResult> newList = new ArrayList<>(scanResultListFilter.extractJFG(resultList, filters));
-                        newList = resultList;
-                        //没有设备
-                        if (newList.size() == 0)
-                            result.errState = BindDeviceContract.STATE_NO_JFG_DEVICE;
-                        result.jfgList = newList;
+                .map(resultList -> {
+                    resultList = new ArrayList<>(scanResultListFilter.extractPretty(resultList));
+                    SimpleCache.getInstance().setWeakScanResult(resultList);
+                    Result result = new Result();
+                    result.errState = resultList.size() == 0 ? BindDeviceContract.STATE_NO_RESULT : BindDeviceContract.STATE_HAS_RESULT;
+                    if (result.errState == BindDeviceContract.STATE_NO_RESULT) {
                         return result;
                     }
+                    List<ScanResult> newList = new ArrayList<>(scanResultListFilter.extractJFG(resultList, filters));
+                    newList = resultList;
+                    //没有设备
+                    if (newList.size() == 0)
+                        result.errState = BindDeviceContract.STATE_NO_JFG_DEVICE;
+                    result.jfgList = newList;
+                    return result;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Result>() {
-                    @Override
-                    public void call(Result result) {
-                        if (getView() == null) {
-                            return;
-                        }
-                        //没有wifi列表
-                        if (result == null
-                                || result.errState == BindDeviceContract.STATE_NO_RESULT) {
-                            getView().onNoListError();
-                            return;
-                        }
-                        //有wifi列表，但没有狗设备
-                        if (result.errState == BindDeviceContract.STATE_NO_JFG_DEVICE) {
-                            getView().onNoJFGDevices();
-                            return;
-                        }
-                        //有设备了
-                        if (getView() != null)
-                            getView().onDevicesRsp(result.jfgList);
+                .subscribe(result -> {
+                    if (getView() == null) {
+                        return;
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("good: " + throwable.toString());
+                    //没有wifi列表
+                    if (result == null
+                            || result.errState == BindDeviceContract.STATE_NO_RESULT) {
+                        getView().onNoListError();
+                        return;
                     }
-                });
+                    //有wifi列表，但没有狗设备
+                    if (result.errState == BindDeviceContract.STATE_NO_JFG_DEVICE) {
+                        getView().onNoJFGDevices();
+                        return;
+                    }
+                    //有设备了
+                    if (getView() != null)
+                        getView().onDevicesRsp(result.jfgList);
+                }, throwable -> AppLogger.e("good: " + throwable.toString()));
     }
 
     @Override

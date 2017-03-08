@@ -15,6 +15,8 @@ public interface ViewableView extends JFGView {
 
     void onSpeaker(boolean on);//接听中的麦克风状态改变
 
+    void onMicrophone(boolean on);
+
     void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
     void onFlowSpeed(int speed);

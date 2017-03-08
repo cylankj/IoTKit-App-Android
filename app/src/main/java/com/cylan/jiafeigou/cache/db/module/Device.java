@@ -11,7 +11,6 @@ import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * Created by yanzhendong on 2017/3/4.
@@ -21,7 +20,6 @@ import org.greenrobot.greendao.annotation.Unique;
 public class Device implements IEntity<Device> {
     @Id
     private Long id;
-    @Unique
     private String uuid;
     private String sn;
     private String alias;

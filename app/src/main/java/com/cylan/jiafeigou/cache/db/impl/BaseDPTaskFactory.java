@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.db.impl;
 
 import com.cylan.jiafeigou.cache.db.module.tasks.DPMultiDeleteTask;
+import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleClearTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleDeleteTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleQueryTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleSharedTask;
@@ -43,14 +44,22 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
     }
 
     private IDPSingleTask getSingleTask(DBAction action) {
-        if (DBAction.DELETED == action) {
-            return new DPSingleDeleteTask();
-        } else if (DBAction.SHARED == action) {
-            return new DPSingleSharedTask();
-        } else if (DBAction.QUERY == action) {
-            return new DPSingleQueryTask();
+        IDPSingleTask result = null;
+        switch (action) {
+            case DELETED:
+                result = new DPSingleDeleteTask();
+                break;
+            case SHARED:
+                result = new DPSingleSharedTask();
+                break;
+            case QUERY:
+                result = new DPSingleQueryTask();
+                break;
+            case CLEARED:
+                result = new DPSingleClearTask();
+                break;
         }
-        return null;
+        return result;
     }
 
     private IDPMultiTask getMultiTask(DBAction action) {

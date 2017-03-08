@@ -8,7 +8,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.utils.BitmapUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.io.File;
 
@@ -27,14 +26,15 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
         JfgCmdInsurance.getCmd().screenshot(false, new CallBack<Bitmap>() {
             @Override
             public void onSucceed(Bitmap bitmap) {
-                ToastUtil.showPositiveToast("截图成功!");
                 String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
                 BitmapUtils.saveBitmap2file(bitmap, filePath);
+                mView.onTakeSnapShotSuccess(bitmap);
+
             }
 
             @Override
             public void onFailure(String s) {
-                ToastUtil.showNegativeToast("截图失败!");
+                mView.onTakeSnapShotFailed();
             }
         });
     }
