@@ -165,6 +165,7 @@ public class LoginButton extends TextView {
     }
 
     private void drawPathCompat(Canvas canvas) {
+        paint.setStyle(Paint.Style.STROKE);
         canvas.drawLine(viewH / 2 + strokeWidth / 2,
                 outerCircleRadius,
                 viewW - viewH / 2 + outerCircleRadius / 2,
