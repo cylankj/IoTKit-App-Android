@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -10,6 +11,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
@@ -23,21 +25,29 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     public SmartCallPresenterImpl(SplashContract.View splashView) {
         super(splashView);
         splashView.setPresenter(this);
+//        RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
+//                .subscribeOn(Schedulers.newThread())
+//                .filter(resultLogin -> resultLogin.code == 0)
+//                .timeout(2, TimeUnit.SECONDS, Observable.just("autoLogTimeout")
+//                        .subscribeOn(AndroidSchedulers.mainThread())
+//                        .map(s -> {
+//                            AppLogger.e("" + s);
+//                            getView().splashOver();
+//                            return null;
+//                        }))
+//                .delay(3000, TimeUnit.MILLISECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+////                .doOnCompleted(() -> getView().loginResult(0))
+//                .subscribe(resultLogin1 -> {
+//                    getView().loginResult(0);
+//                });
+
         RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
-                .subscribeOn(Schedulers.newThread())
-                .filter(resultLogin -> resultLogin.code == 0)
-                .timeout(2, TimeUnit.SECONDS, Observable.just("autoLogTimeout")
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .map(s -> {
-                            AppLogger.e("" + s);
-                            getView().splashOver();
-                            return null;
-                        }))
-                .delay(3000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .doOnCompleted(() -> getView().loginResult(0))
-                .subscribe();
+                .subscribe(resultLogin -> {
+                    getView().loginResult(resultLogin.code);
+                });
     }
 
 

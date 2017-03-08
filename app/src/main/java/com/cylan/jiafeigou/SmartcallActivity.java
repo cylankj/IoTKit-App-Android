@@ -26,9 +26,12 @@ import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -57,6 +60,7 @@ public class SmartcallActivity extends NeedLoginActivity
     TextView tvCopyRight;
     @Nullable
     private SplashContract.Presenter presenter;
+    private boolean frist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,7 +186,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @Override
     public void loginResult(int code) {
-        if (code == JError.ErrorOK) {
+        if (code == JError.ErrorOK || code == JError.LoginTimeOut || code == JError.NoNet) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                 startActivity(new Intent(this, NewHomeActivity.class),
                         ActivityOptionsCompat.makeCustomAnimation(getContext(),
@@ -191,8 +195,14 @@ public class SmartcallActivity extends NeedLoginActivity
                 startActivity(new Intent(this, NewHomeActivity.class));
             }
             finish();
+        }else if(code == JError.StartLoginPage && !frist){
+            splashOver();
+            frist = true;
+        }else if (code == JError.ErrorAccountNotExist){
+            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
+        }else if (code == JError.ErrorLoginInvalidPass){
+            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
         }
-
     }
 
     /**
