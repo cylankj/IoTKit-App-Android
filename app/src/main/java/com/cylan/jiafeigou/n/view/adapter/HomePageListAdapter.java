@@ -145,13 +145,10 @@ public class HomePageListAdapter extends SuperAdapter<String> {
     }
 
     private String getAlias(String uuid, String alias) {
-        if (TextUtils.isEmpty(alias)) {
-            return MiscUtils.getBeautifulString(TextUtils.isEmpty(alias) ? uuid : alias, 8);
-        }
         if (TextUtils.equals(alias, uuid)) {
             return uuid;
         }
-        return alias;
+        return MiscUtils.getBeautifulString(TextUtils.isEmpty(alias) ? uuid : alias, 8);
     }
 
     private void handleMsgCountTime(SuperViewHolder holder, String uuid, int pid) {
