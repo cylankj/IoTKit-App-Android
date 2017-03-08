@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true"
+    android:keepScreenOn="true"
     android:orientation="vertical"
     tools:context=".n.view.bind.ConfigApFragment">
 
