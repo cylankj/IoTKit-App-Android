@@ -87,7 +87,7 @@
         android:layout_marginTop="@dimen/y69">
 
         <TextView
-            android:id="@+id/tv_clecr_sdcard"
+            android:id="@+id/tv_clear_sdcard"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y42"
             android:layout_centerVertical="true"

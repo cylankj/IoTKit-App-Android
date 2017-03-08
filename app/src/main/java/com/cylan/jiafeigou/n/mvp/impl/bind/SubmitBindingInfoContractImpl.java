@@ -61,6 +61,11 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
     }
 
     @Override
+    public void clean() {
+        RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
+    }
+
+    @Override
     public void start() {
         super.start();
         //超时
@@ -69,6 +74,9 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
             if ((subscription == null || subscription.isUnsubscribed())) {
                 subscription = bindResultSub();
             }
+        }
+        if (bindResult == BindUtils.BIND_ING) {
+            if (simulatePercent != null) simulatePercent.resume();
         }
     }
 
@@ -79,7 +87,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
      * @return
      */
     private Subscription bindResultSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.BindDeviceEvent.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.BindDeviceEvent.class)
                 .observeOn(Schedulers.newThread())
                 .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null && TextUtils.equals(bindDeviceEvent.uuid, uuid))
                 .timeout(90, TimeUnit.SECONDS, Observable.just("timeout")
@@ -106,8 +114,13 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
     @Override
     public void stop() {
         super.stop();
-        if (simulatePercent != null)
-            simulatePercent.stop();
+        if (bindResult == BindUtils.BIND_ING) {
+            if (simulatePercent != null) simulatePercent.resume();
+        } else {
+            if (simulatePercent != null)
+                simulatePercent.stop();
+        }
+        bindResult = BindUtils.BIND_PREPARED;
         unSubscribe(subscription);
     }
 

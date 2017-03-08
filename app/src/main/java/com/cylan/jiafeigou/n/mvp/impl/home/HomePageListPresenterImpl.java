@@ -25,7 +25,6 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -48,6 +47,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 getTimeTickEventSub(),
                 getShareDevicesListRsp(),
                 devicesUpdate(),
+                internalUpdateUuidList(),
                 devicesUpdate1(),
                 JFGAccountUpdate()};
     }
@@ -59,20 +59,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(new RxHelper.Filter<>("getShareDevicesListRsp:", getView() != null))
                 .subscribe((RxEvent.GetShareListRsp getShareListRsp) -> {
-                    getView().onItemsInsert(getUuidList());
+                    RxBus.getCacheInstance().post(new InternalHelp());
                     AppLogger.i("shareListRsp");
                 }, (Throwable throwable) -> {
                     AppLogger.e("" + throwable.getLocalizedMessage());
                 });
-    }
-
-    private ArrayList<String> getUuidList() {
-        List<JFGDPDevice> devices = DataSourceManager.getInstance().getAllJFGDevice();
-        ArrayList<String> arrayList = new ArrayList<>(devices == null ? 0 : devices.size());
-        for (JFGDPDevice device : devices) {
-            arrayList.add(device.uuid);
-        }
-        return arrayList;
     }
 
     /**
@@ -84,13 +75,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
                 .filter((RxEvent.ParseResponseCompleted data) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<RxEvent.ParseResponseCompleted, Boolean>() {
-                    @Override
-                    public Boolean call(RxEvent.ParseResponseCompleted update) {
-                        subUuidList();
-                        AppLogger.d("data pool update: " + update);
-                        return null;
-                    }
+                .map(update -> {
+                    RxBus.getCacheInstance().post(new InternalHelp());
+                    AppLogger.d("data pool update: " + update);
+                    return null;
                 })
                 .retry(new RxHelper.RxException<>("devicesUpdate"))
                 .subscribe();
@@ -100,13 +88,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceListRsp.class)
                 .filter((RxEvent.DeviceListRsp data) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<RxEvent.DeviceListRsp, Boolean>() {
-                    @Override
-                    public Boolean call(RxEvent.DeviceListRsp update) {
-                        subUuidList();
-                        AppLogger.d("data pool update: " + update);
-                        return null;
-                    }
+                .map(update -> {
+                    RxBus.getCacheInstance().post(new InternalHelp());
+                    AppLogger.d("data pool update: " + update);
+                    return null;
                 })
                 .retry(new RxHelper.RxException<>("devicesUpdate"))
                 .subscribe();
@@ -131,7 +116,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .observeOn(AndroidSchedulers.mainThread())
                 .flatMap(jfgAccount -> {
                     getView().onAccountUpdate(jfgAccount);
-                    subUuidList();
+                    RxBus.getCacheInstance().post(new InternalHelp());
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("JFGAccount"))
@@ -152,16 +137,22 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
             }
             getView().onItemsInsert(uuidList);
         }
+        getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
     }
 
-
-    @Override
-    public void fetchGreet() {
-        Observable.just(null)
+    private Subscription internalUpdateUuidList() {
+        return RxBus.getCacheInstance().toObservable(InternalHelp.class)
+                .observeOn(Schedulers.newThread())
+                .throttleFirst(1, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Object greetBean) -> {
-                    getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
-                });
+                .map(o -> {
+                    subUuidList();
+                    AppLogger.d("get list");
+                    return null;
+                })
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .doOnCompleted(this::subUuidList)
+                .subscribe();
     }
 
     @Override
@@ -175,48 +166,50 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .map((Boolean aBoolean) -> {
                     DataSourceManager.getInstance().syncAllJFGDeviceProperty();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
-                    return null;
+                    return aBoolean;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Object aBoolean) -> {
-                    subUuidList();
-                }, throwable -> {
-                    AppLogger.e("err: " + throwable.getLocalizedMessage());
-                });
+                .map(aBoolean -> {
+                    RxBus.getCacheInstance().post(new InternalHelp());
+                    return aBoolean;
+                })
+                .filter(aBoolean -> aBoolean)//手动刷新，需要停止刷新
+                .subscribe((Object aBoolean) -> AppLogger.d("refresh"),
+                        throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
     }
 
-    @Override
-    public void unBindDevReq(String uuid) {
-        addSubscription(Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .map((Object o) -> {
-                    boolean result = DataSourceManager.getInstance().delRemoteJFGDevice(uuid);
-                    AppLogger.i("unbind uuid: " + uuid + " " + result);
-                    return null;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.UnBindDeviceEvent.class)
-                                .subscribeOn(Schedulers.newThread())
-                                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
-                                        .subscribeOn(AndroidSchedulers.mainThread())
-                                        .map(s -> {
-                                            getView().unBindDeviceRsp(-1);
-                                            return null;
-                                        }))
-                                .filter(s -> getView() != null)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .filter(unbindEvent -> {
-                                    if (unbindEvent.jfgResult.code != 0)
-                                        getView().unBindDeviceRsp(unbindEvent.jfgResult.code);//失败
-                                    return unbindEvent.jfgResult.code == 0;
-                                }),
-                        (Object o, RxEvent.UnBindDeviceEvent unbindEvent) -> {
-                            getView().unBindDeviceRsp(0);//成功
-                            DataSourceManager.getInstance().delLocalJFGDevice(uuid);
-                            return null;
-                        })
-                .subscribe());
-    }
+//    @Override
+//    public void unBindDevReq(String uuid) {
+//        addSubscription(Observable.just(null)
+//                .subscribeOn(Schedulers.newThread())
+//                .map((Object o) -> {
+//                    boolean result = DataSourceManager.getInstance().delRemoteJFGDevice(uuid);
+//                    AppLogger.i("unbind uuid: " + uuid + " " + result);
+//                    return null;
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.UnBindDeviceEvent.class)
+//                                .subscribeOn(Schedulers.newThread())
+//                                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
+//                                        .subscribeOn(AndroidSchedulers.mainThread())
+//                                        .map(s -> {
+////                                            getView().unBindDeviceRsp(-1);
+//                                            return null;
+//                                        }))
+//                                .filter(s -> getView() != null)
+//                                .observeOn(AndroidSchedulers.mainThread())
+//                                .filter(unbindEvent -> {
+//                                    if (unbindEvent.jfgResult.code != 0)
+//                                        getView().unBindDeviceRsp(unbindEvent.jfgResult.code);//失败
+//                                    return unbindEvent.jfgResult.code == 0;
+//                                }),
+//                        (Object o, RxEvent.UnBindDeviceEvent unbindEvent) -> {
+//                            getView().unBindDeviceRsp(0);//成功
+//                            DataSourceManager.getInstance().delLocalJFGDevice(uuid);
+//                            return null;
+//                        })
+//                .subscribe());
+//    }
 
     @Override
     public void registerWorker() {
@@ -241,4 +234,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .registerReceiver(timeTickBroadcast, filter);
     }
 
+    private static final class InternalHelp {
+    }
 }

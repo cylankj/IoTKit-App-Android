@@ -33,5 +33,7 @@ public interface SubmitBindingInfoContract {
         int getBindState();
 
         void setBindState(int bindState);
+
+        void clean();
     }
 }

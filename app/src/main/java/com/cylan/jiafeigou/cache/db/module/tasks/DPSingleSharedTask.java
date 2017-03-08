@@ -82,7 +82,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                                         entity.getVersion() / 1000 +
                                         "_1.jpg";
                                 FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                                        .load(new JFGGlideURL(option.type, option.flag, entity.getVersion() / 1000 + ".jpg", entity.getUuid()))
+                                        .load(new JFGGlideURL(entity.getUuid(), option.type, option.flag, entity.getVersion() / 1000 + ".jpg", entity.getUuid()))
                                         .downloadOnly(100, 100);
                                 result = getCmd().putFileToCloud(remotePath, future.get().getAbsolutePath());
                                 subscriber.onNext(result);

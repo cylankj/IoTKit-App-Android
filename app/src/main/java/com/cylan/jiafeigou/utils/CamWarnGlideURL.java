@@ -4,8 +4,8 @@ import android.util.Log;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
-import com.cylan.entity.JfgEnum;
-import com.cylan.ex.JfgException;
+import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Locale;
 
 /**
  * Created by yzd on 16-12-13.
@@ -23,6 +24,8 @@ public class CamWarnGlideURL extends GlideUrl {
     protected DpMsgDefine.DPAlarm mBean;
     private String uuid;
     private int index;
+    private int regionType;
+    private boolean isLowerVersion;
 
     public CamWarnGlideURL(DpMsgDefine.DPAlarm bean, int index, String uuid) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
@@ -31,6 +34,12 @@ public class CamWarnGlideURL extends GlideUrl {
         mBean = bean;
         this.index = index;
         this.uuid = uuid;
+        JFGDevice device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
+        if (device != null)
+            regionType = device.regionType;
+        else {
+            AppLogger.e("device is null");
+        }
     }
 
     @Override
@@ -47,10 +56,13 @@ public class CamWarnGlideURL extends GlideUrl {
                 .append(index + 1)
                 .append(".jpg");
         try {
-            url = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.WARNING,
-                    mBean.type, builder.toString(), uuid, Security.getVId(JFGRules.getTrimPackageName()));
+//            [bucket]/cid/[vid]/[cid]/[timestamp]_[id].jpg
+            String u = String.format(Locale.getDefault(), "/%s/%s/%s/%s_%s.jpg",
+                    uuid, Security.getVId(JFGRules.getTrimPackageName()), uuid, mBean.time, index);
+
+            url = JfgCmdInsurance.getCmd().getSignedCloudUrl(regionType, u);
             Log.d("toURL", "toURL: " + url);
-        } catch (JfgException e) {
+        } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
         }
         return new URL(url);

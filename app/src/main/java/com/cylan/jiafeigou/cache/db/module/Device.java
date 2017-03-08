@@ -21,7 +21,7 @@ import org.greenrobot.greendao.annotation.Unique;
 public class Device implements IEntity<Device> {
     @Id
     private Long id;
-    @Unique
+//    @Unique
     private String uuid;
     private String sn;
     private String alias;

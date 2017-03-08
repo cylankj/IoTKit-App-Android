@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
@@ -79,8 +80,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         //2 电量
         if (JFGRules.isBell(pid)) {
             DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
-            int b = MiscUtils.safeGet(battery, 0);
-            if (battery != null && b <= 20 && (net != null && net.net >= 1)) {//在线显示
+            if (battery != null && battery.value != null && battery.value <= 20 && (net != null && net.net >= 1)) {//在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else holder.setVisibility(R.id.img_device_state_2, GONE);
@@ -141,16 +141,14 @@ public class HomePageListAdapter extends SuperAdapter<String> {
             handleMsgCountTime(holder, uuid, pid);
         //右下角状态
         setItemState(holder, uuid, pid, shareAccount, net);
+        AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,pid:%s", uuid, pid));
     }
 
     private String getAlias(String uuid, String alias) {
-        if (TextUtils.isEmpty(alias)) {
-            return MiscUtils.getBeautifulString(TextUtils.isEmpty(alias) ? uuid : alias, 8);
-        }
         if (TextUtils.equals(alias, uuid)) {
             return uuid;
         }
-        return alias;
+        return MiscUtils.getBeautifulString(TextUtils.isEmpty(alias) ? uuid : alias, 8);
     }
 
     private void handleMsgCountTime(SuperViewHolder holder, String uuid, int pid) {

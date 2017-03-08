@@ -241,14 +241,15 @@ public class BaseDBHelper implements IDBHelper {
                 .observeOn(Schedulers.io())
                 .flatMap(dev -> RxBus.getCacheInstance().toObservable(JFGAccount.class).map(account -> dev).first())//延迟写入,等到有账号了才写入数据库
                 .map(Device::new)
-                .flatMap(device1 -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(device1.getUuid())).rx().unique()
+                .flatMap(device1 -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(device1.getUuid()), DeviceDao.Properties.Account.eq(getAccount())).rx().unique()
                         .flatMap(device2 -> {
                             if (device2 != null) {
                                 deviceDao.delete(device2);
                             }
                             device1.setAccount(getAccount());
                             return deviceDao.rx().save(device1);
-                        }));
+                        }))
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
     }
 
     @Override

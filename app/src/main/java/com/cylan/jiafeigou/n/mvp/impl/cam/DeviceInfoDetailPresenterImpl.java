@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
@@ -129,6 +130,12 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
         addSubscription(Observable.just(device)
                 .map(device1 -> {
                     DataSourceManager.getInstance().updateJFGDevice(device);
+                    try {
+                        JfgCmdInsurance.getCmd().setAliasByCid(device.uuid, device.alias);
+                        AppLogger.d("update alias suc");
+                    } catch (JfgException e) {
+                        AppLogger.e("err: set up remote alias failed: " + new Gson().toJson(device));
+                    }
                     return null;
                 })
                 .timeout(1, TimeUnit.SECONDS, Observable.just("setAliasTimeout")

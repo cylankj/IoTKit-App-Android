@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.base.view;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.JFGVideo;
@@ -13,6 +14,7 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.dp.DataPoint;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -23,7 +25,13 @@ public interface JFGSourceManager {
 
     <T extends JFGDPDevice> T getJFGDevice(String uuid);
 
+    JFGDevice getRawJFGDevice(String uuid);
+
     List<JFGDPDevice> getAllJFGDevice();
+
+    HashMap<String, JFGDevice> getAllRawJFGDeviceMap();
+
+    boolean updateRawDevice(JFGDevice device);
 
     /**
      * 删除设备，解绑设备使用,一般等待服务器返回结果再调用
@@ -94,6 +102,16 @@ public interface JFGSourceManager {
 
     boolean updateJFGDevice(JFGDPDevice device);
 
+    /**
+     * 本地和远程
+     *
+     * @param uuid
+     * @param value
+     * @param msgId
+     * @param <T>
+     * @return
+     * @throws IllegalAccessException
+     */
     <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws IllegalAccessException;
 
     boolean deleteByVersions(String uuid, long id, ArrayList<Long> versions);

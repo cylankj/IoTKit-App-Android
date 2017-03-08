@@ -505,7 +505,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         }
     }
 
-    @OnClick(R.id.lb_login_commit)
+    @OnClick({R.id.lb_login_commit})
     public void login(View view) {
         if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
             ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
@@ -968,6 +968,12 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         super.onDestroy();
         clearSomeThing();
     }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
 
     /**
      * 验证码

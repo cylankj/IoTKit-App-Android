@@ -168,8 +168,8 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 resutBean.account = checkAccountCallback.s;
                 resutBean.alias = checkAccountCallback.s1;
                 try {
-                    resutBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, checkAccountCallback.s + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
-                } catch (JfgException e) {
+//                    resutBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, checkAccountCallback.s + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 getView().jump2FriendDetailFragment(false, resutBean,checkAccountCallback.b);

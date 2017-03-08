@@ -27,9 +27,9 @@
             android:hint="@string/PHONE_NUMBER"
             android:maxLength="65"
             android:maxLines="1"
-            android:singleLine="true"
             android:paddingLeft="@dimen/x40"
             android:paddingRight="@dimen/x40"
+            android:singleLine="true"
             android:textColor="@color/color_666666"
             android:textColorHint="@color/color_cecece"
             android:textCursorDrawable="@drawable/bg_common_cursor"
@@ -166,9 +166,9 @@
             <TextView
                 android:id="@+id/tv_qqLogin_commit"
                 style="@style/third_party_login_style"
-                android:layout_marginRight="@dimen/x14"
-                android:layout_toLeftOf="@+id/view_third_party_center"
-                android:drawableLeft="@drawable/icon_qq"
+                android:layout_marginEnd="@dimen/x14"
+                android:layout_toStartOf="@+id/view_third_party_center"
+                android:drawableStart="@drawable/icon_qq"
                 android:padding="@dimen/x10"
                 android:text="@string/LOGIN_QQ" />
 

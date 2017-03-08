@@ -32,48 +32,48 @@ public class ScanPresenterImpl extends AbstractPresenter<ScanContract.View> impl
         v.setPresenter(this);
     }
 
-    @Override
-    public void submit(Bundle bundle) {
-        unSubscribe(subscription);
-        subscription = Observable.just("bind")
-                .subscribeOn(Schedulers.newThread())
-                .map(s -> {
-                    String code = DataSourceManager.getInstance().getJFGAccount().getAccount() + System.currentTimeMillis();
-                    try {
-                        return JfgCmdInsurance.getCmd().bindDevice(bundle.getString("sn"), code);
-                    } catch (JfgException e) {
-                        AppLogger.e("scan Bind Err: " + e.getLocalizedMessage());
-                        return -1;
-                    }
-                })
-                .flatMap(new Func1<Integer, Observable<RxEvent.BindDeviceEvent>>() {
-                    @Override
-                    public Observable<RxEvent.BindDeviceEvent> call(Integer integer) {
-                        return RxBus.getCacheInstance().toObservable(RxEvent.BindDeviceEvent.class)
-                                .observeOn(Schedulers.newThread())
-                                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null && TextUtils.equals(getView().getUuid(), bindDeviceEvent.uuid))
-                                .timeout(90, TimeUnit.SECONDS, Observable.just("timeout")
-                                        .subscribeOn(AndroidSchedulers.mainThread())
-                                        .filter(s -> getView() != null)
-                                        .map(s -> {
-                                            getView().onScanRsp(-1);
-                                            AppLogger.e("timeout: " + s);
-                                            return null;
-                                        }));
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(s -> getView() != null)
-                .map(new Func1<RxEvent.BindDeviceEvent, Boolean>() {
-                    @Override
-                    public Boolean call(RxEvent.BindDeviceEvent bindDeviceEvent) {
-                        getView().onScanRsp(bindDeviceEvent.bindResult);
-                        return null;
-                    }
-                })
-                .doOnError(throwable -> AppLogger.e("scan Bind err:" + throwable.getLocalizedMessage()))
-                .subscribe();
-    }
+//    @Override
+//    public void submit(Bundle bundle) {
+//        unSubscribe(subscription);
+//        subscription = Observable.just("bind")
+//                .subscribeOn(Schedulers.newThread())
+//                .map(s -> {
+//                    String code = DataSourceManager.getInstance().getJFGAccount().getAccount() + System.currentTimeMillis();
+//                    try {
+//                        return JfgCmdInsurance.getCmd().bindDevice(bundle.getString("sn"), code);
+//                    } catch (JfgException e) {
+//                        AppLogger.e("scan Bind Err: " + e.getLocalizedMessage());
+//                        return -1;
+//                    }
+//                })
+//                .flatMap(new Func1<Integer, Observable<RxEvent.BindDeviceEvent>>() {
+//                    @Override
+//                    public Observable<RxEvent.BindDeviceEvent> call(Integer integer) {
+//                        return RxBus.getCacheInstance().toObservable(RxEvent.BindDeviceEvent.class)
+//                                .observeOn(Schedulers.newThread())
+//                                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null && TextUtils.equals(getView().getUuid(), bindDeviceEvent.uuid))
+//                                .timeout(90, TimeUnit.SECONDS, Observable.just("timeout")
+//                                        .subscribeOn(AndroidSchedulers.mainThread())
+//                                        .filter(s -> getView() != null)
+//                                        .map(s -> {
+//                                            getView().onScanRsp(-1);
+//                                            AppLogger.e("timeout: " + s);
+//                                            return null;
+//                                        }));
+//                    }
+//                })
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(s -> getView() != null)
+//                .map(new Func1<RxEvent.BindDeviceEvent, Boolean>() {
+//                    @Override
+//                    public Boolean call(RxEvent.BindDeviceEvent bindDeviceEvent) {
+//                        getView().onScanRsp(bindDeviceEvent.bindResult);
+//                        return null;
+//                    }
+//                })
+//                .doOnError(throwable -> AppLogger.e("scan Bind err:" + throwable.getLocalizedMessage()))
+//                .subscribe();
+//    }
 
     @Override
     public void stop() {

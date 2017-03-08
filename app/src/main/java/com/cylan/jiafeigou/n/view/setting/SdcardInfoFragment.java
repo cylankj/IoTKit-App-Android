@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SdcardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SdcardInfoPresenterImpl;
-import com.cylan.jiafeigou.widget.LoginButtonV2;
+import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SmoothPercent;
 
@@ -34,7 +34,7 @@ public class SdcardInfoFragment extends IBaseFragment<SdcardInfoContract.Present
     @BindView(R.id.sm_percent)
     SmoothPercent smPercent;
     @BindView(R.id.lb2_sdcard_format)
-    LoginButtonV2 lb2SdcardFormat;
+    LoginButton lb2SdcardFormat;
 
     public SdcardInfoFragment() {
         // Required empty public constructor
@@ -78,7 +78,7 @@ public class SdcardInfoFragment extends IBaseFragment<SdcardInfoContract.Present
     @OnClick(R.id.lb2_sdcard_format)
     public void onClick() {
         if (basePresenter != null) basePresenter.startFormat();
-        lb2SdcardFormat.autoZoom();
+        lb2SdcardFormat.viewZoomBig();
     }
 
     @Override
