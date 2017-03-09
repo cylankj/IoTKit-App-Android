@@ -10,7 +10,6 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -53,6 +52,7 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, JFGDevice item) {
         holder.setOnClickListener(R.id.rLayout_device_item, deviceItemClickListener);
+        holder.setTag(R.id.rLayout_device_item, layoutPosition);
         holder.setOnLongClickListener(R.id.rLayout_device_item, deviceItemLongClickListener);
         handleState(holder, item);
     }
@@ -151,17 +151,17 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
     }
 
     private void handleMsgCountTime(SuperViewHolder holder, String uuid, int pid) {
+        Pair<Integer, Long> pair = DataSourceManager.getInstance().getUnreadCount(uuid, 505, 512, 222);
         Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息");
-
         //消息数
-        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(null, pid));
+        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(pair, pid));
         //时间
-        holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), 0));
-        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(false);
+        holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), pair != null && pair.first > 0 ? pair.second : 0));
+        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(pair != null && pair.first > 0);
     }
 
 
-    private String getLastWarnContent(Pair<Integer, DataPoint> msgCountPair, int pid) {
+    private String getLastWarnContent(Pair<Integer, Long> msgCountPair, int pid) {
         final int msgCount = msgCountPair == null ? 0 : msgCountPair.first;
         if (msgCount == 0)
             return getContext().getString(R.string.Tap1_NoMessages);

@@ -55,7 +55,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-                robotDataSync()
+                robotDataSync(),
+                robotDeviceDataSync()
         };
     }
 
@@ -101,6 +102,25 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
+                .subscribe();
+    }
+
+    /**
+     * robot同步数据
+     *
+     * @return
+     */
+    private Subscription robotDeviceDataSync() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (
+                        getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
+                ))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map((RxEvent.DeviceSyncRsp update) -> {
+                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
+                    return null;
+                })
+                .retry(new RxHelper.RxException<>("robotDeviceDataSync"))
                 .subscribe();
     }
 

@@ -188,7 +188,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //2w显示双排视图  3.1.0功能
-        imvDoubleSight.setVisibility(isNormalView ? View.GONE : View.VISIBLE);
+//        imvDoubleSight.setVisibility(isNormalView ? View.GONE : View.VISIBLE);
         checkSightDialog(isNormalView);
         ViewUtils.updateViewHeight(fLayoutCamLiveView, isNormalView ? 0.8f : 1.0f);//720*576
         initBottomBtn(false);
@@ -335,11 +335,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (sdcardPulloutDlg == null || sdcardPulloutDlg.get() == null) {
             AlertDialog dialog = new AlertDialog.Builder(getActivity())
                     .setMessage(getString(R.string.MSG_SD_OFF))
-                    .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface d, int which) -> {
+                        if (basePresenter.getPlayType() != PLAY_STATE_PLAYING)
+                            basePresenter.startPlayVideo(TYPE_LIVE);
                     })
                     .setNegativeButton(getString(R.string.CANCEL), null)
                     .create();
@@ -395,6 +393,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                     return;
                 initSdcardStateDialog();
                 sdcardPulloutDlg.get().show();
+                if (basePresenter.getPlayType() == TYPE_HISTORY) {
+                    basePresenter.stopPlayVideo(TYPE_HISTORY);
+                }
             }
             AppLogger.e("sdcard数据被清空，唐宽，还没实现");
         }

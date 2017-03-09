@@ -47,8 +47,15 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 internalUpdateUuidList(),
                 devicesUpdate1(),
                 JFGAccountUpdate(),
-//                autoLoginTip()
+                unreadCountUpdate(),
         };
+    }
+
+    private Subscription unreadCountUpdate() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
+                .doOnCompleted(() -> RxBus.getCacheInstance().post(new InternalHelp()))
+                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                .subscribe();
     }
 
     private Subscription getShareDevicesListRsp() {
@@ -135,7 +142,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private Subscription internalUpdateUuidList() {
         return RxBus.getCacheInstance().toObservable(InternalHelp.class)
                 .observeOn(Schedulers.newThread())
-                .throttleFirst(1, TimeUnit.SECONDS)
+                .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(o -> {
                     subUuidList();
@@ -148,12 +155,22 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     @Override
+    public void stop() {
+        super.stop();
+        unSubscribe(refreshSub);
+    }
+
+    private Subscription refreshSub;
+
+    @Override
     public void fetchDeviceList(boolean manually) {
         int state = DataSourceManager.getInstance().getLoginState();
         if (state != LogState.STATE_ACCOUNT_ON) {
             getView().onLoginState(false);
         }
-        Observable.just(manually)
+        if (refreshSub != null && !refreshSub.isUnsubscribed())
+            return;
+        refreshSub = Observable.just(manually)
                 .subscribeOn(Schedulers.newThread())
                 .map((Boolean aBoolean) -> {
                     DataSourceManager.getInstance().syncAllJFGDeviceProperty();
@@ -166,7 +183,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     return aBoolean;
                 })
                 .filter(aBoolean -> aBoolean)//手动刷新，需要停止刷新
-                .subscribe((Object aBoolean) -> AppLogger.d("refresh"),
+                .observeOn(Schedulers.newThread())
+                .delay(3, TimeUnit.SECONDS)
+                .filter(aBoolean -> getView() != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((Object aBoolean) -> getView().onRefreshFinish(),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
     }
 

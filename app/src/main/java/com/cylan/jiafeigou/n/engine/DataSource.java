@@ -341,7 +341,7 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
-        RxBus.getCacheInstance().post(new RxEvent.UnreadCount(s, l, arrayList));
+        DataSourceManager.getInstance().cacheUnreadCount(l, s, arrayList);
         AppLogger.d("OnRobotCountDataRsp :");
     }
 

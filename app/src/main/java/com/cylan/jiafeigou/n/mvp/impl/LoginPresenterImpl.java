@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
@@ -19,8 +20,10 @@ import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
+
 import java.io.File;
 import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -49,6 +52,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录
+     *
      * @param o
      * @return
      */
@@ -59,7 +63,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
                         if (o.loginType) {
-                            JfgCmdInsurance.getCmd().openLogin(o.userName,o.pwd, o.openLoginType);
+                            JfgCmdInsurance.getCmd().openLogin(o.userName, o.pwd, o.openLoginType);
                         } else {
                             JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
                             //账号和密码
@@ -79,6 +83,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录结果
+     *
      * @return
      */
     private Observable<RxEvent.ResultLogin> loginResultObservable() {
@@ -108,8 +113,12 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     Log.d("CYLAN_TAG", "login subscribe: " + o);
                     if (getView() != null) getView().loginResult(o.code);
                 }, throwable -> {
-                    if (getView() != null) getView().loginResult(JError.ErrorConnect);
-                    Log.d("CYLAN_TAG", "login err: " + throwable.getLocalizedMessage());
+                    try {
+                        if (getView() != null) getView().loginResult(JError.ErrorConnect);
+                        Log.d("CYLAN_TAG", "login err: " + throwable.getLocalizedMessage());
+                    } catch (Exception e) {
+
+                    }
                 });
     }
 
@@ -307,9 +316,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         return RxBus.getCacheInstance().toObservableSticky(LoginAccountBean.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginAccountBean -> {
-                    if (loginAccountBean != null){
+                    if (loginAccountBean != null) {
                         executeLogin(loginAccountBean);
-                    }else {
+                    } else {
                         getView().authorizeResult();
                     }
                 });
@@ -339,7 +348,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> {
-                    if (s != null && !TextUtils.isEmpty(s)){
+                    if (s != null && !TextUtils.isEmpty(s)) {
                         getView().reShowAccount(s);
                     }
                 });

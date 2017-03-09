@@ -227,8 +227,14 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void onStop() {
         super.onStop();
         if (basePresenter != null) basePresenter.stop();
-        if (lbLogin != null) lbLogin.cancelAnim();
+//        if (lbLogin != null) lbLogin.cancelAnim();
 //        if (verificationCodeLogic != null) verificationCodeLogic.stop();
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        if (lbLogin != null) lbLogin.cancelAnim();
     }
 
     @Override

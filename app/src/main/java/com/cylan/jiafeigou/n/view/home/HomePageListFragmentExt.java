@@ -336,6 +336,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && isResumed() && getActivity() != null) {
+            srLayoutMainContentHolder.setRefreshing(false);
         }
     }
 
@@ -395,8 +396,13 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onRefreshFinish() {
-        srLayoutMainContentHolder.postDelayed(() -> srLayoutMainContentHolder.setRefreshing(false), 50);
-        AppLogger.d("stop refreshing ui");
+        srLayoutMainContentHolder.postDelayed(() -> {
+            if (srLayoutMainContentHolder.isRefreshing()) {
+                srLayoutMainContentHolder.setRefreshing(false);
+                srLayoutMainContentHolder.clearAnimation();
+                AppLogger.d("stop refreshing ui");
+            }
+        }, 1500);
     }
 
 //    @Override
@@ -416,7 +422,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onRefresh() {
         //不使用post,因为会泄露
-        srLayoutMainContentHolder.setRefreshing(true);
+        srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
+        srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
         Log.d("refresh", "refresh:start ");
         if (basePresenter != null)
             basePresenter.fetchDeviceList(true);
@@ -424,13 +431,21 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onClick(View v) {
-        final int position = ViewUtils.getParentAdapterPosition(rVDevicesList,
+        int position = ViewUtils.getParentAdapterPosition(rVDevicesList,
                 v,
                 R.id.rLayout_device_item);
         if (position < 0 || position > homePageListAdapter.getCount() - 1) {
-            AppLogger.d("woo,position is invalid: " + position);
             homePageListAdapter.notifyDataSetChanged();
-            return;
+            position = rVDevicesList.getChildAdapterPosition(v);
+        }
+        if (position < 0) {
+            Object o = v.getTag();
+            if (o != null && o instanceof Integer) {
+                position = (int) o;
+            }
+            AppLogger.d("woo,position is invalid final: " + position + " " + o);
+            if (position < 0)
+                return;
         }
         JFGDevice device = homePageListAdapter.getItem(position);
         if (!TextUtils.isEmpty(device.uuid)) {
@@ -482,12 +497,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
             return;
         }
-//        String deleteUUID = homePageListAdapter.getItem((Integer) value);
-//        homePageListAdapter.remove((Integer) value);
-        //刷新需要剩下的item
-//        emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
-//        srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
-//        basePresenter.unBindDevReq(deleteUUID);
     }
 
 
