@@ -100,14 +100,14 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
 
     private Subscription resultLoginSub() {
         //sdk中，登陆失败的话，自动一分钟登录一次。
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultAutoLogin.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                 .delay(500, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.ResultAutoLogin>() {
+                .subscribe(new Action1<RxEvent.ResultLogin>() {
                     @Override
-                    public void call(RxEvent.ResultAutoLogin resultAutoLogin) {
+                    public void call(RxEvent.ResultLogin resultLogin) {
                         if (getView() != null) {
-                            getView().loginResult(resultAutoLogin.code);
+                            getView().loginResult(resultLogin.code);
                         }
                     }
                 }, new Action1<Throwable>() {

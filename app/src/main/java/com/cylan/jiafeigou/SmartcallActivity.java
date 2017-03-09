@@ -196,7 +196,7 @@ public class SmartcallActivity extends NeedLoginActivity
             finish();
         }else if(code == JError.StartLoginPage && !frist){
             splashOver();
-            RxBus.getCacheInstance().removeStickyEvent(RxEvent.ResultAutoLogin.class);
+            RxBus.getCacheInstance().removeStickyEvent(RxEvent.ResultLogin.class);
             frist = true;
         }else if (code == JError.ErrorAccountNotExist){
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));

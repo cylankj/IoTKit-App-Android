@@ -111,23 +111,23 @@ public class DataSource implements AppCallBack {
                     @Override
                     public Observable<?> call(Integer integer) {
                         if(integer==0)
-                        RxBus.getCacheInstance().toObservable(RxEvent.ResultAutoLogin.class)
+                        RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                                 .subscribeOn(Schedulers.newThread())
                                 .timeout(5, TimeUnit.SECONDS,Observable.just("autoSign in timeout")
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .map(s->{
                                             AppLogger.d("net type: "+ NetUtils.getNetType(ContextUtils.getContext()));
                                             if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
-                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultAutoLogin(JError.NoNet));
+                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.NoNet));
                                             }else {
-                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultAutoLogin(JError.LoginTimeOut));
+                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
                                             }
                                             return null;
                                         }))
                                 .subscribe();
                         else if(integer==-1){
                             //emit failed event.
-                            RxBus.getCacheInstance().postSticky(new RxEvent.ResultAutoLogin(JError.StartLoginPage));
+                            RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                         }
                         return null;
                     }
@@ -269,8 +269,7 @@ public class DataSource implements AppCallBack {
                 break;
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
-                RxBus.getCacheInstance().postSticky(new RxEvent.ResultAutoLogin(jfgResult.code));
-                RxBus.getCacheInstance().post(new RxEvent.ResultLogin(jfgResult.code));
+                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备

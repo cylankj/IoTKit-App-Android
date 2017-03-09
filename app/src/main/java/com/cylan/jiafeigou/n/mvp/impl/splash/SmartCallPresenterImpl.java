@@ -21,7 +21,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     public SmartCallPresenterImpl(SplashContract.View splashView) {
         super(splashView);
         splashView.setPresenter(this);
-        subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultAutoLogin.class)
+        subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resultLogin -> {
                     if (resultLogin != null)

@@ -245,7 +245,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
 
     private Subscription autoLoginTip(){
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultAutoLogin.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(resultLogin -> {
                     if(resultLogin != null)

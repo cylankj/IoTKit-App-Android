@@ -163,21 +163,6 @@ public class RxEvent {
         }
     }
 
-    public static final class ResultAutoLogin {
-        public int code;
-
-        public ResultAutoLogin(int code) {
-            this.code = code;
-        }
-
-        @Override
-        public String toString() {
-            return "ResultAutoLogin{" +
-                    "code=" + code +
-                    '}';
-        }
-    }
-
     public static final class ResultLogin {
         public int code;
 
@@ -192,7 +177,6 @@ public class RxEvent {
                     '}';
         }
     }
-
 
     public static final class ResultBind {
         public int code;

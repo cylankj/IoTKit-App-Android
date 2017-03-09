@@ -89,10 +89,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     public void executeLogin(final LoginAccountBean login) {
         //加入
         Observable.zip(loginObservable(login), loginResultObservable(),
-                (Object o, RxEvent.ResultLogin resultAutoLogin) -> {
-                    Log.d("CYLAN_TAG", "login: " + resultAutoLogin);
-                    return resultAutoLogin;
+                (Object o, RxEvent.ResultLogin resultLogin) -> {
+                    Log.d("CYLAN_TAG", "login: " + resultLogin);
+                    return resultLogin;
                 })
+                .filter(resultAutoLogin1 -> resultAutoLogin1.code != JError.StartLoginPage)
                 .timeout(30 * 1000L, TimeUnit.SECONDS, Observable.just(null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map((Object o) -> {
