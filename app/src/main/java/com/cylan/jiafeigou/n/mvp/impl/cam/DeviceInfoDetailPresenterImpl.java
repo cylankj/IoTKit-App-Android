@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -99,13 +100,14 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((Object o) -> {
-                    ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
-                    JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
-                    ipList.add(mesg);
                     try {
+                        ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
+                        JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
+                        mesg.packValue = DpUtils.pack(0);
+                        ipList.add(mesg);
                         requst = JfgCmdInsurance.getCmd().robotSetData(uuid, ipList);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
+                    } catch (Exception e) {
+                        AppLogger.e("format sd： " + e.getLocalizedMessage());
                     }
                 });
     }

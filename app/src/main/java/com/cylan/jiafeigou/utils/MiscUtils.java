@@ -16,6 +16,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -252,5 +253,30 @@ public class MiscUtils {
             }
         }
         return defaultValue;
+    }
+
+    /**
+     * @param set
+     * @param min ： max or min
+     * @param <T>
+     * @return
+     */
+    public static <T extends DataPoint> long getVersion(DpMsgDefine.DPSet<T> set, boolean min) {
+        if (set != null && set.value != null && set.list().size() > 0) {
+            Collections.sort(set.list());
+            if (min)
+                return set.list().get(set.list().size() - 1).version;
+            else {
+                return set.list().get(0).version;
+            }
+        }
+        return 0L;
+    }
+
+    public static JFGDPMsg getMessageByVersion(long id, long version) {
+        JFGDPMsg msg = new JFGDPMsg();
+        msg.id = id;
+        msg.version = version;
+        return msg;
     }
 }

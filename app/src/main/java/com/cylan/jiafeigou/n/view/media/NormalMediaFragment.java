@@ -11,7 +11,9 @@ import android.view.ViewGroup;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -36,6 +38,7 @@ public class NormalMediaFragment extends IBaseFragment {
     public static final String KEY_INDEX = "key_index";
     @BindView(R.id.imgV_show_pic)
     PhotoView imgVShowPic;
+    private JFGDevice device;
 
 
     public NormalMediaFragment() {
@@ -77,6 +80,7 @@ public class NormalMediaFragment extends IBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
         int index = getArguments().getInt(KEY_INDEX);
         DpMsgDefine.DPAlarm dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         if (dpAlarm != null) {
@@ -96,7 +100,7 @@ public class NormalMediaFragment extends IBaseFragment {
 
     private void loadBitmap(DpMsgDefine.DPAlarm dpAlarm, int index, String uuid) {
         Glide.with(ContextUtils.getContext())
-                .load(new CamWarnGlideURL(dpAlarm, index, uuid))
+                .load(new CamWarnGlideURL(dpAlarm, index, uuid, device == null ? 0 : device.regionType))
                 .asBitmap()
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

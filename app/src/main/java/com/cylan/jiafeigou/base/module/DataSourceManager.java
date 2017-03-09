@@ -3,9 +3,12 @@ package com.cylan.jiafeigou.base.module;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
+import android.util.SparseLongArray;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
@@ -82,6 +85,10 @@ public class DataSourceManager implements JFGSourceManager {
     private JFGDPAccount mJFGAccount;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
+    /**
+     * 未读消息数
+     */
+    private HashMap<String, SparseLongArray> unreadMap = new HashMap<>();
     @Deprecated
     private boolean isOnline;
     private JFGAccount jfgAccount;
@@ -314,6 +321,26 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     /**
+     * 很暴力地获取
+     *
+     * @param uuid
+     */
+    private void syncDeviceUnreadCount(String uuid) {
+        JFGDevice device = getRawJFGDevice(uuid);
+        if (device != null && JFGRules.isCamera(device.pid)) {
+            ArrayList<Long> msgs = new ArrayList<>();
+            try {
+                msgs.add(505L);
+                msgs.add(222L);
+                msgs.add(512L);
+                JfgCmdInsurance.getCmd().robotCountData(device.uuid, msgs, 0);
+            } catch (JfgException e) {
+                AppLogger.e("uuid is null: " + e.getLocalizedMessage());
+            }
+        }
+    }
+
+    /**
      * 获取所有的报警消息{505,222}，1：保证有最新的报警消息，2.用于显示xx条新消息。
      *
      * @param ignoreShareDevice:忽略分享账号，一般都为true
@@ -365,12 +392,65 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
+    public void cacheUnreadCount(long seq, String uuid, ArrayList<JFGDPMsgCount> unreadList) {
+        SparseLongArray array = unreadMap.get(uuid);
+        if (array == null) {
+            array = new SparseLongArray();
+        }
+        if (unreadList != null) {
+            for (JFGDPMsgCount count : unreadList) {
+                array.put(count.id, count.count);
+            }
+            unreadMap.put(uuid, array);
+        }
+        RxBus.getCacheInstance().post(new RxEvent.UnreadCount(uuid, seq, unreadList));
+    }
+
+    @Override
+    public Pair<Integer, Long> getUnreadCount(String uuid, long... ids) {
+        if (unreadMap != null && ids != null && ids.length > 0) {
+            SparseLongArray array = unreadMap.get(uuid);
+            if (array != null) {
+                int count = 0;
+                long version = 0;
+                for (long id : ids) {
+                    count += array.get((int) id);
+                    try {
+                        long v = MiscUtils.getVersion(getValue(uuid, id), false);
+                        version = version > v ? version : v;
+                    } catch (Exception e) {
+                        AppLogger.e("err: " + e.getLocalizedMessage());
+                    }
+                }
+                return new Pair<>(count, version);
+            }
+        }
+        return null;
+    }
+
+    @Override
     public void clear() {
         if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
         isOnline = false;
         mJFGAccount = null;
         jfgAccount = null;
         if (shareList != null) shareList.clear();
+    }
+
+    @Override
+    public void clearUnread(String uuid, long... ids) {
+        try {
+            ArrayList<Long> list = new ArrayList<>();
+            if (ids != null && ids.length > 0) {
+                for (long id : ids) {
+                    list.add(id);
+                }
+                JfgCmdInsurance.getCmd().robotCountDataClear(uuid, list, 0);
+                boolean result = unreadMap.remove(uuid) != null;
+                AppLogger.d("clear unread count：" + result);
+            }
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -436,11 +516,17 @@ public class DataSourceManager implements JFGSourceManager {
                                 }).buffer(set.getValue().size())
                         )
                         .map(ret -> set))
-                .subscribe(ret -> {
+                .map(ret -> {
                     RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
                     response.seq = dataRsp.seq;
                     response.msgId = ret.getKey();
                     RxBus.getCacheInstance().post(response);
+                    return ret;
+                })
+                .takeLast(1)//这次RobotoGetDataRsp响应完成
+                .filter(ret -> ret.getKey() > 3)//会有一些1 2 3
+                .subscribe(ret -> {
+                    syncDeviceUnreadCount(dataRsp.identity);
                 }, Throwable::printStackTrace, () -> {
                     RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
                     completed.seq = dataRsp.seq;

@@ -4,8 +4,6 @@ import android.util.Log;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
-import com.cylan.entity.jniCall.JFGDevice;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -25,21 +23,15 @@ public class CamWarnGlideURL extends GlideUrl {
     private String uuid;
     private int index;
     private int regionType;
-    private boolean isLowerVersion;
 
-    public CamWarnGlideURL(DpMsgDefine.DPAlarm bean, int index, String uuid) {
+    public CamWarnGlideURL(DpMsgDefine.DPAlarm bean, int index, String uuid, int regionType) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
         if (bean == null)
             throw new IllegalArgumentException("DPWonderItem is Not Completed!");
         mBean = bean;
         this.index = index;
         this.uuid = uuid;
-        JFGDevice device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
-        if (device != null)
-            regionType = device.regionType;
-        else {
-            AppLogger.e("device is null");
-        }
+        this.regionType = regionType;
     }
 
     @Override
@@ -49,22 +41,18 @@ public class CamWarnGlideURL extends GlideUrl {
 
     @Override
     public URL toURL() throws MalformedURLException {
-        String url = "";
-        StringBuilder builder = new StringBuilder();
-        builder.append(mBean.time)
-                .append("_")
-                .append(index + 1)
-                .append(".jpg");
+
         try {
 //            [bucket]/cid/[vid]/[cid]/[timestamp]_[id].jpg
             String u = String.format(Locale.getDefault(), "/%s/%s/%s/%s_%s.jpg",
                     uuid, Security.getVId(JFGRules.getTrimPackageName()), uuid, mBean.time, index);
-
-            url = JfgCmdInsurance.getCmd().getSignedCloudUrl(regionType, u);
+            String url = JfgCmdInsurance.getCmd().getSignedCloudUrl(regionType, u);
             Log.d("toURL", "toURL: " + url);
+            return new URL(url);
         } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
+            return new URL("");
         }
-        return new URL(url);
+
     }
 }
