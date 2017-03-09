@@ -29,7 +29,7 @@ public interface JFGSourceManager {
 
     List<JFGDPDevice> getAllJFGDevice();
 
-    HashMap<String, JFGDevice> getAllRawJFGDeviceMap();
+    ArrayList<JFGDevice> getAllRawJFGDeviceList();
 
     boolean updateRawDevice(JFGDevice device);
 
