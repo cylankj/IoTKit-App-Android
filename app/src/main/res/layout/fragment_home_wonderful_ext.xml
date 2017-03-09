@@ -98,9 +98,9 @@
                 android:layout_height="match_parent"
                 android:background="@color/color_white">
 
-                <include
-                    android:id="@+id/fragment_wonderful_guide"
-                    layout="@layout/item_wonderful_guide" />
+                <!--<include-->
+                    <!--android:id="@+id/fragment_wonderful_guide"-->
+                    <!--layout="@layout/item_wonderful_guide" />-->
 
                 <include
                     android:id="@+id/fragment_wonderful_empty"

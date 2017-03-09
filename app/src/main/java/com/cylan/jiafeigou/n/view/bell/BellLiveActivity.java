@@ -471,6 +471,12 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         ToastUtil.showPositiveToast(getString(R.string.set_failed));
     }
 
+    @Override
+    public void onDeviceUnBind() {
+        AppLogger.d("当前设备已解绑");
+        finish();
+    }
+
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     void switchSpeakerWithPermission() {
         mPresenter.switchSpeaker();

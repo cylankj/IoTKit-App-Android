@@ -29,6 +29,10 @@ public interface DoorBellHomeContract {
         void onDeleteBellCallRecordFailed();
 
         void onBellRecordCleared();
+
+        void onDeviceUnBind();
+
+        void onFinish();
     }
 
     interface Presenter extends JFGPresenter {

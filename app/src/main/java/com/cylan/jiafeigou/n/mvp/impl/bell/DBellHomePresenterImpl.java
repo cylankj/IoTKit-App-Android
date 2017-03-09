@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
+import android.text.TextUtils;
+
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -41,6 +43,8 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     private List<BellCallRecordBean> mRecords = new ArrayList<>();
     private boolean isFirst = true;
     private Subscription subscribe;
+    private Subscription unBindSub;
+    private Subscription showWonderPageSub;
 
     private void notifyBellLowBattery() {
         if (isFirst) {
@@ -57,13 +61,37 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         }
     }
 
+    private Subscription getDeviceUnBindSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(event -> TextUtils.equals(event.uuid, mUUID))
+                .subscribe(event -> {
+                    mView.onDeviceUnBind();
+                }, Throwable::printStackTrace);
+    }
+
+//    private Subscription getShowWonderPageSub() {
+////        return RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
+////                .subscribeOn(Schedulers.io())
+////                .observeOn(AndroidSchedulers.mainThread())
+////                .subscribe(event -> {
+////                    mView.onFinish();
+////                });
+//    }
 
     @Override
     public void onStart() {
         super.onStart();
         JFGDoorBellDevice device = mSourceManager.getJFGDevice(mUUID);
-        mView.onShowProperty(device);
-        registerSubscription(getClearDataSub());
+        if (device == null) {
+            mView.onDeviceUnBind();
+        } else {
+            mView.onShowProperty(device);
+            registerSubscription(getClearDataSub());
+            unBindSub = getDeviceUnBindSub();
+//            showWonderPageSub = getShowWonderPageSub();
+        }
     }
 
     private Subscription getClearDataSub() {
@@ -148,6 +176,19 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     public void cancelFetch() {
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
+        }
+    }
+
+    @Override
+    public void onViewDetached() {
+        super.onViewDetached();
+        if (unBindSub != null && unBindSub.isUnsubscribed()) {
+            unBindSub.unsubscribe();
+            unBindSub = null;
+        }
+        if (showWonderPageSub != null && showWonderPageSub.isUnsubscribed()) {
+            showWonderPageSub.unsubscribe();
+            showWonderPageSub = null;
         }
     }
 }

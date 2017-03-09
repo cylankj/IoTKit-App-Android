@@ -27,6 +27,7 @@ public class Device implements IEntity<Device> {
     private int pid;
     private String vid;
     private String account;
+    private String server;
     private String action;
     private String state;
     private String option;
@@ -41,9 +42,10 @@ public class Device implements IEntity<Device> {
     @Generated(hash = 371273952)
     private transient DeviceDao myDao;
 
-    @Generated(hash = 1616267814)
+    @Generated(hash = 1784121098)
     public Device(Long id, String uuid, String sn, String alias, String shareAccount, int pid,
-                  String vid, String account, String action, String state, String option) {
+            String vid, String account, String server, String action, String state,
+            String option) {
         this.id = id;
         this.uuid = uuid;
         this.sn = sn;
@@ -52,6 +54,7 @@ public class Device implements IEntity<Device> {
         this.pid = pid;
         this.vid = vid;
         this.account = account;
+        this.server = server;
         this.action = action;
         this.state = state;
         this.option = option;
@@ -235,6 +238,14 @@ public class Device implements IEntity<Device> {
 
     public void setOption(String option) {
         this.option = option;
+    }
+
+    public String getServer() {
+        return this.server;
+    }
+
+    public void setServer(String server) {
+        this.server = server;
     }
 
     /** called by internal mechanisms, do not call yourself. */

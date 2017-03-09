@@ -246,32 +246,67 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
+        dbHelper.updateDevice(devices)
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .doOnCompleted(() -> handleDeletedDevice(devices))
+                .subscribe(device -> {
+                    AppLogger.d("正在更新内存中的 Device 设备");
+                    JFGDPDevice temp = mCachedDeviceMap.get(device.getUuid());
+                    if (temp != null) {
+                        // /已经存在了,则更新即可
+                        temp.alias = device.getAlias();
+                        temp.uuid = device.getUuid();
+                        temp.sn = device.getSn();
+                        temp.shareAccount = device.getShareAccount();
+                        temp.pid = device.getPid();
+                        temp.id = device.getId();
+                    } else {//不存在,则添加
+                        JFGDPDevice jfgDevice = create(device.getPid());
+                        if (jfgDevice != null) mCachedDeviceMap.put(device.getUuid(), jfgDevice);
+                    }
+                });
         mRawDeviceMap.clear();
-        mCachedDeviceMap.clear();//这个 cache 方法是通过SDK调用的调用到这里说明当前已经是有网状态,则清空之前的数据
         for (com.cylan.entity.jniCall.JFGDevice device : devices) {
             Log.d("uuid", "uuid: " + new Gson().toJson(device));
             mRawDeviceMap.put(device.uuid, device);
-            JFGDPDevice temp = mCachedDeviceMap.get(device.uuid);
-            if (temp != null) {//已经存在了,则更新即可
-                temp.setDevice(device);
-            } else {//不存在,则添加
-                JFGDPDevice jfgDevice = create(device);
-                if (jfgDevice != null) mCachedDeviceMap.put(device.uuid, jfgDevice);
-            }
         }
         syncAllJFGDeviceProperty();
     }
 
+    private void handleDeletedDevice(JFGDevice[] devices) {
+        if (mCachedDeviceMap.size() == 0) return;
+        HashMap<String, JFGDPDevice> copy = new HashMap<>(mCachedDeviceMap);
+        for (JFGDevice device : devices) {
+            copy.remove(device.uuid);
+        }
+        Observable.from(copy.entrySet())
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(item -> {
+                    AppLogger.d("正在删除内存缓存中的设备:UUID:" + item.getKey());
+                    delLocalJFGDevice(item.getKey());
+                    return item;
+                })
+                .flatMap(item -> dbHelper.unBindDeviceWithConfirm(item.getKey()))
+                .subscribe(item -> RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(item.getUuid())), Throwable::printStackTrace);
+
+    }
+
     @Override
     public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
-        setJfgAccount(account);
-        if (jfgAccount != null)
-            setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
-        else {
-            AppLogger.e("jfgAccount is null");
-        }
-        mJFGAccount = new JFGDPAccount().setAccount(account);
-        syncAllJFGDeviceProperty();
+        dbHelper.updateAccount(account)
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .doOnCompleted(() -> {
+                    setJfgAccount(account);
+                    if (jfgAccount != null)
+                        setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
+                    else {
+                        AppLogger.e("jfgAccount is null");
+                    }
+                    mJFGAccount = new JFGDPAccount().setAccount(account);
+                    RxBus.getCacheInstance().post(account);
+                })
+                .subscribe();
     }
 
 

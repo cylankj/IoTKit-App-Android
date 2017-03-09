@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
+import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
@@ -68,4 +69,8 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
                 .filter(ret -> ret.requestId == seq).first().timeout(30, TimeUnit.SECONDS);
     }
 
+    protected Observable<JFGResult> makeGetJFGResultResponse(long seq) {
+        return RxBus.getCacheInstance().toObservable(JFGResult.class)
+                .filter(ret -> ret.seq == seq).first().timeout(30, TimeUnit.SECONDS);
+    }
 }

@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -11,7 +10,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
-import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -39,35 +38,22 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
 
     @Override
     public void unbindDevice() {
-        registerSubscription(Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .map((Object o) -> {
-                    boolean result = DataSourceManager.getInstance().delRemoteJFGDevice(mUUID);
-                    AppLogger.i("unbind uuid: " + mUUID + " " + result);
-                    return null;
-                })
+        Subscription subscribe = Observable.just(new DPEntity()
+                .setUuid(mUUID)
+                .setAction(DBAction.UNBIND))
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
-                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.UnBindDeviceEvent.class)
-                                .subscribeOn(Schedulers.newThread())
-                                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
-                                        .subscribeOn(AndroidSchedulers.mainThread())
-                                        .map(s -> {
-                                            mView.unbindDeviceRsp(-1);
-                                            return null;
-                                        }))
-                                .filter(s -> mView != null)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .filter(unbindEvent -> {
-                                    if (unbindEvent.jfgResult.code != 0)
-                                        mView.unbindDeviceRsp(unbindEvent.jfgResult.code);//失败
-                                    return unbindEvent.jfgResult.code == 0;
-                                }),
-                        (Object o, RxEvent.UnBindDeviceEvent unbindEvent) -> {
-                            mView.unbindDeviceRsp(0);//成功
-                            DataSourceManager.getInstance().delLocalJFGDevice(mUUID);
-                            return null;
-                        })
-                .subscribe());
+                .subscribe(rsp -> mView.unbindDeviceRsp(rsp.getResultCode()), e -> {
+                    if (e instanceof TimeoutException) {
+                        mView.unbindDeviceRsp(-1);
+                    }
+                    AppLogger.d(e.getMessage());
+                    e.printStackTrace();
+                }, () -> {
+                });
+        registerSubscription(subscribe);
     }
 
     @Override

@@ -43,5 +43,4 @@ public interface DBOption {
             this.flag = flag;
         }
     }
-
 }
