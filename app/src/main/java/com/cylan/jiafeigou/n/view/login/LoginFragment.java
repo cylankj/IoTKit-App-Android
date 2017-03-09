@@ -434,14 +434,14 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                OpenLoginHelper.getInstance().loginAuthorize(getActivity(),3);
+                OpenLoginHelper.getInstance(getActivity()).loginAuthorize(3);
                 break;
             case R.id.tv_xlLogin_commit:
                 if (TextUtils.equals(NetUtils.getNetName(getActivity()), "offLine") || NetUtils.getJfgNetType(getActivity()) == -1) {
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                OpenLoginHelper.getInstance().loginAuthorize(getActivity(),4);
+                OpenLoginHelper.getInstance(getActivity()).loginAuthorize(4);
                 break;
             case R.id.tv_toolbar_icon:
                 if (getActivity() != null && getActivity() instanceof SmartcallActivity) {
@@ -461,11 +461,11 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             }
             break;
             case R.id.tv_twitterLogin_commit:
-                OpenLoginHelper.getInstance().loginAuthorize(getActivity(),6);
+                OpenLoginHelper.getInstance(getActivity()).loginAuthorize(6);
                 break;
 
             case R.id.tv_facebookLogin_commit:
-                OpenLoginHelper.getInstance().loginAuthorize(getActivity(),7);
+                OpenLoginHelper.getInstance(getActivity()).loginAuthorize(7);
                 break;
         }
     }
@@ -616,7 +616,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             } else if (code == JError.ErrorLoginInvalidPass) {
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
             } else if (code == 162) {
-                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
+                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR)+":162");
             } else if (code == JError.ErrorConnect) {
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             }
@@ -845,7 +845,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 验证码输入框
-     *
      * @param show
      */
     private void handleVerificationCodeBox(boolean show) {
@@ -996,6 +995,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             if (this.viewWeakReference.get() != null) {
                 this.viewWeakReference.get().setText("");
             }
+
         }
 
         public void reset() {
@@ -1034,15 +1034,17 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        AppLogger.d("resultCode:"+requestCode+data.toString());
         SsoHandler sinaCallBack = SinaLogin.getInstance(getActivity()).mSsoHandler;
+
         if (sinaCallBack != null) {
             sinaCallBack.authorizeCallBack(requestCode, resultCode, data);
+            return;
         }
 
         if (requestCode == Constants.REQUEST_LOGIN ||
                 requestCode == Constants.REQUEST_APPBAR) {
-            Tencent.onActivityResultData(requestCode, resultCode, data, TencentInstance.getInstance().listener);
+            Tencent.onActivityResultData(requestCode, resultCode, data, TencentInstance.getInstance(getActivity()).listener);
+            return;
         }
 
         TwitterAuthClient twitterBack = TwitterInstance.getInstance().twitterAuthClient;
@@ -1056,4 +1058,5 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
 }

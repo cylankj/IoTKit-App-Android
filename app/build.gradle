@@ -191,18 +191,18 @@ dependencies {
     compile rootProject.ext.permis
     annotationProcessor rootProject.ext.permisApt
     //    compile project(':jlib')
-//    compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
+    //    compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
     //    compile files('libs/gson-2.2.4.jar')
-//    compile files('libs/mid-sdk-2.3.jar')
-//    compile files('libs/mta-android-stat-sdk-2.2.0.jar')
-//    compile files('libs/nineoldandroids-2.4.0.jar')
+    //    compile files('libs/mid-sdk-2.3.jar')
+    //    compile files('libs/mta-android-stat-sdk-2.2.0.jar')
+    //    compile files('libs/nineoldandroids-2.4.0.jar')
     //    compile files('libs/okhttp-3.2.0.jar')
     //    compile files('libs/okio-1.6.0.jar')
-//    compile files('libs/open_sdk_r5756.jar')
-//    compile files('libs/weiboSDKCore_3.1.4.jar')
-//    compile files('libs/zxing.jar')
-//    compile files('libs/zbar.jar')
-//    compile files('libs/libammsdk-3.1.1.jar')
+    //    compile files('libs/open_sdk_r5756.jar')
+    //    compile files('libs/weiboSDKCore_3.1.4.jar')
+    //    compile files('libs/zxing.jar')
+    //    compile files('libs/zbar.jar')
+    //    compile files('libs/libammsdk-3.1.1.jar')
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
     compile rootProject.ext.buglySdk
@@ -239,7 +239,7 @@ dependencies {
     annotationProcessor 'com.cylan.ext:processor:0.1.0'
     debugCompile 'com.cylan.ext:optdebug:0.0.1'
     releaseCompile 'com.cylan.ext:optdebug:0.0.1'
-//    releaseCompile 'com.cylan.ext:optrelease:0.0.1'
+    //    releaseCompile 'com.cylan.ext:optrelease:0.0.1'
     //渠道包
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
     // twitter
@@ -254,8 +254,8 @@ dependencies {
         transitive = true
     }
     compile 'org.greenrobot:greendao:3.2.0'
-
     compile(name: rootProject.ext.cySdk, ext: 'aar')
     //aar通用依赖，不需要指定名字
+    compile files('libs/open_sdk_r5781.jar')
 }
 

@@ -59,7 +59,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
                         if (o.loginType) {
-                            JfgCmdInsurance.getCmd().openLogin(o.userName,o.pwd, o.openLoginType);
+                            JfgCmdInsurance.getCmd().openLogin(o.pwd,o.userName,o.openLoginType);
                         } else {
                             JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
                             //账号和密码
@@ -81,19 +81,18 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
      * 登录结果
      * @return
      */
-    private Observable<RxEvent.ResultLogin> loginResultObservable() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class);
+    private Observable<RxEvent.UserResultLogin> loginResultObservable() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.UserResultLogin.class);
     }
 
     @Override
     public void executeLogin(final LoginAccountBean login) {
         //加入
         Observable.zip(loginObservable(login), loginResultObservable(),
-                (Object o, RxEvent.ResultLogin resultLogin) -> {
+                (Object o, RxEvent.UserResultLogin resultLogin) -> {
                     Log.d("CYLAN_TAG", "login: " + resultLogin);
                     return resultLogin;
                 })
-                .filter(resultAutoLogin1 -> resultAutoLogin1.code != JError.StartLoginPage)
                 .timeout(30 * 1000L, TimeUnit.SECONDS, Observable.just(null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map((Object o) -> {
@@ -104,7 +103,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribeOn(Schedulers.io())
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.ResultLogin o) -> {
+                .subscribe((RxEvent.UserResultLogin o) -> {
                     Log.d("CYLAN_TAG", "login subscribe: " + o);
                     if (getView() != null) getView().loginResult(o.code);
                 }, throwable -> {

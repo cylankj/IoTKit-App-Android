@@ -270,6 +270,7 @@ public class DataSource implements AppCallBack {
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
+                RxBus.getCacheInstance().post(new RxEvent.UserResultLogin(jfgResult.code));
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备

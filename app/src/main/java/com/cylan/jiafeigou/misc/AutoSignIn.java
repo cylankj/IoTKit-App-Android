@@ -1,9 +1,11 @@
 package com.cylan.jiafeigou.misc;
 
+import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.facebook.FacebookInstance;
@@ -128,8 +130,11 @@ public class AutoSignIn {
                                     else if (signType.type >= 3) {
                                         //效验本地token是否过期
                                         if(checkTokenOut(signType.type)){
+                                            AppLogger.d("isout:ee");
+                                            autoSave(signType.account,1,"");
                                             return Observable.just(-1);
                                         }else {
+                                            AppLogger.d("isout:no");
                                             JfgCmdInsurance.getCmd().openLogin(signType.account, finalPwd, signType.type);
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         }
@@ -153,20 +158,21 @@ public class AutoSignIn {
         boolean isOut = true;
         switch (type){
             case 3:
-                isOut = !TencentInstance.getInstance().mTencent.isSessionValid();
+                isOut = !TencentInstance.getInstance((Activity) ContextUtils.getContext()).mTencent.isSessionValid();
+                AppLogger.d("isout:"+isOut);
                 break;
             case 4:
                 Oauth2AccessToken oauth2AccessToken = AccessTokenKeeper.readAccessToken(ContextUtils.getContext());
                 isOut = !(oauth2AccessToken != null && oauth2AccessToken.isSessionValid());
                 break;
             case 6:
-//                TwitterSession activeSession = Twitter.getSessionManager().getActiveSession();
-//                TwitterAuthToken authToken = activeSession.getAuthToken();
-//                if (authToken != null)
-//                isOut = !authToken.isExpired();
+                TwitterSession activeSession = Twitter.getSessionManager().getActiveSession();
+                TwitterAuthToken authToken = activeSession.getAuthToken();
+                if (authToken != null)
+                isOut = !authToken.isExpired();
                 break;
             case 7:
-//                isOut = !AccessToken.getCurrentAccessToken().isExpired();
+                isOut = !AccessToken.getCurrentAccessToken().isExpired();
                 break;
         }
         return isOut;
