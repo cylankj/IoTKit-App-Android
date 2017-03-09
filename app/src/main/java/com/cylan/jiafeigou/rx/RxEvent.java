@@ -359,6 +359,14 @@ public class RxEvent {
         }
     }
 
+    public static final class DeviceUnBindedEvent {
+        public String uuid;
+
+        public DeviceUnBindedEvent(String uuid) {
+            this.uuid = uuid;
+        }
+    }
+
     /**
      * 检验邮箱是否注册过回调
      */
@@ -797,6 +805,8 @@ public class RxEvent {
         public ThirdLoginTab(boolean isThird) {
             this.isThird = isThird;
         }
+    }
 
+    public static class ShowWonderPageEvent {
     }
 }

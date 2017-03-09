@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.engine;
 import android.content.Context;
 import android.os.Process;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -30,7 +29,6 @@ import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -52,7 +50,6 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -64,6 +61,7 @@ public class DataSource implements AppCallBack {
     }
 
     private static DataSource instance;
+    private static DataSourceManager manager;
 
     private DataSource() {
     }
@@ -73,6 +71,7 @@ public class DataSource implements AppCallBack {
             synchronized (DataSource.class) {
                 if (instance == null)
                     instance = new DataSource();
+                manager = DataSourceManager.getInstance();
             }
         }
         return instance;
@@ -116,30 +115,27 @@ public class DataSource implements AppCallBack {
 
     private void try2autoLogin() {
         AutoSignIn.getInstance().autoLogin()
-                .flatMap(new Func1<Integer, Observable<?>>() {
-                    @Override
-                    public Observable<?> call(Integer integer) {
-                        if(integer==0)
+                .flatMap(integer -> {
+                    if (integer == 0)
                         RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                                 .subscribeOn(Schedulers.newThread())
-                                .timeout(5, TimeUnit.SECONDS,Observable.just("autoSign in timeout")
+                                .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
                                         .observeOn(AndroidSchedulers.mainThread())
-                                        .map(s->{
-                                            AppLogger.d("net type: "+ NetUtils.getNetType(ContextUtils.getContext()));
-                                            if (NetUtils.getNetType(ContextUtils.getContext()) == -1){
+                                        .map(s -> {
+                                            AppLogger.d("net type: " + NetUtils.getNetType(ContextUtils.getContext()));
+                                            if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
                                                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.NoNet));
-                                            }else {
+                                            } else {
                                                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
                                             }
                                             return null;
                                         }))
                                 .subscribe();
-                        else if(integer==-1){
-                            //emit failed event.
-                            RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
-                        }
-                        return null;
+                    else if (integer == -1) {
+                        //emit failed event.
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                     }
+                    return null;
                 })
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe();
@@ -162,19 +158,13 @@ public class DataSource implements AppCallBack {
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
-        BaseDBHelper.getInstance().updateDevice(jfgDevices)
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .subscribe();
+
     }
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
-        BaseDBHelper.getInstance().updateAccount(jfgAccount)
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .subscribe(account -> {
-                    RxBus.getCacheInstance().post(jfgAccount);
-                });
+
         AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
     }
 
@@ -271,6 +261,7 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnResult(JFGResult jfgResult) {
+        RxBus.getCacheInstance().post(jfgResult);
         boolean login = false;
         switch (jfgResult.event) {
             case 0:

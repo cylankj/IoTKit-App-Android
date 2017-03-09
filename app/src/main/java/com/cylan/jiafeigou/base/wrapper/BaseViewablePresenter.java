@@ -108,6 +108,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         registerSubscription(subscribe);
     }
 
+    public void cancelViewer() {
+        stopViewer().subscribe();
+    }
+
     /**
      * stopViewer是被动的,dismiss是主动的,即stop虽然停止了直播,但不会清除播放状态
      * 这样当我们onPause时停止直播后可以在onResume中进行恢复,dismiss不仅会停止直播

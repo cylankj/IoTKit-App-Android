@@ -5,7 +5,7 @@ package com.cylan.jiafeigou.cache.db.view;
  */
 
 public enum DBState {
-    SUCCESS, NOT_CONFIRM, ACTIVE;
+    SUCCESS, NOT_CONFIRM, ACTIVE, FAILED;
 
     public String state() {
         return name();

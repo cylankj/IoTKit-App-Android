@@ -120,7 +120,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
         enableDebugOptions();
         MtaManager.init(getApplicationContext(), true);
         //每一个新的进程启动时，都会调用onCreate方法。
-        DataSource.getInstance().onCreate();
         initBlockCanary();
         initBugMonitor();
         registerBootComplete();

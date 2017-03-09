@@ -55,6 +55,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscription;
 
 public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeContract.Presenter>
         implements DoorBellHomeContract.View,
@@ -95,13 +96,14 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private boolean mIsShardAccount = false;
     private long mLastEnterTime;
     private boolean mHasLoadInitFinished = false;
-
+    private Subscription pageSub;
 
     @Override
     protected void initViewAndListener() {
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
         cvBellHomeBackground.setActionInterface(this);
         initAdapter();
+//        pageSub = getShowWonderPageSub();
     }
 
     @Override
@@ -130,6 +132,15 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     protected DoorBellHomeContract.Presenter onCreatePresenter() {
         return new DBellHomePresenterImpl();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pageSub != null && pageSub.isUnsubscribed()) {
+            pageSub.unsubscribe();
+            pageSub = null;
+        }
     }
 
     @Override
@@ -167,6 +178,15 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             }
         });
     }
+
+//    private Subscription getShowWonderPageSub() {
+////        return RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
+////                .subscribeOn(Schedulers.io())
+////                .observeOn(AndroidSchedulers.mainThread())
+////                .subscribe(event -> {
+////                    finish();
+////                });
+//    }
 
     private void startLoadData(boolean asc, long version) {
         LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false);
@@ -298,6 +318,16 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onBellRecordCleared() {
         bellCallRecordListAdapter.clear();
         mEmptyView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onDeviceUnBind() {
+        finish();
+    }
+
+    @Override
+    public void onFinish() {
+        finish();
     }
 
 

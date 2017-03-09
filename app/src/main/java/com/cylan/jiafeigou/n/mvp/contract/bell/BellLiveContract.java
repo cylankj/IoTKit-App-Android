@@ -20,6 +20,8 @@ public interface BellLiveContract {
         void onTakeSnapShotSuccess(Bitmap bitmap);
 
         void onTakeSnapShotFailed();
+
+        void onDeviceUnBind();
     }
 
     interface Presenter extends CallablePresenter {

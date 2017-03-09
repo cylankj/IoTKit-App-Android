@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
+import android.text.TextUtils;
+
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -57,13 +59,27 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         }
     }
 
+    private Subscription getDeviceUnBindSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(event -> TextUtils.equals(event.uuid, mUUID))
+                .subscribe(event -> {
+                    mView.onDeviceUnBind();
+                }, Throwable::printStackTrace);
+    }
 
     @Override
     public void onStart() {
         super.onStart();
         JFGDoorBellDevice device = mSourceManager.getJFGDevice(mUUID);
-        mView.onShowProperty(device);
-        registerSubscription(getClearDataSub());
+        if (device == null) {
+            mView.onDeviceUnBind();
+        } else {
+            mView.onShowProperty(device);
+            registerSubscription(getClearDataSub());
+
+        }
     }
 
     private Subscription getClearDataSub() {

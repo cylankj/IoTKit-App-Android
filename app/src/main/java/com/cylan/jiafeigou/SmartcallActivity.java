@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.engine.DataSource;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
@@ -70,6 +71,12 @@ public class SmartcallActivity extends NeedLoginActivity
         ButterKnife.bind(this);
         initPresenter();
         fullScreen(true);
+        if (!getIntent().getBooleanExtra("from_log_out", false)) {
+            if (presenter != null) presenter.start();
+        } else {
+            splashOver();
+        }
+        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
     /**
@@ -194,13 +201,13 @@ public class SmartcallActivity extends NeedLoginActivity
                 startActivity(new Intent(this, NewHomeActivity.class));
             }
             finish();
-        }else if(code == JError.StartLoginPage && !frist){
+        } else if (code == JError.StartLoginPage && !frist) {
             splashOver();
             RxBus.getCacheInstance().removeStickyEvent(RxEvent.ResultLogin.class);
             frist = true;
-        }else if (code == JError.ErrorAccountNotExist){
+        } else if (code == JError.ErrorAccountNotExist) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
-        }else if (code == JError.ErrorLoginInvalidPass){
+        } else if (code == JError.ErrorLoginInvalidPass) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
         }
     }
@@ -247,6 +254,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void showWriteStoragePermissions() {
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
+        DataSource.getInstance().onCreate();
     }
 
     @NeedsPermission({Manifest.permission.READ_PHONE_STATE})

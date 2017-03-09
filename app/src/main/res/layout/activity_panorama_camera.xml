@@ -103,7 +103,7 @@
                 android:id="@+id/act_panorama_camera_banner_bad_net_work"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y42"
-                android:background="#FFFCE1"
+                android:background="#FFFFFCE1"
                 android:visibility="invisible">
 
                 <ImageView

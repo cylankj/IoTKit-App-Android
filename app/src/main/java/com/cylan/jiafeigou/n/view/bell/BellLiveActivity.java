@@ -13,6 +13,7 @@ import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ScaleGestureDetector;
@@ -30,6 +31,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -469,6 +471,21 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onTakeSnapShotFailed() {
         ToastUtil.showPositiveToast(getString(R.string.set_failed));
+    }
+
+    @Override
+    public void onDeviceUnBind() {
+        AppLogger.d("当前设备已解绑");
+        mPresenter.cancelViewer();
+        new AlertDialog.Builder(this).setCancelable(false)
+                .setPositiveButton(getString(R.string.OK), (dialog, which) -> {
+                    finish();
+                    Intent intent = new Intent(this, NewHomeActivity.class);
+                    startActivity(intent);
+                })
+                .setMessage(getString(R.string.DEVICE_UNBINDED))
+                .show();
+
     }
 
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
