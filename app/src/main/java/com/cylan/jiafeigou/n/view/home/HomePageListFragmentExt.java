@@ -28,12 +28,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
@@ -49,7 +48,6 @@ import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -57,7 +55,6 @@ import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -127,13 +124,18 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (basePresenter != null) {
+            basePresenter.fetchDeviceList(false);
+        }
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
-        if (basePresenter != null) {
-            basePresenter.fetchDeviceList(false);
-        }
     }
 
     @Override
@@ -306,7 +308,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @UiThread
     @Override
-    public void onItemsInsert(List<String> resultList) {
+    public void onItemsInsert(List<JFGDevice> resultList) {
         homePageListAdapter.clear();//暴力刷新,设备没几个,没关系.
         homePageListAdapter.addAll(resultList);
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
@@ -391,8 +393,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onRefreshFinish() {
-        Log.d("refresh", "refresh:end ");
-        srLayoutMainContentHolder.setRefreshing(false);
+        srLayoutMainContentHolder.postDelayed(() -> srLayoutMainContentHolder.setRefreshing(false), 50);
+        AppLogger.d("stop refreshing ui");
     }
 
 //    @Override
@@ -428,30 +430,25 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             homePageListAdapter.notifyDataSetChanged();
             return;
         }
-        String uuid = homePageListAdapter.getItem(position);
-        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        if (device == null) {
-            Log.d("CYLAN_TAG", "devices is null:" + DataSourceManager.getInstance().getAllJFGDevice());
-        }
-        int pid = device == null ? 0 : device.pid;
-        if (uuid != null) {
+        JFGDevice device = homePageListAdapter.getItem(position);
+        if (!TextUtils.isEmpty(device.uuid)) {
             Bundle bundle = new Bundle();
-            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-            if (JFGRules.isCamera(pid)) {
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
+            if (JFGRules.isCamera(device.pid)) {
                 startActivity(new Intent(getActivity(), CameraLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
-            } else if (JConstant.isMag(pid)) {
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+            } else if (JConstant.isMag(device.pid)) {
                 startActivity(new Intent(getActivity(), MagLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
-            } else if (JConstant.isBell(pid)) {
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+            } else if (JConstant.isBell(device.pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid).putExtra("HasNewMsg", true));
-            } else if (JConstant.isEFamily(pid)) {
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid).putExtra("HasNewMsg", true));
+            } else if (JConstant.isEFamily(device.pid)) {
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             } else {
                 homePageListAdapter.notifyDataSetChanged();
-                AppLogger.e("dis match pid pid: " + pid);
+                AppLogger.e("dis match pid pid: " + device.pid);
             }
         }
     }
@@ -483,11 +480,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
             return;
         }
-        String deleteUUID = homePageListAdapter.getItem((Integer) value);
-        homePageListAdapter.remove((Integer) value);
+//        String deleteUUID = homePageListAdapter.getItem((Integer) value);
+//        homePageListAdapter.remove((Integer) value);
         //刷新需要剩下的item
-        emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
-        srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
+//        emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
+//        srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
 //        basePresenter.unBindDevReq(deleteUUID);
     }
 

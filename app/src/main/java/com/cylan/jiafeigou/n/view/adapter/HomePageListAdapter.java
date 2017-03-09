@@ -6,6 +6,7 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
@@ -18,7 +19,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.ImageViewTip;
@@ -33,12 +33,12 @@ import static android.view.View.VISIBLE;
  * Created by hunt on 16-5-24.
  */
 
-public class HomePageListAdapter extends SuperAdapter<String> {
+public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
 
     private DeviceItemClickListener deviceItemClickListener;
     private DeviceItemLongClickListener deviceItemLongClickListener;
 
-    public HomePageListAdapter(Context context, List<String> items, IMulItemViewType<String> mulItemViewType) {
+    public HomePageListAdapter(Context context, List<JFGDevice> items, IMulItemViewType<JFGDevice> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
@@ -51,7 +51,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
     }
 
     @Override
-    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, String item) {
+    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, JFGDevice item) {
         holder.setOnClickListener(R.id.rLayout_device_item, deviceItemClickListener);
         holder.setOnLongClickListener(R.id.rLayout_device_item, deviceItemLongClickListener);
         handleState(holder, item);
@@ -78,7 +78,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
             }
         }
         //2 电量
-        if (JFGRules.isBell(pid)) {
+        if (JFGRules.isBell(device.pid)) {
             DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
             if (battery != null && battery.value != null && battery.value <= 20 && (net != null && net.net >= 1)) {//在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
@@ -92,7 +92,7 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         boolean s = MiscUtils.safeGet(standby, false);
         DpMsgDefine.DPPrimary<Boolean> dpSafe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
         boolean safe = MiscUtils.safeGet(dpSafe, false);
-        if (s && safe && JFGRules.isCamera(pid)) {
+        if (s && safe && JFGRules.isCamera(device.pid)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {
@@ -118,17 +118,16 @@ public class HomePageListAdapter extends SuperAdapter<String> {
      * |NET_5G      |  5 | #5G网络  |
      */
 
-    private void handleState(SuperViewHolder holder, String uuid) {
+    private void handleState(SuperViewHolder holder, JFGDevice device) {
+        String uuid = device.uuid;
         DpMsgDefine.DPNet net = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
-        JFGDPDevice device = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getJFGDevice(uuid);
-        int pid = device == null ? 0 : device.pid;
-        String alias = device == null ? "" : device.alias;
-        String shareAccount = device == null ? "" : device.shareAccount;
-        final int onLineState = net != null ? net.net : (pid == JConstant.OS_MAGNET ? 1 : 0);
-//        final int deviceType = bean.pid;
+        String alias = device.alias;
+        String shareAccount = device.shareAccount;
+        final int onLineState = net != null ? net.net : (device.pid == JConstant.OS_MAGNET ? 1 : 0);
+//        final int deviceType = bean.device.pid;
         Log.d("handleState", "handleState: " + uuid + " " + net);
-        int online = JConstant.getOnlineIcon(pid);
-        int offline = JConstant.getOfflineIcon(pid);
+        int online = JConstant.getOnlineIcon(device.pid);
+        int offline = JConstant.getOfflineIcon(device.pid);
         int iconRes = (onLineState != 0 && onLineState != -1) ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));
@@ -138,10 +137,10 @@ public class HomePageListAdapter extends SuperAdapter<String> {
         //图标
         holder.setBackgroundResource(R.id.img_device_icon, iconRes);
         if (TextUtils.isEmpty(shareAccount))//被分享用户,不显示 消息数
-            handleMsgCountTime(holder, uuid, pid);
+            handleMsgCountTime(holder, uuid, device.pid);
         //右下角状态
-        setItemState(holder, uuid, pid, shareAccount, net);
-        AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,pid:%s", uuid, pid));
+        setItemState(holder, uuid, device.pid, shareAccount, net);
+        AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,device.pid:%s", uuid, device.pid));
     }
 
     private String getAlias(String uuid, String alias) {
@@ -152,28 +151,13 @@ public class HomePageListAdapter extends SuperAdapter<String> {
     }
 
     private void handleMsgCountTime(SuperViewHolder holder, String uuid, int pid) {
-        Pair<Integer, DataPoint> msgCountPair = getPair(uuid);
-        final int msgCount = msgCountPair == null ? 0 : msgCountPair.first;
-        long time = msgCountPair == null || msgCountPair.second == null
-                ? 0 : msgCountPair.second.version;
+        Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息");
+
         //消息数
-        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(msgCountPair, pid));
+        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(null, pid));
         //时间
-        holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), time));
-        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(msgCount > 0);
-    }
-
-    /**
-     * 未读消息，本地version游标。
-     */
-    private long localUnreadCursor;
-
-    private Pair<Integer, DataPoint> getPair(String uuid) {
-        List<DataPoint> _505List = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getValueBetween(uuid, DpMsgMap.ID_505_CAMERA_ALARM_MSG, localUnreadCursor, System.currentTimeMillis());
-        List<DataPoint> _222List = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getValueBetween(uuid, DpMsgMap.ID_222_SDCARD_SUMMARY, localUnreadCursor, System.currentTimeMillis());
-        int count = ListUtils.getSize(_505List) + ListUtils.getSize(_222List);
-
-        return null;
+        holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), 0));
+        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(false);
     }
 
 
@@ -191,15 +175,15 @@ public class HomePageListAdapter extends SuperAdapter<String> {
     }
 
     @Override
-    protected IMulItemViewType<String> offerMultiItemViewType() {
-        return new IMulItemViewType<String>() {
+    protected IMulItemViewType<JFGDevice> offerMultiItemViewType() {
+        return new IMulItemViewType<JFGDevice>() {
             @Override
             public int getViewTypeCount() {
                 return 1;
             }
 
             @Override
-            public int getItemViewType(int position, String uuid) {
+            public int getItemViewType(int position, JFGDevice item) {
                 return 0;
             }
 

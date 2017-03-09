@@ -74,7 +74,11 @@ public class DataSourceManager implements JFGSourceManager {
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
     private Map<String, JFGDPDevice> mCachedDeviceMap = new HashMap<>();//和uuid相关的数据缓存
-    private HashMap<String, JFGDevice> mRawDeviceMap = new HashMap<>();//和uuid相关的数据缓存
+    private final Object updateListLock = new Object();
+    /**
+     * 服务器发回来有序的设备列表
+     */
+    private ArrayList<JFGDevice> mRawDeviceList = new ArrayList<>();//和uuid相关的数据缓存
     private JFGDPAccount mJFGAccount;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
@@ -172,7 +176,11 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public JFGDevice getRawJFGDevice(String uuid) {
-        return mRawDeviceMap.get(uuid);
+        if (mRawDeviceList != null)
+            for (JFGDevice device : mRawDeviceList)
+                if (TextUtils.equals(uuid, device.uuid))
+                    return device;
+        return null;
     }
 
     @Override
@@ -184,27 +192,37 @@ public class DataSourceManager implements JFGSourceManager {
         return getValueWithAccountCheck(result);
     }
 
+    /**
+     * 设备列表是有序的。按照服务端发回来的顺序
+     *
+     * @return
+     */
     @Override
-    public HashMap<String, JFGDevice> getAllRawJFGDeviceMap() {
-        return mRawDeviceMap;
+    public ArrayList<JFGDevice> getAllRawJFGDeviceList() {
+        return mRawDeviceList;
     }
 
     @Override
     public boolean updateRawDevice(JFGDevice device) {
-        JFGDevice temp = mRawDeviceMap.get(device.uuid);
-        if (temp != null) {
-            //先删除
-            mRawDeviceMap.remove(device.uuid);
-            if (BuildConfig.DEBUG) AppLogger.i("更新设备属性");
-            return mRawDeviceMap.put(device.uuid, device) != null;
+        synchronized (updateListLock) {
+            JFGDevice temp = getRawJFGDevice(device.uuid);
+            if (temp != null) {
+                //先删除
+                int index = mRawDeviceList.indexOf(temp);
+                if (BuildConfig.DEBUG) AppLogger.i("更新设备属性: " + index);
+                if (index > 0) {
+                    mRawDeviceList.set(index, device);
+                    return true;
+                }
+            }
+            return false;
         }
-        return false;
     }
 
     @Override
     public boolean delLocalJFGDevice(String uuid) {
         boolean result = mCachedDeviceMap.remove(uuid) != null;
-        mRawDeviceMap.remove(uuid);
+        mRawDeviceList.remove(uuid);
         AppLogger.d("unbind dev: " + result + " " + uuid);
         return result;
     }
@@ -246,11 +264,11 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
-        mRawDeviceMap.clear();
+        mRawDeviceList.clear();
         mCachedDeviceMap.clear();//这个 cache 方法是通过SDK调用的调用到这里说明当前已经是有网状态,则清空之前的数据
         for (com.cylan.entity.jniCall.JFGDevice device : devices) {
             Log.d("uuid", "uuid: " + new Gson().toJson(device));
-            mRawDeviceMap.put(device.uuid, device);
+            mRawDeviceList.add(device);
             JFGDPDevice temp = mCachedDeviceMap.get(device.uuid);
             if (temp != null) {//已经存在了,则更新即可
                 temp.setDevice(device);
