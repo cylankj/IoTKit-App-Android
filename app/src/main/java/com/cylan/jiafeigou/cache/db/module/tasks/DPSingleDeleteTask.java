@@ -19,13 +19,14 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        return mDPHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(),null)
+        return mDPHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
                 .map(dpEntity -> new BaseDPTaskResult().setResultCode(0).setResultResponse(dpEntity));
     }
 
     @Override
     public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            AppLogger.d("正在执行删除任务,uuid:" + entity.getUuid() + ",msgId:" + entity.getMsgId() + ",version:" + entity.getVersion() + ",option:" + entity.action());
             ArrayList<JFGDPMsg> params = new ArrayList<>();
             JFGDPMsg msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
             params.add(msg);
@@ -33,7 +34,6 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
                 long seq = JfgCmdInsurance.getCmd().robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
-                AppLogger.d("正在执行删除任务,uuid:" + entity.getUuid() + ",msgId:" + entity.getMsgId() + ",version:" + entity.getVersion() + ",option:" + entity.action() + ",state:" + entity.state());
             } catch (JfgException e) {
                 e.printStackTrace();
                 subscriber.onCompleted();
@@ -42,7 +42,14 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
         })
                 .subscribeOn(Schedulers.io())
                 .flatMap(this::makeDeleteDataRspResponse)
-                .flatMap(rsp -> mDPHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(),null)
-                        .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(cache)));
+                .flatMap(rsp -> {
+                            if (rsp.resultCode == 0) {
+                                return mDPHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
+                                        .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(rsp));
+                            } else {
+                                return Observable.just(new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(rsp));
+                            }
+                        }
+                );
     }
 }

@@ -29,6 +29,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
  */
 
 public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
+
     @Ignore
     private boolean isNull = false;
     @Ignore

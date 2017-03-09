@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.bind.BindCameraFragment;
 import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
+import com.cylan.jiafeigou.n.view.bind.BindPanoramaCamera;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -110,7 +111,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         popAllFragmentStack();
     }
 
-    @OnClick({R.id.v_to_scan_qrcode, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell})
+    @OnClick({R.id.v_to_scan_qrcode, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell, R.id.v_to_bind_panorama_camera})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.v_to_scan_qrcode: {
@@ -126,6 +127,10 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             }
             case R.id.v_to_bind_camera: {
                 jump2Cam(true);
+                break;
+            }
+            case R.id.v_to_bind_panorama_camera: {
+                jump2PanoramaCam(true);
                 break;
             }
             case R.id.v_to_bind_doorbell: {
@@ -155,6 +160,27 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                             , R.anim.slide_in_left, R.anim.slide_out_right)
                     .add(android.R.id.content, fragment)
                     .addToBackStack("BindCameraFragment")
+                    .commit();
+        } else {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .add(android.R.id.content, fragment)
+//                    .addToBackStack("BindCameraFragment")
+                    .commit();
+        }
+    }
+
+    private void jump2PanoramaCam(boolean animation) {
+        ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_panorama_camera));
+        Bundle bundle = new Bundle();
+        BindPanoramaCamera fragment = BindPanoramaCamera.newInstance(bundle);
+        if (animation) {
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, fragment)
+                    .addToBackStack("BindPanoramaCameraFragment")
                     .commit();
         } else {
             getSupportFragmentManager()

@@ -27,6 +27,8 @@ public interface DoorBellHomeContract {
         void onDeleteBellRecordSuccess(List<BellCallRecordBean> list);
 
         void onDeleteBellCallRecordFailed();
+
+        void onBellRecordCleared();
     }
 
     interface Presenter extends JFGPresenter {

@@ -294,6 +294,12 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         ToastUtil.showNegativeToast("刪除失敗");
     }
 
+    @Override
+    public void onBellRecordCleared() {
+        bellCallRecordListAdapter.clear();
+        mEmptyView.setVisibility(View.VISIBLE);
+    }
+
 
     @Override
     public boolean onLongClick(View v) {

@@ -71,19 +71,24 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
-        return markDPMsg(getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option).filter(items -> items != null && items.size() == 1).map(items -> items.get(0));
+        return markDPMsg(getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option).map(items -> items == null ? null : items.get(0));
     }
 
     @Override
     public Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
-        return markDPMsg(getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.SUCCESS, option).filter(items -> items != null && items.size() == 1).map(items -> items.get(0));
+        return markDPMsg(getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.SUCCESS, option).map(items -> items == null ? null : items.get(0));
     }
 
     @Override
-    public Observable<Boolean> deleteDPMsgWithConfirm(String uuid, Integer msgId, DBOption option) {
+    public Observable<List<DPEntity>> deleteDPMsgWithConfirm(String uuid, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",msgId:" + msgId);
-        return markDPMsg(getAccount(), getServer(), uuid, null, msgId, DBAction.DELETED, DBState.SUCCESS, option).map(item -> true);
+        return markDPMsg(getAccount(), getServer(), uuid, null, msgId, DBAction.DELETED, DBState.SUCCESS, option);
+    }
+
+    @Override
+    public Observable<List<DPEntity>> deleteDPMsgNotConfirm(String uuid, Integer msgId, DBOption option) {
+        return markDPMsg(getAccount(), getServer(), uuid, null, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option);
     }
 
     @Override
@@ -305,6 +310,11 @@ public class BaseDBHelper implements IDBHelper {
                 builder.where(DPEntityDao.Properties.Action.eq(action.action()));
             } else if (action.op() == DBAction.OP.NOT_EQ) {
                 builder.where(DPEntityDao.Properties.Action.notEq(action.action()));
+            } else if (action.op() == DBAction.OP.NOT_EQS) {
+                String[] actions = action.action().split(",");
+                for (String act : actions) {
+                    builder.where(DPEntityDao.Properties.Action.notEq(act));
+                }
             }
         }
 

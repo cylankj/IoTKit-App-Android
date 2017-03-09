@@ -310,7 +310,7 @@ public class DataSource implements AppCallBack {
     @Override
     public void OnOtherClientAnswerCall() {
         AppLogger.d("OnOtherClientAnswerCall");
-        RxBus.getCacheInstance().post(new RxEvent.CallAnswered(false));
+        RxBus.getCacheInstance().post(new RxEvent.CallResponse(false));
     }
 
     @Override

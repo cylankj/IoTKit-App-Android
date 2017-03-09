@@ -49,19 +49,13 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
                 .subscribe(new Subscriber<DPEntity>() {
                     @Override
                     public void onCompleted() {
-
                     }
-
                     @Override
-                    public void onError(Throwable e) {
-
-                    }
-
+                    public void onError(Throwable e) {}
                     @Override
                     public void onStart() {
                         request(1);
                     }
-
                     @Override
                     public void onNext(DPEntity entity) {
                         BaseDPTaskFactory.getInstance().getTask(entity.action(), false, entity).performServer().subscribe(result -> request(1), e -> request(1));

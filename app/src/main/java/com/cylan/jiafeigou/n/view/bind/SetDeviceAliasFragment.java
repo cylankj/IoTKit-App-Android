@@ -78,7 +78,13 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 //        super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
+        String alias = bundle.getString(JConstant.KEY_BIND_DEVICE_ALIAS);
+        if (!TextUtils.isEmpty(alias)) {
+            etInputBox.setHint(alias);
+            return;
+        }
         String type = bundle.getString(JConstant.KEY_BIND_DEVICE);
+
         if (!TextUtils.isEmpty(type)) {
             etInputBox.setHint(type);
         }

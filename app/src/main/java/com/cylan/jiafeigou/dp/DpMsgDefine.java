@@ -27,6 +27,15 @@ public class DpMsgDefine {
 
     @Message
     public static final class DPNet extends DPSingle<DPNet> {
+
+        public static final DPNet EMPTY;
+
+        static {
+            EMPTY = new DPNet();
+            EMPTY.net = 0;
+            EMPTY.ssid = "";
+        }
+
         /**
          * |NET_CONNECT | -1 | #绑定后的连接中 |
          * |NET_OFFLINE |  0 | #不在线 |
@@ -40,6 +49,7 @@ public class DpMsgDefine {
         public int net;
         @Index(1)
         public String ssid;
+
 
         @Override
         public String toString() {
@@ -122,6 +132,15 @@ public class DpMsgDefine {
 
     @Message
     public static final class DPTimeZone extends DPSingle<DPTimeZone> {
+
+        public static final DPTimeZone EMPTY;
+
+        static {
+            EMPTY = new DPTimeZone();
+            EMPTY.timezone = "";
+            EMPTY.offset = 0;
+        }
+
         @Index(0)
         public String timezone;
         @Index(1)
@@ -179,6 +198,13 @@ public class DpMsgDefine {
 
     @Message
     public static final class DPBindLog extends DPSingle<DPBindLog> {
+
+        public static final DPBindLog EMPTY;
+
+        static {
+            EMPTY = new DPBindLog();
+        }
+
         @Index(0)
         public boolean isBind;
         @Index(1)

@@ -11,6 +11,8 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -61,6 +63,17 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         super.onStart();
         JFGDoorBellDevice device = mSourceManager.getJFGDevice(mUUID);
         mView.onShowProperty(device);
+        registerSubscription(getClearDataSub());
+    }
+
+    private Subscription getClearDataSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ClearDataEvent.class)
+                .filter(event -> event.msgId == DpMsgMap.ID_401_BELL_CALL_STATE)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> {
+                    mView.onBellRecordCleared();
+                    mRecords.clear();
+                });
     }
 
     @Override
