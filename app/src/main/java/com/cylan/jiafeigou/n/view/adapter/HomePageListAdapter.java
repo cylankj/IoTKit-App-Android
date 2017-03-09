@@ -52,6 +52,7 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, JFGDevice item) {
         holder.setOnClickListener(R.id.rLayout_device_item, deviceItemClickListener);
+        holder.setTag(R.id.rLayout_device_item, layoutPosition);
         holder.setOnLongClickListener(R.id.rLayout_device_item, deviceItemLongClickListener);
         handleState(holder, item);
     }
@@ -155,7 +156,7 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
         //消息数
         holder.setText(R.id.tv_device_msg_count, getLastWarnContent(pair, pid));
         //时间
-        holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), pair != null ? pair.second : 0));
+        holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), pair != null && pair.first > 0 ? pair.second : 0));
         ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(pair != null && pair.first > 0);
     }
 

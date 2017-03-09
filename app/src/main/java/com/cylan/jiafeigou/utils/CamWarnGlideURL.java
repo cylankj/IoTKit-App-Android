@@ -23,6 +23,7 @@ public class CamWarnGlideURL extends GlideUrl {
     private String uuid;
     private int index;
     private int regionType;
+    private boolean _v2 = true;
 
     public CamWarnGlideURL(DpMsgDefine.DPAlarm bean, int index, String uuid, int regionType) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
@@ -32,6 +33,17 @@ public class CamWarnGlideURL extends GlideUrl {
         this.index = index;
         this.uuid = uuid;
         this.regionType = regionType;
+    }
+
+    public CamWarnGlideURL(DpMsgDefine.DPAlarm bean, int index, String uuid, int regionType, boolean v2) {
+        super("http://www.cylan.com.cn", Headers.DEFAULT);
+        if (bean == null)
+            throw new IllegalArgumentException("DPWonderItem is Not Completed!");
+        mBean = bean;
+        this.index = index;
+        this.uuid = uuid;
+        this.regionType = regionType;
+        this._v2 = v2;
     }
 
     @Override
@@ -44,8 +56,14 @@ public class CamWarnGlideURL extends GlideUrl {
 
         try {
 //            [bucket]/cid/[vid]/[cid]/[timestamp]_[id].jpg
-            String u = String.format(Locale.getDefault(), "/%s/%s/%s/%s_%s.jpg",
-                    uuid, Security.getVId(JFGRules.getTrimPackageName()), uuid, mBean.time, index);
+            String u;
+            if (_v2) {
+                //[bucket]/[cid]/[timestamp]_[id].jpg
+                u = String.format(Locale.getDefault(), "/%s/%s_%s.jpg", uuid, mBean.time, index + 1);
+            } else {
+                u = String.format(Locale.getDefault(), "/%s/%s/%s/%s_%s.jpg",
+                        uuid, Security.getVId(JFGRules.getTrimPackageName()), uuid, mBean.time, index + 1);
+            }
             String url = JfgCmdInsurance.getCmd().getSignedCloudUrl(regionType, u);
             Log.d("toURL", "toURL: " + url);
             return new URL(url);

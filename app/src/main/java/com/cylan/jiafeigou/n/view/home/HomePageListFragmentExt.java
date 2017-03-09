@@ -438,7 +438,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             position = rVDevicesList.getChildAdapterPosition(v);
         }
         if (position < 0) {
-            AppLogger.d("woo,position is invalid final: " + position);
+            Object o = v.getTag();
+            if (o != null && o instanceof Integer) {
+                position = (int) o;
+            }
+            AppLogger.d("woo,position is invalid final: " + position + " " + o);
             return;
         }
         JFGDevice device = homePageListAdapter.getItem(position);

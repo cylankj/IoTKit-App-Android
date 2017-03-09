@@ -130,8 +130,6 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         return Observable.just(Converter.convert(allList, device.regionType));
                     }
                 });
-
-
     }
 
     @Override
