@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import android.text.TextUtils;
+
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -15,6 +17,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.google.gson.Gson;
@@ -47,8 +50,29 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     protected Subscription[] register() {
         return new Subscription[]{
                 checkNewSoftVersionBack(),
-                clearSdcardReqBack()
+                robotDeviceDataSync(),
+                clearSdcardReqBack(),
         };
+    }
+
+
+    /**
+     * robot同步数据
+     *
+     * @return
+     */
+    private Subscription robotDeviceDataSync() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (
+                        getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
+                ))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map((RxEvent.DeviceSyncRsp update) -> {
+                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
+                    return null;
+                })
+                .retry(new RxHelper.RxException<>("robotDeviceDataSync"))
+                .subscribe();
     }
 
     @Override

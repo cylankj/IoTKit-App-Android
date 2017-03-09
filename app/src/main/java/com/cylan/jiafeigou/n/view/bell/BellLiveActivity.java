@@ -713,7 +713,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (bMute) {
             int result = am.requestAudioFocus(mOnAudioFocusChangeListener,
                     AudioManager.STREAM_VOICE_CALL,
-                    AudioManager.AUDIOFOCUS_GAIN_TRANSIENT);
+                    AudioManager.AUDIOFOCUS_GAIN);
             isSuccess = (result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED);
         } else {
             int result = am.abandonAudioFocus(mOnAudioFocusChangeListener);

@@ -336,6 +336,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && isResumed() && getActivity() != null) {
+            srLayoutMainContentHolder.setRefreshing(false);
         }
     }
 
@@ -443,7 +444,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 position = (int) o;
             }
             AppLogger.d("woo,position is invalid final: " + position + " " + o);
-            return;
+            if (position < 0)
+                return;
         }
         JFGDevice device = homePageListAdapter.getItem(position);
         if (!TextUtils.isEmpty(device.uuid)) {

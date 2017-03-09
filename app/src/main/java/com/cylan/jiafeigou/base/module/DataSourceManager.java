@@ -333,6 +333,7 @@ public class DataSourceManager implements JFGSourceManager {
                 msgs.add(505L);
                 msgs.add(222L);
                 msgs.add(512L);
+                msgs.add(401L);
                 JfgCmdInsurance.getCmd().robotCountData(device.uuid, msgs, 0);
             } catch (JfgException e) {
                 AppLogger.e("uuid is null: " + e.getLocalizedMessage());
