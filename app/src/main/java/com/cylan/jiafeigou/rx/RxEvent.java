@@ -765,8 +765,9 @@ public class RxEvent {
         }
     }
 
-    public static final class RessetPhoneBack{
+    public static final class RessetPhoneBack {
         public JFGResult jfgResult;
+
         public RessetPhoneBack(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
         }
@@ -788,5 +789,14 @@ public class RxEvent {
         public ClearDataEvent(int msgId) {
             this.msgId = msgId;
         }
+    }
+
+    public static class ThirdLoginTab {
+        public boolean isThird;
+
+        public ThirdLoginTab(boolean isThird) {
+            this.isThird = isThird;
+        }
+
     }
 }

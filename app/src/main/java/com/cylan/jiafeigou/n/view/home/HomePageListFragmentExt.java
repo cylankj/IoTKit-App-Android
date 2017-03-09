@@ -109,7 +109,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     private EmptyViewState emptyViewState;
 
-
     public static HomePageListFragmentExt newInstance(Bundle bundle) {
         HomePageListFragmentExt fragment = new HomePageListFragmentExt();
         fragment.setArguments(bundle);
@@ -400,6 +399,15 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 //    public void unBindDeviceRsp(int state) {
 //        ToastUtil.showToast(getString(state == JError.ErrorOK ? R.string.DELETED_SUC : R.string.Tips_DeleteFail));
 //    }
+
+    @Override
+    public void autoLoginTip(int code) {
+        if (code == JError.LoginTimeOut){
+            ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
+        }else if (code == JError.NoNet){
+            ToastUtil.showNegativeToast(getString(R.string.GLOBAL_NO_NETWORK));
+        }
+    }
 
     @Override
     public void onRefresh() {

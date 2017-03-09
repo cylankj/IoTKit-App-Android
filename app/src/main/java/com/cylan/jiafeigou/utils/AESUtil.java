@@ -6,7 +6,6 @@ import java.security.SecureRandom;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
 /**
@@ -42,17 +41,14 @@ public class AESUtil {
         }
         sr.setSeed(seed);
         kgen.init(256, sr);
-        SecretKey skey = kgen.generateKey();
-        byte[] raw = skey.getEncoded();
-        return raw;
+        return kgen.generateKey().getEncoded();
     }
 
     private static byte[] encrypt(byte[] key, byte[] src) throws Exception {
         SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
-        byte[] encrypted = cipher.doFinal(src);
-        return encrypted;
+        return cipher.doFinal(src);
     }
 
     private static byte[] decrypt(byte[] key, byte[] encrypted)
@@ -60,8 +56,7 @@ public class AESUtil {
         SecretKeySpec skeySpec = new SecretKeySpec(key, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
-        byte[] decrypted = cipher.doFinal(encrypted);
-        return decrypted;
+        return cipher.doFinal(encrypted);
     }
 
     public static String toHex(String txt) {
