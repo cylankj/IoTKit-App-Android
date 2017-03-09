@@ -179,15 +179,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         });
     }
 
-//    private Subscription getShowWonderPageSub() {
-////        return RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
-////                .subscribeOn(Schedulers.io())
-////                .observeOn(AndroidSchedulers.mainThread())
-////                .subscribe(event -> {
-////                    finish();
-////                });
-//    }
-
     private void startLoadData(boolean asc, long version) {
         LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false);
         mIsLastLoadFinish = false;
@@ -428,6 +419,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void loadMedia(final BellCallRecordBean item, final ImageView imageView) {
+        ((ImageViewTip) imageView).setShowDot(item.answerState == 0 && item.timeInLong > mLastEnterTime);
         Glide.with(this)
                 .load(new JFGGlideURL(mUUID, JfgEnum.JFG_URL.WARNING, item.type, item.timeInLong / 1000 + ".jpg", mUUID))
                 .asBitmap()
