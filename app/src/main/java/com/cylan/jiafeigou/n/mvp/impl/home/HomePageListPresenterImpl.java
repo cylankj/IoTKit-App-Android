@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
@@ -18,8 +17,6 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -129,14 +126,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        List<JFGDPDevice> deviceList = DataSourceManager.getInstance().getAllJFGDevice();
-        if (deviceList != null) {
-            ArrayList<String> uuidList = new ArrayList<>();
-            for (JFGDPDevice device : deviceList) {
-                uuidList.add(device.uuid);
-            }
-            getView().onItemsInsert(uuidList);
-        }
+        getView().onItemsInsert(DataSourceManager.getInstance().getAllRawJFGDeviceList());
         getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
     }
 
