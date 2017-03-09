@@ -28,7 +28,6 @@ public class TencentInstance {
 
     /**
      * 登录
-     *
      * @param scope
      * @param loginListener
      */

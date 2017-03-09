@@ -763,7 +763,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      */
     @Override
     public void jump2NextPage() {
-        clearSomeThing();
+//        clearSomeThing();
         //to set up pwd
         Bundle bundle = getArguments();
         if (getActivity() != null && bundle != null) {
