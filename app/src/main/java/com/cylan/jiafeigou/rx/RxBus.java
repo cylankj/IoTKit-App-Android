@@ -4,9 +4,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 import rx.Observable;
-import rx.Subscriber;
 import rx.subjects.PublishSubject;
-import rx.subjects.SerializedSubject;
 import rx.subjects.Subject;
 
 /**
@@ -16,7 +14,6 @@ import rx.subjects.Subject;
 public class RxBus implements IEventBus {
 
     private static volatile RxBus mDefaultInstance;
-    private static volatile RxBus mUiInstance;
     private final Subject<Object, Object> mBus;
 
     private final Map<Class<?>, Object> mStickyEventMap;
@@ -24,7 +21,7 @@ public class RxBus implements IEventBus {
     public RxBus() {
         // If multiple threads are going to emit events to this
         // then it must be made thread-safe like this instead
-        mBus = new SerializedSubject<>(PublishSubject.create());
+        mBus = PublishSubject.create().toSerialized();
         mStickyEventMap = new ConcurrentHashMap<>();
     }
 
@@ -42,23 +39,6 @@ public class RxBus implements IEventBus {
             }
         }
         return mDefaultInstance;
-    }
-
-    /**
-     * ui Instance is for ui layer
-     *
-     * @return
-     */
-    @Deprecated
-    public static RxBus getUiInstance() {
-        if (mUiInstance == null) {
-            synchronized (RxBus.class) {
-                if (mUiInstance == null) {
-                    mUiInstance = new RxBus();
-                }
-            }
-        }
-        return mUiInstance;
     }
 
     /**
@@ -114,12 +94,7 @@ public class RxBus implements IEventBus {
             final Object event = mStickyEventMap.get(eventType);
 
             if (event != null) {
-                return observable.mergeWith(Observable.create(new Observable.OnSubscribe<T>() {
-                    @Override
-                    public void call(Subscriber<? super T> subscriber) {
-                        subscriber.onNext(eventType.cast(event));
-                    }
-                }));
+                return observable.mergeWith(Observable.create(subscriber -> subscriber.onNext(eventType.cast(event))));
             } else {
                 return observable;
             }

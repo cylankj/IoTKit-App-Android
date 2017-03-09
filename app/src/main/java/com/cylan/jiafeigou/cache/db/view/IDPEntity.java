@@ -4,7 +4,8 @@ package com.cylan.jiafeigou.cache.db.view;
  * Created by yanzhendong on 2017/3/1.
  */
 
-public interface IDPEntity {
+public interface IDPEntity extends IEntity<IDPEntity> {
+
     IDPEntity setMsgId(Integer msgId);
 
     Integer getMsgId();
@@ -17,12 +18,8 @@ public interface IDPEntity {
 
     String getUuid();
 
-    IDPEntity setTag(String tag);
+    byte[] getBytes();
 
-    String getTag();
-
-    IDPEntity setState(String state);
-
-    String getState();
+    IDPEntity setBytes(byte[] bytes);
 
 }

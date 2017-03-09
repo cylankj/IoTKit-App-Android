@@ -3,38 +3,30 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.content.pm.PackageManager;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPHelper;
-import com.cylan.jiafeigou.cache.db.module.DPCache;
-import com.cylan.jiafeigou.cache.db.module.tasks.DPDeleteTask;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_EMPTY;
-import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_GUIDE;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_HIDE;
 
 
@@ -65,21 +57,6 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         onUnRegisterSubscription();
     }
 
-//    private Subscription getNetWorkMonitorSub() {
-//        return RxBus.getCacheInstance().toObservable(RxEvent.LoginRsp.class)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(event -> {
-//                    if (event.state) {
-//                        AppLogger.e("收到网络可用的通知,正在同步数据");
-//                        syncLocalDataFromServer();
-//                    } else {
-//                        mView.onSyncLocalDataFinished();
-//                    }
-//                }, Throwable::printStackTrace);
-//    }
-
-
     private Subscription getDeleteWonderfulSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeleteWonder.class)
                 .subscribeOn(Schedulers.io())
@@ -93,50 +70,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     public void onStart() {
         super.onStart();
-        if (showGuidePage()) {
-            mView.chooseEmptyView(VIEW_TYPE_GUIDE);
-        }
-//        if (NetUtils.isNetworkAvailable(mView.getAppContext())) {
-//            syncLocalDataFromServer();
-//        } else {
-//            mView.onSyncLocalDataFinished();//无网络不需要同步
+//        if (showGuidePage()) {
+//            mView.chooseEmptyView(VIEW_TYPE_GUIDE);
 //        }
     }
-
-//    private void syncLocalDataFromServer() {
-//        Subscription subscribe = BaseDPHelper.getInstance().queryUnConfirmDpMsgWithTag(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, DBAction.DELETED)
-//                .filter(items -> {
-//                    if (items.size() == 0) {
-//                        mView.onSyncLocalDataFinished();
-//                    }
-//                    return items.size() > 0;
-//                })
-//                .observeOn(Schedulers.io())
-//                .map(items -> {
-//                    ArrayList<JFGDPMsg> params = new ArrayList<>();
-//                    JFGDPMsg msg;
-//                    for (DPCache item : items) {
-//                        msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, item.getVersion());
-//                        params.add(msg);
-//                    }
-//                    long seq = -1;
-//                    try {
-//                        seq = JfgCmdInsurance.getCmd().robotDelData("", params, 0);
-//                        AppLogger.d("正在删除未经确认的数据" + seq);
-//                    } catch (JfgException e) {
-//                        e.printStackTrace();
-//                    }
-//                    return seq;
-//                })
-//                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
-//                        .filter(rsp -> rsp.seq == seq)
-//                        .first().timeout(30, TimeUnit.SECONDS))
-//                .observeOn(Schedulers.io())
-//                .map(rsp -> BaseDPHelper.getInstance().deleteDPMsgWithConfirm(null, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG).subscribe())
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(success -> mView.onSyncLocalDataFinished(), e -> syncLocalDataFromServer());
-//        registerSubscription(subscribe);
-//    }
 
     private boolean showGuidePage() {
         return PreferencesUtils.getBoolean(JConstant.KEY_WONDERFUL_GUIDE, true);
@@ -166,81 +103,66 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startRefresh() {
-        Observable.just(mSourceManager.isOnline())
-                .flatMap(hasNet -> hasNet ? queryTimeLine(0, 20, false) : queryTimeLineFromLocal(Long.MAX_VALUE, 20, false))
+        Subscription subscribe = Observable.just(new DPEntity()
+                .setUuid("")
+                .setVersion(0L)
+                .setAction(DBAction.QUERY)
+                .setOption(new DBOption.SingleQueryOption(false, 20))
+                .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
+                .observeOn(Schedulers.io())
+                .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    mWonderItems.clear();
-                    mWonderItems.addAll(result);
-                    mView.chooseEmptyView(mWonderItems.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
-                    mView.onQueryTimeLineSuccess(mWonderItems, true);
+                    if (result.getResultCode() == 0) {
+                        mWonderItems.clear();
+                        mWonderItems.addAll(result.getResultResponse());
+                        mView.chooseEmptyView(mWonderItems.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
+                        mView.onQueryTimeLineSuccess(mWonderItems, true);
+                    }
                 }, e -> {
-                    if (e instanceof TimeoutException) {
-                        mView.onQueryTimeLineTimeOut();
-                    }
-                    AppLogger.d("请求数据超时");
-                });
-    }
-
-    private Observable<List<DpMsgDefine.DPWonderItem>> queryTimeLineFromLocal(long version, int count, boolean asc) {
-        return BaseDPHelper.getInstance().queryDPMsg(null, version, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, asc, count)
-                .flatMap(Observable::from)
-                .map(item -> {
-                    DpMsgDefine.DPWonderItem wonderItem = null;
-                    try {
-                        wonderItem = DpUtils.unpackData(item.getBytes(), DpMsgDefine.DPWonderItem.class);
-                        if (wonderItem != null) {
-                            wonderItem.version = item.getVersion();
-                            wonderItem.id = DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG;
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return wonderItem;
-                })
-                .buffer(count);
+                    e.printStackTrace();
+                    AppLogger.d(e.getMessage());
+                    mView.onQueryTimeLineCompleted();
+                }, () -> mView.onQueryTimeLineCompleted());
+        registerSubscription(subscribe);
     }
 
     @Override
     public void startLoadMore() {
-        Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
-                .flatMap(hasNet -> hasNet ? queryTimeLine(mWonderItems.get(mWonderItems.size() - 1).version, 20, false) : queryTimeLineFromLocal(mWonderItems.get(mWonderItems.size() - 1).version, 20, false))
+        Observable.just(mWonderItems.get(mWonderItems.size() - 1).version)
+                .map(version -> new DPEntity()
+                        .setVersion(version)
+                        .setAction(DBAction.QUERY)
+                        .setOption(new DBOption.SingleQueryOption(false, 20))
+                        .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
+                .observeOn(Schedulers.io())
+                .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                }, e -> {
-                    if (e instanceof TimeoutException) {
-                        mView.onQueryTimeLineTimeOut();
+                    if (result.getResultCode() == 0) {
+                        List<DpMsgDefine.DPWonderItem> items = result.getResultResponse();
+                        mWonderItems.addAll(items);
+                        mView.onQueryTimeLineSuccess(items, false);
                     }
-                });
-    }
+                }, e -> {
+                    AppLogger.d(e.getMessage());
+                    mView.onQueryTimeLineCompleted();
 
-    public Observable<List<DpMsgDefine.DPWonderItem>> queryTimeLine(long version, int count, boolean asc) {
-        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-            subscriber.onNext(sendQueryRequest(version, count, asc));
-            subscriber.onCompleted();
-        })
-                .subscribeOn(Schedulers.io())
-                .filter(seq -> seq > 0)
-                .flatMap(seq -> RxBus.getCacheInstance()
-                        .toObservable(RxEvent.ParseResponseCompleted.class)
-                        .filter(rsp -> rsp.seq == seq)
-                        .first()
-                        .timeout(10, TimeUnit.SECONDS))
-                .map(rsp -> {
-                    AppLogger.d("收到从服务器返回数据!!!");
-                    DpMsgDefine.DPSet<DpMsgDefine.DPWonderItem> result = mSourceManager.getValue(mUUID, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, rsp.seq);
-                    return result.list();
+                }, () -> {
+                    mView.onQueryTimeLineCompleted();
                 });
     }
 
     @Override
     public void deleteTimeline(int position) {
-        Observable.just(mWonderItems.get(position).version)
+        Subscription subscribe = Observable.just(mWonderItems.get(position).version)
                 .observeOn(Schedulers.io())
-                .map(version -> new DPCache()
+                .map(version -> new DPEntity()
                         .setUuid("")
-                        .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
-                        .setVersion(version)).flatMap(entity -> new DPDeleteTask().init(entity).execute())
+                        .setVersion(version)
+                        .setAction(DBAction.DELETED)
+                        .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
+                .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     if (result.getResultCode() == 0) {//成功了
@@ -254,55 +176,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
                     }
                 }, e -> {
+                    e.printStackTrace();
+                    AppLogger.d(e.getMessage());
                 });
-
-//        Observable.just(mSourceManager.isOnline())
-//                .flatMap(hasNet -> {
-//                    if (hasNet) {
-//                        return deleteTimeLineFromServer(position)
-//                                .filter(success -> success)
-//                                .flatMap(success -> deleteTimeLineFromLocal(position));
-//                    } else {
-//                        return deleteTimeLineFromLocal(position);
-//                    }
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(success -> {
-//                    if (success) {
-//                        AppLogger.d("删除 TimeLine数据成功: position 为:" + position);
-//                        DpMsgDefine.DPWonderItem item = mWonderItems.remove(position);
-//                        mWonderItems.remove(item);
-//                        mView.onDeleteWonderSuccess(position);
-//                        if (mWonderItems.isEmpty()) {//说明当天的已经删完了
-//                            mView.chooseEmptyView(VIEW_TYPE_EMPTY);
-//                        }
-//                        RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
-//                    }
-//                }, Throwable::printStackTrace);
-    }
-
-    private Observable<Boolean> deleteTimeLineFromServer(int position) {
-        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-            ArrayList<JFGDPMsg> params = new ArrayList<>();
-            JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, mWonderItems.get(position).version);
-            params.add(msg);
-            try {
-                AppLogger.d("正在删除!");
-                long seq = getCmd().robotDelData("", params, 0);
-                subscriber.onNext(seq);
-                subscriber.onCompleted();
-            } catch (JfgException e) {
-                e.printStackTrace();
-                subscriber.onError(e);
-            }
-        }).subscribeOn(Schedulers.io())
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class).onBackpressureBuffer().filter(rsp -> rsp.seq == seq).first().timeout(10, TimeUnit.SECONDS))
-                .map(rsp -> rsp.resultCode == 0);
-    }
-
-    private Observable<Boolean> deleteTimeLineFromLocal(int position) {
-        return BaseDPHelper.getInstance().deleteDPMsgNotConfirm(null, mWonderItems.get(position).version, DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
-                .map(result -> true);
+        registerSubscription(subscribe);
     }
 
     @Override
@@ -321,19 +198,6 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     public void removeGuideAnymore() {
         PreferencesUtils.putBoolean(JConstant.KEY_WONDERFUL_GUIDE, false);
         mView.chooseEmptyView(VIEW_TYPE_EMPTY);
-    }
-
-    private long sendQueryRequest(long version, int count, boolean asc) {
-        try {
-            AppLogger.d("正在发送查询请求,version:" + version + "count:" + count + "acs:" + asc);
-            ArrayList<JFGDPMsg> params = new ArrayList<>();
-            JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, version);
-            params.add(msg);
-            return getCmd().robotGetData("", params, count, asc, 0);//多请求一条数据,用来判断是否是一天最后一条
-        } catch (JfgException e) {
-            AppLogger.e(e.getMessage());
-            return -1;
-        }
     }
 }
 

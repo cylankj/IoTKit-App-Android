@@ -76,6 +76,10 @@ public class ShareDialogFragment extends BaseDialog {
         dismiss();
         switch (view.getId()) {
             case R.id.tv_share_to_timeline:
+                if (!ShareUtils.isWechatInstalled()) {
+                    ToastUtil.showToast(getString(R.string.Tap2_share_unabletoshare));
+                    return;
+                }
                 if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneTimeline, glideUrl);
                 } else if (glideUrl != null) {
@@ -85,6 +89,10 @@ public class ShareDialogFragment extends BaseDialog {
                 }
                 break;
             case R.id.tv_share_to_wechat_friends:
+                if (!ShareUtils.isWechatInstalled()) {
+                    ToastUtil.showToast(getString(R.string.Tap2_share_unabletoshare));
+                    return;
+                }
                 if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.shareVideoToWechat(getActivity(), mVideoURL, WXSceneSession, glideUrl);
                 } else if (glideUrl != null) {
@@ -94,6 +102,10 @@ public class ShareDialogFragment extends BaseDialog {
                 }
                 break;
             case R.id.tv_share_to_twitter_friends:
+                if (!ShareUtils.isWechatInstalled()) {
+                    ToastUtil.showToast(getString(R.string.Tap2_share_unabletoshare));
+                    return;
+                }
                 if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.shareVideoToTwitter(getActivity(), mVideoURL, glideUrl);
                 } else if (glideUrl != null) {

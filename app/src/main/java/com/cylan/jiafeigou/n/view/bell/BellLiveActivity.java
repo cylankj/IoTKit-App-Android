@@ -6,11 +6,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.graphics.PixelFormat;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.opengl.GLSurfaceView;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ScaleGestureDetector;
@@ -25,8 +28,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -37,16 +42,21 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
+import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
+import com.cylan.jiafeigou.widget.glide.RoundedCornersTransformation;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
-import com.cylan.jiafeigou.widget.video.ViEAndroidGLES20_Ext;
+import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
+import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
+import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -103,6 +113,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     private boolean isLandMode = false;
     private boolean isLanchFromBellCall = false;
     private MediaPlayer mediaPlayer;
+    private RoundCardPopup roundCardPopup;
 
 
     @Override
@@ -143,7 +154,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         @Override
         public void onReceive(Context context, Intent intent) {
             String action = intent.getAction();
-            if ("android.intent.action.HEADSET_PLUG".equals(action)) {
+            if ("android.intent.option.HEADSET_PLUG".equals(action)) {
                 if (intent.hasExtra("state")) {
                     if (intent.getIntExtra("state", 0) == 0) {
                         BellLiveActivityPermissionsDispatcher.handleHeadsetDisconnectedWithCheck(BellLiveActivity.this);
@@ -263,7 +274,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mSurfaceView = null;
         }
         clearHeadSetEventReceiver();
-        AudioManager manager = null;
+
         finish();
     }
 
@@ -404,7 +415,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (mBellFlow.getVisibility() != View.VISIBLE) {
             mBellFlow.setVisibility(View.VISIBLE);
         }
-        mBellFlow.setText(String.format(Locale.getDefault(), "%sK/s", speed / 8));
+        mBellFlow.setText(MiscUtils.getByteFromBitRate(speed));
     }
 
     @Override
@@ -412,9 +423,75 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     }
 
+    @Override
+    public void onTakeSnapShotSuccess(Bitmap bitmap) {
+        if (bitmap != null) {
+            ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
+            showPopupWindow(bitmap);
+        } else {
+            ToastUtil.showPositiveToast(getString(R.string.set_failed));
+        }
+    }
+
+    private void showPopupWindow(Bitmap bitmap) {
+        try {
+            roundCardPopup = new RoundCardPopup(this, view -> {
+                if (bitmap != null) {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    Glide.with(this)
+                            .load(stream.toByteArray())
+                            .placeholder(R.drawable.wonderful_pic_place_holder)
+                            .override((int) getResources().getDimension(R.dimen.x44),
+                                    (int) getResources().getDimension(R.dimen.x30))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .bitmapTransform(new RoundedCornersTransformation(this, 10, 2))
+                            .into(view);
+                }
+            }, v -> {
+                roundCardPopup.dismiss();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                byte[] byteArray = stream.toByteArray();
+                Bundle bundle = new Bundle();
+                bundle.putByteArray(JConstant.KEY_SHARE_ELEMENT_BYTE, byteArray);
+                NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
+                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment,
+                        android.R.id.content);
+                fragment.setCallBack(t -> getSupportFragmentManager().popBackStack());
+            });
+            roundCardPopup.setAutoDismissTime(3000);
+            roundCardPopup.showOnAnchor(imgvBellLiveCapture, RelativePopupWindow.VerticalPosition.ABOVE, RelativePopupWindow.HorizontalPosition.CENTER);
+        } catch (Exception e) {
+            AppLogger.e("showPopupWindow: " + e.getLocalizedMessage());
+        }
+
+    }
+
+    @Override
+    public void onTakeSnapShotFailed() {
+        ToastUtil.showPositiveToast(getString(R.string.set_failed));
+    }
+
+    @Override
+    public void onDeviceUnBind() {
+        AppLogger.d("当前设备已解绑");
+        mPresenter.cancelViewer();
+        new AlertDialog.Builder(this).setCancelable(false)
+                .setPositiveButton(getString(R.string.OK), (dialog, which) -> {
+                    finish();
+                    Intent intent = new Intent(this, NewHomeActivity.class);
+                    startActivity(intent);
+                })
+                .setMessage(getString(R.string.DEVICE_UNBINDED))
+                .show();
+
+    }
+
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     void switchSpeakerWithPermission() {
         mPresenter.switchSpeaker();
+        mPresenter.switchMicrophone();
     }
 
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
@@ -464,16 +541,19 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
                 break;
             case JError.ErrorVideoPeerNotExist://对端不在线
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NOT_ONLINE));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case JError.ErrorVideoNotLogin://本端未登录
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NOT_ONLINE));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case JError.ErrorVideoPeerDisconnect://对端断开
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.EFAMILY_CALL_IGNORED));
                 break;
             case JError.ErrorP2PSocket:
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NoNetworkTips));
+                break;
+            case BAD_NET_WORK:
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;
             default:
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
@@ -520,6 +600,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
+    public void onMicrophone(boolean on) {
+
+    }
+
+    @Override
     public String onResolveViewLaunchType() {
         return getIntent().getStringExtra(JConstant.VIEW_CALL_WAY);
     }
@@ -538,19 +623,19 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mSurfaceView.setLayoutParams(params);
             mVideoViewContainer.removeAllViews();
             mVideoViewContainer.addView(mSurfaceView);
-            mGestureDetector = new ScaleGestureDetector(this, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-                @Override
-                public boolean onScale(ScaleGestureDetector detector) {
-                    mScaleFactor *= detector.getScaleFactor();
-                    mScaleFactor = Math.max(1.0f, Math.min(mScaleFactor, 3.0f));
-                    AppLogger.e("当前缩放比例为:" + mScaleFactor);
-                    if (mSurfaceView instanceof ViEAndroidGLES20_Ext) {
-                        ((ViEAndroidGLES20_Ext) mSurfaceView).setScaleFactor(mScaleFactor);
-                    }
-
-                    return false;
-                }
-            });
+//            mGestureDetector = new ScaleGestureDetector(this, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
+//                @Override
+//                public boolean onScale(ScaleGestureDetector detector) {
+//                    mScaleFactor *= detector.getScaleFactor();
+//                    mScaleFactor = Math.max(1.0f, Math.min(mScaleFactor, 3.0f));
+//                    AppLogger.e("当前缩放比例为:" + mScaleFactor);
+//                    if (mSurfaceView instanceof ViEAndroidGLES20_Ext) {
+//                        ((ViEAndroidGLES20_Ext) mSurfaceView).setScaleFactor(mScaleFactor);
+//                    }
+//
+//                    return false;
+//                }
+//            });
         }
         AppLogger.i("initVideoView");
         mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
@@ -600,6 +685,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+    }
+
+    @Override
     public void clickImage(int state) {
         switch (state) {
             case ILiveControl.STATE_LOADING_FAILED:
@@ -611,6 +701,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void clickText() {
+    }
+
+    @Override
+    public void clickHelp() {
+
     }
 
     @Override

@@ -6,5 +6,5 @@ package com.cylan.jiafeigou.cache.db.view;
 
 public interface IDPTaskFactory {
 
-    IDPTask getDPTask(IDPEntity cache);
+    <T extends IDPTaskResult> IDPTask<T> getTask(DBAction action, boolean multi, Object initValue);
 }

@@ -1,10 +1,8 @@
 package com.cylan.jiafeigou.rx;
 
 import android.content.Intent;
-import android.os.Bundle;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevice;
@@ -26,14 +24,14 @@ import java.util.Arrays;
  */
 public class RxEvent {
 
-    public static class NeedLoginEvent {
-        public static final String KEY = "show_login_fragment";
-        public Bundle bundle;
-
-        public NeedLoginEvent(Bundle bundle) {
-            this.bundle = bundle;
-        }
-    }
+//    public static class NeedLoginEvent {
+//        public static final String KEY = "show_login_fragment";
+//        public Bundle bundle;
+//
+//        public NeedLoginEvent(Bundle bundle) {
+//            this.bundle = bundle;
+//        }
+//    }
 
     /**
      * 系统TimeTick广播
@@ -340,10 +338,16 @@ public class RxEvent {
     }
 
     public static final class BindDeviceEvent {
-        public JFGResult jfgResult;
+        public int bindResult;
+        public String uuid;
 
-        public BindDeviceEvent(JFGResult jfgResult) {
-            this.jfgResult = jfgResult;
+        public BindDeviceEvent(int jfgResult) {
+            this.bindResult = jfgResult;
+        }
+
+        public BindDeviceEvent(int jfgResult, String uuid) {
+            this.bindResult = jfgResult;
+            this.uuid = uuid;
         }
     }
 
@@ -352,6 +356,14 @@ public class RxEvent {
 
         public UnBindDeviceEvent(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
+        }
+    }
+
+    public static final class DeviceUnBindedEvent {
+        public String uuid;
+
+        public DeviceUnBindedEvent(String uuid) {
+            this.uuid = uuid;
         }
     }
 
@@ -408,25 +420,6 @@ public class RxEvent {
     public static final class DeviceListRsp {
     }
 
-
-//    /**
-//     * 只有一个属性,设置页面更新的某一个属性
-//     */
-//    public static final class JfgDpMsgUpdate {
-//        public String uuid;
-//        public DpMsgDefine.DpMsg dpMsg;
-//    }
-
-//    public static final class JfgAlarmMsg {
-//        public String uuid;
-//        public ArrayList<DpMsgDefine.DpMsg> jfgdpMsgs;
-//    }
-
-    public static final class JFGRobotSyncData {
-        public String identity;
-        public boolean state;
-        public ArrayList<JFGDPMsg> dataList;
-    }
 
     /**
      * 获取好友的信息回调
@@ -639,13 +632,14 @@ public class RxEvent {
     public static class AppHideEvent {
     }
 
+    @Deprecated
     public static class EFamilyMsgpack {
         public int msgId;
         public byte[] data;
     }
 
-    public static class CallAnswered {
-        public CallAnswered(boolean self) {
+    public static class CallResponse {
+        public CallResponse(boolean self) {
             this.self = self;
         }
 
@@ -669,6 +663,13 @@ public class RxEvent {
             return this;
         }
 
+        public DeviceSyncRsp setUuid(String uuid, ArrayList<Long> idList) {
+            this.uuid = uuid;
+            this.idList = idList;
+            return this;
+        }
+
+        public ArrayList<Long> idList;
         public String uuid;
     }
 
@@ -735,16 +736,16 @@ public class RxEvent {
         public String md5;
     }
 
-    public static class LiveResponse<T> {
+    public static class LiveResponse {
         public boolean success;
-        public T response;
+        public Object response;
 
-        public LiveResponse(T disconnect, boolean success) {
+        public LiveResponse(Object disconnect, boolean success) {
             this.success = false;
             this.response = disconnect;
         }
 
-        public LiveResponse(T resolution) {
+        public LiveResponse(Object resolution) {
             this.success = true;
             this.response = resolution;
         }
@@ -772,11 +773,32 @@ public class RxEvent {
         }
     }
 
-    public static final class RessetPhoneBack{
+    public static final class RessetPhoneBack {
         public JFGResult jfgResult;
 
         public RessetPhoneBack(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
         }
+    }
+
+    public static class SetDataRsp {
+        public long seq;
+        public ArrayList<JFGDPMsgRet> rets;
+
+        public SetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
+            this.seq = l;
+            this.rets = arrayList;
+        }
+    }
+
+    public static class ClearDataEvent {
+        public int msgId;
+
+        public ClearDataEvent(int msgId) {
+            this.msgId = msgId;
+        }
+    }
+
+    public static class ShowWonderPageEvent {
     }
 }

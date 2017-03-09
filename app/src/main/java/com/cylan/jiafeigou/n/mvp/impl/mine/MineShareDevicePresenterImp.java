@@ -108,8 +108,8 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 relAndFriendBean.alias = info.alias;
                 relAndFriendBean.markName = info.markName;
                 try {
-                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, info.account + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
-                } catch (JfgException e) {
+//                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, info.account + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 hasShareFriendData.add(relAndFriendBean);

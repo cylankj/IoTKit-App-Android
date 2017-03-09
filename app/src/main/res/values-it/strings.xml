@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">Andare in \"Settings\"&#8211;>\"WLAN\",scegliere \"DOG&#8211;ML&#8211;******\" collegare il telefono,password è 11111111</string>
   <string name="WIFI_SET_4">Tornare a %s</string>
   <string name="WIFI_SET_5GTIPS">Nota: il segnale WiFi 5Ghz non è ancora supportato</string>
+  <string name="WONDER_TODAY_H_M">Oggi HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">Ieri HH:mm</string>
   <string name="Word_Hours">ore</string>
   <string name="XX_DISCOVERY">Nuovi dispositivi di \'%s\'</string>
   <string name="YOUR_FEEDBACK">La Tua opinione è importante per noi</string>

@@ -42,7 +42,7 @@
         android:background="@color/color_8c8c8c"
         hunt:sp_color="@color/color_6FA3FD" />
 
-    <com.cylan.jiafeigou.widget.LoginButtonV2
+    <com.cylan.jiafeigou.widget.LoginButton
         android:id="@+id/lb2_sdcard_format"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y45"
@@ -53,9 +53,7 @@
         android:text="格式化SD卡"
         android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp17"
-        hunt:lb_v2_point_radius="3.0"
-        hunt:lb_v2_stroke_width="@dimen/x1"
-        hunt:lb_v2_stroke_color="@color/color_d8d8d8" />
+        hunt:lb_stroke_color="@color/color_d8d8d8" />
 
     <TextView
         android:layout_width="wrap_content"

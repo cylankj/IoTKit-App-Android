@@ -33,10 +33,9 @@ import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
+import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -52,7 +51,6 @@ import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
-import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem;
 import static com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract.View.VIEW_LAUNCH_WAY_WONDERFUL;
@@ -83,8 +81,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     FrameLayout mWonderfulEmptyViewContainer;
     @BindView(R.id.fragment_wonderful_empty)
     ViewGroup mWonderfulEmptyContainer;
-    @BindView(R.id.fragment_wonderful_guide)
-    ViewGroup mWonderfulGuideContainer;
+//    @BindView(R.id.fragment_wonderful_guide)
+//    ViewGroup mWonderfulGuideContainer;
 
     private ShareDialogFragment shareDialogFragment;
     private WeakReference<SimpleDialogFragment> deleteDialogFragmentWeakReference;
@@ -97,7 +95,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private LinearLayoutManager mLinearLayoutManager;
     private boolean mCanRefresh = true;
     private boolean mHasMore;
-
+    private boolean isPrepaper = false;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
         HomeWonderfulFragmentExt fragment = new HomeWonderfulFragmentExt();
@@ -108,6 +106,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+    }
+
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (getUserVisibleHint()) lazyLoad();
     }
 
     @Override
@@ -124,6 +129,15 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         initHeaderView();
 
         initSomeViewMargin();
+        isPrepaper = true;
+        lazyLoad();
+    }
+
+    private void lazyLoad() {
+        if (getUserVisibleHint() && isPrepaper) {
+            srLayoutMainContentHolder.setRefreshing(true);
+            srLayoutMainContentHolder.postDelayed(() -> mPresenter.startRefresh(), 1000);//避免刷新过快
+        }
     }
 
     private SimpleDialogFragment initDeleteDialog() {
@@ -199,7 +213,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 int visibleItemCount = mLinearLayoutManager.getChildCount();
                 int totalItemCount = mLinearLayoutManager.getItemCount();
                 if (dy > 0) { //check for scroll down
-
+                    if (pastVisibleItems + visibleItemCount >= totalItemCount && mHasMore) {
+                        mPresenter.startLoadMore();
+                    }
                 }
             }
         });
@@ -278,6 +294,11 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             onQueryTimeLineSuccess(items, true);
     }
 
+    @Override
+    public void onQueryTimeLineCompleted() {
+        srLayoutMainContentHolder.setRefreshing(false);
+    }
+
     @SuppressWarnings("deprecation")
     @Override
     public void onTimeTick(int dayTime) {
@@ -299,15 +320,15 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     }
 
-    @OnClick(R.id.item_wonderful_to_start)
+    //    @OnClick(R.id.item_wonderful_to_start)
     public void openWonderful() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {//在线表示已登录
+        if (DataSourceManager.getInstance().getLoginState() == LogState.STATE_ACCOUNT_ON) {//在线表示已登录
             Intent intent = new Intent(getActivityContext(), DelayRecordActivity.class);
             intent.putExtra(JConstant.VIEW_CALL_WAY, VIEW_LAUNCH_WAY_WONDERFUL);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
             startActivity(intent);
         } else {//不在线表示还未登录
-            RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
+            ((NeedLoginActivity) getActivity()).signInFirst(null);
         }
     }
 
@@ -317,13 +338,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         srLayoutMainContentHolder.setRefreshing(false);
     }
 
-    @OnClick(R.id.tv_wonderful_item_share)
+    //    @OnClick(R.id.tv_wonderful_item_share)
     public void shareWonderful() {//分享官方演示视频
         DPWonderItem bean = DPWonderItem.getGuideBean();
         onShareWonderfulContent(bean);
     }
 
-    @OnClick(R.id.iv_wonderful_item_content)
+    //    @OnClick(R.id.iv_wonderful_item_content)
     public void viewWonderful(View view) {
         DPWonderItem bean = DPWonderItem.getGuideBean();
         ArrayList<Parcelable> list = new ArrayList<>();
@@ -331,7 +352,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         onEnterWonderfulContent(list, 0, view);
     }
 
-    @OnClick(R.id.tv_wonderful_item_delete)
+    //    @OnClick(R.id.tv_wonderful_item_delete)
     public void removeAnymore() {
         deleteItem(-1);
     }
@@ -341,7 +362,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         switch (type) {
             case VIEW_TYPE_HIDE: {//hide
                 mWonderfulEmptyViewContainer.setVisibility(View.GONE);
-                mWonderfulGuideContainer.setVisibility(View.GONE);
+//                mWonderfulGuideContainer.setVisibility(View.GONE);
                 mWonderfulEmptyContainer.setVisibility(View.GONE);
                 mCanRefresh = true;
             }
@@ -349,7 +370,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             case VIEW_TYPE_EMPTY: {//empty
                 mCanRefresh = true;
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
-                mWonderfulGuideContainer.setVisibility(View.GONE);
+//                mWonderfulGuideContainer.setVisibility(View.GONE);
                 mWonderfulEmptyContainer.setVisibility(View.VISIBLE);
 
             }
@@ -358,7 +379,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 mCanRefresh = false;
                 mWonderfulEmptyViewContainer.setVisibility(View.VISIBLE);
                 mWonderfulEmptyContainer.setVisibility(View.GONE);
-                mWonderfulGuideContainer.setVisibility(View.VISIBLE);
+//                mWonderfulGuideContainer.setVisibility(View.VISIBLE);
             }
             break;
         }
@@ -490,20 +511,20 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             // so that the correct one falls into place.
             String newTransitionName = currentPosition + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX;
             SuperViewHolder holder = (SuperViewHolder) rVDevicesList.findViewHolderForAdapterPosition(currentPosition);
-            View newSharedElement;
+            View newSharedElement = null;
             if (holder != null) {
                 newSharedElement = holder.getView(R.id.iv_wonderful_item_content);
             } else {
-                newSharedElement = mWonderfulGuideContainer.findViewById(R.id.iv_wonderful_item_content);
+//                newSharedElement = mWonderfulGuideContainer.findViewById(R.id.iv_wonderful_item_content);
             }
             if (newSharedElement == null) return;
             ((ShadowFrameLayout) newSharedElement.getParent()).adjustSize(true);
             SuperViewHolder holders = (SuperViewHolder) rVDevicesList.findViewHolderForAdapterPosition(currentPosition);
-            View oldView;
+            View oldView = null;
             if (holders != null) {
                 oldView = holders.getView(R.id.iv_wonderful_item_content);
             } else {
-                oldView = mWonderfulGuideContainer.findViewById(R.id.iv_wonderful_item_content);
+//                oldView = mWonderfulGuideContainer.findViewById(R.id.iv_wonderful_item_content);
             }
             ((ShadowFrameLayout) oldView.getParent()).adjustSize(false);
             AppLogger.d("transition newTransitionName: " + newTransitionName);

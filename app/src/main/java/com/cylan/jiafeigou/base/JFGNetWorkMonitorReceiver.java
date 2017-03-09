@@ -27,7 +27,7 @@ public class JFGNetWorkMonitorReceiver extends BroadcastReceiver {
 //                BSToast.showLong(context, "网络不可以用");
             AppLogger.d("当前网络不可用");
             RxBus.getCacheInstance().post(new RxEvent.NetConnectionEvent(false));
-            BaseDPTaskDispatcher.getInstance().markSyncNeeded();
+//            BaseDPTaskDispatcher.getInstance().markSyncNeeded();
             //改变背景或者 处理网络的全局变量
         } else {
             //改变背景或者 处理网络的全局变量

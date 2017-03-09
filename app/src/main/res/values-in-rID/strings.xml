@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">Silahkan melalui \"Pengaturan\"&#8211;>\"WLAN\", pilih \"DOG&#8211;ML&#8211;******\" sambungkan ke phone anda, kata sandinya adalah 11111111</string>
   <string name="WIFI_SET_4">Kembali ke %s</string>
   <string name="WIFI_SET_5GTIPS">Tips:Sinyal 5G WIFI tidak memungkinkan sekarang</string>
+  <string name="WONDER_TODAY_H_M">Hari ini HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">Kemarin HH:mm</string>
   <string name="Word_Hours">jam</string>
   <string name="XX_DISCOVERY">\"%s\" ada penemuan baru</string>
   <string name="YOUR_FEEDBACK">Saran anda sangat penting bagi kami</string>

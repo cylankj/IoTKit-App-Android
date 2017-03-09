@@ -298,6 +298,7 @@ public class SuperWheelExt extends View {
     }
 
     public int getMaxScrollX() {
+        if (iDataProvider == null) return 0;
         return (int) ((getMeasuredWidth() >> 1) - getMinPos(iDataProvider.getFlattenMinTime()));
     }
 

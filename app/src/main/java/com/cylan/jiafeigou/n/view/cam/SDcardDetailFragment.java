@@ -48,7 +48,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     TextView tvSdcardVolume;
     @BindView(R.id.view_has_use_volume)
     View viewHasUseVolume;
-    @BindView(R.id.tv_clecr_sdcard)
+    @BindView(R.id.tv_clear_sdcard)
     TextView tvClecrSdcard;
     @BindView(R.id.view_total_volume)
     View viewTotalVolume;
@@ -100,10 +100,10 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
 
     }
 
-    @OnClick({R.id.tv_clecr_sdcard})
+    @OnClick({R.id.tv_clear_sdcard})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_clecr_sdcard:
+            case R.id.tv_clear_sdcard:
                 //格式化SD卡
                 showClearSdDialog();
                 break;

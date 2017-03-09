@@ -200,10 +200,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
-                if (!ShareUtils.isWechatInstalled()) {
-                    ToastUtil.showToast(getString(R.string.Tap2_share_unabletoshare));
-                    return;
-                }
                 ShareDialogFragment fragment = initShareDialog();
                 fragment.setPictureURL(new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
                 fragment.show(getSupportFragmentManager(), "ShareDialogFragment");

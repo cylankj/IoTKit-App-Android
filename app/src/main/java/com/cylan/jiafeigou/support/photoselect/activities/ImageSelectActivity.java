@@ -115,7 +115,7 @@ public class ImageSelectActivity extends HelperActivity {
                             adapter.notifyDataSetChanged();
                             /*
                             Some selected images may have been deleted
-                            hence setDevice action mode title
+                            hence setDevice option mode title
                              */
                             if (actionMode != null) {
                                 countSelected = msg.arg1;

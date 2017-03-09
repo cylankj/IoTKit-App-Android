@@ -293,6 +293,11 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     }
 
     @Override
+    public void onMicrophone(boolean on) {
+
+    }
+
+    @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
 
         SurfaceView surfaceView = mPresenter.getViewerInstance();

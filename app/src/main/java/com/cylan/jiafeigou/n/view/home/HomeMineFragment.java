@@ -27,13 +27,13 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineInfoFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
@@ -249,6 +249,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         rLayoutHomeMineTop.setBackground(drawable);
     }
 
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isResumed() && isVisibleToUser && getActivity() != null) {
+        }
+    }
+
     /**
      * 设置昵称
      *
@@ -307,7 +314,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     private boolean needStartLoginFragment() {
         if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON && RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
+            ((NeedLoginActivity) getActivity()).signInFirst(null);
             return true;
         }
         return false;
@@ -430,10 +437,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
+        bundle.putString("show_login_fragment", "show_login_fragment");
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
         bundle.putBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE, true);
-        RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(bundle));
+        ((NeedLoginActivity) getActivity()).signInFirst(bundle);
     }
 
     @Override

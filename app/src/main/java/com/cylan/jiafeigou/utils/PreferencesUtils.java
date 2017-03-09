@@ -35,7 +35,7 @@ public class PreferencesUtils {
     /**
      * put string preferences
      *
-     * @param key   The name of the preference to modify
+     * @param key   The name of the preference to perform
      * @param value The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
@@ -77,7 +77,7 @@ public class PreferencesUtils {
     /**
      * put int preferences
      *
-     * @param key   The name of the preference to modify
+     * @param key   The name of the preference to perform
      * @param value The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
@@ -118,7 +118,7 @@ public class PreferencesUtils {
     /**
      * put long preferences
      *
-     * @param key   The name of the preference to modify
+     * @param key   The name of the preference to perform
      * @param value The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
@@ -159,7 +159,7 @@ public class PreferencesUtils {
     /**
      * put float preferences
      *
-     * @param key   The name of the preference to modify
+     * @param key   The name of the preference to perform
      * @param value The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */
@@ -200,7 +200,7 @@ public class PreferencesUtils {
     /**
      * put boolean preferences
      *
-     * @param key   The name of the preference to modify
+     * @param key   The name of the preference to perform
      * @param value The new value for the preference
      * @return True if the new values were successfully written to persistent storage.
      */

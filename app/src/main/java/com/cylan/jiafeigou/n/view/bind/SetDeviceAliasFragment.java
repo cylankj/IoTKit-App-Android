@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SetDeviceAliasPresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoginButton;
 
@@ -77,7 +78,13 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
 //        super.onViewCreated(view, savedInstanceState);
         Bundle bundle = getArguments();
+        String alias = bundle.getString(JConstant.KEY_BIND_DEVICE_ALIAS);
+        if (!TextUtils.isEmpty(alias)) {
+            etInputBox.setHint(alias);
+            return;
+        }
         String type = bundle.getString(JConstant.KEY_BIND_DEVICE);
+
         if (!TextUtils.isEmpty(type)) {
             etInputBox.setHint(type);
         }
@@ -114,6 +121,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
     @Override
     public void setupAliasDone() {
         ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
-        getActivity().finish();
+        if (getActivity() != null && getActivity() instanceof BindDeviceActivity)
+            ((BindDeviceActivity) getActivity()).finishExt();
     }
 }

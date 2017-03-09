@@ -44,7 +44,7 @@ public class ScanResultListFilter {
             return results;
         }
         for (ScanResult result : list) {
-            final String ssid = result.SSID.replace("\"", "");
+            final String ssid = result.SSID.replace("\"", "");//不能过滤 blank
             if (JFGRules.isCylanDevice(ssid))
                 continue;
             if (TextUtils.isEmpty(result.SSID)

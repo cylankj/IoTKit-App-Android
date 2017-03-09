@@ -17,13 +17,13 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.cache.LogState.STATE_GUEST;
 import static com.cylan.jiafeigou.cache.LogState.STATE_NONE;
 
 
@@ -61,7 +61,8 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
 
     @OnClick(R.id.btn_look_around)
     public void toLookAround(View view) {
-        DataSourceManager.getInstance().setLoginState(new LogState(STATE_NONE));
+        DataSourceManager.getInstance().setLoginState(new LogState(STATE_GUEST));
+        DataSourceManager.getInstance().clear();
         if (getView() != null)
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_look_around));
 //        clearChildren();
@@ -87,7 +88,7 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_login));
         Bundle bundle = new Bundle();
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
-        RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(bundle));
+        ((NeedLoginActivity) getActivity()).signInFirst(bundle);
     }
 
     @OnClick(R.id.btn_to_register)
@@ -95,10 +96,10 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
         if (getView() != null)
             ViewUtils.deBounceClick(getView().findViewById(R.id.btn_to_register));
         Bundle bundle = new Bundle();
-        bundle.putString(RxEvent.NeedLoginEvent.KEY, RxEvent.NeedLoginEvent.KEY);
+        bundle.putString("show_login_fragment", "show_login_fragment");
         bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
         bundle.putBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE, false);
-        RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(bundle));
+        ((NeedLoginActivity) getActivity()).signInFirst(bundle);
     }
 
     /**

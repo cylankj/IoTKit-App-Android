@@ -8,21 +8,20 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
-import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
+
+import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscription;
@@ -133,12 +132,13 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 addReqBean.account = checkAccountCallback.s;
                 addReqBean.alias = checkAccountCallback.s1;
                 try {
-                    addReqBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, checkAccountCallback.s + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
-                } catch (JfgException e) {
+                    //头像
+                    addReqBean.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(1, String.format(Locale.getDefault(), "image/%s.jpg", addReqBean.account));
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
                 getView().hideFindLoading();
-                getView().setFindResult(false, addReqBean,checkAccountCallback.b);
+                getView().setFindResult(false, addReqBean, checkAccountCallback.b);
             }
         } else {
             //  未注册 无结果

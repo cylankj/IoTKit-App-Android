@@ -40,7 +40,7 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
     public void onBind(final SuperViewHolder holder, int viewType, int layoutPosition, final DeviceBean item) {
         final int deviceType = item.pid;
 
-        int iconRes = JConstant.onLineIconMap.get(deviceType);
+        int iconRes = JConstant.getOnlineIcon(deviceType);
         //昵称
         holder.setText(R.id.tv_device_name, TextUtils.isEmpty(item.alias) ? item.uuid : item.alias);
         //图标

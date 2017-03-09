@@ -32,6 +32,6 @@ public interface ScanContract {
          * 扫描附近设备
          */
 //        void startScan();
-        void submit(Bundle bundle);
+//        void submit(Bundle bundle);
     }
 }

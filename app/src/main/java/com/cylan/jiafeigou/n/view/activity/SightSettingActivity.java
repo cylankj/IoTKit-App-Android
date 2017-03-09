@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
@@ -54,5 +55,11 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
                 rbtnSightVertical.setChecked(true);
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ToastUtil.showToast(getString(R.string.SCENE_SAVED));
     }
 }

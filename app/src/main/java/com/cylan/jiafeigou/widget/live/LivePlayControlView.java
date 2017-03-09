@@ -26,6 +26,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
     private int state = STATE_LOADING;
 
     private TextView textView;
+    private TextView tvHelp;
     private SimpleProgressBar simpleProgressBar;
     private ImageView imageView;
     private Action action;
@@ -44,9 +45,11 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
         setOrientation(LinearLayout.VERTICAL);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.live_play_control_layout_content, this, true);
         textView = (TextView) view.findViewById(R.id.tv_control_content);
+        tvHelp = (TextView) view.findViewById(R.id.tv_control_help);
         simpleProgressBar = (SimpleProgressBar) view.findViewById(R.id.sp_control_loading);
         imageView = (ImageView) view.findViewById(R.id.img_state);
         imageView.setOnClickListener(this);
+        tvHelp.setOnClickListener(this);
         textView.setOnClickListener(this);
     }
 
@@ -56,12 +59,18 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
 
     @Override
     public void setState(int state, CharSequence content) {
+        setState(state, content, null);
+    }
+
+    @Override
+    public void setState(int state, CharSequence content, String help) {
         this.state = state;
         switch (state) {
             case STATE_LOADING:
                 toDismiss(3);
                 toDismiss(1);
                 textView.setVisibility(GONE);
+                tvHelp.setVisibility(GONE);
                 imageView.setVisibility(GONE);
                 if (!simpleProgressBar.isShown())
                     simpleProgressBar.setVisibility(VISIBLE);
@@ -73,6 +82,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                     imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.camera_icon_pause);
                 textView.setVisibility(GONE);
+                tvHelp.setVisibility(GONE);
                 simpleProgressBar.setVisibility(GONE);
                 break;
             case STATE_STOP:
@@ -81,6 +91,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                     imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.camera_icon_play);
                 textView.setVisibility(GONE);
+                tvHelp.setVisibility(GONE);
                 simpleProgressBar.setVisibility(GONE);
                 break;
             case STATE_LOADING_FAILED:
@@ -93,6 +104,10 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                     textView.setVisibility(VISIBLE);
                 if (!TextUtils.isEmpty(content))
                     textView.setText(content);
+                if (!TextUtils.isEmpty(help)) {
+                    tvHelp.setVisibility(VISIBLE);
+                    tvHelp.setText(help);
+                }
                 break;
             case STATE_IDLE:
                 setVisibility(GONE);
@@ -156,6 +171,9 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 if (action != null) action.clickImage(state);
                 break;
             case R.id.tv_control_content:
+                if (action != null) action.clickText();
+                break;
+            case R.id.tv_control_help:
                 if (action != null) action.clickText();
                 break;
         }

@@ -116,10 +116,10 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onCreate() {
         super.onCreate();
+        long time = System.currentTimeMillis();
         enableDebugOptions();
         MtaManager.init(getApplicationContext(), true);
         //每一个新的进程启动时，都会调用onCreate方法。
-        DataSource.getInstance().onCreate();
         initBlockCanary();
         initBugMonitor();
         registerBootComplete();
@@ -129,6 +129,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         initTwitter();
         initFaceBook();
         initHuaweiPushSDK();
+        Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
     }
 
     private void initHuaweiPushSDK() {

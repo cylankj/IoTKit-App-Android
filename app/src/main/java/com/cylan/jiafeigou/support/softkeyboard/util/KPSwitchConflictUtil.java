@@ -50,11 +50,11 @@ public class KPSwitchConflictUtil {
     }
 
     /**
-     * Attach the action of {@code switchPanelKeyboardBtn} and the {@code focusView} to
+     * Attach the option of {@code switchPanelKeyboardBtn} and the {@code focusView} to
      * non-layout-conflict.
      * <p/>
      * You do not have to use this method to attach non-layout-conflict, in other words, you can
-     * attach the action by yourself with invoke methods manually: {@link #showPanel(View)}、
+     * attach the option by yourself with invoke methods manually: {@link #showPanel(View)}、
      * {@link #showKeyboard(View, View)}、{@link #hidePanelAndKeyboard(View)}, and in the case of don't
      * invoke this method to attach, and if your activity with the fullscreen-theme, please ensure your
      * panel layout is {@link View#INVISIBLE} before the keyboard is going to show.

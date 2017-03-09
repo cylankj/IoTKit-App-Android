@@ -238,7 +238,8 @@ dependencies {
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
     annotationProcessor 'com.cylan.ext:processor:0.1.0'
     debugCompile 'com.cylan.ext:optdebug:0.0.1'
-    releaseCompile 'com.cylan.ext:optrelease:0.0.1'
+    releaseCompile 'com.cylan.ext:optdebug:0.0.1'
+//    releaseCompile 'com.cylan.ext:optrelease:0.0.1'
     //渠道包
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
     // twitter
@@ -256,7 +257,5 @@ dependencies {
 
     compile(name: rootProject.ext.cySdk, ext: 'aar')
     //aar通用依赖，不需要指定名字
-
-//    compile 'org.jetbrains:annotations:15.0'
 }
 

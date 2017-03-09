@@ -79,7 +79,6 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     protected void onStart() {
         super.onStart();
         if (mPresenter != null) {
-
             mPresenter.onStart();
         }
     }
@@ -140,7 +139,6 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     public void onLoginStateChanged(boolean online) {
-        showToast("还未登录");
     }
 
     /**
@@ -184,12 +182,15 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             return;
         }
-
-        boolean exit = ((BasePresenter) mPresenter).hasReadyForExit();
-        if (exit) {
-            if (shouldExit()) onPrepareToExit(super::onBackPressed);
+        if (mPresenter != null) {
+            boolean exit = ((BasePresenter) mPresenter).hasReadyForExit();
+            if (exit) {
+                if (shouldExit()) onPrepareToExit(super::onBackPressed);
+            } else {
+                showToast(getString(R.string.click_back_again_exit));
+            }
         } else {
-            showToast(getString(R.string.click_back_again_exit));
+            onPrepareToExit(super::onBackPressed);
         }
     }
 

@@ -48,13 +48,17 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
             holder.setVisibility(R.id.tv_wonderful_item_footer, View.INVISIBLE);
             initClickListener(holder, layoutPosition);
             handleState(holder, item);
-        }
 
+
+        }
         if (layoutPosition == getCount() - 1
                 && getItem(getCount() - 1).msgType != DpMsgDefine.DPWonderItem.TYPE_LOAD
                 && layoutPosition > 0) {
             holder.setVisibility(R.id.tv_wonderful_item_footer, View.VISIBLE);
-        } else holder.setVisibility(R.id.tv_wonderful_item_footer, View.INVISIBLE);
+        } else if (getItem(getCount() - 1).msgType != DpMsgDefine.DPWonderItem.TYPE_LOAD) {
+            holder.setVisibility(R.id.tv_wonderful_item_footer, View.INVISIBLE);
+        }
+
     }
 
     private void initClickListener(SuperViewHolder holder, final int layoutPosition) {
@@ -85,9 +89,9 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .into((ImageView) holder.getView(R.id.iv_wonderful_item_content));
         }
-
-
     }
+
+
 
     @Override
     protected IMulItemViewType<DpMsgDefine.DPWonderItem> offerMultiItemViewType() {

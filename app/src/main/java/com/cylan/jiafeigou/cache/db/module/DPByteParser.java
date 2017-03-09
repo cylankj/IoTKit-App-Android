@@ -2,6 +2,11 @@ package com.cylan.jiafeigou.cache.db.module;
 
 import android.util.SparseArray;
 
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.jiafeigou.dp.DpUtils;
+
+import java.io.IOException;
+
 
 /**
  * Created by yanzhendong on 2017/2/27.
@@ -50,5 +55,14 @@ public class DPByteParser {
         mElementMap.put(601, String.class);
         mElementMap.put(602, com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem.class);
         mElementMap.put(701, boolean.class);
+    }
+
+    public static <T> T parse(IDPEntity entity) {
+        try {
+            return (T) DpUtils.unpackData(entity.getBytes(), mElementMap.get(entity.getMsgId()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }

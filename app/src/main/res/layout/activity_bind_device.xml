@@ -30,7 +30,7 @@
             android:background="@color/color_white"
             hunt:leftDrawable="@drawable/icon_scan_code"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
-            hunt:text="@string/Tap3_FriendsAdd_QR"
+            hunt:text="@string/Tap1_AddDevice_QR"
             hunt:textColor="@color/color_383838"
             hunt:textSize="@dimen/sp16" />
 
@@ -43,6 +43,17 @@
             hunt:leftDrawable="@drawable/icon_home_camera_online"
             hunt:rightDrawable="@drawable/icon_mine_arrow_next"
             hunt:text="@string/DOG_CAMERA_NAME"
+            hunt:textColor="@color/color_383838"
+            hunt:textSize="@dimen/sp16" />
+
+        <com.cylan.jiafeigou.widget.HomeMineItemView
+            android:id="@+id/v_to_bind_panorama_camera"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y67"
+            android:background="@color/color_white"
+            hunt:leftDrawable="@drawable/home_icon_720camera_online"
+            hunt:rightDrawable="@drawable/icon_mine_arrow_next"
+            hunt:text="720°摄像机"
             hunt:textColor="@color/color_383838"
             hunt:textSize="@dimen/sp16" />
 

@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">Ajustes de phone &#8211;>Red de área local inalámbrica,elija DOG&#8211;ML****** entre,si necesitan contraseña, introduzca 11111111</string>
   <string name="WIFI_SET_4">lver a %s</string>
   <string name="WIFI_SET_5GTIPS">Nota:No es compatible con el WiFi 5G</string>
+  <string name="WONDER_TODAY_H_M">Hoy HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">Ayer HH:mm</string>
   <string name="Word_Hours">Hora</string>
   <string name="XX_DISCOVERY">\"%s\" Entidad moviendo</string>
   <string name="YOUR_FEEDBACK">Escuchamos concienzudamente las sugerencias de todos los usuarios</string>

@@ -37,7 +37,7 @@ public interface CamLiveContract {
 
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
-        void onDeviceInfoChanged();
+        void onDeviceInfoChanged(long id);
 
         /**
          * 准备播放

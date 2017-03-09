@@ -98,7 +98,10 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
             return;
         }
         try {
-            if (uuid != null) JfgCmdInsurance.getCmd().stopPlay(uuid);
+            if (uuid != null) {
+                int ret = JfgCmdInsurance.getCmd().stopPlay(uuid);
+                AppLogger.e("disconnect ret: " + ret);
+            }
             isConnectOk = false;
             JfgCmdInsurance.getCmd().playVideo(uuid);
         } catch (JfgException e) {

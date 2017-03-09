@@ -42,12 +42,11 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.CloudLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
+import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -55,8 +54,10 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
+import com.google.gson.Gson;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -131,9 +132,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onResume();
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
-        homePageListAdapter.notifyDataSetChanged();
         if (basePresenter != null) {
-            basePresenter.fetchGreet();
+            basePresenter.fetchDeviceList(false);
         }
     }
 
@@ -272,8 +272,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
         if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-            if (RxBus.getCacheInstance().hasObservers())
-                RxBus.getCacheInstance().post(new RxEvent.NeedLoginEvent(null));
+            ((NeedLoginActivity) getActivity()).signInFirst(null);
             return;
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -311,10 +310,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onItemsInsert(List<String> resultList) {
         homePageListAdapter.clear();//暴力刷新,设备没几个,没关系.
         homePageListAdapter.addAll(resultList);
-        srLayoutMainContentHolder.setNestedScrollingEnabled(resultList.size() > JFGRules.NETSTE_SCROLL_COUNT);
-        onRefreshFinish();
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
-        Log.d("onItemsInsert", "onItemsInsert: " + resultList);
+        onRefreshFinish();
+        Log.d("onItemsInsert", "onItemsInsert:" + resultList);
+        srLayoutMainContentHolder.setNestedScrollingEnabled(resultList.size() > JFGRules.NETSTE_SCROLL_COUNT);
     }
 
     @Override
@@ -330,17 +329,22 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     }
 
-//    @Override
-//    public ArrayList<String> getUuidList() {
-//        return homePageListAdapter == null ? null : (ArrayList<String>) homePageListAdapter.getList();
-//    }
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if (isVisibleToUser && isResumed() && getActivity() != null) {
+        }
+    }
 
     @Override
     public void onAccountUpdate(JFGAccount greetBean) {
-        tvHeaderNickName.setText(String.format("Hi,%s",
-                getBeautifulAlias(greetBean)));
-        tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
-                : getString(R.string.Tap1_Index_NightGreetings));
+        Log.d("JFGAccount", "JFGAccount: " + new Gson().toJson(greetBean));
+        tvHeaderNickName.post(() -> {
+            tvHeaderNickName.setText(String.format("Hi,%s", getBeautifulAlias(greetBean)));
+            tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
+                    : getString(R.string.Tap1_Index_NightGreetings));
+            tvHeaderNickName.requestLayout();
+        });
     }
 
     /**
@@ -388,18 +392,20 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onRefreshFinish() {
+        Log.d("refresh", "refresh:end ");
         srLayoutMainContentHolder.setRefreshing(false);
     }
 
-    @Override
-    public void unBindDeviceRsp(int state) {
-        ToastUtil.showToast(getString(state == JError.ErrorOK ? R.string.DELETED_SUC : R.string.Tips_DeleteFail));
-    }
+//    @Override
+//    public void unBindDeviceRsp(int state) {
+//        ToastUtil.showToast(getString(state == JError.ErrorOK ? R.string.DELETED_SUC : R.string.Tips_DeleteFail));
+//    }
 
     @Override
     public void onRefresh() {
         //不使用post,因为会泄露
         srLayoutMainContentHolder.setRefreshing(true);
+        Log.d("refresh", "refresh:start ");
         if (basePresenter != null)
             basePresenter.fetchDeviceList(true);
     }
@@ -436,7 +442,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 startActivity(new Intent(getActivity(), CloudLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid));
             } else {
-                ToastUtil.showToast("设备没定义");
+                homePageListAdapter.notifyDataSetChanged();
+                AppLogger.e("dis match pid pid: " + pid);
             }
         }
     }
@@ -448,7 +455,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             AppLogger.d("woo,position is invalid: " + position);
             return false;
         }
-        deleteItem(position);
+//        deleteItem(position);
         return true;
     }
 
@@ -473,13 +480,13 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         //刷新需要剩下的item
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
         srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
-        basePresenter.unBindDevReq(deleteUUID);
+//        basePresenter.unBindDevReq(deleteUUID);
     }
 
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-        srLayoutMainContentHolder.setEnabled(verticalOffset == 0);
+//        srLayoutMainContentHolder.setEnabled(verticalOffset == 0);
         final float ratio = (appbar.getTotalScrollRange() + verticalOffset) * 1.0f
                 / appbar.getTotalScrollRange();
 //        AppLogger.d("verticalOffset: " + " " + verticalOffset + "   " + ratio);

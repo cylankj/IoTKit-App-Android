@@ -12,10 +12,14 @@ public interface ViewablePresenter extends JFGPresenter {
      */
     void switchSpeaker();
 
+    void switchMicrophone();
+
     /**
      * 能查看设备摄像头的view,都应该具备主动查看的能力
      */
     void startViewer();
+
+    void cancelViewer();
 
     /**
      * 能查看设备摄像头的view,都应该具备主动断开的能力

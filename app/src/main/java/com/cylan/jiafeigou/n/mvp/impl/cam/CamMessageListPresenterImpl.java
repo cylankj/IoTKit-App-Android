@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -60,9 +61,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .map(new Func1<RxEvent.DeviceSyncRsp, Boolean>() {
                     @Override
                     public Boolean call(RxEvent.DeviceSyncRsp update) {
-                        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_204_SDCARD_STORAGE, DpMsgDefine.DPSdStatus.empty);
+                        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
                         getView().deviceInfoChanged(DpMsgMap.ID_204_SDCARD_STORAGE, status);
-                        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_201_NET, DpMsgDefine.DPNet.empty);
+                        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.DPNet.empty);
                         getView().deviceInfoChanged(DpMsgMap.ID_201_NET, net);
                         AppLogger.e("收到刷新");
                         return null;
@@ -73,9 +74,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void fetchMessageList(final boolean manually, boolean asc) {
+    public void fetchMessageList(final int count, boolean asc) {
         unSubscribe(qeurySub);
-        qeurySub = queryTimeLine(20, asc)
+        qeurySub = queryTimeLine(count, asc)
                 .map((ArrayList<CamMessageBean> camList) -> {
                     ArrayList<CamMessageBean> list = getView().getList();
                     if (list != null)

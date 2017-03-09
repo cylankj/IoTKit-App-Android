@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
@@ -139,6 +140,11 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
             case R.id.tv_setting_unbind:
                 ViewUtils.deBounceClick(view);
+                int net = NetUtils.getJfgNetType(getActivity());
+                if (net == 0) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
                 if (simpleDialogFragment == null) {
                     Bundle bundle = new Bundle();
                     JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
@@ -163,12 +169,14 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
 
     @Override
     public void onClearBellRecordSuccess() {
-        ToastUtil.showPositiveToast("清空呼叫记录成功!");
+        ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override
-    public void onClearBellRecordFaild() {
-        ToastUtil.showNegativeToast("清空呼叫记录失败!");
+    public void onClearBellRecordFailed() {
+        ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
+        LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
     }
 
     @Override

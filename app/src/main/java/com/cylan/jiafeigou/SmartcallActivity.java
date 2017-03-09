@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.engine.DaemonService;
+import com.cylan.jiafeigou.n.engine.DataSource;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
@@ -74,6 +75,7 @@ public class SmartcallActivity extends NeedLoginActivity
         } else {
             splashOver();
         }
+        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
 
     }
 
@@ -232,7 +234,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     public void onWriteStoragePermissionsDenied() {
-        // NOTE: Perform action that requires the permission.
+        // NOTE: Perform option that requires the permission.
         // If this is run by PermissionsDispatcher, the permission will have been granted
 //        Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
         if (presenter != null) presenter.finishAppDelay();
@@ -247,6 +249,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void showWriteStoragePermissions() {
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
+        DataSource.getInstance().onCreate();
     }
 
     @NeedsPermission({Manifest.permission.READ_PHONE_STATE})
@@ -271,7 +274,7 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @NeedsPermission(Manifest.permission.CAMERA)
     public void showCamera() {
-        // NOTE: Perform action that requires the permission. If this is run by PermissionCheckerUitls, the permission will have been granted
+        // NOTE: Perform option that requires the permission. If this is run by PermissionCheckerUitls, the permission will have been granted
         //do you business
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showCamera");
     }

@@ -115,7 +115,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(o));
+//                    AppLogger.i("LoginAccountBean: " + new Gson().toJson(o));
                     //非三方登录的标记
                     RxBus.getCacheInstance().postSticky(o.loginType);
                     return null;

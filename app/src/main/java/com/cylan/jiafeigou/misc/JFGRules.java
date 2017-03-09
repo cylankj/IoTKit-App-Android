@@ -108,12 +108,15 @@ public class JFGRules {
     public static boolean isWifiCam(int pid) {
         return pid == JConstant.OS_CAMERA_UCOS ||
                 pid == JConstant.OS_CAMERA_UCOS_V2 ||
+                pid == JConstant.PID_CAMERA_WIFI_G1 ||
                 pid == JConstant.OS_CAMERA_UCOS_V3;
     }
 
     public static boolean isPanoramicCam(int pid) {
         return pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
                 pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
+                pid == JConstant.PID_CAMERA_PANORAMA_HAISI_960 ||
+                pid == JConstant.PID_CAMERA_PANORAMA_HAISI_1080 ||
                 pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
     }
 
@@ -127,7 +130,7 @@ public class JFGRules {
     }
 
     public static boolean is3GCam(int pid) {
-        return pid == JConstant.OS_CAMERA_ANDROID_3_0;
+        return pid == JConstant.PID_CAMERA_ANDROID_3_0;
     }
 
     public static boolean isFreeCam(int pid) {
@@ -139,7 +142,7 @@ public class JFGRules {
     }
 
     public static boolean showLedIndicator(int pid) {
-        return pid == JConstant.OS_CAMERA_ANDROID_3_0 ||
+        return pid == JConstant.PID_CAMERA_ANDROID_3_0 ||
                 pid == JConstant.OS_CAMERA_ANDROID ||
                 pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
                 pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
@@ -154,7 +157,7 @@ public class JFGRules {
      * @return
      */
     public static boolean showDelayRecordBtn(int pid) {
-        return pid == JConstant.OS_CAMERA_ANDROID_3_0;
+        return pid == JConstant.PID_CAMERA_ANDROID_3_0;
     }
 
     //freeCam 海思 wifi
@@ -184,7 +187,7 @@ public class JFGRules {
             case JConstant.OS_CAMERA_PANORAMA_HAISI:
             case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
             case JConstant.OS_CAMERA_PANORAMA_GUOKE:
-            case JConstant.OS_CAMERA_ANDROID_3_0:
+            case JConstant.PID_CAMERA_ANDROID_3_0:
                 return true;
             default:
                 return false;
@@ -195,9 +198,17 @@ public class JFGRules {
         switch (pid) {
             case JConstant.OS_DOOR_BELL:
             case JConstant.OS_DOOR_BELL_V2:
+            case JConstant.PID_BELL_G_1:
+            case JConstant.PID_BELL_G_2:
+            case JConstant.OS_CAMERA_FXXX_LESHI:
+            case JConstant.PID_CAMERA_FXXX_LESHI_PID:
                 return true;
         }
         return false;
+    }
+
+    public static boolean isVRCam(int pid) {
+        return pid == JConstant.PID_CAMERA_VR_720;
     }
 
     /**
@@ -242,6 +253,7 @@ public class JFGRules {
          * 设备离线了
          */
         public static final int ERR_DEVICE_OFFLINE = 3;
+        public static final int STOP_MAUNALLY = -3;
 
     }
 

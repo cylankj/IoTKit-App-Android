@@ -27,6 +27,12 @@ public interface DoorBellHomeContract {
         void onDeleteBellRecordSuccess(List<BellCallRecordBean> list);
 
         void onDeleteBellCallRecordFailed();
+
+        void onBellRecordCleared();
+
+        void onDeviceUnBind();
+
+        void onFinish();
     }
 
     interface Presenter extends JFGPresenter {
@@ -34,6 +40,8 @@ public interface DoorBellHomeContract {
         void fetchBellRecordsList(boolean asc, long time);
 
         void deleteBellCallRecord(List<BellCallRecordBean> list);
+
+        void cancelFetch();
     }
 }
 

@@ -17,38 +17,13 @@
         android:layout_marginTop="-8dp"
         card:cardElevation="@dimen/x10">
 
-        <LinearLayout
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:paddingEnd="@dimen/x13"
             android:paddingStart="@dimen/x13"
-            android:paddingTop="@dimen/y37">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/pic_welcome_page_3" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y30"
-                android:text="全景摄像机即将推出"
-                android:textColor="@color/color_5e97df"
-                android:textSize="@dimen/sp17" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/y40"
-                android:layout_marginTop="@dimen/y3"
-                android:text="结合VR产品，前所未有的视觉体验"
-                android:textColor="@color/color_84bcfb"
-                android:textSize="@dimen/sp14" />
-        </LinearLayout>
+            android:paddingTop="@dimen/y37"
+            android:src="@drawable/pic_welcome_page_3" />
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
@@ -59,38 +34,13 @@
         android:layout_marginTop="-5dp"
         card:cardElevation="@dimen/x10">
 
-        <LinearLayout
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:paddingEnd="@dimen/x13"
             android:paddingStart="@dimen/x13"
-            android:paddingTop="@dimen/y37">
-
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/pic_welcome_page_2" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y30"
-                android:text="记录生活的每日精彩"
-                android:textColor="@color/color_5e97df"
-                android:textSize="@dimen/sp17" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/y40"
-                android:layout_marginTop="@dimen/y3"
-                android:text="新增每日精彩，制作生活微视频"
-                android:textColor="@color/color_84bcfb"
-                android:textSize="@dimen/sp14" />
-        </LinearLayout>
+            android:paddingTop="@dimen/y37"
+            android:src="@drawable/pic_welcome_page_2" />
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.CardView
@@ -99,38 +49,15 @@
         android:layout_gravity="center"
         card:cardElevation="@dimen/x10">
 
-        <LinearLayout
+
+        <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:paddingEnd="@dimen/x13"
             android:paddingStart="@dimen/x13"
-            android:paddingTop="@dimen/y37">
+            android:paddingTop="@dimen/y37"
+            android:src="@drawable/pic_welcome_page_1" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/pic_welcome_page_1" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginTop="@dimen/y30"
-                android:text="全新设计"
-                android:textColor="@color/color_5e97df"
-                android:textSize="@dimen/sp17" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="@dimen/y40"
-                android:layout_marginTop="@dimen/y3"
-                android:text="更简洁的设计，更好的体验"
-                android:textColor="@color/color_84bcfb"
-                android:textSize="@dimen/sp14" />
-        </LinearLayout>
     </android.support.v7.widget.CardView>
 </com.cylan.jiafeigou.widget.GreatDragView>
 

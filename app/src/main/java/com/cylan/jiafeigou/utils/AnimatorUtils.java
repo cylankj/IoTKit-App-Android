@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
-import com.nineoldandroids.animation.ValueAnimator;
 
 /**
  * Created by lxh on 16-6-16.
@@ -345,7 +344,6 @@ public class AnimatorUtils {
         ObjectAnimator animator = ObjectAnimator.ofFloat(target, "translationX", right, 0);
         animator.setDuration(600);
         animator.setInterpolator(new DecelerateInterpolator());
-        animator.setRepeatMode(ValueAnimator.INFINITE);
         return animator;
     }
 
@@ -393,6 +391,31 @@ public class AnimatorUtils {
                     }
                 }, 1000);
 
+            }
+        });
+        return slideIn;
+    }
+
+    public static Animator onHandMoveAndFlashPanorama(final View hand, final View redot,
+                                                      final ImageView flash, View bg) {
+        Animator slideIn = slideRight(hand);
+        slideIn.setStartDelay(1000);
+        slideIn.setDuration(500);
+        slideIn.addListener(new SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                hand.setVisibility(View.VISIBLE);
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                bg.setVisibility(View.VISIBLE);
+                redot.setVisibility(View.VISIBLE);
+                android.animation.ObjectAnimator alpha = android.animation.ObjectAnimator.ofFloat(flash, "alpha", 0, 1);
+                alpha.setDuration(500);
+                alpha.setRepeatMode(android.animation.ValueAnimator.REVERSE);
+                alpha.setRepeatCount(3);
+                alpha.start();
             }
         });
         return slideIn;

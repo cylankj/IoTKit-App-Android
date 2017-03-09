@@ -662,7 +662,7 @@
   <string name="Tap1_iHome_NotAssociated">未關聯</string>
   <string name="Tap1_iHome_disassociate">取消關聯</string>
   <string name="Tap1_shareDevice_canceledshare">此設備已取消分享</string>
-  <string name="Tap1_share_tips">邀請你成為我的好友，點擊%s下載安裝【加菲狗客戶端】</string>
+  <string name="Tap1_share_tips">邀請你成為我的好友，點擊 %s 下載安裝【加菲狗客戶端】</string>
   <string name="Tap1a_DownloadInstall">下載並安裝(%s)</string>
   <string name="Tap2_Index_DemoVideo">演示視頻</string>
   <string name="Tap2_Index_Greetings">每一天的生活，都值得被記錄</string>
@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">請在系統設置&#8211;>無線區域網，選擇“DOG&#8211;ML&#8211;******”加入，密碼8個1</string>
   <string name="WIFI_SET_4">回到%s</string>
   <string name="WIFI_SET_5GTIPS">注：暫不支持5GHz的WiFi信號</string>
+  <string name="WONDER_TODAY_H_M">今天 HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">昨天 HH:mm</string>
   <string name="Word_Hours">小時</string>
   <string name="XX_DISCOVERY">“%s”有新的發現</string>
   <string name="YOUR_FEEDBACK">每一位用戶的意見與建議都很重要</string>

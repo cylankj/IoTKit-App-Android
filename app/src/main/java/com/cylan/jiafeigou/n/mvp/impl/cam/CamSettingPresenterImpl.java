@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.n.engine.DataSource;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -21,6 +20,7 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -122,7 +122,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public String getAlarmSubTitle(Context context) {
         DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, (long) DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        if (!flag.$()) {
+        boolean f = MiscUtils.safeGet(flag, false);
+        if (!f) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);
         }
         DpMsgDefine.DPAlarmInfo info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
@@ -152,10 +153,13 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public String getAutoRecordTitle(Context context) {
-        int deviceAutoVideoRecord = device.device_auto_video_record.$();
+        int deviceAutoVideoRecord = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD), 0);
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
         }
+        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
+        if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0)
+            return "";
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
     }
 
@@ -187,7 +191,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 .subscribeOn(Schedulers.newThread())
                 .map((Object o) -> {
                     boolean result = DataSourceManager.getInstance().delRemoteJFGDevice(uuid);
-                    AppLogger.i("unbind uuid: " + uuid + " " + result);
+                    AppLogger.i("unbind remote action uuid: " + uuid + " " + result);
                     return null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -199,18 +203,20 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                                             getView().unbindDeviceRsp(-1);
                                             return null;
                                         }))
-                                .filter(s -> getView() != null)
+                                .filter(event -> getView() != null && event != null)
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .filter(unbindEvent -> {
                                     if (unbindEvent.jfgResult.code != 0)
                                         getView().unbindDeviceRsp(unbindEvent.jfgResult.code);//失败
                                     return unbindEvent.jfgResult.code == 0;
-                                }),
+                                })
+                                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage())),
                         (Object o, RxEvent.UnBindDeviceEvent unbindEvent) -> {
                             getView().unbindDeviceRsp(0);//成功
                             DataSourceManager.getInstance().delLocalJFGDevice(uuid);
                             return null;
                         })
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe());
     }
 }

@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.HardwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.HardwareUpdatePresenterImpl;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -102,8 +103,9 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     private void initView() {
         tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
         DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
-        tvHardwareNowVersion.setText(sVersion.$());
-        tvHardwareNewVersion.setText(sVersion.$());
+        String s  = MiscUtils.safeGet(sVersion,"");
+        tvHardwareNowVersion.setText(s);
+        tvHardwareNewVersion.setText(s);
 
         // 有新版本
         if (checkDevVersion != null && checkDevVersion.hasNew) {

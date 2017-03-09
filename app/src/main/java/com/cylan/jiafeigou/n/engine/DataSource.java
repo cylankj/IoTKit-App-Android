@@ -1,10 +1,8 @@
 package com.cylan.jiafeigou.n.engine;
 
 import android.content.Context;
-import android.content.Intent;
 import android.os.Process;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -35,8 +33,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JResultEvent;
-import com.cylan.jiafeigou.misc.efamily.MsgpackMsg;
-import com.cylan.jiafeigou.n.view.cloud.CloudLiveCallActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
@@ -54,10 +50,11 @@ public class DataSource implements AppCallBack {
 
     static {
         System.loadLibrary("jfgsdk");
-        System.loadLibrary("sqlcipher");
+//        System.loadLibrary("sqlcipher");
     }
 
     private static DataSource instance;
+    private static DataSourceManager manager;
 
     private DataSource() {
     }
@@ -67,6 +64,7 @@ public class DataSource implements AppCallBack {
             synchronized (DataSource.class) {
                 if (instance == null)
                     instance = new DataSource();
+                manager = DataSourceManager.getInstance();
             }
         }
         return instance;
@@ -89,7 +87,16 @@ public class DataSource implements AppCallBack {
         Context context = ContextUtils.getContext();
         Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
         try {
-            JfgAppCmd.initJfgAppCmd(context, DataSource.this);
+            String trimPackageName = JFGRules.getTrimPackageName();
+            //读取Smarthome/log/config.txt的内容
+            String extra = DebugOptionsImpl.getServer();
+            //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
+            String serverAddress = (TextUtils.equals(trimPackageName, "yf") && !TextUtils.isEmpty(extra))
+                    ? extra : Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
+            String vid = Security.getVId(trimPackageName);
+            String vKey = Security.getVKey(trimPackageName);
+            JfgAppCmd.getInstance().setCallBack(DataSource.this);
+            JfgAppCmd.getInstance().initNativeParam(vid, vKey, serverAddress);
             JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
         } catch (Exception e) {
             AppLogger.d("let's go err:" + e.getLocalizedMessage());
@@ -120,11 +127,13 @@ public class DataSource implements AppCallBack {
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
+
     }
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
+
         AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
     }
 
@@ -198,6 +207,7 @@ public class DataSource implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SdcardClearRsp(l, arrayList));
     }
 
@@ -220,6 +230,7 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnResult(JFGResult jfgResult) {
+        RxBus.getCacheInstance().post(jfgResult);
         boolean login = false;
         switch (jfgResult.event) {
             case 0:
@@ -235,7 +246,7 @@ public class DataSource implements AppCallBack {
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备
-                RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(jfgResult));
+//                RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(jfgResult.code));
                 break;
             case JResultEvent.JFG_RESULT_UNBINDDEV:
                 RxBus.getCacheInstance().post(new RxEvent.UnBindDeviceEvent(jfgResult));
@@ -294,7 +305,7 @@ public class DataSource implements AppCallBack {
     @Override
     public void OnOtherClientAnswerCall() {
         AppLogger.d("OnOtherClientAnswerCall");
-        RxBus.getCacheInstance().post(new RxEvent.CallAnswered(false));
+        RxBus.getCacheInstance().post(new RxEvent.CallResponse(false));
     }
 
     @Override
@@ -378,28 +389,6 @@ public class DataSource implements AppCallBack {
         PreferencesUtils.putInt(JConstant.KEY_NTP_INTERVAL, (int) (System.currentTimeMillis() / 1000 - l));
     }
 
-    @Override
-    public void OnEfamilyMsg(byte[] bytes) {
-        MsgpackMsg.MsgHeader header = MsgpackMsg.fromBytes(bytes);
-        if (header == null) {
-            AppLogger.e("err: header is null");
-            return;
-        }
-        RxEvent.EFamilyMsgpack eFamilyMsgpack = new RxEvent.EFamilyMsgpack();
-        eFamilyMsgpack.msgId = header.msgId;
-        eFamilyMsgpack.data = bytes;
-        RxBus.getCacheInstance().post(eFamilyMsgpack);
-        AppLogger.d("OnEfamilyMsg :" + header.msgId);
-
-        //暂try try
-        if ((!TextUtils.isEmpty(header.caller)) && header.msgId == 2529) {
-            Intent intent = new Intent(ContextUtils.getContext(), CloudLiveCallActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, header.caller);
-            intent.putExtra("call_in_or_out", true);
-            ContextUtils.getContext().startActivity(intent);
-        }
-    }
 
     @Override
     public void OnForgetPassByEmailRsp(int i, String s) {
@@ -437,25 +426,13 @@ public class DataSource implements AppCallBack {
 
     @Override
     public HashMap<String, String> getAppParameter() {
-        String trimPackageName = JFGRules.getTrimPackageName();
-        //读取Smarthome/log/config.txt的内容
-        String extra = DebugOptionsImpl.getServer();
-        //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
-        String serverAddress = (TextUtils.equals(trimPackageName, "yf") && !TextUtils.isEmpty(extra))
-                ? extra : Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
-        String vid = Security.getVId(trimPackageName);
-        String vKey = Security.getVKey(trimPackageName);
-        HashMap<String, String> map = new HashMap<>();
-        map.put("vid", vid);
-        map.put("vkey", vKey);
-        map.put("ServerAddress", serverAddress);
-        Log.d("getAppParameter", "getAppParameter:" + map);
-        return map;
+        return new HashMap<>();
     }
 
     @Override
     public void OnBindDevRsp(int i, String s) {
         AppLogger.d("onBindDev: " + i + " uuid:" + s);
+        RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(i, s));
     }
 
     @Override

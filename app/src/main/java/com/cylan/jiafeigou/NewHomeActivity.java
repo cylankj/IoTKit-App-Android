@@ -36,6 +36,9 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 public class NewHomeActivity extends NeedLoginActivity implements
         NewHomeActivityContract.View {
@@ -47,6 +50,8 @@ public class NewHomeActivity extends NeedLoginActivity implements
     public static final String KEY_ENTER_ANIM_ID = "key_enter_anim_id";
     public static final String KEY_EXIT_ANIM_ID = "key_exit_anim_id";
     private SharedElementCallBackListener sharedElementCallBackListener;
+    private Subscription subscribe;
+    private HomeViewAdapter viewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,7 +65,15 @@ public class NewHomeActivity extends NeedLoginActivity implements
         }
         initBottomMenu();
         initMainContentAdapter();
+        initShowWonderPageSub();
         new NewHomeActivityPresenterImpl(this);
+    }
+
+    private void initShowWonderPageSub() {
+        subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> vpHomeContent.setCurrentItem(1));
     }
 
     @Override
@@ -84,6 +97,10 @@ public class NewHomeActivity extends NeedLoginActivity implements
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (subscribe != null && subscribe.isUnsubscribed()) {
+            subscribe.unsubscribe();
+            subscribe = null;
+        }
     }
 
     protected int[] getOverridePendingTransition() {
@@ -95,7 +112,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
     }
 
     private void initMainContentAdapter() {
-        final HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
+        viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
         vpHomeContent.setPagingEnabled(true);
         vpHomeContent.setAdapter(viewAdapter);
         vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {

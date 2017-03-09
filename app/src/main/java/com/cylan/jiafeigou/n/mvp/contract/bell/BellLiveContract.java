@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.bell;
 
+import android.graphics.Bitmap;
+
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
 
@@ -15,6 +17,11 @@ public interface BellLiveContract {
         void onLiveStop(int errId);
 
 
+        void onTakeSnapShotSuccess(Bitmap bitmap);
+
+        void onTakeSnapShotFailed();
+
+        void onDeviceUnBind();
     }
 
     interface Presenter extends CallablePresenter {

@@ -173,7 +173,7 @@ public class SuperWaveView extends View {
     }
 
     private void drawShader(Canvas canvas, final int index) {
-        // modify paint shader according to mShowWave state
+        // perform paint shader according to mShowWave state
         if (waveShader != null) {
             // first call after mShowWave, assign it to our paint
             if (wavePaint[index].getShader() == null) {

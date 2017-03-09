@@ -40,6 +40,7 @@ import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -54,6 +55,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import rx.Subscription;
 
 public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeContract.Presenter>
         implements DoorBellHomeContract.View,
@@ -93,14 +95,15 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private boolean mIsLastLoadFinish = true;
     private boolean mIsShardAccount = false;
     private long mLastEnterTime;
-    private boolean mHasLoadInited = false;
-
+    private boolean mHasLoadInitFinished = false;
+    private Subscription pageSub;
 
     @Override
     protected void initViewAndListener() {
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
         cvBellHomeBackground.setActionInterface(this);
         initAdapter();
+//        pageSub = getShowWonderPageSub();
     }
 
     @Override
@@ -108,7 +111,9 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         super.onStart();
         registerNetWorkObserver();
         mLastEnterTime = PreferencesUtils.getLong("BELL_HOME_LAST_ENTER_TIME");
-        startLoadData(false, 0);
+        if (!mHasLoadInitFinished) {
+            startLoadData(false, 0);
+        }
     }
 
     @Override
@@ -127,6 +132,15 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     protected DoorBellHomeContract.Presenter onCreatePresenter() {
         return new DBellHomePresenterImpl();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (pageSub != null && pageSub.isUnsubscribed()) {
+            pageSub.unsubscribe();
+            pageSub = null;
+        }
     }
 
     @Override
@@ -165,6 +179,15 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         });
     }
 
+//    private Subscription getShowWonderPageSub() {
+////        return RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
+////                .subscribeOn(Schedulers.io())
+////                .observeOn(AndroidSchedulers.mainThread())
+////                .subscribe(event -> {
+////                    finish();
+////                });
+//    }
+
     private void startLoadData(boolean asc, long version) {
         LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false);
         mIsLastLoadFinish = false;
@@ -191,6 +214,13 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 onBackPressed();
                 break;
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        mPresenter.cancelFetch();
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
 
     private void initSettingFragment() {
@@ -250,7 +280,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onRecordsListRsp(List<BellCallRecordBean> beanArrayList) {
-        mHasLoadInited = true;
+        mHasLoadInitFinished = true;
         LoadingDialog.dismissLoading(getSupportFragmentManager());
         mEmptyView.postDelayed(() -> LoadingDialog.dismissLoading(getSupportFragmentManager()), 300);//防止 loadingDialog还没添加数据就已经返回了导致dismiss 不掉
         if (beanArrayList != null && beanArrayList.size() < 20) endlessLoading = true;
@@ -275,13 +305,29 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         for (BellCallRecordBean bean : list) {
             bellCallRecordListAdapter.remove(bean);
         }
-
-
+        boolean isEmpty = bellCallRecordListAdapter.getList().size() == 0;
+        mEmptyView.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
     }
 
     @Override
     public void onDeleteBellCallRecordFailed() {
         ToastUtil.showNegativeToast("刪除失敗");
+    }
+
+    @Override
+    public void onBellRecordCleared() {
+        bellCallRecordListAdapter.clear();
+        mEmptyView.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void onDeviceUnBind() {
+        finish();
+    }
+
+    @Override
+    public void onFinish() {
+        finish();
     }
 
 
@@ -383,7 +429,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void loadMedia(final BellCallRecordBean item, final ImageView imageView) {
         Glide.with(this)
-                .load(new JFGGlideURL(JfgEnum.JFG_URL.WARNING, item.type, item.timeInLong / 1000 + ".jpg", mUUID))
+                .load(new JFGGlideURL(mUUID, JfgEnum.JFG_URL.WARNING, item.type, item.timeInLong / 1000 + ".jpg", mUUID))
                 .asBitmap()
                 .placeholder(R.drawable.pic_head_normal240px)
                 .centerCrop()
@@ -417,7 +463,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onShowProperty(JFGDoorBellDevice device) {
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         if (isNetworkConnected(this)) {
-            cvBellHomeBackground.setState(device.net.$().net);
+            DpMsgDefine.DPNet net = MiscUtils.safeGet_(device.net, DpMsgDefine.DPNet.empty);
+            cvBellHomeBackground.setState(net.net);
         } else {
             cvBellHomeBackground.setState(2);
         }
@@ -438,9 +485,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
             NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
             NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
             if (!mobNetInfo.isConnected() && !wifiNetInfo.isConnected()) {
-//                BSToast.showLong(context, "网络不可以用");
                 cvBellHomeBackground.setState(2);
                 //改变背景或者 处理网络的全局变量
             } else {

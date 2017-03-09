@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">Trong mục \"Cài đặt\"&#8211;>\"WLAN\", chọn \"DOG&#8211;ML&#8211;*****\" kết nối iPhone, Mật khẩu 11111111</string>
   <string name="WIFI_SET_4">Trở lại %s</string>
   <string name="WIFI_SET_5GTIPS">Lưu ý:5G Wi&#8211;Fi chưa được bật</string>
+  <string name="WONDER_TODAY_H_M">Hôm nay HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">Hôm qua HH:mm</string>
   <string name="Word_Hours">giờ</string>
   <string name="XX_DISCOVERY">\"%s\" có khám phá mới</string>
   <string name="YOUR_FEEDBACK">Ý kiến của bạn rất quan trọng</string>

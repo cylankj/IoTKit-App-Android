@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.HistoryDateFlatten;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
@@ -57,6 +56,7 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NERWORK;
+import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 
 /**
  * Created by cylan-hunt on 16-7-27.
@@ -68,7 +68,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private int playState = PLAY_STATE_IDLE;
     private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
     private IData historyDataProvider;
-    private int stopReason = JError.STOP_MAUNALLY;//手动断开
+    private int stopReason = STOP_MAUNALLY;//手动断开
     private CompositeSubscription liveSubscription;
     /**
      * 帧率记录
@@ -100,7 +100,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             boolean notNull = getView() != null
                                     && TextUtils.equals(uuid, jfgMsgVideoDisconn.remote);
                             if (!notNull) {
-                                AppLogger.e("err: " + uuid);
+                                AppLogger.e("err: " + uuid + " remote:" + jfgMsgVideoDisconn.remote);
                             } else {
                                 AppLogger.i("stop for reason: " + jfgMsgVideoDisconn.code);
                             }
@@ -177,8 +177,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         liveSubscription.add(videoDisconnectSub());
         liveSubscription.add(prePlay(s -> {
             try {
-                JfgCmdInsurance.getCmd().playVideo(uuid);
-                AppLogger.i("play video: " + uuid);
+                int ret = JfgCmdInsurance.getCmd().playVideo(uuid);
+                AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -194,12 +194,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 }))
                 //filter getInterestingOne()
                 .filter(result -> {
-                    AppLogger.d("action: " + result);
+                    AppLogger.d("option: " + result);
                     return TextUtils.equals(result, "JFGMsgVideoResolution");
                 }), (String s, Object o) -> {
             AppLogger.i("start to receive rtcp");
             //开始接收rtcp
-            liveSubscription.add(rtcpNotifySub().subscribe());
+            liveSubscription.add(rtcpNotifySub()
+                    .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                    .subscribe());
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
@@ -216,7 +218,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private Observable<Object> rtcpNotifySub() {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
                 .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
-                .throttleFirst(500, TimeUnit.MILLISECONDS)
+                .onBackpressureBuffer()//防止MissingBackpressureException
                 .timeout(10, TimeUnit.SECONDS, Observable.just("no rtcp call back")
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .map(s -> {
@@ -254,9 +256,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.e("disconnected: " + new Gson().toJson(disconn));
                     return "JFGMsgVideoDisconn";
                 })
-                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())
                 .mergeWith(RxBus.getCacheInstance().toObservable(JFGMsgVideoResolution.class)
                         .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
+                        .observeOn(Schedulers.newThread())
                         .map(resolution -> {
                             JfgCmdInsurance.getCmd().setAudio(false, false, false);
                             JfgCmdInsurance.getCmd().setAudio(true, false, false);
@@ -318,8 +321,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     JfgCmdInsurance.getCmd().stopPlay(uuid);
                     AppLogger.i("stop play history");
                 }
-                JfgCmdInsurance.getCmd().playHistoryVideo(uuid, time / 1000L);
-                AppLogger.i(String.format("play history video:%s,%s ", uuid, time / 1000L));
+                int ret = JfgCmdInsurance.getCmd().playHistoryVideo(uuid, time / 1000L);
+                AppLogger.i(String.format("play history video:%s,%s ", uuid, time / 1000L) + " " + ret);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
@@ -335,12 +338,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 }))
                 //filter getInterestingOne()
                 .filter(result -> {
-                    AppLogger.d("action: " + result);
+                    AppLogger.d("option: " + result);
                     return TextUtils.equals(result, "JFGMsgVideoResolution");
                 }), (String s, Object o) -> {
             AppLogger.i("start to receive rtcp");
             //开始接收rtcp
-            liveSubscription.add(rtcpNotifySub().subscribe());
+            liveSubscription.add(rtcpNotifySub()
+                    .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                    .subscribe());
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
@@ -358,22 +363,22 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
                     try {
-                        AppLogger.i("stopPlayVideo:" + s);
                         JfgCmdInsurance.getCmd().stopPlay(s);
                         playType = CamLiveContract.TYPE_NONE;
                         playState = PLAY_STATE_IDLE;
+                        AppLogger.i("stopPlayVideo:" + s);
                     } catch (JfgException e) {
-                        e.printStackTrace();
+                        AppLogger.e("stop play err: " + e.getLocalizedMessage());
                     }
                     return null;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Object o) -> {
+                .doOnCompleted(() -> {
                     getView().onLiveStop(playType, stopReason);
                     AppLogger.d("live stop: " + stopReason);
-                }, (Throwable throwable) -> {
-                    AppLogger.e("" + throwable.getLocalizedMessage());
-                });
+                })
+                .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()))
+                .subscribe();
     }
 
     @Override
@@ -562,7 +567,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         return null;
                     Collections.sort(finalList);
                     AppLogger.d(String.format("performance:%s", (System.currentTimeMillis() - time)));
-                    AppLogger.i("historyDataListSub:" + new Gson().toJson(jfgHistoryVideo));
+                    AppLogger.i("performance:" + new Gson().toJson(jfgHistoryVideo));
                     IData data = new DataExt();
                     data.flattenData(finalList);
                     historyDateFlatten.flat(finalList);
@@ -588,12 +593,20 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (
                         getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
+                .flatMap(new Func1<RxEvent.DeviceSyncRsp, Observable<Long>>() {
+                    @Override
+                    public Observable<Long> call(RxEvent.DeviceSyncRsp deviceSyncRsp) {
+                        AppLogger.d("updateList: " + deviceSyncRsp.idList);
+                        return Observable.from(deviceSyncRsp.idList);
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.DeviceSyncRsp update) -> {
-                    getView().onDeviceInfoChanged();
+                .map((Long id) -> {
+                    getView().onDeviceInfoChanged(id);
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe();
     }
 

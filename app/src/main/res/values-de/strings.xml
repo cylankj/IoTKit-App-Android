@@ -818,6 +818,8 @@
   <string name="WIFI_SET_3_1">Bitte \"DOG&#8211;ML&#8211;******\" in Einstellung vom phone&#8211;>WLAN wählen,wenn Passwort erforderlich, bitte 11111111 eingeben</string>
   <string name="WIFI_SET_4">Zurück zum %s</string>
   <string name="WIFI_SET_5GTIPS">Hinweis:Unterstützt nicht die 5GHz WiFi</string>
+  <string name="WONDER_TODAY_H_M">Heute HH:mm</string>
+  <string name="WONDER_YESTERDAY_H_M">Gestern HH:mm</string>
   <string name="Word_Hours">Stunde</string>
   <string name="XX_DISCOVERY">\"%s\" Gegenstand bewegt sich</string>
   <string name="YOUR_FEEDBACK">Vorschläge jedes Benutzers anhören</string>

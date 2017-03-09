@@ -8,8 +8,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -33,10 +31,13 @@ public class JConstant {
 
     public static final Pattern MAC_REG = Pattern.compile("([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
     public static final String EFAMILY_URL_PREFIX = "http://www.jfgou.com/app/download.html?";
-    public static final Pattern EFAMILY_QR_CODE_REG = Pattern.compile(
-            "cid=7\\d{11}" +
-                    "&" +
-                    "mac=([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$");
+    public static final Pattern QR_CODE_REG_WITH_SN = Pattern.compile(
+            "vid=[0-9a-zA-Z]{0,12}" +
+                    "&pid=\\d{0,12}" +
+                    "&sn=[0-9a-zA-Z]{0,64}");
+    public static final Pattern QR_CODE_REG = Pattern.compile(
+            "vid=[0-9a-zA-Z]{0,12}" +
+                    "&pid=\\d{0,12}");
 
 
     //看JConstantTest单元测试
@@ -100,6 +101,7 @@ public class JConstant {
 
     public static final String KEY_CAM_SIGHT_SETTING = "cam_sight_setting";
     public static final java.lang.String LAST_ENTER_TIME = "LAST_ENTER_TIME";
+    public static final String KEY_BIND_DEVICE_ALIAS = "KEY_BIND_DEVICE_ALIAS";
     public static int ConfigApStep = 0;
 
 
@@ -187,79 +189,53 @@ public class JConstant {
     public static final int OS_CAMERA_PANORAMA_HAISI = 18;    //海思全景摄像头  2W
     public static final int OS_CAMERA_PANORAMA_QIAOAN = 19;    //乔安全景摄像头  3W
     public static final int OS_CAMERA_PANORAMA_GUOKE = 20;    //国科全景摄像头   4W
-    public static final int OS_CAMERA_ANDROID_3_0 = 1071;    //3g狗
+    public static final int PID_CAMERA_ANDROID_3_0 = 1071;    //3g狗
 
-    public static final int OS_MAX_COUNT = OS_CAMERA_PANORAMA_GUOKE;
-    public static final Map<Integer, Integer> onLineIconMap = new HashMap<>();
-    public static final Map<Integer, Integer> offLineIconMap = new HashMap<>();
-    public static final Map<Integer, Integer> NET_TYPE_RES = new HashMap<>();
+    public static final int OS_CAMERA_FXXX_LESHI = 27;//门铃
+    public static final int PID_CAMERA_FXXX_LESHI_PID = 1160;
+
+    public static final int PID_CAMERA_VR_720 = 1080;
+    public static final int PID_CAMERA_CLOUD = 1088;
+    public static final int PID_CAMERA_WIFI_G1 = 1090;//wifi狗
+
+    public static final int PID_CAMERA_PANORAMA_HAISI_1080 = 1092;
+    public static final int PID_CAMERA_PANORAMA_HAISI_960 = 1091;
+
+    public static final int PID_BELL_G_1 = 1093;//门铃1代
+    public static final int PID_BELL_G_2 = 1094;//门铃2代
 
 
-    static {
-        NET_TYPE_RES.put(-1, -1);
-        NET_TYPE_RES.put(0, -1);
-        NET_TYPE_RES.put(1, R.drawable.icon_home_net_wifi);
-        NET_TYPE_RES.put(2, R.drawable.icon_home_net_2g);
-        NET_TYPE_RES.put(3, R.drawable.icon_home_net_3g);
-        NET_TYPE_RES.put(4, -1);
-        NET_TYPE_RES.put(5, -1);
-    }
-
-    static {
-        //bell
-        onLineIconMap.put(JConstant.OS_DOOR_BELL, R.drawable.icon_home_doorbell_online);
-        //camera
-        onLineIconMap.put(JConstant.OS_CAMARA_ANDROID_SERVICE, R.drawable.icon_home_camera_online);
-        onLineIconMap.put(JConstant.OS_CAMERA_ANDROID, R.drawable.icon_home_camera_online);
-        onLineIconMap.put(JConstant.OS_CAMERA_ANDROID_4G, R.drawable.icon_home_camera_online);
-        onLineIconMap.put(JConstant.OS_CAMERA_CC3200, R.drawable.icon_home_camera_online);
-        onLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_GUOKE, R.drawable.icon_home_camera_online);
-        onLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_HAISI, R.drawable.icon_home_camera_online);
-        onLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_QIAOAN, R.drawable.icon_home_camera_online);
-        onLineIconMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.icon_home_camera_online);
-        onLineIconMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.icon_home_camera_online);
-        onLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_online);
-
-        onLineIconMap.put(JConstant.OS_CAMERA_ANDROID_3_0, R.drawable.icon_home_camera_online);
-
-        //MAG
-        onLineIconMap.put(JConstant.OS_MAGNET, R.drawable.icon_home_magnetic_online);
-        //E_FAMILY
-        onLineIconMap.put(JConstant.OS_EFAML, R.drawable.icon_home_album_online);
-        for (int i = 0; i < OS_MAX_COUNT; i++) {
-            if (onLineIconMap.get(i) == null) {
-                onLineIconMap.put(i, R.mipmap.ic_launcher);
-            }
+    public static int getNetTypeRes(int net) {
+        switch (net) {
+            case 1:
+                return R.drawable.icon_home_net_wifi;
+            case 2:
+                return R.drawable.icon_home_net_2g;
+            case 3:
+                return R.drawable.icon_home_net_3g;
+            default:
+                return -1;
         }
     }
 
-    static {
-        //offline
-        //bell
-        offLineIconMap.put(JConstant.OS_DOOR_BELL, R.drawable.icon_home_doorbell_offline);
-        //camera
-        offLineIconMap.put(JConstant.OS_CAMARA_ANDROID_SERVICE, R.drawable.icon_home_camera_offline);
-        offLineIconMap.put(JConstant.OS_CAMERA_ANDROID, R.drawable.icon_home_camera_offline);
-        offLineIconMap.put(JConstant.OS_CAMERA_ANDROID_4G, R.drawable.icon_home_camera_offline);
-        offLineIconMap.put(JConstant.OS_CAMERA_CC3200, R.drawable.icon_home_camera_offline);
-        offLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_GUOKE, R.drawable.icon_home_camera_offline);
-        offLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_HAISI, R.drawable.icon_home_camera_offline);
-        offLineIconMap.put(JConstant.OS_CAMERA_PANORAMA_QIAOAN, R.drawable.icon_home_camera_offline);
-        offLineIconMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.icon_home_camera_offline);
-        offLineIconMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.icon_home_camera_offline);
-        offLineIconMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.icon_home_camera_offline);
+    public static int getOnlineIcon(int pid) {
+        if (JFGRules.isBell(pid))
+            return R.drawable.icon_home_doorbell_online;
+        if (JFGRules.isCamera(pid))
+            return R.drawable.icon_home_camera_online;
+        if (isMag(pid))
+            return R.drawable.icon_home_magnetic_online;
+        return R.mipmap.ic_launcher;
+    }
 
-        offLineIconMap.put(JConstant.OS_CAMERA_ANDROID_3_0, R.drawable.icon_home_camera_offline);
-
-        //MAG
-        offLineIconMap.put(JConstant.OS_MAGNET, R.drawable.icon_home_magnetic_offline);
-        //E_FAMILY
-        offLineIconMap.put(JConstant.OS_EFAML, R.drawable.icon_home_album_offline);
-        for (int i = 0; i < OS_MAX_COUNT; i++) {
-            if (offLineIconMap.get(i) == null) {
-                offLineIconMap.put(i, R.mipmap.ic_launcher);
-            }
-        }
+    public static int getOfflineIcon(int pid) {
+        if (JFGRules.isBell(pid))
+            return R.drawable.icon_home_doorbell_offline;
+        if (JFGRules.isCamera(pid))
+            return R.drawable.icon_home_camera_offline;
+        if (isMag(pid))
+            return R.drawable.icon_home_magnetic_online;
+        return R.mipmap.ic_launcher;
     }
 
     public static boolean isBell(int pid) {

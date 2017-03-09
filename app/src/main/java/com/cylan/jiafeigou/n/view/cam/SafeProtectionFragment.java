@@ -71,6 +71,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     private TimePickDialogFragment timePickDialogFragment;
     private String uuid;
 
+    private JFGDPDevice device;
+
+
     public SafeProtectionFragment() {
         // Required empty public constructor
     }
@@ -99,6 +102,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
     }
 
 
@@ -107,10 +111,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         customToolbar.setBackAction((View v) -> {
             getActivity().getSupportFragmentManager().popBackStack();
         });
-        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
-        if (device != null && JFGRules.isFreeCam(device.pid)) {
-            fLayoutProtectionWarnEffect.setVisibility(View.GONE);
-        }
         updateDetails();
         swMotionDetection.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             if (!isChecked) {
@@ -156,6 +156,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 v.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         }
+        if (show && device != null && JFGRules.isFreeCam(device.pid)) {
+            fLayoutProtectionWarnEffect.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -167,9 +170,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
     private void updateDetails() {
         DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        showDetail(flag.$());
+        boolean f = MiscUtils.safeGet(flag, false);
+        showDetail(flag != null && f);
         //移动侦测
-        swMotionDetection.setChecked(flag.$());
+        swMotionDetection.setChecked(flag != null && f);
         //提示音
         DpMsgDefine.DPNotificationInfo notificationInfo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
         fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
@@ -177,8 +181,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 ? R.string.BARKING : R.string.ALARM)));
         //灵敏度
         DpMsgDefine.DPPrimary<Integer> sensitivity = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
-        fLayoutProtectionSensitivity.setTvSubTitle(sensitivity.$() == 0 ? getString(R.string.SENSITIVI_LOW)
-                : (sensitivity.$() == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
+        int s= MiscUtils.safeGet(sensitivity,0);
+        fLayoutProtectionSensitivity.setTvSubTitle(s == 0 ? getString(R.string.SENSITIVI_LOW)
+                : (s == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期
         DpMsgDefine.DPAlarmInfo info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
         fLayoutProtectionRepeatPeriod.setTvSubTitle(basePresenter.getRepeatMode(getContext()));

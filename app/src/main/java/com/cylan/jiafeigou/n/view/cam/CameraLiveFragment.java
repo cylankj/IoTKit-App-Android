@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
@@ -13,6 +14,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -51,6 +53,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -62,9 +65,11 @@ import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
+import com.cylan.panorama.CameraParam;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
@@ -75,6 +80,8 @@ import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
+import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
@@ -123,7 +130,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @BindView(R.id.imv_double_sight)
     ImageView imvDoubleSight;
 
-
+    private SoftReference<AlertDialog> sdcardPulloutDlg;
+    private SoftReference<AlertDialog> sdcardFormatDlg;
     private CamLiveController camLiveController;
     //    /**
 //     * 直播状态监听
@@ -215,11 +223,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (basePresenter != null) {
             basePresenter.fetchHistoryDataList();
             //非待机模式
-            DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-            if (!flag.$()) {
-                startLive();
-            }
-            onDeviceInfoChanged();
+            onDeviceInfoChanged(-1);
         }
         camLiveController.setPortSafeSetter(portFlipLayout);
     }
@@ -265,7 +269,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
         DpMsgDefine.DPPrimary<Boolean> isStandBY = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-        if (isStandBY.$()) return;
+        boolean standby = MiscUtils.safeGet(isStandBY, false);
+        if (isStandBY != null && standby) return;
         basePresenter.startPlayVideo(TYPE_LIVE);
     }
 
@@ -274,7 +279,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
         DpMsgDefine.DPPrimary<Boolean> isStandBY = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-        if (isStandBY.$()) return;
+        boolean standby = MiscUtils.safeGet(isStandBY, false);
+        if (standby) return;
         basePresenter.startPlayHistory(time);
     }
 
@@ -325,18 +331,76 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
     }
 
+    private void initSdcardStateDialog() {
+        if (sdcardPulloutDlg == null || sdcardPulloutDlg.get() == null) {
+            AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.MSG_SD_OFF))
+                    .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.CANCEL), null)
+                    .create();
+            sdcardPulloutDlg = new SoftReference<>(dialog);
+        }
+    }
+
+    private void initSdcardFormatDialog() {
+        if (sdcardFormatDlg == null || sdcardFormatDlg.get() == null) {
+            AlertDialog dialog = new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.Clear_Sdcard_tips6))
+                    .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+                        }
+                    })
+                    .setNegativeButton(getString(R.string.CANCEL), null)
+                    .create();
+            sdcardFormatDlg = new SoftReference<>(dialog);
+        }
+    }
+
     /**
      * 根据 待机模式 ,分享用户模式设置一些view的状态
      */
     @Override
-    public void onDeviceInfoChanged() {
-        DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValueSafe(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, false);
-        boolean flag = wFlag.value;
-        fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
-        if (flag)
-            camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
-        //安全防护状态。
-        showFloatFlowView(false, null);
+    public void onDeviceInfoChanged(long msgId) {
+        if (msgId == -1 || msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
+            DpMsgDefine.DPPrimary<Boolean> wFlag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
+            boolean flag = MiscUtils.safeGet(wFlag, false);
+            fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
+            if (flag) {
+                camLiveController.setLoadingState(ILiveControl.STATE_IDLE, null);
+                //安全防护状态。
+                showFloatFlowView(false, null);
+                //需要断开直播
+                if (basePresenter != null && basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+                    basePresenter.stopPlayVideo(basePresenter.getPlayType());
+                }
+            } else {
+                startLive();
+            }
+            setupStandByView(flag);
+        }
+        if (msgId == DpMsgMap.ID_204_SDCARD_STORAGE) {
+            DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
+            //sd卡状态变化，
+            camLiveController.updateLiveButtonState(sdStatus != null && sdStatus.hasSdcard);
+            if (sdStatus == null || !sdStatus.hasSdcard) {
+                AppLogger.d("sdcard 被拔出");
+                if (sdcardPulloutDlg != null && sdcardPulloutDlg.get() != null && sdcardPulloutDlg.get().isShowing())
+                    return;
+                initSdcardStateDialog();
+                sdcardPulloutDlg.get().show();
+            }
+            AppLogger.e("sdcard数据被清空，唐宽，还没实现");
+        }
+    }
+
+    private void setupStandByView(boolean flag) {
         //进入待机模式
         View v = fLayoutCamLiveView.findViewById("showSceneView".hashCode());
         if (v == null && !flag) {
@@ -487,6 +551,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 }
             });
         }
+        videoView.config360(CameraParam.getTopPreset());
         return videoView;
     }
 
@@ -611,14 +676,16 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
                 DpMsgDefine.DPPrimary<Boolean> standby = DataSourceManager.getInstance().getValue(uuid, ID_508_CAMERA_STANDBY_FLAG);
-                if (standby.$()) break;//
-                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
+                boolean s = MiscUtils.safeGet(standby, false);
+                if (s) break;//
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1), getString(R.string.USER_HELP));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NO_NETWORK_2));
                 break;
             case JFGRules.PlayErr.ERR_LOW_FRAME_RATE:
-                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.GLOBAL_NO_NETWORK));
+                int net = NetUtils.getJfgNetType(getActivity());
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.GLOBAL_NO_NETWORK), net == 0 ? getString(R.string.USER_HELP) : null);
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
             case JError.ErrorVideoPeerNotExist:
@@ -630,7 +697,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 ToastUtil.showToast(getString(R.string.CONNECTING));
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
                 break;
-            case JError.STOP_MAUNALLY:
+            case STOP_MAUNALLY:
                 camLiveController.setLoadingState(ILiveControl.STATE_STOP, null);
                 break;
             case JFGRules.PlayErr.ERR_NOT_FLOW:

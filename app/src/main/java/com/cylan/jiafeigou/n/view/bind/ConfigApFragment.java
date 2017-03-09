@@ -1,11 +1,15 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.ConnectivityManager;
 import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,8 +17,8 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -25,8 +29,10 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
+import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -37,7 +43,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnTextChanged;
 
@@ -62,12 +67,12 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
 
     WiFiListDialogFragment fiListDialogFragment;
     @BindView(R.id.rLayout_wifi_pwd_input_box)
-    FrameLayout rLayoutWifiPwdInputBox;
+    RelativeLayout rLayoutWifiPwdInputBox;
     @BindView(R.id.vs_show_content)
     ViewSwitcher vsShowContent;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-
+    private AlertDialog reBingDialog;
 
     private List<ScanResult> cacheList;
 
@@ -93,7 +98,6 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initFragment();
-        JConstant.ConfigApStep = 2;
         this.basePresenter = new ConfigApPresenterImpl(this);
         basePresenter.clearConnection();
     }
@@ -110,25 +114,31 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setChineseExclude(etWifiPwd, 60);
         if (cacheList != null && cacheList.size() > 0) {
             tvConfigApName.setText(cacheList.get(0).SSID);
             tvConfigApName.setTag(new BeanWifiList(cacheList.get(0)));
         }
+        //默认显示
+        ViewUtils.showPwd(etWifiPwd, true);
         customToolbar.setBackAction(v -> getActivity().onBackPressed());
-
+        cbWifiPwd.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            ViewUtils.showPwd(etWifiPwd, isChecked);
+            etWifiPwd.setSelection(etWifiPwd.length());
+        });
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
+    /**
+     * 明文/密文 密码
+     */
+
 
     @Override
     public void onResume() {
         super.onResume();
+        JConstant.ConfigApStep = 2;
         if (basePresenter != null) {
             basePresenter.refreshWifiList();
+            basePresenter.check3GDogCase();
         }
     }
 
@@ -136,9 +146,6 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     public void onPause() {
         super.onPause();
         JConstant.ConfigApStep = 3;
-        if (basePresenter != null) {
-            basePresenter.unregisterNetworkMonitor();
-        }
     }
 
     @Override
@@ -154,6 +161,33 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     @Override
     public void onDetach() {
         super.onDetach();
+        dismissDialog();
+    }
+
+
+    private void createDialog() {
+        if (reBingDialog == null) {
+            reBingDialog = new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.Tap1_AddDevice_disconnected))
+                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                            ((BindDeviceActivity) getActivity()).finishExt();
+                        }
+                    })
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        ((BindDeviceActivity) getActivity()).finishExt();
+                        Intent intent = new Intent(getActivity(), BindDeviceActivity.class);
+                        intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
+                        startActivity(intent);
+                    })
+                    .create();
+        }
+        if (reBingDialog.isShowing()) return;
+        reBingDialog.show();
+    }
+
+    private void dismissDialog() {
+        if (reBingDialog != null && reBingDialog.isShowing()) reBingDialog.dismiss();
     }
 
     @OnTextChanged(R.id.et_wifi_pwd)
@@ -163,38 +197,32 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
         tvWifiPwdSubmit.setEnabled(s.length() > 6);
     }
 
-    /**
-     * 明文/密文 密码
-     *
-     * @param buttonView
-     * @param isChecked
-     */
-    @OnCheckedChanged(R.id.cb_wifi_pwd)
-    public void onShowPwd(CompoundButton buttonView, boolean isChecked) {
-        ViewUtils.showPwd(etWifiPwd, isChecked);
-        etWifiPwd.setSelection(etWifiPwd.length());
-    }
 
-    @OnClick({R.id.iv_wifi_clear_pwd, R.id.cb_wifi_pwd, R.id.tv_wifi_pwd_submit, R.id.tv_config_ap_name})
+    @OnClick({R.id.iv_wifi_clear_pwd, R.id.tv_wifi_pwd_submit, R.id.tv_config_ap_name})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_wifi_clear_pwd:
                 etWifiPwd.setText("");
                 break;
             case R.id.tv_wifi_pwd_submit:
-                ViewUtils.deBounceClick(tvWifiPwdSubmit);
-                String ssid = ViewUtils.getTextViewContent(tvConfigApName);
+                ViewUtils.deBounceClick(view);
+                int currentNet = NetUtils.getJfgNetType(getActivity());
+                if (currentNet != ConnectivityManager.TYPE_WIFI) {
+                    createDialog();
+                    return;
+                }
+                String ssid = tvConfigApName.getText().toString();
                 String pwd = ViewUtils.getTextViewContent(etWifiPwd);
                 int type = 0;
                 if (TextUtils.isEmpty(ssid)) {
-                    ToastUtil.showNegativeToast("没有文案:请选择wifi");
+//                    ToastUtil.showNegativeToast("没有文案:请选择wifi");
                     return;
                 }
                 Object o = tvConfigApName.getTag();
                 if (o != null && o instanceof BeanWifiList) {
                     type = BindUtils.getSecurity(((BeanWifiList) o).result);
                 }
-                if (TextUtils.isEmpty(pwd) || pwd.length() < 8) {
+                if (type != 0 && pwd.length() < 8) {
                     ToastUtil.showNegativeToast(getString(R.string.ENTER_PWD_1));
                     return;
                 }
@@ -227,7 +255,11 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
 
     @Override
     public void onNetStateChanged(int state) {
-//        Toast.makeText(getContext(), "state: " + state, Toast.LENGTH_SHORT).show();
+        if (state != ConnectivityManager.TYPE_WIFI)
+            ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
+        else {
+            dismissDialog();
+        }
     }
 
     @Override
@@ -235,9 +267,9 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
         final int count = resultList == null ? 0 : resultList.size();
         if (count == 0) {
             if (Build.VERSION.SDK_INT >= 23) {
-                ToastUtil.showNegativeToast(getString(R.string.turn_on_gps));
+                ToastUtil.showNegativeToast(getString(R.string.GetWifiList_FaiTips));
             } else {
-                ToastUtil.showNegativeToast("请尝试手动开关wifi");
+//                ToastUtil.showNegativeToast("请尝试手动开关wifi");
             }
             return;
         }

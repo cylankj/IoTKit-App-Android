@@ -1,11 +1,9 @@
 package com.cylan.jiafeigou.widget;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,12 +72,6 @@ public class LoadingDialog extends BaseDialog {
         TextView textView = (TextView) view.findViewById(R.id.tv_loading_content);
         textView.setText(bundle.getString(KEY_CONTENT, ""));
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH, false));
-        getDialog().setOnKeyListener(new DialogInterface.OnKeyListener() {
-            @Override
-            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event) {
-                return true;
-            }
-        });
     }
 
     @Override

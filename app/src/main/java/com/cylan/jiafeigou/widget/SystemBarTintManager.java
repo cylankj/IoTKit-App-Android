@@ -490,9 +490,9 @@ public class SystemBarTintManager {
         }
 
         /**
-         * Get the height of the action bar.
+         * Get the height of the option bar.
          *
-         * @return The height of the action bar (in pixels).
+         * @return The height of the option bar (in pixels).
          */
         public int getActionBarHeight() {
             return mActionBarHeight;
@@ -530,7 +530,7 @@ public class SystemBarTintManager {
         /**
          * Get the layout inset for any system UI that appears at the top of the screen.
          *
-         * @param withActionBar True to include the height of the action bar, False otherwise.
+         * @param withActionBar True to include the height of the option bar, False otherwise.
          * @return The layout inset (in pixels).
          */
         public int getPixelInsetTop(boolean withActionBar) {

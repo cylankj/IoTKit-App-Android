@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -49,7 +50,8 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
     @Override
     public String getRepeatMode(Context context) {
         DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        if (!flag.$()) {
+        boolean f = MiscUtils.safeGet(flag,false);
+        if (!f) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);
         }
         DpMsgDefine.DPAlarmInfo info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
