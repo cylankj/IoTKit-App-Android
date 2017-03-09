@@ -21,9 +21,9 @@ import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.HackyViewPager;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.ShareUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -73,7 +72,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     private int currentIndex = -1, previewFocusIndex = -1;
     private DpMsgDefine.DPAlarm alarmMsg;
     private String uuid;
-    private JFGDPDevice device;
+    private JFGDevice device;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +83,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         setContentView(R.layout.activity_cam_media);
         ButterKnife.bind(this);
         uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
         basePresenter = new CamMediaPresenterImpl(this, uuid);
         alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());
@@ -124,7 +123,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     }
                 });
                 //可能出错,不是对应的index
-                GlideUrl url = new CamWarnGlideURL(alarmMsg, i, uuid);
+                GlideUrl url = new CamWarnGlideURL(alarmMsg, i, uuid, device == null ? 0 :  device == null ? 0 : device.regionType);
                 Glide.with(ContextUtils.getContext())
                         .load(url)
                         .asBitmap()
@@ -193,7 +192,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         switch (view.getId()) {
             case R.id.imgV_big_pic_download:
                 if (basePresenter != null)
-                    basePresenter.saveImage(new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
+                    basePresenter.saveImage(new CamWarnGlideURL(alarmMsg, currentIndex, uuid,  device == null ? 0 : device.regionType));
                 break;
             case R.id.imgV_big_pic_share:
                 if (NetUtils.getJfgNetType(getContext()) == 0) {
@@ -201,7 +200,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     return;
                 }
                 ShareDialogFragment fragment = initShareDialog();
-                fragment.setPictureURL(new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
+                fragment.setPictureURL(new CamWarnGlideURL(alarmMsg, currentIndex, uuid,  device == null ? 0 : device.regionType));
                 fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.imgV_big_pic_collect:
@@ -210,7 +209,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     return;
                 }
                 if (basePresenter != null)
-                    basePresenter.collect(currentIndex, alarmMsg, new CamWarnGlideURL(alarmMsg, currentIndex, uuid));
+                    basePresenter.collect(currentIndex, alarmMsg, new CamWarnGlideURL(alarmMsg, currentIndex, uuid,  device == null ? 0 : device.regionType));
                 break;
         }
     }
@@ -224,7 +223,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     private ShareDialogFragment initShareDialog() {
         if (shareDialogFragmentWeakReference == null || shareDialogFragmentWeakReference.get() == null) {
-            shareDialogFragmentWeakReference = new WeakReference<>(ShareDialogFragment.newInstance((Bundle) null));
+            shareDialogFragmentWeakReference = new WeakReference<>(ShareDialogFragment.newInstance(null));
         }
         return shareDialogFragmentWeakReference.get();
     }

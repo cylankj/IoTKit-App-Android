@@ -10,15 +10,18 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
@@ -27,6 +30,8 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -178,7 +183,10 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         @Override
         public void onPageSelected(int position) {
             if (position == 1) {
-                AppLogger.e("未实现");
+                Pair<Integer, Long> pair = DataSourceManager.getInstance().getUnreadCount(uuid, 222, 505, 512);
+                if (pair != null && pair.first > 0) {
+                    DataSourceManager.getInstance().clearUnread(uuid, 505, 512, 222);
+                }
             }
         }
 

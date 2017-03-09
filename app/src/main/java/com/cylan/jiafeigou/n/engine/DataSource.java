@@ -29,6 +29,7 @@ import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -39,11 +40,17 @@ import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 
 public class DataSource implements AppCallBack {
@@ -107,7 +114,31 @@ public class DataSource implements AppCallBack {
     }
 
     private void try2autoLogin() {
-        AppLogger.d("let's go 还没实现:");
+        AutoSignIn.getInstance().autoLogin()
+                .flatMap(integer -> {
+                    if (integer == 0)
+                        RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
+                                .subscribeOn(Schedulers.newThread())
+                                .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .map(s -> {
+                                            AppLogger.d("net type: " + NetUtils.getNetType(ContextUtils.getContext()));
+                                            if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.NoNet));
+                                            } else {
+                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+                                            }
+                                            return null;
+                                        }))
+                                .subscribe();
+                    else if (integer == -1) {
+                        //emit failed event.
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
+                    }
+                    return null;
+                })
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe();
     }
 
     @Override
@@ -242,7 +273,7 @@ public class DataSource implements AppCallBack {
                 break;
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
-                RxBus.getCacheInstance().post(new RxEvent.ResultLogin(jfgResult.code));
+                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备
@@ -310,7 +341,7 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
-        RxBus.getCacheInstance().post(new RxEvent.UnreadCount(s, l, arrayList));
+        DataSourceManager.getInstance().cacheUnreadCount(l, s, arrayList);
         AppLogger.d("OnRobotCountDataRsp :");
     }
 

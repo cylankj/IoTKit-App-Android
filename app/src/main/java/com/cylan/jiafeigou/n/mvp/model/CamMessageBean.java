@@ -16,7 +16,7 @@ public class CamMessageBean {
     public DpMsgDefine.DPSdcardSummary sdcardSummary;//204消息
     public long time;
     public long version;
-
+    public int regionType;
     public int viewType = 0;
 
     @Override

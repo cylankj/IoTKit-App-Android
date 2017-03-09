@@ -63,11 +63,6 @@ public interface HomeMineContract {
         String createRandomName();
 
         /**
-         * 初始化界面的数据
-         */
-        Subscription initData(boolean isOpenLogin);
-
-        /**
          * 获取到登录用户的bean
          *
          * @return

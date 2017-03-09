@@ -29,7 +29,7 @@ public interface MineInfoContract {
         /**
          * 退出登录
          */
-        void logOut();
+        void logOut(String account);
 
         /**
          * 检查文件是否存在

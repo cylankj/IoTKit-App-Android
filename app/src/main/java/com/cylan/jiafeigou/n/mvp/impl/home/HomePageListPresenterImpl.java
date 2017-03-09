@@ -6,7 +6,6 @@ import android.content.IntentFilter;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
@@ -18,8 +17,6 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -49,7 +46,16 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 devicesUpdate(),
                 internalUpdateUuidList(),
                 devicesUpdate1(),
-                JFGAccountUpdate()};
+                JFGAccountUpdate(),
+                unreadCountUpdate(),
+        };
+    }
+
+    private Subscription unreadCountUpdate() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
+                .doOnCompleted(() -> RxBus.getCacheInstance().post(new InternalHelp()))
+                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                .subscribe();
     }
 
     private Subscription getShareDevicesListRsp() {
@@ -129,21 +135,14 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        List<JFGDPDevice> deviceList = DataSourceManager.getInstance().getAllJFGDevice();
-        if (deviceList != null) {
-            ArrayList<String> uuidList = new ArrayList<>();
-            for (JFGDPDevice device : deviceList) {
-                uuidList.add(device.uuid);
-            }
-            getView().onItemsInsert(uuidList);
-        }
+        getView().onItemsInsert(DataSourceManager.getInstance().getAllRawJFGDeviceList());
         getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
     }
 
     private Subscription internalUpdateUuidList() {
         return RxBus.getCacheInstance().toObservable(InternalHelp.class)
                 .observeOn(Schedulers.newThread())
-                .throttleFirst(1, TimeUnit.SECONDS)
+                .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(o -> {
                     subUuidList();
@@ -156,12 +155,22 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     @Override
+    public void stop() {
+        super.stop();
+        unSubscribe(refreshSub);
+    }
+
+    private Subscription refreshSub;
+
+    @Override
     public void fetchDeviceList(boolean manually) {
         int state = DataSourceManager.getInstance().getLoginState();
         if (state != LogState.STATE_ACCOUNT_ON) {
             getView().onLoginState(false);
         }
-        Observable.just(manually)
+        if (refreshSub != null && !refreshSub.isUnsubscribed())
+            return;
+        refreshSub = Observable.just(manually)
                 .subscribeOn(Schedulers.newThread())
                 .map((Boolean aBoolean) -> {
                     DataSourceManager.getInstance().syncAllJFGDeviceProperty();
@@ -174,7 +183,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     return aBoolean;
                 })
                 .filter(aBoolean -> aBoolean)//手动刷新，需要停止刷新
-                .subscribe((Object aBoolean) -> AppLogger.d("refresh"),
+                .observeOn(Schedulers.newThread())
+                .delay(3, TimeUnit.SECONDS)
+                .filter(aBoolean -> getView() != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((Object aBoolean) -> getView().onRefreshFinish(),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
     }
 
@@ -235,5 +248,14 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private static final class InternalHelp {
+    }
+
+    private Subscription autoLoginTip() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(resultLogin -> {
+                    if (resultLogin != null)
+                        getView().autoLoginTip(resultLogin.code);
+                });
     }
 }

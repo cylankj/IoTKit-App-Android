@@ -27,11 +27,11 @@ public class DPConstant {
     public static final int MAC = 202;
 
     @DpAnnotation(msgId = 204, clazz = DpMsgDefine.DPSdStatus.class)
-    @DPMessage(type = DpMsgDefine.DPSdStatus.class)
+    @DPMessage(type = DpMsgDefine.DPSdStatus.class, target = CAMERA)
     public static final int SDCARD_STORAGE = 204;
 
     @DpAnnotation(msgId = 222, clazz = DpMsgDefine.DPSdcardSummary.class)
-    @DPMessage(type = DpMsgDefine.DPSdcardSummary.class)
+    @DPMessage(type = DpMsgDefine.DPSdcardSummary.class, target = CAMERA, dpType = TYPE_SET)
     public static final int SDCARD_SUMMARY = 222;
 
     @DpAnnotation(msgId = 205, clazz = boolean.class)
@@ -51,7 +51,7 @@ public class DPConstant {
     public static final int DEVICE_SYS_VERSION = 208;
 
     @DpAnnotation(msgId = 209, clazz = boolean.class)
-    @DPMessage(type = Boolean.class, dpType = TYPE_PRIMARY)
+    @DPMessage(type = Boolean.class, dpType = TYPE_PRIMARY, target = DEVICE)
     public static final int LED_INDICATOR = 209;
 
     @DpAnnotation(msgId = 210, clazz = int.class)
@@ -111,12 +111,12 @@ public class DPConstant {
 
 
     @DpAnnotation(msgId = 303, clazz = int.class)
-    @DPMessage(type = Integer.class, dpType = TYPE_PRIMARY)
+    @DPMessage(type = Integer.class, dpType = TYPE_PRIMARY, target = CAMERA)
     public static final int DEVICE_AUTO_VIDEO_RECORD = 303;//303
 
 
     @DpAnnotation(msgId = 304, clazz = int.class)
-    @DPMessage(type = Integer.class, dpType = TYPE_PRIMARY)
+    @DPMessage(type = Integer.class, dpType = TYPE_PRIMARY, target = DEVICE)
     public static final int DEVICE_CAMERA_ROTATE = 304;//304
 
 
@@ -128,23 +128,23 @@ public class DPConstant {
     @DPMessage(type = Integer.class, dpType = TYPE_PRIMARY, target = {DOORBELL, MAGNETOMETER})
     public static final int BELL_VOICE_MSG = 402;//门铃呼叫状态
 
-    @DPMessage(type = Boolean.class, dpType = TYPE_PRIMARY)
+    @DPMessage(type = Boolean.class, dpType = TYPE_PRIMARY, target = CAMERA)
     @DpAnnotation(msgId = 501, clazz = boolean.class)
     public static final int CAMERA_ALARM_FLAG = 501;
 
-    @DPMessage(type = DpMsgDefine.DPAlarmInfo.class)
+    @DPMessage(type = DpMsgDefine.DPAlarmInfo.class, target = CAMERA)
     @DpAnnotation(msgId = 502, clazz = DpMsgDefine.DPAlarmInfo.class)
     public static final int CAMERA_ALARM_INFO = 502;
 
-    @DPMessage(type = Integer.class, dpType = TYPE_PRIMARY)
+    @DPMessage(type = Integer.class, dpType = TYPE_PRIMARY, target = CAMERA)
     @DpAnnotation(msgId = 503, clazz = int.class)
     public static final int CAMERA_ALARM_SENSITIVITY = 503;
 
-    @DPMessage(type = DpMsgDefine.DPNotificationInfo.class)
+    @DPMessage(type = DpMsgDefine.DPNotificationInfo.class, target = CAMERA)
     @DpAnnotation(msgId = 504, clazz = DpMsgDefine.DPNotificationInfo.class)
     public static final int CAMERA_ALARM_NOTIFICATION = 504;//报警音效
 
-    @DPMessage(type = DpMsgDefine.DPAlarm.class, dpType = TYPE_SET)
+    @DPMessage(type = DpMsgDefine.DPAlarm.class, dpType = TYPE_SET, target = CAMERA)
     @DpAnnotation(msgId = 505, clazz = DpMsgDefine.DPAlarm.class)
     public static final int CAMERA_ALARM_MSG = 505;//
 
@@ -163,6 +163,11 @@ public class DPConstant {
     @DPMessage(type = Boolean.class, dpType = TYPE_PRIMARY)
     @DpAnnotation(msgId = 510, clazz = boolean.class)
     public static final int CAMERA_COORDINATE = 510;//视频坐标
+
+    //兼容3.0，服务端的锅。
+    @DPMessage(type = DpMsgDefine.DPAlarm.class, dpType = TYPE_SET, target = CAMERA)
+    @DpAnnotation(msgId = 512, clazz = DpMsgDefine.DPAlarm.class)
+    public static final int CAMERA_ALARM_MSG_V3 = 512;//
 
     @DPMessage(type = String.class, dpType = TYPE_PRIMARY, target = ACCOUNT)
     @DpAnnotation(msgId = 601, clazz = String.class)

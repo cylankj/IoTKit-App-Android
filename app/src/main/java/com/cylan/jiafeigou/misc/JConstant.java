@@ -72,6 +72,7 @@ public class JConstant {
     public static final String OPEN_LOGIN_TO_BIND_PHONE = "open_login_to_bind_phone";
     public static final String OPEN_LOGIN_USER_ICON = "open_login_user_icon";
     public static final String OPEN_LOGIN_USER_ALIAS = "open_login_user_alias";
+    public static final String AUTO_SIGNIN_KEY = "auto_sign_in";
     /**
      * verification code
      */

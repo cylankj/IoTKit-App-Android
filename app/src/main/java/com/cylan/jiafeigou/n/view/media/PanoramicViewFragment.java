@@ -17,7 +17,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -48,6 +50,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     private PanoramicView panoramicView;
     private DpMsgDefine.DPAlarm dpAlarm;
     private PanoramicView.MountMode mountMode;
+    private JFGDevice device;
 
     public PanoramicViewFragment() {
         // Required empty public constructor
@@ -88,6 +91,7 @@ public class PanoramicViewFragment extends IBaseFragment {
         lp.height = screenWidth;
         mPanoramicContainer.setLayoutParams(lp);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
+        this.device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
         dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         if (getUserVisibleHint()) {//当前页面才显示
             loadBitmap(getArguments().getInt("key_index", 0));
@@ -122,7 +126,7 @@ public class PanoramicViewFragment extends IBaseFragment {
             mPanoramicContainer.addView(panoramicView, layoutParams);
         }
         //填满
-        GlideUrl url = new CamWarnGlideURL(dpAlarm, index, uuid);
+        GlideUrl url = new CamWarnGlideURL(dpAlarm, index, uuid, device == null ? 0 : device.regionType);
         Glide.with(ContextUtils.getContext())
                 .load(url)
                 .asBitmap()

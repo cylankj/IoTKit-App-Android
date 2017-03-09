@@ -19,20 +19,20 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.n.engine.DaemonService;
 import com.cylan.jiafeigou.n.engine.DataSource;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -61,6 +61,7 @@ public class SmartcallActivity extends NeedLoginActivity
     TextView tvCopyRight;
     @Nullable
     private SplashContract.Presenter presenter;
+    private boolean frist;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +77,6 @@ public class SmartcallActivity extends NeedLoginActivity
             splashOver();
         }
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
-
     }
 
     /**
@@ -99,6 +99,11 @@ public class SmartcallActivity extends NeedLoginActivity
     protected void onStart() {
         super.onStart();
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+        if (!getIntent().getBooleanExtra("from_log_out", false)) {
+            if (presenter != null) presenter.start();
+        } else {
+            splashOver();
+        }
     }
 
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
@@ -153,23 +158,11 @@ public class SmartcallActivity extends NeedLoginActivity
      * pre-登陆
      */
     private void initLoginPage() {
-        int loginState = DataSourceManager.getInstance().getLoginState();
-        if (loginState == LogState.STATE_ACCOUNT_ON) {        //进去主页 home page
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                startActivity(new Intent(this, NewHomeActivity.class),
-                        ActivityOptionsCompat.makeCustomAnimation(this, R.anim.alpha_in, R.anim.alpha_out).toBundle());
-            } else {
-                startActivity(new Intent(this, NewHomeActivity.class));
-            }
-            startService(new Intent(getApplicationContext(), DaemonService.class));
-            finish();
-        } else {
-            //进入登陆页 login page
-            getSupportFragmentManager().beginTransaction()
-                    .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
-                    .addToBackStack(BeforeLoginFragment.class.getSimpleName())
-                    .commitAllowingStateLoss();
-        }
+        //进入登陆页 login page
+        getSupportFragmentManager().beginTransaction()
+                .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
+                .addToBackStack(BeforeLoginFragment.class.getSimpleName())
+                .commitAllowingStateLoss();
     }
 
     @Override
@@ -199,12 +192,24 @@ public class SmartcallActivity extends NeedLoginActivity
 
     @Override
     public void loginResult(int code) {
-        if (code == JError.ErrorOK) {
-            startActivity(new Intent(this, NewHomeActivity.class));
-        } else {
-            startActivity(new Intent(this, NewHomeActivity.class));
+        if (code == JError.ErrorOK || code == JError.LoginTimeOut || code == JError.NoNet) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                startActivity(new Intent(this, NewHomeActivity.class),
+                        ActivityOptionsCompat.makeCustomAnimation(getContext(),
+                                R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+            } else {
+                startActivity(new Intent(this, NewHomeActivity.class));
+            }
+            finish();
+        } else if (code == JError.StartLoginPage && !frist) {
+            splashOver();
+            RxBus.getCacheInstance().removeStickyEvent(RxEvent.ResultLogin.class);
+            frist = true;
+        } else if (code == JError.ErrorAccountNotExist) {
+            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
+        } else if (code == JError.ErrorLoginInvalidPass) {
+            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
         }
-        finish();
     }
 
     /**
@@ -316,5 +321,4 @@ public class SmartcallActivity extends NeedLoginActivity
     public Context getContext() {
         return getApplicationContext();
     }
-
 }

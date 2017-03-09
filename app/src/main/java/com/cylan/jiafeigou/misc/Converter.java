@@ -13,7 +13,7 @@ import java.util.ArrayList;
 
 public class Converter {
 
-    public static ArrayList<CamMessageBean> convert(ArrayList<DataPoint> baseValueList) {
+    public static ArrayList<CamMessageBean> convert(ArrayList<DataPoint> baseValueList, int regionType) {
         ArrayList<CamMessageBean> beanArrayList = new ArrayList<>();
         if (baseValueList == null)
             return beanArrayList;
@@ -22,6 +22,7 @@ public class Converter {
             bean.time = base.version;
             bean.id = base.id;
             bean.version = base.version;
+            bean.regionType = regionType;
             if (base.id == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
                 bean.alarmMsg = (DpMsgDefine.DPAlarm) base;
             } else if (base.id == DpMsgMap.ID_222_SDCARD_SUMMARY) {
