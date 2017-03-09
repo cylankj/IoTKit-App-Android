@@ -1034,7 +1034,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-
+        AppLogger.d("resultCode:"+requestCode+data.toString());
         SsoHandler sinaCallBack = SinaLogin.getInstance(getActivity()).mSsoHandler;
         if (sinaCallBack != null) {
             sinaCallBack.authorizeCallBack(requestCode, resultCode, data);

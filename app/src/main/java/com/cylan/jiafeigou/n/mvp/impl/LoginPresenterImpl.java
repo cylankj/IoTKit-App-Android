@@ -72,7 +72,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     }
                     AppLogger.i("LoginAccountBean: " + new Gson().toJson(o));
                     //非三方登录的标记
-                    RxBus.getCacheInstance().postSticky(o.loginType);
+                    RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(o.loginType));
                     return null;
                 });
     }
