@@ -272,17 +272,9 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
         mRawDeviceList.clear();
-        mCachedDeviceMap.clear();//这个 cache 方法是通过SDK调用的调用到这里说明当前已经是有网状态,则清空之前的数据
         for (com.cylan.entity.jniCall.JFGDevice device : devices) {
             Log.d("uuid", "uuid: " + new Gson().toJson(device));
             mRawDeviceList.add(device);
-            JFGDPDevice temp = mCachedDeviceMap.get(device.uuid);
-            if (temp != null) {//已经存在了,则更新即可
-                temp.setDevice(device);
-            } else {//不存在,则添加
-                JFGDPDevice jfgDevice = create(device);
-                if (jfgDevice != null) mCachedDeviceMap.put(device.uuid, jfgDevice);
-            }
         }
         dbHelper.updateDevice(devices)
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
