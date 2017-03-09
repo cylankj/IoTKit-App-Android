@@ -5,7 +5,7 @@ package com.cylan.jiafeigou.cache.db.view;
  */
 
 public enum DBAction {
-    SAVED, DELETED, SHARED, QUERY, CLEARED, AVAILABLE(OP.NOT_EQS, DELETED.name() + "," + CLEARED.name());
+    SAVED, DELETED, SHARED, QUERY, CLEARED, AVAILABLE(OP.NOT_EQS, DELETED.name() + "," + CLEARED.name()), UNBIND;
     private OP op;//op 只是在查询时有用,并不会保存到数据库
     private String action;
 

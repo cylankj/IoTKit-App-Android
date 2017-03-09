@@ -68,7 +68,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     public void onViewAttached(JFGView view) {
         mView = (V) view;
         onRegisterResponseParser();
-
         mSourceManager = DataSourceManager.getInstance();
     }
 

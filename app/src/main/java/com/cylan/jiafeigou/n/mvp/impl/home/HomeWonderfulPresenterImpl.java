@@ -27,7 +27,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_EMPTY;
-import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_GUIDE;
 import static com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract.View.VIEW_TYPE_HIDE;
 
 
@@ -71,9 +70,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     public void onStart() {
         super.onStart();
-        if (showGuidePage()) {
-            mView.chooseEmptyView(VIEW_TYPE_GUIDE);
-        }
+//        if (showGuidePage()) {
+//            mView.chooseEmptyView(VIEW_TYPE_GUIDE);
+//        }
     }
 
     private boolean showGuidePage() {

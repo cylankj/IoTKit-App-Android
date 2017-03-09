@@ -5,6 +5,7 @@ import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleClearTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleDeleteTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleQueryTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleSharedTask;
+import com.cylan.jiafeigou.cache.db.module.tasks.DPUnBindDeviceTask;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPMultiTask;
@@ -58,6 +59,8 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
             case CLEARED:
                 result = new DPSingleClearTask();
                 break;
+            case UNBIND:
+                result = new DPUnBindDeviceTask();
         }
         return result;
     }

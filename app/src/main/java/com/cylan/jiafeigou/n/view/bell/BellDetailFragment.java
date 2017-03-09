@@ -34,6 +34,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_DEFAULT_EDIT_TEXT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TITLE;
@@ -109,28 +110,27 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     @OnClick(R.id.sv_setting_device_alias)
     public void onClick() {
         if (editDialogFragment == null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
-            bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
-            bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-            bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
-            editDialogFragment = EditFragmentDialog.newInstance(bundle);
+            editDialogFragment = EditFragmentDialog.newInstance(null);
         }
         if (editDialogFragment.isVisible())
             return;
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
+        bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
+        bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+        bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
+        bundle.putString(KEY_DEFAULT_EDIT_TEXT, svSettingDeviceAlias.getSubTitle().toString());
+        editDialogFragment.setArguments(bundle);
         editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
-        editDialogFragment.setAction(new BaseDialog.BaseDialogAction() {
-            @Override
-            public void onDialogAction(int id, Object value) {
-                if (value != null && value instanceof String) {
-                    String content = (String) value;
-                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
-                    if (!TextUtils.isEmpty(content)
-                            && device != null && !TextUtils.equals(device.alias, content)) {
-                        device.alias = content;
-                        svSettingDeviceAlias.setTvSubTitle(content);
-                        DataSourceManager.getInstance().updateJFGDevice(device);
-                    }
+        editDialogFragment.setAction((id, value) -> {
+            if (value != null && value instanceof String) {
+                String content = (String) value;
+                JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+                if (!TextUtils.isEmpty(content)
+                        && device != null && !TextUtils.equals(device.alias, content)) {
+                    device.alias = content;
+                    svSettingDeviceAlias.setTvSubTitle(content);
+                    DataSourceManager.getInstance().updateJFGDevice(device);
                 }
             }
         });

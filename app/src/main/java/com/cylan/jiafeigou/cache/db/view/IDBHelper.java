@@ -59,11 +59,19 @@ public interface IDBHelper {
 
     Observable<Device> updateDevice(JFGDevice[] device);
 
+    Observable<Device> unBindDeviceNotConfirm(String uuid);
+
+    Observable<Device> unBindDeviceWithConfirm(String uuid);
+
     Observable<Device> getDevice(String uuid);
+
+    Observable<List<Device>> markDevice(String account, String server, String uuid, DBAction action, DBState state, DBOption option);
 
     Observable<List<Device>> getAccountDevice(String account);
 
     Observable<List<DPEntity>> getAllSavedDPMsgByAccount(String account);
 
     Observable<List<DPEntity>> getActiveAccountSavedDPMsg();
+
+    Observable<DPEntity> findDPMsg(String uuid, Long version, Integer msgId);
 }

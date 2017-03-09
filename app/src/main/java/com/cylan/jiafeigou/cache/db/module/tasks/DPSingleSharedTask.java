@@ -95,12 +95,19 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                             }
                         }).flatMap(this::makeHttpDoneResultResponse)
                                 .flatMap(ret -> {
-                                    AppLogger.d("分享操作步骤二执行成功,正在删除本地数据");
-                                    return mDPHelper.deleteDPMsgForce(null, null, entity.getUuid(), entity.getVersion(), entity.getMsgId())//因为无法知道收藏成功的条目的服务器 version, 因此需要将本地记录删除
-                                            .map(entity -> new BaseDPTaskResult().setResultCode(ret.ret).setResultResponse(ret.result));
+                                    AppLogger.d("分享操作步骤二执行成功,正在更新本地数据Version");
+                                    return mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).map(dpEntity -> {
+                                        dpEntity.setVersion(rsp.rets.get(0).version);
+                                        dpEntity.update();
+                                        return new BaseDPTaskResult().setResultCode(ret.ret).setResultResponse(ret.result);
+                                    });
                                 });
                     } else {
-                        return Observable.just(new BaseDPTaskResult().setResultCode(code));
+                        return mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).map(dpEntity -> {
+                            AppLogger.d("分享失败,正在删除本地数据");
+                            dpEntity.delete();
+                            return new BaseDPTaskResult().setResultCode(code);
+                        });
                     }
                 });
     }

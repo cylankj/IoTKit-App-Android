@@ -61,60 +61,64 @@ public class BaseDBHelper implements IDBHelper {
         mEntityDao = daoSession.getDPEntityDao();
         accountDao = daoSession.getAccountDao();
         deviceDao = daoSession.getDeviceDao();
+
+
     }
 
     @Override
     public Observable<DPEntity> saveDPByte(String uuid, Long version, Integer msgId, byte[] bytes) {
-        return saveDpMsg(getAccount(), getServer(), uuid, version, msgId, bytes, DBAction.SAVED, DBState.SUCCESS, null);
+        return getActiveAccount().flatMap(account -> saveDpMsg(account.getAccount(), getServer(), uuid, version, msgId, bytes, DBAction.SAVED, DBState.SUCCESS, null));
     }
 
     @Override
     public Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
-        return markDPMsg(getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option).map(items -> items == null ? null : items.get(0));
+        return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option)
+                .map(items -> items == null ? null : items.get(0)));
     }
 
     @Override
     public Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
-        return markDPMsg(getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.SUCCESS, option).map(items -> items == null ? null : items.get(0));
+        return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.SUCCESS, option)
+                .map(items -> items == null ? null : items.get(0)));
     }
 
     @Override
     public Observable<List<DPEntity>> deleteDPMsgWithConfirm(String uuid, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",msgId:" + msgId);
-        return markDPMsg(getAccount(), getServer(), uuid, null, msgId, DBAction.DELETED, DBState.SUCCESS, option);
+        return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, null, msgId, DBAction.DELETED, DBState.SUCCESS, option));
     }
 
     @Override
     public Observable<List<DPEntity>> deleteDPMsgNotConfirm(String uuid, Integer msgId, DBOption option) {
-        return markDPMsg(getAccount(), getServer(), uuid, null, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option);
+        return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, null, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option));
     }
 
     @Override
     public Observable<List<DPEntity>> queryUnConfirmDpMsgWithTag(String uuid, Integer msgId, DBAction action) {
         AppLogger.d("正在根据 option 查询未经确认的 DP 消息,uuid:" + uuid + ",msgId:" + msgId + ",option :" + action);
-        return queryDPMsg(getAccount(), getServer(), uuid, null, msgId, null, null, action, DBState.NOT_CONFIRM, null);
+        return getActiveAccount().flatMap(account -> queryDPMsg(account.getAccount(), getServer(), uuid, null, msgId, null, null, action, DBState.NOT_CONFIRM, null));
     }
 
     @Override
     public Observable<List<DPEntity>> queryUnConfirmDpMsg(String uuid, Integer msgId) {
-        return queryDPMsg(getAccount(), getServer(), uuid, null, msgId, null, null, null, DBState.NOT_CONFIRM, null);
+        return getActiveAccount().flatMap(account -> queryDPMsg(account.getAccount(), getServer(), uuid, null, msgId, null, null, null, DBState.NOT_CONFIRM, null));
     }
 
     @Override
     public Observable<List<DPEntity>> markDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBAction action, DBOption option) {
-        return markDPMsg(getAccount(), getServer(), uuid, version, msgId, action, DBState.SUCCESS, option);
+        return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, action, DBState.SUCCESS, option));
     }
 
     @Override
     public Observable<List<DPEntity>> markDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBAction action, DBOption option) {
-        return markDPMsg(getAccount(), getServer(), uuid, version, msgId, action, DBState.NOT_CONFIRM, option);
+        return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, action, DBState.NOT_CONFIRM, option));
     }
 
     @Override
     public Observable<List<DPEntity>> queryDPMsg(String uuid, Long version, Integer msgId, Boolean asc, Integer limit) {
-        return queryDPMsg(getAccount(), getServer(), uuid, version, msgId, asc, limit, DBAction.AVAILABLE, DBState.SUCCESS, null);
+        return getActiveAccount().flatMap(account -> queryDPMsg(account.getAccount(), getServer(), uuid, version, msgId, asc, limit, DBAction.AVAILABLE, DBState.SUCCESS, null));
     }
 
     @Override
@@ -124,7 +128,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<DPEntity> saveDpMsg(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option) {
-        return buildQueryBuilder(account, server, uuid, version, msgId, null, null, null)
+        return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().unique().filter(item -> {
                     if (item != null && DBAction.DELETED.action().equals(item.getAction())) {
                         return false;
@@ -142,7 +146,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<DPEntity> saveOrUpdate(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option) {
-        return buildQueryBuilder(account, server, uuid, version, msgId, null, null, null)
+        return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().unique()
                 .map(item -> {
                     if (item == null) {
@@ -165,12 +169,12 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<DPEntity> saveOrUpdate(String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option) {
-        return saveOrUpdate(getAccount(), getServer(), uuid, version, msgId, bytes, action, state, option);
+        return getActiveAccount().flatMap(account -> saveOrUpdate(account.getAccount(), getServer(), uuid, version, msgId, bytes, action, state, option));
     }
 
     @Override
     public Observable<List<DPEntity>> queryDPMsg(String account, String server, String uuid, Long version, Integer msgId, Boolean asc, Integer limit, DBAction action, DBState state, DBOption option) {
-        QueryBuilder<DPEntity> builder = buildQueryBuilder(account, server, uuid, null, msgId, action, state, option);
+        QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account, server, uuid, null, msgId, action, state, option);
         if (asc != null) {
             builder = asc ? builder.where(DPEntityDao.Properties.Version.ge(version)) : builder.where(DPEntityDao.Properties.Version.le(version));
         }
@@ -182,8 +186,8 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option) {
-        AppLogger.d("正在标记本地数据, account:" + account + ",server:" + server + ",uuid:" + uuid + ",version:" + version + ",msgId:" + msgId + ",option:" + action + ",state:" + state);
-        return buildQueryBuilder(account, server, uuid, version, msgId, null, null, null)
+        AppLogger.d("正在标记本地数据, account:" + account + ",server:" + server + ",uuid:" + uuid + ",version:" + version + ",msgId:" + msgId + ",action:" + action + ",state:" + state + ",option:" + option);
+        return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().list()
                 .map(items -> {
                     if (items == null || items.size() == 0) return items;
@@ -203,8 +207,7 @@ public class BaseDBHelper implements IDBHelper {
      */
     @Override
     public Observable<DPEntity> deleteDPMsgForce(String account, String server, String uuid, Long version, Integer msgId) {
-        AppLogger.e("收藏成功,正在删除本地数据");
-        return buildQueryBuilder(account, server, uuid, version, msgId, null, null, null)
+        return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().unique().map(result -> {
                     result.delete();
                     return result;
@@ -236,7 +239,12 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Account> getActiveAccount() {
-        return accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())).rx().unique();
+        return Observable.just(accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())))
+                .observeOn(Schedulers.io())
+                .flatMap(build -> build.rx().unique().filter(account -> account != null)
+                        .mergeWith(RxBus.getCacheInstance().toObservable(JFGAccount.class)
+                                .flatMap(s -> build.rx().unique().filter(account -> account != null))))
+                .first();
     }
 
     @Override
@@ -244,17 +252,37 @@ public class BaseDBHelper implements IDBHelper {
         return Observable.from(device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(dev -> RxBus.getCacheInstance().toObservable(JFGAccount.class).map(account -> dev).first())//延迟写入,等到有账号了才写入数据库
+                .flatMap(dev -> getActiveAccount().map(account -> dev))//延迟写入,等到有账号了才写入数据库
                 .map(Device::new)
                 .flatMap(device1 -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(device1.getUuid()), DeviceDao.Properties.Account.eq(getAccount())).rx().unique()
                         .flatMap(device2 -> {
+                            AppLogger.d("正在更新 Device 条目");
                             if (device2 != null) {
                                 deviceDao.delete(device2);
                             }
                             device1.setAccount(getAccount());
                             return deviceDao.rx().save(device1);
                         }))
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+                .doOnError(throwable -> {
+                    AppLogger.e("err: " + throwable.getLocalizedMessage());
+                    throwable.printStackTrace();
+                });
+    }
+
+    @Override
+    public Observable<Device> unBindDeviceNotConfirm(String uuid) {
+        return markDevice(getAccount(), getServer(), uuid, DBAction.UNBIND, DBState.NOT_CONFIRM, null).map(items -> {
+            if (items == null || items.size() == 0) return null;
+            return items.get(0);
+        });
+    }
+
+    @Override
+    public Observable<Device> unBindDeviceWithConfirm(String uuid) {
+        return markDevice(getAccount(), getServer(), uuid, DBAction.UNBIND, DBState.SUCCESS, null).map(items -> {
+            if (items == null || items.size() == 0) return null;
+            return items.get(0);
+        });
     }
 
     @Override
@@ -263,8 +291,26 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
+    public Observable<List<Device>> markDevice(String account, String server, String uuid, DBAction action, DBState state, DBOption option) {
+        return buildDPDeviceQueryBuilder(account, server, uuid, null, null, null)
+                .rx()
+                .list()
+                .map(items -> {
+                    if (items != null) {
+                        for (Device item : items) {
+                            item.setAction(action);
+                            item.setState(state);
+                            item.setOption(option);
+                        }
+                    }
+                    deviceDao.updateInTx(items);
+                    return items;
+                });
+    }
+
+    @Override
     public Observable<List<Device>> getAccountDevice(String account) {
-        return deviceDao.queryBuilder().where(DeviceDao.Properties.Account.eq(account)).rx().list();
+        return deviceDao.queryBuilder().where(DeviceDao.Properties.Account.eq(account), DeviceDao.Properties.Action.notEq(DBAction.UNBIND.action())).rx().list();
     }
 
     @Override
@@ -282,7 +328,44 @@ public class BaseDBHelper implements IDBHelper {
         return getAllSavedDPMsgByAccount(getAccount());
     }
 
-    private QueryBuilder<DPEntity> buildQueryBuilder(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option) {
+    @Override
+    public Observable<DPEntity> findDPMsg(String uuid, Long version, Integer msgId) {
+        return getActiveAccount().flatMap(account -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, version, msgId, null, null, null).rx().unique());
+    }
+
+    private QueryBuilder<Device> buildDPDeviceQueryBuilder(String account, String server, String uuid, DBAction action, DBState state, DBOption option) {
+        QueryBuilder<Device> builder = deviceDao.queryBuilder();
+        if (!TextUtils.isEmpty(account)) {
+            builder.where(DeviceDao.Properties.Account.eq(account));//设置 account 约束
+        }
+
+        if (!TextUtils.isEmpty(server)) {
+            builder.where(DeviceDao.Properties.Server.eq(server));//设置 server 约束
+        }
+
+        if (!TextUtils.isEmpty(uuid)) {
+            builder.where(DeviceDao.Properties.Uuid.eq(uuid));//设置 UUID 约束
+        }
+        if (action != null) {
+            if (action.op() == DBAction.OP.EQ) {
+                builder.where(DeviceDao.Properties.Action.eq(action.action()));
+            } else if (action.op() == DBAction.OP.NOT_EQ) {
+                builder.where(DeviceDao.Properties.Action.notEq(action.action()));
+            } else if (action.op() == DBAction.OP.NOT_EQS) {
+                String[] actions = action.action().split(",");
+                for (String act : actions) {
+                    builder.where(DeviceDao.Properties.Action.notEq(act));
+                }
+            }
+        }
+
+        if (state != null) {
+            builder.where(DeviceDao.Properties.State.eq(state.state()));
+        }
+        return builder;
+    }
+
+    private QueryBuilder<DPEntity> buildDPMsgQueryBuilder(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option) {
         QueryBuilder<DPEntity> builder = mEntityDao.queryBuilder();
 
         if (!TextUtils.isEmpty(account)) {

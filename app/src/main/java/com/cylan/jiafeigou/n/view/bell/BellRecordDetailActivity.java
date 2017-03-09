@@ -1,8 +1,10 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.Manifest;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -17,6 +19,7 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.entity.JfgEnum;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -33,6 +36,9 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
@@ -83,6 +89,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     private CompositeSubscription compositeSubscription;
 
+
     @Override
     protected JFGPresenter onCreatePresenter() {
         return new BasePresenter() {
@@ -130,6 +137,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     }
                 })
                 .into(mPictureDetail);
+
     }
 
 
@@ -199,9 +207,29 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     if (result.getResultCode() == 200) {
                         ToastUtil.showPositiveToast(getString(R.string.Tap1_BigPic_FavoriteTips));
                     } else if (result.getResultCode() == 1050) {
-                        ToastUtil.showNegativeToast(getString(R.string.DailyGreatTips_Full));
+                        alertOver50();
                     }
-                }, e -> e.printStackTrace());
+                }, e -> {
+                    AppLogger.d(e.getMessage());
+                    e.printStackTrace();
+                });
+    }
+
+    private void alertOver50() {
+        new AlertDialog.Builder(this)
+                .setCancelable(false)
+                .setMessage(getString(R.string.DailyGreatTips_Full))
+                .setPositiveButton(R.string.OK, (dialog, which) -> {
+                    dialog.dismiss();
+                    finishExt();
+                    RxBus.getCacheInstance().post(new RxEvent.ShowWonderPageEvent());
+                    Intent intent = new Intent(BellRecordDetailActivity.this, NewHomeActivity.class);
+                    startActivity(intent);
+                })
+                .setNegativeButton(R.string.CANCEL, (dialog, which) -> {
+                    dialog.dismiss();
+                    finishExt();
+                }).show();
     }
 
     @Override

@@ -28,16 +28,33 @@
             android:layout_marginStart="@dimen/x24"
             android:orientation="vertical">
 
-            <EditText
-                android:id="@+id/et_input_box"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@null"
-                android:hint="@string/DEViCE_NAME"
-                android:maxLength="12"
-                android:textColor="@color/color_666666"
-                android:textColorHint="@color/color_666666"
-                android:textSize="@dimen/sp14" />
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/et_input_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@null"
+                    android:hint="@string/DEViCE_NAME"
+                    android:maxLength="12"
+                    android:textColor="@color/color_666666"
+                    android:textColorHint="@color/color_666666"
+                    android:textSize="@dimen/sp14" />
+
+                <ImageView
+                    android:id="@+id/et_input_box_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/x10"
+                    android:paddingLeft="@dimen/x10"
+                    android:paddingRight="@dimen/x10"
+                    android:src="@drawable/icon_clear_text" />
+            </RelativeLayout>
+
 
             <View
                 android:layout_width="match_parent"

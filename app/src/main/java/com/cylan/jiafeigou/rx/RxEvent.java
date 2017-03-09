@@ -359,6 +359,14 @@ public class RxEvent {
         }
     }
 
+    public static final class DeviceUnBindedEvent {
+        public String uuid;
+
+        public DeviceUnBindedEvent(String uuid) {
+            this.uuid = uuid;
+        }
+    }
+
     /**
      * 检验邮箱是否注册过回调
      */
@@ -765,8 +773,9 @@ public class RxEvent {
         }
     }
 
-    public static final class RessetPhoneBack{
+    public static final class RessetPhoneBack {
         public JFGResult jfgResult;
+
         public RessetPhoneBack(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
         }
@@ -788,5 +797,8 @@ public class RxEvent {
         public ClearDataEvent(int msgId) {
             this.msgId = msgId;
         }
+    }
+
+    public static class ShowWonderPageEvent {
     }
 }
