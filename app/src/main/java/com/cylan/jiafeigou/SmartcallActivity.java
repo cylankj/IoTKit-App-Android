@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.engine.DaemonService;
+import com.cylan.jiafeigou.n.engine.DataSource;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
@@ -74,6 +75,7 @@ public class SmartcallActivity extends NeedLoginActivity
         } else {
             splashOver();
         }
+        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
 
     }
 
@@ -247,6 +249,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void showWriteStoragePermissions() {
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
+        DataSource.getInstance().onCreate();
     }
 
     @NeedsPermission({Manifest.permission.READ_PHONE_STATE})

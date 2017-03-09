@@ -19,6 +19,8 @@ public interface ViewablePresenter extends JFGPresenter {
      */
     void startViewer();
 
+    void cancelViewer();
+
     /**
      * 能查看设备摄像头的view,都应该具备主动断开的能力
      */

@@ -43,8 +43,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     private List<BellCallRecordBean> mRecords = new ArrayList<>();
     private boolean isFirst = true;
     private Subscription subscribe;
-    private Subscription unBindSub;
-    private Subscription showWonderPageSub;
 
     private void notifyBellLowBattery() {
         if (isFirst) {
@@ -71,15 +69,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                 }, Throwable::printStackTrace);
     }
 
-//    private Subscription getShowWonderPageSub() {
-////        return RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
-////                .subscribeOn(Schedulers.io())
-////                .observeOn(AndroidSchedulers.mainThread())
-////                .subscribe(event -> {
-////                    mView.onFinish();
-////                });
-//    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -89,8 +78,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
         } else {
             mView.onShowProperty(device);
             registerSubscription(getClearDataSub());
-            unBindSub = getDeviceUnBindSub();
-//            showWonderPageSub = getShowWonderPageSub();
+
         }
     }
 
@@ -176,19 +164,6 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     public void cancelFetch() {
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
-        }
-    }
-
-    @Override
-    public void onViewDetached() {
-        super.onViewDetached();
-        if (unBindSub != null && unBindSub.isUnsubscribed()) {
-            unBindSub.unsubscribe();
-            unBindSub = null;
-        }
-        if (showWonderPageSub != null && showWonderPageSub.isUnsubscribed()) {
-            showWonderPageSub.unsubscribe();
-            showWonderPageSub = null;
         }
     }
 }
