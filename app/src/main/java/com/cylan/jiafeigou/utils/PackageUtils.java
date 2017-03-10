@@ -466,7 +466,7 @@ public class PackageUtils {
     }
 
     /**
-     * get app version code
+     * get app dpMsgVersion code
      *
      * @param context
      * @return
@@ -490,7 +490,7 @@ public class PackageUtils {
     }
 
     /**
-     * get external apk's version-name
+     * get external apk's dpMsgVersion-name
      *
      * @param context
      * @param apkPath
@@ -511,7 +511,7 @@ public class PackageUtils {
     }
 
     /**
-     * get external apk's version-code
+     * get external apk's dpMsgVersion-code
      *
      * @param context
      * @param apkPath
@@ -672,7 +672,7 @@ public class PackageUtils {
 
     /**
      * Installation return code<br/>
-     * the new package failed because the current SDK version is older than that required by the package.
+     * the new package failed because the current SDK dpMsgVersion is older than that required by the package.
      */
     public static final int INSTALL_FAILED_OLDER_SDK = -12;
 
@@ -685,7 +685,7 @@ public class PackageUtils {
 
     /**
      * Installation return code<br/>
-     * the new package failed because the current SDK version is newer than that required by the package.
+     * the new package failed because the current SDK dpMsgVersion is newer than that required by the package.
      */
     public static final int INSTALL_FAILED_NEWER_SDK = -14;
 

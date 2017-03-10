@@ -221,7 +221,7 @@ public class ImageSelectActivity extends HelperActivity {
 //
 //        @Override
 //        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {int i = item.getItemId();
-//            if (i == R.id.menu_item_add_image) {
+//            if (i == R.dpMsgId.menu_item_add_image) {
 //                sendIntent();
 //                return true;
 //            }

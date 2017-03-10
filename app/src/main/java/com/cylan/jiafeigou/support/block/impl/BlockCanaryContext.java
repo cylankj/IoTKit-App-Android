@@ -58,7 +58,7 @@ public class BlockCanaryContext implements IBlockCanaryContext {
     }
 
     /**
-     * qualifier which can specify this installation, like version + flavor
+     * qualifier which can specify this installation, like dpMsgVersion + flavor
      *
      * @return apk qualifier
      */
@@ -67,9 +67,9 @@ public class BlockCanaryContext implements IBlockCanaryContext {
     }
 
     /**
-     * Get user id
+     * Get user dpMsgId
      *
-     * @return user id
+     * @return user dpMsgId
      */
     public String getUid() {
         return "0";

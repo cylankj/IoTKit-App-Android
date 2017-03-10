@@ -53,7 +53,7 @@ public class UdpConstant {
             return "UdpDevicePortrait{" +
                     "mac='" + mac + '\'' +
                     ", uuid='" + uuid + '\'' +
-                    ", version='" + version + '\'' +
+                    ", dpMsgVersion='" + version + '\'' +
                     ", net=" + net +
                     '}';
         }

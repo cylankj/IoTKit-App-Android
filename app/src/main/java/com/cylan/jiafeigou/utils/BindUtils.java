@@ -171,10 +171,10 @@ public class BindUtils {
     }
 
     /**
-     * Compares two version strings.
+     * Compares two dpMsgVersion strings.
      * <p/>
      * Use this instead of String.compareTo() for a non-lexicographical
-     * comparison that works for version strings. e.g. "1.10".compareTo("1.6").
+     * comparison that works for dpMsgVersion strings. e.g. "1.10".compareTo("1.6").
      *
      * @param str1 a string of ordinal numbers separated by decimal points.
      * @param str2 a string of ordinal numbers separated by decimal points.
@@ -187,7 +187,7 @@ public class BindUtils {
         String[] vals1 = str1.split("\\.");
         String[] vals2 = str2.split("\\.");
         int i = 0;
-        // set index to first non-equal ordinal or length of shortest version string
+        // set index to first non-equal ordinal or length of shortest dpMsgVersion string
         while (i < vals1.length && i < vals2.length && vals1[i].equals(vals2[i])) {
             i++;
         }

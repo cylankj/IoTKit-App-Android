@@ -29,7 +29,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         // 会调用onCreate，所以这里要处理微信的返回结果
         String appId = Security.getWeChatKey(JFGRules.getTrimPackageName());
         if (TextUtils.isEmpty(appId)) {
-            AppLogger.i("wechat app id is null");
+            AppLogger.i("wechat app dpMsgId is null");
         }
         Log.d("WechatShare", "WechatShare: " + appId);
         // 第三个参数作用:checkSignature

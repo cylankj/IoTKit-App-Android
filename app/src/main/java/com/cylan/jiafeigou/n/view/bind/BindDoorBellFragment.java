@@ -222,13 +222,13 @@ public class BindDoorBellFragment extends IBaseFragment<BindDeviceContract.Prese
 //            bundle = new Bundle();
 //        }
 //        Log.d("simple", "what the hell");
-//        bundle.putInt(KEY_SUB_FRAGMENT_ID, R.id.fLayout_bind_device_list_fragment_container);
+//        bundle.putInt(KEY_SUB_FRAGMENT_ID, R.dpMsgId.fLayout_bind_device_list_fragment_container);
 //        bundle.putParcelableArrayList(KEY_DEVICE_LIST, (ArrayList<? extends Parcelable>) resultList);
 //        getActivity().getSupportFragmentManager()
 //                .beginTransaction()
 //                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
 //                        , R.anim.slide_in_left, R.anim.slide_out_right)
-//                .add(android.R.id.content, listFragmentWeakReference.get(), "BindDeviceListFragment")
+//                .add(android.R.dpMsgId.content, listFragmentWeakReference.get(), "BindDeviceListFragment")
 //                .addToBackStack("BindDeviceListFragment")
 //                .commit();
 //        cancelAnimation();

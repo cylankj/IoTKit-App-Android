@@ -169,7 +169,7 @@ static int registerNatives(JNIEnv *env) {
 /*
 * Set some test stuff up.
 *
-* Returns the JNI version on success, -1 on failure.
+* Returns the JNI dpMsgVersion on success, -1 on failure.
 */
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env = NULL;
@@ -185,7 +185,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
         LOGE("JNICALL", "registerNatives faied");
         return -1;
     }
-    /* success -- return valid version number */
+    /* success -- return valid dpMsgVersion number */
     result = JNI_VERSION_1_4;
 
     return result;

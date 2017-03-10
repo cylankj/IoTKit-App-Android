@@ -22,4 +22,8 @@ public interface IDPEntity extends IEntity<IDPEntity> {
 
     IDPEntity setBytes(byte[] bytes);
 
+    IDPEntity setAccount(String account);
+
+    String getAccount();
+
 }

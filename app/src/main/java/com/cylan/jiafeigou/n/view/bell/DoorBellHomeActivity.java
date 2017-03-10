@@ -24,7 +24,6 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
-import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -421,7 +420,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void loadMedia(final BellCallRecordBean item, final ImageView imageView) {
         ((ImageViewTip) imageView).setShowDot(item.answerState == 0 && item.timeInLong > mLastEnterTime);
         Glide.with(this)
-                .load(new JFGGlideURL(mUUID, JfgEnum.JFG_URL.WARNING, item.type, item.timeInLong / 1000 + ".jpg", mUUID))
+                .load(new JFGGlideURL(mUUID, item.timeInLong / 1000 + ".jpg"))
                 .asBitmap()
                 .placeholder(R.drawable.pic_head_normal240px)
                 .centerCrop()

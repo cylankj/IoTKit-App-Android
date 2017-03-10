@@ -72,14 +72,14 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option) {
-        AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
+        AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option)
                 .map(items -> items == null ? null : items.get(0)));
     }
 
     @Override
     public Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBOption option) {
-        AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
+        AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.SUCCESS, option)
                 .map(items -> items == null ? null : items.get(0)));
     }
@@ -186,7 +186,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option) {
-        AppLogger.d("正在标记本地数据, account:" + account + ",server:" + server + ",uuid:" + uuid + ",version:" + version + ",msgId:" + msgId + ",action:" + action + ",state:" + state + ",option:" + option);
+        AppLogger.d("正在标记本地数据, account:" + account + ",server:" + server + ",uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId + ",action:" + action + ",state:" + state + ",option:" + option);
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().list()
                 .map(items -> {
@@ -203,7 +203,7 @@ public class BaseDBHelper implements IDBHelper {
 
 
     /**
-     * 一般不推荐使用这个方法,但有些情境下无法获取正确的 version 所以必须把那条记录删除,否则就是脏数据了
+     * 一般不推荐使用这个方法,但有些情境下无法获取正确的 dpMsgVersion 所以必须把那条记录删除,否则就是脏数据了
      */
     @Override
     public Observable<DPEntity> deleteDPMsgForce(String account, String server, String uuid, Long version, Integer msgId) {
@@ -239,7 +239,6 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Account> getActiveAccount() {
-        AppLogger.d("getActiveAccount");
         return Observable.just(accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())))
                 .observeOn(Schedulers.io())
                 .flatMap(build -> build.rx().unique().filter(account -> account != null)

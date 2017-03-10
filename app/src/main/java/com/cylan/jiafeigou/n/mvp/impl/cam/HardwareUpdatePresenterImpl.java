@@ -74,7 +74,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         //TEST
 //        UpdateFileBean downLoadBean = new UpdateFileBean();
 //        downLoadBean.url = "http://yf.cylan.com.cn:82/sdk/libmedia-engine-jni-master.so";
-//        downLoadBean.version = "22220000";
+//        downLoadBean.dpMsgVersion = "22220000";
 //        downLoadBean.fileName = "22220000";
 
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {

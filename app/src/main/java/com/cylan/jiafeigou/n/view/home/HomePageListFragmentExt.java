@@ -96,11 +96,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     Toolbar toolbar;
     @BindView(R.id.appbar)
     AppBarLayout appbar;
-    //    @BindView(R.id.collapsing_toolbar)
+    //    @BindView(R.dpMsgId.collapsing_toolbar)
 //    CollapsingToolbarLayout collapsingToolbar;
     @BindView(R.id.fLayout_empty_view_container)
     FrameLayout fLayoutEmptyViewContainer;
-    //    @BindView(R.id.img_home_page_header_bg)
+    //    @BindView(R.dpMsgId.img_home_page_header_bg)
 //    ImageView imgHomePageHeaderBg;
     @BindView(R.id.fLayout_header_bg)
     FrameLayout fLayoutHeaderBg;

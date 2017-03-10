@@ -45,11 +45,11 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     }
 
     @Ignore
-    public long id;
+    public long dpMsgId;
     @Ignore
-    public long version;
+    public long dpMsgVersion;
     @Ignore
-    public long seq;
+    public long dpMsgSeq;
 
     @Override
     public String toString() {
@@ -78,20 +78,20 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     public boolean equals(Object o) {
         if (this == o) return true;
         DataPoint value = (DataPoint) o;
-        return version == value.version && id == value.id;
+        return dpMsgVersion == value.dpMsgVersion && dpMsgId == value.dpMsgId;
 
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
-        result = 31 * result + (int) (version ^ (version >>> 32));
+        int result = (int) (dpMsgId ^ (dpMsgId >>> 32));
+        result = 31 * result + (int) (dpMsgVersion ^ (dpMsgVersion >>> 32));
         return result;
     }
 
     @Override
     public int compareTo(DataPoint another) {
-        return version == another.version ? 0 : version > another.version ? -1 : 1;//降序
+        return dpMsgVersion == another.dpMsgVersion ? 0 : dpMsgVersion > another.dpMsgVersion ? -1 : 1;//降序
     }
 
     @Override
@@ -101,16 +101,16 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(this.id);
-        dest.writeLong(this.version);
-        dest.writeLong(this.seq);
+        dest.writeLong(this.dpMsgId);
+        dest.writeLong(this.dpMsgVersion);
+        dest.writeLong(this.dpMsgSeq);
     }
 
 
     protected DataPoint(Parcel in) {
-        this.id = in.readLong();
-        this.version = in.readLong();
-        this.seq = in.readLong();
+        this.dpMsgId = in.readLong();
+        this.dpMsgVersion = in.readLong();
+        this.dpMsgSeq = in.readLong();
     }
 
 
@@ -177,7 +177,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                 if (init) {
                     field = properties.valueAt(i);
                     value = (DataPoint) field.get(this);
-                    version = value != null ? value.version : version;
+                    version = value != null ? value.dpMsgVersion : version;
                 }
                 result.add(new JFGDPMsg((int) properties.keyAt(i), version));
             }
@@ -206,34 +206,34 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                 field.set(this, setValue);
                 Class<?> paramType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
                 value = (DataPoint) unpackData(msg.packValue, paramType);
-                value.version = msg.version;
-                value.id = msg.id;
-                value.seq = seq;
+                value.dpMsgVersion = msg.version;
+                value.dpMsgId = msg.id;
+                value.dpMsgSeq = seq;
                 setValue.value.remove(value);
                 boolean add = setValue.value.add(value);
                 DataPoint first = setValue.value.first();
-                setValue.version = first.version;
-                setValue.seq = first.seq;
-                setValue.id = first.id;
+                setValue.dpMsgVersion = first.dpMsgVersion;
+                setValue.dpMsgSeq = first.dpMsgSeq;
+                setValue.dpMsgId = first.dpMsgId;
                 ((DataPoint) setValue).isNull = false;
                 return add;
             }
 
-            if (value != null && value.version > msg.version) return false;//数据已是最新的,无需更新了
+            if (value != null && value.dpMsgVersion > msg.version) return false;//数据已是最新的,无需更新了
 
             if ((DpMsgDefine.DPPrimary.class.isAssignableFrom(type))) {
                 type = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
                 DpMsgDefine.DPPrimary primary = new DpMsgDefine.DPPrimary();
                 primary.value = unpackData(msg.packValue, type);
-                primary.version = msg.version;
-                primary.id = msg.id;
-                primary.seq = seq;
+                primary.dpMsgVersion = msg.version;
+                primary.dpMsgId = msg.id;
+                primary.dpMsgSeq = seq;
                 field.set(this, primary);
             } else {
                 value = (DataPoint) unpackData(msg.packValue, type);
-                value.version = msg.version;
-                value.id = msg.id;
-                value.seq = seq;
+                value.dpMsgVersion = msg.version;
+                value.dpMsgId = msg.id;
+                value.dpMsgSeq = seq;
                 field.set(this, value);
             }
         } catch (Exception e) {
@@ -258,17 +258,17 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                 TreeSet<DataPoint> origin = new TreeSet<>();
                 Set<DataPoint> temp = getValue(value);
                 for (DataPoint point : temp) {
-                    if (point.seq == seq) origin.add(point);
+                    if (point.dpMsgSeq == seq) origin.add(point);
                 }
                 DpMsgDefine.DPSet<DataPoint> result = new DpMsgDefine.DPSet<>();
                 result.value = origin;
-                result.id = msgId;
-                result.seq = seq;
+                result.dpMsgId = msgId;
+                result.dpMsgSeq = seq;
                 if (origin.size() > 0) {
                     DataPoint first = origin.first();
-                    result.seq = first.seq;
-                    result.id = first.id;
-                    result.version = first.version;
+                    result.dpMsgSeq = first.dpMsgSeq;
+                    result.dpMsgId = first.dpMsgId;
+                    result.dpMsgVersion = first.dpMsgVersion;
                 }
                 return (T) result;
             }

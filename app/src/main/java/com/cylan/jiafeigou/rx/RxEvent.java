@@ -652,6 +652,7 @@ public class RxEvent {
         public boolean changed;
     }
 
+    @Deprecated
     public static class ParseResponseCompleted {
         public long seq;
         public String uuid;

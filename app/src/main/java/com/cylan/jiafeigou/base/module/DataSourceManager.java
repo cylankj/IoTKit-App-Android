@@ -404,6 +404,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheUnreadCount(long seq, String uuid, ArrayList<JFGDPMsgCount> unreadList) {
+
         SparseLongArray array = unreadMap.get(uuid);
         if (array == null) {
             array = new SparseLongArray();
@@ -474,7 +475,7 @@ public class DataSourceManager implements JFGSourceManager {
             DpMsgDefine.DPSet<T> set = (DpMsgDefine.DPSet<T>) origin;
             if (set.value == null) return result;
             for (T t : set.value) {
-                if (t.version >= startVersion && t.version < endVersion) {
+                if (t.dpMsgVersion >= startVersion && t.dpMsgVersion < endVersion) {
                     result.add(t);
                 }
             }
@@ -521,22 +522,20 @@ public class DataSourceManager implements JFGSourceManager {
                                     }
                                     if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
                                         change |= account.setValue(msg, dataRsp.seq);
-                                        if (change) account.version = System.currentTimeMillis();
+                                        if (change) account.dpMsgVersion = System.currentTimeMillis();
                                     }
                                     return entity;
                                 })
                                         .buffer(set.getValue().size())
-                        )
-                        .map(ret -> {
-                            RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
-                            response.seq = dataRsp.seq;
-                            response.msgId = set.getKey();
-                            RxBus.getCacheInstance().post(response);
-                            return ret;
-                        }))
+                                        .map(items -> set)
+                        ))
                 .subscribe(ret -> {
-                    syncDeviceUnreadCount(dataRsp.identity);
+                    RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
+                    response.seq = dataRsp.seq;
+                    response.msgId = ret.getKey();
+                    RxBus.getCacheInstance().post(response);
                 }, Throwable::printStackTrace, () -> {
+                    syncDeviceUnreadCount(dataRsp.identity);
                     RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
                     completed.seq = dataRsp.seq;
                     completed.uuid = dataRsp.identity;

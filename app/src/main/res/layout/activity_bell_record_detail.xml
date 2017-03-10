@@ -19,7 +19,7 @@
             android:layout_gravity="center"
             android:src="@drawable/ic_delete_photo" />
         <!--<com.cylan.jiafeigou.widget.SimpleProgressBar-->
-            <!--android:id="@+id/act_bell_detail_loading"-->
+            <!--android:dpMsgId="@+dpMsgId/act_bell_detail_loading"-->
             <!--android:layout_width="wrap_content"-->
             <!--android:layout_gravity="center"-->
             <!--android:layout_height="wrap_content"-->

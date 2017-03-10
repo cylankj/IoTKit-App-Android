@@ -265,9 +265,9 @@ public class MiscUtils {
         if (set != null && set.value != null && set.list().size() > 0) {
             Collections.sort(set.list());
             if (min)
-                return set.list().get(set.list().size() - 1).version;
+                return set.list().get(set.list().size() - 1).dpMsgVersion;
             else {
-                return set.list().get(0).version;
+                return set.list().get(0).dpMsgVersion;
             }
         }
         return 0L;

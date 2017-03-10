@@ -52,7 +52,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                 .subscribe((Object o) -> {
                     AppLogger.i("save start: " + id + " " + value);
 //                    BaseValue baseValue = new BaseValue();
-//                    baseValue.setId(id);
+//                    baseValue.setId(dpMsgId);
 //                    baseValue.setVersion(System.currentTimeMillis());
 //                    baseValue.setValue(o);
 //                    DataSourceManager.getInstance().update(uuid, baseValue, true);

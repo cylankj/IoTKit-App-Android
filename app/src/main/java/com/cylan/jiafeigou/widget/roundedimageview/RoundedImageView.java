@@ -429,9 +429,9 @@ public class RoundedImageView extends ImageView {
     }
 
     /**
-     * Set all the corner radii from activity_cloud_live_mesg_call_out_item dimension resource id.
+     * Set all the corner radii from activity_cloud_live_mesg_call_out_item dimension resource dpMsgId.
      *
-     * @param resId dimension resource id of radii.
+     * @param resId dimension resource dpMsgId of radii.
      */
     public void setCornerRadiusDimen(@DimenRes int resId) {
         float radius = getResources().getDimension(resId);
@@ -439,10 +439,10 @@ public class RoundedImageView extends ImageView {
     }
 
     /**
-     * Set the corner radius of activity_cloud_live_mesg_call_out_item specific corner from activity_cloud_live_mesg_call_out_item dimension resource id.
+     * Set the corner radius of activity_cloud_live_mesg_call_out_item specific corner from activity_cloud_live_mesg_call_out_item dimension resource dpMsgId.
      *
      * @param corner the corner to set.
-     * @param resId  the dimension resource id of the corner radius.
+     * @param resId  the dimension resource dpMsgId of the corner radius.
      */
     public void setCornerRadiusDimen(@Corner int corner, @DimenRes int resId) {
         setCornerRadius(corner, getResources().getDimensionPixelSize(resId));

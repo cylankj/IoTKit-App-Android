@@ -95,14 +95,14 @@ public class ResourceUtils {
     }
 
     /**
-     * 获取 id
+     * 获取 dpMsgId
      *
      * @param context Context
-     * @param resName id 的名称
+     * @param resName dpMsgId 的名称
      * @return
      */
     public static int getId(Context context, String resName) {
-        return context.getResources().getIdentifier(resName, "id",
+        return context.getResources().getIdentifier(resName, "dpMsgId",
                 context.getPackageName());
     }
 

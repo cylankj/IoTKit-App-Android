@@ -18,7 +18,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.cylan.entity.JfgEnum;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
@@ -121,7 +120,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         });
 
         Glide.with(this)
-                .load(new JFGGlideURL(mUUID, JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID))
+                .load(new JFGGlideURL(mUUID, mCallRecord.timeInLong / 1000 + ".jpg"))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .error(R.drawable.broken_image)
                 .listener(new RequestListener<JFGGlideURL, GlideDrawable>() {
@@ -176,7 +175,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         if (mShareDialog == null) {
             mShareDialog = ShareDialogFragment.newInstance();
         }
-        mShareDialog.setPictureURL(new JFGGlideURL(mUUID, JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID));
+        mShareDialog.setPictureURL(new JFGGlideURL(mUUID, mCallRecord.timeInLong / 1000 + ".jpg"));
         mShareDialog.show(getSupportFragmentManager(), ShareDialogFragment.class.getName());
     }
 
@@ -194,6 +193,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     .setUuid(mUUID)
                     .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                     .setVersion(mCallRecord.timeInLong)
+                    .setAccount(DataSourceManager.getInstance().getAJFGAccount().getAccount())
                     .setAction(DBAction.SHARED)
                     .setOption(new DBOption.SingleSharedOption(1, 1))
                     .setBytes(item.toBytes());
@@ -246,7 +246,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             return;
         }
-        Glide.with(this).load(new JFGGlideURL(mUUID, JfgEnum.JFG_URL.WARNING, mCallRecord.type, mCallRecord.timeInLong / 1000 + ".jpg", mUUID)).
+        Glide.with(this).load(new JFGGlideURL(mUUID, mCallRecord.timeInLong / 1000 + ".jpg")).
                 downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {

@@ -1,10 +1,15 @@
 package com.cylan.jiafeigou.utils;
 
+import android.text.TextUtils;
+
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.Security;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -15,38 +20,43 @@ import java.util.Locale;
  */
 
 public class JFGGlideURL extends GlideUrl {
-    private int mType;
-    private int mFlag;
-    private String mFile;
-    private String mPath;
-    private String uuid;
+    private String vid;
+    private String cid;
+    private String timestamp;
+    private boolean V2 = true;//2.0版本
+    private int regionType;
 
-    public JFGGlideURL(String uuid, int type, int flag, String file, String path) {
+    public JFGGlideURL(String cid, String fileName) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
-        this.mType = type;
-        mFlag = flag;
-        this.mFile = file;
-        this.mPath = path;
-        this.uuid = uuid;
+        Device device = DataSourceManager.getInstance().getJFGDevice(cid);
+        this.vid = Security.getVId(JFGRules.getTrimPackageName());
+        if (device != null) {
+            this.V2 = TextUtils.isEmpty(device.vid);
+            this.regionType = device.regionType;
+        }
+        this.timestamp = fileName;
+        this.cid = cid;
     }
 
     @Override
     public String getCacheKey() {
-        return mType + "-" + mFlag + "-" + mFile + "-" + mPath;
+        return vid + "-" + cid + "-" + timestamp + "-" + V2 + "-" + regionType;
     }
 
 
     @Override
     public URL toURL() throws MalformedURLException {
-        String url = "";
         try {
-//            [bucket]/cid/[vid]/[cid]/[timestamp]_[id].jpg
-            String u = String.format(Locale.getDefault(), "/%s/%s/%s/%s",
-                    uuid, Security.getVId(JFGRules.getTrimPackageName()), uuid, mFile);
-            url = JfgCmdInsurance.getCmd().getSignedCloudUrl(1, u);
+            String url;
+            if (V2) {
+                url = String.format(Locale.getDefault(), "/%s/%s", cid, timestamp);
+            } else {
+                url = String.format(Locale.getDefault(), "/cid/%s/%s/%s", vid, cid, timestamp);
+            }
+            return new URL(JfgCmdInsurance.getCmd().getSignedCloudUrl(this.regionType, url));
         } catch (Exception e) {
-            e.printStackTrace();
+            AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
+            return new URL("");
         }
-        return new URL(url);
     }
 }

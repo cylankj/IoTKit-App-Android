@@ -446,7 +446,7 @@ public final class DbManagerImpl extends DbBase {
 
     private long getLastAutoIncrementId(String tableName) throws DbException {
         long id = -1;
-        Cursor cursor = execQuery("SELECT seq FROM sqlite_sequence WHERE name='" + tableName + "' LIMIT 1");
+        Cursor cursor = execQuery("SELECT dpMsgSeq FROM sqlite_sequence WHERE name='" + tableName + "' LIMIT 1");
         if (cursor != null) {
             try {
                 if (cursor.moveToNext()) {

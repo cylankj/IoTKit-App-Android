@@ -15,7 +15,7 @@
         app:statusBarScrim="@android:color/transparent">
 
         <!--<FrameLayout-->
-        <!--android:id="@+id/fLayoutHomeWonderfulHeaderContainer"-->
+        <!--android:dpMsgId="@+dpMsgId/fLayoutHomeWonderfulHeaderContainer"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="@dimen/y163"-->
         <!--android:minHeight="@dimen/y48"-->
@@ -99,7 +99,7 @@
                 android:background="@color/color_white">
 
                 <!--<include-->
-                    <!--android:id="@+id/fragment_wonderful_guide"-->
+                    <!--android:dpMsgId="@+dpMsgId/fragment_wonderful_guide"-->
                     <!--layout="@layout/item_wonderful_guide" />-->
 
                 <include

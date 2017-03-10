@@ -80,9 +80,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @BindView(R.id.rl_hardware_update)
     SettingItemView0 rlHardwareUpdate;
 
-    //    @BindView(R.id.hardware_update_point)
+    //    @BindView(R.dpMsgId.hardware_update_point)
 //    View hardwareUpdatePoint;
-//    @BindView(R.id.tv_new_software)
+//    @BindView(R.dpMsgId.tv_new_software)
 //    TextView tvNewSoftware;
     @BindView(R.id.tv_device_cid)
     SettingItemView0 tvDeviceCid;

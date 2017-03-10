@@ -148,7 +148,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                     for (long id : map.keySet()) {
                         boolean result = DataSourceManager.getInstance().deleteByVersions(uuid, id, map.get(id));
-                        AppLogger.i("delete: " + result + " id:" + id);
+                        AppLogger.i("delete: " + result + " dpMsgId:" + id);
                     }
                 }, (Throwable throwable) -> {
                     AppLogger.e(":" + throwable.getLocalizedMessage());

@@ -55,10 +55,10 @@ public class CamWarnGlideURL extends GlideUrl {
     public URL toURL() throws MalformedURLException {
 
         try {
-//            [bucket]/cid/[vid]/[cid]/[timestamp]_[id].jpg
+//            [bucket]/cid/[vid]/[cid]/[timestamp]_[dpMsgId].jpg
             String u;
             if (_v2) {
-                //[bucket]/[cid]/[timestamp]_[id].jpg
+                //[bucket]/[cid]/[timestamp]_[dpMsgId].jpg
                 u = String.format(Locale.getDefault(), "/%s/%s_%s.jpg", uuid, mBean.time, index + 1);
             } else {
                 u = String.format(Locale.getDefault(), "/%s/%s/%s/%s_%s.jpg",

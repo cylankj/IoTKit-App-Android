@@ -129,7 +129,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startLoadMore() {
-        Observable.just(mWonderItems.get(mWonderItems.size() - 1).version)
+        Observable.just(mWonderItems.get(mWonderItems.size() - 1).dpMsgVersion)
                 .map(version -> new DPEntity()
                         .setVersion(version)
                         .setAction(DBAction.QUERY)
@@ -155,7 +155,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void deleteTimeline(int position) {
-        Subscription subscribe = Observable.just(mWonderItems.get(position).version)
+        Subscription subscribe = Observable.just(mWonderItems.get(position).dpMsgVersion)
                 .observeOn(Schedulers.io())
                 .map(version -> new DPEntity()
                         .setUuid("")

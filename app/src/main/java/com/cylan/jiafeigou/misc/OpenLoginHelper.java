@@ -268,7 +268,7 @@ public class OpenLoginHelper {
                         AccessToken accessToken = loginResult.getAccessToken();
                         GraphRequest request = GraphRequest.newMeRequest(accessToken,getUserinfo);
                         Bundle parameters = new Bundle();
-                        parameters.putString("fields", "id,name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
+                        parameters.putString("fields", "dpMsgId,name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
                         request.setParameters(parameters);
                         request.executeAsync();
 

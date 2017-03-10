@@ -41,11 +41,9 @@ public class WonderGlideURL extends GlideUrl {
 
     @Override
     public URL toURL() throws MalformedURLException {
-        int flag = Integer.parseInt(mBean.fileName.split("_")[1].substring(0, 1));
         String url = "";
         try {
-//            [bucket]/long/[vid]/[account]/wonder/[cid]/[timestamp].jpg
-            String u = String.format(Locale.getDefault(), "/long/%s/%s/wonder/%s/%s.jpg/",
+            String u = String.format(Locale.getDefault(), "/long/%s/%s/wonder/%s/%s.jpg",
                     vid, account, mBean.cid, mBean.time);
             url = JfgCmdInsurance.getCmd().getSignedCloudUrl(this.regionType, u);
         } catch (Exception e) {

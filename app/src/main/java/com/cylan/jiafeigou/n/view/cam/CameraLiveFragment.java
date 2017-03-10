@@ -94,7 +94,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         implements CamLiveContract.View, View.OnClickListener {
 
 
-    //    @BindView(R.id.fLayout_live_view_container)
+    //    @BindView(R.dpMsgId.fLayout_live_view_container)
 //    FrameLayout fLayoutLiveViewContainer;
     @BindView(R.id.vs_progress)
     ViewStub vs_control;//中间loading那个view

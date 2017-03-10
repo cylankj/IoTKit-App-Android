@@ -41,14 +41,17 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
+        if (DataSourceManager.getInstance().isOnline()) {//如果在线则直接返回
+            return Observable.just(BaseDPTaskResult.SUCCESS);
+        }
         return BaseDBHelper.getInstance().queryDPMsg(entity.getUuid(), entity.getVersion() == 0 ? Long.MAX_VALUE : entity.getVersion(), entity.getMsgId(), option.asc, option.limit)
                 .map(items -> {
                     List<DataPoint> result = new ArrayList<>();
                     for (DPEntity item : items) {
                         DataPoint parse = DPByteParser.parse(item);
                         if (parse != null) {
-                            parse.version = item.getVersion();
-                            parse.id = item.getMsgId();
+                            parse.dpMsgVersion = item.getVersion();
+                            parse.dpMsgId = item.getMsgId();
                         }
                         result.add(parse);
                     }
@@ -62,7 +65,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
     public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                AppLogger.d("正在发送查询请求,version:" + entity.getVersion() + "count:" + option.asc + "acs:" + option.limit);
+                AppLogger.d("正在发送查询请求,dpMsgVersion:" + entity.getVersion() + "count:" + option.asc + "acs:" + option.limit);
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
                 JFGDPMsg msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
                 params.add(msg);

@@ -19,7 +19,7 @@ public interface BellDetailContract {
     }
 
     interface Presenter extends JFGPresenter {
-        //        void saveBellInfo(BeanBellInfo info, int id);
+        //        void saveBellInfo(BeanBellInfo info, int dpMsgId);
         <T extends DataPoint> void updateInfoReq(String uuid, T value, long id);
 
         /**

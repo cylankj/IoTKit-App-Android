@@ -56,7 +56,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                 msg.packValue = entity.getBytes();
                 req.add(msg);
                 int result = (int) JfgCmdInsurance.getCmd().robotSetData(entity.getUuid() == null ? "" : entity.getUuid(), req);
-                AppLogger.d("正在执行分享操作步骤一: robotSetData,seq:" + result);
+                AppLogger.d("正在执行分享操作步骤一: robotSetData,dpMsgSeq:" + result);
                 subscriber.onNext(result);
                 subscriber.onCompleted();
             } catch (Exception e) {
@@ -74,15 +74,18 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
                             long result = -1;
                             try {
+                                //[bucket]/long/[vid]/[account]/wonder/[cid]/[timestamp].jpg
                                 String remotePath = "/long/" +
-                                        Security.getVId(JFGRules.getTrimPackageName()) +
+                                        Security.getVId(JFGRules.getTrimPackageName()) +//vid
                                         "/" +
-                                        entity.getUuid() +
+                                        entity.getAccount() +//account
                                         "/wonder/" +
+                                        entity.getUuid() + //cid
+                                        "/" +
                                         entity.getVersion() / 1000 +
-                                        "_1.jpg";
+                                        ".jpg";
                                 FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                                        .load(new JFGGlideURL(entity.getUuid(), option.type, option.flag, entity.getVersion() / 1000 + ".jpg", entity.getUuid()))
+                                        .load(new JFGGlideURL(entity.getUuid(), entity.getVersion() / 1000 + ".jpg"))
                                         .downloadOnly(100, 100);
                                 result = getCmd().putFileToCloud(remotePath, future.get().getAbsolutePath());
                                 subscriber.onNext(result);

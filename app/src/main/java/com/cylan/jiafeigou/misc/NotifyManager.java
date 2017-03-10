@@ -118,7 +118,7 @@ public class NotifyManager implements INotify {
         if (notifyBean.pendingIntent != null)
             builder.setContentIntent(notifyBean.pendingIntent);
         final Notification notification = builder.build();
-        int smallIconId = getContext().getResources().getIdentifier("right_icon", "id", android.R.class.getPackage().getName());
+        int smallIconId = getContext().getResources().getIdentifier("right_icon", "dpMsgId", android.R.class.getPackage().getName());
         if (smallIconId != 0) {
             notification.contentView.setViewVisibility(smallIconId, View.INVISIBLE);
         }
