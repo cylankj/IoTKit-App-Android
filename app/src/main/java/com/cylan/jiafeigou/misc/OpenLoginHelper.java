@@ -90,9 +90,11 @@ public class OpenLoginHelper {
                 sinaAuthorize(activity);
                 break;
             case 6:
+                PreferencesUtils.putBoolean(JConstant.TWITTER_INIT_KEY,true);
                 twitterAuthorize(activity);
                 break;
             case 7:
+                PreferencesUtils.putBoolean(JConstant.FACEBOOK_INIT_KEY,true);
                 facebookAuthorize(activity);
                 break;
         }
@@ -328,14 +330,14 @@ public class OpenLoginHelper {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         AccessToken accessToken = loginResult.getAccessToken();
+                        //post 结果
+                        postAuthorizeResult(accessToken.getToken(),"www.cylan.com",7);
+
                         GraphRequest request = GraphRequest.newMeRequest(accessToken,getUserinfo);
                         Bundle parameters = new Bundle();
                         parameters.putString("fields", "id,name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
                         request.setParameters(parameters);
                         request.executeAsync();
-
-                        //post 结果
-                        postAuthorizeResult(accessToken.getToken(),"www.cylan.com",7);
                     }
 
                     @Override

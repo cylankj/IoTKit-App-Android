@@ -245,14 +245,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
      */
     @Override
     public void loginCountTime() {
-        rx.Observable.just(null)
+        addSubscription(Observable.just(null)
                 .delay(30000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> {
                     if (getView() != null && !isLoginSucc)
                         getView().loginResult(JError.ErrorConnect);
-                });
+                }));
     }
 
     @Override

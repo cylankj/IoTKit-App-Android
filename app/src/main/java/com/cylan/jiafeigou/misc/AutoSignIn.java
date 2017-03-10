@@ -201,7 +201,6 @@ public class AutoSignIn {
                 });
     }
 
-
     public static class SignType {
         public String account;
         public int type;

@@ -213,14 +213,14 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) {
-            basePresenter.start();
-        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        if (basePresenter != null) {
+            basePresenter.start();
+        }
     }
 
     @Override
@@ -1047,14 +1047,20 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             return;
         }
 
-        TwitterAuthClient twitterBack = TwitterInstance.getInstance().twitterAuthClient;
-        if (twitterBack != null) {
-            twitterBack.onActivityResult(requestCode, resultCode, data);
+        if (PreferencesUtils.getBoolean(JConstant.TWITTER_INIT_KEY,false)){
+            TwitterAuthClient twitterBack = TwitterInstance.getInstance().twitterAuthClient;
+            if (twitterBack != null) {
+                twitterBack.onActivityResult(requestCode, resultCode, data);
+            }
+            PreferencesUtils.putBoolean(JConstant.TWITTER_INIT_KEY,false);
         }
 
-        CallbackManager faceBookBackObj = FacebookInstance.getInstance().callbackManager;
-        if (faceBookBackObj != null) {
-            faceBookBackObj.onActivityResult(requestCode, resultCode, data);
+        if (PreferencesUtils.getBoolean(JConstant.FACEBOOK_INIT_KEY,false)){
+            CallbackManager faceBookBackObj = FacebookInstance.getInstance().callbackManager;
+            if (faceBookBackObj != null) {
+                faceBookBackObj.onActivityResult(requestCode, resultCode, data);
+            }
+            PreferencesUtils.putBoolean(JConstant.FACEBOOK_INIT_KEY,false);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
