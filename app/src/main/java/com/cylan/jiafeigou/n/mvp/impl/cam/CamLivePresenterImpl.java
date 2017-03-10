@@ -178,6 +178,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         liveSubscription.add(prePlay(s -> {
             try {
                 int ret = JfgCmdInsurance.getCmd().playVideo(uuid);
+                if (ret != 0) {
+                    JfgCmdInsurance.getCmd().stopPlay(uuid);
+                    ret = JfgCmdInsurance.getCmd().playVideo(uuid);
+                }
                 AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
                 e.printStackTrace();

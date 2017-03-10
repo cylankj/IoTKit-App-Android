@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import android.support.annotation.UiThread;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -16,7 +17,7 @@ public interface HomePageListContract {
     interface View extends BaseView<Presenter> {
 
         @UiThread
-        void onItemsInsert(List<String> uuidList);
+        void onItemsInsert(List<JFGDevice> DeviceList);
 
         /**
          * 对单个设备操作
@@ -47,7 +48,10 @@ public interface HomePageListContract {
 
         void onRefreshFinish();
 
+
 //        void unBindDeviceRsp(int state);
+
+        void autoLoginTip(int code);
     }
 
     interface Presenter extends BasePresenter {
@@ -59,5 +63,6 @@ public interface HomePageListContract {
         void registerWorker();
 
         void unRegisterWorker();
+
     }
 }

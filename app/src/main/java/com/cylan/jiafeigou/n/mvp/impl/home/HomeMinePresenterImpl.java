@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
@@ -35,9 +36,7 @@ import rx.subscriptions.CompositeSubscription;
  */
 public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
 
-    private Subscription onRefreshSubscription;
     private Subscription onBlurSubscribtion;
-    private Subscription onLoadUserHeadSubscribtion;
     private CompositeSubscription subscription;
     private JFGAccount userInfo;                          //用户信息bean
 
@@ -54,17 +53,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     @Override
     public void start() {
         super.start();
-/*        onRefreshSubscription = Observable.just(null)
-                .subscribeOn(Schedulers.io())
-                .delay(3000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        if (getView() != null)
-                            getView().onPortraitUpdate(PreferencesUtils.getString(JConstant.USER_IMAGE_HEAD_URL, ""));
-                    }
-                });*/
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
@@ -77,8 +65,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     public void stop() {
         super.stop();
         unSubscribe(subscription);
-        unSubscribe(onRefreshSubscription);
-        unSubscribe(onLoadUserHeadSubscribtion);
     }
 
     @Override
@@ -149,42 +135,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     }
 
     /**
-     * 初始化界面的数据
-     */
-    @Override
-    public Subscription initData(boolean isOpenLogin) {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null) {
-                            userInfo = getUserInfo.jfgAccount;
-                            if (isOpenLogin) {
-                                getView().setUserImageHeadByUrl(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON));
-                                String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
-                                getView().setAliasName(TextUtils.isEmpty(userAlias) ? createRandomName() : userAlias);
-                                return;
-                            }
-                            if (getView() != null) {
-                                getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
-                                if (userInfo.getAlias() == null | TextUtils.isEmpty(userInfo.getAlias())) {
-                                    boolean isEmail = JConstant.EMAIL_REG.matcher(userInfo.getAccount()).find();
-                                    if (isEmail) {
-                                        String[] split = userInfo.getAccount().split("@");
-                                        userInfo.setAlias(split[0]);
-                                    } else {
-                                        userInfo.setAlias(userInfo.getAccount());
-                                    }
-                                }
-                                getView().setAliasName(userInfo.getAlias());
-                            }
-                        }
-                    }
-                });
-    }
-
-    /**
      * 获取到用户信息
      *
      * @return
@@ -211,13 +161,45 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
      */
     @Override
     public Subscription checkIsOpenLoginCallBack() {
-        return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
+                .flatMap(new Func1<RxEvent.ThirdLoginTab, Observable<JFGAccount>>() {
                     @Override
-                    public void call(Boolean aBoolean) {
-                        isOpenLogin = aBoolean;
-                        subscription.add(initData(aBoolean));
+                    public Observable<JFGAccount> call(RxEvent.ThirdLoginTab thirdLoginTab) {
+                        if (thirdLoginTab.isThird){
+                            JFGAccount account = new JFGAccount();
+                            account.setEnablePush(true);
+                            return Observable.just(account);
+                        }else {
+                            return Observable.just(DataSourceManager.getInstance().getJFGAccount());
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<JFGAccount>() {
+                    @Override
+                    public void call(JFGAccount account) {
+                        userInfo = account;
+                        if (account != null && getView() != null){
+                            if (TextUtils.isEmpty(account.getAccount()) && account.isEnablePush()){
+                                isOpenLogin = true;
+                                getView().setUserImageHeadByUrl(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON));
+                                String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
+                                getView().setAliasName(TextUtils.isEmpty(userAlias) ? createRandomName() : userAlias);
+                            }else {
+                                isOpenLogin = false;
+                                getView().setUserImageHeadByUrl(account.getPhotoUrl());
+                                if (account.getAlias() == null | TextUtils.isEmpty(account.getAlias())) {
+                                    boolean isEmail = JConstant.EMAIL_REG.matcher(account.getAccount()).find();
+                                    if (isEmail) {
+                                        String[] split = account.getAccount().split("@");
+                                        account.setAlias(split[0]);
+                                    } else {
+                                        account.setAlias(account.getAccount());
+                                    }
+                                }
+                                getView().setAliasName(account.getAlias());
+                            }
+                        }
                     }
                 });
     }

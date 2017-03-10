@@ -1,8 +1,11 @@
 package com.cylan.jiafeigou.base.view;
 
 
+import android.util.Pair;
+
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
@@ -14,7 +17,6 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.dp.DataPoint;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -29,7 +31,7 @@ public interface JFGSourceManager {
 
     List<JFGDPDevice> getAllJFGDevice();
 
-    HashMap<String, JFGDevice> getAllRawJFGDeviceMap();
+    ArrayList<JFGDevice> getAllRawJFGDeviceList();
 
     boolean updateRawDevice(JFGDevice device);
 
@@ -136,5 +138,11 @@ public interface JFGSourceManager {
 
     ArrayList<JFGVideo> getHistoryList(String uuid);
 
+    void cacheUnreadCount(long seq, String uuid, ArrayList<JFGDPMsgCount> unreadList);
+
+    Pair<Integer, Long> getUnreadCount(String uuid, long... ids);
+
     void clear();
+
+    void clearUnread(String uuid, long... ids);
 }

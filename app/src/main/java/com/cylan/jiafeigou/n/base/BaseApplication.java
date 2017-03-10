@@ -126,8 +126,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
         initLeakCanary();
         registerActivityLifecycleCallbacks(this);
 
-        initTwitter();
-        initFaceBook();
+//        initTwitter();
+//        initFaceBook();
         initHuaweiPushSDK();
         Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
     }

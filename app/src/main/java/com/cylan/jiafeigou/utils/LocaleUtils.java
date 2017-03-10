@@ -29,6 +29,7 @@ public class LocaleUtils {
             Locale.TRADITIONAL_CHINESE};
 
     public static int getLanguageType(Context ctx) {
+        if (ctx == null) return 0;
         Locale locale = ctx.getResources().getConfiguration().locale;
         final String c = locale.toString();
         if (c.contains("zh")) {

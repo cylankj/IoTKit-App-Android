@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -38,10 +39,12 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         implements CamMessageListContract.Presenter {
 
     private Subscription qeurySub;
+    private JFGDevice device;
 
     public CamMessageListPresenterImpl(CamMessageListContract.View view, String uuid) {
         super(view, uuid);
         view.setPresenter(this);
+        device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
     }
 
     @Override
@@ -124,11 +127,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         allList = new ArrayList<>(new HashSet<>(allList));
                         Collections.sort(allList);//来个排序
                         AppLogger.i("get msgList: " + allList.size());
-                        return Observable.just(Converter.convert(allList));
+                        return Observable.just(Converter.convert(allList, device.regionType));
                     }
                 });
-
-
     }
 
     @Override

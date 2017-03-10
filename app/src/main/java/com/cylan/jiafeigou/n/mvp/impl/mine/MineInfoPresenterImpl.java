@@ -10,13 +10,14 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.misc.AutoSignIn;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 
 import java.io.File;
 
@@ -50,7 +51,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      * 退出登录
      */
     @Override
-    public void logOut() {
+    public void logOut(String account) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
@@ -60,13 +61,11 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                         DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
                         JfgCmdInsurance.getCmd().logout();
                         RxBus.getCacheInstance().removeAllStickyEvents();
-                        if (isOpenLogin) {
-                            AccessTokenKeeper.clear(getView().getContext());
-//                            TencentInstance tencentInstance = new TencentInstance();
-//                            if (tencentInstance.mTencent.isSessionValid()){
-//                                tencentInstance.mTencent.logout(getView().getContext());
-//                            }
-                        }
+                        AutoSignIn.getInstance().autoSave(account,1, "")
+                                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                                .subscribe();
+                        //emit failed event.
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -218,13 +217,10 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      */
     @Override
     public Subscription isOpenLoginBack() {
-        return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        isOpenLogin = aBoolean;
-                    }
+                .subscribe(thirdLoginTab -> {
+                    isOpenLogin = thirdLoginTab.isThird;
                 });
     }
 

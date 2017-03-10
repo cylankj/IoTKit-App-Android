@@ -1,12 +1,16 @@
 package com.cylan.jiafeigou.support.qqLogIn;
 
 import android.app.Activity;
-import android.content.Context;
 
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.tencent.connect.UserInfo;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
+import com.tencent.tauth.UiError;
+
+import org.json.JSONObject;
 
 /**
  * 作者：zsl
@@ -15,11 +19,21 @@ import com.tencent.tauth.Tencent;
  */
 public class TencentInstance {
 
+    private String SCOPE = "get_user_info";
     private static boolean isServerSideLogin = false;
-
     public static String APP_KEY;
-
     public Tencent mTencent;
+    private static TencentInstance instance;
+    public IUiListener listener;
+
+    public static TencentInstance getInstance() {
+        if (instance == null)
+            synchronized (TencentInstance.class) {
+                if (instance == null)
+                    instance = new TencentInstance();
+            }
+        return instance;
+    }
 
     public TencentInstance() {
         APP_KEY = "1103156296";
@@ -48,10 +62,85 @@ public class TencentInstance {
     }
 
     /**
-     * 获取到用户的信息
+     * 登录
+     * @param activity
      */
-    public void getUserInfo(Context context) {
-        UserInfo userInfo = new UserInfo(context, mTencent.getQQToken());
-//        userInfo.getUserInfo(new BaseUIListener(this,"get_simple_userinfo"));
+    public void logIn(Activity activity) {
+        if (!mTencent.isSessionValid()) {
+            mTencent.loginServerSide(activity, SCOPE, getQQAuthorizeListener);
+            isServerSideLogin = true;
+        } else {
+            if (!isServerSideLogin) {
+                mTencent.logout(activity);
+                mTencent.loginServerSide(activity,SCOPE, getQQAuthorizeListener);
+                isServerSideLogin = true;
+                return;
+            }
+            mTencent.logout(activity);
+            isServerSideLogin = false;
+        }
     }
+
+    /**
+     * 登录
+     * @param activity
+     */
+    public void logIn(Activity activity,IUiListener iUiListener) {
+        listener = iUiListener;
+        if (!mTencent.isSessionValid()) {
+            mTencent.loginServerSide(activity, SCOPE, iUiListener);
+            isServerSideLogin = true;
+        } else {
+            if (!isServerSideLogin) {
+                mTencent.logout(activity);
+                mTencent.loginServerSide(activity,SCOPE, iUiListener);
+                isServerSideLogin = true;
+                return;
+            }
+            mTencent.logout(activity);
+            isServerSideLogin = false;
+        }
+    }
+
+    /**
+     * 获取用户信息
+     */
+    private IUiListener getQQAuthorizeListener = new IUiListener() {
+        @Override
+        public void onComplete(Object response) {
+            if (response == null){
+                AppLogger.d("QQ authorize failed");
+                return;
+            }
+            try {
+                JSONObject jsonObject = (JSONObject) response;
+                String openID = jsonObject.getString("openid");
+                String accessToken = jsonObject.getString("access_token");
+                String expires = jsonObject.getString("expires_in");
+                mTencent.setOpenId(openID);
+                mTencent.setAccessToken(accessToken, expires);
+
+
+                String nickname = jsonObject.getString("nickname");
+                String figureurl = jsonObject.getString("figureurl");
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, figureurl);
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, nickname);
+                AppLogger.d("nickname:"+nickname+"figureurl:"+figureurl);
+            } catch (Exception e) {
+                AppLogger.d("QQGetUserInfo error:"+e.getLocalizedMessage());
+                e.printStackTrace();
+            }
+        }
+
+        @Override
+        public void onError(UiError uiError) {
+            AppLogger.d("QQGetUserInfo error:"+uiError.errorMessage);
+        }
+
+        @Override
+        public void onCancel() {
+            AppLogger.d("QQ authorize cancle");
+        }
+    };
+
 }

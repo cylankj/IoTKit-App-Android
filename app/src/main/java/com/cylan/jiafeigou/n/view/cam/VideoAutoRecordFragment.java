@@ -192,6 +192,6 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     private boolean hasSdcard() {
         DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid,
                 DpMsgMap.ID_204_SDCARD_STORAGE);
-        return status.hasSdcard && status.err == 0;
+        return status != null && status.hasSdcard && status.err == 0;
     }
 }

@@ -27,6 +27,8 @@ public class SinaLogin {
 
     private static final String URL_ACCOUNT = API_SERVER + "/account";
 
+    private static SinaLogin instance;
+    private static Context context;
     /**
      * post请求方式
      */
@@ -44,16 +46,45 @@ public class SinaLogin {
     public SsoHandler mSsoHandler;
 
     public SinaLogin(Context context) {
-
+        this.context = context;
 //        APP_KEY = PackageUtils.getMetaString(context, "sina_app_key");
         APP_KEY = "1315129656";
         mWeibo = new AuthInfo(context, APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
         LogUtil.enableLog();
     }
 
+
+    public static SinaLogin getInstance(Activity activity){
+        if (instance == null)
+            synchronized (SinaLogin.class) {
+                if (instance == null)
+                    instance = new SinaLogin(activity);
+            }
+        return instance;
+    }
+
+    /**
+     * @param ctx
+     * @param mAuthListener
+     */
     public void login(Context ctx, WeiboAuthListener mAuthListener) {
         if (null == mSsoHandler && mWeibo != null) {
             mSsoHandler = new SsoHandler((Activity) ctx, mWeibo);
+        }
+
+        if (mSsoHandler != null) {
+            mSsoHandler.authorize(mAuthListener);
+        } else {
+            LogUtil.e(TAG, "Please setWeiboAuthInfo(...) for first");
+        }
+    }
+
+    /**
+     * @param mAuthListener
+     */
+    public void login(WeiboAuthListener mAuthListener) {
+        if (null == mSsoHandler && mWeibo != null) {
+            mSsoHandler = new SsoHandler((Activity)context, mWeibo);
         }
 
         if (mSsoHandler != null) {
