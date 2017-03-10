@@ -34,7 +34,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -171,7 +171,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
     }
 
@@ -529,7 +529,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     private VideoViewFactory.IVideoView initVideoView() {
         AppLogger.i("initVideoView:" + (videoView == null));
         if (videoView == null) {
-            JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
             if (device == null) {
                 AppLogger.e("device is null");
                 getActivity().finish();

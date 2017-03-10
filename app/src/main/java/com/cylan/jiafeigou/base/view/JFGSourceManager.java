@@ -11,9 +11,9 @@ import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.jiafeigou.base.module.JFGDPAccount;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 
 import java.util.ArrayList;
@@ -25,11 +25,11 @@ import java.util.List;
 
 public interface JFGSourceManager {
 
-    <T extends JFGDPDevice> T getJFGDevice(String uuid);
+    <T extends Device> T getJFGDevice(String uuid);
 
     JFGDevice getRawJFGDevice(String uuid);
 
-    List<JFGDPDevice> getAllJFGDevice();
+    List<Device> getAllJFGDevice();
 
     ArrayList<JFGDevice> getAllRawJFGDeviceList();
 
@@ -49,7 +49,7 @@ public interface JFGSourceManager {
 
     void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account);
 
-    JFGDPAccount getAJFGAccount();
+    Account getAJFGAccount();
 
     JFGAccount getJFGAccount();
 
@@ -63,7 +63,7 @@ public interface JFGSourceManager {
 
     <T extends DataPoint> T getValue(String uuid, long msgId, long seq);
 
-    List<JFGDPDevice> getJFGDeviceByPid(int... pids);
+    List<Device> getJFGDeviceByPid(int... pids);
 
     List<String> getJFGDeviceUUIDByPid(int... pids);
 
@@ -102,7 +102,7 @@ public interface JFGSourceManager {
 
     void setJfgAccount(JFGAccount jfgAccount);
 
-    boolean updateJFGDevice(JFGDPDevice device);
+    boolean updateJFGDevice(Device device);
 
     /**
      * 本地和远程

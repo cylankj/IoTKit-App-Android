@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -127,7 +127,7 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
         int b = MiscUtils.safeGet(battery, 0);
         tvDeviceBatteryLevel.setText(b + "");
 
-        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device != null) {
             tvDeviceAlias.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
@@ -169,7 +169,7 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
             public void onDialogAction(int id, Object value) {
                 if (presenter != null && value != null && value instanceof String) {
                     String content = (String) value;
-                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
                     if (!TextUtils.isEmpty(content)
                             && !TextUtils.equals(device.alias, content)) {
                         tvDeviceAlias.setText(content);

@@ -1,10 +1,13 @@
 package com.cylan.jiafeigou.cache.db.module;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.ext.annotations.DPProperty;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
+import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -17,9 +20,9 @@ import org.greenrobot.greendao.annotation.Unique;
  */
 
 @Entity(active = true)
-public class Account implements IEntity<Account> {
+public class Account extends DataPoint implements IEntity<Account> {
     @Id
-    private Long id;
+    private Long _id;
     @Unique
     private String account;
     private String phone;
@@ -33,6 +36,12 @@ public class Account implements IEntity<Account> {
     private String action;
     private String state;
     private String option;
+
+    @DPProperty(msgId = 601)
+    public transient DpMsgDefine.DPPrimary<String> account_state;
+
+    @DPProperty(msgId = 602)
+    public transient DpMsgDefine.DPSet<DpMsgDefine.DPWonderItem> account_wonderful_msg;
 
     /**
      * Used to resolve relations
@@ -64,11 +73,11 @@ public class Account implements IEntity<Account> {
     public Account() {
     }
 
-    @Generated(hash = 139519536)
-    public Account(Long id, String account, String phone, String token, String alias,
-                   boolean enablePush, boolean enableSound, String email, boolean enableVibrate,
-                   String photoUrl, String action, String state, String option) {
-        this.id = id;
+    @Generated(hash = 447675577)
+    public Account(Long _id, String account, String phone, String token, String alias,
+            boolean enablePush, boolean enableSound, String email, boolean enableVibrate,
+            String photoUrl, String action, String state, String option) {
+        this._id = _id;
         this.account = account;
         this.phone = phone;
         this.token = token;
@@ -259,12 +268,12 @@ public class Account implements IEntity<Account> {
         return this;
     }
 
-    public Long getId() {
-        return this.id;
+    public Long get_id() {
+        return this._id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void set_id(Long _id) {
+        this._id = _id;
     }
 
     /** called by internal mechanisms, do not call yourself. */

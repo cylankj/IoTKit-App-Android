@@ -11,7 +11,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -81,7 +81,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
         Observable.just(alarmMsg)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((DpMsgDefine.DPAlarm alarm) -> {
-                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
                     String alias = device == null ? "" : device.alias;
                     DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                     item.cid = DataSourceManager.getInstance().getJFGAccount().getAccount();//02-28，丽工说改的

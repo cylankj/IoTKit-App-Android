@@ -29,7 +29,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
@@ -115,7 +115,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     }
 
     private void initTitle() {
-        JFGDPDevice jfgDevice = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device jfgDevice = DataSourceManager.getInstance().getJFGDevice(uuid);
         tvDeviceName.setText(TextUtils.isEmpty(jfgDevice.alias) ? jfgDevice.uuid : jfgDevice.alias);
 //        CloudLiveCallActivity.setOnCloudMesgBackListener(this);
     }

@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -72,7 +72,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
     }
 
     private void fillData() {
-        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         getView().onCloudInfoRsp(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
     }
 
@@ -142,7 +142,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
      */
     @Override
     public String getDeviceName() {
-        JFGDPDevice jfgDevice = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device jfgDevice = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (jfgDevice == null)
             return uuid;
         return TextUtils.isEmpty(jfgDevice.alias) ?

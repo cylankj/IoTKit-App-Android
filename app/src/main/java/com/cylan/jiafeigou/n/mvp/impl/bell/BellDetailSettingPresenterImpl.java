@@ -2,9 +2,9 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -76,7 +76,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
                         DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
                         try {
                             JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, ""));

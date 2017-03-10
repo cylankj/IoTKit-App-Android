@@ -7,7 +7,7 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
@@ -178,11 +178,11 @@ public class MiscUtils {
         return temp;
     }
 
-    public static ArrayList<String> getSharedList(List<JFGDPDevice> devices) {
+    public static ArrayList<String> getSharedList(List<Device> devices) {
         if (devices == null)
             return new ArrayList<>();
         ArrayList<String> arrayList = new ArrayList<>();
-        for (JFGDPDevice device : devices) {
+        for (Device device : devices) {
             if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
                 arrayList.add(device.uuid);
             }
@@ -190,11 +190,11 @@ public class MiscUtils {
         return arrayList;
     }
 
-    public static ArrayList<String> getNoneSharedList(List<JFGDPDevice> devices) {
+    public static ArrayList<String> getNoneSharedList(List<Device> devices) {
         if (devices == null)
             return new ArrayList<>();
         ArrayList<String> arrayList = new ArrayList<>();
-        for (JFGDPDevice device : devices) {
+        for (Device device : devices) {
             if (device != null && TextUtils.isEmpty(device.shareAccount)) {
                 arrayList.add(device.uuid);
             }

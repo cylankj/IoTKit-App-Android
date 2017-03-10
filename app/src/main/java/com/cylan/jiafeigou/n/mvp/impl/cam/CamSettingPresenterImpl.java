@@ -8,7 +8,7 @@ import android.text.TextUtils;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGCameraDevice;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -134,7 +134,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 return context.getString(R.string.SD_INIT_ERR, status.err);
             }
         }
-        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         return device != null && TextUtils.isEmpty(device.alias) ?
                 device.uuid : (device != null ? device.alias : "");
     }

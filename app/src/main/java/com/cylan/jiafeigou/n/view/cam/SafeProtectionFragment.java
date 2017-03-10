@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -71,7 +71,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     private TimePickDialogFragment timePickDialogFragment;
     private String uuid;
 
-    private JFGDPDevice device;
+    private Device device;
 
 
     public SafeProtectionFragment() {

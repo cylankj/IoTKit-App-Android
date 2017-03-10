@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -229,7 +230,14 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
                 if (basePresenter != null)
                     basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
                             ViewUtils.getTextViewContent(etWifiPwd), type);
-                tvWifiPwdSubmit.viewZoomSmall();
+                if (getArguments().getBoolean("ReSetBell", false)) {
+                    ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG));
+                    Intent intent = new Intent(getActivity(), SmartcallActivity.class);
+                    startActivity(intent);
+                    return;
+                } else {
+                    tvWifiPwdSubmit.viewZoomSmall();
+                }
                 break;
             case R.id.tv_config_ap_name:
                 if (getView() != null)

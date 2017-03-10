@@ -13,9 +13,9 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
@@ -125,7 +125,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         editDialogFragment.setAction((id, value) -> {
             if (value != null && value instanceof String) {
                 String content = (String) value;
-                JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+                Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
                 if (!TextUtils.isEmpty(content)
                         && device != null && !TextUtils.equals(device.alias, content)) {
                     device.alias = content;

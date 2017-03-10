@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.jiafeigou.base.module.JFGCameraDevice;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
@@ -61,6 +61,6 @@ public interface CamInfoContract {
         Subscription clearSdcardReqBack();
 
 
-        void updateAlias(JFGDPDevice device);
+        void updateAlias(Device device);
     }
 }

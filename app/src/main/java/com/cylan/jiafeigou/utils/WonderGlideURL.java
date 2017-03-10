@@ -2,8 +2,8 @@ package com.cylan.jiafeigou.utils;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -28,8 +28,8 @@ public class WonderGlideURL extends GlideUrl {
         mBean = bean;
         this.vid = Security.getVId(JFGRules.getTrimPackageName());
         if (DataSourceManager.getInstance().getAJFGAccount() != null)
-            this.account = DataSourceManager.getInstance().getJFGAccount().getAccount();
-        JFGDevice device = DataSourceManager.getInstance().getRawJFGDevice(bean.cid);
+            this.account = DataSourceManager.getInstance().getAJFGAccount().getAccount();
+        Device device = DataSourceManager.getInstance().getJFGDevice(bean.cid);
         if (device != null)
             this.regionType = device.regionType;
     }

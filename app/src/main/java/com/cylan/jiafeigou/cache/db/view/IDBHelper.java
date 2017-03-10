@@ -59,6 +59,8 @@ public interface IDBHelper {
 
     Observable<Device> updateDevice(JFGDevice[] device);
 
+    Observable<Device> updateDevice(Device device);
+
     Observable<Device> unBindDeviceNotConfirm(String uuid);
 
     Observable<Device> unBindDeviceWithConfirm(String uuid);

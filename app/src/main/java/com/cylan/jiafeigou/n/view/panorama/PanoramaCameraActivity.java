@@ -17,8 +17,8 @@ import android.widget.ViewSwitcher;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -86,7 +86,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
 
     @Override
-    public void onShowProperty(JFGDPDevice device) {
+    public void onShowProperty(Device device) {
 
     }
 

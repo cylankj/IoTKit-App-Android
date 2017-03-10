@@ -10,9 +10,9 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -104,6 +104,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 BellDetailFragment fragment = BellDetailFragment.newInstance(null);
                 Bundle bundle = new Bundle();
                 bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getActivity().getSupportFragmentManager(), fragment);
             }
@@ -113,6 +114,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
             case R.id.sv_setting_device_wifi:
                 Bundle setWiFi = new Bundle();
+                setWiFi.putBoolean("ReSetBell", true);
                 BindDoorBellFragment fragment = BindDoorBellFragment.newInstance(setWiFi);
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
@@ -147,7 +149,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 }
                 if (simpleDialogFragment == null) {
                     Bundle bundle = new Bundle();
-                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+                    Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
                     String name = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
                     bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.SURE_DELETE_1, name));
                     simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);

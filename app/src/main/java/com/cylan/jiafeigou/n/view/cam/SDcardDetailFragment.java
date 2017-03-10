@@ -16,7 +16,7 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -187,7 +187,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             showHasNoSdDialog();
             return;
         }
-        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
+        Device device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
         //仅3G摄像头显示此栏
         if (device != null && JFGRules.is3GCam(device.pid)) {
             tvClearRestart.setVisibility(View.VISIBLE);

@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGCameraDevice;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -89,7 +89,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     private String uuid;
     private EditFragmentDialog editDialogFragment;
     private RxEvent.CheckDevVersionRsp checkDevVersion;
-    private JFGDPDevice device;
+    private Device device;
 
     public static DeviceInfoDetailFragment newInstance(Bundle bundle) {
         DeviceInfoDetailFragment fragment = new DeviceInfoDetailFragment();
@@ -165,7 +165,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         } else {
             tvDeviceSdcardState.setTvSubTitle(statusContent, R.color.color_8c8c8c);
         }
-        JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         tvDeviceAlias.setTvSubTitle(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
         tvDeviceCid.setTvSubTitle(uuid);
         DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
@@ -311,7 +311,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         editDialogFragment.setAction((int id, Object value) -> {
             if (value != null && value instanceof String) {
                 String content = (String) value;
-                JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
                 if (!TextUtils.isEmpty(content) && device != null && !TextUtils.equals(content, device.alias)) {
                     device.alias = content;
                     tvDeviceAlias.setTvSubTitle((CharSequence) value);

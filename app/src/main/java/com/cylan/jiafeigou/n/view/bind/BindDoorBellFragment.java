@@ -270,7 +270,7 @@ public class BindDoorBellFragment extends IBaseFragment<BindDeviceContract.Prese
 //        if (basePresenter != null) basePresenter.scanDevices();
         if (getView() != null)
             ViewUtils.deBounceClick(getView().findViewById(R.id.tv_bind_camera_tip));
-        Bundle bundle = new Bundle();
+        Bundle bundle = getArguments();
         bundle.putString(JConstant.KEY_BIND_DEVICE, getString(R.string.CALL_CAMERA_NAME));
         BindGuideFragment fragment = BindGuideFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),

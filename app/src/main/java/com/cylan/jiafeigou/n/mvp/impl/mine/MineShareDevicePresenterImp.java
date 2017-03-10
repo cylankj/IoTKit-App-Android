@@ -5,13 +5,10 @@ import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
-import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDPDevice;
-import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -19,7 +16,6 @@ import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -140,8 +136,8 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     private ArrayList<DeviceBean> getShareDeviceList() {
 
         ArrayList<DeviceBean> list = new ArrayList<>();
-        List<JFGDPDevice> devices = DataSourceManager.getInstance().getAllJFGDevice();
-        for (JFGDPDevice info : devices) {
+        List<Device> devices = DataSourceManager.getInstance().getAllJFGDevice();
+        for (Device info : devices) {
             DeviceBean bean = new DeviceBean();
             bean.alias = info.alias;
             bean.pid = info.pid;

@@ -239,6 +239,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Account> getActiveAccount() {
+        AppLogger.d("getActiveAccount");
         return Observable.just(accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())))
                 .observeOn(Schedulers.io())
                 .flatMap(build -> build.rx().unique().filter(account -> account != null)
@@ -253,20 +254,25 @@ public class BaseDBHelper implements IDBHelper {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(dev -> getActiveAccount().map(account -> dev))//延迟写入,等到有账号了才写入数据库
-                .map(Device::new)
-                .flatMap(device1 -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(device1.getUuid()), DeviceDao.Properties.Account.eq(getAccount())).rx().unique()
-                        .flatMap(device2 -> {
+                .flatMap(dev -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(getAccount())).rx().unique()
+                        .flatMap(dpDevice -> {
                             AppLogger.d("正在更新 Device 条目");
-                            if (device2 != null) {
-                                deviceDao.delete(device2);
+                            if (dpDevice == null) {
+                                dpDevice = new Device();
                             }
-                            device1.setAccount(getAccount());
-                            return deviceDao.rx().save(device1);
+                            dpDevice.setAccount(getAccount());
+                            dpDevice.setDevice(dev);
+                            return deviceDao.rx().save(dpDevice);
                         }))
                 .doOnError(throwable -> {
                     AppLogger.e("err: " + throwable.getLocalizedMessage());
                     throwable.printStackTrace();
                 });
+    }
+
+    @Override
+    public Observable<Device> updateDevice(Device device) {
+        return deviceDao.rx().save(device);
     }
 
     @Override

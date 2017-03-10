@@ -16,7 +16,7 @@ import org.greenrobot.greendao.annotation.Id;
 @Entity(active = true, generateGettersSetters = false)
 public class DPEntity extends BaseDPEntity {
     @Id
-    private Long id;
+    private Long _id;
     private String account;
     private String server;
     private String uuid;
@@ -37,10 +37,10 @@ public class DPEntity extends BaseDPEntity {
     @Generated(hash = 1268361579)
     private transient DPEntityDao myDao;
 
-    @Generated(hash = 1007409977)
-    public DPEntity(Long id, String account, String server, String uuid, Long version,
+    @Generated(hash = 99264848)
+    public DPEntity(Long _id, String account, String server, String uuid, Long version,
                     Integer msgId, byte[] bytes, String action, String state, String option) {
-        this.id = id;
+        this._id = _id;
         this.account = account;
         this.server = server;
         this.uuid = uuid;
@@ -56,13 +56,13 @@ public class DPEntity extends BaseDPEntity {
     public DPEntity() {
     }
 
-    public IDPEntity setId(Long id) {
-        this.id = id;
+    public IDPEntity set_id(Long id) {
+        this._id = id;
         return this;
     }
 
-    public Long getId() {
-        return id;
+    public Long get_id() {
+        return _id;
     }
 
     public IDPEntity setAccount(String account) {
