@@ -1,0 +1,126 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <FrameLayout
+            android:id="@+id/fLayout_top_bar_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/color_0ba8cf">
+
+            <TextView
+                android:id="@+id/imgV_top_bar_center"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/y48"
+                android:drawablePadding="@dimen/y15"
+                android:drawableStart="@drawable/nav_tab_back_selector"
+                android:gravity="center_vertical"
+                android:paddingStart="@dimen/y15"
+                android:text="@string/SETTINGS_1"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp18" />
+        </FrameLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/lLayout_setting_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y10"
+            android:background="@drawable/little_shape" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            android:layout_marginTop="@dimen/y10"
+            android:text="@string/DEVICE"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="@dimen/sp15" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_setting_device_detail"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y72"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            hunt:sv_image_src="@drawable/setting_icon_information"
+            hunt:sv_sub_title="Micro SD卡读写失败"
+            hunt:sv_title="@string/EQUIPMENT_INFO"
+            hunt:sv_v_divider="true" />
+
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_setting_device_logo"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y72"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            hunt:sv_image_src="@drawable/setting_icon_logo"
+            hunt:sv_title="LOGO 选择"
+            hunt:sv_v_divider="false" />
+
+        <LinearLayout
+            android:id="@+id/ll_bell_net_work_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="@dimen/y20"
+                android:layout_marginStart="@dimen/y20"
+                android:layout_marginTop="@dimen/y10"
+                android:text="@string/SETTINGS_1"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp15" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_wifi"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginEnd="@dimen/y20"
+                android:layout_marginStart="@dimen/y20"
+                hunt:sv_image_src="@drawable/setting_icon_information"
+                hunt:sv_title="@string/WIFI"
+                hunt:sv_v_divider="true" />
+
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sv_setting_device_mode"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginEnd="@dimen/y20"
+                android:layout_marginStart="@dimen/y20"
+                hunt:sv_image_src="@drawable/setting_icon_ap"
+                hunt:sv_title="户外模式"
+                hunt:sv_v_divider="false" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_setting_unbind"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y42"
+            android:layout_marginEnd="@dimen/y20"
+            android:layout_marginStart="@dimen/y20"
+            android:layout_marginTop="@dimen/y61"
+            android:background="@drawable/un_bind_device_btn_seletor"
+            android:gravity="center"
+            android:text="@string/DELETE_CID"
+            android:textColor="@color/color_FF3D32"
+            android:textSize="@dimen/sp16" />
+    </LinearLayout>
+</LinearLayout>

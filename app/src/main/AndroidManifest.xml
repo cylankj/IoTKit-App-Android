@@ -56,7 +56,6 @@
     <!-- <uses-permission android:name="android.permission.READ_SMS"/> -->
     <uses-permission android:name="android.permission.SEND_SMS" />
     <uses-permission android:name="android.permission.PROCESS_OUTGOING_CALLS" />
-
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <!-- 闪光灯 -->
@@ -314,7 +313,7 @@
             android:windowSoftInputMode="adjustPan|stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+                <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
             </intent-filter>
         </activity>
 
@@ -385,10 +384,14 @@
             android:enabled="true"
             android:exported="true">
             <intent-filter android:priority="1000">
-                　<!-- 监听的动作类型，这里是监听网络连接的状态  -->
+
+                　
+                <!-- 监听的动作类型，这里是监听网络连接的状态 -->
                 <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
             </intent-filter>
         </receiver>
+
+        <activity android:name=".n.view.panorama.PanoramaAlbumActivity"></activity>
     </application>
 
 </manifest>

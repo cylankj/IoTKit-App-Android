@@ -230,16 +230,8 @@ dependencies {
     //    compile('com.twitter.sdk.android:twitter:2.3.1@aar') {
     //        transitive = true;
     //    }
-    compile 'com.danikula:videocache:2.6.4'
-    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
-    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
-    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
-    compile 'com.cylan.ext:annotations:0.1.0'
-    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
-//    annotationProcessor 'com.cylan.ext:processor:0.1.0'
-    debugCompile 'com.cylan.ext:optdebug:0.0.1'
-    releaseCompile 'com.cylan.ext:optdebug:0.0.1'
-//    releaseCompile 'com.cylan.ext:optrelease:0.0.1'
+    //    annotationProcessor 'com.cylan.ext:processor:0.1.0'
+    //    releaseCompile 'com.cylan.ext:optrelease:0.0.1'
     //渠道包
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
     // twitter
@@ -248,14 +240,23 @@ dependencies {
     compile(name: 'tweet-ui-2.3.1', ext: 'aar')
     compile(name: 'twitter-2.3.1', ext: 'aar')
     compile(name: 'twitter-core-2.3.0', ext: 'aar')
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
     compile(name: rootProject.ext.facebookSDK, ext: 'aar') {
         transitive = true
     }
-    compile 'org.greenrobot:greendao:3.2.0'
 
     compile(name: rootProject.ext.cySdk, ext: 'aar')
     //aar通用依赖，不需要指定名字
+    compile 'com.danikula:videocache:2.6.4'
+    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
+    compile 'com.cylan.ext:annotations:0.1.0'
+    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
+    compile 'org.greenrobot:greendao:3.2.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.1'
+    debugCompile 'com.cylan.ext:optdebug:0.0.1'
+    releaseCompile 'com.cylan.ext:optdebug:0.0.1'
 }
 

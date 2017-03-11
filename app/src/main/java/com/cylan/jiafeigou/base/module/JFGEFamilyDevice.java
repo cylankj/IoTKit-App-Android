@@ -9,28 +9,20 @@ import static com.cylan.jiafeigou.dp.DpMsgDefine.DPPrimary;
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPTimeZone;
 
 public class JFGEFamilyDevice extends Device {
-  @DPProperty(
-      msgId = 201
-  )
-  public DPNet net;
+    @DPProperty(msgId = 201)
+    public DPNet net;
 
-  @DPProperty(
-      msgId = 206
-  )
-  public DPPrimary<Integer> battery;
+    @DPProperty(msgId = 206)
+    public DPPrimary<Integer> battery;
 
-  @DPProperty(
-      msgId = 210
-  )
-  public DPPrimary<Integer> up_time;
+    @DPProperty(msgId = 210)
+    public DPPrimary<Integer> up_time;
 
-  @DPProperty(
-      msgId = 214
-  )
-  public DPTimeZone device_time_zone;
+    @DPProperty(msgId = 214)
+    public DPTimeZone device_time_zone;
 
-  @Override
-  public JFGEFamilyDevice $() {
-    return (JFGEFamilyDevice)super.$();
-  }
+    @Override
+    public JFGEFamilyDevice $() {
+        return this;
+    }
 }

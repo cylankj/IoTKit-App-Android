@@ -9,18 +9,14 @@ import static com.cylan.jiafeigou.dp.DpMsgDefine.DPPrimary;
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPSet;
 
 public class JFGMagnetometerDevice extends Device {
-  @DPProperty(
-      msgId = 401
-  )
-  public DPSet<DPBellCallRecord> bell_call_state;
+    @DPProperty(msgId = 401)
+    public DPSet<DPBellCallRecord> bell_call_state;
 
-  @DPProperty(
-      msgId = 402
-  )
-  public DPPrimary<Integer> bell_voice_msg;
+    @DPProperty(msgId = 402)
+    public DPPrimary<Integer> bell_voice_msg;
 
-  @Override
-  public JFGMagnetometerDevice $() {
-    return (JFGMagnetometerDevice)super.$();
-  }
+    @Override
+    public JFGMagnetometerDevice $() {
+        return this;
+    }
 }

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#99000000">
+
+    <RelativeLayout
+        android:layout_width="@dimen/y280"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/layout_panorama_connection_way_content"
+            android:layout_width="@dimen/y280"
+            android:layout_height="@dimen/y363"
+            android:background="#FFFFFF"
+            app:cardCornerRadius="@dimen/y9">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/y23"
+                    android:text="家居模式"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/sp18" />
+
+                <ImageView
+                    android:id="@+id/pic_home_model"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/y66"
+                    android:src="@drawable/pic_home_model" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/pic_home_model"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/y25"
+                    android:text="摄像机通过网络与客户端连接>>"
+                    android:textColor="#666666"
+                    android:textSize="@dimen/sp14" />
+
+                <View
+                    android:id="@+id/layout_panorama_connection_way_divider"
+                    android:layout_width="@dimen/y254"
+                    android:layout_height="@dimen/y1"
+                    android:layout_centerInParent="true" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layout_panorama_connection_way_divider"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/y23"
+                    android:text="户外模式"
+                    android:textColor="#333333"
+                    android:textSize="@dimen/sp18" />
+
+                <ImageView
+                    android:id="@+id/pic_ap_model"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/layout_panorama_connection_way_divider"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/y66"
+                    android:src="@drawable/pic_ap_model" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/pic_ap_model"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="@dimen/y21"
+                    android:text="摄像机直接与客户端连接>>"
+                    android:textColor="#666666"
+                    android:textSize="@dimen/sp14" />
+
+            </RelativeLayout>
+
+
+        </android.support.v7.widget.CardView>
+
+        <ImageView
+            android:layout_width="@dimen/y42"
+            android:layout_height="@dimen/y42"
+            android:layout_below="@id/layout_panorama_connection_way_content"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/y36"
+            android:src="@drawable/pop_close" />
+    </RelativeLayout>
+</FrameLayout>
