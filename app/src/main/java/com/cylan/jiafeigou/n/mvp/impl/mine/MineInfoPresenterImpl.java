@@ -61,7 +61,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                         DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
                         JfgCmdInsurance.getCmd().logout();
                         RxBus.getCacheInstance().removeAllStickyEvents();
-                        AutoSignIn.getInstance().autoSave(account,1, "")
+                        AutoSignIn.getInstance().autoSave(account, 1, "")
                                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                                 .subscribe();
                         //emit failed event.

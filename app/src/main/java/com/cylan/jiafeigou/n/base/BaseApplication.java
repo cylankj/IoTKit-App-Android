@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.base;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
 import android.content.BroadcastReceiver;
@@ -31,18 +32,14 @@ import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.facebook.FacebookSdk;
 import com.huawei.hms.api.ConnectionResult;
 import com.huawei.hms.api.HuaweiApiClient;
 import com.huawei.hms.support.api.push.HuaweiPush;
 import com.marswin89.marsdaemon.DaemonClient;
 import com.marswin89.marsdaemon.DaemonConfigurations;
 import com.squareup.leakcanary.LeakCanary;
-import com.twitter.sdk.android.core.TwitterAuthConfig;
-import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
-import io.fabric.sdk.android.Fabric;
+import permissions.dispatcher.PermissionUtils;
 
 /**
  * Created by hunt on 16-5-14.
@@ -118,16 +115,28 @@ public class BaseApplication extends MultiDexApplication implements Application.
         super.onCreate();
         long time = System.currentTimeMillis();
         enableDebugOptions();
-        MtaManager.init(getApplicationContext(), true);
         //每一个新的进程启动时，都会调用onCreate方法。
-        DataSource.getInstance().onCreate();
-        initBlockCanary();
+        try2init();
         initBugMonitor();
-        registerBootComplete();
+        MtaManager.init(getApplicationContext(), true);
         initLeakCanary();
+        registerBootComplete();
         registerActivityLifecycleCallbacks(this);
         initHuaweiPushSDK();
         Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
+    }
+
+    /**
+     * 先检查，是否有读写权限
+     */
+    public void try2init() {
+        if (PermissionUtils.hasSelfPermissions(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            DataSource.getInstance().onCreate();
+            initBlockCanary();
+        } else {
+            RxBus.getCacheInstance().postSticky(new RxEvent.ShouldCheckPermission());
+            Log.d("try2init", "try2init failed");
+        }
     }
 
     private void initHuaweiPushSDK() {

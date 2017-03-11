@@ -54,7 +54,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     private Subscription unreadCountUpdate() {
         return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
-                .doOnCompleted(() -> RxBus.getCacheInstance().post(new InternalHelp()))
+                .map(unreadCount -> {
+                    RxBus.getCacheInstance().post(new InternalHelp());
+                    return null;
+                })
                 .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
                 .subscribe();
     }

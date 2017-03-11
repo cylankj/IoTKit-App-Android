@@ -826,4 +826,7 @@ public class RxEvent {
 
     public static class ShowWonderPageEvent {
     }
+
+    public static final class ShouldCheckPermission {
+    }
 }
