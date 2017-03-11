@@ -794,7 +794,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
             if (isRegetCode) {
                 //重新获取验证码也要检测一下账号
-                if (basePresenter.checkOverCount()) {
+                if (basePresenter.checkOverCount(ViewUtils.getTextViewContent(etRegisterInputBox))) {
                     ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                     isRegetCode = false;
                     return;
@@ -816,7 +816,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
             } else {
                 //第一次检测账号是否注册返回执行获取验证码
-                if (basePresenter.checkOverCount()) {
+                if (basePresenter.checkOverCount(ViewUtils.getTextViewContent(etRegisterInputBox))) {
                     ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                     return;
                 }

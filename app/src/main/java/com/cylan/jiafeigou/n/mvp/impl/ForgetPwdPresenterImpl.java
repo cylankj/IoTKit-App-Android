@@ -11,6 +11,8 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -63,30 +65,30 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     //计数10分钟3次
     @Override
-    public boolean checkOverCount() {
-        int count = PreferencesUtils.getInt(JConstant.KEY_FORGET_PWD_GET_SMS_COUNT, 0);
-        long first_time = PreferencesUtils.getLong(JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,0);
+    public boolean checkOverCount(String account) {
+        int count = PreferencesUtils.getInt(account+JConstant.KEY_FORGET_PWD_GET_SMS_COUNT, 0);
+        long first_time = PreferencesUtils.getLong(account+JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,0);
 
         if(count == 0){
-            PreferencesUtils.putLong(JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,System.currentTimeMillis());
-            PreferencesUtils.putInt(JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,count+1);
+            PreferencesUtils.putLong(account+JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,System.currentTimeMillis());
+            PreferencesUtils.putInt(account+JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,count+1);
             return false;
         }
 
         if (count < 3 ){
             if (System.currentTimeMillis() - first_time < 10*60*1000){
-                PreferencesUtils.putInt(JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,count+1);
+                PreferencesUtils.putInt(account+JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,count+1);
             }else {
-                PreferencesUtils.putInt(JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,0);
-                PreferencesUtils.putLong(JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,System.currentTimeMillis());
+                PreferencesUtils.putInt(account+JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,0);
+                PreferencesUtils.putLong(account+JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,System.currentTimeMillis());
             }
             return false;
         }else {
             if (System.currentTimeMillis() - first_time < 10*60*1000){
                 return true;
             }else {
-                PreferencesUtils.putInt(JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,0);
-                PreferencesUtils.putLong(JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,System.currentTimeMillis());
+                PreferencesUtils.putInt(account+JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,0);
+                PreferencesUtils.putLong(account+JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,System.currentTimeMillis());
                 return false;
             }
         }
@@ -241,6 +243,8 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     @Override
     public Subscription checkIsRegBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CheckRegsiterBack.class)
+                .subscribeOn(Schedulers.newThread())
+                .delay(100, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.CheckRegsiterBack>() {
                     @Override

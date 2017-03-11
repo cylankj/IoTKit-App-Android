@@ -125,7 +125,7 @@ public interface LoginContract {
          * 十分钟是否超过3次获取
          * @return
          */
-        boolean checkOverCount();
+        boolean checkOverCount(String account);
 
         /**
          * 三方授权结果
