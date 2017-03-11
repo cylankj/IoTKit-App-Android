@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -195,7 +196,14 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public boolean delLocalJFGDevice(String uuid) {
         boolean result = mCachedDeviceMap.remove(uuid) != null;
-        mRawDeviceList.remove(uuid);
+        int count = mRawDeviceList == null ? 0 : mRawDeviceList.size();
+        for (int i = count - 1; i >= 0; i--) {
+            JFGDevice device = mRawDeviceList.get(i);
+            if (device != null && TextUtils.equals(device.uuid, uuid)) {
+                mRawDeviceList.remove(i);
+                break;
+            }
+        }
         AppLogger.d("unbind dev: " + result + " " + uuid);
         return result;
     }
@@ -237,6 +245,10 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
+        mRawDeviceList.clear();
+        for (com.cylan.entity.jniCall.JFGDevice device : devices) {
+            mRawDeviceList.add(device);
+        }
         dbHelper.updateDevice(devices)
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .map(device -> {
@@ -281,7 +293,7 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     private Set<String> filterDeletedDevice(List<Device> devices) {
-        Set<String> result = mCachedDeviceMap.keySet();
+        Set<String> result = new HashSet<>(mCachedDeviceMap.keySet());
         for (Device device : devices) {
             result.remove(device.getUuid());
         }
@@ -307,10 +319,8 @@ public class DataSourceManager implements JFGSourceManager {
     //主动发起请求,来获取设备所有的属性
     @Override
     public void syncAllJFGDeviceProperty() {
-        if (true) return;
         if (mCachedDeviceMap.size() == 0) return;
         ArrayList<String> uuidList = new ArrayList<>();
-        Set<String> keySet = mCachedDeviceMap.keySet();
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
             Device device = mCachedDeviceMap.get(entry.getKey());
             syncJFGDeviceProperty(entry.getKey());
@@ -442,7 +452,11 @@ public class DataSourceManager implements JFGSourceManager {
         isOnline = false;
         account = null;
         jfgAccount = null;
+        this.jfgAccount = null;
+        this.account = null;
+        if (unreadMap != null) unreadMap.clear();
         if (shareList != null) shareList.clear();
+        if (mRawDeviceList != null) mRawDeviceList.clear();
     }
 
     @Override
@@ -526,10 +540,11 @@ public class DataSourceManager implements JFGSourceManager {
                                         .map(items -> set)
                         ))
                 .subscribe(ret -> {
-                    RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
-                    response.seq = dataRsp.seq;
-                    response.msgId = ret.getKey();
-                    RxBus.getCacheInstance().post(response);
+//                    RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
+//                    response.seq = dataRsp.seq;
+//                    response.msgId = ret.getKey();
+//                    RxBus.getCacheInstance().post(response);
+//                    Log.d("GetDataResponse", "GetDataResponse");
                 }, Throwable::printStackTrace, () -> {
 //                    syncDeviceUnreadCount();
                     RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
@@ -583,16 +598,6 @@ public class DataSourceManager implements JFGSourceManager {
         return value;
     }
 
-    private Device create(com.cylan.entity.jniCall.JFGDevice device) {
-        //摄像头设备
-        if (JFGRules.isCamera(device.pid)) {
-            return new JFGCameraDevice().setDevice(device);
-        }
-        //门铃设备
-        if (JFGRules.isBell(device.pid))
-            return new JFGDoorBellDevice().setDevice(device);
-        return new Device();
-    }
 
     @Override
     public void cacheShareList(ArrayList<JFGShareListInfo> arrayList) {

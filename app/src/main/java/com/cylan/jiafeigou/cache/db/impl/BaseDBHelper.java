@@ -418,7 +418,10 @@ public class BaseDBHelper implements IDBHelper {
 
     private String getAccount() {
         Account account = accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())).unique();
-        if (account == null) return null;
+        if (account == null) {
+            AppLogger.e("account is null");
+            return null;
+        }
         return account.getAccount();
     }
 

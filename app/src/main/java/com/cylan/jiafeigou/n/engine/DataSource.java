@@ -172,9 +172,8 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-        DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
-
         AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
+        DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
     }
 
     @Override

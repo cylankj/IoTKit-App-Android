@@ -6,6 +6,7 @@ import android.support.annotation.CallSuper;
 
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.NetMonitor;
 
 import java.util.HashMap;
@@ -64,6 +65,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
                 if (s != null)
                     compositeSubscription.add(s);
         }
+        AppLogger.d(TAG+": register: "+compositeSubscription.isUnsubscribed());
         String[] action = registerNetworkAction();
         if (action != null && action.length > 0) {
             NetMonitor.getNetMonitor().registerNet(this, action);
