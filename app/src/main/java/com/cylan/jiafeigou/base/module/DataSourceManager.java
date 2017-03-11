@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -272,7 +273,7 @@ public class DataSourceManager implements JFGSourceManager {
                     return items;
                 })
                 .map(items -> {
-                    Set<String> result = mCachedDeviceMap.keySet();
+                    Set<String> result = new HashSet<>(mCachedDeviceMap.keySet());
                     for (Device device : items) {
                         result.remove(device.getUuid());
                     }
@@ -526,10 +527,6 @@ public class DataSourceManager implements JFGSourceManager {
                 .doOnError(Throwable::printStackTrace)
                 .doOnCompleted(() -> {
                     syncDeviceUnreadCount();
-//                    RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
-//                    completed.seq = dataRsp.seq;
-//                    completed.uuid = dataRsp.identity;
-//                    RxBus.getCacheInstance().post(completed);
                     RxBus.getCacheInstance().post(dataRsp);
                 })
                 .subscribe();
