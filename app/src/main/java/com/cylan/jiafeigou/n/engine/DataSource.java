@@ -116,7 +116,8 @@ public class DataSource implements AppCallBack {
     private void try2autoLogin() {
         AutoSignIn.getInstance().autoLogin()
                 .flatMap(integer -> {
-                    if (integer == 0)
+                    if (integer == 0) {
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
                         RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                                 .subscribeOn(Schedulers.newThread())
                                 .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
@@ -131,7 +132,7 @@ public class DataSource implements AppCallBack {
                                             return null;
                                         }))
                                 .subscribe();
-                    else if (integer == -1) {
+                    }else if (integer == -1) {
                         //emit failed event.
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                     }

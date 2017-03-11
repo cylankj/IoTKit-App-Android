@@ -40,6 +40,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                             getView().loginResult(resultLogin.code);
                     });
         }else {
+            AppLogger.d("zhixing zhege");
             getView().splashOver();
         }
         super.start();
