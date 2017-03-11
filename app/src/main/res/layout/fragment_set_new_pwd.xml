@@ -1,76 +1,128 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/rLayout_new_pwd_input_box"
+    <LinearLayout
+        android:id="@+id/ll_new_pwd_container"
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y48"
-        android:layout_marginTop="@dimen/y29">
+        android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/et_new_pwd_input"
+        <FrameLayout
+            android:id="@+id/rLayout_new_pwd_input_box"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/y5"
-            android:layout_marginTop="@dimen/y5"
-            android:background="@null"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:hint="@string/ENTER_PWD_1"
-            android:inputType="textPassword"
-            android:maxLength="12"
-            android:paddingLeft="@dimen/x40"
-            android:paddingRight="@dimen/x40"
-            android:textColor="@color/color_666666"
-            android:textColorHint="@color/color_cecece"
-            android:textCursorDrawable="@drawable/bg_common_cursor"
-            android:textSize="@dimen/sp15" />
+            android:layout_height="@dimen/y48"
+            android:layout_marginTop="@dimen/y29">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end|center_vertical"
-            android:orientation="horizontal">
+            <EditText
+                android:id="@+id/et_new_pwd_input"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/y5"
+                android:layout_marginTop="@dimen/y5"
+                android:background="@null"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:hint="@string/ENTER_PWD_1"
+                android:inputType="textPassword"
+                android:maxLength="12"
+                android:paddingLeft="@dimen/x40"
+                android:paddingRight="@dimen/x40"
+                android:textColor="@color/color_666666"
+                android:textColorHint="@color/color_cecece"
+                android:textCursorDrawable="@drawable/bg_common_cursor"
+                android:textSize="@dimen/sp15" />
 
-            <ImageView
-                android:id="@+id/iv_new_clear_pwd"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:padding="@dimen/x10"
-                android:src="@drawable/icon_clear_text"
-                android:visibility="gone" />
+                android:layout_gravity="end|center_vertical"
+                android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/cb_new_pwd_show"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:background="@drawable/icon_common_show_pwd_selector"
-                android:button="@null"
-                android:checked="false" />
+                <ImageView
+                    android:id="@+id/iv_new_clear_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:padding="@dimen/x10"
+                    android:src="@drawable/icon_clear_text"
+                    android:visibility="gone" />
 
+                <CheckBox
+                    android:id="@+id/cb_new_pwd_show"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:background="@drawable/icon_common_show_pwd_selector"
+                    android:button="@null"
+                    android:checked="false" />
 
-        </LinearLayout>
+            </LinearLayout>
 
-        <View
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y1"
+                android:layout_gravity="bottom"
+                android:background="@color/color_f2f2f2" />
+
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_new_pwd_submit"
+            style="@style/login_model_commit_style"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y37"
+            android:text="@string/Button_Sure" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:visibility="gone"
+        android:orientation="vertical"
+        android:id="@+id/ll_mail_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_marginTop="@dimen/y50"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/color_7c7c7c"
+            android:textSize="@dimen/sp15"
+            android:text="@string/Tap0_AlreadyEmailed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:layout_marginTop="@dimen/y18"
+            android:id="@+id/tv_send_email_content"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"
-            android:layout_gravity="bottom"
-            android:background="@color/color_f2f2f2" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/x10"
+            android:textColor="@color/color_7c7c7c"
+            android:textSize="@dimen/sp15" />
 
-    </FrameLayout>
+        <TextView
+            android:layout_marginTop="@dimen/y18"
+            android:layout_gravity="center_horizontal"
+            android:textColor="@color/color_7c7c7c"
+            android:textSize="@dimen/sp15"
+            android:text="@string/Tap0_Click_ActivateAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/tv_new_pwd_submit"
-        style="@style/login_model_commit_style"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/y37"
-        android:text="@string/Button_Sure" />
+        <TextView
+            android:id="@+id/tv_email_confirm"
+            style="@style/login_model_commit_style"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y37"
+            android:text="@string/Button_Sure" />
+
+    </LinearLayout>
+
 </LinearLayout>

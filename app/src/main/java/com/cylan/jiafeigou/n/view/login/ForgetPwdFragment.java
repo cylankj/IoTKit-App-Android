@@ -5,9 +5,7 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.Editable;
 import android.text.TextUtils;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -32,6 +30,7 @@ import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -99,6 +98,18 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     FrameLayout fLayoutForgetContainer;
     @BindView(R.id.rLayout_forget_pwd_toolbar)
     CustomToolbar rLayoutForgetPwdToolbar;
+    @BindView(R.id.ll_new_pwd_container)
+    LinearLayout llNewPwdContainer;
+    @BindView(R.id.ll_mail_container)
+    LinearLayout llMailContainer;
+    @BindView(R.id.cb_new_pwd_show)
+    CheckBox cbNewPwdShow;
+    @BindView(R.id.fLayout_account_input_box)
+    FrameLayout fLayoutAccountInputBox;
+    @BindView(R.id.tv_email_confirm)
+    TextView tvEmailConfirm;
+    @BindView(R.id.tv_send_email_content)
+    TextView tvSendEmailContent;
 
     /**
      * {0}请输入手机号/邮箱 {1}请输入邮箱
@@ -137,7 +148,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
             @Override
             public void onFinish() {
-                if (isAdded()){
+                if (isAdded()) {
                     tvMeterGetCode.setText(getString(R.string.ANEW_SEND));
                     tvMeterGetCode.setEnabled(true);
                 }
@@ -171,8 +182,10 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     @Override
     public void onStop() {
         super.onStop();
-        if (countDownTimer != null)
+        if (countDownTimer != null){
             countDownTimer.onFinish();
+            countDownTimer = null;
+        }
         if (presenter != null)
             presenter.stop();
     }
@@ -228,14 +241,13 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @OnClick(R.id.tv_meter_get_code)
     public void reGetVerificationCode() {
-        if (presenter.checkOverCount()){
+        if (presenter.checkOverCount(ViewUtils.getTextViewContent(etForgetUsername))) {
             ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
             return;
         }
         countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
         if (presenter != null)
-            Toast.makeText(getActivity(), getString(R.string.Tap3_FriendsAdd_Contacts_Sent), Toast.LENGTH_SHORT).show();
         presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
     }
 
@@ -256,6 +268,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     private void start2HandleVerificationCode() {
         fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
         countDownTimer.start();
+        tvMeterGetCode.setEnabled(false);
         tvForgetPwdSubmit.setEnabled(false);
     }
 
@@ -286,6 +299,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     if (presenter != null) {
                         isCheckAccAgain = true;
                         presenter.checkIsReg(ViewUtils.getTextViewContent(etForgetUsername));
+                        AppLogger.d("isCheckAccAgain:"+isCheckAccAgain);
                     }
 
                 }
@@ -355,114 +369,25 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     }
 
     /**
-     * 提交邮箱,修改密码，服务端响应之后的view
-     */
-    private void prepareMailView() {
-        View view = vsSetAccountPwd.findViewById(R.id.layout_to_be_update);
-        if (view != null) {
-            vsSetAccountPwd.removeView(view);
-        }
-        View mailView = LayoutInflater.from(getActivity())
-                .inflate(R.layout.fragment_forget_pwd_by_email, null);
-        if (mailView == null) {
-            return;
-        }
-        final String content = String.format(getString(R.string.EMAIL_RESET_PWD),
-                ViewUtils.getTextViewContent(etForgetUsername));
-        ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(content);
-        View btn = mailView.findViewById(R.id.tv_email_confirm);
-        btn.setEnabled(true);
-        btn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().getSupportFragmentManager().popBackStack();
-                RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
-            }
-        });
-        vsSetAccountPwd.addView(mailView);
-        vsSetAccountPwd.showNext();
-    }
-
-    /**
      * 设置新手机账号的密码。
      */
-    private void preparePhoneView() {
-        View view = vsSetAccountPwd.findViewById(R.id.layout_to_be_update);
-        if (view != null) {
-            vsSetAccountPwd.removeView(view);
+    private void preparePhoneView(boolean type) {
+        if (!type) {
+            llMailContainer.setVisibility(View.VISIBLE);
+            llNewPwdContainer.setVisibility(View.GONE);
+            tvEmailConfirm.setEnabled(true);
+            final String content = String.format(getString(R.string.EMAIL_RESET_PWD),
+                    ViewUtils.getTextViewContent(etForgetUsername));
+            tvSendEmailContent.setText(content);
+            rLayoutForgetPwdToolbar.setTvToolbarIcon(-1);
+        } else {
+            llMailContainer.setVisibility(View.GONE);
+            llNewPwdContainer.setVisibility(View.VISIBLE);
+            initTitle(JConstant.TYPE_PHONE);
         }
-        View phoneNewPwdView = LayoutInflater.from(getContext())
-                .inflate(R.layout.fragment_set_new_pwd, null);
-        if (phoneNewPwdView == null) {
-            return;
-        }
-        initNewPwdView(phoneNewPwdView);
-        initTitle(JConstant.TYPE_PHONE);
-        vsSetAccountPwd.addView(phoneNewPwdView);
+        vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
+        vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_left);
         vsSetAccountPwd.showNext();
-    }
-
-    /**
-     * 新密码设置界面
-     *
-     * @param phoneNewPwdView
-     */
-    private void initNewPwdView(View phoneNewPwdView) {
-        TextView sureBtn = (TextView) phoneNewPwdView.findViewById(R.id.tv_new_pwd_submit);
-        ImageView iv_Clear = (ImageView) phoneNewPwdView.findViewById(R.id.iv_new_clear_pwd);
-        EditText et_newpass = (EditText) phoneNewPwdView.findViewById(R.id.et_new_pwd_input);
-        CheckBox cb_pwd_visiable = (CheckBox) phoneNewPwdView.findViewById(R.id.cb_new_pwd_show);
-
-        et_newpass.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                iv_Clear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
-                iv_Clear.setClickable(true);
-                sureBtn.setEnabled(TextUtils.isEmpty(s) ? false : true);
-            }
-        });
-
-        sureBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                newPwd = et_newpass.getText().toString().trim();
-                if (newPwd.length() < 6) {
-                    ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
-                    return;
-                }
-                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
-                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
-                    return;
-                }
-                isCheckAgain = true;
-                presenter.submitPhoneNumAndCode(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT),PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE));
-            }
-        });
-
-        iv_Clear.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                et_newpass.setText("");
-            }
-        });
-
-        cb_pwd_visiable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                ViewUtils.showPwd(et_newpass, isChecked);
-                et_newpass.setSelection(et_newpass.length());
-            }
-        });
     }
 
     @Override
@@ -479,11 +404,11 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     Toast.makeText(getContext(), getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST), Toast.LENGTH_SHORT).show();
                     break;
                 }
-                prepareMailView();
+                preparePhoneView(false);
                 break;
             case JConstant.AUTHORIZE_PHONE:
                 tvForgetPwdSubmit.setEnabled(true);
-                preparePhoneView();
+                preparePhoneView(true);
                 break;
         }
     }
@@ -495,17 +420,17 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     public void checkSmsCodeResult(int code) {
         if (code == 181) {
             ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
-        } else if (code == 180){
+        } else if (code == 180) {
             ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
         } else if (code == 0) {
             if (!PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT, "").equals(etForgetUsername.getText().toString().trim())) {
                 ToastUtil.showToast(getContext().getResources().getString(R.string.Tap0_wrongcode));
                 return;
             }
-            if (isCheckAgain){
+            if (isCheckAgain) {
                 presenter.resetPassword(newPwd);
-            }else {
-                preparePhoneView();
+            } else {
+                preparePhoneView(true);
             }
         }
         isCheckAgain = false;
@@ -520,18 +445,13 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     public void resetPwdResult(int code) {
         if (code == JError.ErrorInvalidPass) {
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
-        }else if (code == JError.ErrorSamePass){
+        } else if (code == JError.ErrorSamePass) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ECHANGEPASS_SAME));
-        }else {
+        } else {
             ToastUtil.showToast(getString(R.string.PWD_OK));
             if (getView() != null) {
-                getView().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT)));
-                        ActivityUtils.justPop(getActivity());
-                    }
-                }, 500);
+                RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT)));
+                ActivityUtils.justPop(getActivity());
             }
         }
 
@@ -540,20 +460,20 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     @Override
     public void checkIsRegReuslt(int code) {
         if (code == 0) {
-            if (isCheckAccAgain){
-                if (tempAcc.equals(ViewUtils.getTextViewContent(etForgetUsername))){
+            if (isCheckAccAgain) {
+                if (tempAcc.equals(ViewUtils.getTextViewContent(etForgetUsername))) {
                     getArguments().putString(LoginFragment.KEY_TEMP_ACCOUNT, etForgetUsername.getText().toString());
                     if (presenter != null)
                         presenter.submitPhoneNumAndCode(etForgetUsername.getText().toString(), ViewUtils.getTextViewContent(etVerificationInput));
-                }else {
+                } else {
                     ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
                 }
                 isCheckAccAgain = false;
-            }else {
+            } else {
                 if (!Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etForgetUsername)).find()) {
-                    if (!presenter.checkOverCount()){
+                    if (!presenter.checkOverCount(ViewUtils.getTextViewContent(etForgetUsername))) {
                         start2HandleVerificationCode();
-                    }else {
+                    } else {
                         ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                         return;
                     }
@@ -571,18 +491,15 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         this.presenter = presenter;
     }
 
-    //lazy load 的view 以下不起作用
     @Nullable
     @OnTextChanged(R.id.et_new_pwd_input)
     public void newPwdInputBoxChanged(CharSequence s, final int before, final int count, final int len) {
-        final boolean empty = TextUtils.isEmpty(s);
-        final boolean isNewPswValid = !empty
-                && s.length() >= JConstant.PWD_LEN_MIN
-                && s.length() <= JConstant.PWD_LEN_MAX;
-        if (tvNewPwdSubmit != null) tvNewPwdSubmit.setEnabled(isNewPswValid);
         if (ivNewClearPwd != null) {
-            ivNewClearPwd.setVisibility(empty ? View.GONE : View.VISIBLE);
+            ivNewClearPwd.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
+            ivNewClearPwd.setClickable(true);
         }
+        if (tvNewPwdSubmit != null)
+            tvNewPwdSubmit.setEnabled(TextUtils.isEmpty(s) ? false : true);
     }
 
     @OnCheckedChanged(R.id.cb_new_pwd_show)
@@ -591,15 +508,30 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         if (etNewPwdInput != null) etNewPwdInput.setSelection(etNewPwdInput.length());
     }
 
-    @OnClick({R.id.iv_new_clear_pwd, R.id.tv_new_pwd_submit})
+    @OnClick({R.id.iv_new_clear_pwd, R.id.tv_new_pwd_submit,R.id.tv_email_confirm})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_new_clear_pwd:
                 if (etNewPwdInput != null) etNewPwdInput.setText("");
                 break;
             case R.id.tv_new_pwd_submit:
-                Toast.makeText(getActivity(), "yes?", Toast.LENGTH_SHORT).show();
+                //*********
+                newPwd = etNewPwdInput.getText().toString().trim();
+                if (newPwd.length() < 6) {
+                    ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
+                    return;
+                }
+                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
+                isCheckAgain = true;
+                presenter.submitPhoneNumAndCode(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT), PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE));
+                break;
+            case R.id.tv_email_confirm:
+                //邮箱点击激活
                 getActivity().getSupportFragmentManager().popBackStack();
+                RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
                 break;
         }
     }
@@ -623,9 +555,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))){
+        if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))) {
             getFragmentManager().popBackStack();
-        }else {
+        } else {
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
             vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);

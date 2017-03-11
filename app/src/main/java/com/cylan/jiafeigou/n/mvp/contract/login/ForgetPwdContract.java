@@ -94,7 +94,7 @@ public interface ForgetPwdContract {
          * 十分钟是否超过3次获取
          * @return
          */
-        boolean checkOverCount();
+        boolean checkOverCount(String account);
 
     }
 }

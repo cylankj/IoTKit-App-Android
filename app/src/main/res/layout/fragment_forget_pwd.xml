@@ -25,12 +25,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/x19"
-        android:layout_marginRight="@dimen/x19"
-        android:inAnimation="@anim/slide_in_right_overshoot"
-        android:outAnimation="@anim/slide_out_left">
+        android:layout_marginRight="@dimen/x19" >
 
-        <include
-            layout="@layout/fragment_forget_pwd_get_code" />
+        <include layout="@layout/fragment_forget_pwd_get_code"/>
+
         <include
             android:id="@+id/layout_to_be_update"
             layout="@layout/fragment_set_new_pwd" />
