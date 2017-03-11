@@ -245,10 +245,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
-        mRawDeviceList.clear();
-        for (com.cylan.entity.jniCall.JFGDevice device : devices) {
-            mRawDeviceList.add(device);
-        }
         dbHelper.updateDevice(devices)
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .map(device -> {
