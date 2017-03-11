@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import android.content.Context;
 
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
@@ -15,7 +15,7 @@ public interface CamSettingContract {
 
     interface View extends BaseView<Presenter> {
 
-        void deviceUpdate(JFGCameraDevice jfgCameraDevice);
+        void deviceUpdate(JFGDevice jfgCameraDevice);
 
         void unbindDeviceRsp(int state);
 

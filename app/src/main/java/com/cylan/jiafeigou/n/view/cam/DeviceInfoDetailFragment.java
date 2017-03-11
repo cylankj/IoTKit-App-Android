@@ -8,9 +8,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -122,7 +122,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        boolean showBattery = JFGRules.showBatteryItem(uuid);
+        boolean showBattery = JFGRules.showBatteryItem(device != null ? device.pid : 0);
         //仅3G摄像头、FreeCam显示此栏
         tvDeviceBatteryLevel.setVisibility(showBattery ? View.VISIBLE : View.GONE);
     }
@@ -145,19 +145,20 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         }
         //是否显示移动网络
         tvDeviceMobileNet.setVisibility(device != null && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
-        MiscUtils.loadTimeZoneList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((List<TimeZoneBean> list) -> {
-                    DpMsgDefine.DPTimeZone zone = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
-                    TimeZoneBean bean = new TimeZoneBean();
-                    bean.setId(zone.timezone);
-                    if (list != null) {
-                        int index = list.indexOf(bean);
-                        if (index > 0 && index < list.size()) {
-                            tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
+        DpMsgDefine.DPTimeZone zone = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+        if (zone != null)
+            MiscUtils.loadTimeZoneList()
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe((List<TimeZoneBean> list) -> {
+                        TimeZoneBean bean = new TimeZoneBean();
+                        bean.setId(zone.timezone);
+                        if (list != null) {
+                            int index = list.indexOf(bean);
+                            if (index > 0 && index < list.size()) {
+                                tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
+                            }
                         }
-                    }
-                });
+                    });
         DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         String statusContent = getSdcardState(status);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
@@ -368,7 +369,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     @Override
-    public void deviceUpdate(JFGCameraDevice device) {
+    public void deviceUpdate(JFGDevice device) {
         //sd
         DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
         String statusContent = getSdcardState(status);

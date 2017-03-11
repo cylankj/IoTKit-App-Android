@@ -523,7 +523,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         boolean show = JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0
                 && device != null && TextUtils.isEmpty(device.shareAccount)
-                && sdStatus.hasSdcard && sdStatus.err == 0;
+                && sdStatus.hasSdcard && sdStatus.err == 0
+                && historyDataProvider != null && historyDataProvider.getDataCount() > 0;
         AppLogger.i("show: " + show);
         return show;
     }

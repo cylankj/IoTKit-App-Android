@@ -63,6 +63,7 @@ public class AutoSignIn {
                     public Observable<Integer> call(String s) {
                         try {
                             String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
+                            AppLogger.d("autoLogin");
                             if (TextUtils.isEmpty(aesAccount)) {
                                 AppLogger.d("account is null");
                                 return Observable.just(-1);

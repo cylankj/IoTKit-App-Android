@@ -177,13 +177,13 @@ public class SuperWheelExt extends View {
         //偏移N格,需要找出左节点,和右边节点.
         int offsetCount = (int) (-getScrollX() / lineIntervalPx);
         final int count = getFullScreenItemsCount();
-        int totalCount = iDataProvider.getDataCount();
+        int totalCount = iDataProvider == null ? 0 : iDataProvider.getDataCount();
         int start = offsetCount >= count / 2 ? Math.abs(count / 2 - offsetCount) : 0;
         int end = totalCount - start > count ? count + start : totalCount;
         if (DEBUG)
             Log.d(TAG, String.format("offset:%s,count:%s,totalCount:%s,start:%s,end:%s",
                     offsetCount, count, totalCount, start, end));
-        return iDataProvider.getTimeArray(end, start);
+        return iDataProvider == null ? new long[]{0, 0} : iDataProvider.getTimeArray(end, start);
     }
 
     /**
@@ -268,7 +268,7 @@ public class SuperWheelExt extends View {
      * @return
      */
     private int getLineBottomByType(final long time) {
-        return iDataProvider.getBottomType(time) == 1 ? LINE_HEIGHT_1 : LINE_HEIGHT_0;
+        return iDataProvider == null ? 0 : (iDataProvider.getBottomType(time) == 1 ? LINE_HEIGHT_1 : LINE_HEIGHT_0);
     }
 
     /**
@@ -278,7 +278,7 @@ public class SuperWheelExt extends View {
      * @param time
      */
     private void drawDateText(Canvas canvas, final float pos, final long time) {
-        if (time < 0 || iDataProvider.getBottomType(time) == 0)
+        if (time < 0 || iDataProvider == null || iDataProvider.getBottomType(time) == 0)
             return;
         canvas.drawText(iDataProvider.getDateInFormat(time),
                 pos - (dateTextWidth >> 1),
@@ -293,7 +293,7 @@ public class SuperWheelExt extends View {
      * @return
      */
     private float getPosition(long time) {
-        long timeInterval = iDataProvider.getFlattenMaxTime() - time;
+        long timeInterval = iDataProvider == null ? 0 : (iDataProvider.getFlattenMaxTime() - time);
         return -timeInterval * pixelsInSecond / 1000.0f + getMeasuredWidth() / 2;//中心点为0,像左边降序.
     }
 
@@ -314,7 +314,7 @@ public class SuperWheelExt extends View {
     public long getCurrentFocusTime() {
         int scrollX = getScrollX();
         long timeDelta = (int) (scrollX / pixelsInSecond) * 1000L;
-        return iDataProvider.getFlattenMaxTime() + timeDelta;
+        return iDataProvider == null ? 0 : iDataProvider.getFlattenMaxTime() + timeDelta;
     }
 
     /**
