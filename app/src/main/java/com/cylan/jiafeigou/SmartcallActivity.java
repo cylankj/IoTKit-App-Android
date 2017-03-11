@@ -12,16 +12,16 @@ import android.support.annotation.StringRes;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
@@ -41,9 +41,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
@@ -61,8 +59,10 @@ public class SmartcallActivity extends NeedLoginActivity
     TextView tvCopyRight;
     @Nullable
     private SplashContract.Presenter presenter;
-    private boolean frist;
+    private boolean first;
+    private boolean isPermissionDialogShowing = false;
 
+    //这个页面先请求 sd卡权限
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,11 +76,12 @@ public class SmartcallActivity extends NeedLoginActivity
         } else {
             splashOver();
         }
-        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+
     }
 
     /**
      * 进入全屏模式
+     *
      * @param full
      */
     private void fullScreen(boolean full) {
@@ -97,7 +98,8 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onStart() {
         super.onStart();
-        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+        if (!isPermissionDialogShowing)
+            SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
         if (!getIntent().getBooleanExtra("from_log_out", false)) {
             if (presenter != null) presenter.start();
         } else {
@@ -117,6 +119,10 @@ public class SmartcallActivity extends NeedLoginActivity
     protected void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
+        if (isPermissionDialogShowing) {
+            Log.d("onStop", "onStop");
+//            System.exit(0);
+        }
     }
 
     protected int[] getOverridePendingTransition() {
@@ -200,10 +206,10 @@ public class SmartcallActivity extends NeedLoginActivity
                 startActivity(new Intent(this, NewHomeActivity.class));
             }
             finish();
-        } else if (code == JError.StartLoginPage && !frist) {
+        } else if (code == JError.StartLoginPage && !first) {
             splashOver();
             RxBus.getCacheInstance().removeStickyEvent(RxEvent.ResultLogin.class);
-            frist = true;
+            first = true;
         } else if (code == JError.ErrorAccountNotExist) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
         } else if (code == JError.ErrorLoginInvalidPass) {
@@ -229,9 +235,11 @@ public class SmartcallActivity extends NeedLoginActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         SmartcallActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        Log.d("onRequesResult", "onRequesResult");
         if (permissions.length == 1) {
             if (TextUtils.equals(permissions[0], Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-                SmartcallActivityPermissionsDispatcher.showPhonePermissionsWithCheck(this);
+                SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
+                isPermissionDialogShowing = true;
             }
         }
     }
@@ -241,56 +249,62 @@ public class SmartcallActivity extends NeedLoginActivity
         // NOTE: Perform option that requires the permission.
         // If this is run by PermissionsDispatcher, the permission will have been granted
 //        Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
-        if (presenter != null) presenter.finishAppDelay();
+//        if (presenter != null) presenter.finishAppDelay();
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onWriteSdCardDenied");
         AppLogger.permissionGranted = false;
-    }
-
-    @OnPermissionDenied(Manifest.permission.READ_PHONE_STATE)
-    public void onPhoneStateDenied() {
-        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
+        isPermissionDialogShowing = false;
     }
 
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void showWriteStoragePermissions() {
+        isPermissionDialogShowing = false;
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
         AppLogger.permissionGranted = true;
+        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ShouldCheckPermission.class)) {
+            ((BaseApplication) getApplication()).try2init();
+            RxBus.getCacheInstance().removeStickyEvent(RxEvent.ShouldCheckPermission.class);
+        }
     }
 
-    @NeedsPermission({Manifest.permission.READ_PHONE_STATE})
-    public void showPhonePermissions() {
-        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
-    }
+//    @OnPermissionDenied(Manifest.permission.READ_PHONE_STATE)
+//    public void onPhoneStateDenied() {
+//        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
+//    }
 
+//    @NeedsPermission({Manifest.permission.READ_PHONE_STATE})
+//    public void showPhonePermissions() {
+//        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
+//    }
 
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    public void onCameraDenied() {
-        // NOTE: Deal with activity_cloud_live_mesg_call_out_item denied permission, e.g. by showing specific UI
-        // or disabling certain functionality
-        Toast.makeText(this, R.string.SET_PHOTO_FAIL, Toast.LENGTH_SHORT).show();
-        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onCameraDenied");
-    }
+//
+//    @OnPermissionDenied(Manifest.permission.CAMERA)
+//    public void onCameraDenied() {
+//        // NOTE: Deal with activity_cloud_live_mesg_call_out_item denied permission, e.g. by showing specific UI
+//        // or disabling certain functionality
+//        Toast.makeText(this, R.string.SET_PHOTO_FAIL, Toast.LENGTH_SHORT).show();
+//        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onCameraDenied");
+//    }
+//
+//    @OnNeverAskAgain(Manifest.permission.CAMERA)
+//    public void onCameraNeverAskAgain() {
+////        Toast.makeText(this, R.string.permission_camera_never_askagain, Toast.LENGTH_SHORT).show();
+//        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onCameraNeverAskAgain");
+//    }
+//
+//    @NeedsPermission(Manifest.permission.CAMERA)
+//    public void showCamera() {
+//        // NOTE: Perform option that requires the permission. If this is run by PermissionCheckerUitls, the permission will have been granted
+//        //do you business
+//        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showCamera");
+//    }
 
-    @OnNeverAskAgain(Manifest.permission.CAMERA)
-    public void onCameraNeverAskAgain() {
-//        Toast.makeText(this, R.string.permission_camera_never_askagain, Toast.LENGTH_SHORT).show();
-        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onCameraNeverAskAgain");
-    }
-
-    @NeedsPermission(Manifest.permission.CAMERA)
-    public void showCamera() {
-        // NOTE: Perform option that requires the permission. If this is run by PermissionCheckerUitls, the permission will have been granted
-        //do you business
-        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showCamera");
-    }
-
-    @OnShowRationale(Manifest.permission.CAMERA)
-    public void showRationaleForCamera(PermissionRequest request) {
-        // NOTE: Show activity_cloud_live_mesg_call_out_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_call_out_item dialog.
-        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
-        showRationaleDialog(R.string.SET_PHOTO_FAIL, request);
-        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
-    }
+//    @OnShowRationale(Manifest.permission.CAMERA)
+//    public void showRationaleForCamera(PermissionRequest request) {
+//        // NOTE: Show activity_cloud_live_mesg_call_out_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_call_out_item dialog.
+//        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
+//        showRationaleDialog(R.string.SET_PHOTO_FAIL, request);
+//        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
+//    }
 
 
     private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {

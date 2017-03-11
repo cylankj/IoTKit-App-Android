@@ -33,9 +33,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     @Override
     public void stop() {
         super.stop();
-        if (subscription != null && !subscription.isUnsubscribed()){
-            subscription.unsubscribe();
-        }
+        unSubscribe(subscription);
     }
 
     @Override

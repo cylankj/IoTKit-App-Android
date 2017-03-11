@@ -252,8 +252,11 @@ public class BaseDBHelper implements IDBHelper {
         return Observable.from(device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(dev -> getActiveAccount().map(account -> dev))//延迟写入,等到有账号了才写入数据库
-                .flatMap(dev -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(getAccount())).rx().unique()
+                .flatMap(dev -> getActiveAccount()
+                        .flatMap(account -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(dev.uuid),
+                                DeviceDao.Properties.Account.eq(account.getAccount()))
+                                .rx()
+                                .unique())
                         .flatMap(dpDevice -> {
                             AppLogger.d("正在更新 Device 条目");
                             if (dpDevice == null) {
@@ -415,7 +418,10 @@ public class BaseDBHelper implements IDBHelper {
 
     private String getAccount() {
         Account account = accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())).unique();
-        if (account == null) return null;
+        if (account == null) {
+            AppLogger.e("account is null");
+            return null;
+        }
         return account.getAccount();
     }
 

@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -194,7 +195,14 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public boolean delLocalJFGDevice(String uuid) {
         boolean result = mCachedDeviceMap.remove(uuid) != null;
-        mRawDeviceList.remove(uuid);
+        int count = mRawDeviceList == null ? 0 : mRawDeviceList.size();
+        for (int i = count - 1; i >= 0; i--) {
+            JFGDevice device = mRawDeviceList.get(i);
+            if (device != null && TextUtils.equals(device.uuid, uuid)) {
+                mRawDeviceList.remove(i);
+                break;
+            }
+        }
         AppLogger.d("unbind dev: " + result + " " + uuid);
         return result;
     }
@@ -236,41 +244,57 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
+        mRawDeviceList.clear();
+        for (com.cylan.entity.jniCall.JFGDevice device : devices) {
+            mRawDeviceList.add(device);
+        }
         dbHelper.updateDevice(devices)
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .doOnCompleted(() -> handleDeletedDevice(devices))
-                .subscribe(device -> {
+                .map(device -> {
                     Device dpDevice = mCachedDeviceMap.get(device.getUuid());
                     if (dpDevice == null) {
                         dpDevice = create(device.getPid());
                     }
                     dpDevice.fill(device);
                     mCachedDeviceMap.put(device.getUuid(), dpDevice);
-                });
-        mRawDeviceList.clear();
-        for (com.cylan.entity.jniCall.JFGDevice device : devices) {
-            mRawDeviceList.add(device);
-        }
-        syncAllJFGDeviceProperty();
+                    return device;
+                })
+                .map(device -> {
+                    ArrayList<JFGDPMsg> parameters = device.getQueryParameters(false);
+                    AppLogger.d("syncJFGDeviceProperty: " + device.getUuid() + " " + new Gson().toJson(parameters));
+                    try {
+                        JfgCmdInsurance.getCmd().robotGetData(device.getUuid(), parameters, 1, false, 0);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return device;
+                })
+                .buffer(devices.length)
+                .map(items -> {
+                    ArrayList<String> uuidList = new ArrayList<>();
+                    for (Device item : items) {
+                        if (!JFGRules.isShareDevice(item)) {
+                            uuidList.add(item.uuid);
+                        }
+                    }
+                    JfgCmdInsurance.getCmd().getShareList(uuidList);
+                    return items;
+                })
+                .map(this::filterDeletedDevice)
+                .flatMap(Observable::from)
+                .flatMap(item -> dbHelper.unBindDeviceWithConfirm(item).map(device -> {
+                    delLocalJFGDevice(device.getUuid());
+                    return device;
+                }))
+                .subscribe(item -> RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(item.getUuid())));
     }
 
-    private void handleDeletedDevice(JFGDevice[] devices) {
-        if (mCachedDeviceMap.size() == 0) return;
-        HashMap<String, Device> copy = new HashMap<>(mCachedDeviceMap);
-        for (JFGDevice device : devices) {
-            copy.remove(device.uuid);
+    private Set<String> filterDeletedDevice(List<Device> devices) {
+        Set<String> result = mCachedDeviceMap.keySet();
+        for (Device device : devices) {
+            result.remove(device.getUuid());
         }
-        Observable.from(copy.entrySet())
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .map(item -> {
-                    AppLogger.d("正在删除内存缓存中的设备:UUID:" + item.getKey());
-                    delLocalJFGDevice(item.getKey());
-                    return item;
-                })
-                .flatMap(item -> dbHelper.unBindDeviceWithConfirm(item.getKey()))
-                .subscribe(item -> RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(item.getUuid())), Throwable::printStackTrace);
-
+        return result;
     }
 
     @Override
@@ -422,11 +446,15 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void clear() {
-//        if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
+        if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
         isOnline = false;
         account = null;
         jfgAccount = null;
+        this.jfgAccount = null;
+        this.account = null;
+        if (unreadMap != null) unreadMap.clear();
         if (shareList != null) shareList.clear();
+        if (mRawDeviceList != null) mRawDeviceList.clear();
     }
 
     @Override
@@ -510,10 +538,11 @@ public class DataSourceManager implements JFGSourceManager {
                                         .map(items -> set)
                         ))
                 .subscribe(ret -> {
-                    RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
-                    response.seq = dataRsp.seq;
-                    response.msgId = ret.getKey();
-                    RxBus.getCacheInstance().post(response);
+//                    RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
+//                    response.seq = dataRsp.seq;
+//                    response.msgId = ret.getKey();
+//                    RxBus.getCacheInstance().post(response);
+//                    Log.d("GetDataResponse", "GetDataResponse");
                 }, Throwable::printStackTrace, () -> {
 //                    syncDeviceUnreadCount();
                     RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
@@ -670,6 +699,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     /**
      * 不要使用switch case
+     *
      * @param pid
      * @return
      */

@@ -170,6 +170,7 @@ public class JConstant {
     public static final String KEY_REG_FRIST_GET_SMS = "key_reg_frist_get_time";
     public static final String KEY_REG_GET_SMS_COUNT = "key_reg_get_sms_count";
 
+    public static final String KEY_BELL_LAST_ENTER_TIME_PREFIX = "bell_last_time";
     public static final int OS_SERVER = -1; //system message
     public static final int OS_IOS_PHONE = 0;
     public static final int OS_PC = 1;

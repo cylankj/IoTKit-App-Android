@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 
@@ -58,7 +59,7 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
     }
 
 
-    private void setItemState(SuperViewHolder holder, String uuid, int pid, String shareAccount, DpMsgDefine.DPNet net) {
+    private void setItemState(SuperViewHolder holder, String uuid, DpMsgDefine.DPNet net) {
         //0 net type 网络类型
         int resIdNet = JConstant.getNetTypeRes(net != null ? net.net : -1);
         if (resIdNet != -1) {
@@ -79,8 +80,8 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
         }
         //2 电量
         if (device != null && JFGRules.isBell(device.pid)) {
-            DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
-            if (battery != null && battery.value != null && battery.value <= 20 && (net != null && net.net >= 1)) {//在线显示
+            int battery = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY), 0);
+            if (battery < 20 && (net != null && net.net >= 1)) {//在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else holder.setVisibility(R.id.img_device_state_2, GONE);
@@ -138,7 +139,7 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
         if (TextUtils.isEmpty(shareAccount))//被分享用户,不显示 消息数
             handleMsgCountTime(holder, uuid, device.pid);
         //右下角状态
-        setItemState(holder, uuid, device.pid, shareAccount, net);
+        setItemState(holder, uuid, net);
         AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,device.pid:%s", uuid, device.pid));
     }
 
@@ -153,21 +154,26 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
         Pair<Integer, Long> pair = DataSourceManager.getInstance().getUnreadCount(uuid, 505, 512, 222);
         Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息");
         //消息数
-        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(pair, pid));
+        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(pair, pid, uuid));
         //时间
         holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), pair != null && pair.first > 0 ? pair.second : 0));
         ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(pair != null && pair.first > 0);
     }
 
 
-    private String getLastWarnContent(Pair<Integer, Long> msgCountPair, int pid) {
+    private String getLastWarnContent(Pair<Integer, Long> msgCountPair, int pid, String uuid) {
         final int msgCount = msgCountPair == null ? 0 : msgCountPair.first;
+        long msgTime = msgCountPair != null ? msgCountPair.second : 0;
         if (msgCount == 0)
             return getContext().getString(R.string.Tap1_NoMessages);
         if (JFGRules.isCamera(pid)) {
             return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.MSG_WARNING), msgCount > 99 ? "99+" : msgCount);
         }
         if (JFGRules.isBell(pid)) {
+            long localTime = PreferencesUtils.getLong(JConstant.KEY_BELL_LAST_ENTER_TIME_PREFIX + uuid, 0);
+            if (localTime > msgTime) {
+                return getContext().getString(R.string.Tap1_NoMessages);
+            }
             return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.someone_call), msgCount > 99 ? "99+" : msgCount);
         }
         return "";
