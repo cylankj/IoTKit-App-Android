@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.rx;
 
+import android.util.Log;
+
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -46,6 +48,7 @@ public class RxBus implements IEventBus {
      */
     public Object post(Object event) {
         mBus.onNext(event);
+        Log.d("RxBus", "RxBus: post: " + event);
         return event;
     }
 

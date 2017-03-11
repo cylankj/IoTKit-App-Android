@@ -51,7 +51,6 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 
@@ -115,30 +114,28 @@ public class DataSource implements AppCallBack {
 
     private void try2autoLogin() {
         AutoSignIn.getInstance().autoLogin()
-                .flatMap(new Func1<Integer, Observable<?>>() {
-                    @Override
-                    public Observable<?> call(Integer integer) {
-                        if (integer == 0)
-                            RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
-                                    .subscribeOn(Schedulers.newThread())
-                                    .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
-                                            .observeOn(AndroidSchedulers.mainThread())
-                                            .map(s -> {
-                                                AppLogger.d("net type: " + NetUtils.getNetType(ContextUtils.getContext()));
-                                                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
-                                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.NoNet));
-                                                } else {
-                                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
-                                                }
-                                                return null;
-                                            }))
-                                    .subscribe();
-                        else if (integer == -1) {
-                            //emit failed event.
-                            RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
-                        }
-                        return null;
+                .flatMap(integer -> {
+                    AppLogger.d("integer: " + integer);
+                    if (integer == 0)
+                        RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
+                                .subscribeOn(Schedulers.newThread())
+                                .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
+                                        .observeOn(AndroidSchedulers.mainThread())
+                                        .map(s -> {
+                                            AppLogger.d("net type: " + NetUtils.getNetType(ContextUtils.getContext()));
+                                            if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.NoNet));
+                                            } else {
+                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+                                            }
+                                            return null;
+                                        }))
+                                .subscribe();
+                    else if (integer == -1) {
+                        //emit failed event.
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                     }
+                    return null;
                 })
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe();

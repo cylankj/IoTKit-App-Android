@@ -141,8 +141,8 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                         timeZone.timezone = ((TimeZoneBean) value).getId();
                         timeZone.offset = ((TimeZoneBean) value).getOffset();
                         try {
-                            com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().updateValue(uuid, timeZone, (int) id);
-                        } catch (IllegalAccessException e) {
+                            DataSourceManager.getInstance().updateValue(uuid, timeZone, id);
+                        } catch (Exception e) {
                             AppLogger.e("err: " + e.getLocalizedMessage());
                         }
                         if (callBack != null)

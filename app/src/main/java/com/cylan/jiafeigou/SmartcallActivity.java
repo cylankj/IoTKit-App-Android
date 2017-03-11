@@ -194,13 +194,13 @@ public class SmartcallActivity extends NeedLoginActivity
                 startActivity(new Intent(this, NewHomeActivity.class));
             }
             finish();
-        }else if(code == JError.StartLoginPage && !frist){
+        } else if (code == JError.StartLoginPage && !frist) {
             splashOver();
             RxBus.getCacheInstance().removeStickyEvent(RxEvent.ResultLogin.class);
             frist = true;
-        }else if (code == JError.ErrorAccountNotExist){
+        } else if (code == JError.ErrorAccountNotExist) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
-        }else if (code == JError.ErrorLoginInvalidPass){
+        } else if (code == JError.ErrorLoginInvalidPass) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
         }
     }
@@ -237,6 +237,7 @@ public class SmartcallActivity extends NeedLoginActivity
 //        Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
         if (presenter != null) presenter.finishAppDelay();
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onWriteSdCardDenied");
+        AppLogger.permissionGranted = false;
     }
 
     @OnPermissionDenied(Manifest.permission.READ_PHONE_STATE)
@@ -247,6 +248,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void showWriteStoragePermissions() {
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
+        AppLogger.permissionGranted = true;
     }
 
     @NeedsPermission({Manifest.permission.READ_PHONE_STATE})

@@ -4,15 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
-
-import org.msgpack.MessagePack;
 import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.TreeSet;
@@ -1058,29 +1053,20 @@ public class DpMsgDefine {
     @Message
     public static final class DpSdcardFormatRsp extends DPSingle<DpSdcardFormatRsp> implements Parcelable {
         @Index(0)
-        public long storage;
-        @Index(1)
-        public long storageUsed;
-        @Index(2)
-        public int errCode;
-        @Index(3)
-        public boolean hasSdcard;
+        public int placeHolder;
+
+        public DpSdcardFormatRsp() {
+        }
 
         protected DpSdcardFormatRsp(Parcel in) {
             super(in);
-            storage = in.readLong();
-            storageUsed = in.readLong();
-            errCode = in.readInt();
-            hasSdcard = in.readByte() != 0;
+            placeHolder = in.readInt();
         }
 
         @Override
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
-            dest.writeLong(storage);
-            dest.writeLong(storageUsed);
-            dest.writeInt(errCode);
-            dest.writeByte((byte) (hasSdcard ? 1 : 0));
+            dest.writeInt(placeHolder);
         }
 
         @Override

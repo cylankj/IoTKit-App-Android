@@ -16,6 +16,10 @@ public interface IDPEntity extends IEntity<IDPEntity> {
 
     IDPEntity setUuid(String uuid);
 
+    IDPEntity setAccount(String account);
+
+    String getAccount();
+
     String getUuid();
 
     byte[] getBytes();

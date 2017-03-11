@@ -60,7 +60,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     CustomToolbar customToolbar;
 
     private String uuid;
-    private SdCardInfoContract.Presenter basePresenter;
+//    private SdCardInfoContract.Presenter basePresenter;
 
     public static SDcardDetailFragment newInstance(Bundle bundle) {
         SDcardDetailFragment fragment = new SDcardDetailFragment();
@@ -92,7 +92,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     @Override
     public void onStart() {
         super.onStart();
-        initDetialData();
+        initDetailData();
     }
 
     @Override
@@ -182,7 +182,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
         }
     }
 
-    private void initDetialData() {
+    private void initDetailData() {
         if (!basePresenter.getSdcardState()) {
             showHasNoSdDialog();
             return;

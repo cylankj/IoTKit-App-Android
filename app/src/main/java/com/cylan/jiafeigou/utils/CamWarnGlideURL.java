@@ -2,75 +2,64 @@ package com.cylan.jiafeigou.utils;
 
 import android.util.Log;
 
-import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.load.model.Headers;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Locale;
 
 /**
  * Created by yzd on 16-12-13.
  */
 
-public class CamWarnGlideURL extends GlideUrl {
-    protected DpMsgDefine.DPAlarm mBean;
-    private String uuid;
-    private int index;
-    private int regionType;
-    private boolean _v2 = true;
+public class CamWarnGlideURL extends JFGGlideURL {
+    private boolean isV2;
+    private String vid;
+    private long timestamp;
 
-    public CamWarnGlideURL(DpMsgDefine.DPAlarm bean, int index, String uuid, int regionType) {
-        super("http://www.cylan.com.cn", Headers.DEFAULT);
-        if (bean == null)
-            throw new IllegalArgumentException("DPWonderItem is Not Completed!");
-        mBean = bean;
-        this.index = index;
+
+    public CamWarnGlideURL(long timeMillis, int index, String vid, String uuid, int regionType, boolean v2) {
+        this.mPath = uuid;
+        this.mType = regionType;
+        this.isV2 = v2;
+        this.mFlag = index;
+        this.timestamp = timeMillis;
+        this.vid = vid;
         this.uuid = uuid;
-        this.regionType = regionType;
-    }
-
-    public CamWarnGlideURL(DpMsgDefine.DPAlarm bean, int index, String uuid, int regionType, boolean v2) {
-        super("http://www.cylan.com.cn", Headers.DEFAULT);
-        if (bean == null)
-            throw new IllegalArgumentException("DPWonderItem is Not Completed!");
-        mBean = bean;
-        this.index = index;
-        this.uuid = uuid;
-        this.regionType = regionType;
-        this._v2 = v2;
-    }
-
-    @Override
-    public String getCacheKey() {
-        return uuid + mBean.time + index;
+        this.mFile = getPath();
     }
 
     @Override
     public URL toURL() throws MalformedURLException {
 
         try {
-//            [bucket]/cid/[vid]/[cid]/[timestamp]_[id].jpg
-            String u;
-            if (_v2) {
-                //[bucket]/[cid]/[timestamp]_[id].jpg
-                u = String.format(Locale.getDefault(), "/%s/%s_%s.jpg", uuid, mBean.time, index + 1);
-            } else {
-                u = String.format(Locale.getDefault(), "/%s/%s/%s/%s_%s.jpg",
-                        uuid, Security.getVId(JFGRules.getTrimPackageName()), uuid, mBean.time, index + 1);
-            }
-            String url = JfgCmdInsurance.getCmd().getSignedCloudUrl(regionType, u);
+            String url = JfgCmdInsurance.getCmd().getSignedCloudUrl(mType, mFile);
             Log.d("toURL", "toURL: " + url);
             return new URL(url);
         } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
             return new URL("");
         }
+    }
 
+    public String getPath() {
+        //v3  报警和门铃截图 	[bucket]/cid/[vid]/[cid]/[timestamp]_[id].jpg
+        //v2   [bucket]/[cid]/[timestamp]_[id].jpg
+        if (isV2) {
+            return File.separator +
+                    uuid +
+                    File.separator +
+                    timestamp / 1000 + "_" + (mFlag + 1) + ".jpg";
+        } else {
+            return File.separator +
+                    uuid +
+                    File.separator +
+                    vid +
+                    File.separator +
+                    uuid +
+                    File.separator +
+                    timestamp / 1000 + "_" + (mFlag + 1) + ".jpg";
+        }
     }
 }

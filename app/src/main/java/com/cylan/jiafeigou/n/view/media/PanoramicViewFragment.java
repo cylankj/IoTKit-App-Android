@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,7 +23,9 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -126,7 +129,8 @@ public class PanoramicViewFragment extends IBaseFragment {
             mPanoramicContainer.addView(panoramicView, layoutParams);
         }
         //填满
-        GlideUrl url = new CamWarnGlideURL(dpAlarm, index, uuid, device == null ? 0 : device.regionType);
+        GlideUrl url = new CamWarnGlideURL(dpAlarm.version, index, Security.getVId(JFGRules.getTrimPackageName()),
+                uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid));
         Glide.with(ContextUtils.getContext())
                 .load(url)
                 .asBitmap()

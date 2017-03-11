@@ -553,6 +553,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             });
         }
         videoView.config360(CameraParam.getTopPreset());
+        videoView.detectOrientationChanged();
         return videoView;
     }
 
@@ -588,6 +589,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             fLP.height = height;
             view.setLayoutParams(fLP);
         }
+        if (videoView != null)
+            videoView.detectOrientationChanged();
         AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
 

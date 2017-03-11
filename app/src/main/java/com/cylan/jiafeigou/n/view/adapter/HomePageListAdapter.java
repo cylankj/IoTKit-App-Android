@@ -78,7 +78,7 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
             }
         }
         //2 电量
-        if (JFGRules.isBell(device.pid)) {
+        if (device != null && JFGRules.isBell(device.pid)) {
             DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
             if (battery != null && battery.value != null && battery.value <= 20 && (net != null && net.net >= 1)) {//在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
@@ -92,7 +92,7 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
         boolean s = MiscUtils.safeGet(standby, false);
         DpMsgDefine.DPPrimary<Boolean> dpSafe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
         boolean safe = MiscUtils.safeGet(dpSafe, false);
-        if (s && safe && JFGRules.isCamera(device.pid)) {
+        if (device != null && s && safe && JFGRules.isCamera(device.pid)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {

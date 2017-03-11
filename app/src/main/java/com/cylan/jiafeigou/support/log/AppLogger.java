@@ -18,7 +18,7 @@ import java.util.UnknownFormatConversionException;
  * Wrapper API for sending log output.
  */
 public class AppLogger {
-
+    public static boolean permissionGranted = false;
     private static final String tagLeft = "(";
     private static final String tagRight = "):";
     private static final String tagL = "L:";
@@ -60,7 +60,8 @@ public class AppLogger {
         final String content = buildMessage(msg);
         if (DEBUG)
             android.util.Log.v(TAG, content);
-        logFile(null, content);
+        if (permissionGranted)
+            logFile(null, content);
     }
 
 //    /**
@@ -98,7 +99,8 @@ public class AppLogger {
         final String content = buildMessage(msg);
         if (DEBUG)
             android.util.Log.d(TAG, buildMessage(msg));
-        logFile(null, content);
+        if (permissionGranted)
+            logFile(null, content);
     }
 
 //    /**
@@ -135,7 +137,8 @@ public class AppLogger {
         final String content = buildMessage(msg);
         if (DEBUG)
             android.util.Log.i(TAG, buildMessage(msg));
-        logFile(null, content);
+        if (permissionGranted)
+            logFile(null, content);
     }
 
 //    /**
@@ -171,7 +174,8 @@ public class AppLogger {
         final String content = buildMessage(msg);
         if (DEBUG)
             android.util.Log.e(TAG, content);
-        logFile(null, msg);
+        if (permissionGranted)
+            logFile(null, msg);
     }
 
 //    /**

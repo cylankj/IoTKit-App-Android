@@ -92,4 +92,9 @@ public class PanoramicView_Ext extends PanoramicView implements VideoViewFactory
         // Dispatch touch event to view
         dispatchTouchEvent(motionEvent);
     }
+
+    @Override
+    public void detectOrientationChanged() {
+        super.detectOrientationChange();
+    }
 }

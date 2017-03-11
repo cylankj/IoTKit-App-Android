@@ -1,22 +1,24 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.graphics.Bitmap;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
-import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDPDevice;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -24,11 +26,8 @@ import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
-import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
@@ -78,56 +77,71 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
 
     @Override
     public void collect(int index, DpMsgDefine.DPAlarm alarmMsg, GlideUrl bitmapGlideUrl) {
-        Observable.just(alarmMsg)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe((DpMsgDefine.DPAlarm alarm) -> {
-                    JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                    String alias = device == null ? "" : device.alias;
-                    DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
-                    item.cid = DataSourceManager.getInstance().getJFGAccount().getAccount();//02-28，丽工说改的
-                    item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
-                    item.place = alias;
-                    item.fileName = alarm.time + "_" + index + ".jpg";
-                    item.time = alarm.time;
-                    ArrayList<JFGDPMsg> jfgdpMsgs = new ArrayList<>(1);
-                    JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG, alarm.time);
-                    msg.packValue = item.toBytes();
-                    jfgdpMsgs.add(msg);
-                    try {
-                        JfgCmdInsurance.getCmd().robotSetData(uuid, jfgdpMsgs);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
+        Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
+            DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
+            item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
+            item.cid = uuid;
+            JFGDPDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+            item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+            item.fileName = alarmMsg.time + "_1.jpg";
+            item.time = alarmMsg.time;
+            IDPEntity entity = new DPEntity()
+                    .setUuid(uuid)
+                    .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
+                    .setVersion((long) alarmMsg.time * 1000L)
+                    .setAction(DBAction.SHARED)
+                    .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount())
+                    .setOption(new DBOption.SingleSharedOption(1, 1))
+                    .setBytes(item.toBytes());
+            subscriber.onNext(entity);
+            subscriber.onCompleted();
+        })
+                .subscribeOn(Schedulers.io())
+                .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    if (result.getResultCode() == 200) {
+                        getView().savePicResult(true);
+//                        ToastUtil.showPositiveToast(getString(R.string.Tap1_BigPic_FavoriteTips));
+                    } else if (result.getResultCode() == 1050) {
+//                        ToastUtil.showNegativeToast(getString(R.string.DailyGreatTips_Full));
+                        getView().onErr(1050);
                     }
-                    FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                            .load(bitmapGlideUrl)
-                            .downloadOnly(10, 10);
-                    try {
-                        File cacheFile = future.get();
-                        String path = cacheFile.getAbsolutePath();
-                        StringBuilder remotePath = new StringBuilder();
-                        remotePath.append("/long/")
-                                .append(Security.getVId(JFGRules.getTrimPackageName()))
-                                .append("/")
-                                .append(uuid)
-                                .append("/wonder/")
-                                .append(alarm.time)
-                                .append("_")
-                                .append(index)
-                                .append(".jpg");
-                        Log.d(TAG, "localPath:" + path);
-                        Log.d(TAG, "remotePath:" + remotePath);
-                        try {
-                            JfgCmdInsurance.getCmd().putFileToCloud(remotePath.toString(), path);
-
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    }
-                }, (Throwable th) -> AppLogger.e("" + th.getLocalizedMessage()));
+                }, e -> AppLogger.e("err: " + e.getLocalizedMessage()));
+//        
+//        Observable.just(alarmMsg)
+//                .subscribeOn(Schedulers.newThread())
+//                .subscribe((DpMsgDefine.DPAlarm alarm) -> {
+//
+//                    FutureTarget<File> future = Glide.with(ContextUtils.getContext())
+//                            .load(bitmapGlideUrl)
+//                            .downloadOnly(10, 10);
+//                    try {
+//                        File cacheFile = future.get();
+//                        String path = cacheFile.getAbsolutePath();
+//                        StringBuilder remotePath = new StringBuilder();
+//                        remotePath.append("/long/")
+//                                .append(Security.getVId(JFGRules.getTrimPackageName()))
+//                                .append("/")
+//                                .append(uuid)
+//                                .append("/wonder/")
+//                                .append(alarm.time)
+//                                .append("_")
+//                                .append(index)
+//                                .append(".jpg");
+//                        Log.d(TAG, "localPath:" + path);
+//                        Log.d(TAG, "remotePath:" + remotePath);
+//                        try {
+//                            JfgCmdInsurance.getCmd().putFileToCloud(remotePath.toString(), path);
+//                        } catch (JfgException e) {
+//                            e.printStackTrace();
+//                        }
+//                    } catch (InterruptedException e) {
+//                        e.printStackTrace();
+//                    } catch (ExecutionException e) {
+//                        e.printStackTrace();
+//                    }
+//                }, (Throwable th) -> AppLogger.e("" + th.getLocalizedMessage()));
 
     }
 

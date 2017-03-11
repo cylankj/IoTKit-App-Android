@@ -265,9 +265,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
                         .observeOn(Schedulers.newThread())
                         .map(resolution -> {
-                            JfgCmdInsurance.getCmd().setAudio(false, false, false);
-                            JfgCmdInsurance.getCmd().setAudio(true, false, false);
-                            AppLogger.d("set default mic n speaker flag");
+                            setupAudio(false, false, false, false);
                             return resolution;
                         })
                         .observeOn(AndroidSchedulers.mainThread())
@@ -407,10 +405,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         localSpeaker = false;
                         localMic = false;
                     }
-                    JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
-                    JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
-                    AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
+                    setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
                 });
+    }
+
+    private void setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
+        JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
+        JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
+        AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
     }
 
     @Override
@@ -429,9 +431,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     } else {
                         remoteSpeaker = false;
                     }
-                    JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
-                    JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
-                    AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
+                    setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
                 });
     }
 
