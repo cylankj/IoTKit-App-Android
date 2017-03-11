@@ -138,6 +138,7 @@
   <string name="DOOR_WIFI_HINT">設備指示燈狀態說明</string>
   <string name="DailyGreatTips_Full">每日精彩收藏數量已達50條上限，是否前去刪除？</string>
   <string name="Dec">Dec.</string>
+  <string name="Device_Disconnected">對端斷開</string>
   <string name="EDIT_IMAGE">圖片編輯</string>
   <string name="EDIT_THEME">編輯</string>
   <string name="EFAMILY_BIND_SUCC">新增成功</string>
@@ -662,7 +663,7 @@
   <string name="Tap1_iHome_NotAssociated">未關聯</string>
   <string name="Tap1_iHome_disassociate">取消關聯</string>
   <string name="Tap1_shareDevice_canceledshare">此設備已取消分享</string>
-  <string name="Tap1_share_tips">邀請你成為我的好友，點擊 %s 下載安裝【加菲狗客戶端】</string>
+  <string name="Tap1_share_tips">邀請你成為我的好友，點擊 %s 下載安裝【Clever Dog客戶端】</string>
   <string name="Tap1a_DownloadInstall">下載並安裝(%s)</string>
   <string name="Tap2_Index_DemoVideo">演示視頻</string>
   <string name="Tap2_Index_Greetings">每一天的生活，都值得被記錄</string>
@@ -790,7 +791,7 @@
   <string name="VIDEO_REFRESHING">正在載入，請稍後</string>
   <string name="VIDEO_SD_DESC">Micro SD卡需要初始化，才能存儲影像資料</string>
   <string name="WARN_TIME">警示時間</string>
-  <string name="WEB">加菲狗官網</string>
+  <string name="WEB">Clever Dog官網</string>
   <string name="WED">星期三</string>
   <string name="WED_1">每週三</string>
   <string name="WED_2">三</string>
@@ -820,12 +821,14 @@
   <string name="WIFI_SET_5GTIPS">注：暫不支持5GHz的WiFi信號</string>
   <string name="WONDER_TODAY_H_M">今日 HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">昨日 HH:mm</string>
+  <string name="WeChat">微信</string>
+  <string name="Weibo">微博</string>
   <string name="Word_Hours">小時</string>
   <string name="XX_DISCOVERY">“%s”有新的發現</string>
   <string name="YOUR_FEEDBACK">每一位用戶的意見與建議都很重要</string>
   <string name="Yesterday">昨日</string>
   <string name="addvideo_searching">正在搜索&#8230;</string>
-  <string name="app_name">加菲狗</string>
+  <string name="app_name">Clever Dog</string>
   <string name="app_share">推薦給朋友</string>
   <string name="callto">呼叫</string>
   <string name="camera_auth">相機</string>

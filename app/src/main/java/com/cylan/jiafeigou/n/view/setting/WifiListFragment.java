@@ -28,7 +28,6 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.util.ArrayList;
@@ -40,7 +39,9 @@ import butterknife.ButterKnife;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract.ERR_NO_RAW_LIST;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_EXCLUDE_CHINESE;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_INPUT_HINT;
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_INPUT_LENGTH;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_SHOW_EDIT;
@@ -114,17 +115,16 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
             bundle.putString(KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
             bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
             bundle.putString(KEY_INPUT_HINT, getString(R.string.ENTER_PWD_1));
+            bundle.putInt(KEY_INPUT_LENGTH, 64);
+            bundle.putBoolean(KEY_EXCLUDE_CHINESE, true);
             final int security = NetUtils.getSecurity(item);
             bundle.putBoolean(KEY_SHOW_EDIT, security != 0);
             EditFragmentDialog dialog = EditFragmentDialog.newInstance(bundle);
-            dialog.setAction(new BaseDialog.BaseDialogAction() {
-                @Override
-                public void onDialogAction(int id, Object value) {
-                    if (value != null && value instanceof String) {
-                        //pwd
-                        if (basePresenter != null)
-                            basePresenter.sendWifiInfo(ssid, (String) value, security);
-                    }
+            dialog.setAction((int id, Object value) -> {
+                if (value != null && value instanceof String) {
+                    //pwd
+                    if (basePresenter != null)
+                        basePresenter.sendWifiInfo(ssid, (String) value, security);
                 }
             });
             dialog.show(getChildFragmentManager(), "dialog");

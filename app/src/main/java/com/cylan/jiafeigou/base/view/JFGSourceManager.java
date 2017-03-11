@@ -145,4 +145,6 @@ public interface JFGSourceManager {
     void clear();
 
     void clearUnread(String uuid, long... ids);
+
+    void syncDeviceUnreadCount();
 }

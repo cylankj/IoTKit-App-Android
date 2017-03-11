@@ -46,7 +46,7 @@ public class GlobalBellCallSource {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bellCallEvent.caller.cid);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
-        intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, bellCallEvent.caller.url);
+//        intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, bellCallEvent.caller.url);
         intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, bellCallEvent.caller.time);
         ContextUtils.getContext().startActivity(intent);
 

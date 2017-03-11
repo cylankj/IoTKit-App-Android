@@ -137,7 +137,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
             @Override
             public void onFinish() {
-                if (isAdded()){
+                if (isAdded()) {
                     tvMeterGetCode.setText(getString(R.string.ANEW_SEND));
                     tvMeterGetCode.setEnabled(true);
                 }
@@ -228,7 +228,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @OnClick(R.id.tv_meter_get_code)
     public void reGetVerificationCode() {
-        if (presenter.checkOverCount()){
+        if (presenter.checkOverCount()) {
             ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
             return;
         }
@@ -398,8 +398,10 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         }
         initNewPwdView(phoneNewPwdView);
         initTitle(JConstant.TYPE_PHONE);
-        vsSetAccountPwd.addView(phoneNewPwdView);
-        vsSetAccountPwd.showNext();
+        if (vsSetAccountPwd.getChildCount() == 1) {//##103929
+            vsSetAccountPwd.addView(phoneNewPwdView);
+            vsSetAccountPwd.showNext();
+        }
     }
 
     /**
@@ -445,7 +447,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     return;
                 }
                 isCheckAgain = true;
-                presenter.submitPhoneNumAndCode(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT),PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE));
+                presenter.submitPhoneNumAndCode(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT), PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE));
             }
         });
 
@@ -495,16 +497,16 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     public void checkSmsCodeResult(int code) {
         if (code == 181) {
             ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
-        } else if (code == 180){
+        } else if (code == 180) {
             ToastUtil.showToast(getString(R.string.RET_ELOGIN_VCODE_ERROR));
         } else if (code == 0) {
             if (!PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT, "").equals(etForgetUsername.getText().toString().trim())) {
                 ToastUtil.showToast(getContext().getResources().getString(R.string.Tap0_wrongcode));
                 return;
             }
-            if (isCheckAgain){
+            if (isCheckAgain) {
                 presenter.resetPassword(newPwd);
-            }else {
+            } else {
                 preparePhoneView();
             }
         }
@@ -520,9 +522,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     public void resetPwdResult(int code) {
         if (code == JError.ErrorInvalidPass) {
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
-        }else if (code == JError.ErrorSamePass){
+        } else if (code == JError.ErrorSamePass) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ECHANGEPASS_SAME));
-        }else {
+        } else {
             ToastUtil.showToast(getString(R.string.PWD_OK));
             if (getView() != null) {
                 getView().postDelayed(new Runnable() {
@@ -540,20 +542,20 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     @Override
     public void checkIsRegReuslt(int code) {
         if (code == 0) {
-            if (isCheckAccAgain){
-                if (tempAcc.equals(ViewUtils.getTextViewContent(etForgetUsername))){
+            if (isCheckAccAgain) {
+                if (tempAcc.equals(ViewUtils.getTextViewContent(etForgetUsername))) {
                     getArguments().putString(LoginFragment.KEY_TEMP_ACCOUNT, etForgetUsername.getText().toString());
                     if (presenter != null)
                         presenter.submitPhoneNumAndCode(etForgetUsername.getText().toString(), ViewUtils.getTextViewContent(etVerificationInput));
-                }else {
+                } else {
                     ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
                 }
                 isCheckAccAgain = false;
-            }else {
+            } else {
                 if (!Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etForgetUsername)).find()) {
-                    if (!presenter.checkOverCount()){
+                    if (!presenter.checkOverCount()) {
                         start2HandleVerificationCode();
-                    }else {
+                    } else {
                         ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
                         return;
                     }
@@ -623,9 +625,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))){
+        if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))) {
             getFragmentManager().popBackStack();
-        }else {
+        } else {
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
             vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);

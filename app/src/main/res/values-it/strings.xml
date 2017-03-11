@@ -138,6 +138,7 @@
   <string name="DOOR_WIFI_HINT">Indicatore di stato LED</string>
   <string name="DailyGreatTips_Full">il numero di Raccolta dei Splendida della giornata ha raggiunto il limite massimo di 50, andando a eliminare?</string>
   <string name="Dec">Dec.</string>
+  <string name="Device_Disconnected">Disconnessa</string>
   <string name="EDIT_IMAGE">Modifica</string>
   <string name="EDIT_THEME">Modifica</string>
   <string name="EFAMILY_BIND_SUCC">Aggiunto con successo</string>
@@ -820,6 +821,8 @@
   <string name="WIFI_SET_5GTIPS">Nota: il segnale WiFi 5Ghz non è ancora supportato</string>
   <string name="WONDER_TODAY_H_M">Oggi HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Ieri HH:mm</string>
+  <string name="WeChat">WeChat</string>
+  <string name="Weibo">Weibo</string>
   <string name="Word_Hours">ore</string>
   <string name="XX_DISCOVERY">Nuovi dispositivi di \'%s\'</string>
   <string name="YOUR_FEEDBACK">La Tua opinione è importante per noi</string>

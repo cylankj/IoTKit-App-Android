@@ -45,7 +45,6 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -116,6 +115,7 @@ public class DataSource implements AppCallBack {
     private void try2autoLogin() {
         AutoSignIn.getInstance().autoLogin()
                 .flatMap(integer -> {
+                    AppLogger.d("integer: " + integer);
                     if (integer == 0)
                         RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                                 .subscribeOn(Schedulers.newThread())
@@ -334,7 +334,7 @@ public class DataSource implements AppCallBack {
     }
 
     @Override
-    public void OnOtherClientAnswerCall() {
+    public void OnOtherClientAnswerCall(String s) {
         AppLogger.d("OnOtherClientAnswerCall");
         RxBus.getCacheInstance().post(new RxEvent.CallResponse(false));
     }
@@ -453,11 +453,6 @@ public class DataSource implements AppCallBack {
     @Override
     public void OnNotifyStorageType(int i) {
         AppLogger.d("I:" + i);
-    }
-
-    @Override
-    public HashMap<String, String> getAppParameter() {
-        return new HashMap<>();
     }
 
     @Override

@@ -275,17 +275,14 @@ public class ViewUtils {
     }
 
     public static void setChineseExclude(TextView textView, final int maxLength) {
-        InputFilter filter = new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end,
-                                       Spanned dest, int dstart, int dend) {
-                for (int i = start; i < end; i++) {
-                    if (isChineseChar(source.charAt(i))) {
-                        return "";
-                    }
+        InputFilter filter = (CharSequence source, int start, int end,
+                              Spanned dest, int dstart, int dend) -> {
+            for (int i = start; i < end; i++) {
+                if (isChineseChar(source.charAt(i))) {
+                    return "";
                 }
-                return null;
             }
+            return null;
         };
         textView.setFilters(new InputFilter[]{filter, new InputFilter.LengthFilter(maxLength)});
     }

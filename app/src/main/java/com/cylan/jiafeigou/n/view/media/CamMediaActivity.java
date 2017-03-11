@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMediaPresenterImpl;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
@@ -123,7 +125,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     }
                 });
                 //可能出错,不是对应的index
-                GlideUrl url = new CamWarnGlideURL(alarmMsg, i, uuid, device == null ? 0 :  device == null ? 0 : device.regionType);
+                GlideUrl url = new CamWarnGlideURL(alarmMsg.dpMsgVersion, i, Security.getVId(JFGRules.getTrimPackageName()),
+                        uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid));
                 Glide.with(ContextUtils.getContext())
                         .load(url)
                         .asBitmap()
@@ -192,7 +195,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         switch (view.getId()) {
             case R.id.imgV_big_pic_download:
                 if (basePresenter != null)
-                    basePresenter.saveImage(new CamWarnGlideURL(alarmMsg, currentIndex, uuid,  device == null ? 0 : device.regionType));
+                    basePresenter.saveImage(new CamWarnGlideURL(alarmMsg.dpMsgVersion, currentIndex, Security.getVId(JFGRules.getTrimPackageName()),
+                            uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid)));
                 break;
             case R.id.imgV_big_pic_share:
                 if (NetUtils.getJfgNetType(getContext()) == 0) {
@@ -200,7 +204,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     return;
                 }
                 ShareDialogFragment fragment = initShareDialog();
-                fragment.setPictureURL(new CamWarnGlideURL(alarmMsg, currentIndex, uuid,  device == null ? 0 : device.regionType));
+                fragment.setPictureURL(new CamWarnGlideURL(alarmMsg.dpMsgVersion, currentIndex, Security.getVId(JFGRules.getTrimPackageName()),
+                        uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid)));
                 fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.imgV_big_pic_collect:
@@ -209,7 +214,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     return;
                 }
                 if (basePresenter != null)
-                    basePresenter.collect(currentIndex, alarmMsg, new CamWarnGlideURL(alarmMsg, currentIndex, uuid,  device == null ? 0 : device.regionType));
+                    basePresenter.collect(currentIndex, alarmMsg, new CamWarnGlideURL(alarmMsg.dpMsgVersion, currentIndex, Security.getVId(JFGRules.getTrimPackageName()),
+                            uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid)));
                 break;
         }
     }
@@ -248,8 +254,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @Override
     public void onErr(int err) {
         switch (err) {
-            case 1:
-                ToastUtil.showNegativeToast(getString(R.string.Tap2_share_unabletoshare));
+            case 1050:
+                ToastUtil.showNegativeToast(getString(R.string.DailyGreatTips_Full));
                 break;
         }
     }

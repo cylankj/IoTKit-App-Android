@@ -332,21 +332,21 @@ public class DataSourceManager implements JFGSourceManager {
 
     /**
      * 很暴力地获取
-     *
-     * @param uuid
      */
-    private void syncDeviceUnreadCount(String uuid) {
-        JFGDevice device = getRawJFGDevice(uuid);
-        if (device != null && JFGRules.isCamera(device.pid)) {
-            ArrayList<Long> msgs = new ArrayList<>();
-            try {
-                msgs.add(505L);
-                msgs.add(222L);
-                msgs.add(512L);
-                msgs.add(401L);
-                JfgCmdInsurance.getCmd().robotCountData(device.uuid, msgs, 0);
-            } catch (JfgException e) {
-                AppLogger.e("uuid is null: " + e.getLocalizedMessage());
+    public void syncDeviceUnreadCount() {
+        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+            JFGDevice device = getRawJFGDevice(entry.getKey());
+            if (device != null && JFGRules.isCamera(device.pid)) {
+                ArrayList<Long> msgs = new ArrayList<>();
+                try {
+                    msgs.add(505L);
+                    msgs.add(222L);
+                    msgs.add(512L);
+                    msgs.add(401L);
+                    JfgCmdInsurance.getCmd().robotCountData(device.uuid, msgs, 0);
+                } catch (JfgException e) {
+                    AppLogger.e("uuid is null: " + e.getLocalizedMessage());
+                }
             }
         }
     }
@@ -535,7 +535,7 @@ public class DataSourceManager implements JFGSourceManager {
                     response.msgId = ret.getKey();
                     RxBus.getCacheInstance().post(response);
                 }, Throwable::printStackTrace, () -> {
-                    syncDeviceUnreadCount(dataRsp.identity);
+//                    syncDeviceUnreadCount();
                     RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
                     completed.seq = dataRsp.seq;
                     completed.uuid = dataRsp.identity;

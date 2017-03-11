@@ -13,6 +13,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
+import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -265,9 +266,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         .filter(resolution -> TextUtils.equals(resolution.peer, uuid))
                         .observeOn(Schedulers.newThread())
                         .map(resolution -> {
-                            JfgCmdInsurance.getCmd().setAudio(false, false, false);
-                            JfgCmdInsurance.getCmd().setAudio(true, false, false);
-                            AppLogger.d("set default mic n speaker flag");
+                            setupAudio(false, false, false, false);
                             return resolution;
                         })
                         .observeOn(AndroidSchedulers.mainThread())
@@ -407,10 +406,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         localSpeaker = false;
                         localMic = false;
                     }
-                    JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
-                    JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
-                    AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
+                    setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
                 });
+    }
+
+    private void setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
+        JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
+        JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
+        AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
     }
 
     @Override
@@ -429,9 +432,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     } else {
                         remoteSpeaker = false;
                     }
-                    JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
-                    JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
-                    AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
+                    setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
                 });
     }
 
@@ -457,12 +458,18 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .map(o -> {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                     long time = System.currentTimeMillis();
-                    byte[] data = JfgCmdInsurance.getCmd().screenshot(false);
-                    if (data == null) {
-                        AppLogger.e("直播黑屏，没有数据");
-                        return null;
-                    }
-                    Bitmap bitmap = BitmapUtils.byte2bitmap(videoResolution[0], videoResolution[1], data);
+                    JfgCmdInsurance.getCmd().screenshot(false, new CallBack<Bitmap>() {
+                        @Override
+                        public void onSucceed(Bitmap bitmap) {
+                            Log.d(TAG, "take shot performance: " + (System.currentTimeMillis() - time));
+                        }
+
+                        @Override
+                        public void onFailure(String s) {
+                            AppLogger.e("直播黑屏，没有数据");
+                        }
+                    });
+                    Bitmap bitmap = null;
                     AppLogger.i("capture take shot performance: " + (System.currentTimeMillis() - time));
                     return bitmap;
                 })

@@ -20,7 +20,7 @@
             android:drawablePadding="@dimen/y15"
             android:drawableStart="@drawable/nav_tab_back_selector"
             android:padding="@dimen/y15"
-            android:text="@string/_720"
+            android:text="string/_720"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp16" />
 

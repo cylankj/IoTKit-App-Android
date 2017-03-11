@@ -6,24 +6,15 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.facebook.FacebookInstance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
-import com.cylan.jiafeigou.support.sina.SinaLogin;
-import com.cylan.jiafeigou.support.twitter.TwitterInstance;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.TwitterApiClient;
-import com.twitter.sdk.android.core.TwitterAuthToken;
-import com.twitter.sdk.android.core.TwitterSession;
 
 import java.io.File;
 
@@ -63,45 +54,7 @@ public class AutoSignIn {
 
     public static final String KEY = "fxxx";
 
-    public Observable<Integer> autoLoad() {
-        return Observable.just("run")
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<String, Observable<Integer>>() {
-                    @Override
-                    public Observable<Integer> call(String s) {
-                        try {
-                            String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
-                            if (TextUtils.isEmpty(aesAccount)) {
-                                Log.d(TAG, "aes account is null");
-                                return Observable.just(-1);
-                            }
-                            String decryption = AESUtil.decrypt(aesAccount);
-                            SignType signType = new Gson().fromJson(decryption, SignType.class);
-                            Log.d(TAG, "signType: " + signType);
-                            if (signType != null) {
-                                StringBuilder pwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + aesAccount + ".dat", "UTF-8");
-                                AppLogger.d("pwd111："+pwd);
-                                if (!TextUtils.isEmpty(pwd)) {
-                                    String finalPwd = AESUtil.decrypt(pwd.toString());
-                                    if (signType.type == 1)
-                                        JfgCmdInsurance.getCmd().login(signType.account, finalPwd);
-                                    else if (signType.type >= 3) {
-                                        JfgCmdInsurance.getCmd().openLogin(signType.account, finalPwd, signType.type);
-                                    }
-                                    AppLogger.d("log type: " + signType+":"+finalPwd);
-                                    return Observable.just(0);
-                                }
-                            }
-                            return Observable.just(-1);
-                        } catch (Exception e) {
-                            AppLogger.e("no sign type");
-                            return Observable.just(-1);
-                        }
-                    }
-                });
-    }
 
-    
     public Observable<Integer> autoLogin() {
         return Observable.just("run")
                 .subscribeOn(Schedulers.io())
@@ -111,35 +64,34 @@ public class AutoSignIn {
                         try {
                             String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
                             if (TextUtils.isEmpty(aesAccount)) {
-                                Log.d(TAG, "aes account is null");
+                                AppLogger.d("account is null");
                                 return Observable.just(-1);
                             }
                             String decryption = AESUtil.decrypt(aesAccount);
                             SignType signType = new Gson().fromJson(decryption, SignType.class);
-                            Log.d(TAG, "signType: " + signType);
                             if (signType != null) {
                                 StringBuilder pwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + aesAccount + ".dat", "UTF-8");
                                 if (!TextUtils.isEmpty(pwd)) {
                                     String finalPwd = AESUtil.decrypt(pwd.toString());
-                                    if (signType.type == 1){
+                                    if (signType.type == 1) {
                                         JfgCmdInsurance.getCmd().login(signType.account, finalPwd);
                                         RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
-                                    }
-                                    else if (signType.type >= 3) {
+                                    } else if (signType.type >= 3) {
                                         //效验本地token是否过期
-                                        if(checkTokenOut(signType.type)){
+                                        if (checkTokenOut(signType.type)) {
                                             return Observable.just(-1);
-                                        }else {
+                                        } else {
                                             JfgCmdInsurance.getCmd().openLogin(signType.account, finalPwd, signType.type);
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         }
                                     }
                                     AppLogger.d("log type: " + signType);
                                     return Observable.just(0);
-                                }else {
+                                } else {
                                     return Observable.just(-1);
                                 }
                             }
+                            AppLogger.d("signType is :" + signType);
                             return Observable.just(-1);
                         } catch (Exception e) {
                             AppLogger.e("no sign type");
@@ -151,7 +103,7 @@ public class AutoSignIn {
 
     private boolean checkTokenOut(int type) {
         boolean isOut = true;
-        switch (type){
+        switch (type) {
             case 3:
                 isOut = !TencentInstance.getInstance().mTencent.isSessionValid();
                 break;

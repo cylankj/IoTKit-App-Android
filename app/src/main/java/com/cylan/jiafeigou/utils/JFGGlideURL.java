@@ -26,6 +26,7 @@ public class JFGGlideURL extends GlideUrl {
     private boolean V2 = true;//2.0版本
     private int regionType;
 
+
     public JFGGlideURL(String cid, String fileName) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
         Device device = DataSourceManager.getInstance().getJFGDevice(cid);

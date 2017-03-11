@@ -138,6 +138,7 @@
   <string name="DOOR_WIFI_HINT">Status Indikator LED</string>
   <string name="DailyGreatTips_Full">Nomor koleksi untuk Daily Great telah mencapai batas atas 50, pergi ke menghapus?</string>
   <string name="Dec">Dec.</string>
+  <string name="Device_Disconnected">Terputus</string>
   <string name="EDIT_IMAGE">Ubah</string>
   <string name="EDIT_THEME">Ubah</string>
   <string name="EFAMILY_BIND_SUCC">Berhasil ditambahkan</string>
@@ -820,6 +821,8 @@
   <string name="WIFI_SET_5GTIPS">Tips:Sinyal 5G WIFI tidak memungkinkan sekarang</string>
   <string name="WONDER_TODAY_H_M">Hari ini HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Kemarin HH:mm</string>
+  <string name="WeChat">WeChat</string>
+  <string name="Weibo">Weibo</string>
   <string name="Word_Hours">jam</string>
   <string name="XX_DISCOVERY">\"%s\" ada penemuan baru</string>
   <string name="YOUR_FEEDBACK">Saran anda sangat penting bagi kami</string>

@@ -290,6 +290,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             break;
             case R.id.tv_setting_unbind: {
+                if (NetUtils.getJfgNetType(getContext()) == 0) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
                 Bundle bundle = new Bundle();
                 bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)));
                 bundle.putBoolean(BaseDialog.KEY_TOUCH_OUT_SIDE_DISMISS, true);

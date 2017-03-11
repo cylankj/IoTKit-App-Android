@@ -146,7 +146,8 @@ public class JFGRules {
                 pid == JConstant.OS_CAMERA_ANDROID ||
                 pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
                 pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
-                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
+                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE
+                || isWifiCam(pid);
     }
 
 
@@ -196,12 +197,17 @@ public class JFGRules {
 
     public static boolean isBell(int pid) {
         switch (pid) {
-            case JConstant.OS_DOOR_BELL:
-            case JConstant.OS_DOOR_BELL_V2:
-            case JConstant.PID_BELL_G_1:
-            case JConstant.PID_BELL_G_2:
-            case JConstant.OS_CAMERA_FXXX_LESHI:
-            case JConstant.PID_CAMERA_FXXX_LESHI_PID:
+            case 6:
+            case 25:
+            case 1093:
+            case 1094:
+            case 17:
+            case 1158:
+            case 15:
+            case 1159:
+            case 24:
+            case 1160:
+            case 27:
                 return true;
         }
         return false;
