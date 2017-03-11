@@ -138,7 +138,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     private Subscription resultVerifyCodeSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultVerifyCode.class)
                 .subscribeOn(Schedulers.newThread())
-                .delay(1000, TimeUnit.MILLISECONDS)//set a delay
+                .delay(500, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.ResultVerifyCode resultVerifyCode) -> {
                     if (isRegSms) {
@@ -155,7 +155,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     private Subscription smsCodeResultSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
-                .delay(1000, TimeUnit.MILLISECONDS)//set a delay
+                .delay(500, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.SmsCodeResult smsCodeResult) -> {
                     if (getView().isLoginViewVisible() && JCache.isSmsAction) {
@@ -255,14 +255,14 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
      */
     @Override
     public void loginCountTime() {
-        rx.Observable.just(null)
+        addSubscription(Observable.just(null)
                 .delay(30000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> {
                     if (getView() != null && !isLoginSucc)
                         getView().loginResult(JError.ErrorConnect);
-                });
+                }));
     }
 
     @Override
@@ -282,30 +282,30 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     //计数10分钟3次
     @Override
-    public boolean checkOverCount() {
-        int count = PreferencesUtils.getInt(JConstant.KEY_REG_GET_SMS_COUNT, 0);
-        long first_time = PreferencesUtils.getLong(JConstant.KEY_REG_FRIST_GET_SMS, 0);
+    public boolean checkOverCount(String account) {
+        int count = PreferencesUtils.getInt(account+JConstant.KEY_REG_GET_SMS_COUNT, 0);
+        long first_time = PreferencesUtils.getLong(account+JConstant.KEY_REG_FRIST_GET_SMS, 0);
 
         if (count == 0) {
-            PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
-            PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
+            PreferencesUtils.putLong(account+JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
+            PreferencesUtils.putInt(account+JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
             return false;
         }
 
         if (count < 3) {
             if (System.currentTimeMillis() - first_time < 10 * 60 * 1000) {
-                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
+                PreferencesUtils.putInt(account+JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
             } else {
-                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT, 0);
-                PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
+                PreferencesUtils.putInt(account+JConstant.KEY_REG_GET_SMS_COUNT, 0);
+                PreferencesUtils.putLong(account+JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
             }
             return false;
         } else {
             if (System.currentTimeMillis() - first_time < 10 * 60 * 1000) {
                 return true;
             } else {
-                PreferencesUtils.putInt(JConstant.KEY_REG_GET_SMS_COUNT, 0);
-                PreferencesUtils.putLong(JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
+                PreferencesUtils.putInt(account+JConstant.KEY_REG_GET_SMS_COUNT, 0);
+                PreferencesUtils.putLong(account+JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
                 return false;
             }
         }

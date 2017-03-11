@@ -32,6 +32,7 @@ import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
@@ -99,6 +100,18 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     FrameLayout fLayoutForgetContainer;
     @BindView(R.id.rLayout_forget_pwd_toolbar)
     CustomToolbar rLayoutForgetPwdToolbar;
+    @BindView(R.id.ll_new_pwd_container)
+    LinearLayout llNewPwdContainer;
+    @BindView(R.id.ll_mail_container)
+    LinearLayout llMailContainer;
+    @BindView(R.id.cb_new_pwd_show)
+    CheckBox cbNewPwdShow;
+    @BindView(R.id.fLayout_account_input_box)
+    FrameLayout fLayoutAccountInputBox;
+    @BindView(R.id.tv_email_confirm)
+    TextView tvEmailConfirm;
+    @BindView(R.id.tv_send_email_content)
+    TextView tvSendEmailContent;
 
     /**
      * {0}请输入手机号/邮箱 {1}请输入邮箱
@@ -171,8 +184,10 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     @Override
     public void onStop() {
         super.onStop();
-        if (countDownTimer != null)
+        if (countDownTimer != null){
             countDownTimer.onFinish();
+            countDownTimer = null;
+        }
         if (presenter != null)
             presenter.stop();
     }
@@ -228,14 +243,13 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @OnClick(R.id.tv_meter_get_code)
     public void reGetVerificationCode() {
-        if (presenter.checkOverCount()) {
+        if (presenter.checkOverCount(ViewUtils.getTextViewContent(etForgetUsername))) {
             ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
             return;
         }
         countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
         if (presenter != null)
-            Toast.makeText(getActivity(), getString(R.string.Tap3_FriendsAdd_Contacts_Sent), Toast.LENGTH_SHORT).show();
         presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
     }
 
@@ -256,6 +270,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     private void start2HandleVerificationCode() {
         fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
         countDownTimer.start();
+        tvMeterGetCode.setEnabled(false);
         tvForgetPwdSubmit.setEnabled(false);
     }
 
@@ -286,6 +301,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     if (presenter != null) {
                         isCheckAccAgain = true;
                         presenter.checkIsReg(ViewUtils.getTextViewContent(etForgetUsername));
+                        AppLogger.d("isCheckAccAgain:"+isCheckAccAgain);
                     }
 
                 }
@@ -355,7 +371,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     }
 
     /**
-     * 提交邮箱,修改密码，服务端响应之后的view
+     * 设置新手机账号的密码。
      */
     private void prepareMailView() {
         View view = vsSetAccountPwd.findViewById(R.id.layout_to_be_update);
@@ -465,6 +481,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 et_newpass.setSelection(et_newpass.length());
             }
         });
+        vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
+        vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_left);
+        vsSetAccountPwd.showNext();
     }
 
     @Override
@@ -527,13 +546,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         } else {
             ToastUtil.showToast(getString(R.string.PWD_OK));
             if (getView() != null) {
-                getView().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT)));
-                        ActivityUtils.justPop(getActivity());
-                    }
-                }, 500);
+                RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT)));
+                ActivityUtils.justPop(getActivity());
             }
         }
 
@@ -553,7 +567,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 isCheckAccAgain = false;
             } else {
                 if (!Patterns.EMAIL_ADDRESS.matcher(ViewUtils.getTextViewContent(etForgetUsername)).find()) {
-                    if (!presenter.checkOverCount()) {
+                    if (!presenter.checkOverCount(ViewUtils.getTextViewContent(etForgetUsername))) {
                         start2HandleVerificationCode();
                     } else {
                         ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
@@ -573,18 +587,15 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         this.presenter = presenter;
     }
 
-    //lazy load 的view 以下不起作用
     @Nullable
     @OnTextChanged(R.id.et_new_pwd_input)
     public void newPwdInputBoxChanged(CharSequence s, final int before, final int count, final int len) {
-        final boolean empty = TextUtils.isEmpty(s);
-        final boolean isNewPswValid = !empty
-                && s.length() >= JConstant.PWD_LEN_MIN
-                && s.length() <= JConstant.PWD_LEN_MAX;
-        if (tvNewPwdSubmit != null) tvNewPwdSubmit.setEnabled(isNewPswValid);
         if (ivNewClearPwd != null) {
-            ivNewClearPwd.setVisibility(empty ? View.GONE : View.VISIBLE);
+            ivNewClearPwd.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
+            ivNewClearPwd.setClickable(true);
         }
+        if (tvNewPwdSubmit != null)
+            tvNewPwdSubmit.setEnabled(TextUtils.isEmpty(s) ? false : true);
     }
 
     @OnCheckedChanged(R.id.cb_new_pwd_show)
@@ -593,15 +604,30 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         if (etNewPwdInput != null) etNewPwdInput.setSelection(etNewPwdInput.length());
     }
 
-    @OnClick({R.id.iv_new_clear_pwd, R.id.tv_new_pwd_submit})
+    @OnClick({R.id.iv_new_clear_pwd, R.id.tv_new_pwd_submit,R.id.tv_email_confirm})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_new_clear_pwd:
                 if (etNewPwdInput != null) etNewPwdInput.setText("");
                 break;
             case R.id.tv_new_pwd_submit:
-                Toast.makeText(getActivity(), "yes?", Toast.LENGTH_SHORT).show();
+                //*********
+                newPwd = etNewPwdInput.getText().toString().trim();
+                if (newPwd.length() < 6) {
+                    ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
+                    return;
+                }
+                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
+                isCheckAgain = true;
+                presenter.submitPhoneNumAndCode(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT), PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE));
+                break;
+            case R.id.tv_email_confirm:
+                //邮箱点击激活
                 getActivity().getSupportFragmentManager().popBackStack();
+                RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
                 break;
         }
     }
