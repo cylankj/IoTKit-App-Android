@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 
-import android.Manifest;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -33,9 +31,6 @@ import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.misc.JConstant.QR_CODE_REG;
 import static com.cylan.jiafeigou.misc.JConstant.QR_CODE_REG_WITH_SN;
@@ -47,7 +42,7 @@ import static com.cylan.jiafeigou.misc.JError.ErrorCIDNotBind;
  * Use the {@link BindScanFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-@RuntimePermissions
+
 public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> implements ZXingScannerView.ResultHandler, ScanContract.View {
 
     @BindView(R.id.zxV_scan)
@@ -76,10 +71,8 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @Override
     public void onStart() {
         super.onStart();
-        if (Build.VERSION_CODES.M > Build.VERSION.SDK_INT) {
-            zxVScan.startCamera();
-            zxVScan.setResultHandler(BindScanFragment.this);
-        }
+        zxVScan.startCamera();
+        zxVScan.setResultHandler(BindScanFragment.this);
     }
 
     @Override
@@ -105,18 +98,6 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         });
     }
 
-    @NeedsPermission(Manifest.permission.CAMERA)
-    public void onCameraPermission() {
-        zxVScan.startCamera();
-        zxVScan.setResultHandler(BindScanFragment.this);
-    }
-
-    @OnPermissionDenied(Manifest.permission.CAMERA)
-    public void onCameraPermissionDenied() {
-        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
-            ((BindDeviceActivity) getActivity()).finishExt();
-        }
-    }
 
     @Override
     public void handleResult(Result rawResult) {// Note:
