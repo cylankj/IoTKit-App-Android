@@ -38,9 +38,5 @@ public class HandlerThreadUtils {
 
     public static void clean() {
         mHandler.removeCallbacksAndMessages(null);
-        mHandler.getLooper().quit();
-        HandlerThread mHandlerThread = new HandlerThread("worker-handler-thread");
-        mHandlerThread.start();
-        mHandler = new Handler(mHandlerThread.getLooper());
     }
 }

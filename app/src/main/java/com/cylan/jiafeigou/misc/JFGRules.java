@@ -171,12 +171,16 @@ public class JFGRules {
     }
 
     public static boolean showLedIndicator(int pid) {
-        return pid == JConstant.PID_CAMERA_ANDROID_3_0 ||
-                pid == JConstant.OS_CAMERA_ANDROID ||
-                pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
-                pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
-                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE
-                || isWifiCam(pid);
+        return pid == 4
+                || pid == 5
+                || pid == 7
+                || pid == 10
+                || pid == 18
+                || pid == 1090
+                || pid == 1091
+                || pid == 1092
+                || pid == 1071
+                || pid == 1152;
     }
 
 
