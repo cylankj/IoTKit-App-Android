@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -78,8 +79,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private Subscription devicesUpdate() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
-                .filter((RxEvent.ParseResponseCompleted data) -> (getView() != null))
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                .filter((RobotoGetDataRsp data) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(update -> {
                     RxBus.getCacheInstance().post(new InternalHelp());
