@@ -223,7 +223,7 @@ public class HomeWonderfulPresenterImplc extends BasePresenter<HomeWonderfulCont
                 .filter(seq -> seq > 0)
                 .subscribeOn(Schedulers.io())
                 .flatMap(seq -> RxBus.getCacheInstance()
-                        .toObservable(RxEvent.ParseResponseCompleted.class)
+                        .toObservable(RobotoGetDataRsp.class)
                         .filter(rsp -> rsp.seq == seq)
                         .first()
                         .timeout(10, TimeUnit.SECONDS))

@@ -14,7 +14,6 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -82,8 +81,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         registerSubscription(
                 getDeviceSyncSub(),
                 getLoginStateSub(),
-                getQueryDataRspSub(),
-                getParseResponseCompletedSub(),
                 getDeleteDataRspSub(),
                 getLocalUDPMessageSub()
         );
@@ -92,12 +89,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @CallSuper
     protected void onRegisterResponseParser() {
     }
-
-
-//    protected Observable getNetWorkMonitor() {
-//        Observable.
-//    }
-
     /**
      * 如果不需要在onStop中进行反注册,可以重写这个方法,然后在自定义的地方反注册
      */
@@ -176,33 +167,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     protected void onDeviceSync() {
     }
 
-    /**
-     * 监听请求数据的响应是基本功能,提取到基类
-     */
-    private Subscription getQueryDataRspSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetDataResponse.class)
-                .subscribeOn(Schedulers.io())
-                .filter(response -> mRequestSeqs.remove(response.seq))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(response -> {
-                            ResponseParser parser = mResponseParserMap.get(response.msgId);
-                            if (parser != null) {
-                                Object value = mSourceManager.getValue(mUUID, response.msgId, response.seq);
-                                if (value != null && value instanceof DpMsgDefine.DPSet) {
-                                    DpMsgDefine.DPSet<DataPoint> set = (DpMsgDefine.DPSet<DataPoint>) value;
-                                    if (set.value != null)
-                                        parser.onParseResponse(set.value.toArray(new DataPoint[set.value.size()]));
-                                } else {
-                                    parser.onParseResponse((DataPoint) value);
-                                }
-                            }
-                        }
-                        , e -> {
-                            e.printStackTrace();//打印出错误消息以便排错
-                            registerSubscription(getQueryDataRspSub());//基类不能崩
-                        });
-    }
-
     private Subscription getDeleteDataRspSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
                 .subscribeOn(Schedulers.io())
@@ -212,18 +176,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 }, e -> {
                     e.printStackTrace();
                     registerSubscription(getDeleteDataRspSub());
-                });
-    }
-
-    private Subscription getParseResponseCompletedSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(parseResponseCompleted -> {
-                    onParseResponseCompleted(parseResponseCompleted.seq);
-                }, e -> {
-                    e.printStackTrace();
-                    registerSubscription(getParseResponseCompletedSub());//基类不能崩
                 });
     }
 
