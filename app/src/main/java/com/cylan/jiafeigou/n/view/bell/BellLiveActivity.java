@@ -483,7 +483,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                     Intent intent = new Intent(this, NewHomeActivity.class);
                     startActivity(intent);
                 })
-                .setMessage(getString(R.string.DEVICE_UNBINDED))
+                .setMessage(getString(R.string.Tap1_device_deleted))
                 .show();
 
     }

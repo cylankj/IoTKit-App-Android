@@ -120,9 +120,22 @@ public class JFGRules {
                 pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
     }
 
-    public static boolean showBatteryItem(String uuid) {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        return device != null && (is3GCam(device.pid) || isFreeCam(device.pid));
+    public static boolean showBatteryItem(int pid) {
+        return is3GCam(pid) || isFreeCam(pid)
+                || pid == 1089
+                || pid == 21
+                || pid == 1088
+                || pid == 26
+                || pid == 1093
+                || pid == 6
+                || pid == 1094
+                || pid == 25
+                || pid == 11
+                || pid == 17
+                || pid == 1158
+                || pid == 1160
+                || pid == 27;
+
     }
 
     public static boolean isMobileNet(int net) {
@@ -130,11 +143,27 @@ public class JFGRules {
     }
 
     public static boolean is3GCam(int pid) {
-        return pid == JConstant.PID_CAMERA_ANDROID_3_0;
+        return pid == JConstant.PID_CAMERA_ANDROID_3_0
+                || pid == JConstant.OS_CAMERA_ANDROID;
     }
 
     public static boolean isFreeCam(int pid) {
         return pid == JConstant.OS_CAMERA_CC3200;
+    }
+
+    public static boolean showStandbyItem(int pid) {
+        return pid == 4
+                || pid == 5
+                || pid == 7
+                || pid == 10
+                || pid == 18
+                || pid == 26
+                || pid == 1152
+                || pid == 1090
+                || pid == 1071
+                || pid == 1092
+                || pid == 1091
+                || pid == 1088;
     }
 
     public static boolean isFreeCam(Device jfgDevice) {
@@ -146,7 +175,8 @@ public class JFGRules {
                 pid == JConstant.OS_CAMERA_ANDROID ||
                 pid == JConstant.OS_CAMERA_PANORAMA_HAISI ||
                 pid == JConstant.OS_CAMERA_PANORAMA_QIAOAN ||
-                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
+                pid == JConstant.OS_CAMERA_PANORAMA_GUOKE
+                || isWifiCam(pid);
     }
 
 
@@ -157,7 +187,7 @@ public class JFGRules {
      * @return
      */
     public static boolean showDelayRecordBtn(int pid) {
-        return pid == JConstant.PID_CAMERA_ANDROID_3_0;
+        return false;
     }
 
     //freeCam 海思 wifi
@@ -196,12 +226,17 @@ public class JFGRules {
 
     public static boolean isBell(int pid) {
         switch (pid) {
-            case JConstant.OS_DOOR_BELL:
-            case JConstant.OS_DOOR_BELL_V2:
-            case JConstant.PID_BELL_G_1:
-            case JConstant.PID_BELL_G_2:
-            case JConstant.OS_CAMERA_FXXX_LESHI:
-            case JConstant.PID_CAMERA_FXXX_LESHI_PID:
+            case 6:
+            case 25:
+            case 1093:
+            case 1094:
+            case 17:
+            case 1158:
+            case 15:
+            case 1159:
+            case 24:
+            case 1160:
+            case 27:
                 return true;
         }
         return false;

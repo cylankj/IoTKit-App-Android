@@ -60,6 +60,8 @@ public class VideoViewFactory {
         void takeSnapshot();
 
         void performTouch();
+
+        void detectOrientationChanged();
     }
 
     public interface InterActListener {

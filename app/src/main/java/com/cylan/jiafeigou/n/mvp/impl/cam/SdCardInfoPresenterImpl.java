@@ -44,6 +44,12 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
         };
     }
 
+    @Override
+    public void start() {
+        super.start();
+        AppLogger.d("需要获取sd卡容量");
+    }
+
     /**
      * 是否有SD卡
      *
@@ -82,13 +88,13 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     @Override
     public void clearCountTime() {
-        Observable.just(null)
+        addSubscription(Observable.just(null)
                 .delay(2, TimeUnit.MINUTES)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
                     if (getView() != null && !isClearSucc) getView().clearSdResult(2);
-                });
+                }));
     }
 
     @Override

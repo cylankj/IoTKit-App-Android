@@ -10,14 +10,18 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
@@ -43,6 +47,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private static final int MAX_TYPE = 3;
     private String uuid;
+    private JFGDevice device;
     /**
      * 0： 正常，1:编辑
      */
@@ -62,6 +67,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         pic_container_width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
+        device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
         fetchSdcardStatus();
     }
 
@@ -225,7 +231,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
         for (int i = 0; i < count; i++) {
             Glide.with(getContext())
-                    .load(new CamWarnGlideURL(item.alarmMsg, i, uuid, item.regionType))
+                    .load(new CamWarnGlideURL(item.alarmMsg.dpMsgVersion, i, Security.getVId(JFGRules.getTrimPackageName()),
+                            uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid)))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .override(pic_container_width / count, pic_container_width / count)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)

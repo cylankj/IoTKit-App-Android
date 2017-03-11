@@ -322,6 +322,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             if (layout != null) fLayoutCamLiveView.removeView(layout);
             startLive();
         });
+        layout.setOnClickListener(v -> AppLogger.d("don't click me"));
         view.findViewById(R.id.btn_sight_setting_next).setOnClickListener((View v) -> {
             if (layout != null) fLayoutCamLiveView.removeView(layout);
             Intent intent = new Intent(getActivity(), SightSettingActivity.class);
@@ -553,6 +554,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             });
         }
         videoView.config360(CameraParam.getTopPreset());
+        videoView.detectOrientationChanged();
         return videoView;
     }
 
@@ -588,6 +590,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             fLP.height = height;
             view.setLayoutParams(fLP);
         }
+        if (videoView != null)
+            videoView.detectOrientationChanged();
         AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
     }
 

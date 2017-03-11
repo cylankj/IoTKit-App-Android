@@ -138,6 +138,7 @@
   <string name="DOOR_WIFI_HINT">Светодиодный индикатор состояния</string>
   <string name="DailyGreatTips_Full">Число коллекции Ежедневное чудо достиг верхнего предела 50, собирается удалять?</string>
   <string name="Dec">Dec.</string>
+  <string name="Device_Disconnected">Отключен</string>
   <string name="EDIT_IMAGE">Редактировать</string>
   <string name="EDIT_THEME">Редактировать</string>
   <string name="EFAMILY_BIND_SUCC">Успешно добавлено</string>
@@ -820,6 +821,8 @@
   <string name="WIFI_SET_5GTIPS">Примечание:5ГГц WiFi сигнал не включен сейчас</string>
   <string name="WONDER_TODAY_H_M">Сегодня HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Вчера HH:mm</string>
+  <string name="WeChat">WeChat</string>
+  <string name="Weibo">Weibo</string>
   <string name="Word_Hours">часов</string>
   <string name="XX_DISCOVERY">%s Перемещение объектов</string>
   <string name="YOUR_FEEDBACK">Оставить отзыв (он очень важен для нас)</string>

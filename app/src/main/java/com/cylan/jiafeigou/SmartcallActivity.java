@@ -243,6 +243,7 @@ public class SmartcallActivity extends NeedLoginActivity
 //        Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
         if (presenter != null) presenter.finishAppDelay();
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onWriteSdCardDenied");
+        AppLogger.permissionGranted = false;
     }
 
     @OnPermissionDenied(Manifest.permission.READ_PHONE_STATE)
@@ -253,6 +254,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @NeedsPermission({Manifest.permission.WRITE_EXTERNAL_STORAGE})
     public void showWriteStoragePermissions() {
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showWriteSdCard");
+        AppLogger.permissionGranted = true;
     }
 
     @NeedsPermission({Manifest.permission.READ_PHONE_STATE})

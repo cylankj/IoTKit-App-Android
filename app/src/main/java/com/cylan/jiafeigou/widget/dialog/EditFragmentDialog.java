@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,6 +51,8 @@ public class EditFragmentDialog extends BaseDialog {
     public static final String KEY_DEFAULT_EDIT_TEXT = "KEY_DEFAULT_EDIT_TEXT";
     public static final String KEY_TOUCH_OUT_SIDE_DISMISS = "key_touch_outside";
 
+    public static final String KEY_EXCLUDE_CHINESE = "key_chinese";//允许中文字符,默认允许
+    public static final String KEY_INPUT_LENGTH = "key_input_length";
 
     public static EditFragmentDialog newInstance(Bundle bundle) {
         EditFragmentDialog fragment = new EditFragmentDialog();
@@ -130,6 +133,9 @@ public class EditFragmentDialog extends BaseDialog {
             tvCancel.setText(rContent);
         if (!bundle.getBoolean(KEY_SHOW_EDIT, true)) {
             getView().findViewById(R.id.lLayout_input_box).setVisibility(View.GONE);
+        }
+        if (bundle.getBoolean(KEY_EXCLUDE_CHINESE, false)) {
+            ViewUtils.setChineseExclude(etInputBox, bundle.getInt(KEY_INPUT_LENGTH, 128));
         }
         if (!TextUtils.isEmpty(hint)) {
             etInputBox.setHint(hint);

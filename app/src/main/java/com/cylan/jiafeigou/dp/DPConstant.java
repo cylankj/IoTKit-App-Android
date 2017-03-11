@@ -9,6 +9,7 @@ import static com.cylan.ext.annotations.DPTarget.DEVICE;
 import static com.cylan.ext.annotations.DPTarget.DOORBELL;
 import static com.cylan.ext.annotations.DPTarget.EFAMILY;
 import static com.cylan.ext.annotations.DPTarget.MAGNETOMETER;
+import static com.cylan.ext.annotations.DPType.TYPE_FIELD;
 import static com.cylan.ext.annotations.DPType.TYPE_PRIMARY;
 import static com.cylan.ext.annotations.DPType.TYPE_SET;
 

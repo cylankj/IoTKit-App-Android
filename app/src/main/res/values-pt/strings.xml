@@ -138,6 +138,7 @@
   <string name="DOOR_WIFI_HINT">Descrição do status do dispositivo</string>
   <string name="DailyGreatTips_Full">Número da coleção de Show Diário atingiu o limite superior de 50, vai para apagar?</string>
   <string name="Dec">Dec.</string>
+  <string name="Device_Disconnected">Desconectado</string>
   <string name="EDIT_IMAGE">Editar</string>
   <string name="EDIT_THEME">Editar</string>
   <string name="EFAMILY_BIND_SUCC">Adicionado com sucesso</string>
@@ -820,6 +821,8 @@
   <string name="WIFI_SET_5GTIPS">Nota:Wi&#8211;Fi em 5GHz não é suportado</string>
   <string name="WONDER_TODAY_H_M">Hoje HH:mm</string>
   <string name="WONDER_YESTERDAY_H_M">Ontem HH:mm</string>
+  <string name="WeChat">WeChat</string>
+  <string name="Weibo">Weibo</string>
   <string name="Word_Hours">hora</string>
   <string name="XX_DISCOVERY">%s registrou novas descobertas</string>
   <string name="YOUR_FEEDBACK">Seus comentários são importantes para nós</string>

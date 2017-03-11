@@ -40,8 +40,6 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
-import com.cylan.jiafeigou.n.view.activity.CloudLiveActivity;
-import com.cylan.jiafeigou.n.view.activity.MagLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
@@ -130,7 +128,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onStart();
         if (basePresenter != null) {
             basePresenter.fetchDeviceList(false);
-        }
+        } else AppLogger.e("presenter is null");
     }
 
     @Override
@@ -454,16 +452,20 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             if (JFGRules.isCamera(device.pid)) {
                 startActivity(new Intent(getActivity(), CameraLiveActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
-            } else if (JConstant.isMag(device.pid)) {
-                startActivity(new Intent(getActivity(), MagLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
-            } else if (JConstant.isBell(device.pid)) {
+            }
+//            else if (JFGRules.isMag(device.pid)) {
+//                startActivity(new Intent(getActivity(), MagLiveActivity.class)
+//                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+//            }
+            else if (JFGRules.isBell(device.pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid).putExtra("HasNewMsg", true));
-            } else if (JConstant.isEFamily(device.pid)) {
-                startActivity(new Intent(getActivity(), CloudLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
-            } else {
+            }
+//            else if (JFGRules.isEFamily(device.pid)) {
+//                startActivity(new Intent(getActivity(), CloudLiveActivity.class)
+//                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+//            }
+            else {
                 homePageListAdapter.notifyDataSetChanged();
                 AppLogger.e("dis match pid pid: " + device.pid);
             }

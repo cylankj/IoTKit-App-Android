@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.LayoutInflater;
@@ -371,20 +373,114 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     /**
      * 设置新手机账号的密码。
      */
-    private void preparePhoneView(boolean type) {
-        if (!type) {
-            llMailContainer.setVisibility(View.VISIBLE);
-            llNewPwdContainer.setVisibility(View.GONE);
-            tvEmailConfirm.setEnabled(true);
-            final String content = String.format(getString(R.string.EMAIL_RESET_PWD),
-                    ViewUtils.getTextViewContent(etForgetUsername));
-            tvSendEmailContent.setText(content);
-            rLayoutForgetPwdToolbar.setTvToolbarIcon(-1);
-        } else {
-            llMailContainer.setVisibility(View.GONE);
-            llNewPwdContainer.setVisibility(View.VISIBLE);
-            initTitle(JConstant.TYPE_PHONE);
+    private void prepareMailView() {
+        View view = vsSetAccountPwd.findViewById(R.id.layout_to_be_update);
+        if (view != null) {
+            vsSetAccountPwd.removeView(view);
         }
+        View mailView = LayoutInflater.from(getActivity())
+                .inflate(R.layout.fragment_forget_pwd_by_email, null);
+        if (mailView == null) {
+            return;
+        }
+        final String content = String.format(getString(R.string.EMAIL_RESET_PWD),
+                ViewUtils.getTextViewContent(etForgetUsername));
+        ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(content);
+        View btn = mailView.findViewById(R.id.tv_email_confirm);
+        btn.setEnabled(true);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().getSupportFragmentManager().popBackStack();
+                RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(etForgetUsername.getText().toString()));
+            }
+        });
+        vsSetAccountPwd.addView(mailView);
+        vsSetAccountPwd.showNext();
+    }
+
+    /**
+     * 设置新手机账号的密码。
+     */
+    private void preparePhoneView() {
+        View view = vsSetAccountPwd.findViewById(R.id.layout_to_be_update);
+        if (view != null) {
+            vsSetAccountPwd.removeView(view);
+        }
+        View phoneNewPwdView = LayoutInflater.from(getContext())
+                .inflate(R.layout.fragment_set_new_pwd, null);
+        if (phoneNewPwdView == null) {
+            return;
+        }
+        initNewPwdView(phoneNewPwdView);
+        initTitle(JConstant.TYPE_PHONE);
+        if (vsSetAccountPwd.getChildCount() == 1) {//##103929
+            vsSetAccountPwd.addView(phoneNewPwdView);
+            vsSetAccountPwd.showNext();
+        }
+    }
+
+    /**
+     * 新密码设置界面
+     *
+     * @param phoneNewPwdView
+     */
+    private void initNewPwdView(View phoneNewPwdView) {
+        TextView sureBtn = (TextView) phoneNewPwdView.findViewById(R.id.tv_new_pwd_submit);
+        ImageView iv_Clear = (ImageView) phoneNewPwdView.findViewById(R.id.iv_new_clear_pwd);
+        EditText et_newpass = (EditText) phoneNewPwdView.findViewById(R.id.et_new_pwd_input);
+        CheckBox cb_pwd_visiable = (CheckBox) phoneNewPwdView.findViewById(R.id.cb_new_pwd_show);
+
+        et_newpass.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                iv_Clear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
+                iv_Clear.setClickable(true);
+                sureBtn.setEnabled(TextUtils.isEmpty(s) ? false : true);
+            }
+        });
+
+        sureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                newPwd = et_newpass.getText().toString().trim();
+                if (newPwd.length() < 6) {
+                    ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
+                    return;
+                }
+                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
+                isCheckAgain = true;
+                presenter.submitPhoneNumAndCode(PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT), PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE));
+            }
+        });
+
+        iv_Clear.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                et_newpass.setText("");
+            }
+        });
+
+        cb_pwd_visiable.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                ViewUtils.showPwd(et_newpass, isChecked);
+                et_newpass.setSelection(et_newpass.length());
+            }
+        });
         vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
         vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_left);
         vsSetAccountPwd.showNext();
@@ -404,11 +500,11 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     Toast.makeText(getContext(), getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST), Toast.LENGTH_SHORT).show();
                     break;
                 }
-                preparePhoneView(false);
+                prepareMailView();
                 break;
             case JConstant.AUTHORIZE_PHONE:
                 tvForgetPwdSubmit.setEnabled(true);
-                preparePhoneView(true);
+                preparePhoneView();
                 break;
         }
     }
@@ -430,7 +526,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             if (isCheckAgain) {
                 presenter.resetPassword(newPwd);
             } else {
-                preparePhoneView(true);
+                preparePhoneView();
             }
         }
         isCheckAgain = false;

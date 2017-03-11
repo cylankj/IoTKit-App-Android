@@ -5,9 +5,9 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -36,7 +36,7 @@ import rx.schedulers.Schedulers;
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
 
-    private JFGCameraDevice device;
+    private JFGDevice device;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
             R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
@@ -49,7 +49,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public CamSettingPresenterImpl(CamSettingContract.View view, String uuid) {
         super(view, uuid);
         view.setPresenter(this);
-        device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
     }
 
     @Override
@@ -82,7 +82,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public void start() {
         super.start();
-        JFGCameraDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
         getView().deviceUpdate(device);
     }
 
@@ -98,7 +97,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RxEvent.ParseResponseCompleted update) -> {
-                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
+                    getView().deviceUpdate(DataSourceManager.getInstance().getRawJFGDevice(uuid));
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
@@ -117,7 +116,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RxEvent.DeviceSyncRsp update) -> {
-                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
+                    getView().deviceUpdate(DataSourceManager.getInstance().getRawJFGDevice(uuid));
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDeviceDataSync"))
