@@ -99,7 +99,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     return resultLogin;
                 })
                 .filter(resultAutoLogin1 -> resultAutoLogin1.code != JError.StartLoginPage)
-                .timeout(30 * 1000L, TimeUnit.SECONDS, Observable.just(null)
+                .timeout(30 * 1000L, TimeUnit.MICROSECONDS, Observable.just(null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map((Object o) -> {
                             Log.d("CYLAN_TAG", "login timeout: ");
