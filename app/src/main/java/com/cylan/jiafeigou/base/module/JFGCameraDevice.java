@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.base.module;
 
 import com.cylan.ext.annotations.DPProperty;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPAlarm;
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPAlarmInfo;
@@ -79,7 +80,7 @@ public class JFGCameraDevice extends Device {
     public DPTimeLapse camera_time_lapse_photography;
 
     @DPProperty(msgId = 508)
-    public DPPrimary<Boolean> camera_standby_flag;
+    public DpMsgDefine.DPStandby camera_standby;
 
     @DPProperty(msgId = 509)
     public DPPrimary<Integer> camera_mount_mode;

@@ -78,7 +78,6 @@ import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
 
-import static com.cylan.jiafeigou.dp.DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
