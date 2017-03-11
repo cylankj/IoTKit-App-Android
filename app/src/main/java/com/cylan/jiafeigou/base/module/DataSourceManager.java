@@ -247,11 +247,11 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     dpDevice.fill(device);
                     mCachedDeviceMap.put(device.getUuid(), dpDevice);
-                    return device;
+                    return dpDevice;
                 })
                 .map(device -> {
                     ArrayList<JFGDPMsg> parameters = device.getQueryParameters(false);
-                    AppLogger.d("正在同步设备信息:" + device.getUuid() + " " + new Gson().toJson(parameters));
+                    AppLogger.d("正在同步设备信息:" + device.getUuid() + " " + new Gson().toJson(parameters) + "device:" + device);
                     try {
                         JfgCmdInsurance.getCmd().robotGetData(device.getUuid(), parameters, 1, false, 0);
                     } catch (JfgException e) {
