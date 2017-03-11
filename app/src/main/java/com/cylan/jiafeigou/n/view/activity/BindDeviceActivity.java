@@ -1,10 +1,13 @@
 package com.cylan.jiafeigou.n.view.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import com.cylan.jiafeigou.R;
@@ -21,9 +24,13 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_AUTO_SHOW_BIND;
 
+@RuntimePermissions
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
 
     @BindView(R.id.custom_toolbar)
@@ -49,6 +56,33 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         customToolbar.setBackAction((View v) -> {
             onBackPressed();
         });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        BindDeviceActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        Log.d("onRequesResult", "onRequesResult");
+        if (permissions.length == 1) {
+            if (TextUtils.equals(permissions[0], Manifest.permission.CAMERA)) {
+                BindDeviceActivityPermissionsDispatcher.onCameraPermissionWithCheck(this);
+            }
+        }
+    }
+
+    @NeedsPermission(Manifest.permission.CAMERA)
+    public void onCameraPermission() {
+        BindScanFragment fragment = BindScanFragment.newInstance(null);
+        getSupportFragmentManager()
+                .beginTransaction()
+                .setCustomAnimations(0, R.anim.slide_down_out
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .replace(android.R.id.content, fragment)
+                .commit();
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    public void onCameraPermissionDenied() {
     }
 
     @Override
@@ -116,13 +150,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         switch (view.getId()) {
             case R.id.v_to_scan_qrcode: {
                 ViewUtils.deBounceClick(findViewById(R.id.v_to_scan_qrcode));
-                BindScanFragment fragment = BindScanFragment.newInstance(null);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(0, R.anim.slide_down_out
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .replace(android.R.id.content, fragment)
-                        .commit();
+                BindDeviceActivityPermissionsDispatcher.onCameraPermissionWithCheck(this);
                 break;
             }
             case R.id.v_to_bind_camera: {
