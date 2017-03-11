@@ -40,6 +40,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -257,11 +258,11 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     dpDevice.fill(device);
                     mCachedDeviceMap.put(device.getUuid(), dpDevice);
-                    return device;
+                    return dpDevice;
                 })
                 .map(device -> {
                     ArrayList<JFGDPMsg> parameters = device.getQueryParameters(false);
-                    AppLogger.d("正在同步设备信息:" + device.getUuid() + " " + new Gson().toJson(parameters));
+                    AppLogger.d("正在同步设备信息:" + device.getUuid() + " " + new Gson().toJson(parameters) + "device:" + device);
                     try {
                         JfgCmdInsurance.getCmd().robotGetData(device.getUuid(), parameters, 1, false, 0);
                     } catch (JfgException e) {
@@ -283,7 +284,7 @@ public class DataSourceManager implements JFGSourceManager {
                     return items;
                 })
                 .map(items -> {
-                    Set<String> result = mCachedDeviceMap.keySet();
+                    Set<String> result = new HashSet<>(mCachedDeviceMap.keySet());
                     for (Device device : items) {
                         result.remove(device.getUuid());
                     }

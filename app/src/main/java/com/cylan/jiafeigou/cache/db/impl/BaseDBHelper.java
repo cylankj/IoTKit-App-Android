@@ -249,23 +249,22 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Device> updateDevice(JFGDevice[] device) {
-        return Observable.from(device)
-                .subscribeOn(Schedulers.io())
+        return getActiveAccount()
                 .observeOn(Schedulers.io())
-                .flatMap(dev -> getActiveAccount()
-                        .flatMap(account -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(dev.uuid),
+                .flatMap(account -> Observable.from(device)
+                        .flatMap(dev -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(dev.uuid),
                                 DeviceDao.Properties.Account.eq(account.getAccount()))
                                 .rx()
-                                .unique())
-                        .flatMap(dpDevice -> {
-                            AppLogger.d("正在更新 Device 条目");
-                            if (dpDevice == null) {
-                                dpDevice = new Device();
-                            }
-                            dpDevice.setAccount(getAccount());
-                            dpDevice.setDevice(dev);
-                            return deviceDao.rx().save(dpDevice);
-                        }))
+                                .unique()
+                                .flatMap(dpDevice -> {
+                                    AppLogger.d("正在更新 Device 条目");
+                                    if (dpDevice == null) {
+                                        dpDevice = new Device();
+                                    }
+                                    dpDevice.setDevice(dev);
+                                    dpDevice.setAccount(account.getAccount());
+                                    return deviceDao.rx().save(dpDevice);
+                                })))
                 .doOnError(throwable -> {
                     AppLogger.e("err: " + throwable.getLocalizedMessage());
                     throwable.printStackTrace();
