@@ -177,6 +177,21 @@ public class RxEvent {
         }
     }
 
+    public static final class ResultUserLogin {
+        public int code;
+
+        public ResultUserLogin(int code) {
+            this.code = code;
+        }
+
+        @Override
+        public String toString() {
+            return "ResultUserLogin{" +
+                    "code=" + code +
+                    '}';
+        }
+    }
+
     public static final class ResultBind {
         public int code;
 
