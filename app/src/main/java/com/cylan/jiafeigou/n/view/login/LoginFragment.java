@@ -98,7 +98,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @BindView(R.id.cb_show_pwd)
     CheckBox cbShowPwd;
 
-
     @BindView(R.id.vsLayout_login_box)
     ViewSwitcher vsLayoutSwitcher;
 
@@ -174,7 +173,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 用来点击空白处隐藏键盘
-     *
      * @param view
      */
     public void addOnTouchListener(View view) {
@@ -972,6 +970,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void onDestroy() {
         super.onDestroy();
         clearSomeThing();
+        if (instance != null){
+            instance = null;
+        }
     }
 
     @Override

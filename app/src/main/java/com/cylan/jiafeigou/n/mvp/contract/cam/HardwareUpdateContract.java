@@ -31,6 +31,8 @@ public interface HardwareUpdateContract {
 
         void onUpdateing(int percent);
 
+        void initFileSize(String size);
+
     }
 
     interface Presenter extends BasePresenter {
@@ -41,7 +43,7 @@ public interface HardwareUpdateContract {
 
         void stopDownload();
 
-        String getFileSize();
+        void getFileSize();
 
         void startUpdate();
 

@@ -29,11 +29,13 @@ import org.msgpack.annotation.Index;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLConnection;
 import java.text.DecimalFormat;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -48,6 +50,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     private UpdateFileBean downLoadBean;
 
     private SimulatePercent simulatePercent;
+    private DownloadManagerPro.Config config;
 
     public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view, RxEvent.CheckDevVersionRsp checkDevVersion) {
         super(view);
@@ -74,8 +77,8 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         //TEST
 //        UpdateFileBean downLoadBean = new UpdateFileBean();
 //        downLoadBean.url = "http://yf.cylan.com.cn:82/sdk/libmedia-engine-jni-master.so";
-//        downLoadBean.dpMsgVersion = "22220000";
-//        downLoadBean.fileName = "22220000";
+//        downLoadBean.version = "3330000";
+//        downLoadBean.fileName = "3330000";
 
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             downLoadBean.savePath = getView().getContext().getFilesDir().getAbsolutePath();
@@ -97,7 +100,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         new Thread(new Runnable() {
             @Override
             public void run() {
-                DownloadManagerPro.Config config = new DownloadManagerPro.Config()
+                config = new DownloadManagerPro.Config()
                         .setContext(getView().getContext());
                 DownloadManagerPro.getInstance().init(config);
                 taskBuilder = new DownloadManagerPro.TaskBuilder();
@@ -128,6 +131,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     getView().onDownloading(obj.percent, obj.length);
                     break;
                 case 3:
+                    config = null;
                     getView().onDownloadFinish();
                     break;
 
@@ -149,22 +153,38 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     }
 
     @Override
-    public String getFileSize() {
-        long length = 0;
-        try {
-            URL url = new URL(checkDevVersion.url);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();//建立连接
-            conn.setConnectTimeout(6 * 1000);
-            conn.setRequestMethod("GET");
-            conn.setRequestProperty("Charset", "UTF-8");
-            conn.connect();
-            if (conn.getResponseCode() == 200) {
-                length = conn.getContentLength();
+    public void getFileSize() {
+        addSubscription(Observable.just("url")
+        .subscribeOn(Schedulers.newThread())
+        .flatMap(new Func1<String, Observable<String>>() {
+            @Override
+            public Observable<String> call(String s) {
+                long length = 0;
+                try {
+
+//                    URL url = new URL("http://yf.cylan.com.cn:82/sdk/libmedia-engine-jni-master.so");
+
+                    URL url = new URL(checkDevVersion.url);
+                    URLConnection conn = url.openConnection();//建立连接
+                    String headerField = conn.getHeaderField(6);
+                    length = conn.getContentLength();
+                    AppLogger.d("file name:"+headerField);
+                    AppLogger.d("file_length:"+length);
+                    return Observable.just(FormetSDcardSize(length));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    return null;
+                }
+
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return FormetSDcardSize(length);
+        })
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(s->{
+            if (!TextUtils.isEmpty(s) && getView() != null){
+                getView().initFileSize(s);
+            }
+        }));
+
     }
 
     @Override

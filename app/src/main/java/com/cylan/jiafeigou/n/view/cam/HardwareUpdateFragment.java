@@ -65,6 +65,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     private String uuid;
     private RxEvent.CheckDevVersionRsp checkDevVersion;
+    private String fileSize;
 
     public static HardwareUpdateFragment newInstance(Bundle bundle) {
         HardwareUpdateFragment fragment = new HardwareUpdateFragment();
@@ -98,6 +99,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     public void onStart() {
         super.onStart();
         initView();
+        if (basePresenter != null)basePresenter.getFileSize();
     }
 
     private void initView() {
@@ -110,7 +112,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         // 有新版本
         if (checkDevVersion != null && checkDevVersion.hasNew) {
             tvHardwareNewVersion.setText(checkDevVersion.version);
-            tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), basePresenter.getFileSize()));
+//            tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), basePresenter.getFileSize()));
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
             tvVersionDescribe.setText(checkDevVersion.tip);
         }
@@ -129,6 +131,9 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 break;
 
             case R.id.tv_download_soft_file:
+                //TEST
+//                handlerDownLoad();
+
                 if (NetUtils.getJfgNetType(getContext()) == 0) {
                     ToastUtil.showNegativeToast(getString(R.string.GLOBAL_NO_NETWORK));
                     return;
@@ -244,12 +249,13 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     public void onDownloadStart() {
         tvDownloadSoftFile.setEnabled(false);
         llDownloadPgContainer.setVisibility(View.VISIBLE);
-        tvLoadingShow.setText("0.0MB" + "/" + basePresenter.getFileSize());
+        tvLoadingShow.setText("0.0MB" + "/" + fileSize);
         downloadProgress.setProgress(0);
     }
 
     @Override
     public void onDownloadFinish() {
+
         tvDownloadSoftFile.setEnabled(true);
         llDownloadPgContainer.setVisibility(View.GONE);
         //设备在线
@@ -266,7 +272,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void onDownloading(double percent, long downloadedLength) {
-        tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareDownloading), basePresenter.FormetSDcardSize(downloadedLength) + "/" + basePresenter.getFileSize()));
+        tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareDownloading), basePresenter.FormetSDcardSize(downloadedLength) + "/" + fileSize));
         downloadProgress.setProgress((int) (percent * 100));
     }
 
@@ -285,6 +291,12 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     public void onUpdateing(int percent) {
         tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareUpdating), percent + ""));
         downloadProgress.setProgress(percent);
+    }
+
+    @Override
+    public void initFileSize(String size) {
+        fileSize = size;
+        tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), size));
     }
 
 }

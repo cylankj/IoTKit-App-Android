@@ -84,7 +84,6 @@ public class AutoSignIn {
                                         RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
                                     } else if (signType.type >= 3) {
                                         //效验本地token是否过期
-
                                         if (checkTokenOut(signType.type)) {
                                             AppLogger.d("isout:ee");
                                             autoSave(signType.account, 1, "");

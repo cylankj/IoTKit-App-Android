@@ -21,14 +21,11 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -61,7 +58,7 @@ public class SmartcallActivity extends NeedLoginActivity
     TextView tvCopyRight;
     @Nullable
     private SplashContract.Presenter presenter;
-    private boolean frist;
+    private boolean firstSignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -193,9 +190,9 @@ public class SmartcallActivity extends NeedLoginActivity
                 startActivity(new Intent(this, NewHomeActivity.class));
             }
             finish();
-        } else if (code == JError.StartLoginPage && !frist) {
+        } else if (code == JError.StartLoginPage && !firstSignIn) {
             splashOver();
-            frist = true;
+            firstSignIn = true;
         } else if (code == JError.ErrorAccountNotExist) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
         } else if (code == JError.ErrorLoginInvalidPass) {

@@ -28,7 +28,7 @@ public class SinaLogin {
     private static final String URL_ACCOUNT = API_SERVER + "/account";
 
     private static SinaLogin instance;
-    private static Context context;
+    private Context context;
     /**
      * post请求方式
      */
