@@ -12,7 +12,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -75,7 +74,7 @@ public class CamLiveController implements
     private IData iDataProvider;
     //横屏竖屏的时候,不一样,需要切换.
     private ISafeStateSetter iSafeStateSetterPort;
-    private LiveTimeSetter liveTimeSetterPort, liveTimeSetterLand;
+    private LiveTimeSetter liveTimeSetterPort;
     private WeakReference<CamLiveContract.Presenter> presenterRef;
     private ImageView imgPortMic, imgPortSpeaker;
     private WeakReference<HomeMineHelpFragment> helpPageFragment;
@@ -143,6 +142,7 @@ public class CamLiveController implements
      * 中间白色 loading 播放 暂停 按钮
      */
     private void initLiveControlView() {
+        iLiveActionViewRef.get().setState(STATE_IDLE, null);
         iLiveActionViewRef.get().setAction(new ILiveControl.Action() {
             @Override
             public void clickImage(int curState) {
@@ -214,14 +214,6 @@ public class CamLiveController implements
         ((View) liveTimeSetterPort).setOnClickListener(this);
     }
 
-    /**
-     * 横屏
-     *
-     * @param setter
-     */
-    private void setLandLiveTimeSetter(LiveTimeSetter setter) {
-        this.liveTimeSetterLand = setter;
-    }
 
     public void setupHistoryData(IData dataProvider) {
         this.iDataProvider = dataProvider;
@@ -271,8 +263,8 @@ public class CamLiveController implements
      * @param liveType
      */
     public void setLiveType(int liveType) {
-        camLiveControlLayer.getTvCamLivePortLive().setText(context.getResources()
-                .getString(liveType == TYPE_LIVE ? R.string.Tap1_Camera_VideoLive : R.string.BACK));
+        camLiveControlLayer.getTvCamLivePortLive().setEnabled(liveType != TYPE_LIVE);
+        camLiveControlLayer.getImgVCamLiveLandPlay().setVisibility(liveType == TYPE_LIVE ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -378,9 +370,8 @@ public class CamLiveController implements
                     && playType != CamLiveContract.TYPE_NONE
                     && presenterRef.get().getPlayState() == PLAY_STATE_PLAYING;
             if (land) {
-                if (liveTimeSetterLand != null)
-                    liveTimeSetterLand.setVisibility(show);
-                if (liveTimeSetterLand != null) liveTimeSetterLand.setContent(playType,
+                camLiveControlLayer.getLiveTimeLayout().setVisibility(show);
+                camLiveControlLayer.getLiveTimeLayout().setContent(playType,
                         playType == TYPE_LIVE ? System.currentTimeMillis() : time);
             } else {
                 if (liveTimeSetterPort != null)
@@ -477,31 +468,21 @@ public class CamLiveController implements
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_cam_live_port_live:
-                String content = ((TextView) view).getText().toString();
-                if (TextUtils.equals(content, view.getContext().getString(R.string.BACK))) {
-                    //
-                    AppLogger.d("live now: " + presenterRef.get().getPlayType());
-                    ((TextView) view).setText(view.getContext().getString(R.string.Tap1_Camera_VideoLive));
-                    if (presenterRef != null && presenterRef.get() != null) {
-                        presenterRef.get().stopPlayVideo(TYPE_LIVE);
-                        presenterRef.get().startPlayHistory(camLiveControlLayer.getSwCamLiveWheel()
-                                .getCurrentFocusTime());
-                        AppLogger.d("history now: " + presenterRef.get().getPlayType());
-                    }
-                } else if (TextUtils.equals(content, view.getContext().getString(R.string.Tap1_Camera_VideoLive))) {
-                    if (presenterRef != null && presenterRef.get() != null) {
-                        presenterRef.get().stopPlayVideo(TYPE_HISTORY);
-                        presenterRef.get().startPlayVideo(TYPE_LIVE);
-                        AppLogger.d("history now: " + presenterRef.get().getPlayType());
-                    }
-                    ((TextView) view).setText(view.getContext().getString(R.string.BACK));
+                //只有看历史录像的时候才能点击
+                if (presenterRef != null && presenterRef.get() != null) {
+                    AppLogger.d("click live btn: " + presenterRef.get().getPlayType());
+                    presenterRef.get().stopPlayVideo(TYPE_HISTORY);
+                    presenterRef.get().startPlayVideo(TYPE_LIVE);
                 }
                 break;
             case R.id.imgV_cam_live_land_play:
                 if (presenterRef != null && presenterRef.get() != null) {
                     if (presenterRef.get().getPlayType() == TYPE_LIVE) {
-                        presenterRef.get().startPlayVideo(presenterRef.get().getPlayType());
-                        AppLogger.i(String.format("land play history: %s", "live"));
+                        if (presenterRef.get().getPlayState() == PLAY_STATE_PLAYING) {
+                            presenterRef.get().stopPlayVideo(presenterRef.get().getPlayType());
+                        } else
+                            presenterRef.get().startPlayVideo(presenterRef.get().getPlayType());
+                        AppLogger.i(String.format("land play history: %s", presenterRef.get().getPlayType()));
                     } else {
                         long time = camLiveControlLayer.getSwCamLiveWheel()
                                 .getCurrentFocusTime();
@@ -551,7 +532,7 @@ public class CamLiveController implements
         }
         DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid,
                 DpMsgMap.ID_204_SDCARD_STORAGE);
-        if (status != null && !status.hasSdcard) {
+        if (status == null || !status.hasSdcard) {
             //没有sd卡
             ToastUtil.showToast(context.getString(R.string.Tap1_Camera_NoSDCardTips));
             AppLogger.d("no sdcard");

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.engine;
 import android.content.Context;
 import android.os.Process;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -40,6 +41,7 @@ import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -90,26 +92,30 @@ public class DataSource implements AppCallBack {
 
 
     public void initNative() {
-        Context context = ContextUtils.getContext();
-        Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
-        try {
-            String trimPackageName = JFGRules.getTrimPackageName();
-            //读取Smarthome/log/config.txt的内容
-            String extra = DebugOptionsImpl.getServer();
-            //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
-            String serverAddress = (TextUtils.equals(trimPackageName, "yf") && !TextUtils.isEmpty(extra))
-                    ? extra : Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
-            String vid = Security.getVId(trimPackageName);
-            String vKey = Security.getVKey(trimPackageName);
-            JfgAppCmd.getInstance().setCallBack(DataSource.this);
-            JfgAppCmd.getInstance().initNativeParam(vid, vKey, serverAddress);
-            JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
-        } catch (Exception e) {
-            AppLogger.d("let's go err:" + e.getLocalizedMessage());
-        }
-        try2autoLogin();
-        AppLogger.d("let's go initNative:");
-        MtaManager.customEvent(context, "DataSource", "NativeInit");
+        HandlerThreadUtils.clean();
+        HandlerThreadUtils.postAtFrontOfQueue(() -> {
+            Log.d("initNative", "initNative");
+            Context context = ContextUtils.getContext();
+            Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
+            try {
+                String trimPackageName = JFGRules.getTrimPackageName();
+                //读取Smarthome/log/config.txt的内容
+                String extra = DebugOptionsImpl.getServer();
+                //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
+                String serverAddress = (TextUtils.equals(trimPackageName, "yf") && !TextUtils.isEmpty(extra))
+                        ? extra : Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
+                String vid = Security.getVId(trimPackageName);
+                String vKey = Security.getVKey(trimPackageName);
+                JfgAppCmd.getInstance().setCallBack(DataSource.this);
+                JfgAppCmd.getInstance().initNativeParam(vid, vKey, serverAddress);
+                JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
+            } catch (Exception e) {
+                AppLogger.d("let's go err:" + e.getLocalizedMessage());
+            }
+            try2autoLogin();
+            AppLogger.d("let's go initNative:");
+            MtaManager.customEvent(context, "DataSource", "NativeInit");
+        });
     }
 
     private void try2autoLogin() {

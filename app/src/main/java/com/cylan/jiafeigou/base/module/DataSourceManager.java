@@ -48,26 +48,6 @@ import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
-import static com.cylan.jiafeigou.misc.JConstant.OS_AIR_DETECTOR;
-import static com.cylan.jiafeigou.misc.JConstant.OS_ANDROID_PHONE;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMARA_ANDROID_SERVICE;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_ANDROID;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_ANDROID_4G;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_CC3200;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_PANORAMA_GUOKE;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_PANORAMA_HAISI;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_PANORAMA_QIAOAN;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS_V2;
-import static com.cylan.jiafeigou.misc.JConstant.OS_CAMERA_UCOS_V3;
-import static com.cylan.jiafeigou.misc.JConstant.OS_DOOR_BELL;
-import static com.cylan.jiafeigou.misc.JConstant.OS_EFAML;
-import static com.cylan.jiafeigou.misc.JConstant.OS_IOS_PHONE;
-import static com.cylan.jiafeigou.misc.JConstant.OS_IR;
-import static com.cylan.jiafeigou.misc.JConstant.OS_MAGNET;
-import static com.cylan.jiafeigou.misc.JConstant.OS_PC;
-import static com.cylan.jiafeigou.misc.JConstant.OS_SERVER;
-import static com.cylan.jiafeigou.misc.JConstant.OS_TEMP_HUMI;
 
 /**
  * Created by yzd on 16-12-28.
@@ -344,7 +324,7 @@ public class DataSourceManager implements JFGSourceManager {
                     msgs.add(512L);
                     msgs.add(401L);
                     JfgCmdInsurance.getCmd().robotCountData(device.uuid, msgs, 0);
-                } catch (JfgException e) {
+                } catch (Exception e) {
                     AppLogger.e("uuid is null: " + e.getLocalizedMessage());
                 }
             }
@@ -486,9 +466,9 @@ public class DataSourceManager implements JFGSourceManager {
     public void syncJFGDeviceProperty(String uuid) {
         if (TextUtils.isEmpty(uuid) || account == null) return;
         Device device = mCachedDeviceMap.get(uuid);
-
         if (device != null) {
             ArrayList<JFGDPMsg> parameters = device.getQueryParameters(false);
+            AppLogger.d("syncJFGDeviceProperty: " + uuid + " " + new Gson().toJson(parameters));
             try {
                 JfgCmdInsurance.getCmd().robotGetData(uuid, parameters, 1, false, 0);
             } catch (JfgException e) {
@@ -688,52 +668,19 @@ public class DataSourceManager implements JFGSourceManager {
         }
     }
 
+    /**
+     * 不要使用switch case
+     * @param pid
+     * @return
+     */
     private Device create(int pid) {
         Device result = null;
-        switch (pid) {
-            case OS_SERVER:
-                break;
-            case OS_IOS_PHONE:
-                break;
-            case OS_PC:
-                break;
-            case OS_ANDROID_PHONE:
-                break;
-            //摄像头设备
-            case OS_CAMARA_ANDROID_SERVICE:
-            case OS_CAMERA_ANDROID:
-            case OS_CAMERA_ANDROID_4G:
-            case OS_CAMERA_CC3200:
-            case OS_CAMERA_UCOS:
-            case OS_CAMERA_PANORAMA_HAISI:
-            case OS_CAMERA_PANORAMA_QIAOAN:
-            case OS_CAMERA_PANORAMA_GUOKE:
-            case OS_CAMERA_UCOS_V2:
-            case OS_CAMERA_UCOS_V3:
-                result = new JFGCameraDevice();
-                break;
-
-            //门铃设备
-            case OS_DOOR_BELL:
-                result = new JFGDoorBellDevice();
-                break;
-            //中控设备
-            case OS_EFAML:
-                result = new JFGEFamilyDevice();
-                break;
-            case OS_TEMP_HUMI:
-                break;
-            case OS_IR:
-                break;
-            //门磁设备
-            case OS_MAGNET:
-                result = new JFGMagnetometerDevice();
-                break;
-            case OS_AIR_DETECTOR:
-                break;
-            default:
-                result = new Device();
-        }
+        if (JFGRules.isCamera(pid))
+            result = new JFGCameraDevice();
+        else if (JFGRules.isBell(pid))
+            result = new JFGDoorBellDevice();
+        else
+            result = new Device();
         return result;
     }
 }

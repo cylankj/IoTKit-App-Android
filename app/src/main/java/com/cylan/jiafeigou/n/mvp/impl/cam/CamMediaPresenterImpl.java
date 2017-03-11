@@ -8,8 +8,8 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -79,7 +79,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
             DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
             item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
             item.cid = uuid;
-            JFGCameraDevice device = DataSourceManager.getInstance().getJFGDevice(uuid);
+            JFGDevice device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             item.fileName = alarmMsg.time + "_1.jpg";
             item.time = alarmMsg.time;

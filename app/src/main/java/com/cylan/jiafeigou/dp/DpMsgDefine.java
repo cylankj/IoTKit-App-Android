@@ -21,6 +21,69 @@ public class DpMsgDefine {
 
 
     @Message
+    public static final class DPStandby extends DPSingle<DPStandby> {
+        @Index(0)
+        public boolean standby;
+        @Index(1)
+        public boolean warnEnable;
+        @Index(2)
+        public boolean led;
+        @Index(3)
+        public boolean autoRecord;
+
+        public static DPStandby empty() {
+            return new DPStandby();
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeByte(this.standby ? (byte) 1 : (byte) 0);
+            dest.writeByte(this.warnEnable ? (byte) 1 : (byte) 0);
+            dest.writeByte(this.led ? (byte) 1 : (byte) 0);
+            dest.writeByte(this.autoRecord ? (byte) 1 : (byte) 0);
+        }
+
+        public DPStandby() {
+        }
+
+        protected DPStandby(Parcel in) {
+            super(in);
+            this.standby = in.readByte() != 0;
+            this.warnEnable = in.readByte() != 0;
+            this.led = in.readByte() != 0;
+            this.autoRecord = in.readByte() != 0;
+        }
+
+        public static final Creator<DPStandby> CREATOR = new Creator<DPStandby>() {
+            @Override
+            public DPStandby createFromParcel(Parcel source) {
+                return new DPStandby(source);
+            }
+
+            @Override
+            public DPStandby[] newArray(int size) {
+                return new DPStandby[size];
+            }
+        };
+
+        @Override
+        public String toString() {
+            return "DPStandby{" +
+                    "standby=" + standby +
+                    ", warnEnable=" + warnEnable +
+                    ", led=" + led +
+                    ", autoRecord=" + autoRecord +
+                    '}';
+        }
+    }
+
+    @Message
     public static final class DPNet extends DPSingle<DPNet> {
 
         public static final DPNet EMPTY;

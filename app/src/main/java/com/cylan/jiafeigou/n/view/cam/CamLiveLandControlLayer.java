@@ -109,6 +109,10 @@ public class CamLiveLandControlLayer extends FrameLayout {
             liveTimeLayout.setOnClickListener(clickListener);
     }
 
+    public LiveTimeLayout getLiveTimeLayout() {
+        return liveTimeLayout;
+    }
+
     public void setLivePlayBtnClickListener(OnClickListener clickListener) {
         if (clickListener != null)
             imgVCamLiveLandPlay.setOnClickListener(clickListener);
@@ -160,6 +164,7 @@ public class CamLiveLandControlLayer extends FrameLayout {
         vLiveRect.setVisibility(!isShareDevice && hasSdcard ? VISIBLE : GONE);
         flipLandLayout.setVisibility(!isShareDevice && hasSdcard ? VISIBLE : GONE);
         flipLandLayout.setFlipped(!safe);
+
     }
 
     public void updateLiveButton(boolean show) {

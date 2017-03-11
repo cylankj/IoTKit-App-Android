@@ -224,8 +224,6 @@ public class JConstant {
             return R.drawable.icon_home_doorbell_online;
         if (JFGRules.isCamera(pid))
             return R.drawable.icon_home_camera_online;
-        if (isMag(pid))
-            return R.drawable.icon_home_magnetic_online;
         return R.mipmap.ic_launcher;
     }
 
@@ -234,21 +232,8 @@ public class JConstant {
             return R.drawable.icon_home_doorbell_offline;
         if (JFGRules.isCamera(pid))
             return R.drawable.icon_home_camera_offline;
-        if (isMag(pid))
-            return R.drawable.icon_home_magnetic_online;
+
         return R.mipmap.ic_launcher;
-    }
-
-    public static boolean isBell(int pid) {
-        return OS_DOOR_BELL == pid;
-    }
-
-    public static boolean isEFamily(int pid) {
-        return OS_EFAML == pid;
-    }
-
-    public static boolean isMag(int pid) {
-        return OS_MAGNET == pid;
     }
 
     public static final String KEY_BIND_DEVICE = "BIND_DEVICE";

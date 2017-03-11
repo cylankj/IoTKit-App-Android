@@ -12,10 +12,8 @@ public class HandlerThreadUtils {
 
     static {
         HandlerThread mHandlerThread = new HandlerThread("worker-handler-thread");
-
         mHandlerThread.start();
-        mHandler = new
-                Handler(mHandlerThread.getLooper());
+        mHandler = new Handler(mHandlerThread.getLooper());
     }
 
     public static void post(Runnable runnable) {
@@ -36,5 +34,13 @@ public class HandlerThreadUtils {
 
     public static void postAtTime(Runnable runnable, Object token, long uptimeMillis) {
         mHandler.postAtTime(runnable, token, uptimeMillis);
+    }
+
+    public static void clean() {
+        mHandler.removeCallbacksAndMessages(null);
+        mHandler.getLooper().quit();
+        HandlerThread mHandlerThread = new HandlerThread("worker-handler-thread");
+        mHandlerThread.start();
+        mHandler = new Handler(mHandlerThread.getLooper());
     }
 }

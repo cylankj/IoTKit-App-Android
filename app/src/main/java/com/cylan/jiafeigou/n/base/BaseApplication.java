@@ -126,9 +126,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
         registerBootComplete();
         initLeakCanary();
         registerActivityLifecycleCallbacks(this);
-
-//        initTwitter();
-//        initFaceBook();
         initHuaweiPushSDK();
         Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
     }
@@ -141,25 +138,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
                 .addOnConnectionFailedListener(this)
                 .build();
         client.connect();
-    }
-
-    private void initFaceBook() {
-        HandlerThreadUtils.postAtFrontOfQueue(new Runnable() {
-            @Override
-            public void run() {
-                FacebookSdk.sdkInitialize(getApplicationContext());
-            }
-        });
-    }
-
-    private void initTwitter() {
-        HandlerThreadUtils.postAtFrontOfQueue(new Runnable() {
-            @Override
-            public void run() {
-                TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
-                Fabric.with(getApplicationContext(), new TwitterCore(authConfig), new TweetComposer());
-            }
-        });
     }
 
 
@@ -283,7 +261,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         public void onReceive(Context context, Intent intent) {
             if (!ProcessUtils.isServiceRunning(context, DataSource.class)) {
                 AppLogger.i("start DataSource");
-                context.startService(new Intent(context, DataSource.class));
+//                context.startService(new Intent(context, DataSource.class));
             }
         }
     }
