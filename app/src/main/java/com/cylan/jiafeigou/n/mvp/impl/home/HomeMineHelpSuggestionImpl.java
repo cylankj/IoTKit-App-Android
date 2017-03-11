@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
+import android.content.Intent;
 import android.os.Environment;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -55,6 +56,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     private JFGAccount userInfomation;
     private boolean isOpenLogin;
     private boolean hasSendLog;
+    private File outFile;
 
     public HomeMineHelpSuggestionImpl(HomeMineHelpSuggestionContract.View view) {
         super(view);
@@ -326,7 +328,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         }
         File logFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/log");
         File crashFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/crash");
-        File outFile = new File(Environment.getExternalStorageDirectory().toString() + "/" + bean.getDate() + "Smarthome.zip");
+        outFile = new File(Environment.getExternalStorageDirectory().toString() + "/" + bean.getDate() + "Smarthome.zip");
         try {
             Collection<File> files = new ArrayList<>();
             files.add(logFile);
@@ -359,6 +361,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                         hasSendLog = true;
                         getView().sendLogResult(0);
                         getView().refrshRecycleView(0);
+                        deleteLocalLogFile();
                     }
                 });
     }
@@ -371,6 +374,22 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         public int compare(MineHelpSuggestionBean lhs, MineHelpSuggestionBean rhs) {
             return (int) (Long.parseLong(lhs.getDate()) - Long.parseLong(rhs.getDate()));
         }
+    }
+
+    /**
+     * 删除生成的本地log文件
+     */
+    private void deleteLocalLogFile(){
+        Observable.just("delete")
+                .subscribeOn(Schedulers.io())
+                .map(s -> {
+                    if (outFile != null && outFile.exists()) {
+                        boolean delete = outFile.delete();
+                        return delete ? 0:-1;
+                    }
+                    return 0;
+                })
+                .subscribe();
     }
 
 }

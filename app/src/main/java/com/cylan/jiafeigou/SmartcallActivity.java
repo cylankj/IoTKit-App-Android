@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
@@ -80,7 +81,6 @@ public class SmartcallActivity extends NeedLoginActivity
 
     /**
      * 进入全屏模式
-     *
      * @param full
      */
     private void fullScreen(boolean full) {

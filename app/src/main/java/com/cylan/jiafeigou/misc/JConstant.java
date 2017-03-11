@@ -73,6 +73,8 @@ public class JConstant {
     public static final String OPEN_LOGIN_USER_ICON = "open_login_user_icon";
     public static final String OPEN_LOGIN_USER_ALIAS = "open_login_user_alias";
     public static final String AUTO_SIGNIN_KEY = "auto_sign_in";
+    public static final String TWITTER_INIT_KEY = "twitter_init_key";
+    public static final String FACEBOOK_INIT_KEY = "facebook_init_key";
     /**
      * verification code
      */

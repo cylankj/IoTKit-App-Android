@@ -86,19 +86,18 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
      *
      * @return
      */
-    private Observable<RxEvent.ResultLogin> loginResultObservable() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class);
+    private Observable<RxEvent.UserResultLogin> loginResultObservable() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.UserResultLogin.class);
     }
 
     @Override
     public void executeLogin(final LoginAccountBean login) {
         //加入
         Observable.zip(loginObservable(login), loginResultObservable(),
-                (Object o, RxEvent.ResultLogin resultLogin) -> {
+                (Object o, RxEvent.UserResultLogin resultLogin) -> {
                     Log.d("CYLAN_TAG", "login: " + resultLogin);
                     return resultLogin;
                 })
-                .filter(resultAutoLogin1 -> resultAutoLogin1.code != JError.StartLoginPage)
                 .timeout(30 * 1000L, TimeUnit.SECONDS, Observable.just(null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map((Object o) -> {
@@ -109,7 +108,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribeOn(Schedulers.io())
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.ResultLogin o) -> {
+                .subscribe((RxEvent.UserResultLogin o) -> {
                     Log.d("CYLAN_TAG", "login subscribe: " + o);
                     if (getView() != null) getView().loginResult(o.code);
                 }, throwable -> {
@@ -283,29 +282,29 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     //计数10分钟3次
     @Override
     public boolean checkOverCount(String account) {
-        int count = PreferencesUtils.getInt(account+JConstant.KEY_REG_GET_SMS_COUNT, 0);
-        long first_time = PreferencesUtils.getLong(account+JConstant.KEY_REG_FRIST_GET_SMS, 0);
+        int count = PreferencesUtils.getInt(account + JConstant.KEY_REG_GET_SMS_COUNT, 0);
+        long first_time = PreferencesUtils.getLong(account + JConstant.KEY_REG_FRIST_GET_SMS, 0);
 
         if (count == 0) {
-            PreferencesUtils.putLong(account+JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
-            PreferencesUtils.putInt(account+JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
+            PreferencesUtils.putLong(account + JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
+            PreferencesUtils.putInt(account + JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
             return false;
         }
 
         if (count < 3) {
             if (System.currentTimeMillis() - first_time < 10 * 60 * 1000) {
-                PreferencesUtils.putInt(account+JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
+                PreferencesUtils.putInt(account + JConstant.KEY_REG_GET_SMS_COUNT, count + 1);
             } else {
-                PreferencesUtils.putInt(account+JConstant.KEY_REG_GET_SMS_COUNT, 0);
-                PreferencesUtils.putLong(account+JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
+                PreferencesUtils.putInt(account + JConstant.KEY_REG_GET_SMS_COUNT, 0);
+                PreferencesUtils.putLong(account + JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
             }
             return false;
         } else {
             if (System.currentTimeMillis() - first_time < 10 * 60 * 1000) {
                 return true;
             } else {
-                PreferencesUtils.putInt(account+JConstant.KEY_REG_GET_SMS_COUNT, 0);
-                PreferencesUtils.putLong(account+JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
+                PreferencesUtils.putInt(account + JConstant.KEY_REG_GET_SMS_COUNT, 0);
+                PreferencesUtils.putLong(account + JConstant.KEY_REG_FRIST_GET_SMS, System.currentTimeMillis());
                 return false;
             }
         }
