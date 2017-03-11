@@ -71,11 +71,6 @@ public class SmartcallActivity extends NeedLoginActivity
         ButterKnife.bind(this);
         initPresenter();
         fullScreen(true);
-        if (!getIntent().getBooleanExtra("from_log_out", false)) {
-            if (presenter != null) presenter.start();
-        } else {
-            splashOver();
-        }
         SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
     }
 
@@ -93,24 +88,22 @@ public class SmartcallActivity extends NeedLoginActivity
         getWindow().setAttributes(attrs);
     }
 
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
-        if (!getIntent().getBooleanExtra("from_log_out", false)) {
-            if (presenter != null) presenter.start();
-        } else {
-            splashOver();
-        }
-    }
-
     private SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy", Locale.getDefault());
 
     @Override
     protected void onResume() {
         super.onResume();
         tvCopyRight.setText(String.format(COPY_RIGHT, simpleDateFormat.format(new Date(System.currentTimeMillis()))));
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (!getIntent().getBooleanExtra("from_log_out", false)) {
+            if (presenter != null) presenter.start();
+        } else {
+            splashOver();
+        }
     }
 
     @Override

@@ -86,19 +86,22 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
      *
      * @return
      */
-    private Observable<RxEvent.UserResultLogin> loginResultObservable() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.UserResultLogin.class);
+
+    private Observable<RxEvent.ResultUserLogin> loginResultObservable() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultUserLogin.class);
     }
 
     @Override
     public void executeLogin(final LoginAccountBean login) {
         //加入
         Observable.zip(loginObservable(login), loginResultObservable(),
-                (Object o, RxEvent.UserResultLogin resultLogin) -> {
+
+                (Object o, RxEvent.ResultUserLogin resultLogin) -> {
                     Log.d("CYLAN_TAG", "login: " + resultLogin);
                     return resultLogin;
                 })
-                .timeout(30 * 1000L, TimeUnit.SECONDS, Observable.just(null)
+                .filter(resultAutoLogin1 -> resultAutoLogin1.code != JError.StartLoginPage)
+                .timeout(30 * 1000L, TimeUnit.MILLISECONDS, Observable.just(null)
                         .observeOn(AndroidSchedulers.mainThread())
                         .map((Object o) -> {
                             Log.d("CYLAN_TAG", "login timeout: ");
@@ -108,7 +111,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribeOn(Schedulers.io())
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.UserResultLogin o) -> {
+                .subscribe((RxEvent.ResultUserLogin o) -> {
                     Log.d("CYLAN_TAG", "login subscribe: " + o);
                     if (getView() != null) getView().loginResult(o.code);
                 }, throwable -> {
