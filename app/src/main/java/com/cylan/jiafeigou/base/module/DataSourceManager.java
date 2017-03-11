@@ -291,10 +291,12 @@ public class DataSourceManager implements JFGSourceManager {
                     return result;
                 })
                 .flatMap(Observable::from)
-                .flatMap(item -> dbHelper.unBindDeviceWithConfirm(item).map(device -> {
-                    delLocalJFGDevice(device.getUuid());
-                    return device;
-                }))
+                .flatMap(item -> dbHelper.unBindDeviceWithConfirm(item)
+                        .filter(device -> device != null)
+                        .map(device -> {
+                            delLocalJFGDevice(device.getUuid());
+                            return device;
+                        }))
                 .subscribe(item -> RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(item.getUuid())));
     }
 
