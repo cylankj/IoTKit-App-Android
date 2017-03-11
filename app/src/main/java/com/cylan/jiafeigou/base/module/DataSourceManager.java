@@ -40,7 +40,6 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -283,21 +282,19 @@ public class DataSourceManager implements JFGSourceManager {
                     JfgCmdInsurance.getCmd().getShareList(uuidList);
                     return items;
                 })
-                .map(this::filterDeletedDevice)
+                .map(items -> {
+                    Set<String> result = mCachedDeviceMap.keySet();
+                    for (Device device : items) {
+                        result.remove(device.getUuid());
+                    }
+                    return result;
+                })
                 .flatMap(Observable::from)
                 .flatMap(item -> dbHelper.unBindDeviceWithConfirm(item).map(device -> {
                     delLocalJFGDevice(device.getUuid());
                     return device;
                 }))
                 .subscribe(item -> RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(item.getUuid())));
-    }
-
-    private Set<String> filterDeletedDevice(List<Device> devices) {
-        Set<String> result = new HashSet<>(mCachedDeviceMap.keySet());
-        for (Device device : devices) {
-            result.remove(device.getUuid());
-        }
-        return result;
     }
 
     @Override
@@ -524,7 +521,8 @@ public class DataSourceManager implements JFGSourceManager {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(set -> Observable.from(set.getValue())
-                        .flatMap(msg -> dbHelper.saveDPByte(dataRsp.identity, msg.version, (int) msg.id, msg.packValue).map(entity -> {
+                        .flatMap(msg -> dbHelper.saveDPByte(dataRsp.identity, msg.version, (int) msg.id, msg.packValue)
+                                .map(entity -> {
                                     Device device = mCachedDeviceMap.get(dataRsp.identity);
                                     boolean change = false;
                                     if (device != null) {//优先尝试写入device中
@@ -532,27 +530,18 @@ public class DataSourceManager implements JFGSourceManager {
                                     }
                                     if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
                                         change |= account.setValue(msg, dataRsp.seq);
-                                        if (change) account.dpMsgVersion = System.currentTimeMillis();
+                                        if (change)
+                                            account.dpMsgVersion = System.currentTimeMillis();
                                     }
                                     return entity;
                                 })
-                                        .buffer(set.getValue().size())
-                                        .map(items -> set)
                         ))
-                .subscribe(ret -> {
-//                    RxEvent.GetDataResponse response = new RxEvent.GetDataResponse();
-//                    response.seq = dataRsp.seq;
-//                    response.msgId = ret.getKey();
-//                    RxBus.getCacheInstance().post(response);
-//                    Log.d("GetDataResponse", "GetDataResponse");
-                }, Throwable::printStackTrace, () -> {
-//                    syncDeviceUnreadCount();
-                    RxEvent.ParseResponseCompleted completed = new RxEvent.ParseResponseCompleted();
-                    completed.seq = dataRsp.seq;
-                    completed.uuid = dataRsp.identity;
-                    RxBus.getCacheInstance().post(completed);
+                .doOnError(Throwable::printStackTrace)
+                .doOnCompleted(() -> {
+                    syncDeviceUnreadCount();
                     RxBus.getCacheInstance().post(dataRsp);
-                });
+                })
+                .subscribe();
     }
 
     @Override

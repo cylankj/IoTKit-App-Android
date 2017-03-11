@@ -662,17 +662,17 @@ public class RxEvent {
         public boolean self;
     }
 
-    public static class GetDataResponse {
-        public long seq;
-        public long msgId;
-        public boolean changed;
-    }
+//    public static class GetDataResponse {
+//        public long seq;
+//        public long msgId;
+//        public boolean changed;
+//    }
 
-    @Deprecated
-    public static class ParseResponseCompleted {
-        public long seq;
-        public String uuid;
-    }
+//    @Deprecated
+//    public static class ParseResponseCompleted {
+//        public long seq;
+//        public String uuid;
+//    }
 
     public static class DeviceSyncRsp {
         public DeviceSyncRsp setUuid(String uuid) {

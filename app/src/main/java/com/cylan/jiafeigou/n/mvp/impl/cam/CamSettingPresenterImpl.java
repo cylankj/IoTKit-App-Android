@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -91,12 +92,12 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
      * @return
      */
     private Subscription robotDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.ParseResponseCompleted.class)
-                .filter((RxEvent.ParseResponseCompleted jfgRobotSyncData) -> (
-                        getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                .filter((RobotoGetDataRsp jfgRobotSyncData) -> (
+                        getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.identity)
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.ParseResponseCompleted update) -> {
+                .map((RobotoGetDataRsp update) -> {
                     getView().deviceUpdate(DataSourceManager.getInstance().getRawJFGDevice(uuid));
                     return null;
                 })
