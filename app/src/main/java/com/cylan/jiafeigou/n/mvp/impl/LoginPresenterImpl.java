@@ -83,7 +83,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录结果
-     *
      * @return
      */
 
