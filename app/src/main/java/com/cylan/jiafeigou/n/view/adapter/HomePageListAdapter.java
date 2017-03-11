@@ -88,18 +88,17 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
         //3 延时摄影
 
         //4 安全防护
-        DpMsgDefine.DPPrimary<Boolean> standby = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-        boolean s = MiscUtils.safeGet(standby, false);
+        DpMsgDefine.DPStandby isStandBY = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG), DpMsgDefine.DPStandby.empty());
         DpMsgDefine.DPPrimary<Boolean> dpSafe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
         boolean safe = MiscUtils.safeGet(dpSafe, false);
-        if (device != null && s && safe && JFGRules.isCamera(device.pid)) {
+        if (device != null && isStandBY.standby && safe && JFGRules.isCamera(device.pid)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {
             holder.setVisibility(R.id.img_device_state_3, GONE);
         }
         //5 安全待机
-        if (s) {
+        if (isStandBY.standby) {
             holder.setVisibility(R.id.img_device_state_4, GONE);
             holder.setImageResource(R.id.img_device_state_4, R.drawable.home_icon_net_standby);
         } else holder.setVisibility(R.id.img_device_state_4, GONE);

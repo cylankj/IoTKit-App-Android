@@ -29,10 +29,23 @@ public class DpMsgDefine {
         @Index(2)
         public boolean led;
         @Index(3)
-        public boolean autoRecord;
+        public int autoRecord;
 
         public static DPStandby empty() {
             return new DPStandby();
+        }
+
+        public DPStandby() {
+        }
+
+        @Override
+        public String toString() {
+            return "DPStandby{" +
+                    "standby=" + standby +
+                    ", warnEnable=" + warnEnable +
+                    ", led=" + led +
+                    ", autoRecord=" + autoRecord +
+                    '}';
         }
 
         @Override
@@ -46,10 +59,7 @@ public class DpMsgDefine {
             dest.writeByte(this.standby ? (byte) 1 : (byte) 0);
             dest.writeByte(this.warnEnable ? (byte) 1 : (byte) 0);
             dest.writeByte(this.led ? (byte) 1 : (byte) 0);
-            dest.writeByte(this.autoRecord ? (byte) 1 : (byte) 0);
-        }
-
-        public DPStandby() {
+            dest.writeInt(this.autoRecord);
         }
 
         protected DPStandby(Parcel in) {
@@ -57,7 +67,7 @@ public class DpMsgDefine {
             this.standby = in.readByte() != 0;
             this.warnEnable = in.readByte() != 0;
             this.led = in.readByte() != 0;
-            this.autoRecord = in.readByte() != 0;
+            this.autoRecord = in.readInt();
         }
 
         public static final Creator<DPStandby> CREATOR = new Creator<DPStandby>() {
@@ -71,16 +81,6 @@ public class DpMsgDefine {
                 return new DPStandby[size];
             }
         };
-
-        @Override
-        public String toString() {
-            return "DPStandby{" +
-                    "standby=" + standby +
-                    ", warnEnable=" + warnEnable +
-                    ", led=" + led +
-                    ", autoRecord=" + autoRecord +
-                    '}';
-        }
     }
 
     @Message

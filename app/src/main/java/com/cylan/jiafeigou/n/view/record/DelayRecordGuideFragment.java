@@ -87,8 +87,8 @@ public class DelayRecordGuideFragment extends BaseFragment {
     }
 
     private boolean isDeviceSleeping() {
-        DpMsgDefine.DPPrimary<Boolean> sleep = DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-        return MiscUtils.safeGet(sleep, false);
+        DpMsgDefine.DPStandby isStandBY = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG), DpMsgDefine.DPStandby.empty());
+        return isStandBY.standby;
     }
 
     private void initDeviceEnableDialog() {

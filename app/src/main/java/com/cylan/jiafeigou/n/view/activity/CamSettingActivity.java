@@ -8,6 +8,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
@@ -76,7 +77,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @BindView(R.id.sv_setting_device_standby_mode)
     SettingItemView1 svSettingDeviceStandbyMode;
     @BindView(R.id.sv_setting_device_indicator)
-    SettingItemView1 svSettingDeviceIndicator;
+    SettingItemView1 svSettingDeviceLedIndicator;
     @BindView(R.id.sv_setting_device_rotatable)
     SettingItemView1 svSettingDeviceRotate;
     @BindView(R.id.tv_setting_unbind)
@@ -294,6 +295,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (view.getId() == R.id.tv_setting_unbind) {
                 continue;//解绑按钮
             }
+            view.setAlpha(enable ? 1.f : 0.6f);
             view.setEnabled(enable);
         }
     }
@@ -340,32 +342,27 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             this.dpStandby = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG), DpMsgDefine.DPStandby.empty());
             ((SwitchButton) svSettingDeviceStandbyMode.findViewById(R.id.btn_item_switch)).setChecked(dpStandby.standby);
             svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-//                basePresenter.updateInfoReq(check, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
                 switchBtn(lLayoutSettingItemContainer, !isChecked);
+                this.dpStandby.standby = isChecked;
+                this.dpStandby.led = ledPreState();
+                this.dpStandby.autoRecord = autoRecordPreState();
+                this.dpStandby.warnEnable = warnPreState();
+                triggerStandby(isChecked);
+                basePresenter.updateInfoReq(dpStandby, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
             });
-            if (this.dpStandby.standby) {
-                switchBtn(lLayoutSettingItemContainer, false);
-            }
-            svSettingSafeProtection.setEnabled(dpStandby.standby);
-            svSettingSafeProtection.setAlpha(dpStandby.standby ? 0.6f : 1.0f);
-            svSettingSafeProtection.setTvSubTitle(dpStandby.standby ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
-
-            svSettingDeviceAutoRecord.setEnabled(dpStandby.standby);
-            svSettingDeviceAutoRecord.setAlpha(dpStandby.standby ? 0.6f : 1.0f);
-            svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
-
+            switchBtn(lLayoutSettingItemContainer, !this.dpStandby.standby);
+            triggerStandby(dpStandby.standby);
             /////////////////////////////led/////////////////////////////////////
             if (device != null && JFGRules.showLedIndicator(device.pid)) {
-                DpMsgDefine.DPPrimary<Boolean> dpIndicator = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_209_LED_INDICATOR);
-                boolean state = this.dpStandby != null && !this.dpStandby.standby && MiscUtils.safeGet(dpIndicator, false);
-                svSettingDeviceIndicator.setChecked(state);
-                svSettingDeviceIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                    DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<Boolean>();
+                svSettingDeviceLedIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                    if (this.dpStandby != null && dpStandby.standby) return;//开启待机模式引起的
+                    DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
                     check.value = isChecked;
                     basePresenter.updateInfoReq(check, DpMsgMap.ID_209_LED_INDICATOR);
+                    Log.d("check", "led changed: " + isChecked);
                 });
             } else {
-                svSettingDeviceIndicator.setVisibility(View.GONE);
+                svSettingDeviceLedIndicator.setVisibility(View.GONE);
             }
         }
 
@@ -381,7 +378,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             boolean s = MiscUtils.safeGet(state, false);
             svSettingDeviceMobileNetwork.setChecked(s);
             svSettingDeviceMobileNetwork.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<Boolean>();
+                DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
                 check.value = isChecked;
                 basePresenter.updateInfoReq(check, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
             });
@@ -395,7 +392,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             boolean state = MiscUtils.safeGet(dpState, false);
             sbtnSetting110v.setChecked(state);
             sbtnSetting110v.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<Boolean>();
+                DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
                 check.value = isChecked;
                 basePresenter.updateInfoReq(check, DpMsgMap.ID_216_DEVICE_VOLTAGE);
             });
@@ -419,7 +416,43 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else {
             svSettingDeviceDelayCapture.setVisibility(View.GONE);
         }
+    }
 
+    private boolean ledPreState() {
+        DpMsgDefine.DPPrimary<Boolean> ret = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_209_LED_INDICATOR);
+        return MiscUtils.safeGet(ret, false);
+    }
+
+    /**
+     * 安全防护
+     *
+     * @return
+     */
+    private boolean warnPreState() {
+        DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, (long) DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        return MiscUtils.safeGet(flag, false);
+    }
+
+    private int autoRecordPreState() {
+        return MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD), 0);
+    }
+
+    private void triggerStandby(boolean triggered) {
+        svSettingSafeProtection.setEnabled(!triggered);
+        svSettingSafeProtection.setAlpha(triggered ? 0.6f : 1.0f);
+        svSettingSafeProtection.setTvSubTitle(triggered ? getString(R.string.MAGNETISM_OFF) : basePresenter.getAlarmSubTitle(getContext()));
+
+        svSettingDeviceAutoRecord.setEnabled(!triggered);
+        svSettingDeviceAutoRecord.setAlpha(triggered ? 0.6f : 1.0f);
+        svSettingDeviceAutoRecord.setTvSubTitle(triggered ? "" : basePresenter.getAutoRecordTitle(getContext()));
+
+        if (dpStandby != null && !dpStandby.standby) {
+            svSettingDeviceLedIndicator.setChecked(dpStandby.led);
+        } else {
+            svSettingDeviceLedIndicator.setChecked(false);
+        }
+        svSettingDeviceLedIndicator.setEnabled(!triggered);
+        svSettingDeviceLedIndicator.setAlpha(triggered ? 0.6f : 1.0f);
     }
 
     @Override

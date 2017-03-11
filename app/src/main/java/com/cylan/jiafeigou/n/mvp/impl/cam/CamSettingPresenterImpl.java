@@ -194,9 +194,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                         AppLogger.e("err:" + e.getLocalizedMessage());
                     }
                     AppLogger.i("save end: " + id + " " + value);
-                }, (Throwable throwable) -> {
-                    AppLogger.e(throwable.getLocalizedMessage());
-                });
+                }, (Throwable throwable) -> AppLogger.e(throwable.getLocalizedMessage()));
     }
 
     public static String parse2Time(int value) {
