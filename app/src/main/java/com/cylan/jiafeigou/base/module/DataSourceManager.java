@@ -42,6 +42,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -238,39 +239,53 @@ public class DataSourceManager implements JFGSourceManager {
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
         dbHelper.updateDevice(devices)
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .doOnCompleted(() -> handleDeletedDevice(devices))
-                .subscribe(device -> {
+                .map(device -> {
                     Device dpDevice = mCachedDeviceMap.get(device.getUuid());
                     if (dpDevice == null) {
                         dpDevice = create(device.getPid());
                     }
                     dpDevice.fill(device);
                     mCachedDeviceMap.put(device.getUuid(), dpDevice);
-                });
-        mRawDeviceList.clear();
-        for (com.cylan.entity.jniCall.JFGDevice device : devices) {
-            mRawDeviceList.add(device);
-        }
-        syncAllJFGDeviceProperty();
+                    return device;
+                })
+                .map(device -> {
+                    ArrayList<JFGDPMsg> parameters = device.getQueryParameters(false);
+                    AppLogger.d("正在同步设备信息:" + device.getUuid() + " " + new Gson().toJson(parameters));
+                    try {
+                        JfgCmdInsurance.getCmd().robotGetData(device.getUuid(), parameters, 1, false, 0);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return device;
+                })
+                .buffer(devices.length)
+                .map(items -> {
+                    mRawDeviceList.clear();
+                    ArrayList<String> uuidList = new ArrayList<>();
+                    for (com.cylan.entity.jniCall.JFGDevice device : devices) {
+                        mRawDeviceList.add(device);
+                        if (!JFGRules.isShareDevice(device.uuid)) {
+                            uuidList.add(device.uuid);
+                        }
+                    }
+                    JfgCmdInsurance.getCmd().getShareList(uuidList);
+                    return items;
+                })
+                .map(this::filterDeletedDevice)
+                .flatMap(Observable::from)
+                .flatMap(item -> dbHelper.unBindDeviceWithConfirm(item).map(device -> {
+                    delLocalJFGDevice(device.getUuid());
+                    return device;
+                }))
+                .subscribe(item -> RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(item.getUuid())));
     }
 
-    private void handleDeletedDevice(JFGDevice[] devices) {
-        if (mCachedDeviceMap.size() == 0) return;
-        HashMap<String, Device> copy = new HashMap<>(mCachedDeviceMap);
-        for (JFGDevice device : devices) {
-            copy.remove(device.uuid);
+    private Set<String> filterDeletedDevice(List<Device> devices) {
+        Set<String> result = mCachedDeviceMap.keySet();
+        for (Device device : devices) {
+            result.remove(device.getUuid());
         }
-        Observable.from(copy.entrySet())
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .map(item -> {
-                    AppLogger.d("正在删除内存缓存中的设备:UUID:" + item.getKey());
-                    delLocalJFGDevice(item.getKey());
-                    return item;
-                })
-                .flatMap(item -> dbHelper.unBindDeviceWithConfirm(item.getKey()))
-                .subscribe(item -> RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(item.getUuid())), Throwable::printStackTrace);
-
+        return result;
     }
 
     @Override
@@ -289,12 +304,13 @@ public class DataSourceManager implements JFGSourceManager {
                 .subscribe(act -> this.account = act);
     }
 
-
     //主动发起请求,来获取设备所有的属性
     @Override
     public void syncAllJFGDeviceProperty() {
+        if (true) return;
         if (mCachedDeviceMap.size() == 0) return;
         ArrayList<String> uuidList = new ArrayList<>();
+        Set<String> keySet = mCachedDeviceMap.keySet();
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
             Device device = mCachedDeviceMap.get(entry.getKey());
             syncJFGDeviceProperty(entry.getKey());
@@ -422,7 +438,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void clear() {
-//        if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
+        if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
         isOnline = false;
         account = null;
         jfgAccount = null;
@@ -670,6 +686,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     /**
      * 不要使用switch case
+     *
      * @param pid
      * @return
      */

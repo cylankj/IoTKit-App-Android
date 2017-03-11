@@ -222,17 +222,17 @@ public class BaseDBHelper implements IDBHelper {
                         for (Account account1 : accounts) {
                             account1.setState(DBState.SUCCESS.state());
                         }
+                        accountDao.saveInTx(accounts);
                     }
-                    return accountDao.rx().updateInTx(accounts).flatMap(ret ->
-                            accountDao.queryBuilder().where(AccountDao.Properties.Account.eq(account.getAccount()))
-                                    .rx().unique().map(account1 -> {
+                    return accountDao.queryBuilder().where(AccountDao.Properties.Account.eq(account.getAccount()))
+                            .rx().unique().map(account1 -> {
                                 if (account1 == null) {
                                     account1 = new Account(account);
                                 }
                                 account1.setState(DBState.ACTIVE.state());
                                 accountDao.save(account1);
                                 return account1;
-                            }));
+                            });
                 });
     }
 
@@ -252,8 +252,11 @@ public class BaseDBHelper implements IDBHelper {
         return Observable.from(device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(dev -> getActiveAccount().map(account -> dev))//延迟写入,等到有账号了才写入数据库
-                .flatMap(dev -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(getAccount())).rx().unique()
+                .flatMap(dev -> getActiveAccount()
+                        .flatMap(account -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(dev.uuid),
+                                DeviceDao.Properties.Account.eq(account.getAccount()))
+                                .rx()
+                                .unique())
                         .flatMap(dpDevice -> {
                             AppLogger.d("正在更新 Device 条目");
                             if (dpDevice == null) {

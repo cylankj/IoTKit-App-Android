@@ -1,9 +1,66 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumActivity">
 
-</android.support.constraint.ConstraintLayout>
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/color_0ba8cf">
+
+        <TextView
+            android:id="@+id/act_panorama_album_toolbar_header_title"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/y48"
+            android:layout_marginTop="8dp"
+            android:drawablePadding="@dimen/y15"
+            android:drawableStart="@drawable/nav_tab_back_selector"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/y15"
+            android:text="相册+手机相册"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp18" />
+
+        <FrameLayout
+            android:id="@+id/act_panorama_album_toolbar_option_container"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="@dimen/y11">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="取消"
+                android:textColor="@color/color_white"
+                android:textSize="@dimen/sp18" />
+
+        </FrameLayout>
+
+    </RelativeLayout>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/act_panorama_album_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/act_panorama_album_lists"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <include
+            layout="@layout/layout_panorama_empty_photo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="gone" />
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+
+</LinearLayout>

@@ -207,6 +207,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.imgv_toolbar_right)
     public void clickedToolBarSettingMenu() {
         AppLogger.d("clickedSettingMenu");
+
     }
 
     @OnClick(R.id.tv_top_bar_left)
