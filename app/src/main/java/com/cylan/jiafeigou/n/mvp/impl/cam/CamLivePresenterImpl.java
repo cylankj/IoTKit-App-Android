@@ -459,8 +459,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         reset();
     }
 
-    private Bitmap bitmap = null;
-
     @Override
     public void takeSnapShot(boolean forPreview) {
         Observable.just(null)
@@ -472,19 +470,17 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         @Override
                         public void onSucceed(Bitmap resource) {
                             Log.d(TAG, "onSucceed take shot performance: " + (System.currentTimeMillis() - time) + " " + (resource == null));
-                            bitmap = resource;
-                            SimpleCache.getInstance().addCache(getThumbnailKey(), bitmap);
-                            _2saveBitmap(forPreview, bitmap);
+                            SimpleCache.getInstance().addCache(getThumbnailKey(), resource);
+                            _2saveBitmap(forPreview, resource);
                         }
 
                         @Override
                         public void onFailure(String s) {
-                            bitmap = null;
                             AppLogger.e("直播黑屏，没有数据: " + forPreview);
                         }
                     });
                     AppLogger.i("capture take shot performance: " + (System.currentTimeMillis() - time));
-                    return bitmap;
+                    return null;
                 })
                 .subscribe(b -> {
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));

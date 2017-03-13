@@ -64,7 +64,7 @@ public class PanoramicView_Ext extends PanoramicView implements VideoViewFactory
 
     @Override
     public void loadBitmap(Bitmap bitmap) {
-
+        super.loadImage(bitmap);
     }
 
     @Override

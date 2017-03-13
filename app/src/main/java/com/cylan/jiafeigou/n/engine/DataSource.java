@@ -140,7 +140,7 @@ public class DataSource implements AppCallBack {
                                             return null;
                                         }))
                                 .subscribe();
-                    }else if (integer == -1) {
+                    } else if (integer == -1) {
                         //emit failed event.
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                     }
@@ -165,6 +165,8 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
+        for (JFGDevice device : jfgDevices)
+            Log.d("OnReportJfgDevices", "OnReportJfgDevices: " + device.uuid);
         AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
 

@@ -141,7 +141,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                         timeZone.timezone = ((TimeZoneBean) value).getId();
                         timeZone.offset = ((TimeZoneBean) value).getOffset();
                         try {
-                            DataSourceManager.getInstance().updateValue(uuid, timeZone, id);
+                            DataSourceManager.getInstance().updateValue(uuid, timeZone, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
                         } catch (Exception e) {
                             AppLogger.e("err: " + e.getLocalizedMessage());
                         }
