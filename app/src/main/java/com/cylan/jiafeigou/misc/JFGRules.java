@@ -212,15 +212,25 @@ public class JFGRules {
 
     public static boolean isCamera(int pid) {
         switch (pid) {
-            case JConstant.OS_CAMERA_ANDROID:
-            case JConstant.OS_CAMERA_UCOS:
-            case JConstant.OS_CAMERA_UCOS_V2:
-            case JConstant.OS_CAMERA_UCOS_V3:
-            case JConstant.OS_CAMERA_ANDROID_4G:
-            case JConstant.OS_CAMERA_PANORAMA_HAISI:
-            case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
-            case JConstant.OS_CAMERA_PANORAMA_GUOKE:
-            case JConstant.PID_CAMERA_ANDROID_3_0:
+            case 4:
+            case 5:
+            case 7:
+            case 10:
+            case 18:
+            case 21:
+            case 26:
+            case 17:
+            case 20:
+            case 23:
+            case 19:
+            case 1152:
+            case 1158:
+            case 1088:
+            case 1089:
+            case 1091:
+            case 1092:
+            case 1071:
+            case 1090:
                 return true;
             default:
                 return false;
@@ -233,7 +243,6 @@ public class JFGRules {
             case 25:
             case 1093:
             case 1094:
-            case 17:
             case 1158:
             case 15:
             case 1159:
