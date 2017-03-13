@@ -76,4 +76,6 @@ public interface IDBHelper {
     Observable<List<DPEntity>> getActiveAccountSavedDPMsg();
 
     Observable<DPEntity> findDPMsg(String uuid, Long version, Integer msgId);
+
+    Observable<Account> logout();
 }

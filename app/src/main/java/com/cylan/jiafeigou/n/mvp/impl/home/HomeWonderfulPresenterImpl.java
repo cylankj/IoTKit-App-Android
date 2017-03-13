@@ -115,7 +115,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .subscribe(result -> {
                     if (result.getResultCode() == 0) {
                         mWonderItems.clear();
-                        mWonderItems.addAll(result.getResultResponse());
+                        if (result.getResultResponse() != null) {
+                            mWonderItems.addAll(result.getResultResponse());
+                        }
                         mView.chooseEmptyView(mWonderItems.size() > 0 ? VIEW_TYPE_HIDE : VIEW_TYPE_EMPTY);
                         mView.onQueryTimeLineSuccess(mWonderItems, true);
                     }

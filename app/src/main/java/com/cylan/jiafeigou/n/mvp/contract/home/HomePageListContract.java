@@ -3,7 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import android.support.annotation.UiThread;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -17,7 +17,7 @@ public interface HomePageListContract {
     interface View extends BaseView<Presenter> {
 
         @UiThread
-        void onItemsInsert(List<JFGDevice> DeviceList);
+        void onItemsInsert(List<Device> DeviceList);
 
         /**
          * 对单个设备操作

@@ -340,6 +340,16 @@ public class BaseDBHelper implements IDBHelper {
         return getActiveAccount().flatMap(account -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, version, msgId, null, null, null).rx().unique());
     }
 
+    @Override
+    public Observable<Account> logout() {
+        return getActiveAccount().map(account -> {
+            account.setAction(DBAction.SAVED);
+            account.setState(DBState.SUCCESS);
+            account.update();
+            return account;
+        });
+    }
+
     private QueryBuilder<Device> buildDPDeviceQueryBuilder(String account, String server, String uuid, DBAction action, DBState state, DBOption option) {
         QueryBuilder<Device> builder = deviceDao.queryBuilder();
         if (!TextUtils.isEmpty(account)) {

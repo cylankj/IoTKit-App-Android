@@ -68,7 +68,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RxEvent.DeviceSyncRsp update) -> {
-                    getView().deviceUpdate(DataSourceManager.getInstance().getRawJFGDevice(uuid));
+                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDeviceDataSync"))
