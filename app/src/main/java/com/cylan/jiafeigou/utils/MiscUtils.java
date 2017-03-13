@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
+import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -286,5 +287,15 @@ public class MiscUtils {
     public static boolean checkGpsAvailable(Context context) {
         LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
         return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
+    public static <T> T getObjectFromSP(String key, Class<T> tClass) {
+        try {
+            String content = PreferencesUtils.getString(key);
+            if (TextUtils.isEmpty(content)) return tClass.newInstance();
+            return new Gson().fromJson(content, tClass);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

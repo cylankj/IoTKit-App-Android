@@ -15,6 +15,8 @@ import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -24,6 +26,8 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -39,7 +43,6 @@ import rx.schedulers.Schedulers;
  */
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
-
     private Device device;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
@@ -125,6 +128,22 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 })
                 .retry(new RxHelper.RxException<>("robotDeviceDataSync"))
                 .subscribe();
+    }
+
+    @Override
+    public void updateSettingTips(SettingTip settingTip) {
+        PreferencesUtils.putString(JConstant.KEY_DEVICE_SETTING_SHOW_RED + uuid, new Gson().toJson(settingTip));
+    }
+
+    @Override
+    public SettingTip getSettingTips() {
+        try {
+            String content = PreferencesUtils.getString(JConstant.KEY_DEVICE_SETTING_SHOW_RED + uuid);
+            if (TextUtils.isEmpty(content)) return new SettingTip();
+            return new Gson().fromJson(content, SettingTip.class);
+        } catch (Exception e) {
+            return new SettingTip();
+        }
     }
 
     @Override

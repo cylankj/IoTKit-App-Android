@@ -122,6 +122,14 @@
                 hunt:sv_title="@string/Tap1_CameraFun_Standby"
                 hunt:sv_v_divider="true" />
 
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/sbtn_setting_sight"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:visibility="gone"
+                hunt:sv_image_src="@drawable/setting_icon_angle_visual_angle"
+                hunt:sv_title="@string/Tap1_Camera_ViewAngle"
+                hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView1
                 android:id="@+id/sv_setting_device_indicator"
@@ -140,14 +148,6 @@
                 hunt:sv_title="@string/Tap1_CameraFun_VideoDirection"
                 hunt:sv_v_divider="true" />
 
-            <com.cylan.jiafeigou.widget.SettingItemView0
-                android:id="@+id/sbtn_setting_sight"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y72"
-                android:visibility="gone"
-                hunt:sv_image_src="@drawable/setting_icon_angle_visual_angle"
-                hunt:sv_title="@string/Tap1_Camera_ViewAngle"
-                hunt:sv_v_divider="true" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sbtn_setting_110v"
@@ -155,9 +155,9 @@
                 android:layout_height="@dimen/y72"
                 hunt:sv_image_src="@drawable/icon_setting_electricity"
                 hunt:sv_sub_title="@string/FOOT_TIP_VOTE"
+                hunt:sv_switch_visibility="true"
                 hunt:sv_title="@string/HZ_VOTE"
-                hunt:sv_v_divider="false"
-                hunt:sv_switch_visibility="true" />
+                hunt:sv_v_divider="false" />
 
 
             <TextView

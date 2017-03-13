@@ -199,6 +199,7 @@ public class DataSourceManager implements JFGSourceManager {
                 )
                 .map(items -> {
                     mCachedDeviceMap.clear();
+                    Log.d("update", "updateList: " + new Gson().toJson(items));
                     return items;
                 })
                 .flatMap(items -> dbHelper.updateDevice(items))
@@ -351,11 +352,12 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public void queryHistory(String uuid) {
+    public int queryHistory(String uuid) {
         try {
-            JfgCmdInsurance.getCmd().getVideoList(uuid);
+            return JfgCmdInsurance.getCmd().getVideoList(uuid);
         } catch (JfgException e) {
             AppLogger.e("uuid is null: " + e.getLocalizedMessage());
+            return -1;
         }
     }
 

@@ -117,7 +117,7 @@ public interface JFGSourceManager {
      */
     long syncJFGCameraWarn(String uuid, boolean asc, int count);
 
-    void queryHistory(String uuid);
+    int queryHistory(String uuid);
 
     void cacheHistoryDataList(JFGHistoryVideo historyVideo);
 

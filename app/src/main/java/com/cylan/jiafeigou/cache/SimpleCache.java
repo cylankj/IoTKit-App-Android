@@ -45,7 +45,7 @@ public class SimpleCache {
             AppLogger.e("you add a null bitmap to cache ");
             return;
         }
-        if (previewThumbnailCache == null) {
+        if (previewThumbnailCache == null || previewThumbnailCache.get() == null) {
             previewThumbnailCache = new WeakReference<>(new HashMap<>());
         }
         key = MD5Util.lowerCaseMD5(key);
