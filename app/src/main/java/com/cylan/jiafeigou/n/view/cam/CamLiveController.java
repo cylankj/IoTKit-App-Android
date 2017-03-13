@@ -264,7 +264,8 @@ public class CamLiveController implements
      */
     public void setLiveType(int liveType) {
         camLiveControlLayer.getTvCamLivePortLive().setEnabled(liveType != TYPE_LIVE);
-        camLiveControlLayer.getImgVCamLiveLandPlay().setVisibility(liveType == TYPE_LIVE ? View.VISIBLE : View.GONE);
+        camLiveControlLayer.getTvCamLivePortLive().setAlpha(liveType != TYPE_LIVE ? 1.f : 0.6f);
+        camLiveControlLayer.getImgVCamLiveLandPlay().setVisibility(liveType == TYPE_HISTORY ? View.VISIBLE : View.GONE);
     }
 
     /**

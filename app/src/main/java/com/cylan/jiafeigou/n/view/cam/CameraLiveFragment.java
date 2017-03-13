@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -16,7 +17,6 @@ import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,6 +34,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -51,7 +52,6 @@ import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -63,12 +63,14 @@ import com.cylan.jiafeigou.widget.glide.RoundedCornersTransformation;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
+import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.panorama.CameraParam;
 import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.lang.ref.SoftReference;
 import java.lang.ref.WeakReference;
 
@@ -129,6 +131,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @BindView(R.id.imv_double_sight)
     ImageView imvDoubleSight;
 
+    @BindView(R.id.v_live)
+    LiveViewWithThumbnail vLive;
+
     private SoftReference<AlertDialog> sdcardPulloutDlg;
     private SoftReference<AlertDialog> sdcardFormatDlg;
     private CamLiveController camLiveController;
@@ -139,13 +144,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     /**
      * |安全防护|----直播|5/16 16:30|---|
      */
-    private VideoViewFactory.IVideoView videoView;
+//    private VideoViewFactory.IVideoView videoView;
     //流量显示
     private WeakReference<TextView> tvFlowRef;
-    /**
-     * 待机模式的view:"已进入待机模式,前往打开"
-     */
-    private WeakReference<View> viewStandbyRef;
+
 
     private String uuid;
     private boolean isNormalView;
@@ -188,8 +190,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onViewCreated(view, savedInstanceState);
         //2w显示双排视图  3.1.0功能
 //        imvDoubleSight.setVisibility(isNormalView ? View.GONE : View.VISIBLE);
+        initLiveView();
         checkSightDialog(isNormalView);
-        ViewUtils.updateViewHeight(fLayoutCamLiveView, isNormalView ? 0.8f : 1.0f);//720*576
+        ViewUtils.updateViewHeight(fLayoutCamLiveView, getScaleSizeFactor());//720*576
         initBottomBtn(false);
         imgVCamSwitchSpeaker.setOnClickListener(this);
         imgVCamTriggerMic.setOnClickListener(this);
@@ -208,6 +211,51 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         liveListener = camLiveController.getLiveStateListener();
     }
 
+    private float getScaleSizeFactor() {
+        if (!isNormalView)
+            return 1.f;
+        float r = PreferencesUtils.getFloat(JConstant.KEY_UUID_RESOLUTION + uuid, 0.8f);
+        Log.d("getScaleSizeFactor", "getScaleSizeFactor: " + r);
+        if (r == 0.0f) return 0.8f;
+        return r;
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+    }
+
+    private void initLiveView() {
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        if (device == null) {
+            AppLogger.e("device is null");
+            getActivity().finish();
+            return;
+        }
+        VideoViewFactory.IVideoView videoView = VideoViewFactory.CreateRendererExt(!isNormalView,
+                getContext(), true);
+        videoView.setInterActListener(new VideoViewFactory.InterActListener() {
+
+            @Override
+            public boolean onSingleTap(float x, float y) {
+                camLiveController.tapVideoViewAction();
+                return true;
+            }
+
+            @Override
+            public void onSnapshot(Bitmap bitmap, boolean tag) {
+                Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
+            }
+        });
+        videoView.config360(CameraParam.getTopPreset());
+        videoView.detectOrientationChanged();
+        vLive.setLiveView(videoView);
+        if (SimpleCache.getInstance().getSimpleBitmapCache(basePresenter.getThumbnailKey()) == null) {
+            File file = new File(basePresenter.getThumbnailKey());
+            vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
+        } else
+            vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(basePresenter.getThumbnailKey()));
+    }
 
     @Override
     public void onPause() {
@@ -260,7 +308,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (videoView != null) ((View) videoView).setVisibility(View.GONE);
     }
 
     private void startLive() {
@@ -399,42 +446,21 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         }
     }
 
+    /**
+     * 展示 待机模式view
+     *
+     * @param flag
+     */
     private void setupStandByView(boolean flag) {
-        //进入待机模式
-        View v = fLayoutCamLiveView.findViewById("showSceneView".hashCode());
-        if (v == null && !flag) {
-            return;
-        }
-        if (v == null) {
-            if (viewStandbyRef == null || viewStandbyRef.get() == null) {
-                long time = System.currentTimeMillis();
-                v = LayoutInflater.from(getContext()).inflate(R.layout.layout_fragment_cam_live_standby, null, false);
-                v.setId("showSceneView".hashCode());
-                viewStandbyRef = new WeakReference<>(v);
-                Log.d("showSceneView", "showSceneView: " + (System.currentTimeMillis() - time));
-                int index = 0;
-                if (videoView != null)
-                    index = fLayoutCamLiveView.indexOfChild((View) videoView);//view的上面
-                fLayoutCamLiveView.addView(v, index + 1);//最底
-                boolean isShareDevice = JFGRules.isShareDevice(uuid);
-                TextView tv = (TextView) v.findViewById(R.id.lLayout_standby_jump_setting);
-                //分享设备显示：已进入待机状态
-                if (isShareDevice) {
-                    tv.setText(getString(R.string.Tap1_Camera_Video_Standby));
-                    return;
-                }
-                //非分享设备显示：已进入待机状态，前往开启，和设置点击事件。跳转到设置页面
-                tv.setOnClickListener(view -> {
-                    Intent intent = new Intent(getActivity(), CamSettingActivity.class);
-                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                    startActivityForResult(intent, REQUEST_CODE,
-                            ActivityOptionsCompat.makeCustomAnimation(getActivity(),
-                                    R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
-                });
-            } else v = viewStandbyRef.get();
-        }
-        v.setVisibility(flag ? View.VISIBLE : View.GONE);
-        AppLogger.i("onDeviceInfoChanged");
+        if (flag)
+            vLive.enableStandbyMode(true, v -> {
+                Intent intent = new Intent(getActivity(), CamSettingActivity.class);
+                intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                startActivityForResult(intent, REQUEST_CODE,
+                        ActivityOptionsCompat.makeCustomAnimation(getActivity(),
+                                R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+            }, JFGRules.isShareDevice(uuid));
+        else vLive.enableStandbyMode(false, null, false);
     }
 
     @Override
@@ -446,6 +472,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onLiveStarted(int type) {
+        vLive.onLiveStart();
         camLiveController.setLoadingState(ILiveControl.STATE_PLAYING, null);
         AppLogger.i("onLiveStarted");
         if (getView() != null)
@@ -479,9 +506,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.notifyOrientationChange(this.getResources().getConfiguration().orientation);
         AppLogger.i("onConfigurationChanged");
         updateVideoViewLayoutParameters(null);
-        if (tvFlowRef != null && tvFlowRef.get() != null)
-            ViewUtils.setMargins(tvFlowRef.get(), 0, (int) getResources().getDimension(port ? R.dimen.x14 : R.dimen.x54),
-                    (int) getResources().getDimension(R.dimen.x14), 0);
+        vLive.detectOrientationChanged(port);
     }
 
 
@@ -489,70 +514,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
      * 初始化流量
      */
     private void showFloatFlowView(boolean show, String content) {
-        View v = fLayoutCamLiveView.findViewById("flow".hashCode());
-        if (!show && v == null)
-            return;
-        if (!show && v.isShown()) {
-            v.setVisibility(View.GONE);
-            return;
-        }
-        if (show && v != null && !v.isShown()) {
-            v.setVisibility(View.VISIBLE);
-        }
-        if (v == null) {
-            if (tvFlowRef == null || tvFlowRef.get() == null) {
-                TextView textView = new TextView(getContext());
-                textView.setBackground(getResources().getDrawable(R.drawable.flow_bg));
-                textView.setId("flow".hashCode());
-                textView.setTextColor(getResources().getColor(R.color.color_white));
-                FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(DensityUtils.dip2px(60),
-                        ViewGroup.LayoutParams.WRAP_CONTENT,
-                        Gravity.END);
-                textView.setGravity(Gravity.CENTER);
-                lp.rightMargin = (int) getResources().getDimension(R.dimen.x14);
-                lp.topMargin = (int) getResources().getDimension(R.dimen.x14);
-                fLayoutCamLiveView.addView(textView, lp);
-                tvFlowRef = new WeakReference<>(textView);
-            }
-            v = tvFlowRef.get();
-        }
-        ((TextView) v).setText(content);
-    }
-
-    /**
-     * 初始化videoView
-     *
-     * @return
-     */
-    private VideoViewFactory.IVideoView initVideoView() {
-        AppLogger.i("initVideoView:" + (videoView == null));
-        if (videoView == null) {
-            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-            if (device == null) {
-                AppLogger.e("device is null");
-                getActivity().finish();
-                return null;
-            }
-            videoView = VideoViewFactory.CreateRendererExt(!isNormalView,
-                    getContext(), true);
-            ((View) videoView).setId("IVideoView".hashCode());
-            videoView.setInterActListener(new VideoViewFactory.InterActListener() {
-
-                @Override
-                public boolean onSingleTap(float x, float y) {
-                    camLiveController.tapVideoViewAction();
-                    return true;
-                }
-
-                @Override
-                public void onSnapshot(Bitmap bitmap, boolean tag) {
-
-                }
-            });
-        }
-        videoView.config360(CameraParam.getTopPreset());
-        videoView.detectOrientationChanged();
-        return videoView;
+        vLive.showFlowView(show, content);
     }
 
     /**
@@ -576,20 +538,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         height = isNormalView ? height : Resources.getSystem().getDisplayMetrics().widthPixels;
         RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, height);
-
         fLayoutCamLiveView.setLayoutParams(lp);
-        View view = fLayoutCamLiveView.findViewById("IVideoView".hashCode());
-        if (view == null) {
-            fLayoutCamLiveView.addView((View) videoView, 0, lp);
-        } else {
-            FrameLayout.LayoutParams fLP = (FrameLayout.LayoutParams) view.getLayoutParams();
-            fLP.width = ViewGroup.LayoutParams.MATCH_PARENT;
-            fLP.height = height;
-            view.setLayoutParams(fLP);
-        }
-        if (videoView != null)
-            videoView.detectOrientationChanged();
-        AppLogger.i("updateVideoViewLayoutParameters:" + (view == null));
+        vLive.updateLayoutParameters(height, ViewGroup.LayoutParams.MATCH_PARENT);
+        vLive.getVideoView().detectOrientationChanged();
     }
 
     @Override
@@ -641,8 +592,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 if (basePresenter != null) basePresenter.takeSnapShot(false);
                 break;
             case R.id.fLayout_cam_live_view:
-                if (videoView != null)
-                    videoView.performTouch();
+                vLive.performTouch();
                 break;
         }
     }
@@ -672,6 +622,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onLiveStop(int playType, int errId) {
         if (getView() != null)
             getView().setKeepScreenOn(false);
+//        vLive.onLiveStop();
         showFloatFlowView(false, null);
         initBottomBtn(false);
         camLiveController.setLiveTime(0);
@@ -718,6 +669,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             showPopupWindow(bitmap);
         } else {
             ToastUtil.showPositiveToast(getString(R.string.set_failed));
+        }
+    }
+
+    @Override
+    public void onPreviewResourceReady(Bitmap bitmap) {
+        if (isVisible()) {
+            vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), bitmap);
         }
     }
 
@@ -783,8 +741,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-        JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, (View) initVideoView());
+        JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, (View) vLive.getVideoView());
         updateVideoViewLayoutParameters(resolution);
+        if (resolution != null && resolution.height > 0 && resolution.width > 0) {
+            PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
+        }
     }
 
     @Override

@@ -275,4 +275,7 @@ public class JConstant {
     public static final String KEY_CAM_LIVE_PAGE_PLAY_TYPE = "page_play_type";
     public static final String KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME = "page_play_history_time";
     public static final String KEY_JUMP_TO_CAM_DETAIL = "jump_to_cam_detail";
+
+    public static final String KEY_UUID_RESOLUTION = "uuid_resolution";
+    public static final String KEY_UUID_PREVIEW_THUMBNAIL_TOKEN = "uuid_preview_token";
 }

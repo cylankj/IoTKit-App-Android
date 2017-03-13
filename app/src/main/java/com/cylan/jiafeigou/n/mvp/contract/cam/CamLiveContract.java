@@ -61,6 +61,8 @@ public interface CamLiveContract {
 
         void onTakeSnapShot(Bitmap bitmap);
 
+        void onPreviewResourceReady(Bitmap bitmap);
+
         /**
          * 历史录像播放结束状态
          *
@@ -77,6 +79,13 @@ public interface CamLiveContract {
     }
 
     interface Presenter extends BasePresenter {
+
+        /**
+         * sd卡中的路径
+         *
+         * @return
+         */
+        String getThumbnailKey();
 
         /**
          * 播放状态

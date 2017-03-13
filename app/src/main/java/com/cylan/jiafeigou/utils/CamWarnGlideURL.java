@@ -6,11 +6,6 @@ package com.cylan.jiafeigou.utils;
 
 public class CamWarnGlideURL extends JFGGlideURL {
 
-    public CamWarnGlideURL(long timeMillis, int index, String vid, String uuid, int regionType, boolean v2) {
-        super("", "");
-
-    }
-
     public CamWarnGlideURL(String cid, String fileName) {
         super(cid, fileName);
     }

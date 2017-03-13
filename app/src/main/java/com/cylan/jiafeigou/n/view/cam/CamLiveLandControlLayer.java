@@ -144,7 +144,7 @@ public class CamLiveLandControlLayer extends FrameLayout {
 
     public void setOrientation(int bit, int orientation, boolean isShareDevice, boolean hasSdcard, boolean safe) {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) setVisibility(VISIBLE);
-        imgVCamLiveLandPlay.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
+//        imgVCamLiveLandPlay.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
         fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
         fLayoutCamLiveLandBottomBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
         rvLandDateList.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);

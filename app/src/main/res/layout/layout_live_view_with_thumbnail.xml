@@ -1,0 +1,44 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fLayout_live_view_container"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/imgv_live_thumbnail"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/default_diagram_mask" />
+
+    <TextView
+        android:id="@+id/tv_live_flow"
+        android:layout_width="@dimen/x60"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginEnd="@dimen/x14"
+        android:layout_marginStart="@dimen/x14"
+        android:layout_marginTop="@dimen/x14"
+        android:background="@drawable/flow_bg"
+        android:gravity="center"
+        android:textColor="@color/color_white"
+        android:visibility="gone" />
+
+    <FrameLayout
+        android:id="@+id/fLayout_standby_mode"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/color_2A3C58"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/lLayout_standby_jump_setting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:drawablePadding="@dimen/x17"
+            android:drawableTop="@drawable/icon_camera_standby"
+            android:gravity="center"
+            android:text="@string/Tap1_Camera_Video_DormantTips"
+            android:textColor="@android:color/white" />
+
+    </FrameLayout>
+</FrameLayout>
