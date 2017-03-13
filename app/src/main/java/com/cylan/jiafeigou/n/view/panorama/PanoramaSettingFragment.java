@@ -43,10 +43,8 @@ public class PanoramaSettingFragment extends BaseFragment<PanoramaSettingContact
         return R.layout.fragment_panorama_setting;
     }
 
-    @Override
     @OnClick(R.id.fragment_panorama_setting_header_back)
-    public boolean onBackPressed() {
+    public void exit() {
         getActivity().onBackPressed();
-        return super.onBackPressed();
     }
 }
