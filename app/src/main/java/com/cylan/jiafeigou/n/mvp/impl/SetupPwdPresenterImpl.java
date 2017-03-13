@@ -76,7 +76,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                         }
                         AppLogger.i("LoginAccountBean: " + new Gson().toJson(login));
                         //非三方登录的标记
-                        RxBus.getCacheInstance().postSticky(false);
+                        RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
                         return o;
                     }
                 })

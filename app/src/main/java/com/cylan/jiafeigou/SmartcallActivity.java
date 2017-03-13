@@ -21,14 +21,15 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+<<<<<<< HEAD
 import com.cylan.jiafeigou.n.base.BaseApplication;
+=======
+>>>>>>> dev-3.0.0-zsl
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -61,6 +62,7 @@ public class SmartcallActivity extends NeedLoginActivity
     private SplashContract.Presenter presenter;
     private boolean first;
     private boolean isPermissionDialogShowing = false;
+    private boolean firstSignIn;
 
     //这个页面先请求 sd卡权限
     @Override
@@ -209,10 +211,10 @@ public class SmartcallActivity extends NeedLoginActivity
             }
             if (basePresenter != null) basePresenter.stop();
             finish();
-        } else if (code == JError.StartLoginPage && !first) {
+
+        } else if (code == JError.StartLoginPage && !firstSignIn) {
             splashOver();
-            RxBus.getCacheInstance().removeStickyEvent(RxEvent.ResultLogin.class);
-            first = true;
+            firstSignIn = true;
         } else if (code == JError.ErrorAccountNotExist) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
         } else if (code == JError.ErrorLoginInvalidPass) {

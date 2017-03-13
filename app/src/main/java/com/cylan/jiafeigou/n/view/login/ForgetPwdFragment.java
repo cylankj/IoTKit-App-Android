@@ -196,7 +196,11 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         rLayoutForgetPwdToolbar.setBackAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_Yes), getString(R.string.Button_No), false);
+                if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))) {
+                    getFragmentManager().popBackStack();
+                } else {
+                    showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_Yes), getString(R.string.Button_No), false);
+                }
             }
         });
     }
@@ -651,13 +655,17 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))) {
-            getFragmentManager().popBackStack();
-        } else {
+//        if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))) {
+//            getFragmentManager().popBackStack();
+//        } else {
+//            rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
+//            vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
+//            vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);
+//            vsSetAccountPwd.showPrevious();
+//        }
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
             vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);
             vsSetAccountPwd.showPrevious();
-        }
     }
 }

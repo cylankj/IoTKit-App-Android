@@ -123,7 +123,6 @@ public class DataSource implements AppCallBack {
         AutoSignIn.getInstance().autoLogin()
                 .flatMap(integer -> {
                     AppLogger.d("integer: " + integer);
-
                     if (integer == 0) {
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
                         RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
@@ -236,6 +235,7 @@ public class DataSource implements AppCallBack {
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnRobotGetDataRsp :" + new Gson().toJson(robotoGetDataRsp));
         DataSourceManager.getInstance().cacheRobotoGetDataRsp(robotoGetDataRsp);
+        RxBus.getCacheInstance().post(robotoGetDataRsp);
     }
 
     @Override

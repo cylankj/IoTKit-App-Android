@@ -108,7 +108,10 @@
                 android:textSize="@dimen/sp14" />
 
             <TextView
-                android:layout_below="@id/tv_hardware_update_title"
+                android:visibility="gone"
+                android:textColor="#8c8c8c"
+                style="@style/information_item"
+                android:layout_below="@id/tv_hardware_new_version"
                 android:id="@+id/tv_version_describe"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />

@@ -84,7 +84,6 @@ public class AutoSignIn {
                                         RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
                                     } else if (signType.type >= 3) {
                                         //效验本地token是否过期
-
                                         if (checkTokenOut(signType.type)) {
                                             AppLogger.d("isout:ee");
                                             autoSave(signType.account, 1, "");
@@ -112,24 +111,24 @@ public class AutoSignIn {
     }
 
     private boolean checkTokenOut(int type) {
-        boolean isOut = true;
+        boolean isOut = false;
         switch (type) {
             case 3:
-                isOut = !TencentInstance.getInstance((Activity) ContextUtils.getContext()).mTencent.isSessionValid();
-                AppLogger.d("isout:" + isOut);
+//                isOut = !TencentInstance.getInstance((Activity) ContextUtils.getContext()).mTencent.isSessionValid();
+//                AppLogger.d("isout:" + isOut);
                 break;
             case 4:
                 Oauth2AccessToken oauth2AccessToken = AccessTokenKeeper.readAccessToken(ContextUtils.getContext());
                 isOut = !(oauth2AccessToken != null && oauth2AccessToken.isSessionValid());
                 break;
             case 6:
-                TwitterSession activeSession = Twitter.getSessionManager().getActiveSession();
-                TwitterAuthToken authToken = activeSession.getAuthToken();
-                if (authToken != null)
-                    isOut = !authToken.isExpired();
+//                TwitterSession activeSession = Twitter.getSessionManager().getActiveSession();
+//                TwitterAuthToken authToken = activeSession.getAuthToken();
+//                if (authToken != null)
+//                    isOut = !authToken.isExpired();
                 break;
             case 7:
-                isOut = !AccessToken.getCurrentAccessToken().isExpired();
+//                isOut = !AccessToken.getCurrentAccessToken().isExpired();
                 break;
         }
         return isOut;
