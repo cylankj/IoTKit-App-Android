@@ -6,7 +6,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,7 +14,6 @@ import android.widget.FrameLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
@@ -23,14 +21,14 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.video.PanoramicView_Ext;
+import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CameraParam;
 import com.cylan.panorama.PanoramicView;
 
@@ -50,7 +48,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     @BindView(R.id.fLayout_panoramic_container)
     FrameLayout mPanoramicContainer;
     private String uuid;
-    private PanoramicView panoramicView;
+    private PanoramicView_Ext panoramicView;
     private DpMsgDefine.DPAlarm dpAlarm;
     private PanoramicView.MountMode mountMode;
     private Device device;
@@ -122,17 +120,27 @@ public class PanoramicViewFragment extends IBaseFragment {
     public void loadBitmap(int index) {
         Log.d("panoramicView", "null? " + (panoramicView == null) + " " + (getContext() == null));
         if (panoramicView == null) {
-            panoramicView = new PanoramicView(getContext());
+            panoramicView = new PanoramicView_Ext(getContext());
+            panoramicView.setInterActListener(new VideoViewFactory.InterActListener() {
+                @Override
+                public boolean onSingleTap(float x, float y) {
+                    if (callBack != null) callBack.callBack(null);
+                    return true;
+                }
+
+                @Override
+                public void onSnapshot(Bitmap bitmap, boolean tag) {
+
+                }
+            });
             panoramicView.configV360(CameraParam.getTopPreset());
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mPanoramicContainer.addView(panoramicView, layoutParams);
         }
         //填满
-        GlideUrl url = new CamWarnGlideURL(dpAlarm.dpMsgVersion, index, Security.getVId(JFGRules.getTrimPackageName()),
-                uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid));
         Glide.with(ContextUtils.getContext())
-                .load(url)
+                .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg"))
                 .asBitmap()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(new SimpleTarget<Bitmap>() {

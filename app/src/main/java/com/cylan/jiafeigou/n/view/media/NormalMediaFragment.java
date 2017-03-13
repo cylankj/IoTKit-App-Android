@@ -103,8 +103,7 @@ public class NormalMediaFragment extends IBaseFragment {
 
     private void loadBitmap(DpMsgDefine.DPAlarm dpAlarm, int index, String uuid) {
         Glide.with(ContextUtils.getContext())
-                .load(new CamWarnGlideURL(dpAlarm.dpMsgVersion, index, Security.getVId(JFGRules.getTrimPackageName()),
-                        uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid)))
+                .load(new CamWarnGlideURL(uuid, dpAlarm.time + "_" + (index + 1) + ".jpg"))
                 .asBitmap()
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

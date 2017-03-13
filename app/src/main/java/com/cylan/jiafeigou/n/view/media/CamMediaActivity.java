@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,6 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamMediaPresenterImpl;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
@@ -125,8 +123,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     }
                 });
                 //可能出错,不是对应的index
-                GlideUrl url = new CamWarnGlideURL(alarmMsg.dpMsgVersion, i, Security.getVId(JFGRules.getTrimPackageName()),
-                        uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid));
+                GlideUrl url = new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (i + 1) + ".jpg");
                 Glide.with(ContextUtils.getContext())
                         .load(url)
                         .asBitmap()
@@ -195,8 +192,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         switch (view.getId()) {
             case R.id.imgV_big_pic_download:
                 if (basePresenter != null)
-                    basePresenter.saveImage(new CamWarnGlideURL(alarmMsg.dpMsgVersion, currentIndex, Security.getVId(JFGRules.getTrimPackageName()),
-                            uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid)));
+                    basePresenter.saveImage(new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg"));
                 break;
             case R.id.imgV_big_pic_share:
                 if (NetUtils.getJfgNetType(getContext()) == 0) {
@@ -204,8 +200,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     return;
                 }
                 ShareDialogFragment fragment = initShareDialog();
-                fragment.setPictureURL(new CamWarnGlideURL(alarmMsg.dpMsgVersion, currentIndex, Security.getVId(JFGRules.getTrimPackageName()),
-                        uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid)));
+                fragment.setPictureURL(new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg"));
                 fragment.show(getSupportFragmentManager(), "ShareDialogFragment");
                 break;
             case R.id.imgV_big_pic_collect:
@@ -214,8 +209,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     return;
                 }
                 if (basePresenter != null)
-                    basePresenter.collect(currentIndex, alarmMsg, new CamWarnGlideURL(alarmMsg.dpMsgVersion, currentIndex, Security.getVId(JFGRules.getTrimPackageName()),
-                            uuid, device == null ? 0 : device.regionType, device != null && TextUtils.isEmpty(device.vid)));
+                    basePresenter.collect(currentIndex, alarmMsg, new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg"));
                 break;
         }
     }

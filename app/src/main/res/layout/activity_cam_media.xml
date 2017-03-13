@@ -27,7 +27,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_above="@+id/fLayout_cam_handle_bar"
-        android:layout_below="@+id/vp_container"
         android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="2dp"
