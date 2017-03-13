@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -42,7 +41,6 @@ public class DPUnBindDeviceTask extends BaseDPTask<BaseDPTaskResult> {
                 .timeout(10, TimeUnit.SECONDS)
                 .flatMap(rsp -> {
                     if (rsp.code == 0) {//成功
-                        DataSourceManager.getInstance().delLocalJFGDevice(entity.getUuid());
                         return mDPHelper.unBindDeviceWithConfirm(entity.getUuid()).map(device -> new BaseDPTaskResult().setResultCode(rsp.code).setResultResponse(device));
                     } else {
                         return Observable.just(new BaseDPTaskResult().setResultCode(rsp.code).setResultResponse(null));

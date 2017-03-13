@@ -5,11 +5,13 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -25,6 +27,7 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -37,7 +40,7 @@ import rx.schedulers.Schedulers;
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
 
-    private JFGDevice device;
+    private Device device;
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
             R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
@@ -50,7 +53,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public CamSettingPresenterImpl(CamSettingContract.View view, String uuid) {
         super(view, uuid);
         view.setPresenter(this);
-        device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
+        device = DataSourceManager.getInstance().getJFGDevice(uuid);
     }
 
     @Override
@@ -98,7 +101,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RobotoGetDataRsp update) -> {
-                    getView().deviceUpdate(DataSourceManager.getInstance().getRawJFGDevice(uuid));
+                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
@@ -117,7 +120,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RxEvent.DeviceSyncRsp update) -> {
-                    getView().deviceUpdate(DataSourceManager.getInstance().getRawJFGDevice(uuid));
+                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDeviceDataSync"))
@@ -205,36 +208,21 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public void unbindDevice() {
-        addSubscription(Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .map((Object o) -> {
-                    boolean result = DataSourceManager.getInstance().delRemoteJFGDevice(uuid);
-                    AppLogger.i("unbind remote action uuid: " + uuid + " " + result);
-                    return null;
-                })
+        Subscription subscribe = Observable.just(new DPEntity()
+                .setUuid(uuid)
+                .setAction(DBAction.UNBIND))
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(item -> BaseDPTaskDispatcher.getInstance().perform(item))
                 .observeOn(AndroidSchedulers.mainThread())
-                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.UnBindDeviceEvent.class)
-                                .subscribeOn(Schedulers.newThread())
-                                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
-                                        .subscribeOn(AndroidSchedulers.mainThread())
-                                        .map(s -> {
-                                            getView().unbindDeviceRsp(-1);
-                                            return null;
-                                        }))
-                                .filter(event -> getView() != null && event != null)
-                                .observeOn(AndroidSchedulers.mainThread())
-                                .filter(unbindEvent -> {
-                                    if (unbindEvent.jfgResult.code != 0)
-                                        getView().unbindDeviceRsp(unbindEvent.jfgResult.code);//失败
-                                    return unbindEvent.jfgResult.code == 0;
-                                })
-                                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage())),
-                        (Object o, RxEvent.UnBindDeviceEvent unbindEvent) -> {
-                            getView().unbindDeviceRsp(0);//成功
-                            DataSourceManager.getInstance().delLocalJFGDevice(uuid);
-                            return null;
-                        })
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .subscribe());
+                .subscribe(rsp -> mView.unbindDeviceRsp(rsp.getResultCode()), e -> {
+                    if (e instanceof TimeoutException) {
+                        mView.unbindDeviceRsp(-1);
+                    }
+                    AppLogger.d(e.getMessage());
+                    e.printStackTrace();
+                }, () -> {
+                });
+        addSubscription(subscribe);
     }
 }

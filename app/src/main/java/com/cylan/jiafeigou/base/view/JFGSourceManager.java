@@ -6,7 +6,6 @@ import android.util.Pair;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.JFGVideo;
@@ -19,6 +18,8 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import java.util.ArrayList;
 import java.util.List;
 
+import rx.Observable;
+
 /**
  * Created by yzd on 16-12-28.
  */
@@ -27,23 +28,7 @@ public interface JFGSourceManager {
 
     <T extends Device> T getJFGDevice(String uuid);
 
-    JFGDevice getRawJFGDevice(String uuid);
-
     List<Device> getAllJFGDevice();
-
-    ArrayList<JFGDevice> getAllRawJFGDeviceList();
-
-    boolean updateRawDevice(JFGDevice device);
-
-    /**
-     * 删除设备，解绑设备使用,一般等待服务器返回结果再调用
-     *
-     * @param uuid
-     * @return
-     */
-    boolean delLocalJFGDevice(String uuid);
-
-    boolean delRemoteJFGDevice(String uuid);
 
     void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices);
 
@@ -147,4 +132,6 @@ public interface JFGSourceManager {
     void clearUnread(String uuid, long... ids);
 
     void syncDeviceUnreadCount();
+
+    Observable<Account> logout();
 }
