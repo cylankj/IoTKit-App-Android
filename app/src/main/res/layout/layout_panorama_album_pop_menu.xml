@@ -12,6 +12,7 @@
         app:cardCornerRadius="@dimen/y3">
 
         <RadioGroup
+            android:id="@+id/menu_album_pop_container"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_horizontal"
@@ -19,6 +20,7 @@
             android:weightSum="3">
 
             <RadioButton
+                android:id="@+id/menu_item_album_pop_both"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -29,6 +31,7 @@
                 android:textSize="@dimen/sp16" />
 
             <RadioButton
+                android:id="@+id/menu_item_album_pop_panorama"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
@@ -40,6 +43,7 @@
                 android:textSize="@dimen/sp16" />
 
             <RadioButton
+                android:id="@+id/menu_item_album_pop_photo"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"

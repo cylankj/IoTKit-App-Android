@@ -34,6 +34,11 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
 
+import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.SPEED_MODE.AUTO;
+import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.SPEED_MODE.FLUENCY;
+import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.SPEED_MODE.HD;
+import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.SPEED_MODE.NORMAL;
+
 /**
  * Created by yanzhendong on 2017/3/7.
  */
@@ -89,6 +94,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
 
     private SPEED_MODE speedMode = SPEED_MODE.AUTO;
+    private CONNECTION_MODE connectionMode = CONNECTION_MODE.FINE;
     private PopupWindow videoPopHint;
 
 
@@ -158,6 +164,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(panoramaToolBar);
+        connectionMode = CONNECTION_MODE.DEVICE_OFFLINE;
+        onNotifyBannerWithConnectionChanged();
     }
 
     @Override
@@ -235,15 +243,18 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         videoPopHint.showAsDropDown(bottomPanelVideoMode, -xPos, -yPos);
     }
 
-    public void hideVideoModePop() {
+    public boolean hideVideoModePop() {
         if (videoPopHint != null && videoPopHint.isShowing()) {
             videoPopHint.dismiss();
+            return true;
         }
+        return false;
     }
 
     @OnClick(R.id.imgv_toolbar_right)
     public void clickedToolBarSettingMenu() {
         AppLogger.d("clickedSettingMenu");
+        hideVideoModePop();
         PanoramaSettingFragment fragment = PanoramaSettingFragment.newInstance(mUUID);
         ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content);
     }
@@ -251,7 +262,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     @OnClick(R.id.tv_top_bar_left)
     public void onBackPressed() {
-        super.onBackPressed();
+        if (!hideVideoModePop()) {
+            super.onBackPressed();
+        }
         AppLogger.d("clickedToolBarBackMenu");
     }
 
@@ -264,7 +277,16 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.act_panorama_camera_banner_bad_net_work_configure)
     public void clickedConfigureNetWorkBanner() {
         AppLogger.d("clickedConfigureNetWorkBanner");
+        if (connectionMode == CONNECTION_MODE.BAD_NETWORK) {
+            AppLogger.d("无网络连接,将进入网络设置界面");
+        } else if (connectionMode == CONNECTION_MODE.DEVICE_OFFLINE) {
+            AppLogger.d("当前设备离线,可配置 AP 直联模式");
+
+        }
     }
+
+
+
 
     @OnClick(R.id.act_panorama_camera_quick_menu_item1_mic)
     public void clickedQuickMenuItem1SwitchMic() {
@@ -279,13 +301,28 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.act_panorama_camera_quick_menu_item3_left)
     public void clickedQuickMenuItem3Left() {
         AppLogger.d("clickedQuickMenuItem3Left");
-        onSwitchSpeedMode(speedMode.prev());
+        onSwitchSpeedMode(move(speedMode, false));
+    }
+
+    private SPEED_MODE move(SPEED_MODE mode, boolean next) {
+        switch (mode) {
+            case NORMAL:
+                return next ? HD : FLUENCY;
+            case HD:
+                return next ? AUTO : NORMAL;
+            case AUTO:
+                return next ? FLUENCY : HD;
+            case FLUENCY:
+                return next ? NORMAL : AUTO;
+            default:
+                return AUTO;
+        }
     }
 
     @OnClick(R.id.act_panorama_camera_quick_menu_item3_right)
     public void clickedQuickMenuItem3Right() {
         AppLogger.d("clickedQuickMenuItem3Right");
-        onSwitchSpeedMode(speedMode.next());
+        onSwitchSpeedMode(move(speedMode, true));
     }
 
     public void onShowBadNetWorkBanner() {
@@ -316,6 +353,18 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_photograph_selector);
     }
 
+    public void onNotifyBannerWithConnectionChanged() {
+        switch (connectionMode) {
+            case FINE:
+                break;
+            case DEVICE_OFFLINE:
+                onShowDeviceOfflineBanner();
+                break;
+            case BAD_NETWORK:
+                onShowBadNetWorkBanner();
+                break;
+        }
+    }
 
     public void onSetNoNetWorkLayout() {
         onShowBadNetWorkBanner();
