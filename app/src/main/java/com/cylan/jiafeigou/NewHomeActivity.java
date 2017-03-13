@@ -190,13 +190,15 @@ public class NewHomeActivity extends NeedLoginActivity implements
             @Override
             public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
                 super.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
-                sharedElementCallBackListener.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
+                if (sharedElementCallBackListener != null)
+                    sharedElementCallBackListener.onSharedElementEnd(sharedElementNames, sharedElements, sharedElementSnapshots);
             }
 
             @Override
             public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
                 super.onMapSharedElements(names, sharedElements);
-                sharedElementCallBackListener.onSharedElementCallBack(names, sharedElements);
+                if (sharedElementCallBackListener != null)
+                    sharedElementCallBackListener.onSharedElementCallBack(names, sharedElements);
             }
 
         });
