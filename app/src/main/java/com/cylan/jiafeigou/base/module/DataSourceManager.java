@@ -272,7 +272,8 @@ public class DataSourceManager implements JFGSourceManager {
      * 很暴力地获取
      */
     public void syncDeviceUnreadCount() {
-        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+        HashMap<String, Device> map = new HashMap<>(mCachedDeviceMap);
+        for (Map.Entry<String, Device> entry : map.entrySet()) {
             Device device = entry.getValue();
             if (JFGRules.isCamera(device.pid)) {
                 ArrayList<Long> msgs = new ArrayList<>();
