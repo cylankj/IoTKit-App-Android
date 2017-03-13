@@ -21,10 +21,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-<<<<<<< HEAD
 import com.cylan.jiafeigou.n.base.BaseApplication;
-=======
->>>>>>> dev-3.0.0-zsl
+
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
