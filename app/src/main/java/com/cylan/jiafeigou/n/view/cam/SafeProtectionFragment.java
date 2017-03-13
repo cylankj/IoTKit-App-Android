@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
@@ -227,6 +228,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             }
             break;
             case R.id.fLayout_protection_start_time: {
+                ViewUtils.deBounceClick(view);
                 initTimePickDialogFragment();
                 timePickDialogFragment.setArguments(getBundle(getString(R.string.FROME)));
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentStart");

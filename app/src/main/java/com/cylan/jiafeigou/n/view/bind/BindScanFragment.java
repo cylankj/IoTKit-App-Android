@@ -1,7 +1,12 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -31,7 +36,14 @@ import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
+import static android.Manifest.permission.CAMERA;
 import static com.cylan.jiafeigou.misc.JConstant.QR_CODE_REG;
 import static com.cylan.jiafeigou.misc.JConstant.QR_CODE_REG_WITH_SN;
 import static com.cylan.jiafeigou.misc.JError.ErrorCIDBinded;
@@ -42,7 +54,7 @@ import static com.cylan.jiafeigou.misc.JError.ErrorCIDNotBind;
  * Use the {@link BindScanFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-
+@RuntimePermissions
 public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> implements ZXingScannerView.ResultHandler, ScanContract.View {
 
     @BindView(R.id.zxV_scan)
@@ -71,9 +83,54 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @Override
     public void onStart() {
         super.onStart();
+        BindScanFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        BindScanFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        if (permissions.length == 1) {
+            if (TextUtils.equals(permissions[0], CAMERA) && grantResults[0] > -1) {
+                BindScanFragmentPermissionsDispatcher.onCameraPermissionWithCheck(this);
+            }
+        }
+    }
+
+    @OnPermissionDenied(Manifest.permission.CAMERA)
+    public void onCameraPermissionDenied() {
+        getActivity().getSupportFragmentManager().popBackStack();
+    }
+
+    @OnNeverAskAgain(Manifest.permission.CAMERA)
+    public void onNeverAskAgainCameraPermission() {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(getString(R.string.permission_auth, "", getString(R.string.CAMERA)))
+                .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                })
+                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                })
+                .create()
+                .show();
+    }
+
+    @NeedsPermission(Manifest.permission.CAMERA)
+    public void onCameraPermission() {
         zxVScan.startCamera();
         zxVScan.setResultHandler(BindScanFragment.this);
     }
+
+
+    @OnShowRationale(Manifest.permission.CAMERA)
+    public void showRationaleForCamera(PermissionRequest request) {
+        // NOTE: Show activity_cloud_live_mesg_call_out_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_call_out_item dialog.
+        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
+        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
+        onNeverAskAgainCameraPermission();
+    }
+
 
     @Override
     public void onPause() {

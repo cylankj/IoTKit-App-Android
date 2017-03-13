@@ -1,9 +1,14 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.text.TextUtils;
@@ -21,6 +26,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.nineoldandroids.animation.Animator;
@@ -30,14 +36,22 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_AUTO_SHOW_BIND;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link BindCameraFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
+@RuntimePermissions
 public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Presenter> implements BindDeviceContract.View {
     public static final String KEY_SUB_FRAGMENT_ID = "sub_key_id";
     public static final String KEY_DEVICE_LIST = "key_device_list";
@@ -80,7 +94,6 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         customToolbar.setBackAction(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -97,11 +110,6 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
         });
         initAnimation();
     }
-
-//    @Override
-//    protected int getSubContentViewId() {
-//        return R.layout.fragment_bind_camera;
-//    }
 
 
     private void initAnimation() {
@@ -127,6 +135,62 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
         View rootView = inflater.inflate(R.layout.fragment_bind_camera, container, false);
         ButterKnife.bind(this, rootView);
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        BindCameraFragmentPermissionsDispatcher.onGrantedLocationPermissionWithCheck(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        BindCameraFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        if (permissions.length == 1) {
+            if (TextUtils.equals(permissions[0], ACCESS_FINE_LOCATION) && grantResults[0] > -1) {
+                BindCameraFragmentPermissionsDispatcher.onGrantedLocationPermissionWithCheck(this);
+            }
+        }
+    }
+
+
+    @NeedsPermission(ACCESS_FINE_LOCATION)
+    public void onGrantedLocationPermission() {
+        if (!MiscUtils.checkGpsAvailable(getApplicationContext())) {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(getString(R.string.GetWifiList_FaiTips))
+                    .setCancelable(false)
+                    .setPositiveButton(getString(R.string.OK), (@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
+                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                    })
+                    .setNegativeButton(getString(R.string.CANCEL), (final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
+                        dialog.cancel();
+                        getFragmentManager().popBackStack();
+                    });
+            final AlertDialog alert = builder.create();
+            alert.show();
+        }
+    }
+
+    @OnPermissionDenied(ACCESS_FINE_LOCATION)
+    public void onDeniedLocationPermission() {
+        new AlertDialog.Builder(getActivity())
+                .setMessage(getString(R.string.turn_on_gps))
+                .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+//                    finishExt();
+                    getActivity().getSupportFragmentManager().popBackStack();
+                })
+                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                })
+                .create()
+                .show();
+    }
+
+    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+    public void showRationaleForLocation(PermissionRequest request) {
+        onDeniedLocationPermission();
     }
 
     @OnClick(R.id.tv_bind_camera_tip)

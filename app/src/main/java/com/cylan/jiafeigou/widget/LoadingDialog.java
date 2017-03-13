@@ -51,6 +51,7 @@ public class LoadingDialog extends BaseDialog {
     }
 
     public static void dismissLoading(FragmentManager fragmentManager) {
+        if (fragmentManager == null) return;
         Fragment dialog = fragmentManager.findFragmentByTag("LoadingDialog");
         if (dialog != null && dialog.isVisible()) {
             ((LoadingDialog) dialog).dismiss();

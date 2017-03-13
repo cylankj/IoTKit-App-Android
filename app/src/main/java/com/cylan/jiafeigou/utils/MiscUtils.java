@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.utils;
 
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.XmlResourceParser;
+import android.location.LocationManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -278,5 +280,11 @@ public class MiscUtils {
         msg.id = id;
         msg.version = version;
         return msg;
+    }
+
+
+    public static boolean checkGpsAvailable(Context context) {
+        LocationManager manager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
+        return manager.isProviderEnabled(LocationManager.GPS_PROVIDER);
     }
 }
