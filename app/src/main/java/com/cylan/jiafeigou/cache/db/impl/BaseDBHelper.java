@@ -343,9 +343,11 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Account> logout() {
         return getActiveAccount().map(account -> {
-            account.setAction(DBAction.SAVED);
-            account.setState(DBState.SUCCESS);
-            account.update();
+            if (account != null) {
+                account.setAction(DBAction.SAVED);
+                account.setState(DBState.SUCCESS);
+                account.update();
+            }
             return account;
         });
     }

@@ -39,11 +39,11 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -184,27 +184,26 @@ public class DataSourceManager implements JFGSourceManager {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(items -> {
-                    Set<String> result;
+                    Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
                     for (JFGDevice device : items) {
-                        mCachedDeviceMap.remove(device.uuid);
+                        result.remove(device.uuid);
                     }
-                    result = new HashSet<>(mCachedDeviceMap.keySet());
-                    mCachedDeviceMap.clear();
                     AppLogger.d("已删除的设备数" + result.size());
                     return result;
                 })
                 .flatMap(items ->
-                        items.size() == 0 ? Observable.just(devices) :
-                                Observable.from(items).flatMap(uuid -> dbHelper.unBindDeviceWithConfirm(uuid)
-                                        .filter(dev -> dev != null)
-                                        .map(dev -> {
-                                            RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(dev.getUuid()));
-                                            return dev;
-                                        })
+                        items.size() == 0 ?
+                                Observable.just(devices) :
+                                Observable.from(items)
+                                        .flatMap(this::unBindDevice)
                                         .buffer(items.size())
                                         .map(ret -> devices)
-                                ))
-                .flatMap(items -> dbHelper.updateDevice(devices))
+                )
+                .map(items -> {
+                    mCachedDeviceMap.clear();
+                    return items;
+                })
+                .flatMap(items -> dbHelper.updateDevice(items))
                 .map(dev -> {
                     Device dpDevice = create(dev.getPid()).fill(dev);
                     mCachedDeviceMap.put(dev.getUuid(), dpDevice);
@@ -296,6 +295,17 @@ public class DataSourceManager implements JFGSourceManager {
                     clear();
                     setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
                     return ret;
+                });
+    }
+
+    @Override
+    public Observable<Device> unBindDevice(String uuid) {
+        return dbHelper.unBindDeviceWithConfirm(uuid)
+                .filter(dev -> dev != null)
+                .map(dev -> {
+                    mCachedDeviceMap.remove(dev.getUuid());
+                    RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(dev.getUuid()));
+                    return dev;
                 });
     }
 

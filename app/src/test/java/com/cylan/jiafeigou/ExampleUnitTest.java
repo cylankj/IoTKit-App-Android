@@ -4,6 +4,9 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 /**
@@ -26,7 +29,18 @@ public class ExampleUnitTest {
 
     @Test
     public void testMe() {
-        String ss=null;
+        String ss = null;
         System.out.print(ss);
+    }
+
+    @Test
+    public void testLinkHashMap() {
+        LinkedHashMap<String, String> map = new LinkedHashMap<>();
+        for (int i = 0; i < 10; i++) {
+            map.put("item" + i, "AAAAAA" + i);
+        }
+        for (Map.Entry<String, String> entry : map.entrySet()) {
+            System.out.println(entry.getValue());
+        }
     }
 }

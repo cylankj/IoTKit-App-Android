@@ -134,4 +134,6 @@ public interface JFGSourceManager {
     void syncDeviceUnreadCount();
 
     Observable<Account> logout();
+
+    Observable<Device> unBindDevice(String uuid);
 }
