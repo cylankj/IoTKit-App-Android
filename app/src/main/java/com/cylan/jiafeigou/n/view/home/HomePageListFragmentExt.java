@@ -346,7 +346,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
                     : getString(R.string.Tap1_Index_NightGreetings));
             tvHeaderNickName.requestLayout();
-        },100);
+        }, 100);
     }
 
     /**

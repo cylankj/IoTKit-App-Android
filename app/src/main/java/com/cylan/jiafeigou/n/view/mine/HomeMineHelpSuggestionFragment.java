@@ -122,7 +122,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         switch (v.getId()) {
             case R.id.tv_mine_help_suggestion_clear:
                 //弹出对话框
-                if (suggestionAdapter.getItemCount() == 0){
+                if (suggestionAdapter.getItemCount() == 0) {
                     return;
                 }
                 showDialog();
@@ -146,9 +146,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             return;
         }
 
-        if (suggestionAdapter.getItemCount() == 1 || suggestionAdapter.getItemCount() == 2){
+        if (suggestionAdapter.getItemCount() == 1 || suggestionAdapter.getItemCount() == 2) {
             addAutoReply();
-        }else {
+        } else {
             if (presenter.checkOverTime(suggestionAdapter.getItem(suggestionAdapter.getItemCount() - 2).getDate())) {
                 addAutoReply();
             }
@@ -201,9 +201,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         String time = System.currentTimeMillis() + "";
         suggestionBean.setDate(time);
 
-        if (suggestionAdapter.getItemCount() == 0 || suggestionAdapter.getItemCount() == 1){
+        if (suggestionAdapter.getItemCount() == 0 || suggestionAdapter.getItemCount() == 1) {
             suggestionBean.isShowTime = true;
-        }else {
+        } else {
             if (presenter.checkOver20Min(suggestionAdapter.getList().get(suggestionAdapter.getItemCount() - 1).getDate())) {
                 suggestionBean.isShowTime = true;
             } else {
@@ -308,7 +308,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
      */
     @Override
     public void initRecycleView(ArrayList<MineHelpSuggestionBean> list) {
-        if (list.size() == 0){
+        if (list.size() == 0) {
             //列表为空插入一条系统提示
             list.add(addSystemAutoReply());
         }
@@ -326,7 +326,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                     ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
                     return;
                 }
-                showResendFeedBackDialog(holder,item,position);
+                showResendFeedBackDialog(holder, item, position);
             }
         });
     }
@@ -334,10 +334,10 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     private void showResendFeedBackDialog(SuperViewHolder holder, MineHelpSuggestionBean item, int position) {
         AlertDialog.Builder b = new AlertDialog.Builder(getContext());
         b.setTitle(getString(R.string.ANEW_SEND));
-        b.setNegativeButton(getString(R.string.Button_No),(DialogInterface dialog, int which)->{
+        b.setNegativeButton(getString(R.string.Button_No), (DialogInterface dialog, int which) -> {
             dialog.dismiss();
         });
-        b.setPositiveButton(getString(R.string.Button_Yes),(DialogInterface dialog, int which)->{
+        b.setPositiveButton(getString(R.string.Button_Yes), (DialogInterface dialog, int which) -> {
             itemPosition = position;
             resendFlag = true;
             ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);

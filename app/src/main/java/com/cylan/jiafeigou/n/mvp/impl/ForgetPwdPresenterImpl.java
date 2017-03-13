@@ -66,29 +66,29 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
     //计数10分钟3次
     @Override
     public boolean checkOverCount(String account) {
-        int count = PreferencesUtils.getInt(account+JConstant.KEY_FORGET_PWD_GET_SMS_COUNT, 0);
-        long first_time = PreferencesUtils.getLong(account+JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,0);
+        int count = PreferencesUtils.getInt(account + JConstant.KEY_FORGET_PWD_GET_SMS_COUNT, 0);
+        long first_time = PreferencesUtils.getLong(account + JConstant.KEY_FORGET_PWD_FRIST_GET_SMS, 0);
 
-        if(count == 0){
-            PreferencesUtils.putLong(account+JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,System.currentTimeMillis());
-            PreferencesUtils.putInt(account+JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,count+1);
+        if (count == 0) {
+            PreferencesUtils.putLong(account + JConstant.KEY_FORGET_PWD_FRIST_GET_SMS, System.currentTimeMillis());
+            PreferencesUtils.putInt(account + JConstant.KEY_FORGET_PWD_GET_SMS_COUNT, count + 1);
             return false;
         }
 
-        if (count < 3 ){
-            if (System.currentTimeMillis() - first_time < 10*60*1000){
-                PreferencesUtils.putInt(account+JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,count+1);
-            }else {
-                PreferencesUtils.putInt(account+JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,0);
-                PreferencesUtils.putLong(account+JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,System.currentTimeMillis());
+        if (count < 3) {
+            if (System.currentTimeMillis() - first_time < 10 * 60 * 1000) {
+                PreferencesUtils.putInt(account + JConstant.KEY_FORGET_PWD_GET_SMS_COUNT, count + 1);
+            } else {
+                PreferencesUtils.putInt(account + JConstant.KEY_FORGET_PWD_GET_SMS_COUNT, 0);
+                PreferencesUtils.putLong(account + JConstant.KEY_FORGET_PWD_FRIST_GET_SMS, System.currentTimeMillis());
             }
             return false;
-        }else {
-            if (System.currentTimeMillis() - first_time < 10*60*1000){
+        } else {
+            if (System.currentTimeMillis() - first_time < 10 * 60 * 1000) {
                 return true;
-            }else {
-                PreferencesUtils.putInt(account+JConstant.KEY_FORGET_PWD_GET_SMS_COUNT,0);
-                PreferencesUtils.putLong(account+JConstant.KEY_FORGET_PWD_FRIST_GET_SMS,System.currentTimeMillis());
+            } else {
+                PreferencesUtils.putInt(account + JConstant.KEY_FORGET_PWD_GET_SMS_COUNT, 0);
+                PreferencesUtils.putLong(account + JConstant.KEY_FORGET_PWD_FRIST_GET_SMS, System.currentTimeMillis());
                 return false;
             }
         }
@@ -146,7 +146,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                             //store the token .
                             PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN,
                                     smsCodeResult.token);
-                            AppLogger.d("code:"+smsCodeResult.token);
+                            AppLogger.d("code:" + smsCodeResult.token);
                         }
                     }
                 });

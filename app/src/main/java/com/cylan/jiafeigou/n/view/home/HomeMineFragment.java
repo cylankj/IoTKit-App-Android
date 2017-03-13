@@ -145,6 +145,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 我的亲友
+     *
      * @param view
      */
     public void friendItem(View view) {

@@ -100,7 +100,7 @@ public interface MineBindPhoneContract {
         /**
          * 发送修改手机号请求
          */
-        void sendChangePhoneReq(String newPhone,String token);
+        void sendChangePhoneReq(String newPhone, String token);
 
         /**
          * 获取验证码的回调
@@ -121,7 +121,7 @@ public interface MineBindPhoneContract {
          *
          * @param code
          */
-        void CheckVerifyCode(String phone,String inputcode, String code);
+        void CheckVerifyCode(String phone, String inputcode, String code);
 
         /**
          * 校验短信验证码的回调

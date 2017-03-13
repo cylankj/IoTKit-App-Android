@@ -165,11 +165,11 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .flatMap(new Func1<RxEvent.ThirdLoginTab, Observable<JFGAccount>>() {
                     @Override
                     public Observable<JFGAccount> call(RxEvent.ThirdLoginTab thirdLoginTab) {
-                        if (thirdLoginTab.isThird){
+                        if (thirdLoginTab.isThird) {
                             JFGAccount account = new JFGAccount();
                             account.setEnablePush(true);
                             return Observable.just(account);
-                        }else {
+                        } else {
                             return Observable.just(DataSourceManager.getInstance().getJFGAccount());
                         }
                     }
@@ -179,13 +179,13 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public void call(JFGAccount account) {
                         userInfo = account;
-                        if (account != null && getView() != null){
-                            if (TextUtils.isEmpty(account.getAccount()) && account.isEnablePush()){
+                        if (account != null && getView() != null) {
+                            if (TextUtils.isEmpty(account.getAccount()) && account.isEnablePush()) {
                                 isOpenLogin = true;
                                 getView().setUserImageHeadByUrl(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON));
                                 String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
                                 getView().setAliasName(TextUtils.isEmpty(userAlias) ? createRandomName() : userAlias);
-                            }else {
+                            } else {
                                 isOpenLogin = false;
                                 getView().setUserImageHeadByUrl(account.getPhotoUrl());
                                 if (account.getAlias() == null | TextUtils.isEmpty(account.getAlias())) {

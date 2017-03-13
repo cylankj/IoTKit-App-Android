@@ -379,13 +379,13 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     /**
      * 删除生成的本地log文件
      */
-    private void deleteLocalLogFile(){
+    private void deleteLocalLogFile() {
         Observable.just("delete")
                 .subscribeOn(Schedulers.io())
                 .map(s -> {
                     if (outFile != null && outFile.exists()) {
                         boolean delete = outFile.delete();
-                        return delete ? 0:-1;
+                        return delete ? 0 : -1;
                     }
                     return 0;
                 })

@@ -184,7 +184,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     @Override
     public void onStop() {
         super.onStop();
-        if (countDownTimer != null){
+        if (countDownTimer != null) {
             countDownTimer.onFinish();
             countDownTimer = null;
         }
@@ -250,7 +250,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         countDownTimer.start();
         tvMeterGetCode.setEnabled(false);
         if (presenter != null)
-        presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
+            presenter.submitAccount(ViewUtils.getTextViewContent(etForgetUsername));
     }
 
     @OnClick(R.id.iv_forget_clear_username)
@@ -301,7 +301,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                     if (presenter != null) {
                         isCheckAccAgain = true;
                         presenter.checkIsReg(ViewUtils.getTextViewContent(etForgetUsername));
-                        AppLogger.d("isCheckAccAgain:"+isCheckAccAgain);
+                        AppLogger.d("isCheckAccAgain:" + isCheckAccAgain);
                     }
 
                 }
@@ -604,7 +604,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         if (etNewPwdInput != null) etNewPwdInput.setSelection(etNewPwdInput.length());
     }
 
-    @OnClick({R.id.iv_new_clear_pwd, R.id.tv_new_pwd_submit,R.id.tv_email_confirm})
+    @OnClick({R.id.iv_new_clear_pwd, R.id.tv_new_pwd_submit, R.id.tv_email_confirm})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_new_clear_pwd:

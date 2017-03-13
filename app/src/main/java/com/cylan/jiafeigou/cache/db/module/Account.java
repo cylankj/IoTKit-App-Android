@@ -75,8 +75,8 @@ public class Account extends DataPoint implements IEntity<Account> {
 
     @Generated(hash = 447675577)
     public Account(Long _id, String account, String phone, String token, String alias,
-            boolean enablePush, boolean enableSound, String email, boolean enableVibrate,
-            String photoUrl, String action, String state, String option) {
+                   boolean enablePush, boolean enableSound, String email, boolean enableVibrate,
+                   String photoUrl, String action, String state, String option) {
         this._id = _id;
         this.account = account;
         this.phone = phone;
@@ -276,7 +276,9 @@ public class Account extends DataPoint implements IEntity<Account> {
         this._id = _id;
     }
 
-    /** called by internal mechanisms, do not call yourself. */
+    /**
+     * called by internal mechanisms, do not call yourself.
+     */
     @Generated(hash = 1812283172)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

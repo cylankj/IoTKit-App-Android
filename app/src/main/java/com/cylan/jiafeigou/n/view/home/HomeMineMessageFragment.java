@@ -112,7 +112,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     @Override
     public void initRecycleView(ArrayList<MineMessageBean> list) {
         rclHomeMineMessageRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        messageAdapter = new HomeMineMessageAdapter(getContext(),list, null);
+        messageAdapter = new HomeMineMessageAdapter(getContext(), list, null);
         rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
     }
 

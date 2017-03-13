@@ -99,7 +99,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         this.presenter = presenter;
     }
 
-    @OnClick({R.id.iv_home_setting_back, R.id.rl_home_setting_about, R.id.rl_home_setting_clear,R.id.rl_home_setting_recommend})
+    @OnClick({R.id.iv_home_setting_back, R.id.rl_home_setting_about, R.id.rl_home_setting_clear, R.id.rl_home_setting_recommend})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_home_setting_back:

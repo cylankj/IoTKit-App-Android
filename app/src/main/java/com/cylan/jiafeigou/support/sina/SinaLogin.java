@@ -54,7 +54,7 @@ public class SinaLogin {
     }
 
 
-    public static SinaLogin getInstance(Activity activity){
+    public static SinaLogin getInstance(Activity activity) {
         if (instance == null)
             synchronized (SinaLogin.class) {
                 if (instance == null)
@@ -84,7 +84,7 @@ public class SinaLogin {
      */
     public void login(WeiboAuthListener mAuthListener) {
         if (null == mSsoHandler && mWeibo != null) {
-            mSsoHandler = new SsoHandler((Activity)context, mWeibo);
+            mSsoHandler = new SsoHandler((Activity) context, mWeibo);
         }
 
         if (mSsoHandler != null) {

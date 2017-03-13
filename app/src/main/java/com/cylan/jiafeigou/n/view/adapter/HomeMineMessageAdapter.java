@@ -94,48 +94,48 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
 
         //头像icon
 
-        if (item.type == 701){
+        if (item.type == 701) {
             //处理消息显示
-            holder.setText(R.id.tv_device_name,ContextUtils.getContext().getString(R.string.Tap3_UserMessage_System));
+            holder.setText(R.id.tv_device_name, ContextUtils.getContext().getString(R.string.Tap3_UserMessage_System));
             holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(R.drawable.pic_head));
-        }else {
+        } else {
             //处理消息显示
-            holder.setText(R.id.tv_device_name,item.getContent());
+            holder.setText(R.id.tv_device_name, item.getContent());
             char c = item.content.charAt(0);
-            if (c== '5'){
+            if (c == '5') {
                 int iconRes = resMap.get(6);
                 holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
-            }else if (c == '7'){
+            } else if (c == '7') {
                 int iconRes = resMap.get(11);
                 holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
-            }else {
+            } else {
                 int iconRes = resMap.get(4);
                 holder.setImageDrawable(R.id.iv_mesg_icon, getContext().getResources().getDrawable(iconRes));
             }
         }
 
-        if (item.isDone == 1){
-            switch (item.type){
+        if (item.isDone == 1) {
+            switch (item.type) {
                 case 601:
-                    holder.setText(R.id.mesg_item_content,String.format(ContextUtils.getContext().getString(R.string.MSG_REBIND), item.getName()));
+                    holder.setText(R.id.mesg_item_content, String.format(ContextUtils.getContext().getString(R.string.MSG_REBIND), item.getName()));
                     break;
                 case 603:
-                    holder.setText(R.id.mesg_item_content,"该设备已分享");
+                    holder.setText(R.id.mesg_item_content, "该设备已分享");
                     break;
                 case 604:
-                    holder.setText(R.id.mesg_item_content,"亲友分享了改设备");
+                    holder.setText(R.id.mesg_item_content, "亲友分享了改设备");
                     break;
             }
-        }else {
-            switch (item.type){
+        } else {
+            switch (item.type) {
                 case 601:
                     holder.setText(R.id.mesg_item_content, "该设备已被解绑");
                     break;
                 case 603:
-                    holder.setText(R.id.mesg_item_content,ContextUtils.getContext().getString(R.string.Tap1_shareDevice_canceledshare));
+                    holder.setText(R.id.mesg_item_content, ContextUtils.getContext().getString(R.string.Tap1_shareDevice_canceledshare));
                     break;
                 case 604:
-                    holder.setText(R.id.mesg_item_content,"亲友取消了分享该设备");
+                    holder.setText(R.id.mesg_item_content, "亲友取消了分享该设备");
                     break;
                 case 701:
                     holder.setText(R.id.mesg_item_content, Html.fromHtml(item.getName()).toString().trim());
