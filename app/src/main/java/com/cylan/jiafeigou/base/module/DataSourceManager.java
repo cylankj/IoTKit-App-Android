@@ -44,8 +44,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
@@ -66,6 +68,7 @@ public class DataSourceManager implements JFGSourceManager {
     private Account account;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
+    private Subscription unreadCountFetcher;
     /**
      * 未读消息数
      */
@@ -145,11 +148,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public List<Device> getAllJFGDevice() {
-        List<Device> result = new ArrayList<>(mCachedDeviceMap.size());
-        for (Map.Entry<String, ? extends DataPoint> entry : mCachedDeviceMap.entrySet()) {
-            result.add(getJFGDevice(entry.getKey()));
-        }
-        return getValueWithAccountCheck(result);
+        return new ArrayList<>(mCachedDeviceMap.values());
     }
 
     public List<Device> getJFGDeviceByPid(int... pids) {
@@ -179,7 +178,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
-        AppLogger.d("正在缓冲设备- start");
         Observable.just(devices)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -271,7 +269,7 @@ public class DataSourceManager implements JFGSourceManager {
      * 很暴力地获取
      */
     public void syncDeviceUnreadCount() {
-        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+        for (Map.Entry<String, Device> entry : new HashMap<>(mCachedDeviceMap).entrySet()) {
             Device device = entry.getValue();
             if (JFGRules.isCamera(device.pid)) {
                 ArrayList<Long> msgs = new ArrayList<>();
@@ -286,6 +284,17 @@ public class DataSourceManager implements JFGSourceManager {
                 }
             }
         }
+    }
+
+    private Subscription getUnreadCountFetcherSub() {
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .throttleLast(5, TimeUnit.SECONDS)
+                .subscribe(rsp -> syncDeviceUnreadCount(), e -> {
+                    AppLogger.d(e.getMessage());
+                    e.printStackTrace();
+                });
     }
 
     @Override
@@ -362,7 +371,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheUnreadCount(long seq, String uuid, ArrayList<JFGDPMsgCount> unreadList) {
-
         SparseLongArray array = unreadMap.get(uuid);
         if (array == null) {
             array = new SparseLongArray();
@@ -404,10 +412,10 @@ public class DataSourceManager implements JFGSourceManager {
         isOnline = false;
         account = null;
         jfgAccount = null;
-        this.jfgAccount = null;
-        this.account = null;
         if (unreadMap != null) unreadMap.clear();
         if (shareList != null) shareList.clear();
+        if (unreadCountFetcher != null && unreadCountFetcher.isUnsubscribed())
+            unreadCountFetcher.unsubscribe();
     }
 
     @Override
@@ -491,10 +499,7 @@ public class DataSourceManager implements JFGSourceManager {
                                 })
                         ))
                 .doOnError(Throwable::printStackTrace)
-                .doOnCompleted(() -> {
-                    syncDeviceUnreadCount();
-                    RxBus.getCacheInstance().post(dataRsp);
-                })
+                .doOnCompleted(() -> RxBus.getCacheInstance().post(dataRsp))
                 .subscribe();
     }
 
@@ -584,6 +589,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
+        if (unreadCountFetcher == null) {
+            unreadCountFetcher = getUnreadCountFetcherSub();
+        }
         AppLogger.i("setJfgAccount:" + (jfgAccount == null));
         if (jfgAccount != null) {
             PreferencesUtils.putString(KEY_ACCOUNT, new Gson().toJson(jfgAccount));

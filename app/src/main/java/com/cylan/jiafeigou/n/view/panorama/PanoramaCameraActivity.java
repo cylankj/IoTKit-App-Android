@@ -2,12 +2,17 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
@@ -21,6 +26,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
@@ -83,6 +89,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
 
     private SPEED_MODE speedMode = SPEED_MODE.AUTO;
+    private PopupWindow videoPopHint;
 
 
     @Override
@@ -98,6 +105,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onDismiss() {
 
+    }
+
+    @Override
+    protected void initViewAndListener() {
+        super.initViewAndListener();
     }
 
     @Override
@@ -146,8 +158,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(panoramaToolBar);
-        onSetNoNetWorkLayout();
-
     }
 
     @Override
@@ -191,27 +201,57 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.act_panorama_camera_bottom_panel_album)
     public void clickedBottomPanelAlbumItem() {
         AppLogger.d("clickedBottomPanelAlbumItem");
-
+        Intent intent = new Intent(this, PanoramaAlbumActivity.class);
+        startActivity(intent);
     }
 
     @OnClick(R.id.act_panorama_camera_bottom_panel_picture)
     public void switchViewerModeToPicture() {
         AppLogger.d("switchViewerModeToPicture");
+        hideVideoModePop();
+        onSetPictureModeLayout();
     }
 
     @OnClick(R.id.act_panorama_camera_bottom_panel_video)
     public void switchViewerModeToVideo() {
         AppLogger.d("switchViewerModeToVideo");
+        showVideoModePop();
+        onSetVideoModeLayout();
+
+    }
+
+    public void showVideoModePop() {
+        if (videoPopHint == null) {
+            View view = LayoutInflater.from(this).inflate(R.layout.item_panorama_pop_hint, null);
+            view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+            videoPopHint = new PopupWindow(view, view.getMeasuredWidth(), view.getMeasuredHeight());
+            videoPopHint.setFocusable(false);
+            videoPopHint.setOutsideTouchable(false);
+            videoPopHint.setTouchable(false);
+            videoPopHint.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        }
+        int xPos = (int) ((videoPopHint.getWidth() - bottomPanelVideoMode.getWidth()) / 2 + getResources().getDimension(R.dimen.y2));
+        int yPos = (int) (videoPopHint.getHeight() + getResources().getDimension(R.dimen.y2) + bottomPanelVideoMode.getHeight());
+        videoPopHint.showAsDropDown(bottomPanelVideoMode, -xPos, -yPos);
+    }
+
+    public void hideVideoModePop() {
+        if (videoPopHint != null && videoPopHint.isShowing()) {
+            videoPopHint.dismiss();
+        }
     }
 
     @OnClick(R.id.imgv_toolbar_right)
     public void clickedToolBarSettingMenu() {
         AppLogger.d("clickedSettingMenu");
-
+        PanoramaSettingFragment fragment = PanoramaSettingFragment.newInstance(mUUID);
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fragment, android.R.id.content);
     }
 
+    @Override
     @OnClick(R.id.tv_top_bar_left)
-    public void clickedToolBarBackMenu() {
+    public void onBackPressed() {
+        super.onBackPressed();
         AppLogger.d("clickedToolBarBackMenu");
     }
 
@@ -265,6 +305,17 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         }
         bannerWarmingTitle.setText("设备离线，请重新配置连接>>");
     }
+
+    public void onSetVideoModeLayout() {
+        bottomPanelMoreItem.setEnabled(false);
+        bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_short_video_selector);
+    }
+
+    public void onSetPictureModeLayout() {
+        bottomPanelMoreItem.setEnabled(true);
+        bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_photograph_selector);
+    }
+
 
     public void onSetNoNetWorkLayout() {
         onShowBadNetWorkBanner();

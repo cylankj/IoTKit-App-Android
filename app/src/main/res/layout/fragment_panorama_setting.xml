@@ -6,35 +6,31 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <LinearLayout
+
+    <FrameLayout
+        android:id="@+id/fLayout_top_bar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:background="@color/color_0ba8cf">
 
-        <FrameLayout
-            android:id="@+id/fLayout_top_bar_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/color_0ba8cf">
-
-            <TextView
-                android:id="@+id/imgV_top_bar_center"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:drawablePadding="@dimen/y15"
-                android:drawableStart="@drawable/nav_tab_back_selector"
-                android:gravity="center_vertical"
-                android:paddingStart="@dimen/y15"
-                android:text="@string/SETTINGS_1"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18" />
-        </FrameLayout>
-    </LinearLayout>
+        <TextView
+            android:id="@+id/fragment_panorama_setting_header_back"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/y48"
+            android:drawablePadding="@dimen/y15"
+            android:drawableStart="@drawable/nav_tab_back_selector"
+            android:gravity="center_vertical"
+            android:paddingStart="@dimen/y15"
+            android:text="@string/SETTINGS_1"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp18" />
+    </FrameLayout>
 
     <LinearLayout
         android:id="@+id/lLayout_setting_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:clickable="true"
         android:orientation="vertical">
 
         <View
@@ -58,6 +54,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginEnd="@dimen/y20"
             android:layout_marginStart="@dimen/y20"
+            android:clickable="true"
             hunt:sv_image_src="@drawable/setting_icon_information"
             hunt:sv_sub_title="Micro SD卡读写失败"
             hunt:sv_title="@string/EQUIPMENT_INFO"
@@ -69,6 +66,7 @@
             android:layout_height="@dimen/y72"
             android:layout_marginEnd="@dimen/y20"
             android:layout_marginStart="@dimen/y20"
+            android:clickable="true"
             hunt:sv_image_src="@drawable/setting_icon_logo"
             hunt:sv_title="LOGO 选择"
             hunt:sv_v_divider="false" />
@@ -77,6 +75,7 @@
             android:id="@+id/ll_bell_net_work_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:clickable="true"
             android:orientation="vertical">
 
             <TextView
@@ -95,7 +94,8 @@
                 android:layout_height="@dimen/y72"
                 android:layout_marginEnd="@dimen/y20"
                 android:layout_marginStart="@dimen/y20"
-                hunt:sv_image_src="@drawable/setting_icon_information"
+                android:clickable="true"
+                hunt:sv_image_src="@drawable/icon_wifi"
                 hunt:sv_title="@string/WIFI"
                 hunt:sv_v_divider="true" />
 
@@ -105,6 +105,7 @@
                 android:layout_height="@dimen/y72"
                 android:layout_marginEnd="@dimen/y20"
                 android:layout_marginStart="@dimen/y20"
+                android:clickable="true"
                 hunt:sv_image_src="@drawable/setting_icon_ap"
                 hunt:sv_title="户外模式"
                 hunt:sv_v_divider="false" />
@@ -118,6 +119,7 @@
             android:layout_marginStart="@dimen/y20"
             android:layout_marginTop="@dimen/y61"
             android:background="@drawable/un_bind_device_btn_seletor"
+            android:clickable="true"
             android:gravity="center"
             android:text="@string/DELETE_CID"
             android:textColor="@color/color_FF3D32"

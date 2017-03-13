@@ -8,19 +8,26 @@
     tools:context="com.cylan.jiafeigou.n.view.panorama.PanoramaAlbumActivity">
 
     <RelativeLayout
+        android:id="@+id/act_panorama_album_toolbar_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/color_0ba8cf">
+
+        <ImageView
+            android:id="@+id/act_panorama_album_back"
+            android:layout_width="@dimen/y48"
+            android:layout_height="@dimen/y48"
+            android:paddingEnd="@dimen/y17"
+            android:paddingStart="@dimen/y15"
+            android:src="@drawable/nav_tab_back_selector" />
 
         <TextView
             android:id="@+id/act_panorama_album_toolbar_header_title"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y48"
-            android:layout_marginTop="8dp"
-            android:drawablePadding="@dimen/y15"
-            android:drawableStart="@drawable/nav_tab_back_selector"
+            android:layout_toEndOf="@id/act_panorama_album_back"
             android:gravity="center_vertical"
-            android:paddingStart="@dimen/y15"
+            android:padding="0dp"
             android:text="相册+手机相册"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp18" />
@@ -28,14 +35,14 @@
         <FrameLayout
             android:id="@+id/act_panorama_album_toolbar_option_container"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/y48"
             android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
             android:layout_marginEnd="@dimen/y11">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="取消"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp18" />

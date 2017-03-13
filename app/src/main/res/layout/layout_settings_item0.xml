@@ -38,7 +38,8 @@
             android:layout_marginTop="@dimen/y3"
             android:gravity="center"
             android:textColor="@color/color_8C8C8C"
-            android:textSize="@dimen/sp13" />
+            android:textSize="@dimen/sp13"
+            android:visibility="gone" />
     </LinearLayout>
 
     <com.kyleduo.switchbutton.SwitchButton

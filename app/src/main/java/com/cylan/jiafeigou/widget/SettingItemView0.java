@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorRes;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -63,6 +64,7 @@ public class SettingItemView0 extends RelativeLayout {
         imgvIcon.setImageDrawable(srcId);
         tvTitle.setText(title);
         tvSubTitle.setText(subTitle);
+        tvSubTitle.setVisibility(TextUtils.isEmpty(tvSubTitle.getText()) ? GONE : VISIBLE);
         int subTitleGravity = ta.getInt(R.styleable.SettingItemViewStyle_sv_sub_title_gravity, -1);
         tvSubTitle.setGravity(subTitleGravity);
         switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_switch_visibility, false)
@@ -81,6 +83,7 @@ public class SettingItemView0 extends RelativeLayout {
      * @param charSequence
      */
     public void setTvSubTitle(CharSequence charSequence) {
+        tvSubTitle.setVisibility(VISIBLE);
         tvSubTitle.setText(charSequence);
     }
 

@@ -231,15 +231,14 @@
 
     </LinearLayout>
 
+    
+
     <RelativeLayout
         android:id="@+id/act_panorama_camera_bottom_panel"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y138"
         android:layout_alignParentBottom="true"
         android:background="@color/color_F2333333">
-
-
-
 
         <ViewSwitcher
             android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu"

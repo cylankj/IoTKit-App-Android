@@ -226,6 +226,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     @Override
     public Subscription unReadMesgBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
+                .onBackpressureBuffer()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.UnreadCount unreadCount) -> {
                     if (unreadCount != null && unreadCount.seq == requstId) {
