@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.widget.video;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.net.Uri;
 
 import com.cylan.panorama.CameraParam;
 
@@ -62,6 +63,32 @@ public class VideoViewFactory {
         void performTouch();
 
         void detectOrientationChanged();
+    }
+
+    public interface ILiveView {
+
+        void setThumbnail(Context context, String token, Uri glideUrl);
+
+        /**
+         * @param context ： for glide to perform with life cycle
+         * @param bitmap
+         */
+        void setThumbnail(Context context, String token, Bitmap bitmap);
+
+        void setLiveView(IVideoView iVideoView);
+
+        void updateLayoutParameters(int height, int width);
+
+        void onLiveStart();
+
+        void onLiveStop();
+
+        /**
+         * 流量
+         */
+        void showFlowView(boolean show, String content);
+
+        void detectOrientationChanged(boolean port);
     }
 
     public interface InterActListener {

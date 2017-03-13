@@ -7,13 +7,12 @@
     <FrameLayout
         android:id="@+id/fLayout_cam_live_view"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y100"
-        android:background="@drawable/default_diagram_mask">
+        android:layout_height="@dimen/y300">
 
-        <!--<FrameLayout-->
-            <!--android:dpMsgId="@+dpMsgId/fLayout_live_view_container"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
+        <com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail
+            android:id="@+id/v_live"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <ViewStub
             android:id="@+id/vs_progress"

@@ -41,7 +41,7 @@
                         android:layout_gravity="bottom|center_horizontal"
                         android:alpha="0"
                         android:gravity="center"
-                        android:text="@string/app_name"
+                        android:text="@string/Tap1_TitleName"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/sp20" />
 

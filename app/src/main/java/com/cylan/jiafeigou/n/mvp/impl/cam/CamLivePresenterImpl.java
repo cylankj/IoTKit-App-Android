@@ -16,6 +16,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -33,7 +34,9 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
@@ -71,6 +74,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private IData historyDataProvider;
     private int stopReason = STOP_MAUNALLY;//手动断开
     private CompositeSubscription liveSubscription;
+
     /**
      * 帧率记录
      */
@@ -108,9 +112,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             return notNull;
                         })
                         .observeOn(AndroidSchedulers.mainThread())
-                        .takeFirst(disconn -> {
+                        .takeFirst(disconnect -> {
                             playState = PLAY_STATE_IDLE;
-                            getView().onLiveStop(playType, disconn.code);
+                            getView().onLiveStop(playType, disconnect.code);
                             reset();
                             AppLogger.d("reset subscription");
                             return true;
@@ -125,6 +129,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 (Throwable throwable) -> {
                     AppLogger.e("videoDisconnectSub:" + throwable.getLocalizedMessage());
                 });
+    }
+
+    @Override
+    public String getThumbnailKey() {
+        return JConstant.MEDIA_PATH + File.separator + "." + MD5Util.lowerCaseMD5(uuid);
     }
 
     @Override
@@ -208,7 +217,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
                     .subscribe());
             return null;
-        }).subscribe(objectObservable -> AppLogger.e("flow done"),
+        }).subscribe(objectObservable -> AppLogger.d("播放流程走通 done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
     }
 
@@ -450,6 +459,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         reset();
     }
 
+    private Bitmap bitmap = null;
 
     @Override
     public void takeSnapShot(boolean forPreview) {
@@ -460,34 +470,55 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     long time = System.currentTimeMillis();
                     JfgCmdInsurance.getCmd().screenshot(false, new CallBack<Bitmap>() {
                         @Override
-                        public void onSucceed(Bitmap bitmap) {
-                            Log.d(TAG, "take shot performance: " + (System.currentTimeMillis() - time));
+                        public void onSucceed(Bitmap resource) {
+                            Log.d(TAG, "onSucceed take shot performance: " + (System.currentTimeMillis() - time) + " " + (resource == null));
+                            bitmap = resource;
+                            SimpleCache.getInstance().addCache(getThumbnailKey(), bitmap);
+                            _2saveBitmap(forPreview, bitmap);
                         }
 
                         @Override
                         public void onFailure(String s) {
-                            AppLogger.e("直播黑屏，没有数据");
+                            bitmap = null;
+                            AppLogger.e("直播黑屏，没有数据: " + forPreview);
                         }
                     });
-                    Bitmap bitmap = null;
                     AppLogger.i("capture take shot performance: " + (System.currentTimeMillis() - time));
                     return bitmap;
                 })
-                .filter(bitmap -> bitmap != null)
+                .subscribe(b -> {
+                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));
+    }
+
+    private void _2saveBitmap(boolean forPreview, Bitmap resource) {
+        Observable.just(resource)
+                .filter(bitmap1 -> bitmap1 != null)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Bitmap bitmap) -> {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                     String filePath;
                     long time = System.currentTimeMillis();
                     if (forPreview) {
-                        filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + "_";
+                        filePath = getThumbnailKey();
+                        BitmapUtils.saveBitmap2file(bitmap, filePath);
+                        //因为同一个url,在glide上，不会更新bitmap，等待解决，用一个token来维持
+                        PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
+                        showPreviewThumbnail(bitmap);
                     } else {
                         snapshotResult(bitmap);
-                        filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
+                        filePath = getThumbnailKey() + ".png";
                         BitmapUtils.saveBitmap2file(bitmap, filePath);
                     }
                     AppLogger.i("save take shot performance: " + (System.currentTimeMillis() - time));
                 }, throwable -> AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage()));
+    }
+
+    private void showPreviewThumbnail(Bitmap bitmap) {
+        Observable.just(bitmap)
+                .filter((Bitmap bit) -> (getView() != null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((Bitmap b) -> getView().onPreviewResourceReady(bitmap),
+                        throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
     }
 
     private void snapshotResult(Bitmap bitmap) {
