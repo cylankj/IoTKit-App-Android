@@ -28,10 +28,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -308,7 +308,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @UiThread
     @Override
-    public void onItemsInsert(List<JFGDevice> resultList) {
+    public void onItemsInsert(List<Device> resultList) {
         homePageListAdapter.clear();//暴力刷新,设备没几个,没关系.
         homePageListAdapter.addAll(resultList);
         emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
@@ -445,7 +445,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             if (position < 0)
                 return;
         }
-        JFGDevice device = homePageListAdapter.getItem(position);
+        Device device = homePageListAdapter.getItem(position);
         if (!TextUtils.isEmpty(device.uuid)) {
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);

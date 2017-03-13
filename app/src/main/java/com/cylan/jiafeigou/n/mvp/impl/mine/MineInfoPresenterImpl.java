@@ -9,7 +9,6 @@ import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -52,21 +51,16 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      */
     @Override
     public void logOut(String account) {
-        rx.Observable.just(null)
+        DataSourceManager.getInstance().logout()
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-//                        DataSourceManager.getInstance().setJfgAccount(null);
-                        DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
-                        JfgCmdInsurance.getCmd().logout();
-                        RxBus.getCacheInstance().removeAllStickyEvents();
-                        AutoSignIn.getInstance().autoSave(account, 1, "")
-                                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                                .subscribe();
-                        //emit failed event.
-                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
-                    }
+                .subscribe(o -> {
+                    JfgCmdInsurance.getCmd().logout();
+                    RxBus.getCacheInstance().removeAllStickyEvents();
+                    AutoSignIn.getInstance().autoSave(account, 1, "")
+                            .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                            .subscribe();
+                    //emit failed event.
+                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {

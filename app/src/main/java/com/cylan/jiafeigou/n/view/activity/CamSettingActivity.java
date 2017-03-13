@@ -15,7 +15,6 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -157,7 +156,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         initInfoDetailFragment();
         DeviceInfoDetailFragment fragment = informationWeakReference.get();
         fragment.setCallBack((Object t) -> {
-            deviceUpdate(DataSourceManager.getInstance().getRawJFGDevice(uuid));
+            deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
         });
         Bundle bundle = new Bundle();
         bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
@@ -211,7 +210,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
-                    deviceUpdate(DataSourceManager.getInstance().getRawJFGDevice(uuid));
+                    deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                 });
             }
             break;
@@ -222,7 +221,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
-                    deviceUpdate(DataSourceManager.getInstance().getRawJFGDevice(uuid));
+                    deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                 });
             }
             break;
@@ -317,7 +316,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     @Override
-    public void deviceUpdate(JFGDevice device) {
+    public void deviceUpdate(Device device) {
         //////////////////////////分享账号////////////////////////////////////////////
         if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
             //分享账号 隐藏

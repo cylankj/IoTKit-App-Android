@@ -139,7 +139,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        getView().onItemsInsert(DataSourceManager.getInstance().getAllRawJFGDeviceList());
+        getView().onItemsInsert(DataSourceManager.getInstance().getAllJFGDevice());
         getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
     }
 

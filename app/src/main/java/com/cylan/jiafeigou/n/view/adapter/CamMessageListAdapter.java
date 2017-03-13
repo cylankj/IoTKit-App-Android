@@ -10,13 +10,12 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -47,7 +46,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private static final int MAX_TYPE = 3;
     private String uuid;
-    private JFGDevice device;
+    private Device device;
     /**
      * 0： 正常，1:编辑
      */
@@ -67,7 +66,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         pic_container_width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
-        device = DataSourceManager.getInstance().getRawJFGDevice(uuid);
+        device = DataSourceManager.getInstance().getJFGDevice(uuid);
         fetchSdcardStatus();
     }
 

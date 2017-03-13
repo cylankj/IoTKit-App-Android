@@ -6,7 +6,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -33,12 +32,12 @@ import static android.view.View.VISIBLE;
  * Created by hunt on 16-5-24.
  */
 
-public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
+public class HomePageListAdapter extends SuperAdapter<Device> {
 
     private DeviceItemClickListener deviceItemClickListener;
     private DeviceItemLongClickListener deviceItemLongClickListener;
 
-    public HomePageListAdapter(Context context, List<JFGDevice> items, IMulItemViewType<JFGDevice> mulItemViewType) {
+    public HomePageListAdapter(Context context, List<Device> items, IMulItemViewType<Device> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
@@ -51,7 +50,7 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
     }
 
     @Override
-    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, JFGDevice item) {
+    public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, Device item) {
         holder.setOnClickListener(R.id.rLayout_device_item, deviceItemClickListener);
         holder.setTag(R.id.rLayout_device_item, layoutPosition);
         holder.setOnLongClickListener(R.id.rLayout_device_item, deviceItemLongClickListener);
@@ -118,7 +117,7 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
      * |NET_5G      |  5 | #5G网络  |
      */
 
-    private void handleState(SuperViewHolder holder, JFGDevice device) {
+    private void handleState(SuperViewHolder holder, Device device) {
         String uuid = device.uuid;
         DpMsgDefine.DPNet net = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         String alias = device.alias;
@@ -180,15 +179,15 @@ public class HomePageListAdapter extends SuperAdapter<JFGDevice> {
     }
 
     @Override
-    protected IMulItemViewType<JFGDevice> offerMultiItemViewType() {
-        return new IMulItemViewType<JFGDevice>() {
+    protected IMulItemViewType<Device> offerMultiItemViewType() {
+        return new IMulItemViewType<Device>() {
             @Override
             public int getViewTypeCount() {
                 return 1;
             }
 
             @Override
-            public int getItemViewType(int position, JFGDevice item) {
+            public int getItemViewType(int position, Device item) {
                 return 0;
             }
 

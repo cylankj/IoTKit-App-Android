@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
-import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
@@ -26,7 +25,7 @@ public interface CamInfoContract {
 
         void setAliasRsp(int code);
 
-        void deviceUpdate(JFGDevice device);
+        void deviceUpdate(Device device);
     }
 
     interface Presenter extends BasePresenter {
