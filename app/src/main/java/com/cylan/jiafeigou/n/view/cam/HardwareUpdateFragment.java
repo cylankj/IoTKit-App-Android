@@ -114,6 +114,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
             tvHardwareNewVersion.setText(checkDevVersion.version);
 //            tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), basePresenter.getFileSize()));
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
+            tvVersionDescribe.setVisibility(View.VISIBLE);
             tvVersionDescribe.setText(checkDevVersion.tip);
         }
     }
@@ -134,13 +135,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 //TEST
 //                handlerDownLoad();
 
-                if (NetUtils.getJfgNetType(getContext()) == 0) {
-                    ToastUtil.showNegativeToast(getString(R.string.GLOBAL_NO_NETWORK));
-                    return;
-                }
-
-                if (!checkDevVersion.hasNew) {
-                    ToastUtil.showPositiveToast(getString(R.string.NEW_VERSION));
+                if (NetUtils.getJfgNetType(getContext()) == -1) {
+                    ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
 
@@ -148,6 +144,11 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 boolean show = net != null && JFGRules.isDeviceOnline(net);
                 if (!show) {
                     ToastUtil.showNegativeToast(getString(R.string.NOT_ONLINE));
+                    return;
+                }
+
+                if (!checkDevVersion.hasNew) {
+                    ToastUtil.showPositiveToast(getString(R.string.NEW_VERSION));
                     return;
                 }
 
@@ -183,7 +184,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                     .show();
         } else {
             new AlertDialog.Builder(getContext())
-                    .setMessage("即将升级设备固件,请保持客户端与设备连接于同一网络")
+                    .setMessage(getString(R.string.Tap1_UpdateFirmwareTips))
                     .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                         dialog.dismiss();
                     })
@@ -202,22 +203,15 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     private void handlerDownLoad() {
 
         //wifi 网络
-        if (NetUtils.getNetType(getContext()) == 1) {
-            Bundle bundle = new Bundle();
-            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "即将下载设备固件，升级设备固件时\n" +
-                    "需保持客户端与设备连接于同一网络");
-            SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
-            simpleDialogFragment.setAction((int id, Object value) -> {
-                //开始下载
-                basePresenter.startDownload(basePresenter.creatDownLoadBean());
-            });
-            simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
+        int netType = NetUtils.getNetType(getContext());
+        if (netType == 1) {
+            //开始下载
+            basePresenter.startDownload(basePresenter.creatDownLoadBean());
 
-        } else if (NetUtils.getNetType(getContext()) == 2) {
+        } else if (netType == 2 || netType == 3 || netType == 4) {
             Bundle bundle = new Bundle();
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
-            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, "当前使用非WiFi网络，继续操作\n" +
-                    "将会产生流量，是否继续？");
+            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.Tap1_Firmware_DataTips));
             SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
             simpleDialogFragment.setAction((int id, Object value) -> {
                 //开始下载
@@ -230,9 +224,6 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     @Override
     public void handlerResult(int code) {
         switch (code) {
-            case 0:
-                ToastUtil.showPositiveToast("固件下载成功");
-                break;
             case 1:
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_DownloadFirmwareFai));
                 break;

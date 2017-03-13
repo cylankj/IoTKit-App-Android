@@ -127,6 +127,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
                 wFlag.value = 0;
                 basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD);
                 basePresenter.clearCountTime();
+                basePresenter.getClearSdResult();
                 showLoading();
             });
             simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
@@ -182,6 +183,16 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
         }
     }
 
+    @Override
+    public void initSdUseDetail(DpMsgDefine.DPSdStatus sdStatus) {
+        if (sdStatus != null) {
+            long sdcardTotalCapacity = sdStatus.total;
+            long sdcardUsedCapacity = sdStatus.used;
+            float v = (float) ((sdcardUsedCapacity * 1.0) / sdcardTotalCapacity);
+            sdUseDetail(FormetSDcardSize(sdcardUsedCapacity) + "/" + FormetSDcardSize(sdcardTotalCapacity), v);
+        }
+    }
+
     private void initDetailData() {
         if (!basePresenter.getSdcardState()) {
             showHasNoSdDialog();
@@ -195,17 +206,9 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
 
         DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         boolean show = net != null && JFGRules.isDeviceOnline(net);
-        if (!show || NetUtils.getJfgNetType(getContext()) == 0) {
+        if (!show || NetUtils.getJfgNetType(getContext()) == -1) {
             tvClecrSdcard.setTextColor(Color.parseColor("#8c8c8c"));
             tvClecrSdcard.setEnabled(false);
-        }
-
-        DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
-        if (sdStatus != null) {
-            long sdcardTotalCapacity = sdStatus.total;
-            long sdcardUsedCapacity = sdStatus.used;
-            float v = (float) ((sdcardUsedCapacity * 1.0) / sdcardTotalCapacity);
-            sdUseDetail(FormetSDcardSize(sdcardUsedCapacity) + "/" + FormetSDcardSize(sdcardTotalCapacity), v);
         }
     }
 

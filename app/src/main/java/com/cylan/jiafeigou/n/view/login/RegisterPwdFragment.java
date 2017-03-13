@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
@@ -73,7 +74,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
 
     @Override
     public void doAction(String account, String pwd, String code) {
-        if (NetUtils.getJfgNetType(getContext()) == 0) {
+        if (NetUtils.getJfgNetType(getContext()) == -1) {
             ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
@@ -162,8 +163,8 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 pwdPresenter.executeLogin(login);
                 //账号和密码
                 try {
-                    String hex = AESUtil.encrypt(login.userName + "|" + login.pwd);
-                    AppLogger.e("保存密码未实现");
+                    AutoSignIn.getInstance().autoSave(login.userName,1,login.pwd);
+                    AppLogger.e("AutoSignIn:"+login.userName+":"+login.pwd);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

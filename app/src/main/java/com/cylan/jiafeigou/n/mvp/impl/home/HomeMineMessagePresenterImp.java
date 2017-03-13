@@ -192,20 +192,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     public Subscription getMesgDpDataCallBack() {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .subscribeOn(Schedulers.io())
-//                .flatMap(new Func1<RobotoGetDataRsp, Observable<ArrayList<MineMessageBean>>>() {
-//                    @Override
-//                    public Observable<ArrayList<MineMessageBean>> call(RobotoGetDataRsp robotoGetDataRsp) {
-//                        return null;
-//                    }
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe(new Action1<ArrayList<MineMessageBean>>() {
-//                    @Override
-//                    public void call(ArrayList<MineMessageBean> list) {
-//
-//                    }
-//                });
-
                 .map(new Func1<RobotoGetDataRsp, ArrayList<MineMessageBean>>() {
                     @Override
                     public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {

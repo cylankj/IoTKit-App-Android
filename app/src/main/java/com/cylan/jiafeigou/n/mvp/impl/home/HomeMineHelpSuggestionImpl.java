@@ -326,13 +326,26 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_UNMOUNTED)) {
             return;
         }
-        File logFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/log");
+        File logFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/log/log.txt");
+        File smartcall_t = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/log/smartcall_t.txt");
+        File smartcall_w = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/log/smartcall_w.txt");
         File crashFile = new File(Environment.getExternalStorageDirectory().toString() + "/Smarthome/crash");
         outFile = new File(Environment.getExternalStorageDirectory().toString() + "/" + bean.getDate() + "Smarthome.zip");
         try {
             Collection<File> files = new ArrayList<>();
             files.add(logFile);
-            files.add(crashFile);
+            files.add(smartcall_t);
+            files.add(smartcall_w);
+            if (crashFile.exists()){
+                File[] file = crashFile.listFiles();
+                if (file.length <= 10){
+                    files.add(crashFile);
+                }else {
+                    for (int i = file.length-1;i>file.length-11;i--){
+                        files.add(file[i]);
+                    }
+                }
+            }
             ZipUtils.zipFiles(files, outFile);
         } catch (IOException e) {
             e.printStackTrace();

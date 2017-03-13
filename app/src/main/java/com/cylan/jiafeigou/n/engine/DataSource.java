@@ -236,6 +236,7 @@ public class DataSource implements AppCallBack {
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnRobotGetDataRsp :" + new Gson().toJson(robotoGetDataRsp));
         DataSourceManager.getInstance().cacheRobotoGetDataRsp(robotoGetDataRsp);
+        RxBus.getCacheInstance().post(robotoGetDataRsp);
     }
 
     @Override

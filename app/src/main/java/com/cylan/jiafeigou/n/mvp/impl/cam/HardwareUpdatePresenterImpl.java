@@ -305,7 +305,8 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(downLoadBean.savePath + "/" + downLoadBean.fileName).toBytes());
+                        int req = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(downLoadBean.savePath + "/" + downLoadBean.fileName).toBytes());
+                        AppLogger.d("startUpdate:"+req);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }

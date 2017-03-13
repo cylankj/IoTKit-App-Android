@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
@@ -22,6 +23,8 @@ public interface SdCardInfoContract {
         void hideLoading();
 
         void clearSdResult(int code);
+
+        void initSdUseDetail(DpMsgDefine.DPSdStatus sdStatus);
     }
 
 
@@ -41,5 +44,13 @@ public interface SdCardInfoContract {
          * @return
          */
         Subscription onClearSdResult();
+
+        void getSdCapacity(String uuid);
+
+        Subscription getSdCapacityBack();
+
+        void getClearSdResult();
+
+        Subscription getClearSdResultBack();
     }
 }

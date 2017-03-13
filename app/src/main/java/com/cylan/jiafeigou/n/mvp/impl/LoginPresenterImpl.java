@@ -63,7 +63,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
                         if (o.loginType) {
-                            JfgCmdInsurance.getCmd().openLogin(o.userName, o.pwd, o.openLoginType);
+                            JfgCmdInsurance.getCmd().openLogin(o.pwd,o.userName, o.openLoginType);
                         } else {
                             JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
                             //账号和密码

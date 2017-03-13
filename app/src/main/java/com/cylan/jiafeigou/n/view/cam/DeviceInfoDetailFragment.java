@@ -225,8 +225,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                     showClearSDDialog();
                     return;
                 }
-                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
-                if (status.hasSdcard && JFGRules.isDeviceOnline(net))//没有sd卡,或者离线,不能点击
+
+                if (status.hasSdcard)//没有sd卡,不能点击
                     jump2SdcardDetailFragment();
                 break;
             case R.id.rl_hardware_update:
@@ -336,8 +336,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     @Override
     public void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
+        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
+        String s  = MiscUtils.safeGet(sVersion,"");
         checkDevVersion = checkDevVersionRsp;
-        rlHardwareUpdate.setTvSubTitle(getString(checkDevVersionRsp.hasNew ? R.string.Tap1_NewFirmware : R.string.Tap1_LatestVersion));
+        rlHardwareUpdate.setTvSubTitle(checkDevVersionRsp.hasNew ? getString(R.string.Tap1_NewFirmware) : s);
         rlHardwareUpdate.showRedHint(checkDevVersionRsp.hasNew);
     }
 

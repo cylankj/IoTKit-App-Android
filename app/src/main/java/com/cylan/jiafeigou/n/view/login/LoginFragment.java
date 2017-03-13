@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.OpenLoginHelper;
@@ -612,7 +613,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             }
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
         } else {
-            resetView();
             if (code == JError.ErrorAccountNotExist) {
                 //账号未注册
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
@@ -774,7 +774,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 是否已注册结果
-     *
      * @param callback
      */
     @Override
@@ -970,9 +969,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void onDestroy() {
         super.onDestroy();
         clearSomeThing();
-        if (instance != null){
-            instance = null;
-        }
     }
 
     @Override
