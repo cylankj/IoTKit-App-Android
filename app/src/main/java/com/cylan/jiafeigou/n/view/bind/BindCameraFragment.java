@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.BindDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.BindDevicePresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -166,7 +167,9 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
                     })
                     .setNegativeButton(getString(R.string.CANCEL), (final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
                         dialog.cancel();
-                        getFragmentManager().popBackStack();
+                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                            ((BindDeviceActivity) getActivity()).finishExt();
+                        }
                     });
             final AlertDialog alert = builder.create();
             alert.show();
@@ -179,7 +182,9 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
                 .setMessage(getString(R.string.turn_on_gps))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
 //                    finishExt();
-                    getActivity().getSupportFragmentManager().popBackStack();
+                    if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                        ((BindDeviceActivity) getActivity()).finishExt();
+                    }
                 })
                 .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);

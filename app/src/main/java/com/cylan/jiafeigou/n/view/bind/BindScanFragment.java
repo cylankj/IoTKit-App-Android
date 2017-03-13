@@ -99,7 +99,9 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
 
     @OnPermissionDenied(Manifest.permission.CAMERA)
     public void onCameraPermissionDenied() {
-        getActivity().getSupportFragmentManager().popBackStack();
+        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+            ((BindDeviceActivity) getActivity()).finishExt();
+        }
     }
 
     @OnNeverAskAgain(Manifest.permission.CAMERA)
@@ -107,7 +109,9 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         new AlertDialog.Builder(getActivity())
                 .setMessage(getString(R.string.permission_auth, "", getString(R.string.CAMERA)))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                    getActivity().getSupportFragmentManager().popBackStack();
+                    if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                        ((BindDeviceActivity) getActivity()).finishExt();
+                    }
                 })
                 .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
                     startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
