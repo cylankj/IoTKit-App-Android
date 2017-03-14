@@ -68,8 +68,6 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
     private IDPMultiTask getMultiTask(DBAction action) {
         if (DBAction.DELETED == action) {
             return new DPMultiDeleteTask();
-        } else if (DBAction.QUERY == action) {
-            return new DPMultiQueryTask();
         }
         return null;
     }
