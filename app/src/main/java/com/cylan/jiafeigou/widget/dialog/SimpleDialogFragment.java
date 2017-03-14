@@ -83,8 +83,9 @@ public class SimpleDialogFragment extends BaseDialog {
         }
         if (!TextUtils.isEmpty(lContent))
             tvDialogBtnLeft.setText(lContent);
-        if (!TextUtils.isEmpty(rContent))
-            tvDialogBtnRight.setText(rContent);
+        if (TextUtils.isEmpty(rContent)){
+            tvDialogBtnRight.setVisibility(View.GONE);
+        }else tvDialogBtnRight.setText(rContent);
         if (TextUtils.isEmpty(content)) {
             tvDialogContent.setVisibility(View.GONE);
         } else tvDialogContent.setText(content);

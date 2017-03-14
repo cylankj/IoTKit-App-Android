@@ -4,7 +4,12 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -103,7 +108,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     private Observable<ArrayList<CamMessageBean>> queryTimeLine(int count, boolean asc) {
         return Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .map(o -> DataSourceManager.getInstance().syncJFGCameraWarn(uuid, asc, count))
+                .map(o -> DataSourceManager.getInstance().syncJFGCameraWarn(uuid, 0, asc, count))
                 .filter(aLong -> aLong > 0)
                 .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                         .filter(robotoGetDataRsp -> aLong == robotoGetDataRsp.seq)
@@ -130,7 +135,20 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         return Observable.just(Converter.convert(allList, device.regionType));
                     }
                 });
+
+
     }
+
+//    private Observable<Object> makeLocalQuery(int msgId, long version, boolean asc, int count) {
+//        IDPEntity entity = new DPEntity();
+//        entity.setUuid(uuid)
+//                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount())
+//                .setMsgId(msgId)
+//                .setAction(DBAction.QUERY)
+//                .setVersion(version)
+//                .setOption(new DBOption.SingleQueryOption(asc, count));
+//        BaseDPTaskDispatcher.getInstance().perform(entity);
+//    }
 
     @Override
     public void removeItems(ArrayList<CamMessageBean> beanList) {

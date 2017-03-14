@@ -88,6 +88,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(rlTitleBar);
+        rlHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
     }
 
     private void initPresenter() {

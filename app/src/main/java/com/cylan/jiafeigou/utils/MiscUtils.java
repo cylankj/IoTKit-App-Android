@@ -205,12 +205,17 @@ public class MiscUtils {
         return arrayList;
     }
 
-    public static ArrayList<JFGDPMsg> createGetCameraWarnMsgDp() {
-        ArrayList<JFGDPMsg> list = new ArrayList<>();
-        JFGDPMsg _505 = new JFGDPMsg(505, System.currentTimeMillis());
-        JFGDPMsg _222 = new JFGDPMsg(222, System.currentTimeMillis());
-        list.add(_222);
-        list.add(_505);
+    /**
+     * 还需要判断 2.0版本的设备，3.0版本的设备
+     *
+     * @param device
+     * @return
+     */
+    public static ArrayList<Long> createGetCameraWarnMsgDp(Device device) {
+        ArrayList<Long> list = new ArrayList<>();
+        boolean isV2 = TextUtils.isEmpty(device.vid);
+        list.add(isV2 ? 505L : 512L);
+        list.add(222L);
         return list;
     }
 

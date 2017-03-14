@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
-import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.video.History;
@@ -39,8 +38,8 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -65,12 +64,11 @@ public class DataSourceManager implements JFGSourceManager {
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
-    private Map<String, Device> mCachedDeviceMap = new HashMap<>();//和uuid相关的数据缓存
+    private Map<String, Device> mCachedDeviceMap = new LinkedHashMap<>();//和uuid相关的数据缓存
     private Account account;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private Subscription unreadCountFetcher;
-    private List<Pair<Integer, String>> rawOrder = new ArrayList<>();
     /**
      * 未读消息数
      */
@@ -98,7 +96,6 @@ public class DataSourceManager implements JFGSourceManager {
                                 msg.packValue = entity.getBytes();
                                 dpAccount.setValue(msg);
                             }
-                            RxBus.getCacheInstance().postSticky(new RxEvent.AccountArrived(dpAccount));
                             return dpAccount;
                         })
                 )
@@ -106,9 +103,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(Observable::from)
                 .map(device -> {
                     Device dev = create(device.getPid()).fill(device);
-                    DBOption.RawDeviceOrderOption option = dev.option(DBOption.RawDeviceOrderOption.class);
                     mCachedDeviceMap.put(device.getUuid(), dev);
-                    rawOrder.add(new Pair<>(option.rawDeviceOrder, dev.getUuid()));
                     return dev;
                 })
                 .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
@@ -121,12 +116,7 @@ public class DataSourceManager implements JFGSourceManager {
                                 device.setValue(msg);
                             }
                             return dpEntities;
-                        }))
-                .doOnCompleted(() -> {
-                    Collections.sort(rawOrder, (lhs, rhs) -> lhs.first - rhs.first);
-                    RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
-                })
-                .subscribe();
+                        })).subscribe();
     }
 
     public static DataSourceManager getInstance() {
@@ -158,12 +148,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public List<Device> getAllJFGDevice() {
-        Collections.sort(rawOrder, (lhs, rhs) -> lhs.first - rhs.first);
-        List<Device> result = new ArrayList<>(rawOrder.size());
-        for (Pair<Integer, String> pair : rawOrder) {
-            result.add(mCachedDeviceMap.get(pair.second));
-        }
-        return result;
+        return new ArrayList<>(mCachedDeviceMap.values());
     }
 
     public List<Device> getJFGDeviceByPid(int... pids) {
@@ -198,27 +183,31 @@ public class DataSourceManager implements JFGSourceManager {
                 .observeOn(Schedulers.io())
                 .map(items -> {
                     Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
-                    JFGDevice device;
-                    for (int i = 0; i < items.length; i++) {
-                        device = items[i];
+                    for (JFGDevice device : items) {
                         result.remove(device.uuid);
                     }
+                    AppLogger.d("已删除的设备数" + result.size());
                     return result;
                 })
-                .flatMap(items -> items.size() == 0 ? Observable.just(devices) : Observable.from(items).flatMap(this::unBindDevice).last().map(ret -> devices))
+                .flatMap(items ->
+                        items.size() == 0 ?
+                                Observable.just(devices) :
+                                Observable.from(items)
+                                        .flatMap(this::unBindDevice)
+                                        .buffer(items.size())
+                                        .map(ret -> devices)
+                )
                 .map(items -> {
                     mCachedDeviceMap.clear();
-                    rawOrder.clear();
+                    Log.d("update", "updateList: " + new Gson().toJson(items));
                     return items;
                 })
                 .flatMap(items -> dbHelper.updateDevice(items))
                 .map(dev -> {
                     Device dpDevice = create(dev.getPid()).fill(dev);
-                    DBOption.RawDeviceOrderOption option = dpDevice.option(DBOption.RawDeviceOrderOption.class);
-                    mCachedDeviceMap.put(dpDevice.getUuid(), dpDevice);
-                    rawOrder.add(new Pair<>(option.rawDeviceOrder, dpDevice.getUuid()));
+                    mCachedDeviceMap.put(dev.getUuid(), dpDevice);
                     ArrayList<JFGDPMsg> parameters = dpDevice.getQueryParameters(false);
-                    AppLogger.d("正在同步设备数据");
+                    AppLogger.d("正在同步设备信息:" + dpDevice.getUuid() + " " + new Gson().toJson(parameters) + "device:" + dpDevice);
                     try {
                         JfgCmdInsurance.getCmd().robotGetData(dpDevice.getUuid(), parameters, 1, false, 0);
                     } catch (JfgException e) {
@@ -226,20 +215,18 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     return dpDevice;
                 })
+                .buffer(devices.length)
                 .subscribe(items -> {
-                }, e -> {
-                    AppLogger.d(e.getMessage());
-                    e.printStackTrace();
-                }, () -> {
                     ArrayList<String> uuidList = new ArrayList<>();
-                    for (Pair<Integer, String> pair : rawOrder) {
-                        if (!JFGRules.isShareDevice(pair.second)) {
-                            uuidList.add(pair.second);
+                    for (Device device : items) {
+                        if (!JFGRules.isShareDevice(device.uuid)) {
+                            uuidList.add(device.uuid);
                         }
                     }
                     JfgCmdInsurance.getCmd().getShareList(uuidList);
-                    Collections.sort(rawOrder, (lhs, rhs) -> lhs.first - rhs.first);
-                    RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
+                }, e -> {
+                    AppLogger.d(e.getMessage());
+                    e.printStackTrace();
                 });
     }
 
@@ -255,7 +242,6 @@ public class DataSourceManager implements JFGSourceManager {
                         AppLogger.e("jfgAccount is null");
                     }
                     RxBus.getCacheInstance().post(account);
-                    RxBus.getCacheInstance().postSticky(new RxEvent.AccountArrived(this.account));
                 })
                 .subscribe(act -> this.account = act);
     }
@@ -333,24 +319,19 @@ public class DataSourceManager implements JFGSourceManager {
                 });
     }
 
-    @Override
-    public int getRawDeviceOrder(String uuid) {
-        return rawOrder.indexOf(uuid);
-    }
-
-    /**
-     * 获取所有的报警消息{505,222}，1：保证有最新的报警消息，2.用于显示xx条新消息。
-     *
-     * @param ignoreShareDevice:忽略分享账号，一般都为true
-     */
-    @Override
-    public void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice) {
-        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
-            Device device = mCachedDeviceMap.get(entry.getKey());
-            if (JFGRules.isShareDevice(device) && ignoreShareDevice) continue;
-            syncJFGCameraWarn(entry.getKey(), false, 100);
-        }
-    }
+//    /**
+//     * 获取所有的报警消息{505,222}，1：保证有最新的报警消息，2.用于显示xx条新消息。
+//     *
+//     * @param ignoreShareDevice:忽略分享账号，一般都为true
+//     */
+//    @Override
+//    public void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice) {
+//        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+//            Device device = mCachedDeviceMap.get(entry.getKey());
+//            if (JFGRules.isShareDevice(device) && ignoreShareDevice) continue;
+//            syncJFGCameraWarn(entry.getKey(), false, 100);
+//        }
+//    }
 
     /**
      * 需要暴力操作。
@@ -360,10 +341,11 @@ public class DataSourceManager implements JFGSourceManager {
      * @param uuid
      */
     @Override
-    public long syncJFGCameraWarn(String uuid, boolean asc, int count) {
-        ArrayList<JFGDPMsg> list = MiscUtils.createGetCameraWarnMsgDp();
+    public long syncJFGCameraWarn(String uuid, long version, boolean asc, int count) {
+        //v2: 505,222   v3:512,222
+        ArrayList<Long> list = MiscUtils.createGetCameraWarnMsgDp(getJFGDevice(uuid));
         try {
-            return JfgCmdInsurance.getCmd().robotGetData(uuid, list, count, false, 0);
+            return JfgCmdInsurance.getCmd().robotGetDataEx(uuid, count, false, version, list, 0);
         } catch (JfgException e) {
             AppLogger.e("uuid is null");
             return 0L;
@@ -371,11 +353,12 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public void queryHistory(String uuid) {
+    public int queryHistory(String uuid) {
         try {
-            JfgCmdInsurance.getCmd().getVideoList(uuid);
+            return JfgCmdInsurance.getCmd().getVideoList(uuid);
         } catch (JfgException e) {
             AppLogger.e("uuid is null: " + e.getLocalizedMessage());
+            return -1;
         }
     }
 
@@ -436,7 +419,6 @@ public class DataSourceManager implements JFGSourceManager {
         if (shareList != null) shareList.clear();
         if (unreadCountFetcher != null && unreadCountFetcher.isUnsubscribed())
             unreadCountFetcher.unsubscribe();
-        RxBus.getCacheInstance().removeAllStickyEvents();
     }
 
     @Override

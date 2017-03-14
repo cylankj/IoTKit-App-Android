@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.rx;
 import android.content.Intent;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevice;
@@ -12,14 +13,11 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.jiafeigou.cache.db.module.Account;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.engine.DataSource;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 
 /**
@@ -727,16 +725,28 @@ public class RxEvent {
         }
     }
 
-    public static class SdcardClearRsp {
+    public static class SdcardClearReqRsp {
         public long seq;
 
-        public SdcardClearRsp(long seq, ArrayList<JFGDPMsgRet> arrayList) {
+        public SdcardClearReqRsp(long seq, ArrayList<JFGDPMsgRet> arrayList) {
             this.seq = seq;
             this.arrayList = arrayList;
         }
 
         public ArrayList<JFGDPMsgRet> arrayList;
 
+    }
+
+    public static class SdcardClearFinishRsp {
+        public boolean b;
+        public String s;
+        public ArrayList<JFGDPMsg> arrayList;
+
+        public SdcardClearFinishRsp(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
+            this.b = b;
+            this.s = s;
+            this.arrayList = arrayList;
+        }
     }
 
     public static class CheckDevVersionRsp implements Serializable {
@@ -833,19 +843,12 @@ public class RxEvent {
     public static final class ShouldCheckPermission {
     }
 
-    public static class DevicesArrived {
-        public List<Device> devices;
-
-        public DevicesArrived(List<Device> devices) {
-            this.devices = devices;
+    public static final class PwdHasResetEvent{
+        public PwdHasResetEvent(int code) {
+            this.code = code;
         }
-    }
 
-    public static class AccountArrived {
-        public Account account;
+        public int code;
 
-        public AccountArrived(Account account) {
-            this.account = account;
-        }
     }
 }

@@ -75,6 +75,7 @@ public class AboutFragment extends Fragment {
         customToolbar.setBackAction((View v) -> {
             getActivity().getSupportFragmentManager().popBackStack();
         });
+        tvUserAgreement.setVisibility(getResources().getBoolean(R.bool.show_agreement) ? View.VISIBLE : View.INVISIBLE);
     }
 
     @OnClick({R.id.sv_hot_line, R.id.tv_user_agreement, R.id.sv_official_website})

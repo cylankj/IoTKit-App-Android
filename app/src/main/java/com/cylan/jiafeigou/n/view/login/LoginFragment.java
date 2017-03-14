@@ -26,12 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.OpenLoginHelper;
@@ -174,6 +172,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 用来点击空白处隐藏键盘
+     *
      * @param view
      */
     public void addOnTouchListener(View view) {
@@ -190,10 +189,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         super.onViewCreated(view, savedInstanceState);
         addOnTouchListener(view);
         showLayout();
-        if (BuildConfig.DEBUG) {
-            ivLoginClearPwd.setVisibility(View.GONE);
-            ivLoginClearUsername.setVisibility(View.GONE);
-        }
         decideRegisterWay();
         initView();
         showRegisterPage();
@@ -331,6 +326,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 初始化view
      */
     private void initView() {
+        lLayoutAgreement.setVisibility(getResources().getBoolean(R.bool.show_agreement) ? View.VISIBLE : View.GONE);
         ViewUtils.setChineseExclude(etLoginUsername, 65);
         ViewUtils.setChineseExclude(etLoginPwd, 12);
         ViewUtils.setChineseExclude(etRegisterInputBox, 11);
@@ -398,7 +394,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @OnTextChanged(R.id.et_login_username)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        ivLoginClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
+        ivLoginClearUsername.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
         final String pwd = ViewUtils.getTextViewContent(etLoginPwd);
         if (flag) {
             lbLogin.setEnabled(false);
@@ -494,8 +490,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_right);
             vsLayoutSwitcher.showPrevious();
-            if (!lLayoutAgreement.isShown())
-                lLayoutAgreement.setVisibility(View.VISIBLE);
+//            if (!lLayoutAgreement.isShown())
+//                lLayoutAgreement.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -624,6 +621,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             } else if (code == JError.ErrorConnect) {
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             }
+            resetView();
         }
     }
 
@@ -677,17 +675,17 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         switchBox();
         final boolean validPhoneNum = JConstant.PHONE_REG.matcher(etRegisterInputBox.getText()).find();
 //        if (validPhoneNum) {
-        AppLogger.i("account:" + etRegisterInputBox.getText());
-        etRegisterInputBox.post(new Runnable() {
-            @Override
-            public void run() {
-                if (registerWay == JConstant.REGISTER_BY_PHONE && !validPhoneNum) {
-                    handleRegisterByMail();
-                } else {
-                    //email
-                }
-            }
-        });
+//        AppLogger.i("account:" + etRegisterInputBox.getText());
+//        etRegisterInputBox.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (registerWay == JConstant.REGISTER_BY_PHONE && !validPhoneNum) {
+//                    handleRegisterByMail();
+//                } else {
+//                    //email
+//                }
+//            }
+//        });
 //        }
     }
 
@@ -719,7 +717,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         } else {
             result = Patterns.EMAIL_ADDRESS.matcher(s).find();
         }
-        ivRegisterUserNameClear.setVisibility(!TextUtils.isEmpty(s) ? View.VISIBLE : View.GONE);
+        ivRegisterUserNameClear.setVisibility(!TextUtils.isEmpty(s) ? View.VISIBLE : View.INVISIBLE);
         tvRegisterSubmit.setEnabled(result);
     }
 
@@ -774,6 +772,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 是否已注册结果
+     *
      * @param callback
      */
     @Override

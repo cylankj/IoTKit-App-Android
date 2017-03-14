@@ -660,6 +660,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 break;
         }
         if (liveListener != null) liveListener.liveStateChange();
+        vLive.onLiveStop();
+        AppLogger.d("onLiveStop");
     }
 
     @Override

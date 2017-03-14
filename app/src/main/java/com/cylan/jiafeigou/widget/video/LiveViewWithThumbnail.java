@@ -94,7 +94,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         super.onLoadFailed(e, errorDrawable);
-                        AppLogger.e("err: " + e.getLocalizedMessage());
+                        AppLogger.e("err: " + (e == null ? "e is null" : e.getLocalizedMessage()));
                     }
 
                     @Override
@@ -191,7 +191,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     @Override
     public void onLiveStop() {
         if (isNormalView())
-            imgThumbnail.setVisibility(VISIBLE);
+            imgThumbnail.setVisibility(GONE);
         Log.d(TAG, "onLiveStop");
     }
 

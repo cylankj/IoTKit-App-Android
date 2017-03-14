@@ -42,7 +42,7 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
  * 创建时间：2017/2/13
  * 描述：
  */
-public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Presenter> implements SdCardInfoContract.View {
+public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Presenter> implements SdCardInfoContract.View, BaseDialog.BaseDialogAction {
 
     @BindView(R.id.tv_sdcard_volume)
     TextView tvSdcardVolume;
@@ -59,8 +59,8 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
+    private static final String DIALOG_KEY = "dialogFragment";
     private String uuid;
-//    private SdCardInfoContract.Presenter basePresenter;
 
     public static SDcardDetailFragment newInstance(Bundle bundle) {
         SDcardDetailFragment fragment = new SDcardDetailFragment();
@@ -116,7 +116,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             return;
         }
         if ("0.0MB".equals(split[0])) {
-            Toast.makeText(getContext(), getString(R.string.Clear_Sdcard_tips3), Toast.LENGTH_SHORT).show();
+            ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
         } else {
             Bundle bundle = new Bundle();
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
@@ -127,7 +127,6 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
                 wFlag.value = 0;
                 basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD);
                 basePresenter.clearCountTime();
-                basePresenter.getClearSdResult();
                 showLoading();
             });
             simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
@@ -193,6 +192,18 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
         }
     }
 
+    @Override
+    public void showSdPopDialog() {
+        Bundle bundle = new Bundle();
+        bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.MSG_SD_OFF));
+        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
+        bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
+        bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
+        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+        dialogFragment.setAction(this);
+        dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
+    }
+
     private void initDetailData() {
         if (!basePresenter.getSdcardState()) {
             showHasNoSdDialog();
@@ -249,5 +260,10 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+    }
+
+    @Override
+    public void onDialogAction(int id, Object value) {
+        getFragmentManager().popBackStack();
     }
 }

@@ -130,21 +130,25 @@ android {
             //官方运营
             versionName vName
             versionCode vCode
-        }
-        _yf {
-            applicationIdSuffix ".yf"
-            versionName vName
-            versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider"]
         }
         _test1 {
             applicationIdSuffix ".test1"
             versionName vName
             versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.test1.hms.update.provider"]
         }
-        _zhongxing {
+        _doby {
             applicationIdSuffix ".zhongxing"
             versionName vName
             versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.zhongxing.hms.update.provider"]
+        }
+        _cell_c {
+            applicationIdSuffix ".cell_c"
+            versionName vName
+            versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.cell_c.hms.update.provider"]
         }
     }
 }

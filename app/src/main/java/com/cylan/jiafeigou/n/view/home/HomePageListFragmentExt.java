@@ -272,10 +272,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-//            ((NeedLoginActivity) getActivity()).signInFirst(null);
-//            return;
-//        }
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+            ((NeedLoginActivity) getActivity()).signInFirst(null);
+            return;
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class),
                     ActivityOptionsCompat.makeCustomAnimation(getContext(),

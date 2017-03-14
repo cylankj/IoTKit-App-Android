@@ -158,39 +158,41 @@ public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Present
 
     @NeedsPermission(ACCESS_FINE_LOCATION)
     public void onGrantedLocationPermission() {
-        if (!MiscUtils.checkGpsAvailable(getApplicationContext())) {
-            final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage(getString(R.string.GetWifiList_FaiTips))
-                    .setCancelable(false)
-                    .setPositiveButton(getString(R.string.OK), (@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
-                        startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                    })
-                    .setNegativeButton(getString(R.string.CANCEL), (final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
-                        dialog.cancel();
-                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
-                            ((BindDeviceActivity) getActivity()).finishExt();
-                        }
-                    });
-            final AlertDialog alert = builder.create();
-            alert.show();
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            if (!MiscUtils.checkGpsAvailable(getApplicationContext())) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(getString(R.string.GetWifiList_FaiTips))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.OK), (@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
+                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                        })
+                        .setNegativeButton(getString(R.string.CANCEL), (final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
+                            dialog.cancel();
+                            if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                                ((BindDeviceActivity) getActivity()).finishExt();
+                            }
+                        });
+                final AlertDialog alert = builder.create();
+                alert.show();
+            }
     }
 
     @OnPermissionDenied(ACCESS_FINE_LOCATION)
     public void onDeniedLocationPermission() {
-        new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.turn_on_gps))
-                .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            new AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.turn_on_gps))
+                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
 //                    finishExt();
-                    if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
-                        ((BindDeviceActivity) getActivity()).finishExt();
-                    }
-                })
-                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-                })
-                .create()
-                .show();
+                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                            ((BindDeviceActivity) getActivity()).finishExt();
+                        }
+                    })
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                    })
+                    .create()
+                    .show();
     }
 
     @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
