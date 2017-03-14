@@ -21,7 +21,7 @@ import android.util.Log;
 /**
  * Created by Jacksgong on 3/26/16.
  * <p/>
- * In order to avoid the layout of the Status bar.
+ * In rawDeviceOrder to avoid the layout of the Status bar.
  */
 public class StatusBarHeightUtil {
 

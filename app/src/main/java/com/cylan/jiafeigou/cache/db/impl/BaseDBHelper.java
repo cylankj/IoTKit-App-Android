@@ -4,6 +4,7 @@ import android.content.ContextWrapper;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDevice;
@@ -21,12 +22,14 @@ import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 import rx.Observable;
@@ -42,6 +45,7 @@ public class BaseDBHelper implements IDBHelper {
     private AccountDao accountDao;
     private DeviceDao deviceDao;
     private static BaseDBHelper instance;
+    private Account account;
 
     public static BaseDBHelper getInstance() {
         if (instance == null) {
@@ -239,11 +243,9 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Account> getActiveAccount() {
-        return Observable.just(accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())))
-                .observeOn(Schedulers.io())
-                .flatMap(build -> build.rx().unique().filter(account -> account != null)
-                        .mergeWith(RxBus.getCacheInstance().toObservable(JFGAccount.class)
-                                .flatMap(s -> build.rx().unique().filter(account -> account != null))))
+        return Observable.just(this.account).filter(item -> item != null)
+                .mergeWith(RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class).map(item -> this.account = item.account))
+                .mergeWith(accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())).rx().unique().filter(item -> item != null).map(item -> this.account = item))
                 .first();
     }
 
@@ -251,8 +253,16 @@ public class BaseDBHelper implements IDBHelper {
     public Observable<Device> updateDevice(JFGDevice[] device) {
         return getActiveAccount()
                 .observeOn(Schedulers.io())
-                .flatMap(account -> Observable.from(device)
-                        .flatMap(dev -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(dev.uuid),
+                .flatMap(account -> Observable.just(device)
+                        .map(items -> {
+                            List<Pair<Integer, JFGDevice>> order = new ArrayList<>(items.length);
+                            for (int i = 0; i < items.length; i++) {
+                                order.add(new Pair<>(i, items[i]));
+                            }
+                            return order;
+                        })
+                        .flatMap(Observable::from)
+                        .flatMap(pair -> deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(pair.second.uuid),
                                 DeviceDao.Properties.Account.eq(account.getAccount()))
                                 .rx()
                                 .unique()
@@ -261,8 +271,9 @@ public class BaseDBHelper implements IDBHelper {
                                     if (dpDevice == null) {
                                         dpDevice = new Device();
                                     }
-                                    dpDevice.setDevice(dev);
+                                    dpDevice.setDevice(pair.second);
                                     dpDevice.setAccount(account.getAccount());
+                                    dpDevice.setOption(new DBOption.RawDeviceOrderOption(pair.first));
                                     return deviceDao.rx().save(dpDevice);
                                 })))
                 .doOnError(throwable -> {
@@ -343,6 +354,7 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Account> logout() {
         return getActiveAccount().map(account -> {
+            this.account = null;
             if (account != null) {
                 account.setAction(DBAction.SAVED);
                 account.setState(DBState.SUCCESS);

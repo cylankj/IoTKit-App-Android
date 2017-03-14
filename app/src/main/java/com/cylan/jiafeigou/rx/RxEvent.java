@@ -12,11 +12,14 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.engine.DataSource;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -828,5 +831,21 @@ public class RxEvent {
     }
 
     public static final class ShouldCheckPermission {
+    }
+
+    public static class DevicesArrived {
+        public List<Device> devices;
+
+        public DevicesArrived(List<Device> devices) {
+            this.devices = devices;
+        }
+    }
+
+    public static class AccountArrived {
+        public Account account;
+
+        public AccountArrived(Account account) {
+            this.account = account;
+        }
     }
 }

@@ -136,4 +136,6 @@ public interface JFGSourceManager {
     Observable<Account> logout();
 
     Observable<Device> unBindDevice(String uuid);
+
+    int getRawDeviceOrder(String uuid);
 }

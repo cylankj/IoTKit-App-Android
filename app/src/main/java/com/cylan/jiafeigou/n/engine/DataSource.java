@@ -167,6 +167,9 @@ public class DataSource implements AppCallBack {
         for (JFGDevice device : jfgDevices)
             Log.d("OnReportJfgDevices", "OnReportJfgDevices: " + device.uuid);
         AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
+        for (JFGDevice device : jfgDevices) {
+            AppLogger.d("OnReportJfgDevices" + new Gson().toJson(device));
+        }
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
 
     }
