@@ -29,8 +29,6 @@ import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -40,11 +38,11 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
-import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -460,7 +458,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             else if (JFGRules.isBell(device.pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid).putExtra("HasNewMsg", true));
+            } else if (JFGRules.isVRCam(device.pid)) {
+                startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             }
+
 //            else if (JFGRules.isEFamily(device.pid)) {
 //                startActivity(new Intent(getActivity(), CloudLiveActivity.class)
 //                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));

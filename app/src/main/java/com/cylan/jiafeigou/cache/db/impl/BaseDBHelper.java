@@ -45,7 +45,7 @@ public class BaseDBHelper implements IDBHelper {
     private AccountDao accountDao;
     private DeviceDao deviceDao;
     private static BaseDBHelper instance;
-    private Account account;
+    private Account dpAccount;
 
     public static BaseDBHelper getInstance() {
         if (instance == null) {
@@ -65,8 +65,6 @@ public class BaseDBHelper implements IDBHelper {
         mEntityDao = daoSession.getDPEntityDao();
         accountDao = daoSession.getAccountDao();
         deviceDao = daoSession.getDeviceDao();
-
-
     }
 
     @Override
@@ -165,7 +163,7 @@ public class BaseDBHelper implements IDBHelper {
                         item.setBytes(bytes);
                         item.setAction(action);
                         item.setState(state);
-                        item.update();
+                        mEntityDao.update(item);
                     }
                     return item;
                 });
@@ -190,7 +188,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option) {
-        AppLogger.d("正在标记本地数据, account:" + account + ",server:" + server + ",uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId + ",action:" + action + ",state:" + state + ",option:" + option);
+        AppLogger.d("正在标记本地数据, dpAccount:" + account + ",server:" + server + ",uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId + ",action:" + action + ",state:" + state + ",option:" + option);
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().list()
                 .map(items -> {
@@ -213,7 +211,7 @@ public class BaseDBHelper implements IDBHelper {
     public Observable<DPEntity> deleteDPMsgForce(String account, String server, String uuid, Long version, Integer msgId) {
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().unique().map(result -> {
-                    result.delete();
+                    mEntityDao.delete(result);
                     return result;
                 });
     }
@@ -225,8 +223,8 @@ public class BaseDBHelper implements IDBHelper {
                     if (accounts != null) {
                         for (Account account1 : accounts) {
                             account1.setState(DBState.SUCCESS.state());
+                            accountDao.update(account1);
                         }
-                        accountDao.saveInTx(accounts);
                     }
                     return accountDao.queryBuilder().where(AccountDao.Properties.Account.eq(account.getAccount()))
                             .rx().unique().map(account1 -> {
@@ -235,7 +233,7 @@ public class BaseDBHelper implements IDBHelper {
                                 }
                                 account1.setState(DBState.ACTIVE.state());
                                 accountDao.save(account1);
-                                return account1;
+                                return this.dpAccount = account1;
                             });
                 });
     }
@@ -243,9 +241,9 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Account> getActiveAccount() {
-        return Observable.just(this.account).filter(item -> item != null)
-                .mergeWith(RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class).map(item -> this.account = item.account))
-                .mergeWith(accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())).rx().unique().filter(item -> item != null).map(item -> this.account = item))
+        return Observable.just(this.dpAccount).filter(item -> item != null)
+                .mergeWith(RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class).map(item -> this.dpAccount = item.account))
+                .mergeWith(accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())).rx().unique().filter(item -> item != null).map(item -> this.dpAccount = item))
                 .first();
     }
 
@@ -289,7 +287,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Device> unBindDeviceNotConfirm(String uuid) {
-        return markDevice(getAccount(), getServer(), uuid, DBAction.UNBIND, DBState.NOT_CONFIRM, null).map(items -> {
+        return markDevice(getDpAccount(), getServer(), uuid, DBAction.UNBIND, DBState.NOT_CONFIRM, null).map(items -> {
             if (items == null || items.size() == 0) return null;
             return items.get(0);
         });
@@ -297,7 +295,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Device> unBindDeviceWithConfirm(String uuid) {
-        return markDevice(getAccount(), getServer(), uuid, DBAction.UNBIND, DBState.SUCCESS, null).map(items -> {
+        return markDevice(getDpAccount(), getServer(), uuid, DBAction.UNBIND, DBState.SUCCESS, null).map(items -> {
             if (items == null || items.size() == 0) return null;
             return items.get(0);
         });
@@ -343,7 +341,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<List<DPEntity>> getActiveAccountSavedDPMsg() {
-        return getAllSavedDPMsgByAccount(getAccount());
+        return getAllSavedDPMsgByAccount(getDpAccount());
     }
 
     @Override
@@ -354,20 +352,30 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Account> logout() {
         return getActiveAccount().map(account -> {
-            this.account = null;
+            this.dpAccount = null;
             if (account != null) {
                 account.setAction(DBAction.SAVED);
                 account.setState(DBState.SUCCESS);
-                account.update();
+                accountDao.update(account);
             }
             return account;
         });
     }
 
+    @Override
+    public Observable<DPEntity> update(DPEntity entity) {
+        return mEntityDao.rx().update(entity);
+    }
+
+    @Override
+    public Observable<Void> delete(DPEntity entity) {
+        return mEntityDao.rx().delete(entity);
+    }
+
     private QueryBuilder<Device> buildDPDeviceQueryBuilder(String account, String server, String uuid, DBAction action, DBState state, DBOption option) {
         QueryBuilder<Device> builder = deviceDao.queryBuilder();
         if (!TextUtils.isEmpty(account)) {
-            builder.where(DeviceDao.Properties.Account.eq(account));//设置 account 约束
+            builder.where(DeviceDao.Properties.Account.eq(account));//设置 dpAccount 约束
         }
 
         if (!TextUtils.isEmpty(server)) {
@@ -400,7 +408,7 @@ public class BaseDBHelper implements IDBHelper {
         QueryBuilder<DPEntity> builder = mEntityDao.queryBuilder();
 
         if (!TextUtils.isEmpty(account)) {
-            builder.where(DPEntityDao.Properties.Account.eq(account));//设置 account 约束
+            builder.where(DPEntityDao.Properties.Account.eq(account));//设置 dpAccount 约束
         }
 
         if (!TextUtils.isEmpty(server)) {
@@ -439,10 +447,10 @@ public class BaseDBHelper implements IDBHelper {
         return builder;
     }
 
-    private String getAccount() {
+    private String getDpAccount() {
         Account account = accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())).unique();
         if (account == null) {
-            AppLogger.e("account is null");
+            AppLogger.e("dpAccount is null");
             return null;
         }
         return account.getAccount();

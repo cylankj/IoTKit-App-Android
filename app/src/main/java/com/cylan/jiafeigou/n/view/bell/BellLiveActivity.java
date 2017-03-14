@@ -129,6 +129,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                         WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON
                         | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                         | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        registSreenStatusReceiver();
         Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
@@ -267,15 +268,15 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
         }
-        muteAudio(false);
+
         if (mSurfaceView != null && mSurfaceView instanceof GLSurfaceView) {
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
+            muteAudio(false);
+            finish();
         }
         clearHeadSetEventReceiver();
-
-        finish();
     }
 
     private void clearHeadSetEventReceiver() {
@@ -485,7 +486,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 })
                 .setMessage(getString(R.string.Tap1_device_deleted))
                 .show();
-
     }
 
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
@@ -738,5 +738,35 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         }
         AppLogger.e("pauseMusic bMute=" + bMute + " result=" + isSuccess);
         return isSuccess;
+    }
+
+    private void registSreenStatusReceiver() {
+        mScreenStatusReceiver = new ScreenStatusReceiver();
+        IntentFilter screenStatusIF = new IntentFilter();
+        screenStatusIF.addAction(Intent.ACTION_SCREEN_ON);
+        screenStatusIF.addAction(Intent.ACTION_SCREEN_OFF);
+        registerReceiver(mScreenStatusReceiver, screenStatusIF);
+    }
+
+    private ScreenStatusReceiver mScreenStatusReceiver;
+
+    class ScreenStatusReceiver extends BroadcastReceiver {
+        String SCREEN_ON = "android.intent.action.SCREEN_ON";
+        String SCREEN_OFF = "android.intent.action.SCREEN_OFF";
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (SCREEN_ON.equals(intent.getAction())) {
+
+            } else if (SCREEN_OFF.equals(intent.getAction())) {
+                finish();
+            }
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mScreenStatusReceiver);
     }
 }

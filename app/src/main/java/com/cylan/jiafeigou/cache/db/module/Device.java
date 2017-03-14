@@ -19,7 +19,7 @@ import org.greenrobot.greendao.annotation.Id;
  * Created by yanzhendong on 2017/3/4.
  */
 
-@Entity(active = true)
+@Entity
 public class Device extends DataPoint implements IEntity<Device> {
     @Id
     public Long _id;
@@ -65,17 +65,6 @@ public class Device extends DataPoint implements IEntity<Device> {
 
     @DPProperty(msgId = 304)
     public transient DpMsgDefine.DPPrimary<Integer> device_camera_rotate;
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 371273952)
-    private transient DeviceDao myDao;
-
     @Generated(hash = 182677992)
     public Device(Long _id, String uuid, String sn, String alias, String shareAccount,
                   int pid, String vid, String account, int regionType, String server, String action,
@@ -233,42 +222,6 @@ public class Device extends DataPoint implements IEntity<Device> {
         this.vid = vid;
     }
 
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
     public String getAccount() {
         return this.account;
     }
@@ -308,12 +261,5 @@ public class Device extends DataPoint implements IEntity<Device> {
 
     public void set_id(Long _id) {
         this._id = _id;
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 1755220927)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDeviceDao() : null;
     }
 }

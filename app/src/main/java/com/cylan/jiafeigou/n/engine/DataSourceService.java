@@ -1,8 +1,12 @@
 package com.cylan.jiafeigou.n.engine;
 
+import android.app.Service;
 import android.content.Context;
+import android.content.Intent;
+import android.os.IBinder;
 import android.os.Looper;
 import android.os.Process;
+import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -55,28 +59,35 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
-public class DataSource implements AppCallBack {
+public class DataSourceService extends Service implements AppCallBack {//这里用 services 避免 APP进入后台被挂起
 
     static {
         System.loadLibrary("jfgsdk");
 //        System.loadLibrary("sqlcipher");
     }
 
-    private static DataSource instance;
+    private static DataSourceService instance;
     private static DataSourceManager manager;
 
-    private DataSource() {
+    public DataSourceService() {
     }
 
-    public static DataSource getInstance() {
+    public static DataSourceService getInstance() {
         if (instance == null) {
-            synchronized (DataSource.class) {
+            synchronized (DataSourceService.class) {
                 if (instance == null)
-                    instance = new DataSource();
+                    instance = new DataSourceService();
                 manager = DataSourceManager.getInstance();
             }
         }
         return instance;
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        super.onStartCommand(intent, flags, startId);
+
+        return START_STICKY;
     }
 
     public void onCreate() {
@@ -91,6 +102,12 @@ public class DataSource implements AppCallBack {
         GlobalUdpDataSource.getInstance().unregister();
         GlobalBellCallSource.getInstance().unRegister();
         GlobalResetPwdSource.getInstance().unRegister();
+    }
+
+    @Nullable
+    @Override
+    public IBinder onBind(Intent intent) {
+        return null;
     }
 
 
@@ -109,7 +126,7 @@ public class DataSource implements AppCallBack {
                         ? extra : Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
                 String vid = Security.getVId(trimPackageName);
                 String vKey = Security.getVKey(trimPackageName);
-                JfgAppCmd.getInstance().setCallBack(DataSource.this);
+                JfgAppCmd.getInstance().setCallBack(DataSourceService.this);
                 JfgAppCmd.getInstance().initNativeParam(vid, vKey, serverAddress);
                 JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
             } catch (Exception e) {
@@ -117,7 +134,7 @@ public class DataSource implements AppCallBack {
             }
             try2autoLogin();
             AppLogger.d("let's go initNative:");
-            MtaManager.customEvent(context, "DataSource", "NativeInit");
+            MtaManager.customEvent(context, "DataSourceService", "NativeInit");
         });
     }
 

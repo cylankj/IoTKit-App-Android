@@ -13,6 +13,9 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.n.engine.DataSource;
 
 import java.io.Serializable;
@@ -460,7 +463,7 @@ public class RxEvent {
 //    }
 
     /**
-     * 这个消息从{@link DataSource#OnRobotCountDataRsp(long, String, ArrayList)}
+     * 这个消息从{@link DataSourceService#OnRobotCountDataRsp(long, String, ArrayList)}
      * 传到{@link }
      */
     public static final class UnreadCount {
@@ -843,12 +846,19 @@ public class RxEvent {
     public static final class ShouldCheckPermission {
     }
 
-    public static final class PwdHasResetEvent{
-        public PwdHasResetEvent(int code) {
-            this.code = code;
+    public static class DevicesArrived {
+        public List<Device> devices;
+
+        public DevicesArrived(List<Device> devices) {
+            this.devices = devices;
         }
+    }
 
-        public int code;
+    public static class AccountArrived {
+        public Account account;
 
+        public AccountArrived(Account account) {
+            this.account = account;
+        }
     }
 }
