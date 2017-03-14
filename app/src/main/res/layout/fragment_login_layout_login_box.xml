@@ -13,39 +13,54 @@
         android:layout_height="@dimen/y48"
         android:layout_marginTop="@dimen/y30">
 
-        <EditText
-            android:id="@+id/et_login_username"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/y5"
-            android:layout_marginTop="@dimen/y5"
-            android:background="@null"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:hint="@string/PHONE_NUMBER"
-            android:maxLength="65"
-            android:maxLines="1"
-            android:paddingLeft="@dimen/x40"
-            android:paddingRight="@dimen/x40"
-            android:singleLine="true"
-            android:textColor="@color/color_666666"
-            android:textColorHint="@color/color_cecece"
-            android:textCursorDrawable="@drawable/bg_common_cursor"
-            android:textSize="@dimen/sp15" />
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
-        <ImageView
-            android:id="@+id/iv_login_clear_username"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"
-            android:layout_marginLeft="@dimen/x10"
-            android:layout_marginRight="@dimen/x10"
-            android:paddingLeft="@dimen/x10"
-            android:paddingRight="@dimen/x10"
-            android:src="@drawable/icon_clear_text"
-            android:visibility="gone" />
+            <ImageView
+                android:id="@+id/v_an"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="@dimen/x10"
+                android:paddingLeft="@dimen/x10"
+                android:paddingRight="@dimen/x10"
+                android:src="@drawable/icon_clear_text"
+                android:visibility="invisible" />
+
+            <EditText
+                android:id="@+id/et_login_username"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/y5"
+                android:layout_marginTop="@dimen/y5"
+                android:layout_toEndOf="@+id/v_an"
+                android:layout_toStartOf="@+id/iv_login_clear_username"
+                android:background="@null"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:hint="@string/PHONE_NUMBER"
+                android:maxLength="65"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_666666"
+                android:textColorHint="@color/color_cecece"
+                android:textCursorDrawable="@drawable/bg_common_cursor"
+                android:textSize="@dimen/sp15" />
+
+            <ImageView
+                android:id="@+id/iv_login_clear_username"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="end"
+                android:layout_marginRight="@dimen/x10"
+                android:paddingLeft="@dimen/x10"
+                android:paddingRight="@dimen/x10"
+                android:src="@drawable/icon_clear_text" />
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"
@@ -56,6 +71,7 @@
             android:background="@color/color_f2f2f2" />
     </FrameLayout>
 
+
     <FrameLayout
         android:id="@+id/rLayout_pwd_input_box"
         android:layout_width="match_parent"
@@ -63,56 +79,94 @@
         android:layout_below="@+id/fLayout_account_input_box"
         android:layout_marginTop="@dimen/y29">
 
-        <EditText
-            android:id="@+id/et_login_pwd"
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:layout_marginBottom="@dimen/y5"
-            android:layout_marginTop="@dimen/y5"
-            android:background="@null"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:gravity="center"
-            android:hint="@string/ENTER_PWD_1"
-            android:inputType="textPassword"
-            android:maxLength="12"
-            android:maxLines="1"
-            android:paddingLeft="@dimen/x40"
-            android:paddingRight="@dimen/x40"
-            android:textColor="@color/color_666666"
-            android:textColorHint="@color/color_cecece"
-            android:textCursorDrawable="@drawable/bg_common_cursor"
-            android:textSize="@dimen/sp15" />
+            android:layout_height="wrap_content">
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end|center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/iv_login_clear_pwd"
+            <LinearLayout
+                android:id="@+id/v_space"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:paddingLeft="@dimen/x15"
-                android:paddingRight="@dimen/x7"
-                android:src="@drawable/icon_clear_text"
-                android:visibility="gone" />
+                android:layout_gravity="end|center_vertical"
+                android:orientation="horizontal">
 
-            <CheckBox
-                android:id="@+id/cb_show_pwd"
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="@dimen/x15"
+                    android:paddingRight="@dimen/x7"
+                    android:src="@drawable/icon_clear_text"
+                    android:visibility="invisible" />
+
+                <CheckBox
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/x7"
+                    android:layout_marginRight="@dimen/x20"
+                    android:background="@drawable/icon_common_show_pwd_selector"
+                    android:button="@null"
+                    android:checked="false"
+                    android:visibility="invisible" />
+
+            </LinearLayout>
+
+            <EditText
+                android:id="@+id/et_login_pwd"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_marginBottom="@dimen/y5"
+                android:layout_marginTop="@dimen/y5"
+                android:layout_toEndOf="@+id/v_space"
+                android:layout_toStartOf="@+id/v_space_"
+                android:background="@null"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:gravity="center"
+                android:hint="@string/ENTER_PWD_1"
+                android:inputType="textPassword"
+                android:maxLength="12"
+                android:maxLines="1"
+                android:paddingLeft="@dimen/x40"
+                android:paddingRight="@dimen/x40"
+                android:textColor="@color/color_666666"
+                android:textColorHint="@color/color_cecece"
+                android:textCursorDrawable="@drawable/bg_common_cursor"
+                android:textSize="@dimen/sp15" />
+
+            <LinearLayout
+                android:id="@+id/v_space_"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/x7"
-                android:layout_marginRight="@dimen/x20"
-                android:background="@drawable/icon_common_show_pwd_selector"
-                android:button="@null"
-                android:checked="false" />
+                android:layout_height="match_parent"
+                android:layout_alignParentEnd="true"
+                android:layout_gravity="end|center_vertical"
+                android:orientation="horizontal">
 
-        </LinearLayout>
+                <ImageView
+                    android:id="@+id/iv_login_clear_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center_vertical"
+                    android:paddingLeft="@dimen/x15"
+                    android:paddingRight="@dimen/x7"
+                    android:src="@drawable/icon_clear_text"
+                    android:visibility="invisible" />
+
+                <CheckBox
+                    android:id="@+id/cb_show_pwd"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="@dimen/x7"
+                    android:layout_marginRight="@dimen/x20"
+                    android:background="@drawable/icon_common_show_pwd_selector"
+                    android:button="@null"
+                    android:checked="false" />
+
+            </LinearLayout>
+        </RelativeLayout>
 
         <View
             android:layout_width="match_parent"

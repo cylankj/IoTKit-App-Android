@@ -11,9 +11,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_gravity="center"
         android:layout_marginBottom="@dimen/y90"
-        android:layout_marginTop="@dimen/y170"
+        android:layout_marginTop="@dimen/y120"
         android:src="@drawable/pic_sign_in" />
 
     <TextView

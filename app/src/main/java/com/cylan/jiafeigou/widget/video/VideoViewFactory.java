@@ -109,7 +109,7 @@ public class VideoViewFactory {
             return new PanoramicView_Ext(context);
         }
         return (useOpenGLES2 && ViEAndroidGLES20.IsSupported(context)
-                ? new ViEAndroidGLES20_Ext(context)
+                    ? new ViEAndroidGLES20_Ext(context)
                 : new SurfaceView_Ext(context));
     }
 }

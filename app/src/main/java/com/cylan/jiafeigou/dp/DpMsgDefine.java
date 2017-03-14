@@ -452,7 +452,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPAlarmInfo extends DPMulti<DPAlarmInfo> implements Parcelable {
+    public static final class DPAlarmInfo extends DPSingle<DPAlarmInfo> implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -468,8 +468,8 @@ public class DpMsgDefine {
 
         static {
             empty.timeStart = 0;
-            empty.timeEnd = 0;
-            empty.day = 0;
+            empty.timeEnd = 5947;
+            empty.day = 127;//默认开启
         }
 
         @Override
