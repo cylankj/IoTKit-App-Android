@@ -83,12 +83,14 @@ public class DataSource implements AppCallBack {
         initNative();
         GlobalUdpDataSource.getInstance().register();
         GlobalBellCallSource.getInstance().register();
+        GlobalResetPwdSource.getInstance().register();
     }
 
 
     public void onDestroy() {
         GlobalUdpDataSource.getInstance().unregister();
         GlobalBellCallSource.getInstance().unRegister();
+        GlobalResetPwdSource.getInstance().unRegister();
     }
 
 
@@ -195,8 +197,8 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnLogoutByServer(int i) {
-        AppLogger.d("OnLocalMessage :" + i);
-        RxBus.getCacheInstance().post(i);
+        AppLogger.d("OnLocalMessage hh:" + i);
+        RxBus.getCacheInstance().post(new RxEvent.PwdHasResetEvent(i));
         DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
     }
 
@@ -249,7 +251,7 @@ public class DataSource implements AppCallBack {
     public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, arrayList));
-        RxBus.getCacheInstance().post(new RxEvent.SdcardClearRsp(l, arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SdcardClearReqRsp(l, arrayList));
     }
 
     @Override
@@ -366,6 +368,7 @@ public class DataSource implements AppCallBack {
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
         AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + new Gson().toJson(arrayList));
         DataSourceManager.getInstance().cacheRobotoSyncData(b, s, arrayList);
+        RxBus.getCacheInstance().post(new RxEvent.SdcardClearFinishRsp(b,s,arrayList));
     }
 
     @Override
@@ -476,6 +479,5 @@ public class DataSource implements AppCallBack {
     public void OnGetVideoShareUrl(String s) {
 
     }
-
 
 }

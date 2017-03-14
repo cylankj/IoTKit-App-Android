@@ -42,6 +42,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     private boolean isRegSms;
     private boolean isReg;
 
+    private boolean hasSwitchBox = true;
+
 
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
@@ -81,7 +83,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录结果
-     *
      * @return
      */
 
@@ -172,10 +173,15 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     private Subscription switchBoxSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SwitchBox.class)
-                .delay(1000, TimeUnit.MILLISECONDS)//set a delay
+                .delay(100, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(switchBox -> getView().switchBox(""),
-                        throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
+                .subscribe(switchBox -> {
+                    if (hasSwitchBox){
+                        getView().switchBox("");
+                        hasSwitchBox = false;
+                    }
+                },throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
+
     }
 
     private Subscription loginPopBackSub() {
@@ -195,9 +201,10 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     public void getCodeByPhone(final String phone) {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(o -> JfgCmdInsurance.getCmd().sendCheckCode(phone,
-                        JfgEnum.JFG_SMS_REGISTER),
-                        throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
+                .subscribe(o -> {
+                    JfgCmdInsurance.getCmd().sendCheckCode(phone,JfgEnum.JFG_SMS_REGISTER);
+                    AppLogger.d("phone:"+phone);
+                },throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
     }
 
     @Override

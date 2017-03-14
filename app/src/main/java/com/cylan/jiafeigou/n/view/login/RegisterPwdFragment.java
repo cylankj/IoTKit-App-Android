@@ -198,6 +198,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
 //                getActivity().getSupportFragmentManager().popBackStack();
                 // TODO 去登录
                 RxBus.getCacheInstance().post(new RxEvent.LoginPopBack(account));
+                RxBus.getCacheInstance().post(new RxEvent.SwitchBox());
                 ActivityUtils.justPop(getActivity());
             }
         });

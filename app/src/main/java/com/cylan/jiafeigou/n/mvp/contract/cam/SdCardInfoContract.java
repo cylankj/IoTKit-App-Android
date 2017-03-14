@@ -25,6 +25,9 @@ public interface SdCardInfoContract {
         void clearSdResult(int code);
 
         void initSdUseDetail(DpMsgDefine.DPSdStatus sdStatus);
+
+        void showSdPopDialog();
+
     }
 
 
@@ -49,8 +52,5 @@ public interface SdCardInfoContract {
 
         Subscription getSdCapacityBack();
 
-        void getClearSdResult();
-
-        Subscription getClearSdResultBack();
     }
 }
