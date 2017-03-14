@@ -141,6 +141,11 @@ android {
             versionName vName
             versionCode vCode
         }
+        _cell_c {
+            applicationIdSuffix ".cell_c"
+            versionName vName
+            versionCode vCode
+        }
     }
 }
 

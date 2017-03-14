@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <resources>
-    <string name="app_name">Doby</string>
+    <string name="app_name">Cell_C</string>
     <string name="Slogan">Smart Home, for better life</string>
     <string name="help_url">https://yf.jfgou.com:8081/help/zh&#8211;rCN_doby.html</string>
 </resources>

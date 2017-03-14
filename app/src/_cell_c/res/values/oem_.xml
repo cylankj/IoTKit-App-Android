@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="show_all_right">false</bool>
+    <bool name="show_agreement">false</bool>
+    <bool name="show_about">false</bool>
+    <bool name="show_official_website">false</bool>
+    <bool name="show_official_hot_line">false</bool>
+</resources>
