@@ -43,4 +43,12 @@ public interface DBOption {
             this.flag = flag;
         }
     }
+
+    class RawDeviceOrderOption extends BaseDBOption {
+        public int rawDeviceOrder;
+
+        public RawDeviceOrderOption(int order) {
+            this.rawDeviceOrder = order;
+        }
+    }
 }

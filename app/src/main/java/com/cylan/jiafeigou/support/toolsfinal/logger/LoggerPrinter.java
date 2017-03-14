@@ -62,7 +62,7 @@ public final class LoggerPrinter implements Printer {
 
     /**
      * tag is used for the Log, the name is a little different
-     * in order to differentiate the logs easily with the filter
+     * in rawDeviceOrder to differentiate the logs easily with the filter
      */
     private String tag;
 
@@ -216,7 +216,7 @@ public final class LoggerPrinter implements Printer {
     }
 
     /**
-     * This method is synchronized in order to avoid messy of logs' order.
+     * This method is synchronized in rawDeviceOrder to avoid messy of logs' rawDeviceOrder.
      */
     private synchronized void log(int logType, String msg, Object... args) {
         if (settings.getLogLevel() == LogLevel.NONE) {

@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.video.History;
@@ -38,8 +39,8 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -64,11 +65,12 @@ public class DataSourceManager implements JFGSourceManager {
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
-    private Map<String, Device> mCachedDeviceMap = new LinkedHashMap<>();//和uuid相关的数据缓存
+    private Map<String, Device> mCachedDeviceMap = new HashMap<>();//和uuid相关的数据缓存
     private Account account;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private Subscription unreadCountFetcher;
+    private List<Pair<Integer, String>> rawOrder = new ArrayList<>();
     /**
      * 未读消息数
      */
@@ -96,6 +98,7 @@ public class DataSourceManager implements JFGSourceManager {
                                 msg.packValue = entity.getBytes();
                                 dpAccount.setValue(msg);
                             }
+                            RxBus.getCacheInstance().postSticky(new RxEvent.AccountArrived(dpAccount));
                             return dpAccount;
                         })
                 )
@@ -103,7 +106,9 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(Observable::from)
                 .map(device -> {
                     Device dev = create(device.getPid()).fill(device);
+                    DBOption.RawDeviceOrderOption option = dev.option(DBOption.RawDeviceOrderOption.class);
                     mCachedDeviceMap.put(device.getUuid(), dev);
+                    rawOrder.add(new Pair<>(option.rawDeviceOrder, dev.getUuid()));
                     return dev;
                 })
                 .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
@@ -116,7 +121,12 @@ public class DataSourceManager implements JFGSourceManager {
                                 device.setValue(msg);
                             }
                             return dpEntities;
-                        })).subscribe();
+                        }))
+                .doOnCompleted(() -> {
+                    Collections.sort(rawOrder, (lhs, rhs) -> lhs.first - rhs.first);
+                    RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
+                })
+                .subscribe();
     }
 
     public static DataSourceManager getInstance() {
@@ -148,7 +158,12 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public List<Device> getAllJFGDevice() {
-        return new ArrayList<>(mCachedDeviceMap.values());
+        Collections.sort(rawOrder, (lhs, rhs) -> lhs.first - rhs.first);
+        List<Device> result = new ArrayList<>(rawOrder.size());
+        for (Pair<Integer, String> pair : rawOrder) {
+            result.add(mCachedDeviceMap.get(pair.second));
+        }
+        return result;
     }
 
     public List<Device> getJFGDeviceByPid(int... pids) {
@@ -183,30 +198,27 @@ public class DataSourceManager implements JFGSourceManager {
                 .observeOn(Schedulers.io())
                 .map(items -> {
                     Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
-                    for (JFGDevice device : items) {
+                    JFGDevice device;
+                    for (int i = 0; i < items.length; i++) {
+                        device = items[i];
                         result.remove(device.uuid);
                     }
-                    AppLogger.d("已删除的设备数" + result.size());
                     return result;
                 })
-                .flatMap(items ->
-                        items.size() == 0 ?
-                                Observable.just(devices) :
-                                Observable.from(items)
-                                        .flatMap(this::unBindDevice)
-                                        .buffer(items.size())
-                                        .map(ret -> devices)
-                )
+                .flatMap(items -> items.size() == 0 ? Observable.just(devices) : Observable.from(items).flatMap(this::unBindDevice).last().map(ret -> devices))
                 .map(items -> {
                     mCachedDeviceMap.clear();
+                    rawOrder.clear();
                     return items;
                 })
                 .flatMap(items -> dbHelper.updateDevice(items))
                 .map(dev -> {
                     Device dpDevice = create(dev.getPid()).fill(dev);
-                    mCachedDeviceMap.put(dev.getUuid(), dpDevice);
+                    DBOption.RawDeviceOrderOption option = dpDevice.option(DBOption.RawDeviceOrderOption.class);
+                    mCachedDeviceMap.put(dpDevice.getUuid(), dpDevice);
+                    rawOrder.add(new Pair<>(option.rawDeviceOrder, dpDevice.getUuid()));
                     ArrayList<JFGDPMsg> parameters = dpDevice.getQueryParameters(false);
-                    AppLogger.d("正在同步设备信息:" + dpDevice.getUuid() + " " + new Gson().toJson(parameters) + "device:" + dpDevice);
+                    AppLogger.d("正在同步设备数据");
                     try {
                         JfgCmdInsurance.getCmd().robotGetData(dpDevice.getUuid(), parameters, 1, false, 0);
                     } catch (JfgException e) {
@@ -214,18 +226,20 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     return dpDevice;
                 })
-                .buffer(devices.length)
                 .subscribe(items -> {
-                    ArrayList<String> uuidList = new ArrayList<>();
-                    for (Device device : items) {
-                        if (!JFGRules.isShareDevice(device.uuid)) {
-                            uuidList.add(device.uuid);
-                        }
-                    }
-                    JfgCmdInsurance.getCmd().getShareList(uuidList);
                 }, e -> {
                     AppLogger.d(e.getMessage());
                     e.printStackTrace();
+                }, () -> {
+                    ArrayList<String> uuidList = new ArrayList<>();
+                    for (Pair<Integer, String> pair : rawOrder) {
+                        if (!JFGRules.isShareDevice(pair.second)) {
+                            uuidList.add(pair.second);
+                        }
+                    }
+                    JfgCmdInsurance.getCmd().getShareList(uuidList);
+                    Collections.sort(rawOrder, (lhs, rhs) -> lhs.first - rhs.first);
+                    RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
                 });
     }
 
@@ -241,6 +255,7 @@ public class DataSourceManager implements JFGSourceManager {
                         AppLogger.e("jfgAccount is null");
                     }
                     RxBus.getCacheInstance().post(account);
+                    RxBus.getCacheInstance().postSticky(new RxEvent.AccountArrived(this.account));
                 })
                 .subscribe(act -> this.account = act);
     }
@@ -316,6 +331,11 @@ public class DataSourceManager implements JFGSourceManager {
                     RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(dev.getUuid()));
                     return dev;
                 });
+    }
+
+    @Override
+    public int getRawDeviceOrder(String uuid) {
+        return rawOrder.indexOf(uuid);
     }
 
     /**
@@ -416,6 +436,7 @@ public class DataSourceManager implements JFGSourceManager {
         if (shareList != null) shareList.clear();
         if (unreadCountFetcher != null && unreadCountFetcher.isUnsubscribed())
             unreadCountFetcher.unsubscribe();
+        RxBus.getCacheInstance().removeAllStickyEvents();
     }
 
     @Override

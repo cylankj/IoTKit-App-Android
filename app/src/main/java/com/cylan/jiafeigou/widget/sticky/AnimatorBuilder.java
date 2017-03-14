@@ -140,7 +140,7 @@ public class AnimatorBuilder {
 
     /**
      * @param viewToParallax
-     * @param velocityParallax the velocity to apply to the view in order to show the parallax effect. choose activity_cloud_live_mesg_call_out_item velocity between 0 and 1 for better results
+     * @param velocityParallax the velocity to apply to the view in rawDeviceOrder to show the parallax effect. choose activity_cloud_live_mesg_call_out_item velocity between 0 and 1 for better results
      * @return
      */
     public AnimatorBuilder applyVerticalParallax(View viewToParallax, float velocityParallax) {
