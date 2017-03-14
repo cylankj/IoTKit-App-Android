@@ -16,11 +16,11 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
-import com.cylan.jiafeigou.n.engine.DataSource;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 
 /**
@@ -860,5 +860,14 @@ public class RxEvent {
         public AccountArrived(Account account) {
             this.account = account;
         }
+    }
+
+    public static final class PwdHasResetEvent {
+        public PwdHasResetEvent(int code) {
+            this.code = code;
+        }
+
+        public int code;
+
     }
 }

@@ -335,22 +335,17 @@ public class DataSourceManager implements JFGSourceManager {
                 });
     }
 
-    @Override
-    public int getRawDeviceOrder(String uuid) {
-        return rawDeviceOrder.indexOf(uuid);
-    }
-
     /**
      * 获取所有的报警消息{505,222}，1：保证有最新的报警消息，2.用于显示xx条新消息。
      *
      * @param ignoreShareDevice:忽略分享账号，一般都为true
      */
-    @Override
+
     public void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice) {
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
             Device device = mCachedDeviceMap.get(entry.getKey());
             if (JFGRules.isShareDevice(device) && ignoreShareDevice) continue;
-            syncJFGCameraWarn(entry.getKey(), false, 100);
+//            syncJFGCameraWarn(entry.getKey(), false, 100);
         }
     }
 
@@ -361,24 +356,30 @@ public class DataSourceManager implements JFGSourceManager {
      *
      * @param uuid
      */
+
+
+//    int queryHistory(String uuid);
     @Override
-    public long syncJFGCameraWarn(String uuid, boolean asc, int count) {
-        ArrayList<JFGDPMsg> list = MiscUtils.createGetCameraWarnMsgDp();
-        try {
-            return JfgCmdInsurance.getCmd().robotGetData(uuid, list, count, false, 0);
-        } catch (JfgException e) {
-            AppLogger.e("uuid is null");
-            return 0L;
-        }
+    public long syncJFGCameraWarn(String uuid, long version, boolean asc, int count) {
+//        Device device = mCachedDeviceMap.get(uuid);
+//        ArrayList<JFGDPMsg> list = MiscUtils.createGetCameraWarnMsgDp(device);
+//        try {
+//            return JfgCmdInsurance.getCmd().robotGetData(uuid, list, count, false, 0);
+//        } catch (JfgException e) {
+//            AppLogger.e("uuid is null");
+//            return 0L;
+//        }
+        return 0;
     }
 
     @Override
-    public void queryHistory(String uuid) {
+    public int queryHistory(String uuid) {
         try {
             JfgCmdInsurance.getCmd().getVideoList(uuid);
         } catch (JfgException e) {
             AppLogger.e("uuid is null: " + e.getLocalizedMessage());
         }
+        return 0;
     }
 
     @Override
