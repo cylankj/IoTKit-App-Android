@@ -310,9 +310,7 @@ public class Device extends DataPoint implements IEntity<Device> {
         this._id = _id;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1755220927)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

@@ -151,12 +151,50 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         Observable.just(null)
                 .filter(o -> !JFGRules.isShareDevice(uuid))//过滤分享设备
                 .observeOn(Schedulers.newThread())
-                .subscribe((Object dataStack) -> {
+                .map(o -> {
                     //获取设备历史录像
                     //不直接使用这个接口,因为在videoList的数据结构中没有uuid标签,只能使用请求的seq来判断.
                     //所有把它统一放到History类中管理.
                     DataSourceManager.getInstance().queryHistory(uuid);
                     AppLogger.i("getVideoList");
+                    return null;
+                })
+                .timeout(3, TimeUnit.SECONDS, Observable.just("get history list timeout: " + uuid)
+                        .map(s -> {
+                            AppLogger.d("" + s);
+                            return null;
+                        }))
+                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
+                                .filter(jfgHistoryVideoParseRsp -> TextUtils.equals(jfgHistoryVideoParseRsp.uuid, uuid)),
+                        (Object o, RxEvent.JFGHistoryVideoParseRsp jfgHistoryVideoParseRsp) -> {
+                            return Observable.just(jfgHistoryVideoParseRsp)
+                                    .filter(historyList -> TextUtils.equals(uuid, historyList.uuid))//过滤uuid
+                                    .subscribeOn(Schedulers.computation())
+                                    .map((RxEvent.JFGHistoryVideoParseRsp jfgHistoryVideo) -> {
+                                        long time = System.currentTimeMillis();
+                                        ArrayList<JFGVideo> finalList = DataSourceManager.getInstance().getHistoryList(uuid);
+                                        if (finalList == null || finalList.size() == 0)
+                                            return null;
+                                        Collections.sort(finalList);
+                                        AppLogger.d(String.format("performance:%s", (System.currentTimeMillis() - time)));
+                                        AppLogger.i("performance:" + new Gson().toJson(jfgHistoryVideo));
+                                        IData data = new DataExt();
+                                        data.flattenData(finalList);
+                                        historyDateFlatten.flat(finalList);
+                                        return historyDataProvider = data;
+                                    })
+                                    .filter((IData dataStack) -> (getView() != null && dataStack != null))
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .map((IData dataStack) -> {
+                                        getView().onHistoryDataRsp(dataStack);
+                                        return null;
+                                    })
+                                    .retry(new RxHelper.ExceptionFun<>("historyDataListSub"))
+                                    .subscribe();
+                        })
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe((Object dataStack) -> {
+                    AppLogger.d("get historyList finish");
                 });
     }
 
@@ -386,8 +424,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnCompleted(() -> {
-                    getView().onLiveStop(playType, stopReason);
                     AppLogger.d("live stop: " + stopReason);
+                    getView().onLiveStop(playType, stopReason);
                 })
                 .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()))
                 .subscribe();
@@ -585,41 +623,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     protected Subscription[] register() {
-        return new Subscription[]{
-                robotDataSync(),
-                historyDataListSub()};
-    }
-
-    /**
-     * 接受历史录像数据
-     *
-     * @return
-     */
-    private Subscription historyDataListSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
-                .filter(historyList -> TextUtils.equals(uuid, historyList.uuid))//过滤uuid
-                .subscribeOn(Schedulers.computation())
-                .map((RxEvent.JFGHistoryVideoParseRsp jfgHistoryVideo) -> {
-                    long time = System.currentTimeMillis();
-                    ArrayList<JFGVideo> finalList = DataSourceManager.getInstance().getHistoryList(uuid);
-                    if (finalList == null || finalList.size() == 0)
-                        return null;
-                    Collections.sort(finalList);
-                    AppLogger.d(String.format("performance:%s", (System.currentTimeMillis() - time)));
-                    AppLogger.i("performance:" + new Gson().toJson(jfgHistoryVideo));
-                    IData data = new DataExt();
-                    data.flattenData(finalList);
-                    historyDateFlatten.flat(finalList);
-                    return historyDataProvider = data;
-                })
-                .filter((IData dataStack) -> (getView() != null && dataStack != null))
-                .observeOn(AndroidSchedulers.mainThread())
-                .map((IData dataStack) -> {
-                    getView().onHistoryDataRsp(dataStack);
-                    return null;
-                })
-                .retry(new RxHelper.ExceptionFun<>("historyDataListSub"))
-                .subscribe();
+        return new Subscription[]{robotDataSync()};
     }
 
     /**

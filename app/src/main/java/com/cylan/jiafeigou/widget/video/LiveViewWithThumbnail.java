@@ -191,7 +191,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     @Override
     public void onLiveStop() {
         if (isNormalView())
-            imgThumbnail.setVisibility(VISIBLE);
+            imgThumbnail.setVisibility(GONE);
         Log.d(TAG, "onLiveStop");
     }
 

@@ -166,7 +166,7 @@ public class DataSource implements AppCallBack {
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
         for (JFGDevice device : jfgDevices)
-            Log.d("OnReportJfgDevices", "OnReportJfgDevices: " + device.uuid);
+            Log.d("OnReportJfgDevices", "OnReportJfgDevices: " + device.uuid + " " + System.currentTimeMillis());
         AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
 

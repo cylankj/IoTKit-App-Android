@@ -276,9 +276,7 @@ public class Account extends DataPoint implements IEntity<Account> {
         this._id = _id;
     }
 
-    /**
-     * called by internal mechanisms, do not call yourself.
-     */
+    /** called by internal mechanisms, do not call yourself. */
     @Generated(hash = 1812283172)
     public void __setDaoSession(DaoSession daoSession) {
         this.daoSession = daoSession;

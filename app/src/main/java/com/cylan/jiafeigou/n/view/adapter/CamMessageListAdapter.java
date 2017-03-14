@@ -38,7 +38,7 @@ import java.util.Map;
  * Created by cylan-hunt on 16-7-13.
  */
 public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
-
+    private static final String TAG = "CamMessageListAdapter";
     /**
      * 图片，只有文字,加载。
      */
@@ -53,8 +53,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private final int pic_container_width;//宽度是固定的，需要调整高度。
     private Map<Integer, Integer> selectedMap = new HashMap<>();
     private Map<Integer, Integer> loadFailedMap = new HashMap<>();
-    private boolean hasSdcard;
-    private boolean deviceOnlineState;
+//    private boolean hasSdcard;
+//    private boolean deviceOnlineState;
 
     private int pic_container_height;//5+26+48
 
@@ -65,14 +65,16 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
         device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        fetchSdcardStatus();
     }
 
-    private void fetchSdcardStatus() {
+    private boolean hasSdcard() {
         DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
-        this.hasSdcard |= status != null && status.hasSdcard;
+        return status != null && status.hasSdcard && status.err == 0;
+    }
+
+    private boolean online() {
         DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET), DpMsgDefine.DPNet.empty);
-        deviceOnlineState = net != null && net.net != 0;
+        return net.net > 0;
     }
 
     public boolean isEditMode() {
@@ -174,19 +176,17 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * @return
      */
     private boolean showLiveBtn(long time) {
-        return System.currentTimeMillis() - time >= 30 * 60 * 1000L && this.hasSdcard && deviceOnlineState;
+        return (System.currentTimeMillis() - time) >= 30 * 60 * 1000L && hasSdcard() && online();
     }
 
     /**
      * 来自一个全局的通知消息
      */
     public void notifySdcardStatus(boolean status, int position) {
-        this.hasSdcard = status;
         updateItemFrom(position);
     }
 
     public void notifyDeviceOnlineState(boolean online, int position) {
-        this.deviceOnlineState = online;
         updateItemFrom(position);
     }
 
@@ -200,8 +200,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                          CamMessageBean item) {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
-        DpMsgDefine.DPSdcardSummary sdStatus = item.sdcardSummary;
-        if (sdStatus != null && sdStatus.hasSdcard && sdStatus.errCode != 0) {
+        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
+        if (sdStatus != null && sdStatus.hasSdcard && sdStatus.err != 0) {
             holder.setVisibility(R.id.tv_jump_next, View.VISIBLE);
             if (onClickListener != null)
                 holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
@@ -238,12 +238,13 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
 //        }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
+        Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.time));
         holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
         holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_2, onClickListener);
-        holder.setEnabled(R.id.tv_jump_next, deviceOnlineState);
+        holder.setEnabled(R.id.tv_jump_next, online());
     }
 
 
