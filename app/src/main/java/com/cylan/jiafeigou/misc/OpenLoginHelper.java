@@ -80,10 +80,11 @@ public class OpenLoginHelper {
 
     /**
      * 根据type选择授权
+     *
      * @param type
      */
-    public void loginAuthorize(int type){
-        switch (type){
+    public void loginAuthorize(int type) {
+        switch (type) {
             case 3:
                 qqAuthorize(activity);
                 break;
@@ -91,11 +92,11 @@ public class OpenLoginHelper {
                 sinaAuthorize(activity);
                 break;
             case 6:
-                PreferencesUtils.putBoolean(JConstant.TWITTER_INIT_KEY,true);
+                PreferencesUtils.putBoolean(JConstant.TWITTER_INIT_KEY, true);
                 twitterAuthorize(activity);
                 break;
             case 7:
-                PreferencesUtils.putBoolean(JConstant.FACEBOOK_INIT_KEY,true);
+                PreferencesUtils.putBoolean(JConstant.FACEBOOK_INIT_KEY, true);
                 facebookAuthorize(activity);
                 break;
         }
@@ -108,7 +109,7 @@ public class OpenLoginHelper {
         TencentInstance.getInstance(activity).logIn(qqListener);
     }
 
-    private IUiListener qqListener = new BaseUiListener(){
+    private IUiListener qqListener = new BaseUiListener() {
         @Override
         protected void doComplete(JSONObject values) {
             initLoginID(values);
@@ -117,11 +118,12 @@ public class OpenLoginHelper {
 
     /**
      * 获取qq信息
+     *
      * @param jsonObject
      */
     private void initLoginID(JSONObject jsonObject) {
         try {
-            if (jsonObject.getInt("ret")==0) {
+            if (jsonObject.getInt("ret") == 0) {
                 String openID = jsonObject.getString("openid");
                 String expires = jsonObject.getString("expires_in");
                 String accessToken = jsonObject.getString("access_token");
@@ -129,7 +131,7 @@ public class OpenLoginHelper {
                 TencentInstance.getInstance(activity).mTencent.setOpenId(openID);
                 TencentInstance.getInstance(activity).mTencent.setAccessToken(accessToken, expires);
                 //post获取到的token
-                postAuthorizeResult(accessToken,openID,3);
+                postAuthorizeResult(accessToken, openID, 3);
                 getuserInfo();
             }
         } catch (JSONException e) {
@@ -139,8 +141,8 @@ public class OpenLoginHelper {
 
     private void getuserInfo() {
         QQToken qqToken = TencentInstance.getInstance(activity).mTencent.getQQToken();
-        AppLogger.d("tokendd:"+qqToken.getAccessToken());
-        UserInfo qqInfo = new UserInfo(activity,qqToken);
+        AppLogger.d("tokendd:" + qqToken.getAccessToken());
+        UserInfo qqInfo = new UserInfo(activity, qqToken);
         qqInfo.getUserInfo(getQQinfoListener);
     }
 
@@ -157,7 +159,7 @@ public class OpenLoginHelper {
                 String figureurl = jsonObject.getString("figureurl");
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, figureurl);
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, nickname);
-                AppLogger.d("jsonObject:"+jsonObject.toString());
+                AppLogger.d("jsonObject:" + jsonObject.toString());
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -178,6 +180,7 @@ public class OpenLoginHelper {
 
         protected void doComplete(JSONObject values) {
         }
+
         @Override
         public void onComplete(Object response) {
             if (null == response) {
@@ -187,13 +190,14 @@ public class OpenLoginHelper {
             if (null != jsonResponse && jsonResponse.length() == 0) {
                 return;
             }
-            doComplete((JSONObject)response);
+            doComplete((JSONObject) response);
         }
 
         @Override
         public void onError(UiError e) {
             AppLogger.e("qqauthorize:"+e.errorMessage);
         }
+
         @Override
         public void onCancel() {
             AppLogger.d("qq cancle");
@@ -211,8 +215,8 @@ public class OpenLoginHelper {
                 UsersAPI usersAPI = new UsersAPI(accessToken, activity);
                 Long uid = Long.parseLong(accessToken.getUid());
                 usersAPI.show(uid, sinaRequestListener);
-                if(accessToken != null && accessToken.isSessionValid()) {
-                    AccessTokenKeeper.writeAccessToken(ContextUtils.getContext(),accessToken);
+                if (accessToken != null && accessToken.isSessionValid()) {
+                    AccessTokenKeeper.writeAccessToken(ContextUtils.getContext(), accessToken);
                     //post 结果
                     postAuthorizeResult(accessToken.getToken(),accessToken.getUid(),4);
                 } else {
@@ -226,7 +230,7 @@ public class OpenLoginHelper {
             public void onWeiboException(WeiboException e) {
                 LoginAccountBean login = null;
                 RxBus.getCacheInstance().postSticky(login);
-                AppLogger.e("sinaAuthorize:"+e.getLocalizedMessage());
+                AppLogger.e("sinaAuthorize:" + e.getLocalizedMessage());
             }
 
             @Override
@@ -253,6 +257,7 @@ public class OpenLoginHelper {
                 AppLogger.e(e.toString());
             }
         }
+
         @Override
         public void onWeiboException(WeiboException e) {
             AppLogger.e(e.toString());
@@ -283,14 +288,14 @@ public class OpenLoginHelper {
                         TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
                         Call<User> call = twitterApiClient.getAccountService().verifyCredentials(false, false);
                         call.enqueue(new UserInfoBack());
-                        AppLogger.d("token:"+strToken);
+                        AppLogger.d("token:" + strToken);
                     }
 
                     @Override
                     public void failure(TwitterException e) {
                         LoginAccountBean login = null;
                         RxBus.getCacheInstance().postSticky(login);
-                        AppLogger.e("twitterAuthorize:"+e.getLocalizedMessage());
+                        AppLogger.e("twitterAuthorize:" + e.getLocalizedMessage());
                     }
                 });
             }
@@ -300,7 +305,7 @@ public class OpenLoginHelper {
     /**
      * Twitter用户信息回调
      */
-    private class UserInfoBack extends Callback<User>{
+    private class UserInfoBack extends Callback<User> {
         @Override
         public void success(Result<User> result) {
             String twitter_name = result.data.name;
@@ -308,12 +313,12 @@ public class OpenLoginHelper {
 
             PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, str[0]);
             PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, str[1]);
-            AppLogger.d("twitterName:"+str[0]);
+            AppLogger.d("twitterName:" + str[0]);
         }
 
         @Override
         public void failure(TwitterException e) {
-            AppLogger.e("twitter_get_userinfo:"+e.getLocalizedMessage());
+            AppLogger.e("twitter_get_userinfo:" + e.getLocalizedMessage());
         }
     }
 
@@ -334,6 +339,7 @@ public class OpenLoginHelper {
                         //post 结果
                         postAuthorizeResult(accessToken.getToken(),accessToken.getUserId(),7);
                         GraphRequest request = GraphRequest.newMeRequest(accessToken,getUserinfo);
+
                         Bundle parameters = new Bundle();
                         parameters.putString("fields", "dpMsgId,name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
                         request.setParameters(parameters);
@@ -349,37 +355,38 @@ public class OpenLoginHelper {
                     public void onError(FacebookException e) {
                         LoginAccountBean login = null;
                         RxBus.getCacheInstance().postSticky(login);
-                        AppLogger.e("facebookAuthorize:"+e.getLocalizedMessage());
+                        AppLogger.e("facebookAuthorize:" + e.getLocalizedMessage());
                     }
                 });
             }
         });
     }
 
-   private GraphRequest.GraphJSONObjectCallback getUserinfo = new GraphRequest.GraphJSONObjectCallback() {
-       @Override
-       public void onCompleted(JSONObject object, GraphResponse graphResponse) {
-           if (object != null) {
-               String name = object.optString("name");
-               //获取用户头像
-               JSONObject object_pic = object.optJSONObject("picture");
-               JSONObject object_data = object_pic.optJSONObject("data");
-               String photo = object_data.optString("url");
+    private GraphRequest.GraphJSONObjectCallback getUserinfo = new GraphRequest.GraphJSONObjectCallback() {
+        @Override
+        public void onCompleted(JSONObject object, GraphResponse graphResponse) {
+            if (object != null) {
+                String name = object.optString("name");
+                //获取用户头像
+                JSONObject object_pic = object.optJSONObject("picture");
+                JSONObject object_data = object_pic.optJSONObject("data");
+                String photo = object_data.optString("url");
 
-               // 保存用户信息
-               PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, photo);
-               PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, name);
-               AppLogger.d("facebook_getUserinfo:"+name+photo);
-           }
-       }
-   };
+                // 保存用户信息
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, photo);
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, name);
+                AppLogger.d("facebook_getUserinfo:" + name + photo);
+            }
+        }
+    };
 
     /**
      * post 授权结果
+     *
      * @param token
      * @param type
      */
-    private void postAuthorizeResult(String token,String openId,int type) {
+    private void postAuthorizeResult(String token, String openId, int type) {
         LoginAccountBean login = new LoginAccountBean();
         login.userName = token;
         login.pwd = openId;

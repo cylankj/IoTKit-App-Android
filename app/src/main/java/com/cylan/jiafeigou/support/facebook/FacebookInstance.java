@@ -20,12 +20,12 @@ public class FacebookInstance {
     public CallbackManager callbackManager;
 
     private FacebookInstance() {
-        if (callbackManager == null){
+        if (callbackManager == null) {
             callbackManager = CallbackManager.Factory.create();
         }
     }
 
-    public static FacebookInstance getInstance(){
+    public static FacebookInstance getInstance() {
         if (instance == null)
             synchronized (FacebookInstance.class) {
                 if (instance == null)
@@ -34,8 +34,8 @@ public class FacebookInstance {
         return instance;
     }
 
-    public void login(Activity activity,FacebookCallback<LoginResult> callback){
+    public void login(Activity activity, FacebookCallback<LoginResult> callback) {
         LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList("public_profile", "user_friends", "email"));
-        LoginManager.getInstance().registerCallback(callbackManager,callback);
+        LoginManager.getInstance().registerCallback(callbackManager, callback);
     }
 }

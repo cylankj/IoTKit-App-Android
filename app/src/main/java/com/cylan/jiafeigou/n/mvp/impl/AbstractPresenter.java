@@ -65,7 +65,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
                 if (s != null)
                     compositeSubscription.add(s);
         }
-        AppLogger.d(TAG+": register: "+compositeSubscription.isUnsubscribed());
+        AppLogger.d(TAG + ": register: " + compositeSubscription.isUnsubscribed());
         String[] action = registerNetworkAction();
         if (action != null && action.length > 0) {
             NetMonitor.getNetMonitor().registerNet(this, action);

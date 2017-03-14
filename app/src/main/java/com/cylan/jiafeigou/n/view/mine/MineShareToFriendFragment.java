@@ -283,7 +283,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
         shareToFriendsAdapter.setOnShareCheckListener(new ShareToFriendsAdapter.OnShareCheckListener() {
             @Override
             public void onCheck(boolean isCheckFlag, SuperViewHolder holder, RelAndFriendBean item) {
-                if (isCheckFlag && hasShareNum >= 5){
+                if (isCheckFlag && hasShareNum >= 5) {
                     showNumIsOverDialog(holder);
                     item.isCheckFlag = 2;
                     return;
@@ -299,7 +299,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
                         isChooseToShareList.add(bean);
                     }
                 }
-                hasShareNum+=hasCheckNum;
+                hasShareNum += hasCheckNum;
                 presenter.checkShareNumIsOver(holder, numIsChange, hasShareNum);
             }
         });

@@ -88,6 +88,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 拿到数据库的操作对象
+     *
      * @return
      */
     @Override
@@ -108,6 +109,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 获取到本地数据库中的所有消息记录
+     *
      * @return
      */
     @Override
@@ -196,7 +198,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     @Override
                     public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
                         if (results.size() != 0)
-                        results.clear();
+                            results.clear();
                         AppLogger.d("getMesgDpDataCallBack:" + robotoGetDataRsp.seq + ":" + robotoGetDataRsp.identity);
                         if (robotoGetDataRsp != null && robotoGetDataRsp.seq == seq) {
                             results.addAll(convertData(robotoGetDataRsp));
@@ -210,7 +212,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     public void call(ArrayList<MineMessageBean> list) {
                         if (list.size() != 0) {
                             handlerDataResult(list);
-                        }else {
+                        } else {
                             getView().showNoMesgView();
                         }
                     }

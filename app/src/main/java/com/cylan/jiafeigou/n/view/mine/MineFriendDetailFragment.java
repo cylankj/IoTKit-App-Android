@@ -231,7 +231,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         if (lisenter != null) {
             Bundle arguments = getArguments();
             int position = arguments.getInt("position");
-            if (!(position == -1)){
+            if (!(position == -1)) {
                 lisenter.onDelete(position);
                 ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
             }

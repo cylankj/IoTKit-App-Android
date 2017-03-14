@@ -286,8 +286,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
 
-
-
     @OnClick(R.id.act_panorama_camera_quick_menu_item1_mic)
     public void clickedQuickMenuItem1SwitchMic() {
         AppLogger.d("clickedQuickMenuItem1SwitchMic");

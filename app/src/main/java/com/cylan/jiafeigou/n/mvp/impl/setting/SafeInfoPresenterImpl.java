@@ -50,7 +50,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
     @Override
     public String getRepeatMode(Context context) {
         DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        boolean f = MiscUtils.safeGet(flag,false);
+        boolean f = MiscUtils.safeGet(flag, false);
         if (!f) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);
         }

@@ -33,7 +33,7 @@ public class TwitterInstance {
         }
     }
 
-    public static TwitterInstance getInstance(){
+    public static TwitterInstance getInstance() {
         if (instance == null)
             synchronized (TwitterInstance.class) {
                 if (instance == null)
@@ -44,10 +44,11 @@ public class TwitterInstance {
 
     /**
      * 启动授权
+     *
      * @param activity
      */
-    public void login(Activity activity,Callback<TwitterSession> callback){
-        twitterAuthClient.authorize(activity,callback);
+    public void login(Activity activity, Callback<TwitterSession> callback) {
+        twitterAuthClient.authorize(activity, callback);
     }
 
 }

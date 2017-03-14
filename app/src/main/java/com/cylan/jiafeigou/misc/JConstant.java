@@ -278,4 +278,5 @@ public class JConstant {
 
     public static final String KEY_UUID_RESOLUTION = "uuid_resolution";
     public static final String KEY_UUID_PREVIEW_THUMBNAIL_TOKEN = "uuid_preview_token";
+    public static final String KEY_DEVICE_SETTING_SHOW_RED = "device_setting_show";
 }

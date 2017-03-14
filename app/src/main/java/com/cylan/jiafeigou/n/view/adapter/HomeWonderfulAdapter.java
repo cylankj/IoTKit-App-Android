@@ -92,7 +92,6 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
     }
 
 
-
     @Override
     protected IMulItemViewType<DpMsgDefine.DPWonderItem> offerMultiItemViewType() {
         return new IMulItemViewType<DpMsgDefine.DPWonderItem>() {

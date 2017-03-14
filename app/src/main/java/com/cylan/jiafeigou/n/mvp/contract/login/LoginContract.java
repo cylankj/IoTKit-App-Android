@@ -123,18 +123,21 @@ public interface LoginContract {
 
         /**
          * 十分钟是否超过3次获取
+         *
          * @return
          */
         boolean checkOverCount(String account);
 
         /**
          * 三方授权结果
+         *
          * @return
          */
         Subscription thirdAuthorizeBack();
 
         /**
          * 回显账号
+         *
          * @return
          */
         Subscription reShowAccount();

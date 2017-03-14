@@ -13,20 +13,23 @@ import android.text.TextUtils;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomViewPager;
+import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
 
 import butterknife.BindView;
@@ -43,11 +46,11 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @BindView(R.id.v_indicator)
     PagerSlidingTabStrip vIndicator;
     @BindView(R.id.rLayout_camera_live_top_bar)
-    RelativeLayout rLayoutCameraLiveTopBar;
+    FrameLayout rLayoutCameraLiveTopBar;
     @BindView(R.id.vp_camera_live)
     CustomViewPager vpCameraLive;
     @BindView(R.id.imgV_camera_title_top_setting)
-    ImageView imgVCameraTitleTopSetting;
+    ImageViewTip imgVCameraTitleTopSetting;
     private String uuid;
     private SimplePageListener simpleListener = new SimplePageListener();
 
@@ -94,6 +97,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        updateRedHint();
+    }
+
+    private void updateRedHint() {
+        SettingTip settingTip = MiscUtils.getObjectFromSP(JConstant.KEY_DEVICE_SETTING_SHOW_RED + uuid, SettingTip.class);
+        //延时摄影，暂时隐藏。
+        imgVCameraTitleTopSetting.setShowDot(settingTip == null || settingTip.isBeautiful());
     }
 
     @Override
