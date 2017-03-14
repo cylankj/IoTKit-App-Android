@@ -131,17 +131,12 @@ android {
             versionName vName
             versionCode vCode
         }
-        _yf {
-            applicationIdSuffix ".yf"
-            versionName vName
-            versionCode vCode
-        }
         _test1 {
             applicationIdSuffix ".test1"
             versionName vName
             versionCode vCode
         }
-        _zhongxing {
+        _doby {
             applicationIdSuffix ".zhongxing"
             versionName vName
             versionCode vCode

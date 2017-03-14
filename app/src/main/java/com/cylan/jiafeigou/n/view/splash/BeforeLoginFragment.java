@@ -73,13 +73,6 @@ public class BeforeLoginFragment extends android.support.v4.app.Fragment {
             getActivity().startActivity(new Intent(getActivity(), NewHomeActivity.class));
         }
         getActivity().finish();
-//        Intent intent = new Intent(getContext(), UpdateActivity.class);
-//        UpdateFileBean bean = new UpdateFileBean();
-//        bean.fileName = "test.apk";
-//        bean.savePath = "Smarthome/download";
-//        bean.url = "http://le-apk.wdjcdn.com/7/24/1703183cbee0b57a38079d004d72f247.apk";
-//        intent.putExtra(DownloadService.KEY_PARCELABLE, bean);
-//        startActivity(intent);
     }
 
     @OnClick(R.id.btn_to_login)

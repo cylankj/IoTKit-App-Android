@@ -26,12 +26,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewSwitcher;
 
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.JCache;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.OpenLoginHelper;
@@ -174,6 +172,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 用来点击空白处隐藏键盘
+     *
      * @param view
      */
     public void addOnTouchListener(View view) {
@@ -327,6 +326,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
      * 初始化view
      */
     private void initView() {
+        lLayoutAgreement.setVisibility(getResources().getBoolean(R.bool.show_agreement) ? View.VISIBLE : View.GONE);
         ViewUtils.setChineseExclude(etLoginUsername, 65);
         ViewUtils.setChineseExclude(etLoginPwd, 12);
         ViewUtils.setChineseExclude(etRegisterInputBox, 11);
@@ -490,8 +490,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             vsLayoutSwitcher.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsLayoutSwitcher.setOutAnimation(getContext(), R.anim.slide_out_right);
             vsLayoutSwitcher.showPrevious();
-            if (!lLayoutAgreement.isShown())
-                lLayoutAgreement.setVisibility(View.VISIBLE);
+//            if (!lLayoutAgreement.isShown())
+//                lLayoutAgreement.setVisibility(View.VISIBLE);
+
         }
     }
 
@@ -770,6 +771,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 是否已注册结果
+     *
      * @param callback
      */
     @Override
