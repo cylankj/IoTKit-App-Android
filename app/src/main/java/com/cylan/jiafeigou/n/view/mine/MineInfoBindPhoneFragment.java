@@ -92,11 +92,11 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @OnTextChanged(R.id.et_verification_input)
     public void initCheckCodeListener(CharSequence s, int start, int before, int count) {
 
-        if (s.length() == 6 && getInputPhone().length() == 11){
+        if (s.length() == 6 && getInputPhone().length() == 11) {
             ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMineInfoBindPhone.setClickable(true);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
-        }else {
+        } else {
             ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMineInfoBindPhone.setClickable(false);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
@@ -113,7 +113,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
             @Override
             public void onFinish() {
-                if (isAdded()){
+                if (isAdded()) {
                     tvMeterGetCode.setText(getString(R.string.Button_ReObtain));
                     tvMeterGetCode.setEnabled(true);
                 }
@@ -136,15 +136,15 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
             viewMinePersonalInformationMailbox.setBackgroundColor(Color.parseColor("#36bdff"));
         }
 
-        if (s.length() == 11 && getInputCheckCode().length() == 6){
+        if (s.length() == 11 && getInputCheckCode().length() == 6) {
             ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
             ivMineInfoBindPhone.setClickable(true);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
-        }else {
+        } else {
             ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
             ivMineInfoBindPhone.setClickable(false);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
-    }
+        }
 
     }
 
@@ -202,14 +202,14 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
             case R.id.iv_mine_info_bind_phone:
                 //点击完成
-                if (!JConstant.PHONE_REG.matcher(getInputPhone()).find()){
+                if (!JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
                     ToastUtil.showNegativeToast(getString(R.string.PHONE_NUMBER_2));
                     return;
                 }
                 if (getInputCheckCode().length() != 6) {
                     ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
                 } else {
-                    presenter.CheckVerifyCode(etMineBindPhone.getText().toString().trim(),getInputCheckCode(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                    presenter.CheckVerifyCode(etMineBindPhone.getText().toString().trim(), getInputCheckCode(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                 }
                 break;
         }
@@ -249,7 +249,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 if (!tvMeterGetCode.getText().toString().equals(getString(R.string.Button_ReObtain))) {
                     userinfo.setPhone(getInputPhone(), getInputCheckCode());
                     userinfo.resetFlag();
-                    presenter.sendChangePhoneReq(getInputPhone(),PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                    presenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                 } else {
                     ToastUtil.showToast(getString(R.string.Tap0_invaildcode));
                 }
@@ -319,11 +319,11 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 }
             }
             showLoadingDialog();
-            presenter.sendChangePhoneReq(getInputPhone(),PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
-        } else if (resultVerifyCode.code == JError.ErrorSMSCodeTimeout){
+            presenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+        } else if (resultVerifyCode.code == JError.ErrorSMSCodeTimeout) {
             hideLoadingDialog();
             ToastUtil.showNegativeToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
-        }else {
+        } else {
             ToastUtil.showNegativeToast(getString(R.string.Tap0_wrongcode));
         }
     }
@@ -391,7 +391,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (countDownTimer != null){
+        if (countDownTimer != null) {
             countDownTimer.cancel();
             countDownTimer = null;
         }

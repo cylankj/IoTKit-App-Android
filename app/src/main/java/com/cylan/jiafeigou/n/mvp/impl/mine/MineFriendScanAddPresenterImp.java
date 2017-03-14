@@ -172,7 +172,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                getView().jump2FriendDetailFragment(false, resutBean,checkAccountCallback.b);
+                getView().jump2FriendDetailFragment(false, resutBean, checkAccountCallback.b);
             } else if (checkAccountCallback.i == 241) {
                 // 已经是好友了
                 getView().isMineFriendResult();

@@ -620,7 +620,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             } else if (code == JError.ErrorLoginInvalidPass) {
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
             } else if (code == 162) {
-                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR)+":162");
+                ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR) + ":162");
             } else if (code == JError.ErrorConnect) {
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             }
@@ -848,6 +848,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 验证码输入框
+     *
      * @param show
      */
     private void handleVerificationCodeBox(boolean show) {
@@ -1056,20 +1057,20 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             return;
         }
 
-        if (PreferencesUtils.getBoolean(JConstant.TWITTER_INIT_KEY,false)){
+        if (PreferencesUtils.getBoolean(JConstant.TWITTER_INIT_KEY, false)) {
             TwitterAuthClient twitterBack = TwitterInstance.getInstance().twitterAuthClient;
             if (twitterBack != null) {
                 twitterBack.onActivityResult(requestCode, resultCode, data);
             }
-            PreferencesUtils.putBoolean(JConstant.TWITTER_INIT_KEY,false);
+            PreferencesUtils.putBoolean(JConstant.TWITTER_INIT_KEY, false);
         }
 
-        if (PreferencesUtils.getBoolean(JConstant.FACEBOOK_INIT_KEY,false)){
+        if (PreferencesUtils.getBoolean(JConstant.FACEBOOK_INIT_KEY, false)) {
             CallbackManager faceBookBackObj = FacebookInstance.getInstance().callbackManager;
             if (faceBookBackObj != null) {
                 faceBookBackObj.onActivityResult(requestCode, resultCode, data);
             }
-            PreferencesUtils.putBoolean(JConstant.FACEBOOK_INIT_KEY,false);
+            PreferencesUtils.putBoolean(JConstant.FACEBOOK_INIT_KEY, false);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }

@@ -143,21 +143,19 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         //取得电话本中开始一项的光标
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         //向下移动光标
-        while(cursor.moveToNext())
-        {
+        while (cursor.moveToNext()) {
             //取得联系人名字
             int nameFieldColumnIndex = cursor.getColumnIndex(ContactsContract.PhoneLookup.DISPLAY_NAME);
             String contact = cursor.getString(nameFieldColumnIndex);
             //取得电话号码
             String ContactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
-            Cursor phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI,null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactId, null, null);
-            while(phone.moveToNext())
-            {
+            Cursor phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactId, null, null);
+            while (phone.moveToNext()) {
                 RelAndFriendBean friendBean = new RelAndFriendBean();
                 friendBean.alias = contact;
                 String PhoneNumber = phone.getString(phone.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-                PhoneNumber = PhoneNumber.replace("-","");
-                PhoneNumber = PhoneNumber.replace(" ","");
+                PhoneNumber = PhoneNumber.replace("-", "");
+                PhoneNumber = PhoneNumber.replace(" ", "");
                 friendBean.account = PhoneNumber;
                 if (friendBean.account.startsWith("+86")) {
                     friendBean.account = friendBean.account.substring(3);

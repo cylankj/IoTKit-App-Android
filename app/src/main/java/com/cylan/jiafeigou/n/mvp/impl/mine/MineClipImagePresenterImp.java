@@ -63,7 +63,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                     public void call(String path) {
                         try {
                             req = JfgCmdInsurance.getCmd().updateAccountPortrait(path);
-                            AppLogger.d("upLoadUserHeadImag:"+ req);
+                            AppLogger.d("upLoadUserHeadImag:" + req);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -102,6 +102,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     /**
      * 处理上传头像文件后
+     *
      * @param getHttpDoneResult
      */
     private void handlerUploadImage(JFGMsgHttpResult getHttpDoneResult) {
@@ -124,7 +125,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                                 jfgAccount.resetFlag();
                                 jfgAccount.setPhoto(true);
                                 int req = JfgCmdInsurance.getCmd().setAccount(jfgAccount);
-                                AppLogger.d("sendResetUrl:"+req);
+                                AppLogger.d("sendResetUrl:" + req);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }

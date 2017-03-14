@@ -105,7 +105,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     private void initView() {
         tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
         DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
-        String s  = MiscUtils.safeGet(sVersion,"");
+        String s = MiscUtils.safeGet(sVersion, "");
         tvHardwareNowVersion.setText(s);
         tvHardwareNewVersion.setText(s);
 

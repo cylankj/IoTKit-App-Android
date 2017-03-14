@@ -121,8 +121,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      * 跳转到对方详情页
      */
     @Override
-    public void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean,boolean isFriend) {
-        if (isFriend){
+    public void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean, boolean isFriend) {
+        if (isFriend) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFrom", isFrom);
             bundle.putSerializable("addRequestItems", bean);
@@ -133,7 +133,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
                     .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
                     .addToBackStack("mineHelpFragment")
                     .commit();
-        }else {
+        } else {
             //已是亲友的跳转到分享
             RelAndFriendBean friendBean = new RelAndFriendBean();
             friendBean.account = bean.account;

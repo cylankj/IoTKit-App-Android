@@ -182,7 +182,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 ? R.string.BARKING : R.string.ALARM)));
         //灵敏度
         DpMsgDefine.DPPrimary<Integer> sensitivity = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
-        int s= MiscUtils.safeGet(sensitivity,0);
+        int s = MiscUtils.safeGet(sensitivity, 0);
         fLayoutProtectionSensitivity.setTvSubTitle(s == 0 ? getString(R.string.SENSITIVI_LOW)
                 : (s == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期

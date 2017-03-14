@@ -153,7 +153,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                         bean.setId(zone.timezone);
                         if (list != null) {
                             int index = list.indexOf(bean);
-                            if (index > 0 && index < list.size()) {
+                            if (index >= 0 && index < list.size()) {
                                 tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
                             }
                         }
@@ -287,7 +287,20 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 return;
             }
             //更新ui
-            updateDetails();
+            DpMsgDefine.DPTimeZone zone = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+            if (zone != null)
+                MiscUtils.loadTimeZoneList()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((List<TimeZoneBean> list) -> {
+                            TimeZoneBean bean = new TimeZoneBean();
+                            bean.setId(zone.timezone);
+                            if (list != null) {
+                                int index = list.indexOf(bean);
+                                if (index >= 0 && index < list.size()) {
+                                    tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
+                                }
+                            }
+                        });
         });
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 timeZoneFragment, android.R.id.content);
@@ -389,7 +402,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                     bean.setId(zone.timezone);
                     if (list != null) {
                         int index = list.indexOf(bean);
-                        if (index > 0 && index < list.size()) {
+                        if (index >= 0 && index < list.size()) {
                             tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
                         }
                     }

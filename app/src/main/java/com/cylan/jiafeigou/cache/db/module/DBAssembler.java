@@ -8,7 +8,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 
 public class DBAssembler {
 
-    void ss(){
+    void ss() {
         DataSourceManager.getInstance().cacheJFGDevices();
     }
 }

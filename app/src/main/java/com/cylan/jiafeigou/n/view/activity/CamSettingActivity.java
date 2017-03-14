@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
@@ -212,6 +213,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setCallBack((Object t) -> {
                     deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                 });
+                basePresenter.updateSettingTips(basePresenter.getSettingTips().setAutoRecord(0));
             }
             break;
             case R.id.sv_setting_safe_protection: {
@@ -223,6 +225,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setCallBack((Object t) -> {
                     deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                 });
+                basePresenter.updateSettingTips(basePresenter.getSettingTips().setSafe(0));
             }
             break;
             case R.id.sv_setting_device_delay_capture: {
@@ -232,6 +235,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 startActivity(intent,
                         ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),
                                 R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
+                basePresenter.updateSettingTips(basePresenter.getSettingTips().setAutoRecord(0));
             }
             break;
             case R.id.sv_setting_device_wifi:
@@ -415,6 +419,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else {
             svSettingDeviceDelayCapture.setVisibility(View.GONE);
         }
+
+        ////////////////////////显示红点//////////////////////////////////////////////
+        SettingTip settingTip = basePresenter.getSettingTips();
+        svSettingDeviceAutoRecord.showRedHint(settingTip.autoRecord == 1);
+        svSettingSafeProtection.showRedHint(settingTip.safe == 1);
+        svSettingDeviceDelayCapture.showRedHint(settingTip.timeLapse == 1);
     }
 
     private boolean ledPreState() {

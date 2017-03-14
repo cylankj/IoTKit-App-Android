@@ -104,9 +104,9 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
                     String account = DataSourceManager.getInstance().getJFGAccount().getAccount();
-                    if (TextUtils.isEmpty(getInputNum())){
+                    if (TextUtils.isEmpty(getInputNum())) {
                         ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
-                    }else if (getInputNum().equals(account)) {
+                    } else if (getInputNum().equals(account)) {
                         ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
                     } else {
                         showFindLoading();
@@ -209,8 +209,8 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     }
 
     @Override
-    public void setFindResult(boolean isFrom, MineAddReqBean bean,boolean isFriend) {
-        if (!isFriend){
+    public void setFindResult(boolean isFrom, MineAddReqBean bean, boolean isFriend) {
+        if (!isFriend) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFrom", isFrom);
             bundle.putSerializable("addRequestItems", bean);
@@ -221,7 +221,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
                     .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
                     .addToBackStack("mineHelpFragment")
                     .commit();
-        }else {
+        } else {
             //已是亲友的跳转到分享
             RelAndFriendBean friendBean = new RelAndFriendBean();
             friendBean.account = bean.account;

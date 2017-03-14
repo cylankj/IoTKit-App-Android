@@ -45,6 +45,7 @@ public class TencentInstance {
 
     /**
      * 登录
+     *
      * @param scope
      * @param loginListener
      */
@@ -66,6 +67,7 @@ public class TencentInstance {
 
     /**
      * 登录
+     *
      * @param activity
      */
     public void logIn(Activity activity) {
@@ -75,7 +77,7 @@ public class TencentInstance {
         } else {
             if (!isServerSideLogin) {
                 mTencent.logout(activity);
-                mTencent.loginServerSide(activity,SCOPE, getQQAuthorizeListener);
+                mTencent.loginServerSide(activity, SCOPE, getQQAuthorizeListener);
                 isServerSideLogin = true;
                 return;
             }
@@ -89,8 +91,8 @@ public class TencentInstance {
      */
     public void logIn(IUiListener iUiListener) {
         listener = iUiListener;
-        if (!mTencent.isSessionValid()){
-            mTencent.login((Activity) context,SCOPE,iUiListener);
+        if (!mTencent.isSessionValid()) {
+            mTencent.login((Activity) context, SCOPE, iUiListener);
         }
     }
 
@@ -100,7 +102,7 @@ public class TencentInstance {
     private IUiListener getQQAuthorizeListener = new IUiListener() {
         @Override
         public void onComplete(Object response) {
-            if (response == null){
+            if (response == null) {
                 AppLogger.d("QQ authorize failed");
                 return;
             }
@@ -116,16 +118,16 @@ public class TencentInstance {
                 String figureurl = jsonObject.getString("figureurl");
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, figureurl);
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, nickname);
-                AppLogger.d("nickname:"+nickname+"figureurl:"+figureurl);
+                AppLogger.d("nickname:" + nickname + "figureurl:" + figureurl);
             } catch (Exception e) {
-                AppLogger.d("QQGetUserInfo error:"+e.getLocalizedMessage());
+                AppLogger.d("QQGetUserInfo error:" + e.getLocalizedMessage());
                 e.printStackTrace();
             }
         }
 
         @Override
         public void onError(UiError uiError) {
-            AppLogger.d("QQGetUserInfo error:"+uiError.errorMessage);
+            AppLogger.d("QQGetUserInfo error:" + uiError.errorMessage);
         }
 
         @Override
