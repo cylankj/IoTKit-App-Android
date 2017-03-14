@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.cylan.jiafeigou"
     android:versionCode="999"
     android:versionName="888">
@@ -385,7 +386,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".n.view.panorama.PanoramaAlbumActivity"></activity>
+        <activity android:name=".n.view.panorama.PanoramaAlbumActivity" />
+        <service android:name=".n.engine.DataSourceService" >
+        </service>
     </application>
 
 </manifest>

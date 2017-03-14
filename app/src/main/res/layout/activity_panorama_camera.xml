@@ -41,7 +41,13 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:layout_below="@id/act_panorama_camera_toolbar">
+        android:layout_below="@id/act_panorama_camera_toolbar"
+        android:background="#000000">
+
+        <FrameLayout
+            android:id="@+id/act_panorama_camera_video_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
 
         <ViewSwitcher
@@ -149,11 +155,11 @@
             android:layout_marginTop="@dimen/y4"
             android:background="@color/color_33000000"
             android:gravity="center"
-            android:text="295K/s"
+            android:text="0K/s"
             android:textColor="#FFFFFF" />
 
         <com.cylan.jiafeigou.widget.SimpleProgressBar
-            android:id="@+id/vv_play_loading"
+            android:id="@+id/act_panorama_camera_loading"
             android:layout_width="@dimen/y48"
             android:layout_height="@dimen/y48"
             android:layout_centerHorizontal="true"
@@ -231,7 +237,6 @@
 
     </LinearLayout>
 
-    
 
     <RelativeLayout
         android:id="@+id/act_panorama_camera_bottom_panel"

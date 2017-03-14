@@ -19,7 +19,7 @@ import com.cylan.jiafeigou.DaemonReceiver2;
 import com.cylan.jiafeigou.DaemonService1;
 import com.cylan.jiafeigou.DaemonService2;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.engine.DataSource;
+import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
@@ -131,7 +131,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
      */
     public void try2init() {
         if (PermissionUtils.hasSelfPermissions(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            DataSource.getInstance().onCreate();
+            startService(new Intent(this, DataSourceService.class));
             initBlockCanary();
         } else {
             RxBus.getCacheInstance().postSticky(new RxEvent.ShouldCheckPermission());
@@ -203,6 +203,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onTerminate() {
         super.onTerminate();
+        AppLogger.d("进程已被销毁!!!!");
         if (client != null && client.isConnected()) {
             client.disconnect();
         }
@@ -268,9 +269,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public static class BootCompletedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!ProcessUtils.isServiceRunning(context, DataSource.class)) {
-                AppLogger.i("start DataSource");
-//                context.startService(new Intent(context, DataSource.class));
+            if (!ProcessUtils.isServiceRunning(context, DataSourceService.class)) {
+                AppLogger.i("start DataSourceService");
+//                context.startService(new Intent(context, DataSourceService.class));
             }
         }
     }

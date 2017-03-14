@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou.misc;
 
 import com.cylan.jfgapp.jni.JfgAppCmd;
-import com.cylan.jiafeigou.n.engine.DataSource;
+import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 /**
@@ -18,7 +18,7 @@ public class JfgCmdInsurance {
     public static JfgAppCmd getCmd() {
         JfgAppCmd jfgAppCmd = JfgAppCmd.getInstance();
         if (jfgAppCmd == null) {
-            DataSource.getInstance().initNative();
+            DataSourceService.getInstance().initNative();
             jfgAppCmd = JfgAppCmd.getInstance();
             AppLogger.e("jfgAppCmd is null: " + jfgAppCmd);
         } else return jfgAppCmd;

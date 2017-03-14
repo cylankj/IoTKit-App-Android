@@ -46,6 +46,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.ReentrantLock;
 
 import rx.Observable;
 import rx.Subscription;
@@ -70,7 +71,8 @@ public class DataSourceManager implements JFGSourceManager {
     private static DataSourceManager mDataSourceManager;
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private Subscription unreadCountFetcher;
-    private List<Pair<Integer, String>> rawOrder = new ArrayList<>();
+    private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
+    private ReentrantLock dpLock = new ReentrantLock();
     /**
      * 未读消息数
      */
@@ -108,7 +110,7 @@ public class DataSourceManager implements JFGSourceManager {
                     Device dev = create(device.getPid()).fill(device);
                     DBOption.RawDeviceOrderOption option = dev.option(DBOption.RawDeviceOrderOption.class);
                     mCachedDeviceMap.put(device.getUuid(), dev);
-                    rawOrder.add(new Pair<>(option.rawDeviceOrder, dev.getUuid()));
+                    rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, dev.getUuid()));
                     return dev;
                 })
                 .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
@@ -123,7 +125,7 @@ public class DataSourceManager implements JFGSourceManager {
                             return dpEntities;
                         }))
                 .doOnCompleted(() -> {
-                    Collections.sort(rawOrder, (lhs, rhs) -> lhs.first - rhs.first);
+                    Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
                     RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
                 })
                 .subscribe();
@@ -158,9 +160,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public List<Device> getAllJFGDevice() {
-        Collections.sort(rawOrder, (lhs, rhs) -> lhs.first - rhs.first);
-        List<Device> result = new ArrayList<>(rawOrder.size());
-        for (Pair<Integer, String> pair : rawOrder) {
+        Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
+        List<Device> result = new ArrayList<>(rawDeviceOrder.size());
+        for (Pair<Integer, String> pair : rawDeviceOrder) {
             result.add(mCachedDeviceMap.get(pair.second));
         }
         return result;
@@ -208,7 +210,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(items -> items.size() == 0 ? Observable.just(devices) : Observable.from(items).flatMap(this::unBindDevice).last().map(ret -> devices))
                 .map(items -> {
                     mCachedDeviceMap.clear();
-                    rawOrder.clear();
+                    rawDeviceOrder.clear();
                     return items;
                 })
                 .flatMap(items -> dbHelper.updateDevice(items))
@@ -216,7 +218,7 @@ public class DataSourceManager implements JFGSourceManager {
                     Device dpDevice = create(dev.getPid()).fill(dev);
                     DBOption.RawDeviceOrderOption option = dpDevice.option(DBOption.RawDeviceOrderOption.class);
                     mCachedDeviceMap.put(dpDevice.getUuid(), dpDevice);
-                    rawOrder.add(new Pair<>(option.rawDeviceOrder, dpDevice.getUuid()));
+                    rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, dpDevice.getUuid()));
                     ArrayList<JFGDPMsg> parameters = dpDevice.getQueryParameters(false);
                     AppLogger.d("正在同步设备数据");
                     try {
@@ -232,13 +234,13 @@ public class DataSourceManager implements JFGSourceManager {
                     e.printStackTrace();
                 }, () -> {
                     ArrayList<String> uuidList = new ArrayList<>();
-                    for (Pair<Integer, String> pair : rawOrder) {
+                    for (Pair<Integer, String> pair : rawDeviceOrder) {
                         if (!JFGRules.isShareDevice(pair.second)) {
                             uuidList.add(pair.second);
                         }
                     }
                     JfgCmdInsurance.getCmd().getShareList(uuidList);
-                    Collections.sort(rawOrder, (lhs, rhs) -> lhs.first - rhs.first);
+                    Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
                     RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
                 });
     }
@@ -316,8 +318,8 @@ public class DataSourceManager implements JFGSourceManager {
     public Observable<Account> logout() {
         return dbHelper.logout()
                 .map(ret -> {
-                    clear();
                     setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
+                    clear();
                     return ret;
                 });
     }
@@ -335,7 +337,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public int getRawDeviceOrder(String uuid) {
-        return rawOrder.indexOf(uuid);
+        return rawDeviceOrder.indexOf(uuid);
     }
 
     /**
@@ -428,6 +430,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void clear() {
+        RxBus.getCacheInstance().removeAllStickyEvents();
         if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
         isOnline = false;
         account = null;
@@ -436,7 +439,6 @@ public class DataSourceManager implements JFGSourceManager {
         if (shareList != null) shareList.clear();
         if (unreadCountFetcher != null && unreadCountFetcher.isUnsubscribed())
             unreadCountFetcher.unsubscribe();
-        RxBus.getCacheInstance().removeAllStickyEvents();
     }
 
     @Override
@@ -504,22 +506,29 @@ public class DataSourceManager implements JFGSourceManager {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(set -> Observable.from(set.getValue())
-                        .flatMap(msg -> dbHelper.saveDPByte(dataRsp.identity, msg.version, (int) msg.id, msg.packValue)
-                                .map(entity -> {
-                                    Device device = mCachedDeviceMap.get(dataRsp.identity);
-                                    boolean change = false;
-                                    if (device != null) {//优先尝试写入device中
-                                        change = device.setValue(msg, dataRsp.seq);
-                                    }
-                                    if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
-                                        change |= account.setValue(msg, dataRsp.seq);
-                                        if (change)
-                                            account.dpMsgVersion = System.currentTimeMillis();
-                                    }
-                                    return entity;
-                                })
-                        ))
-                .doOnError(Throwable::printStackTrace)
+                        .flatMap(msg -> {
+//                            if (dpLock.tryLock())
+//                            dpLock.lock();
+                            return dbHelper.saveDPByte(dataRsp.identity, msg.version, (int) msg.id, msg.packValue)
+                                    .map(entity -> {
+                                        Device device = mCachedDeviceMap.get(dataRsp.identity);
+                                        boolean change = false;
+                                        if (device != null) {//优先尝试写入device中
+                                            change = device.setValue(msg, dataRsp.seq);
+                                        }
+                                        if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
+                                            change |= account.setValue(msg, dataRsp.seq);
+                                            if (change)
+                                                account.dpMsgVersion = System.currentTimeMillis();
+                                        }
+//                                        dpLock.unlock();
+                                        return entity;
+                                    });
+                        }))
+                .doOnError(e -> {
+                    AppLogger.d(e.getMessage());
+                    e.printStackTrace();
+                })
                 .doOnCompleted(() -> RxBus.getCacheInstance().post(dataRsp))
                 .subscribe();
     }
@@ -673,6 +682,8 @@ public class DataSourceManager implements JFGSourceManager {
             result = new JFGCameraDevice();
         else if (JFGRules.isBell(pid))
             result = new JFGDoorBellDevice();
+        else if (JFGRules.isVRCam(pid))
+            result = new JFGCameraDevice();
         else
             result = new Device();
         return result;

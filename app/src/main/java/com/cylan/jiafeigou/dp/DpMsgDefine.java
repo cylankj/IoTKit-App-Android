@@ -18,8 +18,6 @@ import java.util.TreeSet;
 
 
 public class DpMsgDefine {
-
-
     @Message
     public static final class DPStandby extends DPSingle<DPStandby> {
         @Index(0)
@@ -85,15 +83,6 @@ public class DpMsgDefine {
 
     @Message
     public static final class DPNet extends DPSingle<DPNet> {
-
-        public static final DPNet EMPTY;
-
-        static {
-            EMPTY = new DPNet();
-            EMPTY.net = 0;
-            EMPTY.ssid = "";
-        }
-
         /**
          * |NET_CONNECT | -1 | #绑定后的连接中 |
          * |NET_OFFLINE |  0 | #不在线 |
@@ -160,14 +149,10 @@ public class DpMsgDefine {
         public DPNet() {
         }
 
-        @Ignore
-        public static DPNet empty = new DPNet();
-
-        static {
-            empty.net = 0;
-            empty.ssid = "不在线";
+        public DPNet(int net, String ssid) {
+            this.net = net;
+            this.ssid = ssid;
         }
-
 
         protected DPNet(Parcel in) {
             super(in);
@@ -190,27 +175,10 @@ public class DpMsgDefine {
 
     @Message
     public static final class DPTimeZone extends DPSingle<DPTimeZone> {
-
-        public static final DPTimeZone EMPTY;
-
-        static {
-            EMPTY = new DPTimeZone();
-            EMPTY.timezone = "";
-            EMPTY.offset = 0;
-        }
-
         @Index(0)
         public String timezone;
         @Index(1)
         public int offset;
-
-        @Ignore
-        public static DPTimeZone empty = new DPTimeZone();
-
-        static {
-            empty.timezone = "北京时间";
-            empty.offset = 0;
-        }
 
         @Override
         public String toString() {
@@ -257,27 +225,12 @@ public class DpMsgDefine {
     @Message
     public static final class DPBindLog extends DPSingle<DPBindLog> {
 
-        public static final DPBindLog EMPTY;
-
-        static {
-            EMPTY = new DPBindLog();
-        }
-
         @Index(0)
         public boolean isBind;
         @Index(1)
         public String account;
         @Index(2)
         public String oldAccount;
-
-        @Ignore
-        public static DPBindLog empty = new DPBindLog();
-
-        static {
-            empty.isBind = false;
-            empty.account = "www.cylan.com";
-            empty.oldAccount = "www.cylan.com";
-        }
 
         @Override
         public int describeContents() {
@@ -332,14 +285,6 @@ public class DpMsgDefine {
         @Index(1)
         public int errCode;
 
-        @Ignore
-        public static DPSdcardSummary empty = new DPSdcardSummary();
-
-        static {
-            empty.hasSdcard = false;
-            empty.errCode = 0;
-        }
-
         public DPSdcardSummary() {
         }
 
@@ -392,16 +337,6 @@ public class DpMsgDefine {
         public int err;
         @Index(3)
         public boolean hasSdcard;
-
-        @Ignore
-        public static DPSdStatus empty = new DPSdStatus();
-
-        static {
-            empty.total = 0;
-            empty.used = 0;
-            empty.err = 0;
-            empty.hasSdcard = false;
-        }
 
         public DPSdStatus() {
         }
@@ -462,15 +397,6 @@ public class DpMsgDefine {
          */
         @Index(2)
         public int day;
-
-        @Ignore
-        public static DPAlarmInfo empty = new DPAlarmInfo();
-
-        static {
-            empty.timeStart = 0;
-            empty.timeEnd = 0;
-            empty.day = 0;
-        }
 
         @Override
         public int describeContents() {
@@ -853,13 +779,13 @@ public class DpMsgDefine {
         public DPPrimary() {
         }
 
+        public DPPrimary(T value) {
+            this.value = value;
+        }
+
         @Override
         public byte[] toBytes() {
             return DpUtils.pack(value);
-        }
-
-        public DPPrimary(Object o) {
-            this.value = (T) o;
         }
 
 
@@ -913,8 +839,8 @@ public class DpMsgDefine {
         public DPSet() {
         }
 
-        public DPSet(Object o) {
-            this.value = (TreeSet<T>) o;
+        public DPSet(TreeSet<T> value) {
+            this.value = value;
         }
 
         protected DPSet(Parcel in) {
@@ -1148,6 +1074,30 @@ public class DpMsgDefine {
                 return new DpSdcardFormatRsp[size];
             }
         };
+    }
+
+    public interface EMPTY {
+        DPNet NET = new DPNet();
+        DPStandby STANDBY = new DPStandby();
+        DPTimeZone TIME_ZONE = new DPTimeZone();
+        DPBindLog BIND_LOG = new DPBindLog();
+        DPSdcardSummary SDCARD_SUMMARY = new DPSdcardSummary();
+        DPSdStatus SD_STATUS = new DPSdStatus();
+        DPAlarmInfo ALARM_INFO = new DPAlarmInfo();
+        DPAlarm ALARM = new DPAlarm();
+        DPNotificationInfo NOTIFICATION_INFO = new DPNotificationInfo();
+        DPTimeLapse TIME_LAPSE = new DPTimeLapse();
+        DPCamCoord CAM_COORD = new DPCamCoord();
+        DPBellCallRecord BELL_CALL_RECORD = new DPBellCallRecord();
+        DPPrimary<Integer> DP_INT = new DPPrimary<>(0);
+        DPPrimary<Boolean> DP_BOOL = new DPPrimary<>(false);
+        DPPrimary<Long> DP_LONG = new DPPrimary<>(0L);
+        DPPrimary<String> DP_STRING = new DPPrimary<>("");
+        DPSet DP_SET = new DPSet<>(new TreeSet<>());
+        DPWonderItem WONDER_ITEM = new DPWonderItem();
+        DPMineMesg MINE_MESG = new DPMineMesg();
+        DPSystemMesg SYSTEM_MESG = new DPSystemMesg();
+        DpSdcardFormatRsp SDCARD_FORMAT_RSP = new DpSdcardFormatRsp();
     }
 
 }

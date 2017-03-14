@@ -42,6 +42,15 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
+        registerSubscription(getDeviceUnBindSub());
+    }
+
+    private Subscription getDeviceUnBindSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceUnBindedEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(event -> TextUtils.equals(event.uuid, mUUID))
+                .subscribe(event -> mView.onDeviceUnBind(), Throwable::printStackTrace);
     }
 
     @Override
@@ -62,9 +71,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     try {
                         AppLogger.d("正在准备开始直播,对端 cid 为:" + handle);
                         int ret = JfgCmdInsurance.getCmd().playVideo(handle);
+                        AppLogger.d("准备开始直播返回的结果码为:" + ret);
                         if (ret != 0) {
                             JfgCmdInsurance.getCmd().stopPlay(handle);
-                            JfgCmdInsurance.getCmd().playVideo(handle);
+                            int retry = JfgCmdInsurance.getCmd().playVideo(handle);
+                            AppLogger.d("重试准备直播返回的结果码为:" + retry);
                         }
                     } catch (JfgException e) {
                         e.printStackTrace();

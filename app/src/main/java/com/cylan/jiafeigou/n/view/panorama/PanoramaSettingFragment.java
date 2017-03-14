@@ -5,11 +5,14 @@ import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
-import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
+import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 /**
  * Created by yanzhendong on 2017/3/11.
@@ -22,7 +25,7 @@ public class PanoramaSettingFragment extends BaseFragment<PanoramaSettingContact
     public static PanoramaSettingFragment newInstance(String uuid) {
         PanoramaSettingFragment fragment = new PanoramaSettingFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -39,6 +42,12 @@ public class PanoramaSettingFragment extends BaseFragment<PanoramaSettingContact
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        ViewUtils.clearViewPaddingStatusBar(toolbarContainer);
+    }
+
+    @Override
     protected int getContentViewID() {
         return R.layout.fragment_panorama_setting;
     }
@@ -46,5 +55,14 @@ public class PanoramaSettingFragment extends BaseFragment<PanoramaSettingContact
     @OnClick(R.id.fragment_panorama_setting_header_back)
     public void exit() {
         getActivity().onBackPressed();
+    }
+
+    @OnClick(R.id.sv_setting_device_detail)
+    public void showDeviceDetail() {
+        DeviceInfoDetailFragment fragment = DeviceInfoDetailFragment.newInstance(null);
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_DEVICE_ITEM_UUID, mUUID);
+        fragment.setArguments(bundle);
+        loadFragment(android.R.id.content, getActivity().getSupportFragmentManager(), fragment);
     }
 }
