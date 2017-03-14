@@ -148,8 +148,9 @@ public class JConstant {
 
     private static String getRoot() {
         String content = JFGRules.getTrimPackageName();
-        if (TextUtils.isEmpty(content)) return "Smarthome";
-        return content;
+        if (TextUtils.equals(content, "cell_c") || TextUtils.equals(content, "zhongxing"))
+            return content;
+        return "Smarthome";
     }
 
     /**

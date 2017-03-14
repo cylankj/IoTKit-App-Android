@@ -319,19 +319,19 @@ public class DataSourceManager implements JFGSourceManager {
                 });
     }
 
-    /**
-     * 获取所有的报警消息{505,222}，1：保证有最新的报警消息，2.用于显示xx条新消息。
-     *
-     * @param ignoreShareDevice:忽略分享账号，一般都为true
-     */
-    @Override
-    public void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice) {
-        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
-            Device device = mCachedDeviceMap.get(entry.getKey());
-            if (JFGRules.isShareDevice(device) && ignoreShareDevice) continue;
-            syncJFGCameraWarn(entry.getKey(), false, 100);
-        }
-    }
+//    /**
+//     * 获取所有的报警消息{505,222}，1：保证有最新的报警消息，2.用于显示xx条新消息。
+//     *
+//     * @param ignoreShareDevice:忽略分享账号，一般都为true
+//     */
+//    @Override
+//    public void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice) {
+//        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
+//            Device device = mCachedDeviceMap.get(entry.getKey());
+//            if (JFGRules.isShareDevice(device) && ignoreShareDevice) continue;
+//            syncJFGCameraWarn(entry.getKey(), false, 100);
+//        }
+//    }
 
     /**
      * 需要暴力操作。
@@ -341,10 +341,11 @@ public class DataSourceManager implements JFGSourceManager {
      * @param uuid
      */
     @Override
-    public long syncJFGCameraWarn(String uuid, boolean asc, int count) {
-        ArrayList<JFGDPMsg> list = MiscUtils.createGetCameraWarnMsgDp();
+    public long syncJFGCameraWarn(String uuid, long version, boolean asc, int count) {
+        //v2: 505,222   v3:512,222
+        ArrayList<Long> list = MiscUtils.createGetCameraWarnMsgDp(getJFGDevice(uuid));
         try {
-            return JfgCmdInsurance.getCmd().robotGetData(uuid, list, count, false, 0);
+            return JfgCmdInsurance.getCmd().robotGetDataEx(uuid, count, false, version, list, 0);
         } catch (JfgException e) {
             AppLogger.e("uuid is null");
             return 0L;

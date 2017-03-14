@@ -108,14 +108,14 @@ public interface JFGSourceManager {
      *
      * @param ignoreShareDevice
      */
-    void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice);
+//    void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice);
 
     /**
      * 查询单个摄像头的报警消息：默认为{505,222}
      *
      * @param uuid
      */
-    long syncJFGCameraWarn(String uuid, boolean asc, int count);
+    long syncJFGCameraWarn(String uuid, long version, boolean asc, int count);
 
     int queryHistory(String uuid);
 
