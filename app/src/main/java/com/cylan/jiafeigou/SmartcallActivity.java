@@ -216,9 +216,9 @@ public class SmartcallActivity extends NeedLoginActivity
             splashOver();
             firstSignIn = true;
         } else if (code == JError.ErrorAccountNotExist) {
-            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
+//            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
         } else if (code == JError.ErrorLoginInvalidPass) {
-            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
+//            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
         }
     }
 

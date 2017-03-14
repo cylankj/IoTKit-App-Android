@@ -38,7 +38,6 @@ import rx.schedulers.Schedulers;
 public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         implements LoginContract.Presenter {
 
-    private Context ctx;
     private boolean isLoginSucc;
     private boolean isRegSms;
     private boolean isReg;
@@ -47,7 +46,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
         view.setPresenter(this);
-        ctx = view.getContext();
     }
 
     /**

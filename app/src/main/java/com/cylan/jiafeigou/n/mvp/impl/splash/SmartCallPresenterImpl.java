@@ -36,6 +36,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                     .map(resultLogin -> {
                         if (resultLogin != null)
                             getView().loginResult(resultLogin.code);
+                        AppLogger.d("login result: " + resultLogin);
                         return null;
                     })
                     .subscribe();

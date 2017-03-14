@@ -621,6 +621,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             } else if (code == JError.ErrorConnect) {
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             }
+            resetView();
         }
     }
 
