@@ -161,7 +161,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
             public Observable<String> call(String s) {
                 long length = 0;
                 try {
-
+                    if (TextUtils.isEmpty(s))return null;
 //                    URL url = new URL("http://yf.cylan.com.cn:82/sdk/libmedia-engine-jni-master.so");
 
                     URL url = new URL(checkDevVersion.url);

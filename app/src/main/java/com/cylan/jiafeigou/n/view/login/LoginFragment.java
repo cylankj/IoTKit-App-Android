@@ -677,17 +677,17 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         switchBox();
         final boolean validPhoneNum = JConstant.PHONE_REG.matcher(etRegisterInputBox.getText()).find();
 //        if (validPhoneNum) {
-        AppLogger.i("account:" + etRegisterInputBox.getText());
-        etRegisterInputBox.post(new Runnable() {
-            @Override
-            public void run() {
-                if (registerWay == JConstant.REGISTER_BY_PHONE && !validPhoneNum) {
-                    handleRegisterByMail();
-                } else {
-                    //email
-                }
-            }
-        });
+//        AppLogger.i("account:" + etRegisterInputBox.getText());
+//        etRegisterInputBox.post(new Runnable() {
+//            @Override
+//            public void run() {
+//                if (registerWay == JConstant.REGISTER_BY_PHONE && !validPhoneNum) {
+//                    handleRegisterByMail();
+//                } else {
+//                    //email
+//                }
+//            }
+//        });
 //        }
     }
 

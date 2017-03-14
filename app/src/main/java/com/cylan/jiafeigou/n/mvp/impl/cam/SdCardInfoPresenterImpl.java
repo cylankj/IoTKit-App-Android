@@ -18,9 +18,9 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -49,7 +49,6 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 onClearSdReqBack(),
                 onClearSdResult(),
                 getSdCapacityBack(),
-                getClearSdResultBack()
         };
     }
 
@@ -107,9 +106,9 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     @Override
     public Subscription onClearSdReqBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearReqRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.SdcardClearRsp sdcardClearRsp) -> {
+                .subscribe((RxEvent.SdcardClearReqRsp sdcardClearRsp) -> {
                     if (sdcardClearRsp != null) {
                         isClearSucc = true;
                         JFGDPMsgRet jfgdpMsgRet = sdcardClearRsp.arrayList.get(0);
@@ -124,17 +123,42 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     @Override
     public Subscription onClearSdResult() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RobotoGetDataRsp rsp) -> {
-                    if (rsp != null) {
-                        for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
-                            if (entry.getValue() == null) continue;
-                            for (JFGDPMsg dp : entry.getValue()) {
-                                if (dp.id == 203) {
-                                    getView().clearSdResult(0);
+        return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearFinishRsp.class)
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<RxEvent.SdcardClearFinishRsp, Observable<Object>>() {
+                    @Override
+                    public Observable<Object> call(RxEvent.SdcardClearFinishRsp rsp) {
+                        if (rsp != null && rsp.arrayList.size() >0){
+                            for (JFGDPMsg dp : rsp.arrayList) {
+                                try {
+                                    if (dp.id == 203 && TextUtils.equals(uuid,rsp.s)) {
+                                        DpMsgDefine.DPSdStatus sdStatus = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdStatus.class);
+                                        return Observable.just(sdStatus);
+                                    }else if (dp.id == 222 && TextUtils.equals(uuid,rsp.s)){
+                                        DpMsgDefine.DPSdcardSummary isPopSd = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdcardSummary.class);
+                                        return Observable.just(isPopSd);
+                                    }
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                    return Observable.just(null);
                                 }
                             }
+                        }
+                        return Observable.just(null);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o -> {
+                    if (o != null){
+                        if (o instanceof DpMsgDefine.DPSdStatus){
+                            //清空SD卡提示
+                            getView().clearSdResult(0);
+                            getView().initSdUseDetail((DpMsgDefine.DPSdStatus) o);
+                        }else if (o instanceof DpMsgDefine.DPSdcardSummary){
+                            //SD卡已被拔出提示
+                            DpMsgDefine.DPSdcardSummary sdcardSummary = (DpMsgDefine.DPSdcardSummary) o;
+                            if (!sdcardSummary.hasSdcard)
+                            getView().showSdPopDialog();
                         }
                     }
                 });
@@ -154,7 +178,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                             ArrayList<JFGDPMsg> dpID = new ArrayList<JFGDPMsg>();
                             JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_204_SDCARD_STORAGE, System.currentTimeMillis());
                             dpID.add(msg);
-                            long req = JfgCmdInsurance.getCmd().robotGetData(uuid, dpID, 10, false, 0);
+                            long req = JfgCmdInsurance.getCmd().robotGetData(uuid, dpID, 1, false, 0);
                             AppLogger.d("getSdCapacity:"+req);
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -191,58 +215,6 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(sdStatus -> {
                     if (sdStatus != null && getView() != null)getView().initSdUseDetail(sdStatus);
-                    AppLogger.d("sdStatus:"+sdStatus.toString());
-                });
-    }
-
-    @Override
-    public void getClearSdResult() {
-        Observable.just(uuid)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(s -> {
-                    try {
-                        ArrayList<JFGDPMsg> dpID = new ArrayList<JFGDPMsg>();
-                        JFGDPMsg msg = new JFGDPMsg(203, System.currentTimeMillis());
-                        dpID.add(msg);
-                        long req = JfgCmdInsurance.getCmd().robotGetData(uuid, dpID, 10, false, 0);
-                        AppLogger.d("getClearSdResult:"+req);
-                    } catch (JfgException e) {
-                        e.printStackTrace();
-                    }
-                });
-    }
-
-    @Override
-    public Subscription getClearSdResultBack() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<RobotoGetDataRsp, Observable<DpMsgDefine.DPSdStatus>>() {
-                    @Override
-                    public Observable<DpMsgDefine.DPSdStatus> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        if (robotoGetDataRsp != null && robotoGetDataRsp.map.size() != 0){
-                            for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
-                                try {
-                                    if (entry.getKey() == 203){
-                                        ArrayList<JFGDPMsg> value = entry.getValue();
-                                        JFGDPMsg jfgdpMsg = value.get(0);
-                                        DpMsgDefine.DPSdStatus sysMesg = DpUtils.unpackData(jfgdpMsg.packValue, DpMsgDefine.DPSdStatus.class);
-                                        return Observable.just(sysMesg);
-                                    }
-                                }catch (Exception e){
-                                    AppLogger.e("getSdCapacityBack:"+e.getLocalizedMessage());
-                                    return Observable.just(null);
-                                }
-                            }
-                        }
-                        return Observable.just(null);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(sdStatus -> {
-                    if (sdStatus != null && getView() != null){
-                        getView().clearSdResult(0);
-                        getView().initSdUseDetail(sdStatus);
-                    }
                 });
     }
 
