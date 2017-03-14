@@ -19,41 +19,59 @@
             android:layout_height="@dimen/y48"
             android:layout_marginTop="@dimen/y30">
 
-
-            <EditText
-                android:id="@+id/et_register_input_box"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="center"
-                android:layout_marginBottom="@dimen/y5"
-                android:layout_marginTop="@dimen/y5"
-                android:background="@null"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:gravity="center"
-                android:hint="@string/PHONE_NUMBER"
-                android:inputType="phone"
-                android:maxLength="11"
-                android:maxLines="1"
-                android:singleLine="true"
-                android:paddingLeft="@dimen/x40"
-                android:paddingRight="@dimen/x40"
-                android:textColor="@color/color_666666"
-                android:textColorHint="@color/color_cecece"
-                android:textCursorDrawable="@drawable/bg_common_cursor"
-                android:textSize="@dimen/sp15" />
+                android:layout_height="wrap_content">
 
-            <ImageView
-                android:id="@+id/iv_register_username_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="end"
-                android:layout_marginLeft="@dimen/x10"
-                android:layout_marginRight="@dimen/x10"
-                android:paddingLeft="@dimen/x10"
-                android:paddingRight="@dimen/x10"
-                android:src="@drawable/icon_clear_text"
-                android:visibility="gone" />
+                <ImageView
+                    android:id="@+id/iv_space"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:layout_marginRight="@dimen/x10"
+                    android:paddingLeft="@dimen/x10"
+                    android:paddingRight="@dimen/x10"
+                    android:src="@drawable/icon_clear_text"
+                    android:visibility="invisible" />
+
+                <EditText
+                    android:id="@+id/et_register_input_box"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:layout_marginBottom="@dimen/y5"
+                    android:layout_marginTop="@dimen/y5"
+                    android:layout_toEndOf="@+id/iv_space"
+                    android:layout_toStartOf="@+id/iv_register_username_clear"
+                    android:background="@null"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:gravity="center"
+                    android:hint="@string/PHONE_NUMBER"
+                    android:inputType="phone"
+                    android:maxLength="11"
+                    android:maxLines="1"
+                    android:paddingLeft="@dimen/x40"
+                    android:paddingRight="@dimen/x40"
+                    android:singleLine="true"
+                    android:textColor="@color/color_666666"
+                    android:textColorHint="@color/color_cecece"
+                    android:textCursorDrawable="@drawable/bg_common_cursor"
+                    android:textSize="@dimen/sp15" />
+
+                <ImageView
+                    android:id="@+id/iv_register_username_clear"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_gravity="end"
+                    android:layout_marginLeft="@dimen/x10"
+                    android:layout_marginRight="@dimen/x10"
+                    android:paddingLeft="@dimen/x10"
+                    android:paddingRight="@dimen/x10"
+                    android:src="@drawable/icon_clear_text" />
+            </RelativeLayout>
 
             <View
                 android:layout_width="match_parent"

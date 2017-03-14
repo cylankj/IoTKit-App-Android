@@ -191,10 +191,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         super.onViewCreated(view, savedInstanceState);
         addOnTouchListener(view);
         showLayout();
-        if (BuildConfig.DEBUG) {
-            ivLoginClearPwd.setVisibility(View.GONE);
-            ivLoginClearUsername.setVisibility(View.GONE);
-        }
         decideRegisterWay();
         initView();
         showRegisterPage();
@@ -399,7 +395,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     @OnTextChanged(R.id.et_login_username)
     public void onUserNameChange(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
-        ivLoginClearUsername.setVisibility(flag ? View.GONE : View.VISIBLE);
+        ivLoginClearUsername.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
         final String pwd = ViewUtils.getTextViewContent(etLoginPwd);
         if (flag) {
             lbLogin.setEnabled(false);
@@ -721,7 +717,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         } else {
             result = Patterns.EMAIL_ADDRESS.matcher(s).find();
         }
-        ivRegisterUserNameClear.setVisibility(!TextUtils.isEmpty(s) ? View.VISIBLE : View.GONE);
+        ivRegisterUserNameClear.setVisibility(!TextUtils.isEmpty(s) ? View.VISIBLE : View.INVISIBLE);
         tvRegisterSubmit.setEnabled(result);
     }
 
