@@ -193,7 +193,7 @@ public class DataSource implements AppCallBack {
 
     @Override
     public void OnLogoutByServer(int i) {
-        AppLogger.d("OnLocalMessage :" + i);
+        AppLogger.d("OnLocalMessage hh:" + i);
         RxBus.getCacheInstance().post(i);
         DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
     }
@@ -474,6 +474,5 @@ public class DataSource implements AppCallBack {
     public void OnGetVideoShareUrl(String s) {
 
     }
-
 
 }

@@ -191,6 +191,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(sdStatus -> {
                     if (sdStatus != null && getView() != null)getView().initSdUseDetail(sdStatus);
+                    AppLogger.d("sdStatus:"+sdStatus.toString());
                 });
     }
 
