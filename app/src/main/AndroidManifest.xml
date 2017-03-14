@@ -95,7 +95,7 @@
 
         <provider
             android:name="com.huawei.hms.update.provider.UpdateProvider"
-            android:authorities="com.cylan.jiafeigou.yf.hms.update.provider"
+            android:authorities="${HW_PUSH_AUTHORITIES}"
             android:exported="false"
             android:grantUriPermissions="true" />
         <!-- 华为推送 End -->
