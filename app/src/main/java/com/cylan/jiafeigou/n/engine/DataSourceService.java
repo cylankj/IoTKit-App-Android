@@ -32,6 +32,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.AutoSignIn;
@@ -119,14 +120,19 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                 String trimPackageName = JFGRules.getTrimPackageName();
                 //读取Smarthome/log/config.txt的内容
                 String extra = DebugOptionsImpl.getServer();
+                String inner = Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
+                Log.d("initNative", "initNative: " + extra + " " + inner);
+                if (BuildConfig.DEBUG) {
+                    if (TextUtils.isEmpty(extra))
+                        extra = inner;
+                } else extra = inner;
                 //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
-                String serverAddress = (TextUtils.equals(trimPackageName, "yf") && !TextUtils.isEmpty(extra))
-                        ? extra : Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
                 String vid = Security.getVId(trimPackageName);
                 String vKey = Security.getVKey(trimPackageName);
                 JfgAppCmd.getInstance().setCallBack(DataSourceService.this);
-                JfgAppCmd.getInstance().initNativeParam(vid, vKey, "yf.jfgou.com:443");
+                JfgAppCmd.getInstance().initNativeParam(vid, vKey, extra);
                 JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
+
             } catch (Exception e) {
                 AppLogger.d("let's go err:" + e.getLocalizedMessage());
             }
@@ -144,11 +150,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
                         RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                                 .subscribeOn(Schedulers.newThread())
-<<<<<<< Updated upstream:app/src/main/java/com/cylan/jiafeigou/n/engine/DataSourceService.java
-                                .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
-=======
-                                .timeout(4, TimeUnit.SECONDS,Observable.just("autoSign in timeout")
->>>>>>> Stashed changes:app/src/main/java/com/cylan/jiafeigou/n/engine/DataSource.java
+                                .timeout(4, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .map(s -> {
                                             AppLogger.d("net type: " + NetUtils.getNetType(ContextUtils.getContext()));
@@ -387,8 +389,8 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
     @Override
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
         AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + new Gson().toJson(arrayList));
-        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b,s,arrayList));
-        RxBus.getCacheInstance().post(new RxEvent.SdcardClearFinishRsp(b,s,arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b, s, arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SdcardClearFinishRsp(b, s, arrayList));
     }
 
     @Override
