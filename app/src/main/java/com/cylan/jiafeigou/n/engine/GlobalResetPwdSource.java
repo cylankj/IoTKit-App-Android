@@ -1,15 +1,16 @@
 package com.cylan.jiafeigou.n.engine;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
-import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
+import android.view.WindowManager;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -55,7 +56,19 @@ public class GlobalResetPwdSource {
     public void pwdResetedDialog(int code){
         if (code == 16008){
           //TODO
+            AppLogger.d("pwdResetedDialog:16008");
+            AlertDialog.Builder builder = new AlertDialog.Builder(ContextUtils.getContext().getApplicationContext());
+            builder.setTitle("密码已修改，重新登录");
+            builder.setMessage("This is message");
+            builder.setNegativeButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            Dialog dialog=builder.create();
+            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
+            dialog.show();
         }
     }
-
 }

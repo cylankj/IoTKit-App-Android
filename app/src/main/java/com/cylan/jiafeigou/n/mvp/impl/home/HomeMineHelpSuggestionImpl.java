@@ -327,8 +327,8 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             return;
         }
         File logFile = new File(JConstant.LOG_PATH + "/log.txt");
-        File smartcall_t = new File(JConstant.LOG_PATH + "/smartcall_t.txt");
-        File smartcall_w = new File(JConstant.LOG_PATH + "/smartcall_w.txt");
+        File smartcall_t = new File(JConstant.LOG_PATH + "/smartCall_t.txt");
+        File smartcall_w = new File(JConstant.LOG_PATH + "/smartCall_w.txt");
         File crashFile = new File(JConstant.CRASH_PATH);
         outFile = new File(Environment.getExternalStorageDirectory().toString() + "/" + bean.getDate() + "Smarthome.zip");
         try {

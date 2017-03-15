@@ -72,11 +72,11 @@ public class SmartcallActivity extends NeedLoginActivity
         ButterKnife.bind(this);
         initPresenter();
         fullScreen(true);
-        if (!getIntent().getBooleanExtra("from_log_out", false)) {
-            if (presenter != null) presenter.start();
-        } else {
-            splashOver();
-        }
+//        if (!getIntent().getBooleanExtra("from_log_out", false)) {
+//            if (presenter != null) presenter.start();
+//        } else {
+//            splashOver();
+//        }
     }
 
     /**
