@@ -189,14 +189,13 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
         for (JFGDevice device : jfgDevices) {
             AppLogger.d("OnReportJfgDevices" + new Gson().toJson(device));
         }
-        DataSourceManager.getInstance().cacheJFGDevices(jfgDevices);//缓存设备
-
+        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheDeviceEvent(jfgDevices));
     }
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
         AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
-        DataSourceManager.getInstance().cacheJFGAccount(jfgAccount);//缓存账号信息
+        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheAccountEvent(jfgAccount));
     }
 
     @Override
@@ -258,8 +257,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
     @Override
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnRobotGetDataRsp :" + new Gson().toJson(robotoGetDataRsp));
-        DataSourceManager.getInstance().cacheRobotoGetDataRsp(robotoGetDataRsp);
-//        RxBus.getCacheInstance().post(robotoGetDataRsp);
+        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
     }
 
     @Override
@@ -387,7 +385,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
     @Override
     public void OnRobotSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
         AppLogger.d("OnRobotSyncData :" + b + " " + s + " " + new Gson().toJson(arrayList));
-        DataSourceManager.getInstance().cacheRobotoSyncData(b, s, arrayList);
+        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheSyncDataEvent(b,s,arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SdcardClearFinishRsp(b,s,arrayList));
     }
 
