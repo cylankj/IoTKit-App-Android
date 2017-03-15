@@ -150,8 +150,11 @@ android {
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.cell_c.hms.update.provider"]
         }
-        yf {
-            
+        _yf {
+            applicationIdSuffix ".yf"
+            versionName vName
+            versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.yf.hms.update.provider"]
         }
     }
 }
