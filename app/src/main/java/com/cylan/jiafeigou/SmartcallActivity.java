@@ -73,10 +73,6 @@ public class SmartcallActivity extends NeedLoginActivity
         initPresenter();
         fullScreen(true);
         if (!getIntent().getBooleanExtra("from_log_out", false)) {
-<<<<<<< Updated upstream
-=======
-            AppLogger.d("start bool:");
->>>>>>> Stashed changes
             if (presenter != null) presenter.start();
         } else {
             splashOver();
@@ -110,7 +106,6 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onStart() {
         super.onStart();
-<<<<<<< Updated upstream
         if (!isPermissionDialogShowing)
             SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
         if (!getIntent().getBooleanExtra("from_log_out", false)) {
@@ -118,10 +113,6 @@ public class SmartcallActivity extends NeedLoginActivity
         } else {
             splashOver();
         }
-=======
-        SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
-
->>>>>>> Stashed changes
     }
 
     @Override

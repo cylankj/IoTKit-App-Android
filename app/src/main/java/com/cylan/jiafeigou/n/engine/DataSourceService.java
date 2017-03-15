@@ -144,11 +144,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
                         RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
                                 .subscribeOn(Schedulers.newThread())
-<<<<<<< Updated upstream:app/src/main/java/com/cylan/jiafeigou/n/engine/DataSourceService.java
                                 .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
-=======
-                                .timeout(4, TimeUnit.SECONDS,Observable.just("autoSign in timeout")
->>>>>>> Stashed changes:app/src/main/java/com/cylan/jiafeigou/n/engine/DataSource.java
                                         .observeOn(AndroidSchedulers.mainThread())
                                         .map(s -> {
                                             AppLogger.d("net type: " + NetUtils.getNetType(ContextUtils.getContext()));
