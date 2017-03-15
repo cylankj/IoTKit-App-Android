@@ -8,6 +8,7 @@ import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
@@ -15,6 +16,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -327,21 +329,21 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             return;
         }
         File logFile = new File(JConstant.LOG_PATH + "/log.txt");
-        File smartcall_t = new File(JConstant.LOG_PATH + "/smartcall_t.txt");
-        File smartcall_w = new File(JConstant.LOG_PATH + "/smartcall_w.txt");
+        File smartcall_t = new File(JConstant.LOG_PATH + "/smartCall_t.txt");
+        File smartcall_w = new File(JConstant.LOG_PATH + "/smartCall_w.txt");
         File crashFile = new File(JConstant.CRASH_PATH);
-        outFile = new File(Environment.getExternalStorageDirectory().toString() + "/" + bean.getDate() + "Smarthome.zip");
+        outFile = new File(Environment.getExternalStorageDirectory().toString() + "/" + bean.getDate() + JConstant.getRoot() + ".zip");
         try {
             Collection<File> files = new ArrayList<>();
             files.add(logFile);
             files.add(smartcall_t);
             files.add(smartcall_w);
-            if (crashFile.exists()){
+            if (crashFile.exists()) {
                 File[] file = crashFile.listFiles();
-                if (file.length <= 10){
+                if (file.length <= 10) {
                     files.add(crashFile);
-                }else {
-                    for (int i = file.length-1;i>file.length-11;i--){
+                } else {
+                    for (int i = file.length - 1; i > file.length - 11; i--) {
                         files.add(file[i]);
                     }
                 }
@@ -354,7 +356,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         String fileName = (Long.parseLong(bean.getDate())) / 1000 + ".zip";
         String remoteUrl = null;
         try {
-            remoteUrl = "/log/0001/" + userInfomation.getAccount() + "/" + fileName;
+            remoteUrl = "/log/" + Security.getVId(JFGRules.getTrimPackageName()) + "/" + userInfomation.getAccount() + "/" + fileName;
             int code = JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
             ToastUtil.showToast("" + code);
         } catch (JfgException e) {

@@ -13,6 +13,7 @@ import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
@@ -868,6 +869,50 @@ public class RxEvent {
         }
 
         public int code;
-
     }
+
+    //DataSouManager 专用,其他场景不要用这个类
+    public static final class SerializeCacheAccountEvent {
+
+        public final JFGAccount account;
+
+        public SerializeCacheAccountEvent(JFGAccount jfgAccount) {
+            this.account = jfgAccount;
+        }
+    }
+
+    //DataSouManager 专用,其他场景不要用这个类
+    public static final class SerializeCacheDeviceEvent {
+
+        public final JFGDevice[] devices;
+
+        public SerializeCacheDeviceEvent(JFGDevice[] jfgDevices) {
+            this.devices = jfgDevices;
+        }
+    }
+
+    //DataSouManager 专用,其他场景不要用这个类
+    public static final class SerializeCacheGetDataEvent {
+
+        public final RobotoGetDataRsp getDataRsp;
+
+        public SerializeCacheGetDataEvent(RobotoGetDataRsp robotoGetDataRsp) {
+            this.getDataRsp = robotoGetDataRsp;
+        }
+    }
+
+    //DataSouManager 专用,其他场景不要用这个类
+    public static final class SerializeCacheSyncDataEvent {
+
+        public final boolean b;
+        public final String s;
+        public final ArrayList<JFGDPMsg> arrayList;
+
+        public SerializeCacheSyncDataEvent(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
+            this.b = b;
+            this.s = s;
+            this.arrayList = arrayList;
+        }
+    }
+
 }

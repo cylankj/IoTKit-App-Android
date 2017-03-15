@@ -50,9 +50,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
-import rx.subjects.PublishSubject;
-import rx.subjects.SerializedSubject;
-import rx.subjects.Subject;
+import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
@@ -74,7 +72,7 @@ public class DataSourceManager implements JFGSourceManager {
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private Subscription unreadCountFetcher;
     private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
-    private Subject<Object, Object> bus = new SerializedSubject<>(PublishSubject.create());
+    private CompositeSubscription subscription;
     /**
      * 未读消息数
      */
@@ -86,7 +84,16 @@ public class DataSourceManager implements JFGSourceManager {
 
     private DataSourceManager() {
         dbHelper = BaseDBHelper.getInstance();
+        initSubscription();
         initFromDB();
+    }
+
+    private void initSubscription() {
+        subscription = new CompositeSubscription();
+        subscription.add(makeCacheGetDataSub());
+        subscription.add(makeCacheSyncDataSub());
+        subscription.add(makeCacheAccountSub());
+        subscription.add(makeCacheDeviceSub());
     }
 
     private void initFromDB() {
@@ -198,9 +205,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
-        bus.onNext(devices);
         Observable.just(devices)
-                .filter(biggerThan0 -> devices.length > 0)//必须，buffer size
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(items -> {
@@ -233,8 +238,6 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     return dpDevice;
                 })
-                //见 doc/err/rx_buffer.md
-                .buffer(devices.length)//buffer size must be greater than 0
                 .subscribe(items -> {
                 }, e -> {
                     AppLogger.d(e.getMessage());
@@ -254,7 +257,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
-        bus.onNext(account);
         dbHelper.updateAccount(account)
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .doOnCompleted(() -> {
@@ -511,14 +513,12 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp) {
-        bus.onNext(dataRsp);
         Observable.from(dataRsp.map.entrySet())
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(set -> Observable.from(set.getValue())
                         .flatMap(msg -> {
-//                            if (dpLock.tryLock())
-//                            dpLock.lock();
+                            AppLogger.d(dataRsp.identity + ":" + msg.version + ":" + msg.id);
                             return dbHelper.saveDPByte(dataRsp.identity, msg.version, (int) msg.id, msg.packValue)
                                     .map(entity -> {
                                         Device device = mCachedDeviceMap.get(dataRsp.identity);
@@ -697,5 +697,37 @@ public class DataSourceManager implements JFGSourceManager {
         else
             result = new Device();
         return result;
+    }
+
+    private Subscription makeCacheAccountSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.SerializeCacheAccountEvent.class)
+                .onBackpressureBuffer()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(event -> cacheJFGAccount(event.account));
+    }
+
+    private Subscription makeCacheDeviceSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.SerializeCacheDeviceEvent.class)
+                .onBackpressureBuffer()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(event -> cacheJFGDevices(event.devices));
+    }
+
+    private Subscription makeCacheGetDataSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.SerializeCacheGetDataEvent.class)
+                .onBackpressureBuffer()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(event -> cacheRobotoGetDataRsp(event.getDataRsp));
+    }
+
+    private Subscription makeCacheSyncDataSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.SerializeCacheSyncDataEvent.class)
+                .onBackpressureBuffer()
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .subscribe(event -> cacheRobotoSyncData(event.b, event.s, event.arrayList));
     }
 }
