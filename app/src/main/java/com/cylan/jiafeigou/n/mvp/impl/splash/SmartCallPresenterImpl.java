@@ -14,18 +14,13 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
 
-<<<<<<< Updated upstream
-import java.util.concurrent.TimeUnit;
-
-import rx.Subscription;
-import rx.android.schedulers.AndroidSchedulers;
-=======
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
->>>>>>> Stashed changes
+import rx.schedulers.Schedulers;
+
 import rx.schedulers.Schedulers;
 
 /**
@@ -38,7 +33,6 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
 
     public SmartCallPresenterImpl(SplashContract.View splashView) {
         super(splashView);
-<<<<<<< Updated upstream
     }
 
     @Override
@@ -62,18 +56,6 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
         super.start();
     }
 
-=======
-        splashView.setPresenter(this);
-        subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
-                .subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(resultLogin -> {
-                    if (resultLogin != null)
-                        getView().loginResult(resultLogin.code);
-                });
-    }
-
->>>>>>> Stashed changes
     @Override
     public void stop() {
         super.stop();
