@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscription;
@@ -88,7 +89,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.account = jfgFriendRequest.account;
             emMessage.time = jfgFriendRequest.time;
             try {
-                emMessage.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, jfgFriendRequest.account + ".jpg");
+                emMessage.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", jfgFriendRequest.account));
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -108,6 +109,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.alias = account.alias;
             try {
 //                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, account.account + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
+                emMessage.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", account.account));
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -133,7 +133,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 addReqBean.alias = checkAccountCallback.s1;
                 try {
                     //头像
-                    addReqBean.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(1, String.format(Locale.getDefault(), "image/%s.jpg", addReqBean.account));
+                    addReqBean.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", addReqBean.account));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
