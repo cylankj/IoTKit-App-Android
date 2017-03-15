@@ -109,7 +109,23 @@ public class VideoViewFactory {
             return new PanoramicView_Ext(context);
         }
         return (useOpenGLES2 && ViEAndroidGLES20.IsSupported(context)
-                    ? new ViEAndroidGLES20_Ext(context)
+                ? new ViEAndroidGLES20_Ext(context)
                 : new SurfaceView_Ext(context));
+    }
+
+    public enum RENDERER_VIEW_TYPE {
+        TYPE_PANORAMA_360, TYPE_PANORAMA_720, TYPE_DEFAULT
+    }
+
+    public static IVideoView CreateRendererExt(RENDERER_VIEW_TYPE view_type, Context context, boolean useOpenGLES2) {
+        switch (view_type) {
+            case TYPE_PANORAMA_360:
+                break;
+            case TYPE_PANORAMA_720:
+                break;
+            default:
+                return (useOpenGLES2 && ViEAndroidGLES20.IsSupported(context) ? new ViEAndroidGLES20_Ext(context) : new SurfaceView_Ext(context));
+        }
+        return null;
     }
 }

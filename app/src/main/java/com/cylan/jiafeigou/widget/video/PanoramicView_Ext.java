@@ -6,13 +6,13 @@ import android.os.SystemClock;
 import android.view.MotionEvent;
 
 import com.cylan.panorama.CameraParam;
-import com.cylan.panorama.PanoramicView;
+import com.cylan.panorama.Panoramic360View;
 
 /**
  * Created by cylan-hunt on 16-11-30.
  */
 
-public class PanoramicView_Ext extends PanoramicView implements VideoViewFactory.IVideoView {
+public class PanoramicView_Ext extends Panoramic360View implements VideoViewFactory.IVideoView {
 
     private VideoViewFactory.InterActListener interActListener;
 
