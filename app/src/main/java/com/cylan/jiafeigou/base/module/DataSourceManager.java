@@ -179,6 +179,7 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
         Observable.just(devices)
+                .filter(biggerThan0 -> devices.length > 0)//必须，buffer size
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .map(items -> {
@@ -215,7 +216,8 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     return dpDevice;
                 })
-                .buffer(devices.length)
+                //见 doc/err/rx_buffer.md
+                .buffer(devices.length)//buffer size must be greater than 0
                 .subscribe(items -> {
                     ArrayList<String> uuidList = new ArrayList<>();
                     for (Device device : items) {
