@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.rx;
 
 import android.content.Intent;
+import android.net.NetworkInfo;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -792,6 +793,8 @@ public class RxEvent {
 
     public static class NetConnectionEvent {
         public boolean available;
+        public NetworkInfo mobile;
+        public NetworkInfo wifi;
 
         public NetConnectionEvent(boolean available) {
             this.available = available;

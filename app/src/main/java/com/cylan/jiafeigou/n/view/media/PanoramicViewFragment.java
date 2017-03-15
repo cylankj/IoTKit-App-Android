@@ -27,7 +27,7 @@ import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.DensityUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.video.PanoramicView_Ext;
+import com.cylan.jiafeigou.widget.video.PanoramicView360_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CameraParam;
 import com.cylan.panorama.Panoramic360View;
@@ -48,7 +48,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     @BindView(R.id.fLayout_panoramic_container)
     FrameLayout mPanoramicContainer;
     private String uuid;
-    private PanoramicView_Ext panoramicView;
+    private PanoramicView360_Ext panoramicView;
     private DpMsgDefine.DPAlarm dpAlarm;
     private Panoramic360View.MountMode mountMode;
     private Device device;
@@ -120,7 +120,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     public void loadBitmap(int index) {
         Log.d("panoramicView", "null? " + (panoramicView == null) + " " + (getContext() == null));
         if (panoramicView == null) {
-            panoramicView = new PanoramicView_Ext(getContext());
+            panoramicView = new PanoramicView360_Ext(getContext());
             panoramicView.setInterActListener(new VideoViewFactory.InterActListener() {
                 @Override
                 public boolean onSingleTap(float x, float y) {

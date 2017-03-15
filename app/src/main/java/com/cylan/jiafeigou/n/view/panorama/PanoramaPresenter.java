@@ -2,8 +2,11 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -23,8 +26,60 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     }
 
     @Override
+    protected void onRegisterSubscription() {
+        super.onRegisterSubscription();
+        registerSubscription(getNetWorkChangedSub());
+    }
+
+    private Subscription getNetWorkChangedSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event -> {
+                    if (event.mobile != null && event.mobile.isConnected()) {
+                        //移动网络,提醒用户注意流量
+                        mView.onNetWorkChangedToMobile();
+                    } else if (event.wifi != null && event.wifi.isConnected()) {
+                        //wifi 网络,关闭流量提醒
+                        mView.onNetWorkChangedToWiFi();
+                    }
+                });
+
+    }
+
+    @Override
     public void makePhotograph() {
-        Observable.just((JFGCameraDevice) mSourceManager.getJFGDevice(mUUID))
+//        verifySDCard(mSourceManager.getJFGDevice(mUUID))
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(dev -> {
+//                  mView.onMakePhotoGraphPreview();
+//                });
+        mView.onMakePhotoGraphPreview();
+    }
+
+    @Override
+    public void startMakeLongVideo() {
+        verifySDCard(mSourceManager.getJFGDevice(mUUID))
+                .observeOn(Schedulers.io());
+    }
+
+    @Override
+    public void stopMakeMakeLongVideo() {
+
+    }
+
+    @Override
+    public void startMakeShortVideo() {
+
+    }
+
+    @Override
+    public void stopMakeShortVideo() {
+
+    }
+
+    private Observable<JFGCameraDevice> verifySDCard(JFGCameraDevice device) {
+        return Observable.just(device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(dev -> {
@@ -42,27 +97,22 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         return false;
                     }
                     return true;
-                })
-                .observeOn(Schedulers.io());
+                });
     }
 
-    @Override
-    public void startMakeLongVideo() {
-
+    private Observable<JFGCameraDevice> verifyBattery(JFGCameraDevice device) {
+        return Observable.just(device)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(dev -> {
+                    if (dev.battery == null || dev.battery.value < 5) {
+                        //电量低于5%
+                        mView.onDeviceBatteryLow();
+                        return false;
+                    }
+                    return true;
+                });
     }
 
-    @Override
-    public void stopMakeMakeLongVideo() {
 
-    }
-
-    @Override
-    public void startMakeShortVideo() {
-
-    }
-
-    @Override
-    public void stopMakeShortVideo() {
-
-    }
 }

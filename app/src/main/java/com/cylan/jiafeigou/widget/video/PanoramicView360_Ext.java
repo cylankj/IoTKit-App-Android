@@ -12,11 +12,11 @@ import com.cylan.panorama.Panoramic360View;
  * Created by cylan-hunt on 16-11-30.
  */
 
-public class PanoramicView_Ext extends Panoramic360View implements VideoViewFactory.IVideoView {
+public class PanoramicView360_Ext extends Panoramic360View implements VideoViewFactory.IVideoView {
 
     private VideoViewFactory.InterActListener interActListener;
 
-    public PanoramicView_Ext(Context context) {
+    public PanoramicView360_Ext(Context context) {
         super(context);
     }
 

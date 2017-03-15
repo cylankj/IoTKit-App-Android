@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -243,7 +244,8 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/y138"
         android:layout_alignParentBottom="true"
-        android:background="@color/color_F2333333">
+        android:background="@color/color_F2333333"
+        android:clickable="true">
 
         <ViewSwitcher
             android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu"
@@ -298,16 +300,17 @@
 
         </ViewSwitcher>
 
-        <ImageButton
+        <com.cylan.jiafeigou.support.photoselect.CircleImageView
             android:id="@+id/act_panorama_camera_bottom_panel_album"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/y43"
+            android:layout_height="@dimen/y43"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/y32"
             android:layout_marginEnd="@dimen/y62"
             android:layout_toStartOf="@+id/act_panorama_bottom_panel_camera_photograph"
             android:background="@android:color/transparent"
-            android:src="@drawable/camera720_icon_album_selector" />
+            android:src="@drawable/camera720_icon_album_selector"
+            app:riv_oval="false" />
 
         <ImageButton
             android:id="@+id/act_panorama_bottom_panel_camera_photograph"
@@ -321,8 +324,8 @@
 
         <ImageButton
             android:id="@+id/act_panorama_camera_bottom_panel_more"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="@dimen/y43"
+            android:layout_height="@dimen/y43"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/y32"
             android:layout_marginStart="@dimen/y62"
