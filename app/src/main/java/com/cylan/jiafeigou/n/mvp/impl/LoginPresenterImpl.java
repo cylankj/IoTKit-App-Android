@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -63,7 +62,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
                         if (o.loginType) {
-                            JfgCmdInsurance.getCmd().openLogin(o.pwd,o.userName, o.openLoginType);
+                            JfgCmdInsurance.getCmd().openLogin(o.pwd, o.userName, o.openLoginType);
                         } else {
                             JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
                             //账号和密码
@@ -83,6 +82,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录结果
+     *
      * @return
      */
 
@@ -176,11 +176,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .delay(100, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(switchBox -> {
-                    if (hasSwitchBox){
+                    if (hasSwitchBox) {
                         getView().switchBox("");
                         hasSwitchBox = false;
                     }
-                },throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
+                }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
 
     }
 
@@ -202,9 +202,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    JfgCmdInsurance.getCmd().sendCheckCode(phone,JfgEnum.JFG_SMS_REGISTER);
-                    AppLogger.d("phone:"+phone);
-                },throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
+                    JfgCmdInsurance.getCmd().sendCheckCode(phone, JfgEnum.JFG_SMS_REGISTER);
+                    AppLogger.d("phone:" + phone);
+                }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
     }
 
     @Override
@@ -232,6 +232,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         try {
                             isReg = true;
                             JfgCmdInsurance.getCmd().checkAccountRegState(s);
+                            AppLogger.d("checkAccountIsReg: " + s);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
