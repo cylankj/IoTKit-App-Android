@@ -2,12 +2,14 @@ package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -49,7 +51,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                     @Override
                     public void call(Object s) {
                         try {
-                            JfgCmdInsurance.getCmd().register(account, pwd, type, token);
+                            JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()),account, pwd, type, token);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -70,7 +72,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                     @Override
                     public LoginAccountBean call(LoginAccountBean o) {
                         try {
-                            JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
+                            JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()),o.userName, o.pwd);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
