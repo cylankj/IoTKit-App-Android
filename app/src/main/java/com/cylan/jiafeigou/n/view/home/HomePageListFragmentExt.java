@@ -45,6 +45,7 @@ import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
 import com.cylan.jiafeigou.n.view.misc.IEmptyView;
+import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -460,7 +461,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             else if (JFGRules.isBell(device.pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid).putExtra("HasNewMsg", true));
+            } else if (JFGRules.isVRCam(device.pid)) {
+                startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             }
+
 //            else if (JFGRules.isEFamily(device.pid)) {
 //                startActivity(new Intent(getActivity(), CloudLiveActivity.class)
 //                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));

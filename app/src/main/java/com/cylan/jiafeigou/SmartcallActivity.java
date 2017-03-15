@@ -211,7 +211,6 @@ public class SmartcallActivity extends NeedLoginActivity
             }
             if (basePresenter != null) basePresenter.stop();
             finish();
-
         } else if (code == JError.StartLoginPage && !firstSignIn) {
             splashOver();
             firstSignIn = true;
@@ -219,6 +218,7 @@ public class SmartcallActivity extends NeedLoginActivity
 //            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
         } else if (code == JError.ErrorLoginInvalidPass) {
 //            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
+            splashOver();
         }
     }
 

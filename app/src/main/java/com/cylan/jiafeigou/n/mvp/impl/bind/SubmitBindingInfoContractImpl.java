@@ -4,7 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.misc.SimulatePercent;
-import com.cylan.jiafeigou.n.engine.DataSource;
+import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -81,7 +81,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
     }
 
     /**
-     * 绑定结果:通过{@link DataSource#OnResult(JFGResult)}
+     * 绑定结果:通过{@link DataSourceService#OnResult(JFGResult)}
      * {@link com.cylan.jiafeigou.misc.JResultEvent#JFG_RESULT_BINDDEV}
      *
      * @return

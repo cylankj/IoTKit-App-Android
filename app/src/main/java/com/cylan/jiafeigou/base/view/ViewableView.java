@@ -27,5 +27,7 @@ public interface ViewableView extends JFGView {
 
     void onVideoDisconnect(int code);
 
+    void onDeviceUnBind();//当前设备已解绑
+
     int BAD_NET_WORK = -1000001;
 }

@@ -95,7 +95,7 @@
                 android:layout_marginEnd="@dimen/y20"
                 android:layout_marginStart="@dimen/y20"
                 android:clickable="true"
-                hunt:sv_image_src="@drawable/icon_wifi"
+                hunt:sv_image_src="@drawable/setting_icon_wifi"
                 hunt:sv_title="@string/WIFI"
                 hunt:sv_v_divider="true" />
 

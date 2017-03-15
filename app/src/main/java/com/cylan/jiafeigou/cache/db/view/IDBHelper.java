@@ -78,4 +78,8 @@ public interface IDBHelper {
     Observable<DPEntity> findDPMsg(String uuid, Long version, Integer msgId);
 
     Observable<Account> logout();
+
+    Observable<DPEntity> update(DPEntity entity);
+
+    Observable<Void> delete(DPEntity entity);
 }

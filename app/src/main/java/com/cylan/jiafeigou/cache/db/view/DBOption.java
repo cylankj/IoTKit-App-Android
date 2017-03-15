@@ -9,6 +9,8 @@ import com.google.gson.Gson;
 public interface DBOption {
     String option();
 
+    DBOption NO_OPTION = new BaseDBOption();
+
     class BaseDBOption implements DBOption {
         protected static Gson parser = new Gson();
 
@@ -41,6 +43,14 @@ public interface DBOption {
         public SingleSharedOption(int type, int flag) {
             this.type = type;
             this.flag = flag;
+        }
+    }
+
+    class RawDeviceOrderOption extends BaseDBOption {
+        public int rawDeviceOrder;
+
+        public RawDeviceOrderOption(int order) {
+            this.rawDeviceOrder = order;
         }
     }
 }

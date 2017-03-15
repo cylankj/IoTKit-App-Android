@@ -29,7 +29,6 @@ public class DPSingleClearTask extends BaseDPTask<BaseDPTaskResult> {
                         entity = items.get(0);
                         entity.setAction(DBAction.CLEARED);
                         entity.setState(DBState.NOT_CONFIRM);
-                        entity.update();
                         this.entity = entity;
                     }
                     return new BaseDPTaskResult().setResultCode(0).setResultResponse(entity);

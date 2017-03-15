@@ -77,7 +77,7 @@ public class GLTextureView extends TextureView
     public final static int DEBUG_LOG_GL_CALLS = 2;
 
     /**
-     * Standard View constructor. In order to render something, you
+     * Standard View constructor. In rawDeviceOrder to render something, you
      * must call {@link #setRenderer} to register a renderer.
      */
     public GLTextureView(Context context) {
@@ -86,7 +86,7 @@ public class GLTextureView extends TextureView
     }
 
     /**
-     * Standard View constructor. In order to render something, you
+     * Standard View constructor. In rawDeviceOrder to render something, you
      * must call {@link #setRenderer} to register a renderer.
      */
     public GLTextureView(Context context, AttributeSet attrs) {
@@ -160,7 +160,7 @@ public class GLTextureView extends TextureView
      * Whether the EGL context is actually preserved or not depends upon whether the
      * Android device that the program is running on can support an arbitrary number of EGL
      * contexts or not. Devices that can only support a limited number of EGL contexts must
-     * release the  EGL context in order to allow multiple applications to share the GPU.
+     * release the  EGL context in rawDeviceOrder to allow multiple applications to share the GPU.
      * <p>
      * If set to false, the EGL context will be released when the GLTextureView is paused,
      * and recreated when the GLTextureView is resumed.
@@ -581,7 +581,7 @@ public class GLTextureView extends TextureView
      * There are situations where the EGL rendering context will be lost. This
      * typically happens when device wakes up after going to sleep. When
      * the EGL context is lost, all OpenGL resources (such as textures) that are
-     * associated with that context will be automatically deleted. In order to
+     * associated with that context will be automatically deleted. In rawDeviceOrder to
      * keep rendering correctly, a renderer must recreate any lost resources
      * that it still needs. The {@link #onSurfaceCreated(GL10,
      * EGLConfig)} method

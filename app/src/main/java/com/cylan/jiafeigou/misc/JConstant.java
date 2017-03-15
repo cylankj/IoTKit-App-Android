@@ -234,6 +234,8 @@ public class JConstant {
             return R.drawable.icon_home_doorbell_online;
         if (JFGRules.isCamera(pid))
             return R.drawable.icon_home_camera_online;
+        if (JFGRules.isVRCam(pid))
+            return R.drawable.home_icon_720camera_online;
         return R.mipmap.ic_launcher;
     }
 
@@ -242,7 +244,8 @@ public class JConstant {
             return R.drawable.icon_home_doorbell_offline;
         if (JFGRules.isCamera(pid))
             return R.drawable.icon_home_camera_offline;
-
+        if (JFGRules.isVRCam(pid))
+            return R.drawable.home_icon_720camera_offline;
         return R.mipmap.ic_launcher;
     }
 

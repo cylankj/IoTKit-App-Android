@@ -204,6 +204,8 @@ public class JFGRules {
             case JConstant.OS_CAMERA_PANORAMA_HAISI:
             case JConstant.OS_CAMERA_PANORAMA_QIAOAN:
             case JConstant.OS_CAMERA_PANORAMA_GUOKE:
+            case 21:
+            case 1089:
                 return false;
             default:
                 return true;
@@ -217,7 +219,6 @@ public class JFGRules {
             case 7:
             case 10:
             case 18:
-            case 21:
             case 26:
             case 17:
             case 20:
@@ -226,7 +227,6 @@ public class JFGRules {
             case 1152:
             case 1158:
             case 1088:
-            case 1089:
             case 1091:
             case 1092:
             case 1071:
@@ -255,7 +255,12 @@ public class JFGRules {
     }
 
     public static boolean isVRCam(int pid) {
-        return pid == JConstant.PID_CAMERA_VR_720;
+        switch (pid) {
+            case 21:
+            case 1089:
+                return true;
+        }
+        return false;
     }
 
     /**

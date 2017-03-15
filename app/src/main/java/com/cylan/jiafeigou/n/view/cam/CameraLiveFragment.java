@@ -429,7 +429,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             setupStandByView(flag);
         }
         if (msgId == DpMsgMap.ID_204_SDCARD_STORAGE) {
-            DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
+            DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
             //sd卡状态变化，
             camLiveController.updateLiveButtonState(sdStatus != null && sdStatus.hasSdcard);
             if (sdStatus == null || !sdStatus.hasSdcard) {

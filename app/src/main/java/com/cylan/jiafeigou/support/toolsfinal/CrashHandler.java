@@ -7,6 +7,8 @@ import android.os.Build;
 import android.os.Environment;
 import android.os.Looper;
 
+import com.cylan.jiafeigou.support.log.AppLogger;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -85,6 +87,7 @@ public class CrashHandler implements Thread.UncaughtExceptionHandler {
                 e.printStackTrace();
             }
             // 退出程序
+            AppLogger.d("DDD");
             android.os.Process.killProcess(android.os.Process.myPid());
             System.exit(1);
         }

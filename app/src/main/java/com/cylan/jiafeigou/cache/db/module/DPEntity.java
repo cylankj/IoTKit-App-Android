@@ -13,7 +13,7 @@ import org.greenrobot.greendao.annotation.Id;
 /**
  * Created by yanzhendong on 2017/2/27.
  */
-@Entity(active = true, generateGettersSetters = false)
+@Entity(generateGettersSetters = false)
 public class DPEntity extends BaseDPEntity {
     @Id
     private Long _id;
@@ -26,17 +26,6 @@ public class DPEntity extends BaseDPEntity {
     private String action;
     private String state;
     private String option;//json 格式的字符串
-    /**
-     * Used to resolve relations
-     */
-    @Generated(hash = 2040040024)
-    private transient DaoSession daoSession;
-    /**
-     * Used for active entity operations.
-     */
-    @Generated(hash = 1268361579)
-    private transient DPEntityDao myDao;
-
     @Generated(hash = 99264848)
     public DPEntity(Long _id, String account, String server, String uuid, Long version,
                     Integer msgId, byte[] bytes, String action, String state, String option) {
@@ -187,49 +176,6 @@ public class DPEntity extends BaseDPEntity {
     @Override
     public <R extends DBOption> R option(Class<R> clz) {
         return DBOption.BaseDBOption.option(this.option, clz);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#delete(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 128553479)
-    public void delete() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.delete(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#refresh(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 1942392019)
-    public void refresh() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.refresh(this);
-    }
-
-    /**
-     * Convenient call for {@link org.greenrobot.greendao.AbstractDao#update(Object)}.
-     * Entity must attached to an entity context.
-     */
-    @Generated(hash = 713229351)
-    public void update() {
-        if (myDao == null) {
-            throw new DaoException("Entity is detached from DAO context");
-        }
-        myDao.update(this);
-    }
-
-    /** called by internal mechanisms, do not call yourself. */
-    @Generated(hash = 69931815)
-    public void __setDaoSession(DaoSession daoSession) {
-        this.daoSession = daoSession;
-        myDao = daoSession != null ? daoSession.getDPEntityDao() : null;
     }
 
 }

@@ -95,20 +95,21 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                                 subscriber.onError(e);
                                 e.printStackTrace();
                                 AppLogger.d("分享操作步骤二操作失败,错误信息为:" + e.getMessage());
+                                mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(item -> mDPHelper.delete(item));
                             }
                         }).flatMap(this::makeHttpDoneResultResponse)
                                 .flatMap(ret -> {
                                     AppLogger.d("分享操作步骤二执行成功,正在更新本地数据Version");
                                     return mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).map(dpEntity -> {
                                         dpEntity.setVersion(rsp.rets.get(0).version);
-                                        dpEntity.update();
+                                        mDPHelper.update(dpEntity).subscribe();
                                         return new BaseDPTaskResult().setResultCode(ret.ret).setResultResponse(ret.result);
                                     });
                                 });
                     } else {
                         return mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).map(dpEntity -> {
                             AppLogger.d("分享失败,正在删除本地数据");
-                            dpEntity.delete();
+
                             return new BaseDPTaskResult().setResultCode(code);
                         });
                     }

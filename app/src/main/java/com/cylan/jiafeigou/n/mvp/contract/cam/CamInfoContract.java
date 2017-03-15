@@ -61,5 +61,7 @@ public interface CamInfoContract {
 
 
         void updateAlias(Device device);
+
+        Subscription onClearSdReqBack();
     }
 }
