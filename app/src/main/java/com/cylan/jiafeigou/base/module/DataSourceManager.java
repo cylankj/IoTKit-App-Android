@@ -521,8 +521,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .observeOn(Schedulers.io())
                 .flatMap(set -> Observable.from(set.getValue())
                         .flatMap(msg -> {
-//                            if (dpLock.tryLock())
-//                            dpLock.lock();
+                            AppLogger.d(dataRsp.identity + ":" + msg.version + ":" + msg.id);
                             return dbHelper.saveDPByte(dataRsp.identity, msg.version, (int) msg.id, msg.packValue)
                                     .map(entity -> {
                                         Device device = mCachedDeviceMap.get(dataRsp.identity);

@@ -4,7 +4,6 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
-import android.os.Looper;
 import android.os.Process;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -126,7 +125,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                 String vid = Security.getVId(trimPackageName);
                 String vKey = Security.getVKey(trimPackageName);
                 JfgAppCmd.getInstance().setCallBack(DataSourceService.this);
-                JfgAppCmd.getInstance().initNativeParam(vid, vKey, serverAddress);
+                JfgAppCmd.getInstance().initNativeParam(vid, vKey, "yf.jfgou.com:443");
                 JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
             } catch (Exception e) {
                 AppLogger.d("let's go err:" + e.getLocalizedMessage());

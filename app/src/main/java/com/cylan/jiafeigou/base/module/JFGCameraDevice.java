@@ -77,22 +77,19 @@ public class JFGCameraDevice extends Device {
     public DPSet<DPAlarm> camera_alarm_msg = DpMsgDefine.EMPTY.DP_SET;
 
     @DPProperty(msgId = 506)
-    public DPTimeLapse camera_time_lapse_photography= DpMsgDefine.EMPTY.TIME_LAPSE;
+    public DPTimeLapse camera_time_lapse_photography = DpMsgDefine.EMPTY.TIME_LAPSE;
 
     @DPProperty(msgId = 508)
-    public DpMsgDefine.DPStandby camera_standby= DpMsgDefine.EMPTY.STANDBY;
+    public DpMsgDefine.DPStandby camera_standby = DpMsgDefine.EMPTY.STANDBY;
 
     @DPProperty(msgId = 509)
-    public DPPrimary<Integer> camera_mount_mode= DpMsgDefine.EMPTY.DP_INT;
+    public DPPrimary<Integer> camera_mount_mode = DpMsgDefine.EMPTY.DP_INT;
 
     @DPProperty(msgId = 510)
-    public DPPrimary<Boolean> camera_coordinate= DpMsgDefine.EMPTY.DP_BOOL;
+    public DPPrimary<Boolean> camera_coordinate = DpMsgDefine.EMPTY.DP_BOOL;
 
     @DPProperty(msgId = 512)
-    public DPSet<DPAlarm> camera_alarm_msg_v3= DpMsgDefine.EMPTY.DP_SET;
-
-    @DPProperty(msgId = 701)
-    public DPPrimary<Boolean> sys_push_flag= DpMsgDefine.EMPTY.DP_BOOL;
+    public DPSet<DPAlarm> camera_alarm_msg_v3 = DpMsgDefine.EMPTY.DP_SET;
 
     @Override
     public JFGCameraDevice $() {
