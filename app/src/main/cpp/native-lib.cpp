@@ -5,6 +5,7 @@
 #include <cstring>
 
 #include "constants.h"
+
 #define LOGV(TAG, ...) __android_log_print(ANDROID_LOG_VERBOSE, TAG,__VA_ARGS__)
 #define LOGD(TAG, ...) __android_log_print(ANDROID_LOG_DEBUG  , TAG,__VA_ARGS__)
 #define LOGI(TAG, ...) __android_log_print(ANDROID_LOG_INFO   , TAG,__VA_ARGS__)
@@ -67,13 +68,14 @@ extern "C" jstring JNICALL native_getServerAddr(JNIEnv *env, jclass clazz, jstri
     if (content == NULL) {
         return NULL;
     }
-    if (strcmp(content, "") == 0 || strcmp(content, "zhongxing") == 0) {
-        std::string result = "yun";
+    std::string result = "yun";
+    if (strcmp(content, "test1") == 0) {
+        result = "test1";
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
     env->ReleaseStringUTFChars(content_, content);
-    return content_;
+    return env->NewStringUTF(result.c_str());
 }
 extern "C" int JNICALL native_getServerPort(JNIEnv *env, jclass clazz, jstring content_) {
     return 443;
@@ -89,6 +91,11 @@ extern "C" jstring JNICALL native_getVKey(JNIEnv *env, jclass clazz, jstring con
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
+    if (strcmp(content, "cell_c") == 0) {
+        result = CELL_C_VKEY;
+        env->ReleaseStringUTFChars(content_, content);
+        return env->NewStringUTF(result.c_str());
+    }
     env->ReleaseStringUTFChars(content_, content);
     return env->NewStringUTF(result.c_str());
 }
@@ -101,6 +108,11 @@ extern "C" jstring JNICALL native_getVId(JNIEnv *env, jclass clazz, jstring cont
     std::string result = CYLAN_VID;
     if (strcmp(content, "zhongxing") == 0) {
         result = DOBY_VID;
+        env->ReleaseStringUTFChars(content_, content);
+        return env->NewStringUTF(result.c_str());
+    }
+    if (strcmp(content, "cell_c") == 0) {
+        result = CELL_C_VID;
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }

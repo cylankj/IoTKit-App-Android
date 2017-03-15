@@ -146,7 +146,7 @@ public class JConstant {
 
     public static final String KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX = "_image";
 
-    private static String getRoot() {
+    public static String getRoot() {
         String content = JFGRules.getTrimPackageName();
         if (TextUtils.equals(content, "cell_c") || TextUtils.equals(content, "zhongxing"))
             return content;
