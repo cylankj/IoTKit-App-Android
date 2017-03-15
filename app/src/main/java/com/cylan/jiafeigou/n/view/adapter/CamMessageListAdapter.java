@@ -10,7 +10,6 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
@@ -69,12 +68,12 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private boolean hasSdcard() {
-        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
+        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
         return status != null && status.hasSdcard && status.err == 0;
     }
 
     private boolean online() {
-        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET), DpMsgDefine.DPNet.empty);
+        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.NET);
         return net.net > 0;
     }
 
@@ -201,7 +200,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                          CamMessageBean item) {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
-        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
+        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
         if (sdStatus != null && sdStatus.hasSdcard && sdStatus.err != 0) {
             holder.setVisibility(R.id.tv_jump_next, View.VISIBLE);
             if (onClickListener != null)

@@ -370,7 +370,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
 
         ////////////////////////////net////////////////////////////////////////
-        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.DPNet.empty);
+        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.NET);
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
         boolean flag = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY), false);
         //是否有sim卡

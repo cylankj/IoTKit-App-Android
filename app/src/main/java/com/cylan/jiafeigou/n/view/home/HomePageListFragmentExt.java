@@ -29,6 +29,8 @@ import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -38,6 +40,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
+import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;

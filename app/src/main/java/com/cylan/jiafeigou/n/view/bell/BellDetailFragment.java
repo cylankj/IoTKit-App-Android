@@ -152,7 +152,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         svSettingDeviceVersion.setTvSubTitle(device.device_version.value);
         int battery = MiscUtils.safeGet(device.battery, 0);
         svSettingDeviceBattery.setTvSubTitle(battery + "");
-        DpMsgDefine.DPNet net = MiscUtils.safeGet_(device.net, DpMsgDefine.DPNet.empty);
+        DpMsgDefine.DPNet net = MiscUtils.safeGet_(device.net, DpMsgDefine.EMPTY.NET);
         String ssid = TextUtils.isEmpty(net.ssid) ? getString(R.string.OFF_LINE) : net.ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);
         svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(MiscUtils.safeGet(device.up_time, 0)));

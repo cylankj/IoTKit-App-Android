@@ -4,12 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
-import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.view.DBAction;
-import com.cylan.jiafeigou.cache.db.view.DBOption;
-import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -69,9 +64,9 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .map(new Func1<RxEvent.DeviceSyncRsp, Boolean>() {
                     @Override
                     public Boolean call(RxEvent.DeviceSyncRsp update) {
-                        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
+                        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
                         getView().deviceInfoChanged(DpMsgMap.ID_204_SDCARD_STORAGE, status);
-                        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.DPNet.empty);
+                        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.NET);
                         getView().deviceInfoChanged(DpMsgMap.ID_201_NET, net);
                         AppLogger.e("收到刷新");
                         return null;

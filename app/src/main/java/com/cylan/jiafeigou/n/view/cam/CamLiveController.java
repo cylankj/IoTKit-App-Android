@@ -274,7 +274,7 @@ public class CamLiveController implements
     public void notifyOrientationChange(final int orientation) {
         boolean land = orientation == Configuration.ORIENTATION_LANDSCAPE;
         boolean isShareDevice = presenterRef != null && presenterRef.get() != null && presenterRef.get().isShareDevice();
-        DpMsgDefine.DPSdStatus sd = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.DPSdStatus.empty);
+        DpMsgDefine.DPSdStatus sd = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
         boolean sdCardStatus = sd.hasSdcard && sd.err == 0;
         DpMsgDefine.DPPrimary<Boolean> safe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
 
