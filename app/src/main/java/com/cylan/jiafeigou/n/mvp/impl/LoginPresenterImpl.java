@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
@@ -16,6 +17,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -62,9 +64,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
                         if (o.loginType) {
-                            JfgCmdInsurance.getCmd().openLogin(o.pwd, o.userName, o.openLoginType);
+                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()),o.pwd, o.userName, o.openLoginType);
                         } else {
-                            JfgCmdInsurance.getCmd().login(o.userName, o.pwd);
+                            JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()),o.userName, o.pwd);
                             //账号和密码
                         }
                         AutoSignIn.getInstance().autoSave(o.userName, o.openLoginType, o.pwd)
@@ -202,7 +204,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    JfgCmdInsurance.getCmd().sendCheckCode(phone, JfgEnum.JFG_SMS_REGISTER);
+                    JfgCmdInsurance.getCmd().sendCheckCode(phone,JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
                     AppLogger.d("phone:" + phone);
                 }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
     }

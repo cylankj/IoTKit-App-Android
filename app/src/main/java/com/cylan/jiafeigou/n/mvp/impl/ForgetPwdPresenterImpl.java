@@ -3,12 +3,14 @@ package com.cylan.jiafeigou.n.mvp.impl;
 import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -46,10 +48,10 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         final boolean isPhoneNum = JConstant.PHONE_REG.matcher(account).find();
                         if (isPhoneNum) {
                             JfgCmdInsurance.getCmd()
-                                    .sendCheckCode(account, JfgEnum.JFG_SMS_FORGOTPASS);
+                                    .sendCheckCode(account, JFGRules.getLanguageType(ContextUtils.getContext()),JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
                         } else {
                             try {
-                                JfgCmdInsurance.getCmd().forgetPassByEmail(account);
+                                JfgCmdInsurance.getCmd().forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()),account);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
