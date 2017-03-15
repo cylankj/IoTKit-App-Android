@@ -146,11 +146,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             String routerMac = NetUtils.getRouterMacAddress(getApplication());
             if (TextUtils.equals(device.mac.value, routerMac)) {
                 //AP 模式
-                bannerConnectionIcon.setImageResource(R.drawable.home_icon_ap);
+                bannerConnectionIcon.setImageResource(R.drawable.camera720_icon_ap);
                 bannerConnectionText.setText("户外模式");
             } else {
                 //非 AP 模式
-                bannerConnectionIcon.setImageResource(R.drawable.icon_home_net_wifi);
+                bannerConnectionIcon.setImageResource(R.drawable.camera720_icon_wifi);
                 bannerConnectionText.setText("WiFi连接");
             }
         }

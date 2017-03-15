@@ -69,6 +69,7 @@
                     android:layout_centerVertical="true"
                     android:layout_marginLeft="@dimen/y16"
                     android:layout_marginStart="@dimen/y16"
+                    android:scaleType="fitXY"
                     android:src="@drawable/camera720_icon_wifi" />
 
                 <TextView
