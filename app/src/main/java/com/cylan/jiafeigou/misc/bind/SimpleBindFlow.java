@@ -261,7 +261,7 @@ public class SimpleBindFlow extends AFullBind {
                             AppLogger.i(BIND_TAG + cid);
                             Log.d("run", "run: ");
                             try {
-                                JfgCmdInsurance.getCmd().bindDevice(cid, bindCode);
+                                JfgCmdInsurance.getCmd().bindDevice(cid, bindCode, "", 1);//有 Bug
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }

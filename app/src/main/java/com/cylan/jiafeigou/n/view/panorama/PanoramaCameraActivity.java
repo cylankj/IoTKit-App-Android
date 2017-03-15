@@ -1,14 +1,17 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -32,10 +35,16 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
+import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import butterknife.OnLongClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.SPEED_MODE.AUTO;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.SPEED_MODE.FLUENCY;
@@ -45,7 +54,7 @@ import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.SPE
 /**
  * Created by yanzhendong on 2017/3/7.
  */
-
+@RuntimePermissions
 public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.Presenter> implements PanoramaCameraContact.View {
 
     @BindView(R.id.act_panorama_camera_banner)
@@ -107,14 +116,19 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onShowProperty(JFGCameraDevice device) {
-        if (device.battery != null) {
-            bannerChargeText.setText(device.battery.value + "%");
-        }
         if (device.charging != null && device.charging.value) {
             bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge);
+        } else if (device.battery != null) {
+            bannerChargeText.setText(device.battery.value + "%");
+            int battery = device.battery.value;
+            if (battery <= 20) {
+                bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_low_power);
+            } else if (battery > 20 && battery < 80) {
+                bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_half);
+            } else if (battery >= 80) {
+                bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_full);
+            }
         }
-
-
     }
 
     @Override
@@ -151,13 +165,19 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-        SurfaceView surfaceView = mPresenter.getViewerInstance();
+        SurfaceView surfaceView = (SurfaceView) VideoViewFactory.CreateRendererExt(false, this, true);
+        surfaceView.setId("IVideoView".hashCode());
+        ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        surfaceView.setLayoutParams(params);
         videoLiveContainer.addView(surfaceView);
         JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, surfaceView);
 
         //enable views
         bottomPanelSwitcher.setEnabled(true);
         bottomPanelPhotoGraphItem.setEnabled(true);
+        bottomPanelPictureMode.setEnabled(true);
+        bottomPanelVideoMode.setEnabled(true);
+        loadingBar.setVisibility(View.GONE);
         if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_PICTURE) {
             bottomPanelMoreItem.setEnabled(true);
         } else {
@@ -353,11 +373,40 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.act_panorama_camera_quick_menu_item1_mic)
     public void clickedQuickMenuItem1SwitchMic() {
         AppLogger.d("clickedQuickMenuItem1SwitchMic");
+        PanoramaCameraActivityPermissionsDispatcher.switchMicroPhoneWithPermissionWithCheck(this);
+    }
+
+    @NeedsPermission(Manifest.permission.RECORD_AUDIO)
+    void switchSpeakerWithPermission() {
+        mPresenter.switchSpeaker();
+    }
+
+    @OnShowRationale(Manifest.permission.RECORD_AUDIO)
+    public void showEnablePermissionAlert(PermissionRequest request) {
+        AppLogger.d("需要提醒用户给 APP 授权");
+    }
+
+    @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
+    public void onNoAudioPermission() {
+        AppLogger.d("没有控制扬声器和麦克风的权限");
+    }
+
+
+    @NeedsPermission(Manifest.permission.RECORD_AUDIO)
+    void switchMicroPhoneWithPermission() {
+        mPresenter.switchMicrophone();
     }
 
     @OnClick(R.id.act_panorama_camera_quick_menu_item2_voice)
     public void clickedQuickMenuItem2SwitchVoice() {
         AppLogger.d("clickedQuickMenuItem2SwitchVoice");
+        PanoramaCameraActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        PanoramaCameraActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
     }
 
     @OnClick(R.id.act_panorama_camera_quick_menu_item3_left)

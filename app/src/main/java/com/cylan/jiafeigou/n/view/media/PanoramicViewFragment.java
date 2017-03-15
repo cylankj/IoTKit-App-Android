@@ -30,7 +30,7 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.video.PanoramicView_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 import com.cylan.panorama.CameraParam;
-import com.cylan.panorama.PanoramicView;
+import com.cylan.panorama.Panoramic360View;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -50,7 +50,7 @@ public class PanoramicViewFragment extends IBaseFragment {
     private String uuid;
     private PanoramicView_Ext panoramicView;
     private DpMsgDefine.DPAlarm dpAlarm;
-    private PanoramicView.MountMode mountMode;
+    private Panoramic360View.MountMode mountMode;
     private Device device;
 
     public PanoramicViewFragment() {
