@@ -118,7 +118,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
             Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             try {
                 String trimPackageName = JFGRules.getTrimPackageName();
-                //读取Smarthome/log/config.txt的内容
+                //读取JConstant.getRoot()/log/config.txt的内容
                 String extra = DebugOptionsImpl.getServer();
                 String inner = Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
                 Log.d("initNative", "initNative: " + extra + " " + inner);
