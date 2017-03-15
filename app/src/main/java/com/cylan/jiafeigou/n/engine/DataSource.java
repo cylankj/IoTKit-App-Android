@@ -95,7 +95,6 @@ public class DataSource implements AppCallBack {
     public void initNative() {
         HandlerThreadUtils.clean();
         HandlerThreadUtils.postAtFrontOfQueue(() -> {
-            Log.d("initNative", "initNative: " + Looper.myLooper());
             Context context = ContextUtils.getContext();
             Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             try {
