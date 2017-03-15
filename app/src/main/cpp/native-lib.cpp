@@ -91,6 +91,11 @@ extern "C" jstring JNICALL native_getVKey(JNIEnv *env, jclass clazz, jstring con
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
+    if (strcmp(content, "cell_c") == 0) {
+        result = CELL_C_VKEY;
+        env->ReleaseStringUTFChars(content_, content);
+        return env->NewStringUTF(result.c_str());
+    }
     env->ReleaseStringUTFChars(content_, content);
     return env->NewStringUTF(result.c_str());
 }
@@ -103,6 +108,11 @@ extern "C" jstring JNICALL native_getVId(JNIEnv *env, jclass clazz, jstring cont
     std::string result = CYLAN_VID;
     if (strcmp(content, "zhongxing") == 0) {
         result = DOBY_VID;
+        env->ReleaseStringUTFChars(content_, content);
+        return env->NewStringUTF(result.c_str());
+    }
+    if (strcmp(content, "cell_c") == 0) {
+        result = CELL_C_VID;
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
