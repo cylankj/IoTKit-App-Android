@@ -154,6 +154,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         SurfaceView surfaceView = mPresenter.getViewerInstance();
         videoLiveContainer.addView(surfaceView);
         JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, surfaceView);
+
+        //enable views
+        bottomPanelSwitcher.setEnabled(true);
+        bottomPanelPhotoGraphItem.setEnabled(true);
+        if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_PICTURE) {
+            bottomPanelMoreItem.setEnabled(true);
+        } else {
+            bottomPanelMoreItem.setEnabled(false);
+        }
     }
 
     @Override
