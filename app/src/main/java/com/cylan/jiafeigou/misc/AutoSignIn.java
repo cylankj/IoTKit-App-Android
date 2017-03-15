@@ -77,6 +77,7 @@ public class AutoSignIn {
                             SignType signType = new Gson().fromJson(decryption, SignType.class);
                             if (signType != null) {
                                 StringBuilder pwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + aesAccount + ".dat", "UTF-8");
+                                AppLogger.d("log pwd: " + pwd);
                                 if (!TextUtils.isEmpty(pwd)) {
                                     String finalPwd = AESUtil.decrypt(pwd.toString());
                                     if (signType.type == 1) {
