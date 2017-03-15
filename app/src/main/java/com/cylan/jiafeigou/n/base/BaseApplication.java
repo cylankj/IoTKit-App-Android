@@ -8,6 +8,8 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
@@ -124,6 +126,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
         registerActivityLifecycleCallbacks(this);
         initHuaweiPushSDK();
         Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
+
+
     }
 
     /**

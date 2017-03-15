@@ -53,6 +53,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .subscribe(event -> mView.onDeviceUnBind(), Throwable::printStackTrace);
     }
 
+
+
     @Override
     public void startViewer() {
         Subscription subscribe = Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))

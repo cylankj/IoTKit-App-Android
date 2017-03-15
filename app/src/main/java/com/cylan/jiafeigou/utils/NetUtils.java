@@ -1,9 +1,11 @@
 package com.cylan.jiafeigou.utils;
 
+import android.app.Application;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -370,4 +372,16 @@ public class NetUtils {
     static final int SECURITY_WEP = 1;
     static final int SECURITY_PSK = 2;
     static final int SECURITY_EAP = 3;
+
+    public static String getRouterMacAddress(Application context) {
+        WifiManager mWifi = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        if (mWifi.isWifiEnabled()) {
+            WifiInfo wifiInfo = mWifi.getConnectionInfo();
+            String netMac = wifiInfo.getBSSID(); //获取被连接网络的mac地址
+            return netMac == null ? "" : netMac.toUpperCase();
+        }
+        return "";
+    }
+
+
 }

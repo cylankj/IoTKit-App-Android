@@ -106,7 +106,7 @@ public class VideoViewFactory {
     public static IVideoView CreateRendererExt(boolean isPanoramicView, Context context, boolean useOpenGLES2) {
         if (isPanoramicView) {
 //            return
-            return new PanoramicView_Ext(context);
+            return new PanoramicView360_Ext(context);
         }
         return (useOpenGLES2 && ViEAndroidGLES20.IsSupported(context)
                 ? new ViEAndroidGLES20_Ext(context)
@@ -120,12 +120,11 @@ public class VideoViewFactory {
     public static IVideoView CreateRendererExt(RENDERER_VIEW_TYPE view_type, Context context, boolean useOpenGLES2) {
         switch (view_type) {
             case TYPE_PANORAMA_360:
-                break;
+                return new PanoramicView360_Ext(context);
             case TYPE_PANORAMA_720:
-                break;
+                return new PanoramicView720_Ext(context);
             default:
                 return (useOpenGLES2 && ViEAndroidGLES20.IsSupported(context) ? new ViEAndroidGLES20_Ext(context) : new SurfaceView_Ext(context));
         }
-        return null;
     }
 }

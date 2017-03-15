@@ -4,19 +4,16 @@ import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 
 /**
- * Created by yanzhendong on 2017/3/11.
+ * Created by yanzhendong on 2017/3/15.
  */
 
-public class PanoramaSettingContact {
+public interface PanoramaLogoConfigureContact {
 
     interface View extends JFGView {
 
-        void unbindDeviceRsp(int resultCode);
     }
 
     interface Presenter extends JFGPresenter {
 
-        void unBindDevice();
     }
-
 }
