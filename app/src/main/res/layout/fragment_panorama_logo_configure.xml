@@ -23,19 +23,39 @@
         app:ct_left_title="LOGO设置"
         app:ct_left_title_color="@color/color_white" />
 
+
+    <FrameLayout
+        android:id="@+id/fragment_panorama_logo_content_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/fragment_panorama_logo_toolbar" />
+
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/y10"
         android:layout_below="@id/fragment_panorama_logo_toolbar"
         android:background="@drawable/little_shape" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/act_panorama_camera_bottom_panel"
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/y138"
         android:layout_alignParentBottom="true"
         android:background="@color/color_F2333333"
         android:clickable="true">
 
-    </android.support.v7.widget.RecyclerView>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/fragment_panorama_logo_bottom_panel"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y70"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/y33"
+            android:clickable="true">
+
+        </android.support.v7.widget.RecyclerView>
+
+
+    </RelativeLayout>
+
+
 </RelativeLayout>

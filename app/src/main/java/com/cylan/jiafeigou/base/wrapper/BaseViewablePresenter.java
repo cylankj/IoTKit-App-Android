@@ -54,7 +54,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
 
-
     @Override
     public void startViewer() {
         Subscription subscribe = Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
@@ -109,6 +108,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     AppLogger.d("流量信息更新:" + rtcp.bitRate / 8 + "KB/S");
                     mView.onFlowSpeed(rtcp.bitRate);
                 }, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
                     if (e instanceof TimeoutException) {
                         AppLogger.d("连接设备超时,即将退出!");
                         if (hasResolution) {
@@ -240,7 +241,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     setViewHandler(null);
                     mView.onDismiss();
                 }, e -> {
-
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
                 });
     }
 
@@ -248,13 +250,19 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void switchSpeaker() {
         setSpeaker(!mIsSpeakerOn)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(on -> mView.onSpeaker(on), Throwable::printStackTrace);
+                .subscribe(on -> mView.onSpeaker(on), e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
     }
 
     @Override
     public void switchMicrophone() {
         setMicrophone(!mIsMicrophoneOn).observeOn(AndroidSchedulers.mainThread())
-                .subscribe(on -> mView.onMicrophone(on), Throwable::printStackTrace);
+                .subscribe(on -> mView.onMicrophone(on), e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
     }
 
     private Observable<Boolean> setMicrophone(boolean on) {

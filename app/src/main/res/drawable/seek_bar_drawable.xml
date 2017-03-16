@@ -17,33 +17,28 @@
     <item
         android:id="@android:id/background"
         android:gravity="center_vertical|fill_horizontal">
-        <shape
-            android:shape="rectangle"
-            android:tint="#33FFFFFF">
-            <size android:height="@dimen/y10" />
-            <solid android:color="#FFFFFF" />
-            <corners android:radius="@dimen/y1" />
+        <shape android:shape="rectangle">
+            <size android:height="@dimen/y2" />
+            <solid android:color="#33FFFFFF" />
         </shape>
     </item>
-    <!--<item-->
-    <!--android:dpMsgId="@android:dpMsgId/secondaryProgress"-->
-    <!--android:gravity="center_vertical|fill_horizontal">-->
-    <!--<scale android:scaleWidth="100%">-->
-    <!--<selector>-->
-    <!--<item-->
-    <!--android:drawable="@color/transparent"-->
-    <!--android:state_enabled="false" />-->
-    <!--<item>-->
-    <!--<shape-->
-    <!--android:shape="rectangle"-->
-    <!--android:tint="?attr/colorControlActivated">-->
-    <!--<size android:height="@dimen/y2" />-->
-    <!--<solid android:color="@color/white_disabled_material" />-->
-    <!--</shape>-->
-    <!--</item>-->
-    <!--</selector>-->
-    <!--</scale>-->
-    <!--</item>-->
+    <item
+        android:id="@android:id/secondaryProgress"
+        android:gravity="center_vertical|fill_horizontal">
+        <scale android:scaleWidth="100%">
+            <selector>
+                <item
+                    android:drawable="@android:color/transparent"
+                    android:state_enabled="false" />
+                <item>
+                    <shape android:shape="rectangle">
+                        <size android:height="@dimen/y2" />
+                        <solid android:color="@android:color/transparent" />
+                    </shape>
+                </item>
+            </selector>
+        </scale>
+    </item>
     <item
         android:id="@android:id/progress"
         android:gravity="center_vertical|fill_horizontal">
@@ -53,11 +48,9 @@
                     android:drawable="@android:color/transparent"
                     android:state_enabled="false" />
                 <item>
-                    <shape
-                        android:shape="rectangle"
-                        android:tint="#CCCCCC">
+                    <shape android:shape="rectangle">
                         <size android:height="@dimen/y2" />
-                        <solid android:color="#FFFFFF" />
+                        <solid android:color="@android:color/white" />
                         <corners android:radius="@dimen/y1" />
                     </shape>
                 </item>

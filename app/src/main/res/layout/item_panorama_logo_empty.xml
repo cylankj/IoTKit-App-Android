@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/y69"
+    android:layout_height="@dimen/y69"
+    android:layout_marginStart="@dimen/y18">
+
+    <TextView
+        android:id="@+id/item_panorama_logo_img"
+        android:layout_width="@dimen/y63"
+        android:layout_height="@dimen/y63"
+        android:layout_gravity="center"
+        android:background="@drawable/logo_no_watermark"
+        android:gravity="center"
+        android:text="无"
+        android:textColor="#CCFFFFFF"
+        android:textSize="@dimen/sp17" />
+
+</FrameLayout>

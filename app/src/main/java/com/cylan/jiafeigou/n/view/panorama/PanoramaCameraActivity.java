@@ -152,6 +152,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 //非 AP 模式
                 bannerConnectionIcon.setImageResource(R.drawable.camera720_icon_wifi);
                 bannerConnectionText.setText("WiFi连接");
+
             }
         }
     }

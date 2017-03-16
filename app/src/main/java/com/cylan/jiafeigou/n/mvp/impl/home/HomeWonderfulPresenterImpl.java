@@ -64,6 +64,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .subscribe(deleteWonder -> {
                     AppLogger.d("收到删除请求,正在删除");
                     deleteTimeline(deleteWonder.position);
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
                 });
     }
 
@@ -87,6 +90,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(timeTickEvent -> {
                     mView.onTimeTick(JFGRules.getTimeRule());
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
                 });
     }
 
@@ -98,6 +104,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .subscribe(timeTickEvent -> {
                     onUnRegisterSubscription();
                     mView.onPageScrolled();
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
                 });
     }
 
@@ -147,7 +156,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         mView.onQueryTimeLineSuccess(items, false);
                     }
                 }, e -> {
-                    AppLogger.d(e.getMessage());
+                    AppLogger.e(e.getMessage());
                     mView.onQueryTimeLineCompleted();
 
                 }, () -> {
