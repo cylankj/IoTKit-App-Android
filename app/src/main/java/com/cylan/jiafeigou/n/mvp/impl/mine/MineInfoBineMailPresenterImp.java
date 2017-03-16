@@ -52,7 +52,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
 
     @Override
     public boolean checkEmail(String email) {
-        return JConstant.MAC_REG.matcher(email).find();
+        return JConstant.EMAIL_REG.matcher(email).find();
     }
 
     @Override

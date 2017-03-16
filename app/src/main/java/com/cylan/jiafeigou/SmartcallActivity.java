@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou;
 
 import android.Manifest;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -76,6 +77,7 @@ public class SmartcallActivity extends NeedLoginActivity
 //        } else {
 //            splashOver();
 //        }
+
     }
 
     /**
@@ -216,7 +218,7 @@ public class SmartcallActivity extends NeedLoginActivity
         } else if (code == JError.ErrorAccountNotExist) {
 //            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
         } else if (code == JError.ErrorLoginInvalidPass) {
-//            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
+//            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));且是自动登录返回的错误密码走此
             splashOver();
         }
     }

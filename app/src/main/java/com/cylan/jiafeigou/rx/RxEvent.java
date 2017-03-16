@@ -918,11 +918,23 @@ public class RxEvent {
         }
     }
 
+    /**
+     * 从我的界面登录标记
+     */
     public static final class LoginMeTab{
         public LoginMeTab(boolean b) {
             this.b = b;
         }
+        public boolean b;
+    }
 
+    /**
+     * 从别的终端密码修改后标记
+     */
+    public static final class LogOutByResetPwdTab{
+        public LogOutByResetPwdTab(boolean b) {
+            this.b = b;
+        }
         public boolean b;
     }
 
