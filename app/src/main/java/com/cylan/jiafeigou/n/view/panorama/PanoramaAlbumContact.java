@@ -14,6 +14,7 @@ public interface PanoramaAlbumContact {
             MODE_BOTH, MODE_PANORAMA, MODE_PHOTO;
         }
 
+
     }
 
     interface Presenter extends JFGPresenter {

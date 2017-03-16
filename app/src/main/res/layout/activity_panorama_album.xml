@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -26,6 +25,8 @@
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y48"
             android:layout_toEndOf="@id/act_panorama_album_back"
+            android:drawablePadding="@dimen/x5"
+            android:drawableRight="@drawable/album_icon_open"
             android:gravity="center_vertical"
             android:padding="0dp"
             android:text="相册+手机相册"
@@ -40,10 +41,11 @@
             android:layout_marginEnd="@dimen/y11">
 
             <TextView
+                android:id="@+id/tv_album_delete"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="取消"
+                android:drawableStart="@drawable/album_delete_selector"
                 android:textColor="@color/color_white"
                 android:textSize="@dimen/sp18" />
 
