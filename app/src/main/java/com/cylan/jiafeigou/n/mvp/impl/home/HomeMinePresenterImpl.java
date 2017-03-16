@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import java.util.ArrayList;
 import java.util.Random;
 
 import rx.Observable;
@@ -214,11 +213,8 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
-                    ArrayList<Long> idList = new ArrayList<>();
-                    idList.add((long) 601);
-                    idList.add((long) 701);
                     try {
-                        requstId = JfgCmdInsurance.getCmd().robotCountData("", idList, 0);
+                        requstId = JfgCmdInsurance.getCmd().robotCountData("", new long[]{601L, 701L}, 0);
                     } catch (JfgException e) {
                         AppLogger.e("" + e.getLocalizedMessage());
                     }
@@ -259,18 +255,15 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((Object o) -> {
-                    ArrayList<Long> idList = new ArrayList<>();
-                    idList.add((long) 601);
-                    idList.add((long) 701);
                     try {
-                        JfgCmdInsurance.getCmd().robotCountDataClear(uuid, idList, 0);
+                        JfgCmdInsurance.getCmd().robotCountDataClear(uuid, new long[]{601L, 701L}, 0);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                 });
     }
 
-    public Subscription loginInMe(){
+    public Subscription loginInMe() {
         return RxBus.getCacheInstance().toObservable(RxEvent.LoginMeTab.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginMeTab -> {

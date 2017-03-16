@@ -304,13 +304,8 @@ public class DataSourceManager implements JFGSourceManager {
         for (Map.Entry<String, Device> entry : new HashMap<>(mCachedDeviceMap).entrySet()) {
             Device device = entry.getValue();
             if (JFGRules.isCamera(device.pid)) {
-                ArrayList<Long> msgs = new ArrayList<>();
                 try {
-                    msgs.add(505L);
-                    msgs.add(222L);
-                    msgs.add(512L);
-                    msgs.add(401L);
-                    JfgCmdInsurance.getCmd().robotCountData(device.uuid, msgs, 0);
+                    JfgCmdInsurance.getCmd().robotCountData(device.uuid, new long[]{505, 222, 512, 401}, 0);
                 } catch (Exception e) {
                     AppLogger.e("uuid is null: " + e.getLocalizedMessage());
                 }
@@ -455,15 +450,15 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void clearUnread(String uuid, long... ids) {
         try {
+            if (ids == null || ids.length == 0) return;
+            long[] array = new long[ids.length];
             ArrayList<Long> list = new ArrayList<>();
-            if (ids != null && ids.length > 0) {
-                for (long id : ids) {
-                    list.add(id);
-                }
-                JfgCmdInsurance.getCmd().robotCountDataClear(uuid, list, 0);
-                boolean result = unreadMap.remove(uuid) != null;
-                AppLogger.d("clear unread count：" + result);
+            for (int i = 0; i < ids.length; i++) {
+                array[i] = ids[i];
             }
+            JfgCmdInsurance.getCmd().robotCountDataClear(uuid, array, 0);
+            boolean result = unreadMap.remove(uuid) != null;
+            AppLogger.d("clear unread count：" + result);
         } catch (Exception e) {
         }
     }

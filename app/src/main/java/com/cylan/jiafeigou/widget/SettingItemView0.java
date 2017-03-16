@@ -93,6 +93,7 @@ public class SettingItemView0 extends RelativeLayout {
      * @param charSequence
      */
     public void setTvSubTitle(CharSequence charSequence, @ColorRes int color) {
+        tvSubTitle.setVisibility(VISIBLE);
         tvSubTitle.setTextColor(getResources().getColor(color));
         tvSubTitle.setText(charSequence);
     }

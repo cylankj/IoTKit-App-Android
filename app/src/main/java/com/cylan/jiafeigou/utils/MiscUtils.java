@@ -304,11 +304,7 @@ public class MiscUtils {
         }
     }
 
-    public static ArrayList<Long> getChaosDpList(boolean isV2) {
-        ArrayList<Long> list = new ArrayList<>();
-        list.add(222L);
-        if (isV2) list.add(505L);
-        else list.add(512L);
-        return list;
+    public static long[] getChaosDpList(boolean isV2) {
+        return isV2 ? new long[]{222L, 505L} : new long[]{222L, 512L};
     }
 }
