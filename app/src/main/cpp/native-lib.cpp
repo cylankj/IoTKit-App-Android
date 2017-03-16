@@ -74,6 +74,11 @@ extern "C" jstring JNICALL native_getServerAddr(JNIEnv *env, jclass clazz, jstri
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
+    if (strcmp(content, "yf") == 0) {
+        result = "yf";
+        env->ReleaseStringUTFChars(content_, content);
+        return env->NewStringUTF(result.c_str());
+    }
     env->ReleaseStringUTFChars(content_, content);
     return env->NewStringUTF(result.c_str());
 }

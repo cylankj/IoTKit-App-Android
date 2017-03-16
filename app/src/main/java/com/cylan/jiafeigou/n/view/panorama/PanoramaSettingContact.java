@@ -11,10 +11,12 @@ public class PanoramaSettingContact {
 
     interface View extends JFGView {
 
+        void unbindDeviceRsp(int resultCode);
     }
 
     interface Presenter extends JFGPresenter {
 
+        void unBindDevice();
     }
 
 }

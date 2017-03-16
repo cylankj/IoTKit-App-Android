@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.misc;
 
-import android.app.Activity;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -8,18 +7,13 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.qqLogIn.TencentInstance;
 import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.facebook.AccessToken;
 import com.google.gson.Gson;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
-import com.twitter.sdk.android.Twitter;
-import com.twitter.sdk.android.core.TwitterAuthToken;
-import com.twitter.sdk.android.core.TwitterSession;
 
 import java.io.File;
 
@@ -81,7 +75,7 @@ public class AutoSignIn {
                                 if (!TextUtils.isEmpty(pwd)) {
                                     String finalPwd = AESUtil.decrypt(pwd.toString());
                                     if (signType.type == 1) {
-                                        JfgCmdInsurance.getCmd().login(signType.account, finalPwd);
+                                        JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()),signType.account, finalPwd);
                                         RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
                                     } else if (signType.type >= 3) {
                                         //效验本地token是否过期
@@ -91,7 +85,7 @@ public class AutoSignIn {
                                             return Observable.just(-1);
                                         } else {
                                             AppLogger.d("isout:no");
-                                            JfgCmdInsurance.getCmd().openLogin(signType.account, finalPwd, signType.type);
+                                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()),signType.account, finalPwd, signType.type);
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         }
                                     }

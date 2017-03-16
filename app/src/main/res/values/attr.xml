@@ -42,7 +42,7 @@
         <attr name="shortLineHeight" format="float|dimension" />
         <attr name="longLineHeight" format="float|dimension" />
     </declare-styleable>
-    <declare-styleable name="CustomToolbarStyle">
+    <declare-styleable name="CustomToolbar">
         <attr name="ct_background_color" format="color" />
         <attr name="ct_title" format="string|reference" />
         <attr name="ct_left_title" format="string|reference" />

@@ -1,24 +1,16 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
-import android.text.TextUtils;
-
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
-
-import java.util.concurrent.TimeUnit;
 
 import java.util.concurrent.TimeUnit;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-
 import rx.schedulers.Schedulers;
 
 /**

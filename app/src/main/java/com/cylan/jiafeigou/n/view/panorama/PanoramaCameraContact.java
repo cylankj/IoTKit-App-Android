@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.graphics.Bitmap;
+
 import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
@@ -12,6 +14,11 @@ import com.cylan.jiafeigou.base.view.ViewableView;
 public interface PanoramaCameraContact {
 
     interface View extends PropertyView<JFGCameraDevice>, ViewableView {
+
+        void onNetWorkChangedToMobile();
+
+        void onNetWorkChangedToWiFi();
+
         enum SPEED_MODE {AUTO, FLUENCY, NORMAL, HD}
 
         enum CONNECTION_MODE {FINE, DEVICE_OFFLINE, BAD_NETWORK}
@@ -27,6 +34,10 @@ public interface PanoramaCameraContact {
         void onDeviceBatteryLow();
 
         void onUpdateRecordTime(int second);
+
+        void onMakePhotoGraphPreview();
+
+        void onMakePhotographSuccess(Bitmap picture);
 
 
     }

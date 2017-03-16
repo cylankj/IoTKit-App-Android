@@ -14,7 +14,7 @@
         android:background="@color/color_0ba8cf">
 
         <TextView
-            android:id="@+id/fragment_panorama_setting_header_back"
+            android:id="@+id/act_panorama_setting_header_back"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y48"
             android:drawablePadding="@dimen/y15"

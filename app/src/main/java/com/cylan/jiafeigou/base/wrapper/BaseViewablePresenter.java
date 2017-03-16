@@ -53,6 +53,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .subscribe(event -> mView.onDeviceUnBind(), Throwable::printStackTrace);
     }
 
+
+
     @Override
     public void startViewer() {
         Subscription subscribe = Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
@@ -179,7 +181,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                                 RxBus.getCacheInstance().toObservable(RxEvent.OnlineStatusRsp.class)
                                         .filter(event -> !event.state).map(event -> {
                                     JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-                                    disconn.code = ViewableView.BAD_NET_WORK;
+                                    disconn.code = ViewableView.BAD_NET_WORK;//连接互联网不可用,
                                     disconn.remote = getViewHandler();
                                     return disconn;
                                 }))
@@ -244,20 +246,20 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void switchSpeaker() {
-        setSpeaker(mIsSpeakerOn = !mIsSpeakerOn)
+        setSpeaker(!mIsSpeakerOn)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(on -> mView.onSpeaker(on), Throwable::printStackTrace);
     }
 
     @Override
     public void switchMicrophone() {
-        setMicrophone(mIsMicrophoneOn = !mIsMicrophoneOn).observeOn(AndroidSchedulers.mainThread())
+        setMicrophone(!mIsMicrophoneOn).observeOn(AndroidSchedulers.mainThread())
                 .subscribe(on -> mView.onMicrophone(on), Throwable::printStackTrace);
     }
 
     private Observable<Boolean> setMicrophone(boolean on) {
         return Observable.just(on).map(s -> {
-            AppLogger.d("正在切换 Speaker :" + on);
+            AppLogger.d("正在切换 setMicrophone :" + on);
             mIsMicrophoneOn = on;
             switchSpeakAndMicroPhone();
             return s;

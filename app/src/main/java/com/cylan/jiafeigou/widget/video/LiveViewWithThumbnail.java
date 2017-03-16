@@ -80,7 +80,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     }
 
     private boolean isNormalView() {
-        return videoView != null && !(videoView instanceof PanoramicView_Ext);
+        return videoView != null && !(videoView instanceof PanoramicView360_Ext);
     }
 
     @Override
