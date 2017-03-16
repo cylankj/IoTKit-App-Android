@@ -53,9 +53,8 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  * create an instance of this fragment.
  */
 @RuntimePermissions
-public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Presenter> implements BindDeviceContract.View {
-    public static final String KEY_SUB_FRAGMENT_ID = "sub_key_id";
-    public static final String KEY_DEVICE_LIST = "key_device_list";
+public class BindCameraFragment extends IBaseFragment<BindDeviceContract.Presenter>
+        implements BindDeviceContract.View {
 
     @BindView(R.id.imgV_camera_wifi_light_flash)
     ImageView imgVCameraWifiLightFlash;

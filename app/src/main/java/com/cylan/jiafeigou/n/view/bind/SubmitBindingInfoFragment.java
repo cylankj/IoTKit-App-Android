@@ -194,6 +194,8 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
             nullCidDialog.show();
             if (basePresenter != null)
                 basePresenter.stop();
+        } else {
+            vsLayoutSwitch.showNext();
         }
     }
 

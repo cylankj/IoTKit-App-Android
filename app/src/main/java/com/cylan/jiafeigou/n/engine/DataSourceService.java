@@ -52,6 +52,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -265,7 +266,22 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
 
     @Override
     public void OnRobotGetDataExRsp(long l, String s, ArrayList<JFGDPMsg> arrayList) {
-        AppLogger.d("OnRobotGetDataExRsp :" + new Gson().toJson(s));
+        long time = System.currentTimeMillis();
+        //parse to RobotoGetDataRsp
+        RobotoGetDataRsp robotoGetDataRsp = new RobotoGetDataRsp();
+        robotoGetDataRsp.identity = s;
+        robotoGetDataRsp.seq = l;
+        robotoGetDataRsp.map = new HashMap<>();
+        for (JFGDPMsg msg : arrayList) {
+            ArrayList<JFGDPMsg> list = robotoGetDataRsp.map.get((int) msg.id);//
+            if (list == null) {
+                list = new ArrayList<>();
+                robotoGetDataRsp.map.put((int) msg.id, list);
+            }
+            list.add(msg);
+        }
+        RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
+        AppLogger.d("OnRobotGetDataExRsp performance:" + (System.currentTimeMillis() - time));
     }
 
     @Override
@@ -494,6 +510,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
     public void OnBindDevRsp(int i, String s) {
         AppLogger.d("onBindDev: " + i + " uuid:" + s);
         RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(i, s));
+        PreferencesUtils.putString(JConstant.UN_BIND_DEVICE, "");
     }
 
     @Override

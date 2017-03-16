@@ -10,6 +10,7 @@ import org.msgpack.annotation.Message;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.TreeSet;
 
 /**
@@ -93,7 +94,7 @@ public class DpMsgDefine {
          * |NET_5G      |  5 | #5G网络  |
          */
         @Index(0)
-        public int net;
+        public int net = -1;
         @Index(1)
         public String ssid;
 
@@ -201,6 +202,8 @@ public class DpMsgDefine {
         }
 
         public DPTimeZone() {
+            TimeZone timeZone = TimeZone.getDefault();
+            this.timezone = timeZone.getID();
         }
 
         protected DPTimeZone(Parcel in) {
@@ -334,7 +337,7 @@ public class DpMsgDefine {
         @Index(1)
         public long used;
         @Index(2)
-        public int err;
+        public int err = -1;
         @Index(3)
         public boolean hasSdcard;
 

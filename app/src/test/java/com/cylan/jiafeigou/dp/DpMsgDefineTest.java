@@ -12,11 +12,12 @@ import org.msgpack.MessagePack;
 import org.robolectric.annotation.Config;
 
 import java.io.IOException;
+import java.util.TimeZone;
 
 /**
  * Created by cylan-hunt on 16-11-24.
  */
-@RunWith(MyTestRunner.class)
+//@RunWith(MyTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
 public class DpMsgDefineTest {
 
@@ -36,5 +37,11 @@ public class DpMsgDefineTest {
     private <T> T unpackData(byte[] data, Class<T> clazz) throws IOException {
         MessagePack ms = new MessagePack();
         return ms.read(data, clazz);
+    }
+
+    @Test
+    public void testDefaultTimeZone() {
+        TimeZone timeZone = TimeZone.getDefault();
+        System.out.println(timeZone.getID());
     }
 }

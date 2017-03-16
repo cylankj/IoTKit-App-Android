@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.n.mvp.impl.setting.TimezonePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.DeviceTimeZoneAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -122,8 +123,8 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         lvTimezoneDetail.setLayoutManager(layoutManager);
         adapter = new DeviceTimeZoneAdapter(getActivity().getApplicationContext());
-        DpMsgDefine.DPTimeZone info = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
-        String timeZoneId = info == null ? "" : info.timezone;
+        DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
+        String timeZoneId = zone == null ? "" : zone.timezone;
         adapter.setChooseId(timeZoneId);
         Log.d("onViewCreated", "offset: " + timeZoneId);
         lvTimezoneDetail.setAdapter(adapter);
@@ -136,7 +137,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
             simpleDialog.setValue(adapter.getItem(position));
             simpleDialog.setAction((int id, Object value) -> {
                 if (value != null && value instanceof TimeZoneBean) {
-                    DpMsgDefine.DPTimeZone timeZone = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+                    DpMsgDefine.DPTimeZone timeZone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
                     if (!TextUtils.equals(timeZone.timezone, ((TimeZoneBean) value).getId())) {
                         timeZone.timezone = ((TimeZoneBean) value).getId();
                         timeZone.offset = ((TimeZoneBean) value).getOffset();

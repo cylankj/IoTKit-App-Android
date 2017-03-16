@@ -247,7 +247,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
                     if (!JFGRules.isDeviceOnline(net)) {
                         //设备离线
-                        Intent intent = new Intent(this, BindDeviceActivity.class);
+                        Intent intent = new Intent(this, BindCamActivity.class);
                         intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
                         startActivity(intent);
                     } else {
@@ -374,8 +374,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
         boolean flag = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY), false);
         //是否有sim卡
-        svSettingDeviceMobileNetwork.setVisibility(flag ? View.VISIBLE : View.GONE);
-        svSettingDeviceMobileNetwork.setChecked(flag);
         if (device != null && JFGRules.is3GCam(device.pid) && JFGRules.isMobileNet(net.net)) {
             DpMsgDefine.DPPrimary<Boolean> state = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
             boolean s = MiscUtils.safeGet(state, false);

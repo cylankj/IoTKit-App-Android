@@ -7,14 +7,15 @@ import com.cylan.ex.JfgException;
 import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
@@ -248,28 +249,15 @@ public class SimpleBindFlow extends AFullBind {
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-                    return devicePortrait.uuid;
+                    return devicePortrait;
                 })
-                .subscribe((String cid) -> {
+                .subscribe((UdpConstant.UdpDevicePortrait portrait) -> {
                     //此时,设备还没恢复连接,需要加入队列
-                    int key = ("JfgCmdInsurance.getCmd().bindDevice" + cid).hashCode();
-                    OfflineTaskQueue.getInstance().enqueue(key, new Runnable() {
-//                        private String cid = devicePortrait.uuid;
-
-                        @Override
-                        public void run() {
-                            AppLogger.i(BIND_TAG + cid);
-                            Log.d("run", "run: ");
-                            try {
-                                JfgCmdInsurance.getCmd().bindDevice(cid, bindCode, "", 1);//有 Bug
-                            } catch (JfgException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    });
+                    portrait.bindCode = bindCode;
+                    PreferencesUtils.putString(JConstant.UN_BIND_DEVICE, new Gson().toJson(portrait));
+                    AppLogger.i(BIND_TAG + "onLocalFlowFinish: " + portrait);
                     //恢复wifi
                     iBindResult.onLocalFlowFinish();
-                    AppLogger.i(BIND_TAG + "onLocalFlowFinish");
                 }, (Throwable throwable) -> {
                     AppLogger.e(BIND_TAG + throwable.getLocalizedMessage());
                 });

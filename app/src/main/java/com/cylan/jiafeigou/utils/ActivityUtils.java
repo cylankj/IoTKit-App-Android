@@ -97,6 +97,24 @@ public class ActivityUtils {
         return true;
     }
 
+    public static boolean addFragmentSlideInFromRight(FragmentManager fragmentManager, Fragment fragment, int containerId, boolean noStack) {
+        final String tag = fragment.getClass().getSimpleName();
+        Fragment f = fragmentManager.findFragmentByTag(tag);
+        if (f != null && f.isVisible()) {
+            return false;
+        }
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_right_in,
+                        R.anim.slide_out_left,
+                        R.anim.slide_out_right,
+                        R.anim.slide_out_right)
+                .add(containerId, fragment, tag)
+                .commit();
+        return true;
+    }
+
     public static boolean addFragmentSlideInFromLeft(FragmentManager fragmentManager, Fragment fragment, int containerId) {
         final String tag = fragment.getClass().getSimpleName();
         Fragment f = fragmentManager.findFragmentByTag(tag);
@@ -112,6 +130,24 @@ public class ActivityUtils {
                         R.anim.slide_out_right)
                 .add(containerId, fragment, tag)
                 .addToBackStack(tag)
+                .commit();
+        return true;
+    }
+
+    public static boolean addFragmentSlideInFromLeft(FragmentManager fragmentManager, Fragment fragment, int containerId, boolean noStatck) {
+        final String tag = fragment.getClass().getSimpleName();
+        Fragment f = fragmentManager.findFragmentByTag(tag);
+        if (f != null && f.isVisible()) {
+            return false;
+        }
+        fragmentManager
+                .beginTransaction()
+                .setCustomAnimations(
+                        R.anim.slide_in_left,
+                        R.anim.slide_out_left,
+                        R.anim.slide_out_right,
+                        R.anim.slide_out_right)
+                .add(containerId, fragment, tag)
                 .commit();
         return true;
     }

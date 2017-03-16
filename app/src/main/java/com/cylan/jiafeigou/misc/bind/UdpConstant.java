@@ -47,15 +47,22 @@ public class UdpConstant {
         public String uuid;
         public String version;
         public int net;
+        public String bindCode;
+        public int bindFlag = 1;//默认
 
         @Override
         public String toString() {
             return "UdpDevicePortrait{" +
                     "mac='" + mac + '\'' +
                     ", uuid='" + uuid + '\'' +
-                    ", dpMsgVersion='" + version + '\'' +
+                    ", version='" + version + '\'' +
                     ", net=" + net +
+                    ", bindCode='" + bindCode + '\'' +
+                    ", bindFlag=" + bindFlag +
                     '}';
+        }
+
+        public UdpDevicePortrait() {
         }
 
         @Override
@@ -69,9 +76,8 @@ public class UdpConstant {
             dest.writeString(this.uuid);
             dest.writeString(this.version);
             dest.writeInt(this.net);
-        }
-
-        public UdpDevicePortrait() {
+            dest.writeString(this.bindCode);
+            dest.writeInt(this.bindFlag);
         }
 
         protected UdpDevicePortrait(Parcel in) {
@@ -79,6 +85,8 @@ public class UdpConstant {
             this.uuid = in.readString();
             this.version = in.readString();
             this.net = in.readInt();
+            this.bindCode = in.readString();
+            this.bindFlag = in.readInt();
         }
 
         public static final Creator<UdpDevicePortrait> CREATOR = new Creator<UdpDevicePortrait>() {

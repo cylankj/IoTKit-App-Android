@@ -119,5 +119,6 @@
     <dimen name="WheelItemSpace">@dimen/y12</dimen>
     <dimen name="WheelIndicatorSize">@dimen/y2</dimen>
     <dimen name="WheelMargins">@dimen/y8</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 
 </resources>

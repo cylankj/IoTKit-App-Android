@@ -1,18 +1,22 @@
 package com.cylan.jiafeigou.n.view.setting;
 
 
+import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -22,8 +26,10 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.WifiListPresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -35,7 +41,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
 
+import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract.ERR_NO_RAW_LIST;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
@@ -45,13 +57,15 @@ import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_INPUT_LEN
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_SHOW_EDIT;
+import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * A simple {@link Fragment} subclass.
  */
+@RuntimePermissions
 public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
         implements WifiListContract.View, SwipeRefreshLayout.OnRefreshListener {
-
+    private static final int REQ_CODE = 100;
     @BindView(R.id.rv_wifi_list)
     RecyclerView rvWifiList;
     @BindView(R.id.sw_refresh_wifi)
@@ -85,6 +99,79 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
         View view = inflater.inflate(R.layout.fragment_wifi_list, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        WifiListFragmentPermissionsDispatcher.onGrantedLocationPermissionWithCheck(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        WifiListFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        if (permissions.length == 1) {
+            if (TextUtils.equals(permissions[0], ACCESS_FINE_LOCATION) && grantResults[0] > -1) {
+                WifiListFragmentPermissionsDispatcher.onGrantedLocationPermissionWithCheck(this);
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == REQ_CODE) {
+            onGrantedLocationPermission();
+        }
+    }
+
+    @NeedsPermission(ACCESS_FINE_LOCATION)
+    public void onGrantedLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (!MiscUtils.checkGpsAvailable(getApplicationContext())) {
+                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                builder.setMessage(getString(R.string.GetWifiList_FaiTips))
+                        .setCancelable(false)
+                        .setPositiveButton(getString(R.string.OK), (@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
+                            startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQ_CODE);
+                        })
+                        .setNegativeButton(getString(R.string.CANCEL), (final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
+                            dialog.cancel();
+                            if (getActivity() != null) {
+                                getActivity().getSupportFragmentManager().popBackStack();
+                            }
+                        });
+                final AlertDialog alert = builder.create();
+                alert.show();
+                return;
+            }
+        }
+        if (basePresenter != null)
+            basePresenter.startScan();
+    }
+
+    @OnPermissionDenied(ACCESS_FINE_LOCATION)
+    public void onDeniedLocationPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+            new android.app.AlertDialog.Builder(getActivity())
+                    .setMessage(getString(R.string.turn_on_gps))
+                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+//                    finishExt();
+                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                            ((BindDeviceActivity) getActivity()).finishExt();
+                        }
+                    })
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                    })
+                    .create()
+                    .show();
+    }
+
+    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
+    public void showRationaleForLocation(PermissionRequest request) {
+        onDeniedLocationPermission();
     }
 
     @Override

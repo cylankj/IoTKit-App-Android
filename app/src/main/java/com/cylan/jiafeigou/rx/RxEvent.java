@@ -371,6 +371,14 @@ public class RxEvent {
             this.bindResult = jfgResult;
             this.uuid = uuid;
         }
+
+        @Override
+        public String toString() {
+            return "BindDeviceEvent{" +
+                    "bindResult=" + bindResult +
+                    ", uuid='" + uuid + '\'' +
+                    '}';
+        }
     }
 
     public static final class UnBindDeviceEvent {

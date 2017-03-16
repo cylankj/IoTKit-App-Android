@@ -144,7 +144,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         }
         //是否显示移动网络
         tvDeviceMobileNet.setVisibility(device != null && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
-        DpMsgDefine.DPTimeZone zone = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+        DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
         if (zone != null)
             MiscUtils.loadTimeZoneList()
                     .observeOn(AndroidSchedulers.mainThread())
@@ -287,7 +287,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 return;
             }
             //更新ui
-            DpMsgDefine.DPTimeZone zone = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+            DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
             if (zone != null)
                 MiscUtils.loadTimeZoneList()
                         .observeOn(AndroidSchedulers.mainThread())
@@ -349,7 +349,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
         DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
-        String s  = MiscUtils.safeGet(sVersion,"");
+        String s = MiscUtils.safeGet(sVersion, "");
         checkDevVersion = checkDevVersionRsp;
         rlHardwareUpdate.setTvSubTitle(checkDevVersionRsp.hasNew ? getString(R.string.Tap1_NewFirmware) : s);
         rlHardwareUpdate.showRedHint(checkDevVersionRsp.hasNew);
@@ -396,7 +396,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         MiscUtils.loadTimeZoneList()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((List<TimeZoneBean> list) -> {
-                    DpMsgDefine.DPTimeZone zone = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+                    DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
                     if (zone == null) return;
                     TimeZoneBean bean = new TimeZoneBean();
                     bean.setId(zone.timezone);

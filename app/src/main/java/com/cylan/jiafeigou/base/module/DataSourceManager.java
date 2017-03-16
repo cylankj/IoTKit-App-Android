@@ -351,40 +351,35 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     /**
-     * 获取所有的报警消息{505,222}，1：保证有最新的报警消息，2.用于显示xx条新消息。
-     *
-     * @param ignoreShareDevice:忽略分享账号，一般都为true
-     */
-
-    public void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice) {
-        for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
-            Device device = mCachedDeviceMap.get(entry.getKey());
-            if (JFGRules.isShareDevice(device) && ignoreShareDevice) continue;
-//            syncJFGCameraWarn(entry.getKey(), false, 100);
-        }
-    }
-
-    /**
      * 需要暴力操作。
      * 服务端任务太多，太杂，暂时实现不了。
      * 自力更生
      *
+     * @param uuid    区分2.0 3.0设备
      * @param uuid
+     * @param version
+     * @param asc
+     * @param count
      */
-
 
 //    int queryHistory(String uuid);
     @Override
     public long syncJFGCameraWarn(String uuid, long version, boolean asc, int count) {
-//        Device device = mCachedDeviceMap.get(uuid);
-//        ArrayList<JFGDPMsg> list = MiscUtils.createGetCameraWarnMsgDp(device);
-//        try {
-//            return JfgCmdInsurance.getCmd().robotGetData(uuid, list, count, false, 0);
-//        } catch (JfgException e) {
-//            AppLogger.e("uuid is null");
-//            return 0L;
-//        }
-        return 0;
+        Device device = getJFGDevice(uuid);
+        if (device != null) {
+            boolean isV2 = TextUtils.isEmpty(device.vid);
+            try {
+                AppLogger.e("还没实现。。。。。");
+//                return  -1;
+                return JfgCmdInsurance.getCmd().robotGetDataEx(uuid, count, asc, version, MiscUtils.getChaosDpList(isV2), 0);
+            } catch (Exception e) {
+                AppLogger.e("bad ,uuid may be null");
+                return -1;
+            }
+        } else {
+            AppLogger.e("bad ,device is null");
+            return -1;
+        }
     }
 
     @Override
@@ -523,7 +518,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .observeOn(Schedulers.io())
                 .flatMap(set -> Observable.from(set.getValue())
                         .flatMap(msg -> {
-                            AppLogger.d(dataRsp.identity + ":" + msg.version + ":" + msg.id);
+                            Log.d("DataSourceManager", dataRsp.identity + ":" + msg.version + ":" + msg.id);
                             return dbHelper.saveDPByte(dataRsp.identity, msg.version, (int) msg.id, msg.packValue)
                                     .map(entity -> {
                                         Device device = mCachedDeviceMap.get(dataRsp.identity);

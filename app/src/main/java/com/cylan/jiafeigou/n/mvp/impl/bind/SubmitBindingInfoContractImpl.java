@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGResult;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
@@ -17,7 +18,11 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.CompositeSubscription;
+
+import static com.cylan.jiafeigou.utils.BindUtils.BIND_SUC;
 
 /**
  * Created by cylan-hunt on 16-11-12.
@@ -27,7 +32,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         implements SubmitBindingInfoContract.Presenter, SimulatePercent.OnAction {
 
     private SimulatePercent simulatePercent;
-    private Subscription subscription;
+    private CompositeSubscription subscription;
     private int bindResult;
 
     public SubmitBindingInfoContractImpl(SubmitBindingInfoContract.View view, String uuid) {
@@ -72,7 +77,9 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         if (bindResult == BindUtils.BIND_PREPARED) {
             bindResult = BindUtils.BIND_ING;
             if ((subscription == null || subscription.isUnsubscribed())) {
-                subscription = bindResultSub();
+                subscription = new CompositeSubscription();
+                subscription.add(bindResultSub());
+                subscription.add(bindResultSub1());
             }
         }
         if (bindResult == BindUtils.BIND_ING) {
@@ -94,17 +101,50 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .filter(s -> getView() != null)
                         .map(s -> {
-                            getView().bindState(bindResult = BindUtils.BIND_TIME_OUT);
+                            getView().bindState(bindResult = BindUtils.BIND_FAILED);
                             AppLogger.e("timeout: " + s);
                             return null;
                         }))
                 .filter(viceEvent -> getView() != null && viceEvent != null)
+                .observeOn(AndroidSchedulers.mainThread())
                 .map((RxEvent.BindDeviceEvent result) -> {
                     getView().bindState(bindResult = result.bindResult);
                     if (simulatePercent != null && bindResult == 0) {
                         simulatePercent.boost();
                     }
-                    AppLogger.i("bind success");
+                    AppLogger.i("bind success: " + result);
+                    return null;
+                })
+                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                .subscribe();
+    }
+
+    private Subscription bindResultSub1() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DevicesArrived.class)
+                .observeOn(Schedulers.newThread())
+                .flatMap(new Func1<RxEvent.DevicesArrived, Observable<Device>>() {
+                    @Override
+                    public Observable<Device> call(RxEvent.DevicesArrived devicesArrived) {
+                        return Observable.from(devicesArrived.devices);
+                    }
+                })
+                .filter(device -> getView() != null && TextUtils.equals(device.uuid, uuid))
+                .timeout(90, TimeUnit.SECONDS, Observable.just("timeout")
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .filter(s -> getView() != null)
+                        .map(s -> {
+                            getView().bindState(bindResult = BindUtils.BIND_FAILED);
+                            AppLogger.e("timeout: " + s);
+                            return null;
+                        }))
+                .filter(viceEvent -> getView() != null && viceEvent != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map((Device result) -> {
+                    getView().bindState(bindResult = BIND_SUC);
+                    if (simulatePercent != null && bindResult == BIND_SUC) {
+                        simulatePercent.boost();
+                    }
+                    AppLogger.i("bind success: " + result);
                     return null;
                 })
                 .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
@@ -130,7 +170,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object integer) -> {
                     AppLogger.i("actionDone: " + integer);
-                    getView().bindState(BindUtils.BIND_SUC);
+                    getView().bindState(BIND_SUC);
                 });
     }
 

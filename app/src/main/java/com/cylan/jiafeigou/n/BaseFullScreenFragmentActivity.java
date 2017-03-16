@@ -157,18 +157,6 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
 
     @Override
     public void onBackPressed() {
-
-//        if (isBeforLog()) {
-//            if (System.currentTimeMillis() - time < 1500) {
-//                finish();
-//            } else {
-//                time = System.currentTimeMillis();
-//                Toast.makeText(getApplicationContext(), String.format(getString(R.string.click_back_again_exit),
-//                        getString(R.string.app_name)), Toast.LENGTH_SHORT).show();
-//            }
-//            return;
-//        }
-
         if (checkExtraChildFragment()) {
             return;
         } else if (checkExtraFragment())

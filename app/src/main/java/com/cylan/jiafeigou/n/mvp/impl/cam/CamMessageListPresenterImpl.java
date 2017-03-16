@@ -79,7 +79,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     @Override
     public void fetchMessageList(final int count, boolean asc) {
         unSubscribe(qeurySub);
-        qeurySub = queryTimeLine(count, asc)
+        qeurySub = queryTimeLine(count, 0, asc)
                 .map((ArrayList<CamMessageBean> camList) -> {
                     ArrayList<CamMessageBean> list = getView().getList();
                     if (list != null)
@@ -100,10 +100,10 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
 
-    private Observable<ArrayList<CamMessageBean>> queryTimeLine(int count, boolean asc) {
+    private Observable<ArrayList<CamMessageBean>> queryTimeLine(int count, long version, boolean asc) {
         return Observable.just(null)
                 .subscribeOn(Schedulers.io())
-                .map(o -> DataSourceManager.getInstance().syncJFGCameraWarn(uuid, 0, asc, count))
+                .map(o -> DataSourceManager.getInstance().syncJFGCameraWarn(uuid, version, asc, count))
                 .filter(aLong -> aLong > 0)
                 .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                         .filter(robotoGetDataRsp -> aLong == robotoGetDataRsp.seq)

@@ -10,10 +10,10 @@ import android.view.View;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.n.view.bind.BindCameraFragment;
 import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
 import com.cylan.jiafeigou.n.view.bind.BindPanoramaCamera;
 import com.cylan.jiafeigou.n.view.bind.BindScanFragment;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
@@ -36,16 +36,8 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         setContentView(R.layout.activity_bind_device);
         ButterKnife.bind(this);
         initTopBar();
-        checkShouldJump();
     }
 
-    private void checkShouldJump() {
-        Intent intent = getIntent();
-        //从wifi配置跳过来。
-        if (intent != null && !TextUtils.isEmpty(intent.getStringExtra(KEY_AUTO_SHOW_BIND))) {
-            jump2Cam(false);
-        }
-    }
 
     private void initTopBar() {
         customToolbar.setBackAction((View v) -> {
@@ -95,12 +87,13 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
     }
 
     private boolean shouldNotifyBackForeword() {
-        if (JConstant.ConfigApStep == 2) {
+        if (JConstant.ConfigApStep >= 2) {
             new AlertDialog.Builder(this)
                     .setMessage(getString(R.string.Tap1_AddDevice_tips))
                     .setNegativeButton(getString(R.string.CANCEL), null)
                     .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
                         popAllFragmentStack();
+                        JConstant.ConfigApStep = 0;
                     }).show();
             return true;
         }
@@ -120,17 +113,16 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             case R.id.v_to_scan_qrcode: {
                 ViewUtils.deBounceClick(view);
                 BindScanFragment fragment = BindScanFragment.newInstance(null);
-                getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(0, R.anim.slide_down_out,
-                                R.anim.slide_in_left, R.anim.slide_out_right)
-                        .replace(android.R.id.content, fragment)
-                        .commit();
+                ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
+                        fragment, android.R.id.content);
                 break;
             }
             case R.id.v_to_bind_camera: {
                 ViewUtils.deBounceClick(view);
-                jump2Cam(true);
+                Intent intent = new Intent(this, BindCamActivity.class);
+                intent.putExtra("fromBindActivity", "fromBindActivity");
+                startActivity(intent);
+                finish();
                 break;
             }
             case R.id.v_to_bind_panorama_camera: {
@@ -150,27 +142,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                         .commit();
                 break;
             }
-        }
-    }
-
-    private void jump2Cam(boolean animation) {
-        ViewUtils.deBounceClick(findViewById(R.id.v_to_bind_camera));
-        Bundle bundle = new Bundle();
-        BindCameraFragment fragment = BindCameraFragment.newInstance(bundle);
-        if (animation) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                            , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .add(android.R.id.content, fragment)
-                    .addToBackStack("BindCameraFragment")
-                    .commit();
-        } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(android.R.id.content, fragment)
-//                    .addToBackStack("BindCameraFragment")
-                    .commit();
         }
     }
 

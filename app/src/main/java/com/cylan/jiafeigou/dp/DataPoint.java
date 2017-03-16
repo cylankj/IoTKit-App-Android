@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.dp;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.util.LongSparseArray;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ext.annotations.DPProperty;

@@ -139,7 +139,7 @@ public class JFGRules {
     }
 
     public static boolean isMobileNet(int net) {
-        return net >= 3;
+        return net >= 2;
     }
 
     public static boolean is3GCam(int pid) {
@@ -310,7 +310,11 @@ public class JFGRules {
     }
 
     public static boolean isDeviceOnline(DpMsgDefine.DPNet net) {
-        return net != null && net.net != 0;
+        return net != null && net.net > 0;
+    }
+
+    public static boolean hasSdcard(DpMsgDefine.DPSdStatus sdStatus) {
+        return sdStatus != null && sdStatus.err == 0 && sdStatus.hasSdcard;
     }
 
     public static boolean isShareDevice(String uuid) {

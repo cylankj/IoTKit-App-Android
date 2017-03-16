@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.engine.task.OfflineTaskQueue;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -73,7 +76,13 @@ public class AfterLoginService extends IntentService {
             } else if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
                 JfgCmdInsurance.getCmd().getAccount();
             } else if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
-                OfflineTaskQueue.getInstance().startRolling();
+                try {
+                    String content = PreferencesUtils.getString(JConstant.UN_BIND_DEVICE);
+                    UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
+                    JfgCmdInsurance.getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                } catch (Exception e) {
+                    AppLogger.d("err: " + e.getLocalizedMessage());
+                }
             }
         }
     }

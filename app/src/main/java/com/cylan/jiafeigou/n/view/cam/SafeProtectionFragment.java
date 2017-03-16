@@ -114,7 +114,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         });
         updateDetails();
         swMotionDetection.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+            DpMsgDefine.DPSdStatus net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.SD_STATUS);
             if (!isChecked) {
+                if (!JFGRules.hasSdcard(net))
+                    return;//不插卡 不需要提示
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
                         .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
