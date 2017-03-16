@@ -18,6 +18,7 @@ import com.google.gson.Gson;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -306,5 +307,28 @@ public class MiscUtils {
 
     public static long[] getChaosDpList(boolean isV2) {
         return isV2 ? new long[]{222L, 505L} : new long[]{222L, 512L};
+    }
+
+    /**
+     * desc:转换文件的大小
+     *
+     * @param fileS
+     * @return
+     */
+    public static String FormetSDcardSize(long fileS) {
+        DecimalFormat df = new DecimalFormat("#.00");
+        String fileSizeString = "";
+        if (fileS == 0) {
+            fileSizeString = "0.0MB";
+        } else if (fileS < 1024) {
+            fileSizeString = df.format((double) fileS) + "B";
+        } else if (fileS < 1048576) {
+            fileSizeString = df.format((double) fileS / 1024) + "K";
+        } else if (fileS < 1073741824) {
+            fileSizeString = df.format((double) fileS / 1048576) + "M";
+        } else {
+            fileSizeString = df.format((double) fileS / 1073741824) + "G";
+        }
+        return fileSizeString;
     }
 }

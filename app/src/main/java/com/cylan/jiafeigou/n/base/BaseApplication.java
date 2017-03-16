@@ -59,9 +59,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private static final String TAG = "BaseApplication";
     private HttpProxyCacheServer proxy;
 
-    private static final String TWITTER_KEY = "kCEeFDWzz5xHi8Ej9Wx6FWqRL";
-    private static final String TWITTER_SECRET = "Ih4rUwyhKreoHqzd9BeIseAKHoNRszi2rT2udlMz6ssq9LeXw5";
-
     private DaemonClient mDaemonClient;
     private HuaweiApiClient client;
 

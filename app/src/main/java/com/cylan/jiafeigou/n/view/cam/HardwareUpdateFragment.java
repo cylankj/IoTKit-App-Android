@@ -263,7 +263,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void onDownloading(double percent, long downloadedLength) {
-        tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareDownloading), basePresenter.FormetSDcardSize(downloadedLength) + "/" + fileSize));
+        tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareDownloading), MiscUtils.FormetSDcardSize(downloadedLength) + "/" + fileSize));
         downloadProgress.setProgress((int) (percent * 100));
     }
 

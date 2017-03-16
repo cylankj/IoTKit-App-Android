@@ -239,11 +239,6 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
         if (fileS == 0) {
             fileSizeString = "0.0M";
         }
-//        else if (fileS < 1024) {
-//            fileSizeString = df.format((double) fileS) + "B";
-//        } else if (fileS < 1048576) {
-//            fileSizeString = df.format((double) fileS / 1024) + "K";
-//        }
         else if (fileS < 1073741824) {
             fileSizeString = df.format((double) fileS / 1048576) + "M";
         } else {

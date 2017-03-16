@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.support.download.net.NetConfig;
 import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListener;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import org.msgpack.MessagePack;
@@ -170,7 +171,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     length = conn.getContentLength();
                     AppLogger.d("file name:"+headerField);
                     AppLogger.d("file_length:"+length);
-                    return Observable.just(FormetSDcardSize(length));
+                    return Observable.just(MiscUtils.FormetSDcardSize(length));
                 } catch (Exception e) {
                     e.printStackTrace();
                     return null;
@@ -270,30 +271,6 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
             handler.sendMessage(msg);
         }
     };
-
-    /**
-     * desc:转换文件的大小
-     *
-     * @param fileS
-     * @return
-     */
-    @Override
-    public String FormetSDcardSize(long fileS) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        String fileSizeString = "";
-        if (fileS == 0) {
-            fileSizeString = "0.0MB";
-        } else if (fileS < 1024) {
-            fileSizeString = df.format((double) fileS) + "B";
-        } else if (fileS < 1048576) {
-            fileSizeString = df.format((double) fileS / 1024) + "K";
-        } else if (fileS < 1073741824) {
-            fileSizeString = df.format((double) fileS / 1048576) + "M";
-        } else {
-            fileSizeString = df.format((double) fileS / 1073741824) + "G";
-        }
-        return fileSizeString;
-    }
 
 
     /**

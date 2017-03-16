@@ -72,12 +72,6 @@ public class SmartcallActivity extends NeedLoginActivity
         ButterKnife.bind(this);
         initPresenter();
         fullScreen(true);
-//        if (!getIntent().getBooleanExtra("from_log_out", false)) {
-//            if (presenter != null) presenter.start();
-//        } else {
-//            splashOver();
-//        }
-
     }
 
     /**
@@ -217,9 +211,10 @@ public class SmartcallActivity extends NeedLoginActivity
             firstSignIn = true;
         } else if (code == JError.ErrorAccountNotExist) {
 //            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
-        } else if (code == JError.ErrorLoginInvalidPass) {
-//            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));且是自动登录返回的错误密码走此
+        } else if (code == JError.ErrorLoginInvalidPass && PreferencesUtils.getBoolean(JConstant.AUTO_SIGNIN_TAB,false)) {
+//          密码错误且是自动登录才走此
             splashOver();
+            PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB,false);
         }
     }
 
@@ -312,6 +307,10 @@ public class SmartcallActivity extends NeedLoginActivity
 //        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
 //    }
 
+    @NeedsPermission({Manifest.permission.SYSTEM_ALERT_WINDOW})
+    public void showAlertWindowPermissions() {
+        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showAlertWindowPermissions");
+    }
 
     private void showRationaleDialog(@StringRes int messageResId, final PermissionRequest request) {
         new AlertDialog.Builder(this)

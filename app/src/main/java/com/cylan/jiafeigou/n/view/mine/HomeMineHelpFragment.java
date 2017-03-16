@@ -73,13 +73,14 @@ public class HomeMineHelpFragment extends Fragment {
      * 当进度条加载完成的时候显示该webView
      */
     private void showWebView() {
-//        String agreementUrl= "https://yf.jfgou.com:8081/helps/zh-rCN.html";
-        String agreementUrl = getString(R.string.help_url);
+        String agreementUrl= "https://yf.jfgou.com:8081/helps/zh-rCN.html";
+//        String agreementUrl = getString(R.string.help_url);
         WebSettings settings = mWvHelp.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         settings.setLoadWithOverviewMode(true);
         settings.setJavaScriptEnabled(true);
         settings.setSavePassword(false);
+        settings.setDomStorageEnabled(true);
         mWvHelp.removeJavascriptInterface("searchBoxJavaBridge_");
         mWvHelp.removeJavascriptInterface("accessibilityTraversal");
         mWvHelp.removeJavascriptInterface("accessibility");

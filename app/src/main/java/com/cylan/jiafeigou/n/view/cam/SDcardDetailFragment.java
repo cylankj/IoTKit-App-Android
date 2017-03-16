@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.SdCardInfoPresenterImpl;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -188,7 +189,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             long sdcardTotalCapacity = sdStatus.total;
             long sdcardUsedCapacity = sdStatus.used;
             float v = (float) ((sdcardUsedCapacity * 1.0) / sdcardTotalCapacity);
-            sdUseDetail(FormetSDcardSize(sdcardUsedCapacity) + "/" + FormetSDcardSize(sdcardTotalCapacity), v);
+            sdUseDetail(MiscUtils.FormetSDcardSize(sdcardUsedCapacity) + "/" + MiscUtils.FormetSDcardSize(sdcardTotalCapacity), v);
         }
     }
 
@@ -232,29 +233,6 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             getFragmentManager().popBackStack();
         });
         simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
-    }
-
-    /**
-     * desc:转换文件的大小
-     *
-     * @param fileS
-     * @return
-     */
-    public String FormetSDcardSize(long fileS) {
-        DecimalFormat df = new DecimalFormat("#.00");
-        String fileSizeString = "";
-        if (fileS == 0) {
-            fileSizeString = "0.0MB";
-        } else if (fileS < 1024) {
-            fileSizeString = df.format((double) fileS) + "B";
-        } else if (fileS < 1048576) {
-            fileSizeString = df.format((double) fileS / 1024) + "K";
-        } else if (fileS < 1073741824) {
-            fileSizeString = df.format((double) fileS / 1048576) + "M";
-        } else {
-            fileSizeString = df.format((double) fileS / 1073741824) + "G";
-        }
-        return fileSizeString;
     }
 
     @Override

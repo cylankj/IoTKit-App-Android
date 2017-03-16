@@ -59,6 +59,5 @@ public interface HardwareUpdateContract {
          */
         void endCounting();
 
-        String FormetSDcardSize(long length);
     }
 }
