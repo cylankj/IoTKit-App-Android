@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.mine;
 
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,6 +13,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -19,9 +21,11 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoBineMailPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -168,7 +172,32 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
         mETMailBox.requestFocus();
+        initKeyListener();
+
     }
+    private void initKeyListener() {
+//        mETMailBox.requestFocus();
+        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
+        mETMailBox.setOnKeyListener(new View.OnKeyListener() {
+            @Override
+            public boolean onKey(View v, int keyCode, KeyEvent event) {
+                if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
+                    mailBox = getEditText();
+                    if (TextUtils.isEmpty(mailBox)) {
+                        return false;
+                    } else if (!presenter.checkEmail(mailBox)) {
+                        ToastUtil.showNegativeToast(getString(R.string.EMAIL_2));
+                        return false;
+                    } else {
+                        presenter.checkEmailIsBinded(mailBox);
+                    }
+                }
+                return false;
+            }
+        });
+    }
+
 
     private void initPresenter() {
         presenter = new MineInfoBineMailPresenterImp(this);
@@ -310,4 +339,5 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
                 .addToBackStack("personalInformationFragment")
                 .commit();
     }
+
 }

@@ -51,6 +51,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
     public static final String KEY_EXIT_ANIM_ID = "key_exit_anim_id";
     private SharedElementCallBackListener sharedElementCallBackListener;
     private Subscription subscribe;
+    private Subscription resetPwdSubscribe;
     private HomeViewAdapter viewAdapter;
 
     @Override
@@ -92,6 +93,13 @@ public class NewHomeActivity extends NeedLoginActivity implements
     @Override
     protected void onStart() {
         super.onStart();
+        resetPwdSubscribe = RxBus.getCacheInstance().toObservable(RxEvent.LogOutByResetPwdTab.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(event ->{
+                    if (event.b)
+                    finish();
+                });
     }
 
     @Override
@@ -100,6 +108,10 @@ public class NewHomeActivity extends NeedLoginActivity implements
         if (subscribe != null && subscribe.isUnsubscribed()) {
             subscribe.unsubscribe();
             subscribe = null;
+        }
+        if (resetPwdSubscribe != null && resetPwdSubscribe.isUnsubscribed()) {
+            resetPwdSubscribe.unsubscribe();
+            resetPwdSubscribe = null;
         }
     }
 

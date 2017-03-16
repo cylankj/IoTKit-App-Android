@@ -655,14 +655,6 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void onDialogAction(int id, Object value) {
-//        if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))) {
-//            getFragmentManager().popBackStack();
-//        } else {
-//            rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
-//            vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
-//            vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);
-//            vsSetAccountPwd.showPrevious();
-//        }
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
             vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);
