@@ -147,7 +147,6 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                 .flatMap(integer -> {
                     AppLogger.d("integer: " + integer);
                     if (integer == 0) {
-                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
                         RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                                 .subscribeOn(Schedulers.newThread())
                                 .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")

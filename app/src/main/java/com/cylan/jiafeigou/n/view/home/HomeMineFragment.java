@@ -460,7 +460,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     public void onUpdataView(){
         AppLogger.d("onUpdataView");
-        if (basePresenter != null)basePresenter.start();
+//        if (basePresenter != null)basePresenter.start();
     }
 
 }

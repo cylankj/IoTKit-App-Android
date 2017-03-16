@@ -66,6 +66,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     public void stop() {
         super.stop();
         unSubscribe(subscription);
+        unSubscribe(loginInMe());
     }
 
     @Override
