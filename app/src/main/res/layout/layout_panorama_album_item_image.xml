@@ -1,0 +1,47 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lLayout_cam_msg_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingEnd="@dimen/x15"
+    android:paddingStart="@dimen/x15">
+
+
+    <FrameLayout
+        android:id="@+id/v_fate_line"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <com.cylan.jiafeigou.widget.DividerView
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layerType="software"
+            hunt:dv_color="@color/color_e8e8e8"
+            hunt:dv_dashGap="2dp"
+            hunt:dv_dashLength="3dp"
+            hunt:dv_dashThickness="2dp"
+            hunt:dv_orientation="vertical" />
+
+        <RadioButton
+            android:id="@+id/rbtn_item_check"
+            android:layout_width="@dimen/x20"
+            android:layout_height="@dimen/x20"
+            android:layout_gravity="center"
+            android:background="@drawable/custom_rtbn_style1"
+            android:button="@null"
+            android:clickable="false"
+            android:visibility="invisible" />
+    </FrameLayout>
+
+    <com.cylan.jiafeigou.widget.AspectRatioImageView
+        android:id="@+id/img_album_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="5dp"
+        android:layout_marginStart="2dp"
+        android:background="@drawable/wonderful_pic_place_holder"
+        android:src="@drawable/pic_broken"
+        hunt:as_ratio="3" />
+</LinearLayout>

@@ -50,7 +50,7 @@
             app:t_border_color="@color/color_white"
             app:t_border_width="@dimen/y1"
             app:t_point_color="@color/color_red_dot_f43531"
-            app:t_radius="@dimen/y2"
+            app:t_radius="@dimen/x4"
             app:t_round_image="true" />
     </FrameLayout>
 

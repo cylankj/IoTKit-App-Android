@@ -55,8 +55,8 @@
 
     <ImageView
         android:id="@+id/imv_item_red_hint"
-        android:layout_width="@dimen/x8"
-        android:layout_height="@dimen/x8"
+        android:layout_width="@dimen/x4"
+        android:layout_height="@dimen/x4"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/x10"

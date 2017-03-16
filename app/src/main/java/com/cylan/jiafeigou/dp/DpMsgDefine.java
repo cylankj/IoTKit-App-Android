@@ -1102,5 +1102,4 @@ public class DpMsgDefine {
         DPSystemMesg SYSTEM_MESG = new DPSystemMesg();
         DpSdcardFormatRsp SDCARD_FORMAT_RSP = new DpSdcardFormatRsp();
     }
-
 }

@@ -98,7 +98,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                             AppLogger.e("timeout: " + s);
                             return null;
                         }))
-                .filter(viceEvent -> getView() != null)
+                .filter(viceEvent -> getView() != null && viceEvent != null)
                 .map((RxEvent.BindDeviceEvent result) -> {
                     getView().bindState(bindResult = result.bindResult);
                     if (simulatePercent != null && bindResult == 0) {

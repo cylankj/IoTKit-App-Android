@@ -304,5 +304,18 @@
         <attr name="lineIcon" format="reference" />
         <attr name="lineLength" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="AspectImageViewStyle">
+        <attr name="as_ratio" format="integer|reference" />
+    </declare-styleable>
 
+    <declare-styleable name="DividerView">
+        <attr name="dv_color" format="color" />
+        <attr name="dv_dashLength" format="dimension" />
+        <attr name="dv_dashGap" format="dimension" />
+        <attr name="dv_dashThickness" format="dimension" />
+        <attr name="dv_orientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+    </declare-styleable>
 </resources>

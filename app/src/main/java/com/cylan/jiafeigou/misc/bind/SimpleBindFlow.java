@@ -293,7 +293,7 @@ public class SimpleBindFlow extends AFullBind {
                 .subscribeOn(Schedulers.newThread())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
-                    boolean needUpdate = BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
+                    boolean needUpdate = udpDevicePortrait != null && BindUtils.versionCompare(UPGRADE_VERSION, udpDevicePortrait.version) > 0
                             && BindUtils.isUcos(udpDevicePortrait.uuid);
                     //是否需要升级
                     if (needUpdate)

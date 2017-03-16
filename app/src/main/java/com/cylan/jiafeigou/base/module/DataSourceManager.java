@@ -173,7 +173,12 @@ public class DataSourceManager implements JFGSourceManager {
         Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
         List<Device> result = new ArrayList<>(rawDeviceOrder.size());
         for (Pair<Integer, String> pair : rawDeviceOrder) {
-            result.add(mCachedDeviceMap.get(pair.second));
+            Device d = mCachedDeviceMap.get(pair.second);
+            if (!result.contains(d))
+                result.add(d);
+            else {
+                AppLogger.d("yes list contains d: " + d);
+            }
         }
         return result;
     }

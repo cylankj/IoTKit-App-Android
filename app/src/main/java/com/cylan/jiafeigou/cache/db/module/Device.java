@@ -262,4 +262,23 @@ public class Device extends DataPoint implements IEntity<Device> {
     public void set_id(Long _id) {
         this._id = _id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        Device device = (Device) o;
+
+        return uuid != null ? uuid.equals(device.uuid) : device.uuid == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (uuid != null ? uuid.hashCode() : 0);
+        return result;
+    }
 }

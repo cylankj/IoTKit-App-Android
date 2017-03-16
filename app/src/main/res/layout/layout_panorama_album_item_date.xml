@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lLayout_cam_msg_container"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:orientation="horizontal"
+    android:paddingEnd="@dimen/x15"
+    android:paddingStart="@dimen/x15">
+
+
+    <FrameLayout
+        android:id="@+id/v_fate_line"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent">
+
+        <com.cylan.jiafeigou.widget.DividerView
+            android:layout_width="10dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:layerType="software"
+            hunt:dv_color="@color/color_e8e8e8"
+            hunt:dv_dashGap="2dp"
+            hunt:dv_dashLength="3dp"
+            hunt:dv_dashThickness="2dp"
+            hunt:dv_orientation="vertical" />
+
+        <View
+            android:id="@+id/v_circle"
+            android:layout_width="@dimen/x20"
+            android:layout_height="@dimen/x20"
+            android:layout_marginTop="@dimen/x16"
+            android:background="@drawable/border_solid_circle" />
+    </FrameLayout>
+
+
+    <TextView
+        android:id="@+id/tv_cam_message_item_date"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/y51"
+        android:gravity="center"
+        android:text="12:30"
+        android:textColor="@color/color_666666"
+        android:textSize="@dimen/sp12" />
+</LinearLayout>
