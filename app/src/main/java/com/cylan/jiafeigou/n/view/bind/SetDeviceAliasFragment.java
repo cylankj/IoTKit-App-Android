@@ -13,9 +13,11 @@ import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SetDeviceAliasPresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoginButton;
@@ -121,7 +123,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
     @Override
     public void setupAliasDone() {
         ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
-        if (getActivity() != null && getActivity() instanceof BindDeviceActivity)
-            ((BindDeviceActivity) getActivity()).finishExt();
+        if (getActivity() != null && getActivity() instanceof BaseFullScreenFragmentActivity)
+            ((BaseFullScreenFragmentActivity) getActivity()).finishExt();
     }
 }
