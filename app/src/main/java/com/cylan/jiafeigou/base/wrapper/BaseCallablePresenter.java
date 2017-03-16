@@ -110,6 +110,8 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         mHolderCaller = null;
                         mView.onDismiss();
                     }
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
                 });
         registerSubscription(subscribe);
     }

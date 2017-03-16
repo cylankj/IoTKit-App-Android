@@ -238,5 +238,11 @@ public class PreferencesUtils {
         return settings.getBoolean(key, defaultValue);
     }
 
+    public static void remove(String key) {
+        Context context = ContextUtils.getContext();
+        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
+        settings.edit().remove(key).apply();
+    }
+
 }
 

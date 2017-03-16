@@ -10,6 +10,14 @@ import com.cylan.jiafeigou.base.view.JFGView;
 public interface PanoramaLogoConfigureContact {
 
     interface View extends JFGView {
+        class LogoItem {
+            public int type = 0;//0:无水印,1:white,2:black,3:cloveDog,-1:自定义
+            public String resPath = null;
+
+            public LogoItem(int type) {
+                this.type = type;
+            }
+        }
 
     }
 

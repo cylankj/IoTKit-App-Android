@@ -16,7 +16,6 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
-import android.view.ScaleGestureDetector;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -95,10 +94,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     TextView mBellLiveBack;
     @BindView(R.id.view_bell_handle)
     ImageView mBellhandle;
-
     private ImageView mLandBellLiveSpeaker;
-    private ScaleGestureDetector mGestureDetector;
-    private float mScaleFactor = 1.0f;
     /**
      * 水平方向的view
      */

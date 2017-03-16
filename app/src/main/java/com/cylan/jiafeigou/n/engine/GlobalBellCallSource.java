@@ -6,7 +6,9 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.JFGGlideURL;
 
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -35,7 +37,10 @@ public class GlobalBellCallSource {
         }
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.BellCallEvent.class).subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(this::launchBellLive);
+                .subscribe(this::launchBellLive, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
         mSubscription.add(subscribe);
 
 
@@ -46,7 +51,8 @@ public class GlobalBellCallSource {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bellCallEvent.caller.cid);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
-//        intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, bellCallEvent.caller.url);
+        String url = new JFGGlideURL(bellCallEvent.caller.cid, bellCallEvent.caller.time + ".jpg").toStringUrl();
+        intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, url);
         intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, bellCallEvent.caller.time);
         ContextUtils.getContext().startActivity(intent);
 

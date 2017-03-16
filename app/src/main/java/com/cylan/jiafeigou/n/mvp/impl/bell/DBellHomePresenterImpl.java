@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
@@ -45,13 +47,16 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     private void notifyBellLowBattery() {
         if (isFirst) {
             isFirst = false;
-            long lastTime = PreferencesUtils.getLong(JConstant.LAST_ENTER_TIME + mUUID, System.currentTimeMillis());
-            DpMsgDefine.DPPrimary<Integer> battery = mSourceManager.getValue(mUUID, DpMsgMap.ID_206_BATTERY);
-            if (lastTime < todayInMidNight) {//新的一天
-                PreferencesUtils.putLong(JConstant.LAST_ENTER_TIME + mUUID, System.currentTimeMillis());
-                int b = MiscUtils.safeGet(battery, 0);
-                if (b < 20) {
-                    mView.onBellBatteryDrainOut();
+            Account account = DataSourceManager.getInstance().getAJFGAccount();
+            if (account != null) {
+                long lastTime = PreferencesUtils.getLong(account.getAccount() + ":" + mUUID + ":" + JConstant.LAST_ENTER_TIME, System.currentTimeMillis());
+                DpMsgDefine.DPPrimary<Integer> battery = mSourceManager.getValue(mUUID, DpMsgMap.ID_206_BATTERY);
+                if (lastTime < todayInMidNight) {//新的一天
+                    PreferencesUtils.putLong(account.getAccount() + ":" + mUUID + ":" + JConstant.LAST_ENTER_TIME, System.currentTimeMillis());
+                    int b = MiscUtils.safeGet(battery, 0);
+                    if (b < 20) {
+                        mView.onBellBatteryDrainOut();
+                    }
                 }
             }
         }
@@ -77,6 +82,9 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                 .subscribe(event -> {
                     mView.onBellRecordCleared();
                     mRecords.clear();
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
                 });
     }
 
@@ -100,6 +108,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         fetchBellRecordsList(asc, time);
                     } else {
                         AppLogger.e(e.getMessage());
+                        e.printStackTrace();
                     }
                 }, () -> mView.onRecordsListRsp(null));
         registerSubscription(subscribe);
@@ -143,6 +152,8 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
                         mView.onDeleteBellRecordSuccess(list);
                     }
                 }, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
                 }, () -> {
                 });
         registerSubscription(subscribe);

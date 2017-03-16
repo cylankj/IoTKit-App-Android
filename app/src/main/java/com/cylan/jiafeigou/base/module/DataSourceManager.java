@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -138,7 +139,12 @@ public class DataSourceManager implements JFGSourceManager {
                     Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
                     RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
                 })
-                .subscribe();
+                .subscribe(ret -> {
+                }, e -> {
+                    //减少不必要的崩溃
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
     }
 
     public static DataSourceManager getInstance() {
@@ -269,7 +275,10 @@ public class DataSourceManager implements JFGSourceManager {
                     RxBus.getCacheInstance().post(account);
                     RxBus.getCacheInstance().postSticky(new RxEvent.AccountArrived(this.account));
                 })
-                .subscribe(act -> this.account = act);
+                .subscribe(act -> this.account = act, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
     }
 
     //主动发起请求,来获取设备所有的属性
@@ -340,6 +349,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .filter(dev -> dev != null)
                 .map(dev -> {
                     mCachedDeviceMap.remove(dev.getUuid());
+                    PreferencesUtils.remove(account.getAccount() + ":" + dev.getUuid() + ":" + JConstant.LAST_ENTER_TIME);
                     RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(dev.getUuid()));
                     return dev;
                 });
@@ -513,7 +523,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp) {
-        Observable.from(dataRsp.map.entrySet())
+        Observable.just(dataRsp)
+                .filter(rsp -> rsp.map != null)
+                .flatMap(rsp -> Observable.from(rsp.map.entrySet()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(set -> Observable.from(set.getValue())
@@ -531,16 +543,14 @@ public class DataSourceManager implements JFGSourceManager {
                                             if (change)
                                                 account.dpMsgVersion = System.currentTimeMillis();
                                         }
-//                                        dpLock.unlock();
                                         return entity;
                                     });
                         }))
-                .doOnError(e -> {
-                    AppLogger.d(e.getMessage());
+                .subscribe(ret -> {
+                }, e -> {
+                    AppLogger.e(e.getMessage());
                     e.printStackTrace();
-                })
-                .doOnCompleted(() -> RxBus.getCacheInstance().post(dataRsp))
-                .subscribe();
+                }, () -> RxBus.getCacheInstance().post(dataRsp));
     }
 
     @Override
@@ -554,7 +564,10 @@ public class DataSourceManager implements JFGSourceManager {
                     if (device != null) {
                         device.setValue(msg);
                     }
-                }, Throwable::printStackTrace, () -> {
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                }, () -> {
                     ArrayList<Long> updateIdList = new ArrayList<>();
                     for (JFGDPMsg msg : arrayList) {
                         updateIdList.add(msg.id);
@@ -704,7 +717,10 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(event -> cacheJFGAccount(event.account));
+                .subscribe(event -> cacheJFGAccount(event.account), e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
     }
 
     private Subscription makeCacheDeviceSub() {
@@ -712,7 +728,10 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(event -> cacheJFGDevices(event.devices));
+                .subscribe(event -> cacheJFGDevices(event.devices), e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
     }
 
     private Subscription makeCacheGetDataSub() {
@@ -720,7 +739,10 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(event -> cacheRobotoGetDataRsp(event.getDataRsp));
+                .subscribe(event -> cacheRobotoGetDataRsp(event.getDataRsp), e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
     }
 
     private Subscription makeCacheSyncDataSub() {
@@ -728,6 +750,9 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(event -> cacheRobotoSyncData(event.b, event.s, event.arrayList));
+                .subscribe(event -> cacheRobotoSyncData(event.b, event.s, event.arrayList), e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
     }
 }
