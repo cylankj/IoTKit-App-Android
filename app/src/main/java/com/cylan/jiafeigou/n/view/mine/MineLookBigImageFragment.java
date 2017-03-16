@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +15,21 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.RemoteViews;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineLookBigImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineLookBigImagePresenterImp;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -40,9 +46,9 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     ImageView ivLookBigImage;
 
     private MineLookBigImageContract.Presenter presenter;
-    private boolean loadResult = false;
+    private static boolean loadResult = false;
     private String imageUrl;
-    private Bitmap bitmapSource;
+    private static Bitmap bitmapSource;
 
     public static MineLookBigImageFragment newInstance(Bundle bundle) {
         MineLookBigImageFragment fragment = new MineLookBigImageFragment();
@@ -95,7 +101,6 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
         ivLookBigImage.setLayoutParams(lp);
     }
 
-
     /**
      * desc:保存图片
      */
@@ -128,6 +133,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
      * desc:加载图片
      */
     private void loadImage() {
+        myViewTarget = new MyViewTarget(ivLookBigImage, ContextUtils.getContext(),getFragmentManager());
         showLoadImageProgress();
         Glide.with(getContext())
                 .load(imageUrl)
@@ -137,29 +143,44 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
                 .centerCrop()
                 .skipMemoryCache(true)
                 .diskCacheStrategy(DiskCacheStrategy.NONE)
-                .into(new BitmapImageViewTarget(ivLookBigImage) {
-                    @Override
-                    public void onLoadStarted(Drawable placeholder) {
-                        super.onLoadStarted(placeholder);
-                    }
-
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        super.onResourceReady(resource, glideAnimation);
-                        bitmapSource = resource;
-                        hideLoadImageProgress();
-                        loadResult = true;
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        hideLoadImageProgress();
-                        loadResult = false;
-                        ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
-                    }
-                });
+                .into(myViewTarget);
     }
+
+    private MyViewTarget myViewTarget;
+    private static class MyViewTarget extends BitmapImageViewTarget {
+        private final WeakReference<ImageView> image;
+        private final WeakReference<Context> mContext;
+        private final WeakReference<FragmentManager> fragmentManager;
+
+        public MyViewTarget(ImageView view,Context context,FragmentManager manager) {
+            super(view);
+            image = new WeakReference<ImageView>(view);
+            mContext = new WeakReference<Context>(context);
+            fragmentManager = new WeakReference<FragmentManager>(manager);
+
+        }
+
+        @Override
+        public void onLoadStarted(Drawable placeholder) {
+            super.onLoadStarted(placeholder);
+        }
+
+        @Override
+        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            super.onResourceReady(resource, glideAnimation);
+            bitmapSource = resource;
+            LoadingDialog.dismissLoading(fragmentManager.get());
+            loadResult = true;
+        }
+
+        @Override
+        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+            super.onLoadFailed(e, errorDrawable);
+            loadResult = false;
+            LoadingDialog.dismissLoading(fragmentManager.get());
+//            ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
+        }
+    };
 
     @Override
     public void setPresenter(MineLookBigImageContract.Presenter presenter) {
@@ -189,12 +210,10 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
         }
     }
 
-    @Override
     public void showLoadImageProgress() {
         LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
-    @Override
     public void hideLoadImageProgress() {
         LoadingDialog.dismissLoading(getFragmentManager());
     }

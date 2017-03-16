@@ -918,4 +918,12 @@ public class RxEvent {
         }
     }
 
+    public static final class LoginMeTab{
+        public LoginMeTab(boolean b) {
+            this.b = b;
+        }
+
+        public boolean b;
+    }
+
 }

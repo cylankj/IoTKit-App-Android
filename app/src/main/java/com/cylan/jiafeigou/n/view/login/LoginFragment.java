@@ -39,6 +39,7 @@ import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.LoginPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.facebook.FacebookInstance;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -606,6 +607,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 getActivity().finish();
             else {
                 getActivity().getSupportFragmentManager().popBackStack();
+                RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
                 return;
             }
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));

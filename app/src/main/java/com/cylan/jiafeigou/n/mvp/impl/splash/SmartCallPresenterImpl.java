@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;

@@ -26,16 +26,6 @@ public class MineLookBigImagePresenterImp extends AbstractPresenter<MineLookBigI
         view.setPresenter(this);
     }
 
-    @Override
-    public void start() {
-
-    }
-
-    @Override
-    public void stop() {
-
-    }
-
     /**
      * 保存图片
      */

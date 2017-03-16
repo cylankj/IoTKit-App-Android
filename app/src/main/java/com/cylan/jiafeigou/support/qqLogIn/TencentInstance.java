@@ -38,7 +38,7 @@ public class TencentInstance {
     }
 
     public TencentInstance(Activity activity) {
-        APP_KEY = "1103156296";
+        APP_KEY = "1106028314";
         context = activity;
         mTencent = Tencent.createInstance(APP_KEY, activity);
     }

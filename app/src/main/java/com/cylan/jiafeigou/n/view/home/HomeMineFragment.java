@@ -128,8 +128,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     @Override
-    public void onDetach() {
-        super.onDetach();
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden){
+            AppLogger.d("yingchang"+hidden);
+        }else {
+            AppLogger.d("show"+hidden);
+        }
     }
 
     /**
@@ -449,4 +454,13 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         Fragment mineInfoFragment = getFragmentManager().findFragmentByTag("personalInformationFragment");
         mineInfoFragment.onActivityResult(requestCode, resultCode, data);
     }
+
+    /**
+     * 更新界面的数据
+     */
+    public void onUpdataView(){
+        AppLogger.d("onUpdataView");
+        if (basePresenter != null)basePresenter.start();
+    }
+
 }

@@ -48,6 +48,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
         view.setPresenter(this);
+        loginInMe();
     }
 
     @Override
@@ -265,6 +266,14 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
+                });
+    }
+
+    public Subscription loginInMe(){
+        return RxBus.getCacheInstance().toObservable(RxEvent.LoginMeTab.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(loginMeTab -> {
+                    start();
                 });
     }
 
