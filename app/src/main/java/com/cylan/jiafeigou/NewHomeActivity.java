@@ -121,9 +121,6 @@ public class NewHomeActivity extends NeedLoginActivity implements
                 final int id = position == 0 ? R.id.btn_home_list
                         : (position == 1 ? R.id.btn_home_wonderful : R.id.btn_home_mine);
                 rgLayoutHomeBottomMenu.check(id);
-
-                if (position == 2)
-                viewAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -270,13 +267,6 @@ public class NewHomeActivity extends NeedLoginActivity implements
             //复写这个函数,以免回收fragment.
         }
 
-        @Override
-        public int getItemPosition(Object object) {
-            if (object instanceof HomeMineFragment){
-                ((HomeMineFragment)object).onUpdataView();
-            }
-            return super.getItemPosition(object);
-        }
     }
 
     public void setOnBackPreseedListener() {

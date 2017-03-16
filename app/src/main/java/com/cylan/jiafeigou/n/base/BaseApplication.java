@@ -20,7 +20,9 @@ import com.cylan.jiafeigou.DaemonReceiver1;
 import com.cylan.jiafeigou.DaemonReceiver2;
 import com.cylan.jiafeigou.DaemonService1;
 import com.cylan.jiafeigou.DaemonService2;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -31,6 +33,7 @@ import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -41,7 +44,12 @@ import com.marswin89.marsdaemon.DaemonClient;
 import com.marswin89.marsdaemon.DaemonConfigurations;
 import com.squareup.leakcanary.LeakCanary;
 
+import java.util.concurrent.TimeUnit;
+
 import permissions.dispatcher.PermissionUtils;
+import rx.Observable;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by hunt on 16-5-14.
@@ -126,8 +134,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
         registerActivityLifecycleCallbacks(this);
         initHuaweiPushSDK();
         Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
-
-
     }
 
     /**
@@ -288,6 +294,5 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private HttpProxyCacheServer newProxy() {
         return new HttpProxyCacheServer.Builder(this).maxCacheSize(Long.MAX_VALUE).maxCacheFilesCount(Integer.MAX_VALUE).build();
     }
-
 
 }

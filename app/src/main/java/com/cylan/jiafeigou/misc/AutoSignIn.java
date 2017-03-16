@@ -75,6 +75,7 @@ public class AutoSignIn {
                                 if (!TextUtils.isEmpty(pwd)) {
                                     String finalPwd = AESUtil.decrypt(pwd.toString());
                                     if (signType.type == 1) {
+                                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
                                         JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()),signType.account, finalPwd);
                                         RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
                                     } else if (signType.type >= 3) {
@@ -85,6 +86,7 @@ public class AutoSignIn {
                                             return Observable.just(-1);
                                         } else {
                                             AppLogger.d("isout:no");
+                                            RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
                                             JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()),signType.account, finalPwd, signType.type);
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         }
