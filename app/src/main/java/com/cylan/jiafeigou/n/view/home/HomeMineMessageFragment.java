@@ -146,6 +146,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
                 getFragmentManager().popBackStack();
                 break;
             case R.id.tv_home_mine_message_clear:       //删除
+                if (messageAdapter == null)return;
                 if (messageAdapter.getItemCount() == 0) return;
                 if (tvHomeMineMessageClear.getText().equals(getString(R.string.CANCEL))) {
                     handleCancle();

@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.HardwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.HardwareUpdatePresenterImpl;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -99,7 +100,6 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     public void onStart() {
         super.onStart();
         initView();
-        if (basePresenter != null)basePresenter.getFileSize();
     }
 
     private void initView() {
@@ -112,10 +112,10 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         // 有新版本
         if (checkDevVersion != null && checkDevVersion.hasNew) {
             tvHardwareNewVersion.setText(checkDevVersion.version);
-//            tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), basePresenter.getFileSize()));
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
             tvVersionDescribe.setVisibility(View.VISIBLE);
             tvVersionDescribe.setText(checkDevVersion.tip);
+            if (basePresenter != null)basePresenter.getFileSize(basePresenter.creatDownLoadBean());
         }
     }
 
@@ -135,7 +135,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 //TEST
 //                handlerDownLoad();
 
-                if (NetUtils.getJfgNetType(getContext()) == -1) {
+                if (NetUtils.getNetType(getContext()) == -1) {
                     ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
@@ -156,10 +156,10 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                     handlerDownLoad();
                 } else {
                     handlerUpdate();
+                    AppLogger.d("handlerUpdate");
                 }
                 break;
         }
-
     }
 
     /**
@@ -192,6 +192,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                         //开始升级
                         basePresenter.startUpdate();
                         basePresenter.startCounting();
+                        tvDownloadSoftFile.setEnabled(false);
                     })
                     .show();
         }
@@ -207,10 +208,10 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         if (netType == 1) {
             //开始下载
             basePresenter.startDownload(basePresenter.creatDownLoadBean());
-
-        } else if (netType == 2 || netType == 3 || netType == 4) {
+        } else if (netType == 0 || netType == 2 || netType == 3 || netType == 4) {
             Bundle bundle = new Bundle();
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
             bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.Tap1_Firmware_DataTips));
             SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
             simpleDialogFragment.setAction((int id, Object value) -> {
@@ -229,9 +230,14 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 break;
             case 2:
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_FirmwareUpdateSuc));
+                hardwareUpdatePoint.setVisibility(View.INVISIBLE);
+                tvDownloadSoftFile.setEnabled(true);
+                llDownloadPgContainer.setVisibility(View.VISIBLE);
                 break;
             case 3:
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_FirmwareUpdateFai));
+                tvDownloadSoftFile.setEnabled(true);
+                llDownloadPgContainer.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -246,7 +252,6 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void onDownloadFinish() {
-
         tvDownloadSoftFile.setEnabled(true);
         llDownloadPgContainer.setVisibility(View.GONE);
         //设备在线
@@ -255,9 +260,13 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         String remoteSSid = net.ssid;
         if (TextUtils.equals(localSSid, remoteSSid)) {
             basePresenter.startUpdate();
+            basePresenter.startCounting();
+            tvDownloadSoftFile.setEnabled(false);
+            AppLogger.d("same_net");
         } else {
             //不在同局域网
             tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
+            AppLogger.d("different_net");
         }
     }
 
@@ -269,23 +278,26 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void onDownloadErr(int reason) {
+        AppLogger.d("downLoadErr:"+reason);
         handlerResult(reason);
     }
 
     @Override
-    public void startUpdate() {
+    public void beginUpdate() {
         tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareUpdating), 0 + ""));
         llDownloadPgContainer.setVisibility(View.VISIBLE);
     }
 
     @Override
     public void onUpdateing(int percent) {
+        llDownloadPgContainer.setVisibility(View.VISIBLE);
         tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareUpdating), percent + ""));
         downloadProgress.setProgress(percent);
     }
 
     @Override
     public void initFileSize(String size) {
+        if (TextUtils.isEmpty(size))return;
         fileSize = size;
         tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), size));
     }
