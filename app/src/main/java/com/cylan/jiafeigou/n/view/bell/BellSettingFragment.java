@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.n.view.bell;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -33,8 +35,7 @@ import butterknife.OnClick;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 public class BellSettingFragment extends BaseFragment<BellSettingContract.Presenter>
-        implements BellSettingContract.View,
-        BaseDialog.BaseDialogAction {
+        implements BellSettingContract.View{
 
     @BindView(R.id.imgV_top_bar_center)
     TextView imgVTopBarCenter;
@@ -54,7 +55,6 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     @BindView(R.id.ll_bell_net_work_container)
     LinearLayout mNetWorkContainer;
 
-    private SimpleDialogFragment simpleDialogFragment;
     private SimpleDialogFragment mClearRecordFragment;
 
 
@@ -147,15 +147,19 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                if (simpleDialogFragment == null) {
-                    Bundle bundle = new Bundle();
-                    Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
-                    String name = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.SURE_DELETE_1, name));
-                    simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
-                }
-                simpleDialogFragment.setAction(this);
-                simpleDialogFragment.show(getActivity().getSupportFragmentManager(), "simpleDialogFragment");
+                Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+                String name = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(getString(R.string.SURE_DELETE_1, name))
+                        .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                mPresenter.unbindDevice();
+                                LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.CANCEL),null)
+                        .create().show();
                 break;
         }
     }
@@ -179,17 +183,6 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     public void onClearBellRecordFailed() {
         ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips4));
         LoadingDialog.dismissLoading(getActivity().getSupportFragmentManager());
-    }
-
-    @Override
-    public void onDialogAction(int id, Object value) {
-        switch (id) {
-            case R.id.tv_dialog_btn_left:
-                mPresenter.unbindDevice();
-                LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
-                break;
-        }
-
     }
 
     @Override

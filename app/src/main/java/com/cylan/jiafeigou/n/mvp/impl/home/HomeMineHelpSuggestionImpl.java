@@ -359,6 +359,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             remoteUrl = "/log/" + Security.getVId(JFGRules.getTrimPackageName()) + "/" + userInfomation.getAccount() + "/" + fileName;
             int code = JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
             ToastUtil.showToast("" + code);
+            AppLogger.d("upload log:"+remoteUrl);
         } catch (JfgException e) {
             e.printStackTrace();
         }

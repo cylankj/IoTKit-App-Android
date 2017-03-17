@@ -31,7 +31,6 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static android.Manifest.permission.ACCESS_FINE_LOCATION;
-import static com.cylan.jiafeigou.misc.JConstant.ConfigApStep;
 
 @RuntimePermissions
 public class BindCamActivity extends BaseFullScreenFragmentActivity {
@@ -57,11 +56,11 @@ public class BindCamActivity extends BaseFullScreenFragmentActivity {
             onBackPressed();
         });
         initAnimation();
-        ConfigApStep = 0;
+        JConstant.ConfigApStep = 0;
     }
 
     private boolean shouldNotifyBackword() {
-        if (JConstant.ConfigApStep == 2) {
+        if (JConstant.ConfigApStep >= 2) {
             new AlertDialog.Builder(this)
                     .setMessage(getString(R.string.Tap1_AddDevice_tips))
                     .setNegativeButton(getString(R.string.CANCEL), null)
@@ -77,7 +76,7 @@ public class BindCamActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ConfigApStep = 0;
+        JConstant.ConfigApStep = 0;
     }
 
     @Override

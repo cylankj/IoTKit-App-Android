@@ -44,9 +44,7 @@ import rx.schedulers.Schedulers;
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
     private Device device;
-    private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
-            R.string.WED_1, R.string.THU_1,
-            R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
+
     private static final int[] autoRecordMode = {
             R.string.RECORD_MODE,
             R.string.RECORD_MODE_1,
@@ -161,37 +159,36 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 device.uuid : (device != null ? device.alias : "");
     }
 
+    //    一：关闭移动侦测
+//1.关闭移动侦测后，下方显示：关闭
+//
+//    二：打开移动侦测
+//1.当设备报警开启周一至周日，时间段为0:00-23:59 下方应显示：每天 全天提示
+//3.当设备报警开启周一至周五，时间段为0:00-00:00 下方应显示：工作日 00:00-次日0:00
+//            4.当设备报警天数开启周六、周日，时间段为01:00-16:00 下方应显示：周末 01:00-16:00
+//            5.当设备报警天数开启周六、周日，时间段为0:00-23:59 下方应显示：工作日 全天提示
+//6.当设备报警天数开启周一、周五、周六，时间段为02:00-19:00 下方应显示：周一、周五、周六 02:00-19:00
+//            7.当设备报警天数开启周一、周五、周六，时间段为0:00-23:59 下方应显示：周一、周五、周六 全天提示
+//
+//    天数总结：
+//            1.周一至周日显示：每天
+//2.周一至周五显示 ：工作日
+//3.周六日显示：周末
+//4.周一、周六显示：每周一、周六
+//
+//    时间总结：
+//            1.0:00-23：59 显示：全天提示
+//2.0：00-0:23:28 显示：0：00-0:23:28
+//            3.0:00-0:00显示0:00-次日0:00
+//            4:12:01-12:00显示：12:01-次日12:00
     @Override
     public String getAlarmSubTitle(Context context) {
         DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, (long) DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
         boolean f = MiscUtils.safeGet(flag, false);
-        if (!f) {
-            return getView().getContext().getString(R.string.MAGNETISM_OFF);
-        }
         DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), DpMsgDefine.EMPTY.ALARM_INFO);
-        int day = info == null ? 0 : info.day;
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < 7; i++) {
-            if (((day >> (7 - 1 - i)) & 0x01) == 1) {
-                //hit
-                builder.append(context.getString(periodResId[i]));
-                builder.append(",");
-            }
-        }
-        if (builder.length() > 1)
-            builder.replace(builder.length() - 1, builder.length(), "");
-        if (day == 127) {//全天
-            builder.setLength(0);
-            builder.append(context.getString(R.string.HOURS));
-        } else if (day == 124) {//工作日
-            builder.setLength(0);
-            builder.append(context.getString(R.string.WEEKDAYS));
-        }
-        builder.append(info == null ? "" : parse2Time(info.timeStart));
-        builder.append("-");
-        builder.append(info == null ? "" : parse2Time(info.timeEnd));
-        return builder.toString();
+        return MiscUtils.getChaosTime(context, info, f);
     }
+
 
     @Override
     public String getAutoRecordTitle(Context context) {

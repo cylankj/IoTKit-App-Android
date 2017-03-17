@@ -188,9 +188,6 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
 
     @Override
     public void OnReportJfgDevices(JFGDevice[] jfgDevices) {
-        for (JFGDevice device : jfgDevices)
-            Log.d("OnReportJfgDevices", "OnReportJfgDevices: " + device.uuid + " " + System.currentTimeMillis());
-        AppLogger.i("OnReportJfgDevices:" + (jfgDevices == null ? 0 : jfgDevices.length));
         for (JFGDevice device : jfgDevices) {
             AppLogger.d("OnReportJfgDevices" + new Gson().toJson(device));
         }

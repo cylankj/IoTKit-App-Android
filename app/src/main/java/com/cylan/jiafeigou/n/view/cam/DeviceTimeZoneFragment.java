@@ -119,6 +119,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        etTimezoneSearch.setEnabled(false);
         ViewUtils.setViewPaddingStatusBar(view.findViewById(R.id.rLayout_timezone_list));
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         lvTimezoneDetail.setLayoutManager(layoutManager);
@@ -189,6 +190,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_timezone_search:
+                etTimezoneSearch.setEnabled(true);
                 etTimezoneSearch.getText().clear();
                 etTimezoneSearch.setFocusableInTouchMode(true);
                 etTimezoneSearch.setFocusable(true);

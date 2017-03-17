@@ -3,6 +3,9 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
+import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
@@ -198,7 +201,32 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
     }
 
-//    @Override
+    @Override
+    protected String[] registerNetworkAction() {
+        return new String[]{WifiManager.NETWORK_STATE_CHANGED_ACTION};
+    }
+
+    @Override
+    public void onNetworkChanged(Context context, Intent intent) {
+        String action = intent.getAction();
+        if (TextUtils.equals(action, WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
+            NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
+            updateConnectInfo(info);
+        }
+    }
+
+    /**
+     * 可能连上其他非 'DOG-xxx'
+     *
+     * @param networkInfo
+     */
+    private void updateConnectInfo(NetworkInfo networkInfo) {
+        Observable.just(networkInfo)
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(v -> getView() != null)
+                .subscribe((NetworkInfo info) -> getView().onNetworkChanged(info != null && info.isConnected()));
+    }
+    //    @Override
 //    public void unBindDevReq(String uuid) {
 //        addSubscription(Observable.just(null)
 //                .subscribeOn(Schedulers.newThread())

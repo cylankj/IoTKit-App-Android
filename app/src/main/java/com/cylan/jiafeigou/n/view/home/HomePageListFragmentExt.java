@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -95,12 +96,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     Toolbar toolbar;
     @BindView(R.id.appbar)
     AppBarLayout appbar;
-    //    @BindView(R.dpMsgId.collapsing_toolbar)
-//    CollapsingToolbarLayout collapsingToolbar;
+    @BindView(R.id.rLayout_network_banner)
+    RelativeLayout badNetworkBanner;
     @BindView(R.id.fLayout_empty_view_container)
-    FrameLayout fLayoutEmptyViewContainer;
-    //    @BindView(R.dpMsgId.img_home_page_header_bg)
-//    ImageView imgHomePageHeaderBg;
+    LinearLayout fLayoutEmptyViewContainer;
     @BindView(R.id.fLayout_header_bg)
     FrameLayout fLayoutHeaderBg;
     private HomePageListAdapter homePageListAdapter;
@@ -286,6 +285,11 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
+    @OnClick(R.id.imgv_close_network_banner)
+    public void onClickCloseBanner() {
+        badNetworkBanner.setVisibility(View.GONE);
+    }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -402,6 +406,13 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 AppLogger.d("stop refreshing ui");
             }
         }, 1500);
+    }
+
+    @Override
+    public void onNetworkChanged(boolean connected) {
+        badNetworkBanner.setVisibility(connected ? View.GONE : View.VISIBLE);
+        srLayoutMainContentHolder.setEnabled(connected);
+        if(!connected)srLayoutMainContentHolder.setRefreshing(false);
     }
 
 //    @Override

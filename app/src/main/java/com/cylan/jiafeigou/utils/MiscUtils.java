@@ -331,4 +331,58 @@ public class MiscUtils {
         }
         return fileSizeString;
     }
+
+    public static String getChaosTime(Context context, DpMsgDefine.DPAlarmInfo info, boolean off) {
+        if (!off) {
+            return context.getString(R.string.MAGNETISM_OFF);
+        }
+        //每一天
+        if (info.day == 127) {
+            if (info.timeStart == 0 && info.timeEnd == 5947)
+                return context.getString(R.string.EVERY_DAY) + " " + context.getString(R.string.HOURS);
+            return context.getString(R.string.EVERY_DAY) + " " + getTime(info.timeStart, info.timeEnd);
+        }
+        //工作日
+        if (info.day == 124) {
+            if (info.timeStart == 0 && info.timeEnd == 5947)
+                return context.getString(R.string.WEEKDAYS) + " " + context.getString(R.string.HOURS);
+            return context.getString(R.string.WEEKDAYS) + " " + getTime(info.timeStart, info.timeEnd);
+        }
+        //周末
+        if (info.day == 3) {
+            if (info.timeStart == 0 && info.timeEnd == 5947)
+                return context.getString(R.string.WEEKEND) + " " + context.getString(R.string.HOURS);
+            return context.getString(R.string.WEEKEND) + " " + getTime(info.timeStart, info.timeEnd);
+        }
+        //零散
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < 7; i++) {
+            if (((info.day >> (7 - 1 - i)) & 0x01) == 1) {
+                //hit
+                builder.append(context.getString(periodResId[i]));
+                builder.append(",");
+            }
+        }
+        if (builder.length() > 1)
+            builder.replace(builder.length() - 1, builder.length(), "");
+        if (info.timeStart == 0 && info.timeEnd == 5947) {
+            builder.append(" ");
+            return builder.append(context.getString(R.string.HOURS)).toString();
+        }
+        if (info.timeStart > info.timeEnd) {
+            builder.append(parse2Time(info.timeStart));
+            return builder.append("-")
+                    .append(context.getString(R.string.TOW))
+                    .append(parse2Time(info.timeEnd)).toString();
+        }
+        return builder.append(getTime(info.timeStart, info.timeEnd)).toString();
+    }
+
+    private static String getTime(int start, int end) {
+        return parse2Time(start) + "-" + parse2Time(end);
+    }
+
+    private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
+            R.string.WED_1, R.string.THU_1,
+            R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
 }
