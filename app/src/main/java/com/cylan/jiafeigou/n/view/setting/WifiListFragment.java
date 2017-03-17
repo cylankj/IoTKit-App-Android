@@ -27,12 +27,12 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.WifiListPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
+import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
@@ -64,7 +64,7 @@ import static com.facebook.FacebookSdk.getApplicationContext;
  */
 @RuntimePermissions
 public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
-        implements WifiListContract.View, SwipeRefreshLayout.OnRefreshListener {
+        implements WifiListContract.View, SwipeRefreshLayout.OnRefreshListener, OnItemClickListener {
     private static final int REQ_CODE = 100;
     @BindView(R.id.rv_wifi_list)
     RecyclerView rvWifiList;
@@ -183,40 +183,13 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rvWifiList.setAdapter(new AAdapter(getContext(), null, R.layout.layout_wifi_list_item));
+        ((AAdapter) rvWifiList.getAdapter()).setOnItemClickListener(this);
         rvWifiList.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         swRefreshWifi.setOnRefreshListener(this);
         customToolbar.setBackAction(v -> {//回退事件
             getActivity().getSupportFragmentManager().popBackStack();
         });
     }
-
-    private View.OnClickListener clickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            ViewUtils.deBounceClick(v);
-            int position = ViewUtils.getParentAdapterPosition(rvWifiList, v, R.id.lLayout_wifi_list_item);
-            final ScanResult item = ((AAdapter) rvWifiList.getAdapter()).getItem(position);
-            Bundle bundle = new Bundle();
-            final String ssid = item.SSID.replace("\"", "");
-            bundle.putString(KEY_TITLE, ssid);
-            bundle.putString(KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
-            bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-            bundle.putString(KEY_INPUT_HINT, getString(R.string.ENTER_PWD_1));
-            bundle.putInt(KEY_INPUT_LENGTH, 64);
-            bundle.putBoolean(KEY_EXCLUDE_CHINESE, true);
-            final int security = NetUtils.getSecurity(item);
-            bundle.putBoolean(KEY_SHOW_EDIT, security != 0);
-            EditFragmentDialog dialog = EditFragmentDialog.newInstance(bundle);
-            dialog.setAction((int id, Object value) -> {
-                if (value != null && value instanceof String) {
-                    //pwd
-                    if (basePresenter != null)
-                        basePresenter.sendWifiInfo(ssid, (String) value, security);
-                }
-            });
-            dialog.show(getChildFragmentManager(), "dialog");
-        }
-    };
 
     @Override
     public void onResults(ArrayList<ScanResult> results) {
@@ -249,6 +222,30 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
         swRefreshWifi.setRefreshing(true);
     }
 
+    @Override
+    public void onItemClick(View itemView, int viewType, int position) {
+        final ScanResult item = ((AAdapter) rvWifiList.getAdapter()).getItem(position);
+        Bundle bundle = new Bundle();
+        final String ssid = item.SSID.replace("\"", "");
+        bundle.putString(KEY_TITLE, ssid);
+        bundle.putString(KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
+        bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+        bundle.putString(KEY_INPUT_HINT, getString(R.string.ENTER_PWD_1));
+        bundle.putInt(KEY_INPUT_LENGTH, 64);
+        bundle.putBoolean(KEY_EXCLUDE_CHINESE, true);
+        final int security = NetUtils.getSecurity(item);
+        bundle.putBoolean(KEY_SHOW_EDIT, security != 0);
+        EditFragmentDialog dialog = EditFragmentDialog.newInstance(bundle);
+        dialog.setAction((int id, Object value) -> {
+            if (value != null && value instanceof String) {
+                //pwd
+                if (basePresenter != null)
+                    basePresenter.sendWifiInfo(ssid, (String) value, security);
+            }
+        });
+        dialog.show(getChildFragmentManager(), "dialog");
+    }
+
     private class AAdapter extends SuperAdapter<ScanResult> {
 
         private AAdapter(Context context, List<ScanResult> items, int layoutResId) {
@@ -260,7 +257,6 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
             String ssid = item.SSID.replace("\"", "");
             holder.setImageResource(R.id.imv_wifi_ssid, getWifiIcon(item));
             holder.setText(R.id.tv_wifi_ssid, ssid);
-            holder.setOnClickListener(R.id.lLayout_wifi_list_item, clickListener);
             Log.d("WifiList", "list: " + ssid);
         }
 

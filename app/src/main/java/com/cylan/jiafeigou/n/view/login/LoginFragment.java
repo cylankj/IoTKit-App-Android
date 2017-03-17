@@ -896,7 +896,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             etRegisterInputBox.setText("");
             etRegisterInputBox.setHint(getString(R.string.PHONE_NUMBER_1));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_CLASS_PHONE);
-            ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 11);
+            ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 65);
             registerWay = JConstant.REGISTER_BY_PHONE;
             tvRegisterSubmit.setText(getString(R.string.GET_CODE));
         }

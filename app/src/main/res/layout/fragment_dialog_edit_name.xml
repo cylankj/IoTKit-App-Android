@@ -16,7 +16,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/x24"
             android:layout_marginTop="@dimen/y24"
-            android:text="@string/EQUIPMENT_NAME"
             android:textColor="@color/color_black"
             android:textSize="@dimen/sp16" />
 

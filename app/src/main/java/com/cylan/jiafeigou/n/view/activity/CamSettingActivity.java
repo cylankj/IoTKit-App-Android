@@ -45,8 +45,6 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import java.lang.ref.WeakReference;
@@ -122,18 +120,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         initBackListener();
     }
 
-    private void initSightBtn() {
-        if (JFGRules.isShareDevice(uuid)) {
-            sbtnSettingSight.setVisibility(View.GONE);
-            return;
-        }
-        if (device != null && JFGRules.isPanoramicCam(device.pid)) {
-            sbtnSettingSight.setVisibility(View.VISIBLE);
-            int defaultValue = PreferencesUtils.getInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL + uuid, 0);
-            sbtnSettingSight.setTvSubTitle(getString(defaultValue == 0 ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
-        }
-    }
-
     private void initBackListener() {
         customToolbar.post(() -> {
             customToolbar.setBackAction((View v) -> {
@@ -192,15 +178,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                Bundle bundle = new Bundle();
-                bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)));
-                bundle.putBoolean(BaseDialog.KEY_TOUCH_OUT_SIDE_DISMISS, true);
-                SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
-                simpleDialogFragment.setAction((int id, Object value) -> {
-                    basePresenter.unbindDevice();
-                    LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
-                });
-                simpleDialogFragment.show(getSupportFragmentManager(), "simpleDialogFragment");
+                new AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)))
+                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
+                            basePresenter.unbindDevice();
+                            LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
+                        })
+                        .setNegativeButton(getString(R.string.CANCEL), null)
+                        .create().show();
             }
             break;
             case R.id.sv_setting_device_auto_record: {
@@ -372,8 +357,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         ////////////////////////////net////////////////////////////////////////
         DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.NET);
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
-        boolean flag = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY), false);
-        //是否有sim卡
+                //是否有sim卡
         if (device != null && JFGRules.is3GCam(device.pid) && JFGRules.isMobileNet(net.net)) {
             DpMsgDefine.DPPrimary<Boolean> state = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
             boolean s = MiscUtils.safeGet(state, false);
@@ -423,6 +407,16 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceAutoRecord.showRedHint(settingTip.autoRecord == 1);
         svSettingSafeProtection.showRedHint(settingTip.safe == 1);
         svSettingDeviceDelayCapture.showRedHint(settingTip.timeLapse == 1);
+
+        if (JFGRules.isShareDevice(uuid)) {
+            sbtnSettingSight.setVisibility(View.GONE);
+            return;
+        }
+        if (device != null && JFGRules.isPanoramicCam(device.pid)) {
+            sbtnSettingSight.setVisibility(View.VISIBLE);
+            int defaultValue = PreferencesUtils.getInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL + uuid, 0);
+            sbtnSettingSight.setTvSubTitle(getString(defaultValue == 0 ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+        }
     }
 
     private boolean ledPreState() {

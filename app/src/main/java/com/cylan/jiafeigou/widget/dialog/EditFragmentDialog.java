@@ -43,13 +43,11 @@ public class EditFragmentDialog extends BaseDialog {
     ImageView ivClear;
 
 
-    public static final String KEY_TITLE = "key_title";
     public static final String KEY_LEFT_CONTENT = "key_left";
     public static final String KEY_RIGHT_CONTENT = "key_right";
     public static final String KEY_SHOW_EDIT = "key_show_edit";
     public static final String KEY_INPUT_HINT = "key_input_hint";
     public static final String KEY_DEFAULT_EDIT_TEXT = "KEY_DEFAULT_EDIT_TEXT";
-    public static final String KEY_TOUCH_OUT_SIDE_DISMISS = "key_touch_outside";
 
     public static final String KEY_EXCLUDE_CHINESE = "key_chinese";//允许中文字符,默认允许
     public static final String KEY_INPUT_LENGTH = "key_input_length";
@@ -114,11 +112,6 @@ public class EditFragmentDialog extends BaseDialog {
                 }
             }
         });
-
-    }
-
-    @Override
-    public int show(FragmentTransaction transaction, String tag) {
         Bundle bundle = getArguments();
         final String title = bundle.getString(KEY_TITLE);
         final String lContent = bundle.getString(KEY_LEFT_CONTENT);
@@ -144,7 +137,7 @@ public class EditFragmentDialog extends BaseDialog {
             etInputBox.setText(text);
         }
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
-        return super.show(transaction, tag);
+
     }
 
     /**

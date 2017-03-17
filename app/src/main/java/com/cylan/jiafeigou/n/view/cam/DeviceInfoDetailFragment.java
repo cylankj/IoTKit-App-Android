@@ -143,7 +143,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             getView().findViewById(R.id.tv_storage).setVisibility(View.GONE);
         }
         //是否显示移动网络
-        tvDeviceMobileNet.setVisibility(device != null && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
+        boolean hasSimCard = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY), false);
+        tvDeviceMobileNet.setVisibility(hasSimCard && device != null && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
+        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.NET);
+        tvDeviceMobileNet.setTvSubTitle(getMobileNet(hasSimCard, net));
         DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
         if (zone != null)
             MiscUtils.loadTimeZoneList()
@@ -180,8 +183,12 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         DpMsgDefine.DPPrimary<Integer> uptime = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_210_UP_TIME);
         int u = MiscUtils.safeGet(uptime, 0);
         tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(u));
-        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
+    }
+
+    private String getMobileNet(boolean hasSimcard, DpMsgDefine.DPNet net) {
+        if (!hasSimcard) return "";
+        return net.ssid;
     }
 
     private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {
@@ -195,7 +202,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         if (sdStatus != null && !sdStatus.hasSdcard) {
             return getString(R.string.SD_NO);
         }
-        return sdStatus != null ? getString(R.string.SD_NORMAL) : "";
+        return sdStatus != null ? getString(R.string.SD_NORMAL) : getString(R.string.SD_NO);
     }
 
     @OnClick({R.id.tv_toolbar_icon,

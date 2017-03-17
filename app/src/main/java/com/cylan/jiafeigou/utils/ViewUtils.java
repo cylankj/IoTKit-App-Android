@@ -277,6 +277,7 @@ public class ViewUtils {
     public static void setChineseExclude(TextView textView, final int maxLength) {
         InputFilter filter = (CharSequence source, int start, int end,
                               Spanned dest, int dstart, int dend) -> {
+            if (source.equals(" ")) return "";
             for (int i = start; i < end; i++) {
                 if (isChineseChar(source.charAt(i))) {
                     return "";

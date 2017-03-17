@@ -114,10 +114,17 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         });
         updateDetails();
         swMotionDetection.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            DpMsgDefine.DPSdStatus net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.SD_STATUS);
+            DpMsgDefine.DPSdStatus net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
             if (!isChecked) {
-                if (!JFGRules.hasSdcard(net))
+                if (!JFGRules.hasSdcard(net)) {
+                    DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
+                    wFlag.value = false;
+                    basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                    showDetail(false);
+                    updateDetails();
+                    ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     return;//不插卡 不需要提示
+                }
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
                         .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {

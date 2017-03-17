@@ -94,8 +94,8 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onResume() {
         super.onResume();
-        tvCopyRight.setVisibility(getResources().getBoolean(R.bool.show_all_right) ? View.VISIBLE : View.GONE);
-        tvCopyRight.setText(String.format(COPY_RIGHT, simpleDateFormat.format(new Date(System.currentTimeMillis()))));
+//        tvCopyRight.setVisibility(getResources().getBoolean(R.bool.show_all_right) ? View.VISIBLE : View.GONE);
+//        tvCopyRight.setText(String.format(COPY_RIGHT, simpleDateFormat.format(new Date(System.currentTimeMillis()))));
     }
 
     @Override
