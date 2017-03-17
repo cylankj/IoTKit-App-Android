@@ -1,11 +1,15 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.SslErrorHandler;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -73,12 +77,17 @@ public class HomeMineHelpFragment extends Fragment {
      * 当进度条加载完成的时候显示该webView
      */
     private void showWebView() {
-        String agreementUrl= "https://yf.jfgou.com:8081/helps/zh-rCN.html";
-//        String agreementUrl = getString(R.string.help_url);
+//        String agreementUrl= "https://yf.jfgou.com:8081/helps/zh-rCN.html";
+        String agreementUrl = getString(R.string.help_url);
+        if(agreementUrl.contains("–")){
+            agreementUrl = agreementUrl.replace("–","-");
+        }
         WebSettings settings = mWvHelp.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         settings.setLoadWithOverviewMode(true);
         settings.setJavaScriptEnabled(true);
+        settings.setDefaultTextEncodingName("utf-8");
+        settings.setBlockNetworkImage(false);
         settings.setSavePassword(false);
         settings.setDomStorageEnabled(true);
         mWvHelp.removeJavascriptInterface("searchBoxJavaBridge_");
@@ -90,6 +99,13 @@ public class HomeMineHelpFragment extends Fragment {
                 view.loadUrl(url);
                 return true;
             }
+
+            @Override
+            public void onReceivedSslError(WebView view,
+                SslErrorHandler handler, SslError error) {
+                handler.proceed();  //接受所有证书
+            }
+
         });
         AppLogger.d("url:" + agreementUrl);
         mWvHelp.loadUrl(agreementUrl);
