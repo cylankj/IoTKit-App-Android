@@ -29,17 +29,22 @@ import com.cylan.entity.jniCall.JFGServerCfg;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
 import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JResultEvent;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
@@ -49,8 +54,10 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.concurrent.TimeUnit;
@@ -140,7 +147,18 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
             try2autoLogin();
             AppLogger.d("let's go initNative:");
             MtaManager.customEvent(context, "DataSourceService", "NativeInit");
+            try {
+                JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+
         });
+        try {
+            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
     }
 
     private void try2autoLogin() {
@@ -519,4 +537,15 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
 
     }
 
+    @Override
+    public void OnForwardData(byte[] bytes) {
+        try {
+            PanoramaEvent.RawRspMsg rawRspMsg = DpUtils.unpackData(bytes, PanoramaEvent.RawRspMsg.class);
+            RxBus.getCacheInstance().post(rawRspMsg);
+            AppLogger.d("OnForwardData:" + new Gson().toJson(rawRspMsg));
+        } catch (IOException e) {
+            e.printStackTrace();
+            AppLogger.e("OnForwardData:解析局域网消息失败!!!");
+        }
+    }
 }
