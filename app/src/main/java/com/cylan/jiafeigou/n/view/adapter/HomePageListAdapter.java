@@ -118,6 +118,10 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
      */
 
     private void handleState(SuperViewHolder holder, Device device) {
+        if (device == null) {
+            AppLogger.e("device is null");
+            return;
+        }
         String uuid = device.uuid;
         DpMsgDefine.DPNet net = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         String alias = device.alias;

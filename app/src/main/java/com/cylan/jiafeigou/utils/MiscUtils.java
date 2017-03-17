@@ -340,19 +340,19 @@ public class MiscUtils {
         if (info.day == 127) {
             if (info.timeStart == 0 && info.timeEnd == 5947)
                 return context.getString(R.string.EVERY_DAY) + " " + context.getString(R.string.HOURS);
-            return context.getString(R.string.EVERY_DAY) + " " + getTime(info.timeStart, info.timeEnd);
+            return context.getString(R.string.EVERY_DAY) + " " + getTime(context, info.timeStart, info.timeEnd);
         }
         //工作日
         if (info.day == 124) {
             if (info.timeStart == 0 && info.timeEnd == 5947)
                 return context.getString(R.string.WEEKDAYS) + " " + context.getString(R.string.HOURS);
-            return context.getString(R.string.WEEKDAYS) + " " + getTime(info.timeStart, info.timeEnd);
+            return context.getString(R.string.WEEKDAYS) + " " + getTime(context, info.timeStart, info.timeEnd);
         }
         //周末
         if (info.day == 3) {
             if (info.timeStart == 0 && info.timeEnd == 5947)
                 return context.getString(R.string.WEEKEND) + " " + context.getString(R.string.HOURS);
-            return context.getString(R.string.WEEKEND) + " " + getTime(info.timeStart, info.timeEnd);
+            return context.getString(R.string.WEEKEND) + " " + getTime(context, info.timeStart, info.timeEnd);
         }
         //零散
         StringBuilder builder = new StringBuilder();
@@ -369,17 +369,17 @@ public class MiscUtils {
             builder.append(" ");
             return builder.append(context.getString(R.string.HOURS)).toString();
         }
-        if (info.timeStart > info.timeEnd) {
-            builder.append(parse2Time(info.timeStart));
-            return builder.append("-")
-                    .append(context.getString(R.string.TOW))
-                    .append(parse2Time(info.timeEnd)).toString();
-        }
-        return builder.append(getTime(info.timeStart, info.timeEnd)).toString();
+        return builder.append(getTime(context, info.timeStart, info.timeEnd)).toString();
     }
 
-    private static String getTime(int start, int end) {
-        return parse2Time(start) + "-" + parse2Time(end);
+    private static String getTime(Context context, int timeStart, int timeEnd) {
+        if (timeStart > timeEnd) {
+            StringBuilder builder = new StringBuilder(parse2Time(timeStart));
+            return builder.append("-")
+                    .append(context.getString(R.string.TOW))
+                    .append(parse2Time(timeEnd)).toString();
+        }
+        return parse2Time(timeStart) + "-" + parse2Time(timeEnd);
     }
 
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
