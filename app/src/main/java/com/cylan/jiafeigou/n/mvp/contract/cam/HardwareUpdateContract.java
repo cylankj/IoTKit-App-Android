@@ -27,7 +27,7 @@ public interface HardwareUpdateContract {
 
         void onDownloadErr(int reason);
 
-        void startUpdate();
+        void beginUpdate();
 
         void onUpdateing(int percent);
 
@@ -43,7 +43,7 @@ public interface HardwareUpdateContract {
 
         void stopDownload();
 
-        void getFileSize();
+        void getFileSize(UpdateFileBean bean);
 
         void startUpdate();
 

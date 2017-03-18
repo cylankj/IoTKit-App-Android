@@ -201,7 +201,7 @@
             android:layout_height="@dimen/y42"
             android:layout_marginBottom="@dimen/y15"
             android:layout_marginTop="@dimen/y15"
-            android:src="@drawable/camera720_icon_voice_selector" />
+            android:src="@drawable/camera720_icon_no_voice_selector" />
 
         <RelativeLayout
             android:layout_width="@dimen/y138"
@@ -250,17 +250,18 @@
 
         <ViewSwitcher
             android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/act_panorama_bottom_panel_camera_photograph"
+            android:layout_alignEnd="@+id/act_panorama_bottom_panel_camera_photograph"
+            android:layout_alignStart="@+id/act_panorama_bottom_panel_camera_photograph"
             android:layout_centerHorizontal="true">
 
             <RadioGroup
                 android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_item"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom"
-                android:layout_marginBottom="@dimen/y16"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
                 android:orientation="horizontal">
 
                 <RadioButton
@@ -280,8 +281,9 @@
 
             <RelativeLayout
                 android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_horizontal">
 
                 <ImageView
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_red_dot"
@@ -290,10 +292,11 @@
 
                 <TextView
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
                     android:layout_marginBottom="@dimen/y17"
                     android:layout_marginTop="@dimen/y18"
+                    android:gravity="center_horizontal"
                     android:text="00:08:07"
                     android:textColor="#FFFFFF"
                     android:textSize="@dimen/sp16" />

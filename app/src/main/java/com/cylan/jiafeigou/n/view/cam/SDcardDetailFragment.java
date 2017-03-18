@@ -121,6 +121,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
         } else {
             Bundle bundle = new Bundle();
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
             bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Clear_Sdcard_tips));
             SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
             simpleDialogFragment.setAction((int id, Object value) -> {
@@ -218,7 +219,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
 
         DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         boolean show = net != null && JFGRules.isDeviceOnline(net);
-        if (!show || NetUtils.getJfgNetType(getContext()) == -1) {
+        if (!show || NetUtils.getNetType(getContext()) == -1) {
             tvClecrSdcard.setTextColor(Color.parseColor("#8c8c8c"));
             tvClecrSdcard.setEnabled(false);
         }

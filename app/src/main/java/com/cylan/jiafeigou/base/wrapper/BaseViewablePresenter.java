@@ -179,8 +179,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
                         .filter(dis -> TextUtils.equals(dis.remote, resolution.peer))
                         .mergeWith(
-                                RxBus.getCacheInstance().toObservable(RxEvent.OnlineStatusRsp.class)
-                                        .filter(event -> !event.state).map(event -> {
+                                RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+                                        .filter(event -> !event.available).map(event -> {
                                     JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                                     disconn.code = ViewableView.BAD_NET_WORK;//连接互联网不可用,
                                     disconn.remote = getViewHandler();
@@ -189,7 +189,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         .first()
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(dis -> {
-                            AppLogger.e(dis.code + "AAA");
+                            AppLogger.d("收到了断开视频的消息:" + dis.code);
                             switch (dis.code) {
                                 case ViewableView.BAD_NET_WORK:
                                     mView.onVideoDisconnect(dis.code);
@@ -216,8 +216,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void onStop() {
         super.onStop();
         if (getViewHandler() != null) {
-            stopViewer().subscribe();
             setViewHandler(null);
+            if (hasResolution) {
+                stopViewer().subscribe();
+            }
         }
     }
 

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -84,9 +85,9 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
         ViewUtils.setChineseExclude(etMinePersonalInformationOldPassword, 12);
+        ViewUtils.setChineseExclude(etMinePersonalInformationNewPassword, 12);
         ivMinePersonalSetpasswordBind.setEnabled(false);
     }
 

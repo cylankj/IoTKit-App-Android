@@ -259,11 +259,11 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
     compile 'org.greenrobot:greendao:3.2.0'
-//先用本地依赖的方式，打包平台还部支持
+    //先用本地依赖的方式，打包平台还部支持
     compile(name: 'constraint-layout-1.0.1', ext: 'aar')
-//    compile 'com.android.support.constraint:constraint-layout:1.0.1'
-
+    //    compile 'com.android.support.constraint:constraint-layout:1.0.1'
     //aar通用依赖，不需要指定名字
     compile files('libs/open_sdk_r5781.jar')
+    testCompile files('libs/javassist.jar')
 }
 
