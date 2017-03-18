@@ -158,7 +158,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 //非 AP 模式
                 bannerConnectionIcon.setImageResource(R.drawable.camera720_icon_wifi);
                 bannerConnectionText.setText("WiFi连接");
-
             }
         }
     }
@@ -171,9 +170,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelVideoMode.setEnabled(false);
         liveFlowSpeedText.setText("0K/s");
         loadingBar.setVisibility(View.VISIBLE);
-        if (bottomPanelSwitcher.getDisplayedChild() == 1) {
-            bottomPanelSwitcher.showPrevious();
-        }
     }
 
     @Override
@@ -236,7 +232,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onFlowSpeed(int speed) {
-        AppLogger.d("onFlowSpeed:" + MiscUtils.getByteFromBitRate(speed));
         liveFlowSpeedText.setText(MiscUtils.getByteFromBitRate(speed));
     }
 
@@ -280,7 +275,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(panoramaToolBar);
-        connectionMode = CONNECTION_MODE.DEVICE_OFFLINE;
 
         int netType = NetUtils.getNetType(this);
         if (netType == ConnectivityManager.TYPE_MOBILE) {
@@ -288,6 +282,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         } else {
             mPresenter.startViewer();
         }
+        if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_PICTURE && bottomPanelSwitcher.getDisplayedChild() == 1) {
+            bottomPanelSwitcher.showPrevious();
+        } else if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_VIDEO && bottomPanelSwitcher.getDisplayedChild() == 0) {
+            bottomPanelSwitcher.showNext();
+        }
+        mPresenter.checkAndInitRecord();
     }
 
     @Override
@@ -299,12 +299,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     protected void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(panoramaToolBar);
-        if (surfaceView != null) {
-            surfaceView.onPause();
-            videoLiveContainer.removeAllViews();
-            surfaceView = null;
-            muteAudio(false);
-        }
     }
 
     public boolean muteAudio(boolean bMute) {
@@ -366,13 +360,15 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         AppLogger.d("clickedBottomPanelPhotoGraphItem");
         if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_PICTURE) {
             AppLogger.d("将进行拍照");
-            bottomPanelPhotoGraphItem.setEnabled(false);
+            bottomPanelPhotoGraphItem.setEnabled(false);//防止重复点击
             mPresenter.makePhotograph();
         } else if (panoramaRecordMode == MODE_NONE) {
             AppLogger.d("将进行长录像");
+            bottomPanelPhotoGraphItem.setEnabled(false);//防止重复点击
             mPresenter.startMakeLongVideo();
         } else if (panoramaRecordMode == MODE_LONG) {
             AppLogger.d("将结束录制长视频");
+            bottomPanelPhotoGraphItem.setEnabled(false);//防止重复点击
             mPresenter.stopMakeLongVideo();
         }
     }
@@ -440,6 +436,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     protected void onPrepareToExit(Action action) {
         mPresenter.dismiss();
+        if (surfaceView != null) {
+            surfaceView.onPause();
+            videoLiveContainer.removeAllViews();
+            surfaceView = null;
+            muteAudio(false);
+        }
         action.actionDone();
     }
 
@@ -610,11 +612,18 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onStopMakeVideoFailed() {
         AppLogger.d("结束录制视频失败");
+        ToastUtil.showNegativeToast("录制视频失败了!");
+        bottomPanelPhotoGraphItem.setEnabled(true);
+        panoramaRecordMode = MODE_NONE;
+        onSetVideoModeLayout();
     }
 
     @Override
     public void onLongVideoCompleted() {
-        AppLogger.d("录制长视频结束了");
+        AppLogger.d("长视频录制成功了!");
+        ToastUtil.showPositiveToast("录制长视频成功了!");
+        panoramaRecordMode = MODE_NONE;
+        bottomPanelPhotoGraphItem.setEnabled(true);
         onSetVideoModeLayout();
     }
 
@@ -649,11 +658,13 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onShortVideoStarted() {
         panoramaRecordMode = MODE_SHORT;
+        bottomPanelSwitcherItem2TimeText.setText("8S");
         onSetShortVideoRecordLayout();
     }
 
     @Override
     public void onShortVideoCompleted() {
+        ToastUtil.showPositiveToast("短视频录制成功");
         panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_NONE;
         onSetVideoModeLayout();
     }
@@ -668,6 +679,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onLongVideoStarted() {
         panoramaRecordMode = MODE_LONG;
+        bottomPanelPhotoGraphItem.setEnabled(true);
+        bottomPanelSwitcherItem2TimeText.setText("00:00:00");
         onSetLongVideoRecordLayout();
     }
 
@@ -680,12 +693,13 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onStartShortVideoFailed() {
+        ToastUtil.showNegativeToast("开始录制短视频失败");
         AppLogger.d("onStartShortVideoFailed");
     }
 
     @Override
     public void onStartMakeVideoFailed() {
-
+        ToastUtil.showPositiveToast("开始录制长视频失败");
     }
 
     public void onSwitchSpeedMode(SPEED_MODE mode) {
@@ -725,7 +739,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onUpdateRecordTime(int second, int type) {
-        AppLogger.d("正在更新录像时间(长视频或者短视频)");
+//        AppLogger.d("正在更新录像时间(长视频或者短视频)");
         switch (panoramaRecordMode) {
             case MODE_LONG:
                 bottomPanelSwitcherItem2TimeText.setText(TimeUtils.getHHMMSS(second * 1000L));

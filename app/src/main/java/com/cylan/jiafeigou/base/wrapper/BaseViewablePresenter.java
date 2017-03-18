@@ -136,6 +136,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .map(handler -> {
                     if (!TextUtils.isEmpty(handler)) {
                         try {
+                            hasResolution = false;
                             getCmd().stopPlay(handler);
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.remote = getViewHandler();

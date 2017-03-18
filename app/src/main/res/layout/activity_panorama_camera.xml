@@ -294,9 +294,7 @@
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginBottom="@dimen/y17"
-                    android:layout_marginTop="@dimen/y18"
-                    android:gravity="center_horizontal"
+                    android:gravity="center"
                     android:text="00:08:07"
                     android:textColor="#FFFFFF"
                     android:textSize="@dimen/sp16" />
