@@ -255,6 +255,18 @@ public class TimeUtils {
         return format.format(new Date(time));
     }
 
+    public static String getHHMMSS(long timeMs) {
+        int totalSecound = (int) (timeMs / 1000);
+        int second = totalSecound % 60;
+        totalSecound = totalSecound / 60;
+        int minutes = totalSecound % 60;
+        int hours = totalSecound / 60;
+        String str_hour = hours > 9 ? "" + hours : "0" + hours;
+        String str_minute = minutes > 9 ? "" + minutes : "0" + minutes;
+        String str_second = second > 9 ? "" + second : "0" + second;
+        return str_hour + ":" + str_minute + ":" + str_second;
+    }
+
 
     public static String getBellRecordTime(long time) {
         Date today = new Date();

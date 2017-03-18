@@ -19,11 +19,29 @@ public interface PanoramaCameraContact {
 
         void onNetWorkChangedToWiFi();
 
+        void onShortVideoStarted();
+
+        void onShortVideoCompleted();
+
+        void onShortVideoCanceled(int reason);
+
+        void onMakePhotoGraphFailed();
+
+        void onStartShortVideoFailed();
+
+        void onStartMakeVideoFailed();
+
+        void onSetShortVideoRecordLayout();
+
+        void onSetLongVideoRecordLayout();
+
         enum SPEED_MODE {AUTO, FLUENCY, NORMAL, HD}
 
         enum CONNECTION_MODE {FINE, DEVICE_OFFLINE, BAD_NETWORK}
 
         enum PANORAMA_VIEW_MODE {MODE_PICTURE, MODE_VIDEO}
+
+        enum PANORAMA_RECORD_MODE {MODE_NONE, MODE_SHORT, MODE_LONG}
 
         void onSwitchSpeedMode(SPEED_MODE mode);
 
@@ -43,6 +61,18 @@ public interface PanoramaCameraContact {
     }
 
     interface Presenter extends ViewablePresenter {
+
+        class RecordProgress {
+            long second;
+
+            public RecordProgress(long second) {
+                this.second = second;
+            }
+        }
+
+        class RecordFinished {
+        }
+
         void makePhotograph();//拍照
 
         void startMakeLongVideo();//开始录制长视频
@@ -52,5 +82,8 @@ public interface PanoramaCameraContact {
         void startMakeShortVideo();//开始录制短视频
 
         void stopMakeShortVideo();
+
+        void checkAndInitRecord();
+
     }
 }

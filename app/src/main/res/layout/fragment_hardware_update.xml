@@ -114,6 +114,7 @@
                     android:textSize="@dimen/sp14" />
 
                 <View
+                    android:visibility="invisible"
                     android:layout_marginRight="@dimen/x20"
                     android:id="@+id/hardware_update_point"
                     android:layout_alignParentRight="true"

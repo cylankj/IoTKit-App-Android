@@ -27,11 +27,12 @@ import com.cylan.udpMsgPack.JfgUdpMsg;
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Index;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
-import java.text.DecimalFormat;
 
 import rx.Observable;
 import rx.Subscription;
@@ -84,7 +85,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             downLoadBean.savePath = getView().getContext().getFilesDir().getAbsolutePath();
         } else {
-            downLoadBean.savePath = Environment.getExternalStorageDirectory().getAbsolutePath();
+            downLoadBean.savePath = Environment.getExternalStorageDirectory().getAbsolutePath()+File.separator;
         }
         return downLoadBean;
     }
@@ -154,7 +155,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     }
 
     @Override
-    public void getFileSize() {
+    public void getFileSize(UpdateFileBean bean) {
         addSubscription(Observable.just("url")
         .subscribeOn(Schedulers.newThread())
         .flatMap(new Func1<String, Observable<String>>() {
@@ -162,21 +163,28 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
             public Observable<String> call(String s) {
                 long length = 0;
                 try {
-                    if (TextUtils.isEmpty(s))return null;
+                    if (TextUtils.isEmpty(checkDevVersion.url))return Observable.just("");
 //                    URL url = new URL("http://yf.cylan.com.cn:82/sdk/libmedia-engine-jni-master.so");
-
                     URL url = new URL(checkDevVersion.url);
                     URLConnection conn = url.openConnection();//建立连接
                     String headerField = conn.getHeaderField(6);
                     length = conn.getContentLength();
                     AppLogger.d("file name:"+headerField);
                     AppLogger.d("file_length:"+length);
+                    //先从本地获取看看是否已下载
+                    String localUrl = "/mnt/sdcard/"+Environment.getExternalStorageDirectory().getAbsolutePath()+ "/" + bean.fileName+".bin";
+                    File file = new File(localUrl);
+                    AppLogger.d("local_url:"+file.getAbsolutePath());
+                    AppLogger.d("file_length:"+getFileSize(file));
+                    AppLogger.d("file_exit:"+file.exists());
+                    if (file.exists() && getFileSize(file) == length){
+                        return Observable.just("");
+                    }
                     return Observable.just(MiscUtils.FormetSDcardSize(length));
                 } catch (Exception e) {
                     e.printStackTrace();
-                    return null;
+                    return Observable.just("");
                 }
-
             }
         })
         .observeOn(AndroidSchedulers.mainThread())
@@ -185,7 +193,6 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 getView().initFileSize(s);
             }
         }));
-
     }
 
     @Override
@@ -194,7 +201,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object integer) -> {
                     AppLogger.i("actionDone: " + integer);
-                    getView().startUpdate();
+                    getView().beginUpdate();
                 });
     }
 
@@ -204,6 +211,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .filter((Integer integer) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Integer integer) -> {
+                    AppLogger.d("updataing:"+integer);
                     getView().onUpdateing(integer);
                 });
     }
@@ -266,6 +274,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
 
         @Override
         public void onFailedReason(long taskId, FailReason reason) {
+            AppLogger.d("download_fail:"+reason.toString());
             Message msg = new Message();
             msg.what = 5;
             handler.sendMessage(msg);
@@ -282,8 +291,10 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        int req = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(downLoadBean.savePath + "/" + downLoadBean.fileName).toBytes());
-                        AppLogger.d("startUpdate:"+req);
+                        String localUrl = "/mnt/sdcard"+downLoadBean.savePath + "/" + downLoadBean.fileName+".bin";
+                        AppLogger.d("localUrl:"+localUrl);
+                        int req = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(localUrl).toBytes());
+                        AppLogger.d("beginUpdate:"+req);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -300,6 +311,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     try {
                         JfgUdpMsg.UdpHeader header = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
                         final String headTag = header.cmd;
+                        AppLogger.d("udp_cmd:"+headTag);
                         if (TextUtils.equals(headTag, "f_upgrade")) {
                             getView().handlerResult(2);
                         } else {
@@ -327,10 +339,13 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     public static class UpdatePing extends JfgUdpMsg.UdpHeader {
         @Index(1)
         public String url;
+        @Index(2)
+        public String cid;
 
         public UpdatePing(String url) {
             this.url = url;
             this.cmd = "f_upgrade";
+//            this.cid = cid;
         }
     }
 
@@ -338,5 +353,26 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     public void stop() {
         super.stop();
         endCounting();
+    }
+
+    /**
+     * 获取文件大小
+     * @param file
+     * @return
+     * @throws Exception
+     */
+    private long getFileSize(File file){
+        long size = 0;
+        try {
+            if (file.exists()){
+                FileInputStream fis = null;
+                fis = new FileInputStream(file);
+                size = fis.available();
+                AppLogger.d("getF:"+size);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return size;
     }
 }
