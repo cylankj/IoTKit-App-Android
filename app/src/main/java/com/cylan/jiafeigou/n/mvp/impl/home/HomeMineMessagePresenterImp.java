@@ -265,12 +265,16 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
         Comparator<MineMessageBean> comparator = new Comparator<MineMessageBean>() {
             @Override
             public int compare(MineMessageBean lhs, MineMessageBean rhs) {
-                long oldTime = Long.parseLong(rhs.time + "");
-                long newTime = Long.parseLong(lhs.time + "");
-                return (int) (oldTime - newTime);
+                long oldTime = Long.parseLong(rhs.time);
+                long newTime = Long.parseLong(lhs.time);
+                if (oldTime == newTime)
+                    return 0;
+                if (oldTime < newTime)
+                    return -1;
+                return 1;
             }
         };
-        Collections.sort(list, comparator);
+        Collections.sort(list,comparator);
         return list;
     }
 

@@ -82,6 +82,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriendsAddByNum);
+        ViewUtils.setChineseExclude(etAddByNumber,65);
         initKeyListener();
     }
 

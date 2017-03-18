@@ -39,11 +39,12 @@ import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
-import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -103,7 +104,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private HomeMineInfoMailBoxFragment mailBoxFragment;
     private MineInfoBindPhoneFragment bindPhoneFragment;
     private MineUserInfoLookBigHeadFragment bigHeadFragment;
-    private MineSetUserNameFragment setUserNameFragment;
+    private MineSetUserAliasFragment setUserNameFragment;
     private MineInfoSetPassWordFragment setPassWordFragment;
     private MineInfoContract.Presenter presenter;
     private JFGAccount argumentData;
@@ -111,6 +112,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private File tempFile;
     private PopupWindow popupWindow;
     private int navigationHeight;
+    private boolean resetPhoto;
     private WeakReference<MyQRCodeDialog> myQrcodeDialog;
 
     public static HomeMineInfoFragment newInstance() {
@@ -191,6 +193,10 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
+        if (resetPhoto){
+            RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
+            resetPhoto = false;
+        }
     }
 
     @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
@@ -285,7 +291,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void jump2SetUserNameFragment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", argumentData);
-        setUserNameFragment = MineSetUserNameFragment.newInstance(bundle);
+        setUserNameFragment = MineSetUserAliasFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -294,10 +300,11 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 .commit();
 
         if (getActivity() != null && getActivity().getFragmentManager() != null) {
-            setUserNameFragment.setOnSetUsernameListener(new MineSetUserNameFragment.OnSetUsernameListener() {
+            setUserNameFragment.setOnSetUsernameListener(new MineSetUserAliasFragment.OnSetUsernameListener() {
                 @Override
                 public void userNameChange(String name) {
                     tvUserName.setText(name);
+                    argumentData.setAlias(name);
                 }
             });
         }
@@ -623,6 +630,8 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 }
                 String cropImagePath = getRealFilePathFromUri(getContext(), uri);
                 PreferencesUtils.putString("UserImageUrl", cropImagePath);
+                resetPhoto = true;
+                AppLogger.d("upload_succ");
             } else if (requestCode == OPEN_CAMERA) {
                 if (resultCode == getActivity().RESULT_OK) {
                     gotoClipActivity(outPutUri);

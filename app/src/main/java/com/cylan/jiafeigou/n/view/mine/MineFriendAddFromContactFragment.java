@@ -55,7 +55,6 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
 
     private MineFriendAddFromContactContract.Presenter presenter;
     private FriendAddFromContactAdapter contactListAdapter;
-
     private String friendAccount;
 
     @Override
@@ -89,6 +88,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriendsScanAdd);
+        ViewUtils.setChineseExclude(etAddPhoneNumber,65);
     }
 
     @OnTextChanged(R.id.et_add_phone_number)
