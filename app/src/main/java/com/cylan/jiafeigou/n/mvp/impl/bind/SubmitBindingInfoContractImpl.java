@@ -78,6 +78,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
             bindResult = BindUtils.BIND_ING;
             if ((subscription == null || subscription.isUnsubscribed())) {
                 subscription = new CompositeSubscription();
+                AppLogger.d("add sub result");
                 subscription.add(bindResultSub());
                 subscription.add(bindResultSub1());
             }
@@ -96,7 +97,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
     private Subscription bindResultSub() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.BindDeviceEvent.class)
                 .observeOn(Schedulers.newThread())
-                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null && TextUtils.equals(bindDeviceEvent.uuid, uuid))
+                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null/** && TextUtils.equals(bindDeviceEvent.uuid, uuid)**/)
                 .timeout(90, TimeUnit.SECONDS, Observable.just("timeout")
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .filter(s -> getView() != null)

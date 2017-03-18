@@ -325,7 +325,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备
-//                RxBus.getCacheInstance().post(new RxEvent.BindDeviceEvent(jfgResult.code));
+                RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(jfgResult.code));
                 break;
             case JResultEvent.JFG_RESULT_UNBINDDEV:
                 RxBus.getCacheInstance().post(new RxEvent.UnBindDeviceEvent(jfgResult));
