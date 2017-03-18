@@ -281,6 +281,8 @@ public class ViewUtils {
             for (int i = start; i < end; i++) {
                 if (isChineseChar(source.charAt(i))) {
                     return "";
+                }else if(source.equals(" ")){
+                    return "";
                 }
             }
             return null;

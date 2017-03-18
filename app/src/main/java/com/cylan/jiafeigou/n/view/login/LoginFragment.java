@@ -887,7 +887,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             etRegisterInputBox.setHint(getString(R.string.EMAIL_1));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
             //设置长度
-            ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 65);
+            ViewUtils.setChineseExclude(etRegisterInputBox,65);
             registerWay = JConstant.REGISTER_BY_EMAIL;
             tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
             handleVerificationCodeBox(false);
@@ -896,7 +896,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             etRegisterInputBox.setText("");
             etRegisterInputBox.setHint(getString(R.string.PHONE_NUMBER_1));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_CLASS_PHONE);
-            ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 65);
+            ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 11);
+            ViewUtils.setChineseExclude(etRegisterInputBox,11);
+            ViewUtils.setChineseExclude(etVerificationInput,6);
             registerWay = JConstant.REGISTER_BY_PHONE;
             tvRegisterSubmit.setText(getString(R.string.GET_CODE));
         }

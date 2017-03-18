@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoBineMailPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
+import com.cylan.jiafeigou.support.softkeyboard.util.ViewUtil;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -171,12 +172,12 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+        ViewUtils.setChineseExclude(mETMailBox,65);
         mETMailBox.requestFocus();
         initKeyListener();
 
     }
     private void initKeyListener() {
-//        mETMailBox.requestFocus();
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
         mETMailBox.setOnKeyListener(new View.OnKeyListener() {

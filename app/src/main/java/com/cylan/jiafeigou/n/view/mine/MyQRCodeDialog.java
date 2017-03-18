@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -21,6 +22,8 @@ import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -80,6 +83,7 @@ public class MyQRCodeDialog extends BaseDialog {
     }
 
     private void initView() {
+        MyViewTarget myViewTarget= new MyViewTarget(ivUserIcon,getResources());
         if (isopenlogin) {
             tvUserAlias.setText(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
             Glide.with(getContext()).load(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON))
@@ -88,16 +92,7 @@ public class MyQRCodeDialog extends BaseDialog {
                     .placeholder(R.drawable.icon_mine_head_normal)
                     .error(R.drawable.icon_mine_head_normal)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new BitmapImageViewTarget(ivUserIcon) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            ivUserIcon.setImageDrawable(circularBitmapDrawable);
-                        }
-
-                    });
+                    .into(myViewTarget);
             return;
         }
         tvUserAlias.setText(jfgaccount.getAlias());
@@ -107,16 +102,40 @@ public class MyQRCodeDialog extends BaseDialog {
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new BitmapImageViewTarget(ivUserIcon) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        ivUserIcon.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                .into(myViewTarget);
     }
+
+/*    new BitmapImageViewTarget(ivUserIcon) {
+        @Override
+        protected void setResource(Bitmap resource) {
+            RoundedBitmapDrawable circularBitmapDrawable =
+                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
+            circularBitmapDrawable.setCircular(true);
+            ivUserIcon.setImageDrawable(circularBitmapDrawable);
+        }
+    }
+    */
+
+    private static class MyViewTarget extends BitmapImageViewTarget{
+        private WeakReference<Resources> resourcesWeakReference;
+        private WeakReference<ImageView> imageViewWeakReference;
+
+        public MyViewTarget(ImageView view,Resources resources) {
+            super(view);
+            resourcesWeakReference = new WeakReference<Resources>(resources);
+            imageViewWeakReference = new WeakReference<ImageView>(view);
+        }
+
+        @Override
+        protected void setResource(Bitmap resource) {
+            super.setResource(resource);
+            RoundedBitmapDrawable circularBitmapDrawable =
+                    RoundedBitmapDrawableFactory.create(resourcesWeakReference.get(), resource);
+            circularBitmapDrawable.setCircular(true);
+            imageViewWeakReference.get().setImageDrawable(circularBitmapDrawable);
+        }
+    }
+
 
     @OnClick(R.id.iv_close_dialog)
     public void onClick() {

@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNameContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -33,14 +33,14 @@ import rx.subscriptions.CompositeSubscription;
  * 创建时间：2016/9/2
  * 描述：
  */
-public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetNameContract.View> implements MineInfoSetNameContract.Presenter {
+public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetAliasContract.View> implements MineInfoSetAliasContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
     private JFGAccount jfgAccount;
     private Network network;
     private boolean isSetAlais;
 
-    public MineInfoSetNamePresenterImpl(MineInfoSetNameContract.View view) {
+    public MineInfoSetNamePresenterImpl(MineInfoSetAliasContract.View view) {
         super(view);
         view.setPresenter(this);
     }

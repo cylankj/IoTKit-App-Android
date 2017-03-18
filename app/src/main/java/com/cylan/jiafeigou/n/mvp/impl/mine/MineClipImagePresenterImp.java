@@ -102,7 +102,6 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
 
     /**
      * 处理上传头像文件后
-     *
      * @param getHttpDoneResult
      */
     private void handlerUploadImage(JFGMsgHttpResult getHttpDoneResult) {

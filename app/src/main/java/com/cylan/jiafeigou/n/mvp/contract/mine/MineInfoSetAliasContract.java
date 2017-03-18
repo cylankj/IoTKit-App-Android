@@ -11,7 +11,7 @@ import rx.Subscription;
  * 创建时间：2016/9/2
  * 描述：
  */
-public interface MineInfoSetNameContract {
+public interface MineInfoSetAliasContract {
 
     interface View extends BaseView<Presenter> {
         /**
