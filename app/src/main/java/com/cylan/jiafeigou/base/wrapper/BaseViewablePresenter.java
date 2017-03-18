@@ -105,7 +105,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .doOnUnsubscribe(() -> AppLogger.d("直播链取消订阅了"))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rtcp -> {
-                    AppLogger.d("流量信息更新:" + rtcp.bitRate / 8 + "KB/S");
                     mView.onFlowSpeed(rtcp.bitRate);
                 }, e -> {
                     AppLogger.e(e.getMessage());
