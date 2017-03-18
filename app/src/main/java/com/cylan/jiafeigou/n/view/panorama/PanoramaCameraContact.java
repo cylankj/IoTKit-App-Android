@@ -25,6 +25,10 @@ public interface PanoramaCameraContact {
 
         void onShortVideoCanceled(int reason);
 
+        void onLongVideoStarted();
+
+        void onLongVideoCompleted();
+
         void onMakePhotoGraphFailed();
 
         void onStartShortVideoFailed();
@@ -34,6 +38,9 @@ public interface PanoramaCameraContact {
         void onSetShortVideoRecordLayout();
 
         void onSetLongVideoRecordLayout();
+
+        void onStopMakeVideoFailed();
+
 
         enum SPEED_MODE {AUTO, FLUENCY, NORMAL, HD}
 
@@ -51,7 +58,7 @@ public interface PanoramaCameraContact {
 
         void onDeviceBatteryLow();
 
-        void onUpdateRecordTime(int second);
+        void onUpdateRecordTime(int second, int type);
 
         void onMakePhotoGraphPreview();
 
@@ -77,7 +84,7 @@ public interface PanoramaCameraContact {
 
         void startMakeLongVideo();//开始录制长视频
 
-        void stopMakeMakeLongVideo();
+        void stopMakeLongVideo();
 
         void startMakeShortVideo();//开始录制短视频
 

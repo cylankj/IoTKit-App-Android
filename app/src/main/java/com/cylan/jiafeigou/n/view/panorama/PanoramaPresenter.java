@@ -26,13 +26,13 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_VIDEO_END_REQ;
+
 /**
  * Created by yanzhendong on 2017/3/8.
  */
 
 public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter, JfgSocket.JfgSocketCallBack {
-
-    private boolean hasConnected = false;//0:未连接,1:连接中,2:已连接
 
     @Override
     public void onStart() {
@@ -69,25 +69,28 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         return RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(msg -> {
+                .filter(msg -> {
+                    JfgUdpMsg.UdpHeader header = null;
                     try {
-                        JfgUdpMsg.UdpHeader header = DpUtils.unpackData(msg.data, JfgUdpMsg.UdpHeader.class);
-                        if (header != null && TextUtils.equals(header.cmd, "f_ping_ack")) {
-                            //得到 fping响应
-                            JfgUdpMsg.FPingAck pingAck = DpUtils.unpackData(msg.data, JfgUdpMsg.FPingAck.class);
-                            if (pingAck != null && TextUtils.equals(pingAck.cid, mUUID)) {
-                                synchronized (this) {
-                                    if (!hasConnected) {
-                                        hasConnected = true;
-                                        AppLogger.d("获取到设备 IP 地址:" + msg.ip + ",port:" + msg.port);
-                                        JfgSocket.Connect(msg.ip, msg.port, true);
-                                    }
-                                }
-                            }
-                        }
+                        header = DpUtils.unpackData(msg.data, JfgUdpMsg.UdpHeader.class);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+                    return header != null && TextUtils.equals(header.cmd, "f_ping_ack");
+                })
+                .filter(msg -> {
+                    JfgUdpMsg.FPingAck pingAck = null;
+                    try {
+                        pingAck = DpUtils.unpackData(msg.data, JfgUdpMsg.FPingAck.class);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return pingAck != null && TextUtils.equals(pingAck.cid, mUUID);
+                })
+                .first()
+                .subscribe(msg -> {
+                    AppLogger.d("获取到设备 IP 地址:" + msg.ip + ",port:" + msg.port);
+                    JfgSocket.Connect(msg.ip, msg.port, true);
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
@@ -124,7 +127,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                     AppLogger.d("正在发送拍照请求:" + new Gson().toJson(msg));
                                     return msg.mSeq;
                                 })
-                                .flatMap(this::makeForwardDataRspResponse))
+                                .flatMap(this::makeLocalDataRspResponse))
                 .first()
                 .map(rsp -> {
                     PanoramaEvent.MSG_TYPE_TAKE_PICTURE_RSP data = null;
@@ -135,6 +138,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                     return data;
                 })
+                .observeOn(AndroidSchedulers.mainThread())
                 .filter(rsp -> {
                     if (rsp == null || rsp.ret == -1) {
                         //失败了
@@ -155,7 +159,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         registerSubscription(subscribe);
     }
 
-    protected Observable<PanoramaEvent.RawRspMsg> makeForwardDataRspResponse(long seq) {
+    protected Observable<PanoramaEvent.RawRspMsg> makeLocalDataRspResponse(long seq) {
         return RxBus.getCacheInstance().toObservable(PanoramaEvent.RawRspMsg.class)
                 .filter(rsp -> rsp.mSeq == seq);
     }
@@ -166,17 +170,42 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startMakeLongVideo() {
-
-    }
-
-    @Override
-    public void stopMakeMakeLongVideo() {
         Subscription subscribe = verifySDCard(mSourceManager.getJFGDevice(mUUID))
                 .flatMap(this::verifyBattery)
                 .flatMap(ret -> startMakeVideo(2))
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(ret -> makeVideoProgressUpdate(0, 2))
                 .subscribe(second -> {
-                    mView.onUpdateRecordTime(second);
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                });
+        registerSubscription(subscribe);
+    }
+
+    @Override
+    public void stopMakeLongVideo() {
+        Subscription subscribe = RxBus.getCacheInstance().toObservable(RecordProgress.class)
+                .first()
+                .map(sec -> {
+                    RxBus.getCacheInstance().post(new RecordFinished());
+                    return sec;
+                })
+                .flatMap(progress -> stopMakeVideo(2)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(rsp -> {
+                            if (rsp == null || rsp.ret == -1) {
+                                AppLogger.d("结束录制长视频失败");
+                                mView.onStopMakeVideoFailed();
+                            } else {
+                                AppLogger.d("结束录制长视频成功");
+                                mView.onLongVideoCompleted();
+                            }
+                            return rsp;
+                        })
+
+                )
+                .subscribe(ret -> {
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
@@ -192,13 +221,13 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             byte[] reqBytes = DpUtils.pack(type);
                             byte[] rawBytes = fill(msg, PanoramaEvent.MIDRobotForwardDataV2, PanoramaEvent.TYPE_VIDEO_BEGIN_REQ, reqBytes);
                             JfgSocket.SendMsgpackBuff(rawBytes);
-                            AppLogger.d(new Gson().toJson(msg));
+                            AppLogger.d("正在发送录像请求:" + new Gson().toJson(msg));
                             subscriber.onNext(msg.mSeq);
                             subscriber.onCompleted();
                         })
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.io())
-                                .flatMap(this::makeForwardDataRspResponse)
+                                .flatMap(this::makeLocalDataRspResponse)
                 )
                 .first()
                 .map(rsp -> {
@@ -219,29 +248,44 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         return false;
                     }
                     return true;
-                })
-                .flatMap(dev -> Observable.interval(500, TimeUnit.MILLISECONDS)
-                        .map(time -> {
-                            int second = (int) (time + 1) / 2;
-                            RxBus.getCacheInstance().post(calculate(second));
-                            return second;
-                        }));
+                });
+    }
+
+    protected Observable<PanoramaEvent.MSG_TYPE_VIDEO_END_RSP> stopMakeVideo(int type) {
+        return RxBus.getCacheInstance().toObservable(PanoramaEvent.RawRspMsg.class)
+                .mergeWith(
+                        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+                            PanoramaEvent.RawReqMsg msg = new PanoramaEvent.RawReqMsg();
+                            byte[] rawBytes = fill(msg, PanoramaEvent.MIDRobotForwardDataV2, TYPE_VIDEO_END_REQ, DpUtils.pack(type));
+                            JfgSocket.SendMsgpackBuff(rawBytes);
+                            subscriber.onNext(msg.mSeq);
+                            subscriber.onCompleted();
+                        })
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(Schedulers.io())
+                                .flatMap(this::makeLocalDataRspResponse))
+                .first()
+                .map(rsp -> {
+                    PanoramaEvent.MSG_TYPE_VIDEO_END_RSP data = null;
+                    try {
+                        data = DpUtils.unpackData(rsp.msg, PanoramaEvent.MSG_TYPE_VIDEO_END_RSP.class);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return data;
+                });
     }
 
     @Override
     public void startMakeShortVideo() {
         Subscription subscribe = verifySDCard(mSourceManager.getJFGDevice(mUUID))
+                .observeOn(Schedulers.io())
                 .flatMap(ret -> startMakeVideo(1))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(time -> {
-                    mView.onShortVideoStarted();
-                    return time;
-                })
-                .takeUntil(RxBus.getCacheInstance().toObservable(RecordFinished.class).first())
+                .flatMap(ret -> makeVideoProgressUpdate(0, 1))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(sec -> {
-                    mView.onUpdateRecordTime(sec);
-                    if (sec >= 8) {
+                    if (sec >= 8) {//大于八秒设备自动停止录像,不需要我们再去发送消息,我们只需要更新界面就行了
                         AppLogger.d("录制完成了");
                         mView.onShortVideoCompleted();
                         RxBus.getCacheInstance().post(new RecordFinished());
@@ -257,27 +301,29 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     public void stopMakeShortVideo() {
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RecordProgress.class)
                 .first()
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(progress -> {
-                    if (progress.second < 3) {//录制不足3秒
-                        mView.onShortVideoCanceled(-1);
-                        return false;
-                    }
-                    return true;
+                .map(sec -> {
+                    RxBus.getCacheInstance().post(new RecordFinished());
+                    return sec;
                 })
-                .observeOn(Schedulers.io())
                 .filter(progress -> progress.second < 7)//超过8秒会在 startMakeShortVideo中完成
-                .flatMap(progress -> {
-                    return Observable.just("完成了");//这里会插入完成录制逻辑,现在还没接口;
-                })
-                .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(progress -> stopMakeVideo(1)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .map(rsp -> {
+                            if (rsp == null || rsp.ret == -1) {
+                                mView.onStopMakeVideoFailed();
+                            } else if (progress.second < 3) {
+                                mView.onShortVideoCanceled(-1);
+                            } else {
+                                mView.onShortVideoCompleted();
+                            }
+                            return rsp;
+                        })
+
+                )
                 .subscribe(ret -> {
-                    mView.onShortVideoCompleted();
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
-                }, () -> {
-                    RxBus.getCacheInstance().post(new RecordFinished());
                 });
         registerSubscription(subscribe);
     }
@@ -297,7 +343,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         })
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.io())
-                                .flatMap(this::makeForwardDataRspResponse))
+                                .flatMap(this::makeLocalDataRspResponse))
                 .first()
                 .map(rsp -> {
                     PanoramaEvent.MSG_TYPE_VIDEO_STATUS_RSP data = null;
@@ -326,32 +372,33 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         registerSubscription(subscribe);
     }
 
-    public void makeVideoProgressUpdate(int offset, int type) {
-        Observable.create(subscriber -> {
+    public Observable<Integer> makeVideoProgressUpdate(int offset, int type) {
+        return Observable.create(subscriber -> {
             if (offset == 0 && type == 1) {//开始录制8秒短视频
                 mView.onShortVideoStarted();
             } else if (offset == 0 && type == 2) {//开始录制长视频
+                mView.onLongVideoStarted();
             } else if (offset > 0 && type == 1) {//继续上次的录制8秒短视频
-                mView.onUpdateRecordTime(offset);
+                mView.onUpdateRecordTime(offset, type);
             } else if (offset > 0 && type == 2) {//继续上次的录制长视频
-                mView.onUpdateRecordTime(offset);
+                mView.onUpdateRecordTime(offset, type);
             }
             subscriber.onNext("VideoProgressStart");
             subscriber.onCompleted();
         }).subscribeOn(AndroidSchedulers.mainThread())
                 .flatMap(ret -> Observable.interval(500, TimeUnit.MILLISECONDS))
+                .takeUntil(RxBus.getCacheInstance().toObservable(RecordFinished.class).first())
                 .observeOn(Schedulers.io())
                 .map(time -> {
-                    int second = (int) (time + 1) / 2;
-                    RxBus.getCacheInstance().post(new RecordProgress((time + 1 + 2 * offset) * 500));
+                    int second = (int) ((time + 1 + 2 * offset) * 500);
+                    RxBus.getCacheInstance().post(new RecordProgress(second));
                     return second;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(sec -> {
-
+                    mView.onUpdateRecordTime(sec, type);
                     return sec;
                 });
-
     }
 
     protected byte[] fill(PanoramaEvent.RawReqMsg rawReqMsg, int msgId, int type, byte[] msg) {
@@ -396,7 +443,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     if (dev.battery == null || dev.battery.value < 5) {
                         //电量低于5%
                         mView.onDeviceBatteryLow();
-                        return false;
+//                        return false;
                     }
                     return true;
                 });
