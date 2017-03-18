@@ -267,6 +267,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         return RxBus.getCacheInstance().toObservable(RxEvent.LoginMeTab.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginMeTab -> {
+                    if (loginMeTab.b)
                     start();
                 });
     }

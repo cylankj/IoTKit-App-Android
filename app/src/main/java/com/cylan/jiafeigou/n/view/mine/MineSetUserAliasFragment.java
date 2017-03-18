@@ -14,8 +14,9 @@ import android.widget.ImageView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNameContract;
+import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNamePresenterImpl;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -32,7 +33,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/9/2
  * 描述：
  */
-public class MineSetUserNameFragment extends Fragment implements MineInfoSetNameContract.View {
+public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAliasContract.View {
 
     @BindView(R.id.iv_top_bar_left_back)
     ImageView ivTopBarLeftBack;
@@ -48,7 +49,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     FrameLayout rlTabBarContainer;
 
 
-    private MineInfoSetNameContract.Presenter presenter;
+    private MineInfoSetAliasContract.Presenter presenter;
 
     private OnSetUsernameListener listener;
     private JFGAccount userinfo;
@@ -61,8 +62,8 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
         this.listener = listener;
     }
 
-    public static MineSetUserNameFragment newInstance(Bundle bundle) {
-        MineSetUserNameFragment fragment = new MineSetUserNameFragment();
+    public static MineSetUserAliasFragment newInstance(Bundle bundle) {
+        MineSetUserAliasFragment fragment = new MineSetUserAliasFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -115,7 +116,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     }
 
     private void initEditText() {
-        etMinePersonalInformationNewName.setText(PreferencesUtils.getString("username", ""));
+        etMinePersonalInformationNewName.setText(TextUtils.isEmpty(userinfo.getAlias()) ? "":userinfo.getAlias());
     }
 
     private void initPresenter() {
@@ -161,6 +162,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
             hideSendHint();
             if (getEditName().equals(getUserInfo.jfgAccount.getAlias())) {
                 ToastUtil.showPositiveToast(getString(R.string.PWD_OK_2));
+                RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
                 getFragmentManager().popBackStack();
             } else {
                 ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
@@ -169,7 +171,7 @@ public class MineSetUserNameFragment extends Fragment implements MineInfoSetName
     }
 
     @Override
-    public void setPresenter(MineInfoSetNameContract.Presenter presenter) {
+    public void setPresenter(MineInfoSetAliasContract.Presenter presenter) {
 
     }
 

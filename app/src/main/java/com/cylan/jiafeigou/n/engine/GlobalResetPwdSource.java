@@ -72,7 +72,7 @@ public class GlobalResetPwdSource {
     }
 
     public void pwdResetedDialog(int code){
-        if (code == 16008){
+        if (code == 16008 || code == 1007){
             AppLogger.d("pwdResetedDialog:16008");
             AlertDialog.Builder builder = new AlertDialog.Builder(ContextUtils.getContext().getApplicationContext());
             LayoutInflater mLayoutInflater=LayoutInflater.from(ContextUtils.getContext().getApplicationContext());

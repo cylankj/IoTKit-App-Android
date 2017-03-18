@@ -62,6 +62,7 @@ public class SmartcallActivity extends NeedLoginActivity
     private boolean first;
     private boolean isPermissionDialogShowing = false;
     private boolean firstSignIn;
+    private boolean from_log_out;
 
     //这个页面先请求 sd卡权限
     @Override
@@ -72,6 +73,7 @@ public class SmartcallActivity extends NeedLoginActivity
         ButterKnife.bind(this);
         initPresenter();
         fullScreen(true);
+        from_log_out = getIntent().getBooleanExtra("from_log_out", false);
     }
 
     /**
@@ -103,10 +105,11 @@ public class SmartcallActivity extends NeedLoginActivity
         super.onStart();
         if (!isPermissionDialogShowing)
             SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
-        if (!getIntent().getBooleanExtra("from_log_out", false)) {
+        if (!from_log_out) {
             if (presenter != null) presenter.start();
         } else {
             splashOver();
+            from_log_out = false;
         }
     }
 

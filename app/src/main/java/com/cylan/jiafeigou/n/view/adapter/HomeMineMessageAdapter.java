@@ -93,7 +93,6 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
         }
 
         //头像icon
-
         if (item.type == 701) {
             //处理消息显示
             holder.setText(R.id.tv_device_name, ContextUtils.getContext().getString(R.string.Tap3_UserMessage_System));

@@ -319,6 +319,10 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         mRvMineSuggestion.setLayoutManager(layoutManager);
         suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), list, null);
         mRvMineSuggestion.setAdapter(suggestionAdapter);
+
+        //从最后一行显示
+        mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount()-1);
+
         suggestionAdapter.setOnResendFeedBack(new HomeMineHelpSuggestionAdapter.OnResendFeedBackListener() {
             @Override
             public void onResend(SuperViewHolder holder, MineHelpSuggestionBean item, int position) {

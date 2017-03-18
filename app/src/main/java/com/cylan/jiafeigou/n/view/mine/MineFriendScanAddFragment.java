@@ -49,7 +49,6 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     @BindView(R.id.rl_home_mine_relativesandfriends_scan_add)
     FrameLayout rlHomeMineRelativesandfriendsScanAdd;
     private MineFriendScanAddContract.Presenter presenter;
-    private boolean handlerResult;
 
 
     public static MineFriendScanAddFragment newInstance() {
@@ -159,7 +158,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void isMineFriendResult() {
-        ToastUtil.showToast("已是亲友");
+        ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
     }
 
     /**
@@ -196,7 +195,6 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void hideLoadingPro() {
-        handlerResult = false;
         LoadingDialog.dismissLoading(getFragmentManager());
     }
 
@@ -212,9 +210,8 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
             }
 //            showLoadingPro();
             if (getView() != null) {
-                if (presenter != null && !handlerResult) {
+                if (presenter != null) {
                     presenter.checkScanAccount(rawResult.getText());
-                    handlerResult = true;
                 }
             }
         }

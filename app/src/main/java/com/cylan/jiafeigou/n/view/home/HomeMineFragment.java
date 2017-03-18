@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
@@ -125,16 +126,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void onStop() {
         super.onStop();
-    }
-
-    @Override
-    public void onHiddenChanged(boolean hidden) {
-        super.onHiddenChanged(hidden);
-        if (hidden){
-            AppLogger.d("yingchang"+hidden);
-        }else {
-            AppLogger.d("show"+hidden);
-        }
     }
 
     /**
@@ -274,7 +265,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void setUserImageHeadByUrl(String url) {
 
-        Glide.with(getContext()).load(url)
+        Glide.with(ContextUtils.getContext()).load(url)
                 .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
@@ -453,14 +444,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         super.onActivityResult(requestCode, resultCode, data);
         Fragment mineInfoFragment = getFragmentManager().findFragmentByTag("personalInformationFragment");
         mineInfoFragment.onActivityResult(requestCode, resultCode, data);
-    }
-
-    /**
-     * 更新界面的数据
-     */
-    public void onUpdataView(){
-        AppLogger.d("onUpdataView");
-//        if (basePresenter != null)basePresenter.start();
     }
 
 }
