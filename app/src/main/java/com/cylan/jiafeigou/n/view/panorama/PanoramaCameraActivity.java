@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
@@ -381,6 +382,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void clickedBottomPanelAlbumItem() {
         AppLogger.d("clickedBottomPanelAlbumItem");
         Intent intent = new Intent(this, PanoramaAlbumActivity.class);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
         startActivity(intent);
     }
 

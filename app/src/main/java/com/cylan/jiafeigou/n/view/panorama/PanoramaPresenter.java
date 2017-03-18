@@ -32,7 +32,10 @@ import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_VIDEO_END_REQ;
  * Created by yanzhendong on 2017/3/8.
  */
 
-public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter, JfgSocket.JfgSocketCallBack {
+public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter, JfgSocket.JFGSocketCallBack {
+
+    private boolean hasConnected = false;//0:未连接,1:连接中,2:已连接
+    private long nativeObj;
 
     @Override
     public void onStart() {
@@ -46,7 +49,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     protected void connectSocket(boolean init) {
         if (init) {
-            JfgSocket.InitSocket(this);
+            nativeObj = JfgSocket.InitSocket(this);
         }
         try {
             AppLogger.d("正在发送 FPing 消息");
@@ -73,6 +76,19 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     JfgUdpMsg.UdpHeader header = null;
                     try {
                         header = DpUtils.unpackData(msg.data, JfgUdpMsg.UdpHeader.class);
+                        if (header != null && TextUtils.equals(header.cmd, "f_ping_ack")) {
+                            //得到 fping响应
+                            JfgUdpMsg.FPingAck pingAck = DpUtils.unpackData(msg.data, JfgUdpMsg.FPingAck.class);
+                            if (pingAck != null && TextUtils.equals(pingAck.cid, mUUID)) {
+                                synchronized (this) {
+                                    if (!hasConnected) {
+                                        hasConnected = true;
+                                        AppLogger.d("获取到设备 IP 地址:" + msg.ip + ",port:" + msg.port);
+                                        JfgSocket.Connect(nativeObj, msg.ip, msg.port, true);
+                                    }
+                                }
+                            }
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
@@ -90,7 +106,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .first()
                 .subscribe(msg -> {
                     AppLogger.d("获取到设备 IP 地址:" + msg.ip + ",port:" + msg.port);
-                    JfgSocket.Connect(msg.ip, msg.port, true);
+                    JfgSocket.Connect(nativeObj, msg.ip, msg.port, true);
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
@@ -123,7 +139,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                     PanoramaEvent.RawReqMsg msg = new PanoramaEvent.RawReqMsg();
                                     byte[] reqBytes = DpUtils.pack(new PanoramaEvent.MSG_TYPE_TAKE_PICTURE_REQ());
                                     byte[] rawBytes = fill(msg, PanoramaEvent.MIDRobotForwardDataV2, PanoramaEvent.TYPE_TAKE_PICTURE_REQ, reqBytes);
-                                    JfgSocket.SendMsgpackBuff(rawBytes);
+                                    JfgSocket.SendMsgpackBuff(nativeObj, rawBytes);
                                     AppLogger.d("正在发送拍照请求:" + new Gson().toJson(msg));
                                     return msg.mSeq;
                                 })
@@ -220,8 +236,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             PanoramaEvent.RawReqMsg msg = new PanoramaEvent.RawReqMsg();
                             byte[] reqBytes = DpUtils.pack(type);
                             byte[] rawBytes = fill(msg, PanoramaEvent.MIDRobotForwardDataV2, PanoramaEvent.TYPE_VIDEO_BEGIN_REQ, reqBytes);
-                            JfgSocket.SendMsgpackBuff(rawBytes);
+                            JfgSocket.SendMsgpackBuff(nativeObj, rawBytes);
                             AppLogger.d("正在发送录像请求:" + new Gson().toJson(msg));
+                            AppLogger.d(new Gson().toJson(msg));
                             subscriber.onNext(msg.mSeq);
                             subscriber.onCompleted();
                         })
@@ -257,7 +274,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
                             PanoramaEvent.RawReqMsg msg = new PanoramaEvent.RawReqMsg();
                             byte[] rawBytes = fill(msg, PanoramaEvent.MIDRobotForwardDataV2, TYPE_VIDEO_END_REQ, DpUtils.pack(type));
-                            JfgSocket.SendMsgpackBuff(rawBytes);
+                            JfgSocket.SendMsgpackBuff(nativeObj, rawBytes);
                             subscriber.onNext(msg.mSeq);
                             subscriber.onCompleted();
                         })
@@ -337,7 +354,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             PanoramaEvent.RawReqMsg msg = new PanoramaEvent.RawReqMsg();
                             byte[] reqBytes = DpUtils.pack(new PanoramaEvent.MSG_TYPE_VIDEO_STATUS_REQ());
                             byte[] rawBytes = fill(msg, PanoramaEvent.MIDRobotForwardDataV2, PanoramaEvent.TYPE_VIDEO_STATUS_REQ, reqBytes);
-                            JfgSocket.SendMsgpackBuff(rawBytes);
+                            JfgSocket.SendMsgpackBuff(nativeObj, rawBytes);
                             subscriber.onNext(msg.mSeq);
                             subscriber.onCompleted();
                         })
@@ -463,7 +480,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void onStop() {
         super.onStop();
-        JfgSocket.Disconnect();
+        JfgSocket.Disconnect(nativeObj);
     }
 
     @Override

@@ -1,8 +1,16 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.support.annotation.NonNull;
+import android.text.TextUtils;
+
+import com.cylan.jiafeigou.utils.MD5Util;
+import com.cylan.jiafeigou.utils.MiscUtils;
+
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -40,6 +48,16 @@ public interface PanoramaEvent {
         public String mCallee;
         @Index(3)
         public long mSeq;
+
+        @Override
+        public String toString() {
+            return "RawMsgHeader{" +
+                    "mId=" + mId +
+                    ", mCaller='" + mCaller + '\'' +
+                    ", mCallee='" + mCallee + '\'' +
+                    ", mSeq=" + mSeq +
+                    '}';
+        }
     }
 
     @Message
@@ -55,19 +73,29 @@ public interface PanoramaEvent {
     }
 
     @Message
-    class MSG_TYPE_FILE_DOWNLOAD_REQ {
+    class MsgFileDownloadReq {
         @Index(0)
         public String fileName;// 文件名, 注：根据后缀区分是图片或视频
         @Index(1)
-        public byte[] md5;//      文件的md5值
+        public String md5;//      文件的md5值
         @Index(2)
         public int begin;//    起始位置
         @Index(3)
         public int offset;//   偏移量
+
+        @Override
+        public String toString() {
+            return "MsgFileDownloadReq{" +
+                    "fileName='" + fileName + '\'' +
+                    ", md5='" + md5 + '\'' +
+                    ", begin=" + begin +
+                    ", offset=" + offset +
+                    '}';
+        }
     }
 
     @Message
-    class MSG_TYPE_FILE_DOWNLOAD_RSP {
+    class MsgFileDownloadRsp {
         @Index(0)
         public int ret;//       错误码
         @Index(1)
@@ -78,6 +106,21 @@ public interface PanoramaEvent {
         public int offset;//    偏移量
         @Index(4)
         public byte[] buffer;//    文件内容
+
+        @Override
+        public String toString() {
+            return "MsgFileDownloadRsp{" +
+                    "ret=" + ret +
+                    ", fileName='" + fileName + '\'' +
+                    ", begin=" + begin +
+                    ", offset=" + offset +
+                    ", buffer=" + Arrays.toString(buffer) +
+                    '}';
+        }
+
+        public boolean isInValid() {
+            return ret != 0 || TextUtils.isEmpty(fileName) || offset > 64;
+        }
     }
 
     @Message
@@ -94,7 +137,7 @@ public interface PanoramaEvent {
     }
 
     @Message
-    class MSG_TYPE_FILE_LIST_REQ {
+    class MsgFileListReq {
         @Index(0)
         public int beginTime;// 查询开始时间，public   int timestamp;//单位秒。
         @Index(1)
@@ -103,14 +146,40 @@ public interface PanoramaEvent {
         public int limit;// 查询条数
     }
 
+    //文件列表响应
     @Message
-    class MSG_TYPE_FILE_LIST_RSP {
+    class MsgFileListRsp {
+        @Index(0)
+        public MsgFile[] array;
+    }
+
+    @Message
+    class MsgFile implements Comparable<MsgFile> {
         @Index(0)
         public String fileName;// 文件名，命名格式[timestamp].jpg 或[timestamp]_[secends].avi，timestamp是文件生成时间的unix时间戳，secends是视频录制的时长,单位秒。根据后缀区分是图片或视频。
         @Index(1)
         public int fileSize;// 文件大小, bit。
         @Index(2)
         public byte[] md5;// 文件的md5值
+
+        @Override
+        public String toString() {
+            return "MsgFile{" +
+                    "fileName='" + fileName + '\'' +
+                    ", fileSize=" + fileSize +
+                    ", md5=" + MD5Util.MD5(md5) +
+                    '}';
+        }
+
+        public int getTimeStamp() {
+            return MiscUtils.getValueFrom(fileName);
+        }
+
+        @Override
+        public int compareTo(@NonNull MsgFile msgFile) {
+            return getTimeStamp() - msgFile.getTimeStamp();
+        }
+
     }
 
     @Message
