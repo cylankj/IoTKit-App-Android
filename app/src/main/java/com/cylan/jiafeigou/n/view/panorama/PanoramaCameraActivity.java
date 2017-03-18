@@ -638,9 +638,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onNetWorkChangedToMobile() {
         AppLogger.d("正在使用移动网络,请注意流量");
-        ToastUtil.showNegativeToast("正在使用移动网络");
+//        ToastUtil.showNegativeToast("正在使用移动网络");
         if (isPlaying) {
-            isPlaying = false;
+//            isPlaying = false;
 //            mPresenter.cancelViewer();
         }
     }
@@ -648,9 +648,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onNetWorkChangedToWiFi() {
         AppLogger.d("正在使用 WiFi 网络,可以放心观看");
-        ToastUtil.showPositiveToast("已切换到WiFi网络");
+//        ToastUtil.showPositiveToast("已切换到WiFi网络");
         if (!isPlaying) {
-            isPlaying = true;
+//            isPlaying = true;
 //            mPresenter.startViewer();
         }
     }
