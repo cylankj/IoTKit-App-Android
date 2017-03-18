@@ -91,6 +91,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     @Override
     public void onDetach() {
         super.onDetach();
+        JConstant.ConfigApStep=0;
         if (basePresenter != null) {
             basePresenter.clean();
         } else {

@@ -4,6 +4,7 @@ import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
 import android.support.annotation.Nullable;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -15,25 +16,27 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.PAlbumBean;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
-import com.cylan.jiafeigou.utils.RandomUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Presenter> implements PanoramaAlbumContact.View,
+public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Presenter>
+        implements PanoramaAlbumContact.View,
         RadioGroup.OnCheckedChangeListener,
         OnItemClickListener,
+        SwipeRefreshLayout.OnRefreshListener,
         OnItemLongClickListener {
     @BindView(R.id.act_panorama_album_toolbar_container)
     RelativeLayout toolbarContainer;
@@ -43,6 +46,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @BindView(R.id.tv_album_delete)
     TextView tvAlbumDelete;
 
+    @BindView(R.id.act_panorama_album_refresh)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     @BindView(R.id.act_panorama_album_lists)
     RecyclerView recyclerView;
@@ -60,34 +65,13 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        panoramaAdapter = new PanoramaAdapter(this, getTest(), null);
+        mPresenter.onSetViewUUID(getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+        panoramaAdapter = new PanoramaAdapter(this, null, null);
         panoramaAdapter.setOnItemClickListener(this);
         panoramaAdapter.setOnItemLongClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
         recyclerView.setAdapter(panoramaAdapter);
-    }
-
-    private List<PAlbumBean> getTest() {
-        List<PAlbumBean> list = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            PAlbumBean albumBean = new PAlbumBean();
-            albumBean.isDate = RandomUtils.getRandom(10) % 2 == 0;
-            albumBean.timeInDate = System.currentTimeMillis() / 1000 - RandomUtils.getRandom(10) * 24 * 3600;
-            albumBean.from = RandomUtils.getRandom(1, 3);
-            albumBean.url = getUrl();
-            list.add(albumBean);
-        }
-        return list;
-    }
-
-    String[] ret = {
-            "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490178509&di=faf69d7930c8eaa0d779f25c3aa6e8b5&imgtype=jpg&er=1&src=http%3A%2F%2Fwww.th7.cn%2Fd%2Ffile%2Fp%2F2017%2F01%2F21%2F4cc5e894d9a736f2453387e983180d1e.jpg"
-            , "https://timgsa.baidu.com/timg?image&quality=80&size=b9999_10000&sec=1490178527&di=cf1d4608f6f9aacdf0e49c2abd9c8579&imgtype=jpg&er=1&src=http%3A%2F%2Ffmn.rrimg.com%2Ffmn057%2Fxiaozhan%2F20120201%2F1335%2Fp%2Fm2w500hq85lt_x_large_XnFv_5fd20000919b125f.jpg"
-            , ""
-    };
-
-    private String getUrl() {
-        return ret[RandomUtils.getRandom(ret.length)];
+        swipeRefreshLayout.setOnRefreshListener(this);
     }
 
     @Override
@@ -216,5 +200,38 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
                 .setNegativeButton(getString(R.string.CANCEL), null)
                 .create()
                 .show();
+    }
+
+    @Override
+    public void onRefresh() {
+        if (swipeRefreshLayout.isRefreshing()) {
+            return;
+        }
+        mPresenter.fresh(0, false);
+    }
+
+    @Override
+    public void onAppend(ArrayList<PAlbumBean> resultList) {
+        swipeRefreshLayout.setRefreshing(false);
+        if (resultList != null && resultList.size() > 0)
+            panoramaAdapter.addAll(resultList);
+    }
+
+    @Override
+    public void onDelete(ArrayList<PAlbumBean> positionList) {
+        swipeRefreshLayout.setRefreshing(false);
+        if (positionList.size() > 0) {
+            panoramaAdapter.removeAll(positionList);
+        }
+    }
+
+    @Override
+    public void onUpdate(PanoramaEvent.MsgFile needUpdate, int position) {
+        swipeRefreshLayout.setRefreshing(false);
+    }
+
+    @Override
+    public ArrayList<PAlbumBean> getList() {
+        return (ArrayList<PAlbumBean>) panoramaAdapter.getList();
     }
 }

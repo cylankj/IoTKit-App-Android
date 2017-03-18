@@ -6,6 +6,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import java.util.ArrayList;
@@ -109,10 +110,12 @@ public class BindUtils {
      * @return
      */
     public static String filterCylanDeviceShortCid(String string) {
-        if (TextUtils.isEmpty(string))
+        if (TextUtils.isEmpty(string) || string.length() < 6) {
+            AppLogger.e("bad cid: " + string);
             return "";
-        return string.replace("DOG-", "").replace("ML-", "").replace("\"", "");
-//        return string.replaceAll("\\D+", "");
+        }
+        string = string.replace("\"", "");
+        return string.substring(string.length() - 6, string.length());
     }
 
     public static String getDigitsString(String content) {

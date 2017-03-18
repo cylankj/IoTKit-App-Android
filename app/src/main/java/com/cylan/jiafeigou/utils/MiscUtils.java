@@ -385,4 +385,23 @@ public class MiscUtils {
     private static final int[] periodResId = {R.string.MON_1, R.string.TUE_1,
             R.string.WED_1, R.string.THU_1,
             R.string.FRI_1, R.string.SAT_1, R.string.SUN_1};
+
+
+    /**
+     * 文件名，命名格式[timestamp].jpg 或[timestamp]_[secends].avi，timestamp是文件生成时间的unix时间戳，secends是视频录制的时长,单位秒。根据后缀区分是图片或视频。
+     * 提取时间戳
+     * 1489756095
+     *
+     * @param content
+     * @return
+     */
+    public static int getValueFrom(String content) {
+        if (TextUtils.isEmpty(content) || content.length() < 10)
+            return 0;
+        try {
+            return Integer.valueOf(content.substring(0, 10));
+        } catch (Exception e) {
+            return 0;
+        }
+    }
 }
