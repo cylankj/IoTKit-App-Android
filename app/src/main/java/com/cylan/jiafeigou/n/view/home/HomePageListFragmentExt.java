@@ -17,13 +17,13 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,8 +43,6 @@ import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
-import com.cylan.jiafeigou.n.view.misc.HomeEmptyView;
-import com.cylan.jiafeigou.n.view.misc.IEmptyView;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -95,17 +93,13 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     Toolbar toolbar;
     @BindView(R.id.appbar)
     AppBarLayout appbar;
-    //    @BindView(R.dpMsgId.collapsing_toolbar)
-//    CollapsingToolbarLayout collapsingToolbar;
-    @BindView(R.id.fLayout_empty_view_container)
-    FrameLayout fLayoutEmptyViewContainer;
-    //    @BindView(R.dpMsgId.img_home_page_header_bg)
-//    ImageView imgHomePageHeaderBg;
+    @BindView(R.id.rLayout_network_banner)
+    RelativeLayout badNetworkBanner;
+    @BindView(R.id.lLayout_home_page_list_empty_view)
+    LinearLayout emptyViewState;
     @BindView(R.id.fLayout_header_bg)
     FrameLayout fLayoutHeaderBg;
     private HomePageListAdapter homePageListAdapter;
-
-    private EmptyViewState emptyViewState;
 
     public static HomePageListFragmentExt newInstance(Bundle bundle) {
         HomePageListFragmentExt fragment = new HomePageListFragmentExt();
@@ -145,8 +139,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         homePageListAdapter = new HomePageListAdapter(getContext(), null, null);
         homePageListAdapter.setDeviceItemClickListener(this);
         homePageListAdapter.setDeviceItemLongClickListener(this);
-        initEmptyViewState(context);
-        //需要优化.
     }
 
     @Override
@@ -170,7 +162,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initProgressBarColor();
         initListAdapter();
         initSomeViewMargin();
-        addEmptyView();
     }
 
     /**
@@ -206,29 +197,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         rVDevicesList.setAdapter(homePageListAdapter);
     }
 
-    /**
-     * 添加
-     */
-    private void addEmptyView() {
-        srLayoutMainContentHolder.post(new Runnable() {
-            @Override
-            public void run() {
-                emptyViewState.setEmptyViewState(fLayoutEmptyViewContainer, 0);
-                emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
-            }
-        });
-    }
-
-    /**
-     * 初始化Layout,Inflation一个layout,可在attach的时候做。
-     *
-     * @param context
-     */
-    private void initEmptyViewState(Context context) {
-        if (emptyViewState == null)
-            emptyViewState = new EmptyViewState(context, R.layout.layout_home_page_list_empty_view);
-    }
-
     private void initDeleteItemDialog() {
         if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
             Bundle bundle = new Bundle();
@@ -242,7 +210,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     private void initSomeViewMargin() {
         ViewUtils.setFitsSystemWindowsCompat(fLayoutHomeHeaderContainer);
-//        ViewUtils.setViewMarginStatusBar(imgBtnAddDevices);
         ViewUtils.setViewMarginStatusBar(lLayoutHomeGreet);
         ViewUtils.setViewMarginStatusBar(toolbar);
     }
@@ -277,13 +244,18 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             ((NeedLoginActivity) getActivity()).signInFirst(null);
             return;
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class),
                     ActivityOptionsCompat.makeCustomAnimation(getContext(),
                             R.anim.slide_in_right, R.anim.slide_out_left).toBundle());
         } else {
             getActivity().startActivity(new Intent(getActivity(), BindDeviceActivity.class));
         }
+    }
+
+    @OnClick(R.id.imgv_close_network_banner)
+    public void onClickCloseBanner() {
+        badNetworkBanner.setVisibility(View.GONE);
     }
 
     @Override
@@ -311,8 +283,9 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onItemsInsert(List<Device> resultList) {
         homePageListAdapter.clear();//暴力刷新,设备没几个,没关系.
-        homePageListAdapter.addAll(resultList);
-        emptyViewState.determineEmptyViewState(homePageListAdapter.getCount());
+        if (resultList != null && resultList.size() > 0)
+            homePageListAdapter.addAll(resultList);
+        emptyViewState.setVisibility(homePageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
         onRefreshFinish();
         Log.d("onItemsInsert", "onItemsInsert:" + resultList);
         srLayoutMainContentHolder.setNestedScrollingEnabled(resultList.size() > JFGRules.NETSTE_SCROLL_COUNT);
@@ -402,6 +375,13 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 AppLogger.d("stop refreshing ui");
             }
         }, 1500);
+    }
+
+    @Override
+    public void onNetworkChanged(boolean connected) {
+        badNetworkBanner.setVisibility(connected ? View.GONE : View.VISIBLE);
+        srLayoutMainContentHolder.setEnabled(connected);
+        if (!connected) srLayoutMainContentHolder.setRefreshing(false);
     }
 
 //    @Override
@@ -531,27 +511,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             if (alpha < 0.02f)
                 alpha = 0;//设定一个阀值,以免掉帧导致回调不及时
             tvHeaderLastTitle.setAlpha(alpha);
-        }
-    }
-
-    private static class EmptyViewState {
-        private IEmptyView homePageEmptyView;
-
-        public EmptyViewState(Context context, final int layoutId) {
-            homePageEmptyView = new HomeEmptyView(context, layoutId);
-        }
-
-
-        public void setEmptyViewState(ViewGroup viewContainer, final int bottom) {
-            FrameLayout.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT);
-            lp.gravity = Gravity.CENTER_HORIZONTAL;
-            lp.topMargin = ViewUtils.dp2px(80);
-            homePageEmptyView.addView(viewContainer, lp);
-        }
-
-        public void determineEmptyViewState(final int count) {
-            homePageEmptyView.show(count == 0);
         }
     }
 

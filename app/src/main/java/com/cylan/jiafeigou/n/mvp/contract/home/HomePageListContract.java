@@ -48,6 +48,7 @@ public interface HomePageListContract {
 
         void onRefreshFinish();
 
+        void onNetworkChanged(boolean connected);
 
 //        void unBindDeviceRsp(int state);
 
