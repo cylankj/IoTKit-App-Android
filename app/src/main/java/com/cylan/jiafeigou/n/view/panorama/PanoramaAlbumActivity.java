@@ -23,10 +23,12 @@ import com.cylan.jiafeigou.n.mvp.model.PAlbumBean;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
 
+import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -85,6 +87,15 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(toolbarContainer);
+        toolbarAlbumViewMode.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                PAlbumBean bean = new PAlbumBean();
+                bean.timeInDate = 1489906172;
+                bean.url = JConstant.getRoot() + File.separator + "1489906172.jpg";
+                panoramaAdapter.add(bean);
+            }
+        }, 2000);
     }
 
     @Override
@@ -189,7 +200,14 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
-        panoramaAdapter.reverseItemSelectedState(position);
+        if (panoramaAdapter.isInEditMode()) {
+            panoramaAdapter.reverseItemSelectedState(position);
+        } else {
+            Bundle bundle = new Bundle();
+            bundle.putString("url_item", JConstant.getRoot() + File.separator + "1489906172.jpg");
+            Pan720FullFragment fullFragment = Pan720FullFragment.newInstance(bundle);
+            ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fullFragment, android.R.id.content);
+        }
     }
 
     @Override

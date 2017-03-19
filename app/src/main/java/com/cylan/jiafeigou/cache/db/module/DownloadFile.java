@@ -7,7 +7,8 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Keep;
+
+import java.util.Arrays;
 
 /**
  * Created by holy on 2017/3/19.
@@ -19,28 +20,30 @@ public final class DownloadFile implements Comparable<DownloadFile> {
     public long id;
     @Generated(hash = 735721945)
     public String fileName;
-    public String md5;
+    public byte[] md5;
     public int fileSize;
     //已经下载的
     public int offset;
     public int state;
     private int place;
 
-    @Keep
-    public DownloadFile(long id, String fileName, String md5, int fileSize,
-                        int offset, int state, int albumPosition) {
+
+    @Generated(hash = 1300993736)
+    public DownloadFile(long id, String fileName, byte[] md5, int fileSize,
+            int offset, int state, int place) {
         this.id = id;
         this.fileName = fileName;
         this.md5 = md5;
         this.fileSize = fileSize;
         this.offset = offset;
         this.state = state;
-        this.place = albumPosition;
+        this.place = place;
     }
 
     @Generated(hash = 379234666)
     public DownloadFile() {
     }
+
 
     public int getTimeStamp() {
         return MiscUtils.getValueFrom(fileName);
@@ -59,7 +62,7 @@ public final class DownloadFile implements Comparable<DownloadFile> {
         return fileName;
     }
 
-    public String getMd5() {
+    public byte[] getMd5() {
         return md5;
     }
 
@@ -75,6 +78,10 @@ public final class DownloadFile implements Comparable<DownloadFile> {
         return state;
     }
 
+    public int getPlace() {
+        return place;
+    }
+
     public void setId(long id) {
         this.id = id;
     }
@@ -83,7 +90,7 @@ public final class DownloadFile implements Comparable<DownloadFile> {
         this.fileName = fileName;
     }
 
-    public void setMd5(String md5) {
+    public void setMd5(byte[] md5) {
         this.md5 = md5;
     }
 
@@ -99,10 +106,6 @@ public final class DownloadFile implements Comparable<DownloadFile> {
         this.state = state;
     }
 
-    public int getPlace() {
-        return place;
-    }
-
     public void setPlace(int place) {
         this.place = place;
     }
@@ -112,7 +115,7 @@ public final class DownloadFile implements Comparable<DownloadFile> {
         return "DownloadFile{" +
                 "id=" + id +
                 ", fileName='" + fileName + '\'' +
-                ", md5='" + md5 + '\'' +
+                ", md5=" + Arrays.toString(md5) +
                 ", fileSize=" + fileSize +
                 ", offset=" + offset +
                 ", state=" + state +

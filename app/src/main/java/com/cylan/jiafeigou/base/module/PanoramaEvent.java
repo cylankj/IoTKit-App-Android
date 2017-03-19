@@ -79,7 +79,7 @@ public interface PanoramaEvent {
         @Index(0)
         public String fileName;// 文件名, 注：根据后缀区分是图片或视频
         @Index(1)
-        public String md5;//      文件的md5值
+        public byte[] md5;//      文件的md5值
         @Index(2)
         public int begin;//    起始位置
         @Index(3)
@@ -121,7 +121,7 @@ public interface PanoramaEvent {
         }
 
         public boolean isInValid() {
-            return ret != 0 || TextUtils.isEmpty(fileName) || offset > 64;
+            return ret != 0 || TextUtils.isEmpty(fileName);
         }
     }
 

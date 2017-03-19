@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.cache.db.module.DownloadFile;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -59,7 +60,7 @@ public class PanAlbumDataManager {
      * @param md5
      * @return
      */
-    public boolean putFile(String fileName, String md5, int fileSize) {
+    public boolean putFile(String fileName, byte[] md5, int fileSize) {
         boolean ret = false;
         DownloadFile downloadFile = downloadFileHashMap.get(fileName);
         if (downloadFile == null) {
@@ -70,7 +71,7 @@ public class PanAlbumDataManager {
             downloadFileHashMap.put(fileName, downloadFile);
             ret = true;
         } else {
-            if (TextUtils.equals(md5, downloadFile.md5) || fileSize != downloadFile.fileSize) {
+            if (Arrays.equals(md5, downloadFile.md5) || fileSize != downloadFile.fileSize) {
                 AppLogger.e("文件更新了？:" + fileName);
                 downloadFile.fileSize = fileSize;
                 downloadFile.md5 = md5;
@@ -86,7 +87,7 @@ public class PanAlbumDataManager {
     }
 
 
-    public String getFileMd5(String fileName) {
+    public byte[] getFileMd5(String fileName) {
         DownloadFile file = downloadFileHashMap.get(fileName);
         if (file != null && file.md5 != null)
             return file.md5;

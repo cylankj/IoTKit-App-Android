@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.RandomUtils;
@@ -145,8 +144,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     private static final String KEY_FIRST_FILE_TIME = "firstFileTime";
 
     private void handleFirstFileTime(int time) {
-        if (time < 0) {
-            AppLogger.d("设备没有文件:");
+        if (time <= 0) {
+            AppLogger.d("设备没有文件:" + time);
             notifyNoFile();
             return;
         }
@@ -180,7 +179,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         RxBus.getCacheInstance().post(new FileListRspEvent(fileListRsp.array));
                     break;
                 case TYPE_FILE_DOWNLOAD_RSP://文件区块响应
-                    Log.d("PanoramaAlbumPresenter", "文件下载响应了");
+                    Log.d("PanoramaAlbumPresenter", "文件下载中....");
                     RxBus.getCacheInstance().post(new DownFileRsp(header.msg));
                     break;
             }
@@ -215,7 +214,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 .map(downFileRsp -> {
                     try {
                         PanoramaEvent.MsgFileDownloadRsp rsp = DpUtils.unpackData(downFileRsp.data, PanoramaEvent.MsgFileDownloadRsp.class);
-                        if (rsp == null || !rsp.isInValid()) {
+                        if (rsp == null || rsp.isInValid()) {
                             AppLogger.e("file download err: " + rsp);
                             return null;
                         }
@@ -225,8 +224,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                             goonDownload();
                             return null;
                         }
-                        String fileMd5 = PanAlbumDataManager.getInstance().getFileMd5(rsp.fileName);
-                        if (TextUtils.isEmpty(fileMd5)) {
+                        byte[] fileMd5 = PanAlbumDataManager.getInstance().getFileMd5(rsp.fileName);
+                        if (fileMd5 == null || fileMd5.length == 0) {
                             AppLogger.e("file md5 is null: " + rsp);
                             return null;
                         }
@@ -265,7 +264,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         }
         PanoramaEvent.MsgFileDownloadReq req = new PanoramaEvent.MsgFileDownloadReq();
         req.begin = file.offset;
-        req.offset = 64;
+        req.offset = req.begin + 64;
         req.fileName = file.fileName;
         req.md5 = file.md5;
         byte[] data = fill(new PanoramaEvent.RawReqMsg(),
@@ -287,7 +286,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                             AppLogger.e("fileName is empty: " + file);
                             continue;
                         }
-                        PanAlbumDataManager.getInstance().putFile(file.fileName, MD5Util.MD5(file.md5), file.fileSize);
+                        PanAlbumDataManager.getInstance().putFile(file.fileName, file.md5, file.fileSize);
                         Log.d("PanoramaAlbumPresenter", "file: " + file);
                     }
                     goonDownload();

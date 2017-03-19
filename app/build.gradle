@@ -230,13 +230,6 @@ dependencies {
     //进程保活
     compile(name: 'LibMarsdaemon-release', ext: 'aar')
     compile(name: 'HMS-SDK-2.4.0.300', ext: "aar")
-    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
-    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
-    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
-    compile 'com.cylan.ext:annotations:0.1.0'
-    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
-    debugCompile 'com.cylan.ext:optdebug:0.0.1'
-    releaseCompile 'com.cylan.ext:optdebug:0.0.1'
     //渠道包
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
     // twitter
@@ -250,20 +243,28 @@ dependencies {
     }
     compile(name: rootProject.ext.cySdk, ext: 'aar')
     //aar通用依赖，不需要指定名字
-    compile 'com.danikula:videocache:2.6.4'
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
     compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
-    compile 'com.squareup.retrofit2:retrofit:2.1.0'
-    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
-    compile 'org.greenrobot:greendao:3.2.0'
     //先用本地依赖的方式，打包平台还部支持
     compile(name: 'constraint-layout-1.0.1', ext: 'aar')
     //    compile 'com.android.support.constraint:constraint-layout:1.0.1'
     //aar通用依赖，不需要指定名字
     compile files('libs/open_sdk_r5781.jar')
     testCompile files('libs/javassist.jar')
+    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
+    compile 'com.cylan.ext:annotations:0.1.0'
+    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
+    compile 'com.danikula:videocache:2.6.4'
+    compile 'com.squareup.retrofit2:retrofit:2.1.0'
+    compile 'com.squareup.retrofit2:converter-gson:2.0.0'
+    compile 'org.greenrobot:greendao:3.2.0'
+    compile 'com.android.support:support-v4:23.4.0'
+    debugCompile 'com.cylan.ext:optdebug:0.0.1'
+    releaseCompile 'com.cylan.ext:optdebug:0.0.1'
 }
 

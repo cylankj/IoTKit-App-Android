@@ -884,4 +884,7 @@
     <string name="wifi_authentication">Verify %s WiFi connection</string>
     <string name="wifi_hasnot">Not find this WIFI</string>
     <string name="title_activity_bind_cam">BindCamActivity</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
