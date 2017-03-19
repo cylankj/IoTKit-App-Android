@@ -10,7 +10,6 @@ import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -36,6 +35,9 @@ public interface PanoramaEvent {
     int TYPE_VIDEO_END_RSP = 12;//	停止录像响应	图片和视频文件管理	DOG_5W
     int TYPE_VIDEO_STATUS_REQ = 13;//	查询录像状态请求	图片和视频文件管理	DOG_5W
     int TYPE_VIDEO_STATUS_RSP = 14;//	查询录像状态响应	图片和视频文件管理	DOG_5W
+
+    int TYPE_FIRST_FILE_REQ = 15;//	设备中第一条数据的时间请求	图片和视频文件管理	DOG_5W
+    int TYPE_FIRST_FILE_RSP = 16;//	设备中第一条数据的时间响应	图片和视频文件管理	DOG_5W
 
 
     @Message
@@ -195,7 +197,7 @@ public interface PanoramaEvent {
         @Index(2)
         public int fileSize;//  文件大小, bit。
         @Index(3)
-        public byte[] md5;//  文件的md5值
+        public String md5;//  文件的md5值
     }
 
     @Message
@@ -260,5 +262,16 @@ public interface PanoramaEvent {
         @Index(5)
         public byte[] msg;// 最大长度64K
     }
+
+    @Message
+    class MsgFirstFileInListReq {
+    }
+
+//    @Message
+//    class MsgFirstFileInListRsp {
+//        @Index(0)
+//        public int time;
+//    }
+
 
 }

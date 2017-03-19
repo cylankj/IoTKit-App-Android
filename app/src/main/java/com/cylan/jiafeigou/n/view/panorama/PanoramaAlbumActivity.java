@@ -48,6 +48,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @BindView(R.id.act_panorama_album_refresh)
     SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.pan_empty_list)
+    View emptyView;
 
     @BindView(R.id.act_panorama_album_lists)
     RecyclerView recyclerView;
@@ -207,14 +209,20 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (swipeRefreshLayout.isRefreshing()) {
             return;
         }
-        mPresenter.fresh(0, false);
+        mPresenter.fresh(false);
     }
 
     @Override
     public void onAppend(ArrayList<PAlbumBean> resultList) {
-        swipeRefreshLayout.setRefreshing(false);
         if (resultList != null && resultList.size() > 0)
             panoramaAdapter.addAll(resultList);
+        //setEmptyView
+        emptyView.setVisibility(panoramaAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+        swipeRefreshLayout.setEnabled(false);
+        swipeRefreshLayout.post(() -> {
+            swipeRefreshLayout.setRefreshing(false);
+            swipeRefreshLayout.setEnabled(true);
+        });
     }
 
     @Override
@@ -223,6 +231,8 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
         if (positionList.size() > 0) {
             panoramaAdapter.removeAll(positionList);
         }
+        //setEmptyView
+        emptyView.setVisibility(panoramaAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
     }
 
     @Override

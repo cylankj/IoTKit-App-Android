@@ -59,17 +59,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/act_panorama_album_lists"
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent">
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/act_panorama_album_lists"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
-        <include
-            layout="@layout/layout_panorama_empty_photo"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="gone" />
-
+            <include
+                layout="@layout/layout_panorama_empty_photo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </FrameLayout>
     </android.support.v4.widget.SwipeRefreshLayout>
 
 

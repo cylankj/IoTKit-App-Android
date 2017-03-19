@@ -31,10 +31,9 @@ public interface PanoramaAlbumContact {
         /**
          * 刷新列表d
          *
-         * @param time
          * @param asc
          */
-        void fresh(int time, boolean asc);
+        void fresh(boolean asc);
 
         /**
          * 手动下载

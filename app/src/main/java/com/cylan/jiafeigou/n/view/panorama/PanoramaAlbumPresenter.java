@@ -7,6 +7,7 @@ import android.util.Log;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.db.module.DownloadFile;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -18,6 +19,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.RandomUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.socket.JfgSocket;
@@ -44,6 +46,8 @@ import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_FILE_DOWNLOAD_R
 import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_FILE_DOWNLOAD_RSP;
 import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_FILE_LIST_REQ;
 import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_FILE_LIST_RSP;
+import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_FIRST_FILE_REQ;
+import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_FIRST_FILE_RSP;
 
 /**
  * Created by yanzhendong on 2017/3/13.
@@ -79,20 +83,10 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         }
     }
 
-    /**
-     * 正在下载的区块
-     */
-    private class DownloadingBlock {
-        private String fileName;
-        private byte[] md5;
-        private int offset;
-        private int fileSize;
-    }
-
     @Override
     public void OnConnected() {
         AppLogger.d("socked connected");
-        startSyncAlbumList(1489752143, 20);
+        startGetFirstItem();
     }
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault());
@@ -105,6 +99,17 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         byte[] data = fill(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2, TYPE_FILE_LIST_REQ, DpUtils.pack(req));
         boolean send = JfgSocket.SendMsgpackBuff(socketPointer, data);
         AppLogger.d("send ret:" + send + " time:" + dateFormat.format(new Date(time * 1000L)));
+    }
+
+    /**
+     * 得到文件
+     */
+    private void startGetFirstItem() {
+        PanoramaEvent.MsgFirstFileInListReq req = new PanoramaEvent.MsgFirstFileInListReq();
+        byte[] data = fill(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2,
+                TYPE_FIRST_FILE_REQ, DpUtils.pack(req));
+        boolean send = JfgSocket.SendMsgpackBuff(socketPointer, data);
+        AppLogger.d("send ret:" + send + "请求第一条文件时间");
     }
 
     protected byte[] fill(PanoramaEvent.RawReqMsg rawReqMsg, int msgId, int type, byte[] msg) {
@@ -127,6 +132,36 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         PanAlbumDataManager.getInstance().setDownloading(false);
     }
 
+    private void notifyNoFile() {
+        Observable.just("no file")
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    ArrayList<PAlbumBean> arrayList = mView.getList();
+                    mView.onDelete(arrayList);
+                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+    }
+
+    private static final String KEY_FIRST_FILE_TIME = "firstFileTime";
+
+    private void handleFirstFileTime(int time) {
+        if (time < 0) {
+            AppLogger.d("设备没有文件:");
+            notifyNoFile();
+            return;
+        }
+        int firstTime = PreferencesUtils.getInt(KEY_FIRST_FILE_TIME + mUUID, 0);
+        AppLogger.d("firstTime in cache: " + firstTime + " " + time);
+        if (time > firstTime) {
+            if (firstTime != 0)
+                AppLogger.d("设备刷新了，或者更换sd卡了。:" + dateFormat.format(new Date(firstTime * 1000L)));
+            PreferencesUtils.putInt(KEY_FIRST_FILE_TIME + mUUID, time);
+        } else {
+            AppLogger.d("设备刷新了，或者更换sd卡了。:" + dateFormat.format(new Date(firstTime * 1000L)));
+        }
+        startSyncAlbumList(time, 20);
+    }
+
     @Override
     public void OnMsgpackBuff(byte[] data) {
         AppLogger.d("socket buffer:" + data.length);
@@ -134,6 +169,11 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
             PanoramaEvent.RawRspMsg header = DpUtils.unpackData(data, PanoramaEvent.RawRspMsg.class);
             if (header == null) return;
             switch (header.type) {
+                case TYPE_FIRST_FILE_RSP:
+                    //设备中列表的第一条数据的时间。
+                    Integer startTime = DpUtils.unpackData(header.msg, Integer.class);
+                    handleFirstFileTime(startTime == null ? -1 : startTime);
+                    break;
                 case TYPE_FILE_LIST_RSP:
                     PanoramaEvent.MsgFileListRsp fileListRsp = DpUtils.unpackData(header.msg, PanoramaEvent.MsgFileListRsp.class);
                     if (fileListRsp != null && fileListRsp.array != null)
@@ -218,7 +258,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
             return;
         }
         //判断当前下载状态
-        PanAlbumDataManager.DownloadFile file = PanAlbumDataManager.getInstance().getNextPreparedDownloadFile();
+        DownloadFile file = PanAlbumDataManager.getInstance().getNextPreparedDownloadFile();
         if (file == null) {
             AppLogger.e("err: no file need download");
             return;
@@ -257,22 +297,22 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     ArrayList<PAlbumBean> viewList = mView.getList();
                     return convert(PanAlbumDataManager.getInstance().getAllFileList());
                 })
-                .subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
                     mView.onAppend(list);
-                    AppLogger.d("fileList");
+                    AppLogger.d("fileList： " + list.size());
                 }, throwable -> {
                     AppLogger.e("err: " + throwable.getLocalizedMessage());
                     registerSubscription(fileListRspSubscription());
                 });
     }
 
-    private ArrayList<PAlbumBean> convert(List<PanAlbumDataManager.DownloadFile> list) {
+    private ArrayList<PAlbumBean> convert(List<DownloadFile> list) {
         ArrayList<PAlbumBean> arrayList = new ArrayList<>(list.size());
         Collections.sort(list);
         Log.d("PanoramaAlbumPresenter", "sort:" + list);
         ArrayList<String> dateList = new ArrayList<>();
-        for (PanAlbumDataManager.DownloadFile file : list) {
+        for (DownloadFile file : list) {
             String date = TimeUtils.getDayString(file.getTimeStamp() * 1000L);
             PAlbumBean bean = new PAlbumBean();
             bean.timeInDate = file.getTimeStamp() * 1000L;
@@ -385,13 +425,19 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
 
 
     @Override
-    public void fresh(int time, boolean asc) {
-        startSyncAlbumList((int) TimeUtils.getTodayStartTime() / 1000, 20);
+    public void fresh(boolean asc) {
+        ArrayList<PAlbumBean> list = mView.getList();
+        int startTime = 0;
+        if (list == null || list.size() == 0) {
+        } else {
+            startTime = (int) (list.get(0).timeInDate / 1000);
+        }
+        startSyncAlbumList(startTime, 20);
     }
 
     @Override
     public void downloadFile(String fileName) {
-        PanAlbumDataManager.DownloadFile file = PanAlbumDataManager.getInstance().getDownloadFile(fileName);
+        DownloadFile file = PanAlbumDataManager.getInstance().getDownloadFile(fileName);
         if (file == null) {
             AppLogger.e("文件损坏");
             return;

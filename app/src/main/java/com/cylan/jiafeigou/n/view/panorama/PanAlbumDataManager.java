@@ -1,9 +1,10 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
-import android.support.annotation.NonNull;
+import android.text.TextUtils;
 
+import com.cylan.jiafeigou.cache.db.impl.PanFileDownloader;
+import com.cylan.jiafeigou.cache.db.module.DownloadFile;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -14,7 +15,6 @@ import java.util.Iterator;
  */
 
 public class PanAlbumDataManager {
-
 
     private boolean downloading = false;
     private static PanAlbumDataManager instance;
@@ -60,11 +60,25 @@ public class PanAlbumDataManager {
      * @return
      */
     public boolean putFile(String fileName, String md5, int fileSize) {
-        DownloadFile downloadFile = new DownloadFile();
-        downloadFile.fileName = fileName;
-        downloadFile.md5 = md5;
-        downloadFile.fileSize = fileSize;
-        return downloadFileHashMap.put(fileName, downloadFile) != null;
+        boolean ret = false;
+        DownloadFile downloadFile = downloadFileHashMap.get(fileName);
+        if (downloadFile == null) {
+            downloadFile = new DownloadFile();
+            downloadFile.fileName = fileName;
+            downloadFile.md5 = md5;
+            downloadFile.fileSize = fileSize;
+            downloadFileHashMap.put(fileName, downloadFile);
+            ret = true;
+        } else {
+            if (TextUtils.equals(md5, downloadFile.md5) || fileSize != downloadFile.fileSize) {
+                AppLogger.e("文件更新了？:" + fileName);
+                downloadFile.fileSize = fileSize;
+                downloadFile.md5 = md5;
+                ret = false;
+            }
+        }
+        PanFileDownloader.getDownloader().updateOrSaveFile(downloadFile);
+        return ret;
     }
 
     public boolean removeFile(String fileName) {
@@ -146,23 +160,6 @@ public class PanAlbumDataManager {
         return file;
     }
 
-    public static final class DownloadFile implements Comparable<DownloadFile> {
-        public String fileName;
-        public String md5;
-        public int fileSize;
-        //已经下载的
-        public int offset;
-        public int state;
-
-        public int getTimeStamp() {
-            return MiscUtils.getValueFrom(fileName);
-        }
-
-        @Override
-        public int compareTo(@NonNull DownloadFile downloadFile) {
-            return getTimeStamp() - downloadFile.getTimeStamp();
-        }
-    }
 
     public static class DownloadState {
         public static final int IDLE = 0;//准备好了，需要下载，下载中断，重新加载表的数据的时候，需要更新

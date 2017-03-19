@@ -31,6 +31,7 @@ public class ExampleUnitTest {
     public void testMe() {
         String ss = null;
         System.out.print(ss);
+        System.out.println("fileName".hashCode());
     }
 
     @Test

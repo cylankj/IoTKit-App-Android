@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.cache.db.module.DaoMaster;
 import com.cylan.jiafeigou.cache.db.module.DaoSession;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.DeviceDao;
+import com.cylan.jiafeigou.cache.db.module.DownloadFileDao;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;

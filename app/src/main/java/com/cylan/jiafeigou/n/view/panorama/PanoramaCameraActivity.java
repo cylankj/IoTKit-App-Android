@@ -300,6 +300,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     protected void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(panoramaToolBar);
+        mPresenter.dismiss();
     }
 
     public boolean muteAudio(boolean bMute) {
