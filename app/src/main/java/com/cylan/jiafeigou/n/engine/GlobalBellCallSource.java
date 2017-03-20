@@ -10,6 +10,8 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
 
+import java.net.MalformedURLException;
+
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -51,11 +53,16 @@ public class GlobalBellCallSource {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bellCallEvent.caller.cid);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
-        String url = new JFGGlideURL(bellCallEvent.caller.cid, bellCallEvent.caller.time + ".jpg").toStringUrl();
+        String url = null;
+        try {
+            url = new JFGGlideURL(bellCallEvent.caller.cid, bellCallEvent.caller.time + ".jpg").toURL().toString();
+            AppLogger.d("门铃截图地址:" + url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, url);
         intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, bellCallEvent.caller.time);
         ContextUtils.getContext().startActivity(intent);
-
     }
 
     public void unRegister() {

@@ -109,11 +109,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
 
     @OnClick(R.id.sv_setting_device_alias)
     public void onClick() {
-        if (editDialogFragment == null) {
-            editDialogFragment = EditFragmentDialog.newInstance(null);
-        }
-        if (editDialogFragment.isVisible())
-            return;
+        editDialogFragment = EditFragmentDialog.newInstance(null);
         Bundle bundle = new Bundle();
         bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
         bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));

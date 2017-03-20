@@ -102,7 +102,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
         cvBellHomeBackground.setActionInterface(this);
         initAdapter();
-//        pageSub = getShowWonderPageSub();
     }
 
     @Override

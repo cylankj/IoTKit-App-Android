@@ -260,16 +260,16 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void dismiss() {
-        stopViewer()
-                .observeOn(AndroidSchedulers.mainThread())
+        stopViewer().observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> {
+                }, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                }, () -> {
                     setViewHandler(null);
                     if (mView != null) {
                         mView.onDismiss();
                     }
-                }, e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
                 });
     }
 
