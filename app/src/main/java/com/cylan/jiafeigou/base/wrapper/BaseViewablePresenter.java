@@ -33,9 +33,8 @@ import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter {
     protected boolean mIsMicrophoneOn = false;
-    protected boolean hasResolution = false;
+    protected boolean hasLiveStream = false;
     protected boolean mIsSpeakerOn = false;
-    protected boolean hasCalledPlayVideo = false;
     protected String mViewLaunchType;
 
 
@@ -79,7 +78,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     String handle = getViewHandler();
                     try {
                         AppLogger.d("正在准备开始直播,对端 cid 为:" + handle);
-                        hasCalledPlayVideo = true;
+                        hasLiveStream = true;
                         int ret = JfgCmdInsurance.getCmd().playVideo(handle);
                         AppLogger.d("准备开始直播返回的结果码为:" + ret);
                         if (ret != 0) {
@@ -101,7 +100,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .flatMap(rsp -> {
                     try {
                         AppLogger.d("接收到分辨率消息,准备播放直播");
-                        hasResolution = true;
+                        hasLiveStream = true;
                         if (mView != null) {
                             mView.onResolution(rsp);
                         }
@@ -110,7 +109,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-                    return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
+                    return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class).timeout(10, TimeUnit.SECONDS)
                             .takeUntil(handleVideoRTCP(rsp));
                 })
                 .doOnUnsubscribe(() -> AppLogger.d("直播链取消订阅了"))
@@ -124,7 +123,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     e.printStackTrace();
                     if (e instanceof TimeoutException) {
                         AppLogger.d("连接设备超时,即将退出!");
-                        if (hasResolution) {
+                        if (hasLiveStream) {
                             if (mView != null) {
                                 mView.onVideoDisconnect(ViewableView.BAD_NET_WORK);
                             }
@@ -149,13 +148,12 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
      */
     protected Observable<Boolean> stopViewer() {
         return Observable.just(getViewHandler())
-                .filter(handler -> hasCalledPlayVideo)
+                .filter(handler -> hasLiveStream)
                 .subscribeOn(Schedulers.io())
                 .map(handler -> {
                     if (!TextUtils.isEmpty(handler)) {
                         try {
-                            hasCalledPlayVideo = false;
-                            hasResolution = false;
+                            hasLiveStream = false;
                             getCmd().stopPlay(handler);
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.remote = getViewHandler();
@@ -242,7 +240,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         super.onStop();
         if (getViewHandler() != null) {
             setViewHandler(null);
-            if (hasResolution) {
+            if (hasLiveStream) {
                 stopViewer().subscribe();
             }
         }

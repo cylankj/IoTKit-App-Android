@@ -301,12 +301,20 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         } else {
             mPresenter.startViewer();
         }
-        if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_PICTURE && bottomPanelSwitcher.getDisplayedChild() == 1) {
-            bottomPanelSwitcher.showPrevious();
-        } else if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_VIDEO && bottomPanelSwitcher.getDisplayedChild() == 0) {
-            bottomPanelSwitcher.showNext();
-        }
+        setViewModeAndRecordLayout();
         mPresenter.checkAndInitRecord();
+    }
+
+    public void setViewModeAndRecordLayout() {
+        if (bottomPanelSwitcher.getDisplayedChild() == 1) {//1
+            if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_PICTURE || panoramaRecordMode == MODE_NONE) {
+                bottomPanelSwitcher.showPrevious();
+            }
+        } else {//0
+            if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_VIDEO && panoramaRecordMode != MODE_NONE) {
+                bottomPanelSwitcher.showNext();
+            }
+        }
     }
 
     @Override
@@ -399,6 +407,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.act_panorama_camera_bottom_panel_album)
     public void clickedBottomPanelAlbumItem() {
         AppLogger.d("clickedBottomPanelAlbumItem");
+        mPresenter.dismiss();
         Intent intent = new Intent(this, PanoramaAlbumActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
         startActivity(intent);
@@ -448,6 +457,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void clickedToolBarSettingMenu() {
         AppLogger.d("clickedSettingMenu");
         hideVideoModePop();
+        mPresenter.dismiss();
         startActivity(new Intent(this, PanoramaSettingActivity.class));
     }
 
@@ -707,7 +717,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         panoramaViewMode = PANORAMA_VIEW_MODE.MODE_VIDEO;
         panoramaRecordMode = MODE_LONG;
         bottomPanelPhotoGraphItem.setEnabled(true);
-        bottomPanelSwitcherItem2DotIndicator.setVisibility(View.VISIBLE);
         onSetVideoRecordLayout(MODE_LONG);
     }
 
@@ -767,7 +776,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onUpdateRecordTime(int second, int type) {
         if (type == -1) {//-1代表录制结束了,所以不需要再更新 dot
-            bottomPanelSwitcherItem2DotIndicator.setVisibility(View.VISIBLE);
+            if (panoramaRecordMode == MODE_LONG) {
+                bottomPanelSwitcherItem2DotIndicator.setVisibility(View.VISIBLE);
+            }
             bottomCountDownLine.setVisibility(View.GONE);
             return;
         }
