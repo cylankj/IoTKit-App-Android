@@ -76,6 +76,10 @@ public class TimeUtils {
         }
     };
 
+    public static String getTimeSpecial(long time) {
+        return getSimpleDateFormat_1.get().format(new Date(time));
+    }
+
     /**
      * 获取当天0点时间戳
      *

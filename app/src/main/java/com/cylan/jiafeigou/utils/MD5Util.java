@@ -35,6 +35,8 @@ public class MD5Util {
         return null;
     }
 
+    private static final char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
+
     /**
      * 将byte[]生成32位的ＭＤ５值
      *
@@ -42,7 +44,6 @@ public class MD5Util {
      * @return
      */
     public static String MD5(byte[] data) {
-        char hexDigits[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'A', 'B', 'C', 'D', 'E', 'F'};
         try {
             // 获得MD5摘要算法的 MessageDigest 对象
             MessageDigest mdInst = MessageDigest.getInstance("MD5");

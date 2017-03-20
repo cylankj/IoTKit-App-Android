@@ -485,13 +485,15 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
-
+    private float preRatio = -1;
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 //        srLayoutMainContentHolder.setEnabled(verticalOffset == 0);
         final float ratio = (appbar.getTotalScrollRange() + verticalOffset) * 1.0f
                 / appbar.getTotalScrollRange();
-//        AppLogger.d("verticalOffset: " + " " + verticalOffset + "   " + ratio);
+        if (preRatio == ratio) return;
+        preRatio = ratio;
+        Log.d("HomePageListFragmentExt","HomePageListFragmentExt: "+verticalOffset);
         updateWaveViewAmplitude(ratio);
     }
 

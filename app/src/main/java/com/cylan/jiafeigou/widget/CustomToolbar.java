@@ -84,6 +84,42 @@ public class CustomToolbar extends LinearLayout {
         }
     }
 
+    /**
+     * 使用这个方法后，原来设置过的，title icon均失效。
+     * @param viewFactory
+     */
+    public void setViewFactory(ToolbarFactory viewFactory) {
+        if (viewFactory != null) {
+            viewGroup.removeAllViews();
+            viewGroup.addView(viewFactory.createView());
+
+        }
+    }
+
+    /**
+     * toolbar自定义view
+     */
+    public interface ToolbarFactory {
+        View createView();
+
+        boolean showShadow();
+
+        boolean gitSystemWindow();
+    }
+
+    public static abstract class SimpleFactory implements ToolbarFactory {
+
+        @Override
+        public boolean showShadow() {
+            return false;
+        }
+
+        @Override
+        public boolean gitSystemWindow() {
+            return false;
+        }
+    }
+
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -117,6 +153,11 @@ public class CustomToolbar extends LinearLayout {
     }
 
     public void setToolbarLeftTitle(int resId) {
+        if (!tvToolbarIcon.isShown()) tvToolbarIcon.setVisibility(View.VISIBLE);
+        tvToolbarIcon.setText(resId);
+    }
+
+    public void setToolbarLeftTitle(String resId) {
         if (!tvToolbarIcon.isShown()) tvToolbarIcon.setVisibility(View.VISIBLE);
         tvToolbarIcon.setText(resId);
     }

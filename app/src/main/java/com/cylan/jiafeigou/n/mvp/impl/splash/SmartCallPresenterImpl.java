@@ -44,7 +44,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
             AppLogger.d("has sticky");
             subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                     .subscribeOn(Schedulers.newThread())
-                    .delay(200, TimeUnit.MILLISECONDS)
+//                    .delay(200, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                     .map(resultLogin -> {

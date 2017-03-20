@@ -241,7 +241,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(s -> {
                     setViewHandler(null);
-                    mView.onDismiss();
+                    if (mView != null)
+                        mView.onDismiss();
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();

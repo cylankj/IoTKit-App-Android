@@ -20,6 +20,7 @@ public final class DownloadFile implements Comparable<DownloadFile> {
     public long id;
     @Generated(hash = 735721945)
     public String fileName;
+    public long time;
     public byte[] md5;
     public int fileSize;
     //已经下载的
@@ -27,12 +28,20 @@ public final class DownloadFile implements Comparable<DownloadFile> {
     public int state;
     private int place;
 
+    public void setTime(long time) {
+        this.time = time;
+    }
 
-    @Generated(hash = 1300993736)
-    public DownloadFile(long id, String fileName, byte[] md5, int fileSize,
-            int offset, int state, int place) {
+    public long getTime() {
+        return time;
+    }
+
+    @Generated(hash = 573880890)
+    public DownloadFile(long id, String fileName, long time, byte[] md5,
+            int fileSize, int offset, int state, int place) {
         this.id = id;
         this.fileName = fileName;
+        this.time = time;
         this.md5 = md5;
         this.fileSize = fileSize;
         this.offset = offset;

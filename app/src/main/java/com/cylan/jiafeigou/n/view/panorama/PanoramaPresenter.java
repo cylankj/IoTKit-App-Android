@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.RandomUtils;
 import com.cylan.socket.JfgSocket;
 import com.cylan.udpMsgPack.JfgUdpMsg;
@@ -487,14 +488,22 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     public void OnDisconnected() {
         AppLogger.d("OnDisconnected");
         localUDPConnected = false;
+        HandlerThreadUtils.postAtFrontOfQueue(() -> {
+            if (socketHandler != -1) {
+                AppLogger.d("release socket");
+                JfgSocket.Release(socketHandler);
+                AppLogger.d("release socket good");
+                socketHandler = -1;
+            }
+        });
     }
 
     @Override
     public void dismiss() {
         super.dismiss();
-        JfgSocket.Disconnect(socketHandler);
-        JfgSocket.Release(socketHandler);
-        socketHandler = -1;
+        if (socketHandler != -1) {
+            JfgSocket.Disconnect(socketHandler);
+        }
     }
 
     @Override

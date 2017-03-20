@@ -25,6 +25,16 @@ public interface PanoramaAlbumContact {
         void onUpdate(PanoramaEvent.MsgFile needUpdate, int position);
 
         ArrayList<PAlbumBean> getList();
+
+        void onDisconnected();
+
+        void onConnected();
+
+        /**
+         * 文件损坏，文件不存
+         * @param state
+         */
+        void onFileState(int state);
     }
 
     interface Presenter extends JFGPresenter {

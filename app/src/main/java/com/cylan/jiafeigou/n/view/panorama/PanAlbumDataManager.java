@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
-import android.text.TextUtils;
-
 import com.cylan.jiafeigou.cache.db.impl.PanFileDownloader;
 import com.cylan.jiafeigou.cache.db.module.DownloadFile;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -10,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import rx.Observable;
 
 /**
  * Created by holy on 2017/3/18.
@@ -78,7 +78,9 @@ public class PanAlbumDataManager {
                 ret = false;
             }
         }
-        PanFileDownloader.getDownloader().updateOrSaveFile(downloadFile);
+//        PanFileDownloader.getDownloader().updateOrSaveFile(downloadFile)
+//                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+//                .subscribe();
         return ret;
     }
 
@@ -122,23 +124,12 @@ public class PanAlbumDataManager {
         return 0;
     }
 
-    public boolean isFileDownloaded(String fileName) {
-        DownloadFile file = downloadFileHashMap.get(fileName);
-        return file != null && file.state == DownloadState.SUC;
+    public Observable<Integer> getFileDownloadState(String fileName) {
+        return PanFileDownloader.getDownloader().getFileDownloadState(fileName);
     }
 
-    public boolean isFileDownloadFailed(String fileName) {
-        DownloadFile file = downloadFileHashMap.get(fileName);
-        return file != null && file.state == DownloadState.FAILED;
-    }
-
-    public boolean isFileDownloadIdle(String fileName) {
-        DownloadFile file = downloadFileHashMap.get(fileName);
-        return file != null && file.state == DownloadState.IDLE;
-    }
-
-    public DownloadFile getDownloadFile(String fileName) {
-        return downloadFileHashMap.get(fileName);
+    public Observable<DownloadFile> getDownloadFile(String fileName) {
+        return PanFileDownloader.getDownloader().getFileFrom(fileName);
     }
 
     /**

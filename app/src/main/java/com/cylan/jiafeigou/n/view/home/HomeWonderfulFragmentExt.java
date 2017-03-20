@@ -14,6 +14,7 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -483,6 +484,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 / appbar.getTotalScrollRange();
         if (preRatio == ratio) return;
         preRatio = ratio;
+        Log.d("WonderfulFragmentExt","WonderfulFragmentExt: "+verticalOffset);
         final float alpha = 1.0f - ratio;
         if (imgWonderfulTitleCover.getAlpha() != alpha) {
             imgWonderfulTitleCover.setAlpha(alpha);

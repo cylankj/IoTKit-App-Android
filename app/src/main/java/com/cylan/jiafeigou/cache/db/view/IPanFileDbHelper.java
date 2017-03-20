@@ -23,7 +23,13 @@ public interface IPanFileDbHelper {
      */
     Observable<List<DownloadFile>> getFileFrom(int time, boolean asc, int count);
 
+    Observable<DownloadFile> getFileFrom(int time);
+
+    Observable<DownloadFile> getFileFrom(String fileName);
+
     Observable<Long> updateOrSaveFile(DownloadFile downloadFile);
+
+    Observable<Integer> getFileDownloadState(String fileName);
 
     Observable<List<Long>> updateOrSaveFile(List<DownloadFile> downloadFileList);
 

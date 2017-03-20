@@ -89,7 +89,7 @@ public interface PanoramaEvent {
         public String toString() {
             return "MsgFileDownloadReq{" +
                     "fileName='" + fileName + '\'' +
-                    ", md5='" + md5 + '\'' +
+                    ", md5=" + (md5) +
                     ", begin=" + begin +
                     ", offset=" + offset +
                     '}';
@@ -116,7 +116,7 @@ public interface PanoramaEvent {
                     ", fileName='" + fileName + '\'' +
                     ", begin=" + begin +
                     ", offset=" + offset +
-                    ", buffer=" + Arrays.toString(buffer) +
+                    ", buffer=" + (buffer == null ? 0 : buffer.length) +
                     '}';
         }
 
@@ -169,7 +169,7 @@ public interface PanoramaEvent {
             return "MsgFile{" +
                     "fileName='" + fileName + '\'' +
                     ", fileSize=" + fileSize +
-                    ", md5=" + MD5Util.MD5(md5) +
+                    ", md5=" + Arrays.toString(md5) +
                     '}';
         }
 

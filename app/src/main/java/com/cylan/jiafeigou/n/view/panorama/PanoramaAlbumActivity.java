@@ -15,6 +15,7 @@ import android.widget.RadioGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
@@ -24,6 +25,7 @@ import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
@@ -87,15 +89,6 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     protected void onStart() {
         super.onStart();
         ViewUtils.setViewPaddingStatusBar(toolbarContainer);
-        toolbarAlbumViewMode.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                PAlbumBean bean = new PAlbumBean();
-                bean.timeInDate = 1489906172;
-                bean.url = JConstant.getRoot() + File.separator + "1489906172.jpg";
-                panoramaAdapter.add(bean);
-            }
-        }, 2000);
     }
 
     @Override
@@ -177,6 +170,10 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             ViewUtils.setDrawablePadding(tvAlbumDelete, R.drawable.album_delete_selector, 0);
             toggleEditMode(false);
         }
+        Bundle bundle = new Bundle();
+        bundle.putString("url_item", JConstant.getRoot() + File.separator + "1489906172.jpg");
+        Pan720FullFragment fullFragment = Pan720FullFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fullFragment, android.R.id.content);
     }
 
     /**
@@ -261,5 +258,22 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     @Override
     public ArrayList<PAlbumBean> getList() {
         return (ArrayList<PAlbumBean>) panoramaAdapter.getList();
+    }
+
+    @Override
+    public void onDisconnected() {
+        if (BuildConfig.DEBUG)
+            ToastUtil.showNegativeToast("sock断开连接");
+    }
+
+    @Override
+    public void onConnected() {
+        if (BuildConfig.DEBUG)
+            ToastUtil.showNegativeToast("sock连接成功");
+    }
+
+    @Override
+    public void onFileState(int state) {
+
     }
 }
