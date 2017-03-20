@@ -41,9 +41,11 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import com.cylan.jiafeigou.widget.video.PanoramicView720_Ext;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
@@ -123,6 +125,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     FrameLayout videoLiveContainer;
     @BindView(R.id.act_panorama_camera_loading)
     SimpleProgressBar loadingBar;
+    @BindView(R.id.act_panorama_camera_bottom_count_down_line)
+    View bottomCountDownLine;
 
     private SPEED_MODE speedMode = SPEED_MODE.AUTO;
     private CONNECTION_MODE connectionMode = CONNECTION_MODE.FINE;
@@ -132,6 +136,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private PanoramicView720_Ext surfaceView;
 
     private boolean isPlaying = false;
+    private int countDownLineWidth;
 
 
     @Override
@@ -176,6 +181,19 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @Override
     public void onDismiss() {
 
+    }
+
+    public void showLoading(String msg) {
+        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+        }
+        LoadingDialog.showLoading(getSupportFragmentManager(), msg);
+    }
+
+    public void dismissLoading() {
+        if (LoadingDialog.isShowing(getSupportFragmentManager())) {
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+        }
     }
 
     @Override
@@ -349,6 +367,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @OnLongClick(R.id.act_panorama_bottom_panel_camera_photograph)
     public boolean longClickedBottomPanelPhotoGraphItem() {
+        hideVideoModePop();
         AppLogger.d("longClickedBottomPanelPhotoGraphItem");
         if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_VIDEO) {
             mPresenter.startMakeShortVideo();
@@ -359,6 +378,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @OnClick(R.id.act_panorama_bottom_panel_camera_photograph)
     public void clickedBottomPanelPhotoGraphItem() {
+        hideVideoModePop();
         AppLogger.d("clickedBottomPanelPhotoGraphItem");
         if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_PICTURE) {
             AppLogger.d("将进行拍照");
@@ -371,6 +391,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         } else if (panoramaRecordMode == MODE_LONG) {
             AppLogger.d("将结束录制长视频");
             bottomPanelPhotoGraphItem.setEnabled(false);//防止重复点击
+            showLoading("视频处理中,请稍后");
             mPresenter.stopMakeLongVideo();
         }
     }
@@ -387,14 +408,17 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void switchViewerModeToPicture() {
         AppLogger.d("switchViewerModeToPicture");
         hideVideoModePop();
-        onSetPictureModeLayout();
+        onSetViewModeLayout(PANORAMA_VIEW_MODE.MODE_PICTURE);
     }
 
     @OnClick(R.id.act_panorama_camera_bottom_panel_video)
     public void switchViewerModeToVideo() {
         AppLogger.d("switchViewerModeToVideo");
-        showVideoModePop();
-        onSetVideoModeLayout();
+        if (PreferencesUtils.getBoolean(JConstant.KEY_PANORAMA_POP_HINT, true)) {//只提示一次
+            PreferencesUtils.putBoolean(JConstant.KEY_PANORAMA_POP_HINT, false);
+            showVideoModePop();
+        }
+        onSetViewModeLayout(PANORAMA_VIEW_MODE.MODE_VIDEO);
     }
 
     public void showVideoModePop() {
@@ -550,29 +574,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bannerWarmingTitle.setText("设备离线，请重新配置连接>>");
     }
 
-    public void onSetVideoModeLayout() {
-        bottomPanelMoreItem.setEnabled(false);
-        bottomPanelAlbumItem.setVisibility(View.VISIBLE);
-        bottomPanelMoreItem.setVisibility(View.VISIBLE);
-        panoramaViewMode = PANORAMA_VIEW_MODE.MODE_VIDEO;
-        bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_short_video_selector);
-        if (bottomPanelSwitcher.getDisplayedChild() == 1) {
-            bottomPanelSwitcher.showPrevious();
-        }
-        animatedPopMenu(false);
-    }
-
-    public void onSetPictureModeLayout() {
-        bottomPanelMoreItem.setEnabled(true);
-        panoramaViewMode = PANORAMA_VIEW_MODE.MODE_PICTURE;
-        bottomPanelAlbumItem.setVisibility(View.VISIBLE);
-        bottomPanelMoreItem.setVisibility(View.VISIBLE);
-        bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_photograph_selector);
-        if (bottomPanelSwitcher.getDisplayedChild() == 1) {
-            bottomPanelSwitcher.showPrevious();
-        }
-    }
-
     public void onNotifyBannerWithConnectionChanged() {
         switch (connectionMode) {
             case FINE:
@@ -594,40 +595,64 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         bottomPanelPhotoGraphItem.setEnabled(false);
     }
 
-    public void onSetShortVideoRecordLayout() {
-        bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_short_video_selector);
-        bottomPanelAlbumItem.setVisibility(View.GONE);
-        bottomPanelMoreItem.setVisibility(View.GONE);
-        if (bottomPanelSwitcher.getDisplayedChild() == 0) {
-            bottomPanelSwitcher.showNext();
+    public void onSetViewModeLayout(PANORAMA_VIEW_MODE mode) {
+        panoramaViewMode = mode;
+        panoramaRecordMode = MODE_NONE;
+        bottomPanelAlbumItem.setVisibility(View.VISIBLE);
+        bottomPanelMoreItem.setVisibility(View.VISIBLE);
+        bottomPanelPhotoGraphItem.setEnabled(true);
+        if (bottomPanelSwitcher.getDisplayedChild() == 1) {
+            bottomPanelSwitcher.showPrevious();
+        }
+
+        if (mode == PANORAMA_VIEW_MODE.MODE_VIDEO) {
+            bottomPanelMoreItem.setEnabled(false);
+            bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_short_video_selector);
+            animatedPopMenu(false);
+        } else if (mode == PANORAMA_VIEW_MODE.MODE_PICTURE) {
+            bottomPanelMoreItem.setEnabled(true);
+            bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_photograph_selector);
+
         }
     }
 
-    public void onSetLongVideoRecordLayout() {
-        bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_video_recording_selector);
+    public void onSetVideoRecordLayout(PANORAMA_RECORD_MODE mode) {
+        panoramaViewMode = PANORAMA_VIEW_MODE.MODE_VIDEO;
+        panoramaRecordMode = mode;
         bottomPanelAlbumItem.setVisibility(View.GONE);
         bottomPanelMoreItem.setVisibility(View.GONE);
+        bottomPanelPhotoGraphItem.setEnabled(true);
+        bottomPanelSwitcherItem1ViewMode.check(R.id.act_panorama_camera_bottom_panel_video);
         if (bottomPanelSwitcher.getDisplayedChild() == 0) {
             bottomPanelSwitcher.showNext();
+        }
+
+        if (mode == MODE_LONG) {
+            bottomPanelSwitcherItem2DotIndicator.setVisibility(View.VISIBLE);
+            bottomCountDownLine.setVisibility(View.GONE);
+            bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_video_recording_selector);
+        } else if (mode == MODE_SHORT) {
+            bottomPanelSwitcherItem2DotIndicator.setVisibility(View.GONE);
+            bottomCountDownLine.setVisibility(View.VISIBLE);
+            bottomCountDownLine.setScaleX(1.0F);
+            bottomPanelPhotoGraphItem.setImageResource(R.drawable.camera720_icon_short_video_selector);
         }
     }
 
     @Override
     public void onStopMakeVideoFailed() {
+        dismissLoading();
         AppLogger.d("结束录制视频失败");
         ToastUtil.showNegativeToast("录制视频失败了!");
-        bottomPanelPhotoGraphItem.setEnabled(true);
-        panoramaRecordMode = MODE_NONE;
-        onSetVideoModeLayout();
+        onSetViewModeLayout(PANORAMA_VIEW_MODE.MODE_VIDEO);
     }
 
     @Override
     public void onLongVideoCompleted() {
+        dismissLoading();
         AppLogger.d("长视频录制成功了!");
         ToastUtil.showPositiveToast("录制长视频成功了!");
-        panoramaRecordMode = MODE_NONE;
-        bottomPanelPhotoGraphItem.setEnabled(true);
-        onSetVideoModeLayout();
+        onSetViewModeLayout(PANORAMA_VIEW_MODE.MODE_VIDEO);
     }
 
     public void onHideBadNetWorkBanner() {
@@ -660,20 +685,18 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onShortVideoStarted() {
-        panoramaRecordMode = MODE_SHORT;
-        bottomPanelSwitcherItem2TimeText.setText("8S");
-        onSetShortVideoRecordLayout();
+        onSetVideoRecordLayout(MODE_SHORT);
     }
 
     @Override
     public void onShortVideoCompleted() {
+        onSetViewModeLayout(PANORAMA_VIEW_MODE.MODE_VIDEO);
         ToastUtil.showPositiveToast("短视频录制成功");
-        panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_NONE;
-        onSetVideoModeLayout();
     }
 
     @Override
     public void onShortVideoCanceled(int reason) {
+        onSetViewModeLayout(PANORAMA_VIEW_MODE.MODE_VIDEO);
         if (reason == -1) {//录制时间不足3秒
             ToastUtil.showNegativeToast("录制时间低于3秒,录制取消");
         }
@@ -681,10 +704,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onLongVideoStarted() {
+        panoramaViewMode = PANORAMA_VIEW_MODE.MODE_VIDEO;
         panoramaRecordMode = MODE_LONG;
         bottomPanelPhotoGraphItem.setEnabled(true);
-        bottomPanelSwitcherItem2TimeText.setText("00:00:00");
-        onSetLongVideoRecordLayout();
+        bottomPanelSwitcherItem2DotIndicator.setVisibility(View.VISIBLE);
+        onSetVideoRecordLayout(MODE_LONG);
     }
 
     @Override
@@ -701,7 +725,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     }
 
     @Override
-    public void onStartMakeVideoFailed() {
+    public void onStartLongVideoFailed() {
         ToastUtil.showPositiveToast("开始录制长视频失败");
     }
 
@@ -742,13 +766,21 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onUpdateRecordTime(int second, int type) {
-//        AppLogger.d("正在更新录像时间(长视频或者短视频)");
+        if (type == -1) {//-1代表录制结束了,所以不需要再更新 dot
+            bottomPanelSwitcherItem2DotIndicator.setVisibility(View.VISIBLE);
+            bottomCountDownLine.setVisibility(View.GONE);
+            return;
+        }
         switch (panoramaRecordMode) {
             case MODE_LONG:
                 bottomPanelSwitcherItem2TimeText.setText(TimeUtils.getHHMMSS(second * 1000L));
+                int visibility = bottomPanelSwitcherItem2DotIndicator.getVisibility();
+                bottomPanelSwitcherItem2DotIndicator.setVisibility(visibility == View.VISIBLE ? View.GONE : View.VISIBLE);
                 break;
             case MODE_SHORT:
-                bottomPanelSwitcherItem2TimeText.setText(8 - second + "S");
+                int countDown = 8 - second;
+                bottomPanelSwitcherItem2TimeText.setText(countDown + "S");
+                bottomCountDownLine.animate().scaleX(countDown * 1.0F / 8).start();
                 break;
         }
     }
@@ -764,10 +796,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onMakePhotographSuccess(Bitmap picture) {
-
-    }
-
-    public void refreshLayout() {
 
     }
 

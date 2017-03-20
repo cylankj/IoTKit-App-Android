@@ -108,6 +108,7 @@ public class JConstant {
     public static final String KEY_CAM_SIGHT_SETTING = "cam_sight_setting";
     public static final java.lang.String LAST_ENTER_TIME = "LAST_ENTER_TIME";
     public static final String KEY_BIND_DEVICE_ALIAS = "KEY_BIND_DEVICE_ALIAS";
+    public static final java.lang.String KEY_PANORAMA_POP_HINT = "KEY_PANORAMA_POP_HINT";
     public static int ConfigApStep = 0;
 
 

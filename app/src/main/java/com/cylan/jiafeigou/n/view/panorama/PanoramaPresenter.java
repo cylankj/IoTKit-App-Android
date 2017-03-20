@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
+import android.net.wifi.WifiInfo;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
@@ -7,11 +8,14 @@ import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.RandomUtils;
 import com.cylan.socket.JfgSocket;
 import com.cylan.udpMsgPack.JfgUdpMsg;
@@ -20,13 +24,20 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.base.module.PanoramaEvent.MIDRobotForwardDataV2;
+import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_TAKE_PICTURE_REQ;
+import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_VIDEO_BEGIN_REQ;
 import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_VIDEO_END_REQ;
+import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_VIDEO_STATUS_REQ;
+import static com.cylan.jiafeigou.dp.DpUtils.pack;
 
 /**
  * Created by yanzhendong on 2017/3/8.
@@ -43,61 +54,86 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         if (device != null) {
             mView.onShowProperty(device);
         }
-        connectSocket(true);
-    }
-
-    protected void connectSocket(boolean init) {
-        if (init) {
-            socketHandler = JfgSocket.InitSocket(this);
-
-        }
-        try {
-            AppLogger.d("正在发送 FPing 消息");
-            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-        } catch (JfgException e) {
-            e.printStackTrace();
-            AppLogger.d("连接 socket 出现错误");
-        }
     }
 
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(getNetWorkChangedSub());
-        registerSubscription(getConnectLocalDeviceSub());
+        registerSubscription(makeTCPBridge());
     }
 
-    private Subscription getConnectLocalDeviceSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
-                .subscribeOn(Schedulers.io())
+    private Observable<Boolean> checkConnection() {
+        return Observable.just("checkConnection")
                 .observeOn(Schedulers.io())
-                .filter(msg -> {
-                    JfgUdpMsg.UdpHeader header = null;
-                    try {
-                        header = DpUtils.unpackData(msg.data, JfgUdpMsg.UdpHeader.class);
-                    } catch (IOException e) {
-                        e.printStackTrace();
+                .subscribeOn(Schedulers.io())
+                .map(s -> {
+                    final WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
+                    if (info == null || !JFGRules.isCylanDevice(info.getSSID())) {
+                        AppLogger.i("checkConnection: " + info);
+                        return false;
                     }
-                    return header != null && TextUtils.equals(header.cmd, "f_ping_ack");
-                })
-                .filter(msg -> {
-                    JfgUdpMsg.FPingAck pingAck = null;
-                    try {
-                        pingAck = DpUtils.unpackData(msg.data, JfgUdpMsg.FPingAck.class);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                    return pingAck != null && TextUtils.equals(pingAck.cid, mUUID);
-                })
-                .first()
-                .subscribe(msg -> {
-                    AppLogger.d("获取到设备 IP 地址:" + msg.ip + ",port:" + msg.port);
-                    JfgSocket.Connect(socketHandler, msg.ip, msg.port, true);
-                }, e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
+                    return true;
                 });
+    }
+
+    private Subscription makeTCPBridge() {
+        return checkConnection()
+                .filter(aBoolean -> aBoolean)
+                .map(s -> {
+                    try {
+                        if (socketHandler == -1) {
+                            socketHandler = JfgSocket.InitSocket(this);
+                        }
+                        AppLogger.d("正在发送 FPing 消息");
+                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                        AppLogger.d("连接 socket 出现错误");
+                    }
+                    return null;
+                })
+                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(Schedulers.io())
+                        .map(new Func1<RxEvent.LocalUdpMsg, Boolean>() {
+                            @Override
+                            public Boolean call(RxEvent.LocalUdpMsg msg) {
+                                try {
+                                    JfgUdpMsg.UdpHeader header = DpUtils.unpackData(msg.data, JfgUdpMsg.UdpHeader.class);
+                                    AppLogger.d("header: " + new Gson().toJson(header));
+                                    if (header == null || !TextUtils.equals(header.cmd, "f_ping_ack"))
+                                        return false;
+                                    JfgUdpMsg.FPingAck pingAck = DpUtils.unpackData(msg.data, JfgUdpMsg.FPingAck.class);
+                                    AppLogger.d("pingAck: " + new Gson().toJson(pingAck));
+                                    if (pingAck == null || !TextUtils.equals(pingAck.cid, mUUID))
+                                        return false;
+                                    //得到 fping响应
+                                    synchronized (this) {
+                                        if (!localUDPConnected) {
+                                            localUDPConnected = true;
+                                            AppLogger.d("获取到设备 IP 地址:" + msg.ip + ",port:" + msg.port);
+                                            JfgSocket.Connect(socketHandler, msg.ip, msg.port, true);
+                                            return true;
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    AppLogger.e("err: " + e.getLocalizedMessage());
+                                    return false;
+                                }
+                                return false;
+                            }
+                        }), (Object o, Boolean aBoolean) -> aBoolean)
+                .filter(aBoolean -> aBoolean)
+                .doOnError(throwable -> {
+                    if (throwable instanceof TimeoutException) {
+                        AppLogger.e("f_ping timeout :");
+                    }
+                })
+                .subscribe(o -> AppLogger.d("good"),
+                        throwable -> AppLogger.e("f_ping err :" + throwable.getLocalizedMessage()),
+                        () -> AppLogger.d("make tcp finished"));
     }
 
     protected Observable<RxEvent.PanoramaConnection> getActiveConnection() {
@@ -126,23 +162,14 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void makePhotograph() {
-        Subscription subscribe = RxBus.getCacheInstance().toObservable(PanoramaEvent.RawRspMsg.class)
-                .mergeWith(
-                        verifySDCard(mSourceManager.getJFGDevice(mUUID))
-                                .observeOn(Schedulers.io())
-                                .map(dev -> {
-                                    PanoramaEvent.RawReqMsg msg = new PanoramaEvent.RawReqMsg();
-                                    byte[] reqBytes = DpUtils.pack(new PanoramaEvent.MSG_TYPE_TAKE_PICTURE_REQ());
-                                    byte[] rawBytes = fill(msg, PanoramaEvent.MIDRobotForwardDataV2, PanoramaEvent.TYPE_TAKE_PICTURE_REQ, reqBytes);
-                                    JfgSocket.SendMsgpackBuff(socketHandler, rawBytes);
-                                    AppLogger.d("正在发送拍照请求:" + new Gson().toJson(msg));
-                                    return msg.mSeq;
-                                })
-                                .flatMap(this::makeLocalDataRspResponse))
-                .first()
+        Subscription subscribe = verifySDCard(mSourceManager.getJFGDevice(mUUID))
+                .observeOn(Schedulers.io())
+                .map(dev -> fillRawMsg(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2, TYPE_TAKE_PICTURE_REQ, pack(new PanoramaEvent.MSG_TYPE_TAKE_PICTURE_REQ())))
+                .flatMap(this::sendAndReceiveRawMsg)
                 .timeout(15, TimeUnit.SECONDS, Observable.just(null))//15秒的超时时间
                 .map(rsp -> {
-                    if (rsp == null) return null;//为 null 说明获取响应超时了,这时不应该一直等下去了
+                    if (rsp == null)
+                        return null;//为 null 说明获取响应超时了,这时不应该一直等下去了
                     PanoramaEvent.MSG_TYPE_TAKE_PICTURE_RSP data = null;
                     try {
                         data = DpUtils.unpackData(rsp.msg, PanoramaEvent.MSG_TYPE_TAKE_PICTURE_RSP.class);
@@ -156,24 +183,41 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     if (rsp == null || rsp.ret == -1) {
                         //失败了
                         AppLogger.d("拍照失败了!");
-                        mView.onMakePhotoGraphFailed();
+                        if (mView != null) {
+                            mView.onMakePhotoGraphFailed();
+                        }
                         return false;
                     }
                     return true;
                 })
                 .subscribe(rsp -> {
                     AppLogger.d("拍照成功了" + new Gson().toJson(rsp));
-                    mView.onMakePhotoGraphPreview();
+                    if (mView != null) {
+                        mView.onMakePhotoGraphPreview();
+                    }
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
+                    if (mView != null) {
+                        mView.onMakePhotoGraphFailed();
+                    }
                 });
         registerSubscription(subscribe);
     }
 
-    protected Observable<PanoramaEvent.RawRspMsg> makeLocalDataRspResponse(long seq) {
-        return RxBus.getCacheInstance().toObservable(PanoramaEvent.RawRspMsg.class)
-                .filter(rsp -> rsp.mSeq == seq);
+    protected Observable<PanoramaEvent.RawRspMsg> sendAndReceiveRawMsg(PanoramaEvent.RawReqMsg msg) {
+        return Observable.just(RandomUtils.getRandom(Integer.MAX_VALUE))
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(PanoramaEvent.RawRspMsg.class)
+                        .mergeWith(Observable.just("sendAndReceiveRawMsg")
+                                .map(go -> {
+                                    msg.mSeq = seq;
+                                    JfgSocket.SendMsgpackBuff(socketHandler, pack(msg));
+                                    AppLogger.d("正在发送局域网消息:" + new Gson().toJson(msg));
+                                    return msg.mSeq;
+                                })
+                                .flatMap(ret -> RxBus.getCacheInstance().toObservable(PanoramaEvent.RawRspMsg.class)))
+                        .filter(rsp -> rsp.mSeq == seq)
+                        .first());
     }
 
     protected RecordProgress calculate(long count) {//这里计算修正量,因为可能之前已经在录了
@@ -193,6 +237,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
+                    if (mView != null) {
+                        mView.onStartLongVideoFailed();
+                    }
                 });
         registerSubscription(subscribe);
     }
@@ -222,30 +269,20 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
+                    if (mView != null) {
+                        mView.onStopMakeVideoFailed();
+                    }
                 });
         registerSubscription(subscribe);
     }
 
     protected Observable<Integer> startMakeVideo(int type) {
         return getActiveConnection()
-                .flatMap(ok -> RxBus.getCacheInstance().toObservable(PanoramaEvent.RawRspMsg.class))
                 .observeOn(Schedulers.io())
-                .mergeWith(
-                        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-                            PanoramaEvent.RawReqMsg msg = new PanoramaEvent.RawReqMsg();
-                            byte[] reqBytes = DpUtils.pack(type);
-                            byte[] rawBytes = fill(msg, PanoramaEvent.MIDRobotForwardDataV2, PanoramaEvent.TYPE_VIDEO_BEGIN_REQ, reqBytes);
-                            JfgSocket.SendMsgpackBuff(socketHandler, rawBytes);
-                            AppLogger.d("正在发送录像请求:" + new Gson().toJson(msg));
-                            subscriber.onNext(msg.mSeq);
-                            subscriber.onCompleted();
-                        })
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(Schedulers.io())
-                                .flatMap(this::makeLocalDataRspResponse)
-                )
+                .map(connection -> fillRawMsg(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2, TYPE_VIDEO_BEGIN_REQ, pack(type)))
+                .flatMap(this::sendAndReceiveRawMsg)
                 .first()
-                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .timeout(15, TimeUnit.SECONDS, Observable.just(null))
                 .map(rsp -> {
                     if (rsp == null) return null;
                     Integer data = null;
@@ -261,7 +298,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     if (rsp == null || rsp == -1) {
                         //开始录像失败了
                         AppLogger.d("开始录像失败了!!");
-                        mView.onStartMakeVideoFailed();
+                        if (type == 1) {
+                            mView.onStartShortVideoFailed();
+                        } else if (type == 2) {
+                            mView.onStartLongVideoFailed();
+                        }
                         return false;
                     }
                     return true;
@@ -270,20 +311,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     protected Observable<PanoramaEvent.MSG_TYPE_VIDEO_END_RSP> stopMakeVideo(int type) {
         return getActiveConnection()
-                .flatMap(ok -> RxBus.getCacheInstance().toObservable(PanoramaEvent.RawRspMsg.class))
-                .mergeWith(
-                        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-                            PanoramaEvent.RawReqMsg msg = new PanoramaEvent.RawReqMsg();
-                            byte[] rawBytes = fill(msg, PanoramaEvent.MIDRobotForwardDataV2, TYPE_VIDEO_END_REQ, DpUtils.pack(type));
-                            JfgSocket.SendMsgpackBuff(socketHandler, rawBytes);
-                            subscriber.onNext(msg.mSeq);
-                            subscriber.onCompleted();
-                        })
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(Schedulers.io())
-                                .flatMap(this::makeLocalDataRspResponse))
-                .first()
-                .timeout(30, TimeUnit.SECONDS, Observable.just(null))
+                .observeOn(Schedulers.io())
+                .map(connection -> fillRawMsg(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2, TYPE_VIDEO_END_REQ, pack(type)))
+                .flatMap(this::sendAndReceiveRawMsg)
+//                .timeout(30, TimeUnit.SECONDS, Observable.just(null))//因为结束录制视频等待时间会很长,所有不用 timeout
                 .map(rsp -> {
                     if (rsp == null) return null;//说明请求数据超时了
                     PanoramaEvent.MSG_TYPE_VIDEO_END_RSP data = null;
@@ -355,19 +386,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void checkAndInitRecord() {
         Subscription subscribe = getActiveConnection()
-                .flatMap(connect -> RxBus.getCacheInstance().toObservable(PanoramaEvent.RawRspMsg.class))
-                .mergeWith(
-                        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-                            PanoramaEvent.RawReqMsg msg = new PanoramaEvent.RawReqMsg();
-                            byte[] reqBytes = DpUtils.pack(new PanoramaEvent.MSG_TYPE_VIDEO_STATUS_REQ());
-                            byte[] rawBytes = fill(msg, PanoramaEvent.MIDRobotForwardDataV2, PanoramaEvent.TYPE_VIDEO_STATUS_REQ, reqBytes);
-                            JfgSocket.SendMsgpackBuff(socketHandler, rawBytes);
-                            subscriber.onNext(msg.mSeq);
-                            subscriber.onCompleted();
-                        })
-                                .subscribeOn(Schedulers.io())
-                                .observeOn(Schedulers.io())
-                                .flatMap(this::makeLocalDataRspResponse))
+                .observeOn(Schedulers.io())
+                .map(connection -> fillRawMsg(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2, TYPE_VIDEO_STATUS_REQ, pack(new PanoramaEvent.MSG_TYPE_VIDEO_STATUS_REQ())))
+                .observeOn(Schedulers.io())
+                .flatMap(this::sendAndReceiveRawMsg)
                 .first()
                 .map(rsp -> {
                     PanoramaEvent.MSG_TYPE_VIDEO_STATUS_RSP data = null;
@@ -378,15 +400,10 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     }
                     return data;
                 })
+                .filter(rsp -> rsp != null && rsp.ret != -1)
                 .observeOn(AndroidSchedulers.mainThread())
+                .flatMap(rsp -> makeVideoProgressUpdate(rsp.secends, rsp.videoType))
                 .subscribe(rsp -> {
-                            if (rsp == null || rsp.ret != -1) {//当前没有录制视频
-
-                            } else if (rsp.videoType == 1) {//正在录制8秒短视频
-                                makeVideoProgressUpdate(rsp.secends, rsp.videoType);
-                            } else if (rsp.videoType == 2) {//正在录制长视频
-                                makeVideoProgressUpdate(rsp.secends, rsp.videoType);
-                            }
                         },
                         e -> {
                             AppLogger.e(e.getMessage());
@@ -403,32 +420,32 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
             } else if (offset == 0 && type == 2) {//开始录制长视频
                 mView.onLongVideoStarted();
             } else if (offset > 0 && type == 1) {//继续上次的录制8秒短视频
-                mView.onSetShortVideoRecordLayout();
+                mView.onShortVideoStarted();
                 mView.onUpdateRecordTime(offset, type);
             } else if (offset > 0 && type == 2) {//继续上次的录制长视频
-                mView.onSetLongVideoRecordLayout();
+                mView.onLongVideoStarted();
                 mView.onUpdateRecordTime(offset, type);
             }
             subscriber.onNext("VideoProgressStart");
             subscriber.onCompleted();
         }).subscribeOn(AndroidSchedulers.mainThread())
-                .flatMap(ret -> Observable.interval(500, TimeUnit.MILLISECONDS))
+                .flatMap(ret -> Observable.interval(0, 500, TimeUnit.MILLISECONDS))
                 .takeUntil(RxBus.getCacheInstance().toObservable(RecordFinished.class).first())
                 .observeOn(Schedulers.io())
                 .map(time -> {
-                    int second = (int) (time + 1) / 2 + offset;
+                    int second = (int) (time / 2) + offset;
                     RxBus.getCacheInstance().post(new RecordProgress(second));
                     return second;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .doOnCompleted(() -> mView.onUpdateRecordTime(-1, -1))
                 .map(sec -> {
                     mView.onUpdateRecordTime(sec, type);
                     return sec;
                 });
     }
 
-    protected byte[] fill(PanoramaEvent.RawReqMsg rawReqMsg, int msgId, int type, byte[] msg) {
-        rawReqMsg.mSeq = RandomUtils.getRandom(Integer.MAX_VALUE);
+    protected PanoramaEvent.RawReqMsg fillRawMsg(PanoramaEvent.RawReqMsg rawReqMsg, int msgId, int type, byte[] msg) {
         rawReqMsg.dst = Collections.singletonList(mUUID);
         rawReqMsg.mCaller = "";
         rawReqMsg.mCallee = "";
@@ -436,7 +453,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         rawReqMsg.isAck = 1;
         rawReqMsg.type = type;
         rawReqMsg.msg = msg;
-        return DpUtils.pack(rawReqMsg);
+        return rawReqMsg;
     }
 
     private Observable<JFGCameraDevice> verifySDCard(JFGCameraDevice device) {
@@ -492,9 +509,11 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void dismiss() {
         super.dismiss();
-        JfgSocket.Disconnect(socketHandler);
-        JfgSocket.Release(socketHandler);
-        socketHandler = -1;
+        if (socketHandler != -1) {
+            JfgSocket.Disconnect(socketHandler);
+            JfgSocket.Release(socketHandler);
+            socketHandler = -1;
+        }
     }
 
     @Override
