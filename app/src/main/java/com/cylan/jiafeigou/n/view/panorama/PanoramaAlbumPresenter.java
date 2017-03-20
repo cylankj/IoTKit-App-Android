@@ -284,7 +284,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                                         AppLogger.d("文件下载完成...:" + rsp);
                                         PanoramaEvent.MsgFileDownloadReq req = new PanoramaEvent.MsgFileDownloadReq();
                                         req.begin = rsp.offset;
-                                        req.offset = rsp.offset + 64;
+                                        req.offset = rsp.offset + 30*1024;
                                         req.fileName = rsp.fileName;
                                         req.md5 = longPair.second;
                                         PanoramaEvent.RawReqMsg raw = new PanoramaEvent.RawReqMsg();
