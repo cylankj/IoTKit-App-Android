@@ -376,6 +376,7 @@ public class DataSourceManager implements JFGSourceManager {
                 AppLogger.e("还没实现。。。。。");
 //                return  -1;
                 return JfgCmdInsurance.getCmd().robotGetDataEx(uuid, asc, version, MiscUtils.getChaosDpList(isV2), 0);
+
             } catch (Exception e) {
                 AppLogger.e("bad ,uuid may be null");
                 return -1;

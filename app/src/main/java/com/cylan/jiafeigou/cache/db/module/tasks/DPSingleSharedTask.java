@@ -8,6 +8,8 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.Security;
@@ -84,8 +86,9 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                                         "/" +
                                         entity.getVersion() / 1000 +
                                         ".jpg";
+                                DpMsgDefine.DPWonderItem item = DpUtils.unpackData(entity.getBytes(), DpMsgDefine.DPWonderItem.class);
                                 FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                                        .load(new JFGGlideURL(entity.getUuid(), entity.getVersion() / 1000 + ".jpg"))
+                                        .load(new JFGGlideURL(entity.getUuid(), item.fileName))
                                         .downloadOnly(100, 100);
                                 result = getCmd().putFileToCloud(remotePath, future.get().getAbsolutePath());
                                 subscriber.onNext(result);
