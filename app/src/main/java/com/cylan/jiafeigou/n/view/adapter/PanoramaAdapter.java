@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -44,7 +45,7 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, PAlbumBean item) {
         switch (viewType) {
             case 0:
-                holder.setText(R.id.tv_cam_message_item_date, "12:30");
+                holder.setText(R.id.tv_cam_message_item_date, TimeUtils.getDayString(item.getDownloadFile().getTime() * 1000L));
                 holder.setVisibility(R.id.v_circle, isInEditMode ? View.INVISIBLE : View.VISIBLE);
                 break;
             default:

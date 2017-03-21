@@ -40,8 +40,8 @@ public class PanAlbumDataManager {
      * @param count
      * @return
      */
-    public Observable<List<DownloadFile>> loadFileList(String uuid, int time, boolean asc, int count) {
-        return PanFileDownloader.getDownloader().getFileFrom(uuid, time, asc, count);
+    public Observable<List<DownloadFile>> loadFileList(String uuid, int time, boolean lt, int count) {
+        return PanFileDownloader.getDownloader().getFileFrom(uuid, time, lt, count);
     }
 
     public int getFileSize(String fileName) {

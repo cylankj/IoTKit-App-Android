@@ -69,7 +69,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     @Override
     public void onStart() {
         super.onStart();
-        refresh(false);
+        refresh(false);//下拉刷新
         Observable.just("make")
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.newThread())
@@ -86,12 +86,10 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     public void onStop() {
         super.onStop();
         AppLogger.d("onStop: " + socketPointer);
-        try {
-            if (socketPointer != -1) {
-                JFGSocket.Disconnect(socketPointer);
-            }
-        } catch (Exception e) {
-            AppLogger.d("" + e.getLocalizedMessage());
+        if (socketPointer != -1) {
+            Observable.just("disconnect")
+                    .subscribeOn(Schedulers.newThread())
+                    .subscribe(s -> JFGSocket.Disconnect(socketPointer));
         }
     }
 
@@ -102,6 +100,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         Observable.just("connected")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(s -> mView != null)
                 .subscribe(s -> mView.onConnected());
     }
 
@@ -157,17 +156,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         Observable.just("disconnect")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(s -> mView != null)
                 .subscribe(s -> mView.onDisconnected());
-    }
-
-    private void notifyNoFile() {
-        Observable.just("no file")
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(s -> {
-                    ArrayList<PAlbumBean> arrayList = mView.getList();
-                    mView.onDelete(arrayList);
-                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
     }
 
     private static final String KEY_FIRST_FILE_TIME = "firstFileTime";
@@ -190,7 +180,9 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         } else {
             AppLogger.d("设备刷新了，或者更换sd卡了。:" + dateFormat.format(new Date(firstTime * 1000L)));
         }
-        startSyncAlbumList(time, 20);
+        Observable.just("o")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(s -> startSyncAlbumList(time, 20));
     }
 
     @Override
@@ -273,7 +265,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 .subscribeOn(Schedulers.newThread())
                 .flatMap(file -> {
                     if (file == null) {
-                        AppLogger.e("err: no file need download");
+                        AppLogger.e("err: no file need to be downloaded");
                         return Observable.just(new Pair<Long, byte[]>(-1L, null));
                     }
                     AppLogger.d(" need download:" + file);
@@ -376,6 +368,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(s -> mView != null)
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe(integer -> mView.onUpdate(null, integer));
     }
@@ -398,7 +391,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         AppLogger.d("insert file?: " + file);
                     }
                     goonDownload();
-                    refresh(true);//刷列表
+                    judgeLoadMore();
                     return fileListRspEvent.array;
                 })
                 .subscribe(list -> {
@@ -408,22 +401,32 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 });
     }
 
-    private ArrayList<PAlbumBean> convert(List<DownloadFile> list) {
+    private void judgeLoadMore() {
+        if (mView != null && ListUtils.getSize(mView.getList()) > 0)
+            refresh(true);//刷列表,loadMore形式
+    }
+
+    private ArrayList<PAlbumBean> convert(List<DownloadFile> list, boolean assembleDate) {
         if (ListUtils.getSize(list) == 0) return new ArrayList<>();
         ArrayList<PAlbumBean> arrayList = new ArrayList<>(list.size());
         Collections.sort(list);
         ArrayList<String> dateList = new ArrayList<>();
         for (DownloadFile file : list) {
             String date = TimeUtils.getDayString(file.getTime() * 1000L);
+            Log.d(this.getClass().getSimpleName(), "convert: " + date);
             PAlbumBean bean = new PAlbumBean();
-            bean.setDownloadFile(file);
-            if (!dateList.contains(date)) {
+            if (!dateList.contains(date) && assembleDate) {
+                bean.setDownloadFile(file);
                 dateList.add(date);
                 bean.isDate = true;
                 arrayList.add(bean);
             }
+            bean = new PAlbumBean();
+            bean.setDownloadFile(file);
+            bean.isDate = false;
             arrayList.add(bean);
         }
+        Log.d(this.getClass().getSimpleName(), "List: " + arrayList);
         return arrayList;
     }
 
@@ -521,43 +524,63 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
 
     }
 
-    private void refresh(boolean asc, boolean goNext) {
+    /**
+     * @param lt     less than
+     * @param goNext
+     */
+    private void refresh(boolean lt, boolean goNext) {
         ArrayList<PAlbumBean> list = mView.getList();
         int startTime = 0;
         if (list == null || list.size() == 0) {
         } else {
-            startTime = list.get(0).getTime();
+            startTime = (int) list.get(0).getDownloadFile().getTime();
         }
-        PanFileDownloader.getDownloader().getFileFrom(mUUID, startTime, asc, 20)
+        PanFileDownloader.getDownloader().getFileFrom(mUUID, startTime, lt, 20)
                 .subscribeOn(Schedulers.io())
                 .flatMap(downloadFiles -> {
                     ArrayList<PAlbumBean> uiList = mView.getList();
+                    if (ListUtils.getSize(uiList) == 0) {
+                        AppLogger.d("back 0");
+                        return Observable.just(convert(downloadFiles, true));
+                    }
+                    if (ListUtils.getSize(downloadFiles) == 0) {
+                        AppLogger.d("back 1");
+                        return null;
+                    }
                     int sizeInUi = ListUtils.getSize(uiList);
-                    ArrayList<PAlbumBean> convertList = convert(downloadFiles);
-                    int convertSize = ListUtils.getSize(convertList);
-                    if (convertSize == 0) return null;
+                    ArrayList<PAlbumBean> convertList = convert(downloadFiles, false);
                     convertList.removeAll(uiList);
-                    AppLogger.d("size: " + convertSize + " s:" + sizeInUi);
-                    long timeLastItem = sizeInUi > 0 ? uiList.get(sizeInUi - 1).getTime() * 1000L : 0L;
-                    long timeLast = downloadFiles.get(convertSize - 1).getTime() * 1000L;
-                    if (!TimeUtils.isSameDay(timeLast, timeLastItem) && timeLastItem > 0) {
+                    if (ListUtils.getSize(convertList) == 0) {
+                        AppLogger.d("back 2");
+                        return null;
+                    }
+                    AppLogger.d("size: " + ListUtils.getSize(convertList) + " s:" + sizeInUi);
+                    long timeLastItem = uiList.get(uiList.size() - 1).getDownloadFile().getTime() * 1000L;
+                    long timeFirst = convertList.get(0).getDownloadFile().getTime() * 1000L;
+                    AppLogger.d("timeLastItem: " + timeLastItem + " timeFirst:" + timeFirst);
+                    if (!TimeUtils.isSameDay(timeFirst, timeLastItem)) {
                         //需要组装
                         PAlbumBean bean = new PAlbumBean();
                         bean.isDate = true;
                         convertList.add(0, bean);
+                        AppLogger.d("assemble date timeLastItem: " + timeLastItem + " timeFirst:" + timeFirst);
                     }
                     return Observable.just(convertList);
                 })
                 .filter(finalList -> ListUtils.getSize(finalList) > 0)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(beanArrayList -> mView.onAppend(beanArrayList),
+                .filter(s -> mView != null)
+                .subscribe(beanArrayList -> {
+                            mView.onAppend(beanArrayList);
+                            Log.d(this.getClass().getSimpleName(), "beanArrayList: " + ListUtils.getSize(beanArrayList));
+                        },
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()),
                         () -> AppLogger.d("good load finish"));
     }
 
     @Override
-    public void refresh(boolean asc) {
-        refresh(asc, false);
+    public void refresh(boolean loadMore) {
+        refresh(loadMore, false);
     }
 
     @Override
@@ -568,6 +591,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         AppLogger.e("文件损坏");
                         Observable.just("fileNotFound")
                                 .observeOn(AndroidSchedulers.mainThread())
+                                .filter(s -> mView != null)
                                 .subscribe(s -> mView.onFileState(-1));
                     }
                     return null;

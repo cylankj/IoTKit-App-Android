@@ -12,17 +12,8 @@ import com.cylan.jiafeigou.cache.db.module.DownloadFile;
 public class PAlbumBean implements Parcelable {
     public boolean isDate;
     public boolean selected;
-    private int time;
     private DownloadFile downloadFile;
 
-
-    public void setTime(int time) {
-        this.time = time;
-    }
-
-    public int getTime() {
-        return time;
-    }
 
     public void setDownloadFile(DownloadFile downloadFile) {
         this.downloadFile = downloadFile;
@@ -60,7 +51,6 @@ public class PAlbumBean implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeByte(this.isDate ? (byte) 1 : (byte) 0);
         dest.writeByte(this.selected ? (byte) 1 : (byte) 0);
-        dest.writeInt(this.time);
         dest.writeParcelable(this.downloadFile, flags);
     }
 
@@ -70,7 +60,6 @@ public class PAlbumBean implements Parcelable {
     protected PAlbumBean(Parcel in) {
         this.isDate = in.readByte() != 0;
         this.selected = in.readByte() != 0;
-        this.time = in.readInt();
         this.downloadFile = in.readParcelable(DownloadFile.class.getClassLoader());
     }
 
@@ -85,4 +74,13 @@ public class PAlbumBean implements Parcelable {
             return new PAlbumBean[size];
         }
     };
+
+    @Override
+    public String toString() {
+        return "PAlbumBean{" +
+                "isDate=" + isDate +
+                ", selected=" + selected +
+                ", downloadFile=" + downloadFile +
+                '}';
+    }
 }

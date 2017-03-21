@@ -17,11 +17,11 @@ public interface IPanFileDbHelper {
      * 从表中读取
      *
      * @param time
-     * @param asc
+     * @param lt less than
      * @param count
      * @return
      */
-    Observable<List<DownloadFile>> getFileFrom(String uuid, int time, boolean asc, int count);
+    Observable<List<DownloadFile>> getFileFrom(String uuid, int time, boolean lt, int count);
 
     Observable<DownloadFile> getFileFrom(String uuid, int time);
 

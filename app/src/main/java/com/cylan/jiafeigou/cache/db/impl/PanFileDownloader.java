@@ -45,12 +45,13 @@ public class PanFileDownloader implements IPanFileDbHelper {
     }
 
     @Override
-    public Observable<List<DownloadFile>> getFileFrom(String uuid, int time, boolean asc, int count) {
+    public Observable<List<DownloadFile>> getFileFrom(String uuid, int time, boolean lt, int count) {
         return Observable.just("getFile")
                 .flatMap(s -> downloadFileDao.queryBuilder()
-                        .where(DownloadFileDao.Properties.Time.gt(time),
+                        .where(lt ? DownloadFileDao.Properties.Time.lt(time) :
+                                        DownloadFileDao.Properties.Time.gt(time),
                                 DownloadFileDao.Properties.Uuid.eq(uuid))
-                        .orderAsc(DownloadFileDao.Properties.Time)
+                        .orderDesc(DownloadFileDao.Properties.Time)
                         .limit(20)
                         .rx().list());
     }

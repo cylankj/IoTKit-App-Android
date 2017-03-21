@@ -171,10 +171,6 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             ViewUtils.setDrawablePadding(tvAlbumDelete, R.drawable.album_delete_selector, 0);
             toggleEditMode(false);
         }
-        Bundle bundle = new Bundle();
-        bundle.putString("url_item", JConstant.getRoot() + File.separator + "1489906172.jpg");
-        Pan720FullFragment fullFragment = Pan720FullFragment.newInstance(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fullFragment, android.R.id.content);
     }
 
     /**
@@ -223,9 +219,6 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onRefresh() {
-        if (swipeRefreshLayout.isRefreshing()) {
-            return;
-        }
         mPresenter.refresh(false);
     }
 

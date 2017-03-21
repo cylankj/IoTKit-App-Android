@@ -48,13 +48,9 @@ public final class DownloadFile implements Comparable<DownloadFile>, Parcelable 
         this.uuid = uuid;
     }
 
-    public int getTimeStamp() {
-        return MiscUtils.getValueFrom(fileName);
-    }
-
     @Override
     public int compareTo(@NonNull DownloadFile downloadFile) {
-        return getTimeStamp() - downloadFile.getTimeStamp();
+        return (int) (time - downloadFile.time);
     }
 
     public Long getId() {
@@ -118,6 +114,8 @@ public final class DownloadFile implements Comparable<DownloadFile>, Parcelable 
         return "DownloadFile{" +
                 "id=" + id +
                 ", fileName='" + fileName + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", time=" + time +
                 ", md5=" + Arrays.toString(md5) +
                 ", fileSize=" + fileSize +
                 ", offset=" + offset +
