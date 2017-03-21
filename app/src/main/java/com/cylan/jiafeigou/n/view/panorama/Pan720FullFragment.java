@@ -135,6 +135,7 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (panoramic720View != null) panoramic720View.onDestroy();
     }
 
     @OnClick({R.id.img_snap_shot, R.id.img_vr, R.id.img_planet, R.id.img_sensor})

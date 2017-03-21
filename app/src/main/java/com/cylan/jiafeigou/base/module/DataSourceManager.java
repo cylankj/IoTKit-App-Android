@@ -374,8 +374,6 @@ public class DataSourceManager implements JFGSourceManager {
         if (device != null) {
             boolean isV2 = TextUtils.isEmpty(device.vid);
             try {
-                AppLogger.e("还没实现。。。。。");
-//                return  -1;
                 return JfgCmdInsurance.getCmd().robotGetDataEx(uuid, asc, version, MiscUtils.getChaosDpList(isV2), 0);
             } catch (Exception e) {
                 AppLogger.e("bad ,uuid may be null");
