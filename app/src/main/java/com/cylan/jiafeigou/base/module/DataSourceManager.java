@@ -86,7 +86,6 @@ public class DataSourceManager implements JFGSourceManager {
     private DataSourceManager() {
         dbHelper = BaseDBHelper.getInstance();
         initSubscription();
-        initFromDB();
     }
 
     private void initSubscription() {
@@ -97,7 +96,7 @@ public class DataSourceManager implements JFGSourceManager {
         subscription.add(makeCacheDeviceSub());
     }
 
-    private void initFromDB() {
+    public void initFromDB() {//根据需要初始化
         dbHelper.getActiveAccount()
                 .observeOn(Schedulers.io())
                 .filter(account -> account != null)

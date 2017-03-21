@@ -11,6 +11,8 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.live.IFeedRtcp;
+import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -25,18 +27,22 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.base.view.ViewableView.BAD_FRAME_RATE;
+import static com.cylan.jiafeigou.base.view.ViewableView.BAD_NET_WORK;
+import static com.cylan.jiafeigou.base.view.ViewableView.STOP_VIERER_BY_SYSTEM;
 import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 /**
  * Created by yzd on 16-12-30.
  */
 
-public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter {
+public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter, IFeedRtcp.MonitorListener {
     protected boolean mIsMicrophoneOn = false;
     protected boolean hasLiveStream = false;
     protected boolean mIsSpeakerOn = false;
+    protected boolean isLowFrameRate = false;
     protected String mViewLaunchType;
-
+    IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
 
     @Override
     protected void onRegisterSubscription() {
@@ -56,7 +62,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 }, Throwable::printStackTrace);
     }
 
-
     @Override
     public void startViewer() {
         Subscription subscribe = Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
@@ -69,7 +74,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         return true;
                     } else {
                         if (mView != null) {
-                            mView.onVideoDisconnect(ViewableView.BAD_NET_WORK);
+                            mView.onVideoDisconnect(BAD_NET_WORK);
                         }
                         return false;
                     }
@@ -109,12 +114,12 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-                    return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class).timeout(10, TimeUnit.SECONDS)
-                            .takeUntil(handleVideoRTCP(rsp));
+                    return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
+                            .takeUntil(handlerVideoDisconnect(rsp));
                 })
-                .doOnUnsubscribe(() -> AppLogger.d("直播链取消订阅了"))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rtcp -> {
+                    feedRtcp.feed(rtcp);
                     if (mView != null) {
                         mView.onFlowSpeed(rtcp.bitRate);
                     }
@@ -125,7 +130,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         AppLogger.d("连接设备超时,即将退出!");
                         if (hasLiveStream) {
                             if (mView != null) {
-                                mView.onVideoDisconnect(ViewableView.BAD_NET_WORK);
+                                mView.onVideoDisconnect(BAD_NET_WORK);
                             }
                         } else {
                             if (mView != null) {
@@ -157,7 +162,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                             getCmd().stopPlay(handler);
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.remote = getViewHandler();
-                            disconn.code = -1000000;
+                            disconn.code = STOP_VIERER_BY_SYSTEM;
                             RxBus.getCacheInstance().post(disconn);//结束 startView 的订阅链
                             AppLogger.d("正在发送停止直播消息:" + getViewHandler());
                             return true;
@@ -193,33 +198,32 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         });
     }
 
-    protected Observable<JFGMsgVideoDisconn> handleVideoRTCP(JFGMsgVideoResolution resolution) {
-        return
-                RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                        .filter(dis -> TextUtils.equals(dis.remote, resolution.peer))
-                        .mergeWith(
-                                RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
-                                        .filter(event -> !event.available).map(event -> {
-                                    JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-                                    disconn.code = ViewableView.BAD_NET_WORK;//连接互联网不可用,
-                                    disconn.remote = getViewHandler();
-                                    return disconn;
-                                }))
-                        .first()
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .map(dis -> {
-                            AppLogger.d("收到了断开视频的消息:" + dis.code);
-                            switch (dis.code) {
-                                case ViewableView.BAD_NET_WORK:
-                                    if (mView != null) {
-                                        mView.onVideoDisconnect(dis.code);
-                                    }
-                                    break;
-                                case -100000:
-                                    break;
+    protected Observable<JFGMsgVideoDisconn> handlerVideoDisconnect(JFGMsgVideoResolution resolution) {
+        return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+                .filter(dis -> TextUtils.equals(dis.remote, resolution.peer))
+                .mergeWith(
+                        RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+                                .filter(event -> !event.available).map(event -> {
+                            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                            disconn.code = BAD_NET_WORK;//连接互联网不可用,
+                            disconn.remote = getViewHandler();
+                            return disconn;
+                        }))
+                .first()
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(dis -> {
+                    AppLogger.d("收到了断开视频的消息:" + dis.code);
+                    switch (dis.code) {
+                        case BAD_NET_WORK:
+                            if (mView != null) {
+                                mView.onVideoDisconnect(dis.code);
                             }
-                            return dis;
-                        });
+                            break;
+                        case STOP_VIERER_BY_SYSTEM:
+                            break;
+                    }
+                    return dis;
+                });
     }
 
     @Override
@@ -252,6 +256,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     public void onStart() {
         super.onStart();
+        feedRtcp.setMonitorListener(this);
     }
 
     protected String getViewHandler() {
@@ -275,7 +280,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void switchSpeaker() {
-        setSpeaker(!mIsSpeakerOn)
+        setSpeaker(!mIsMicrophoneOn)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(on -> {
                     if (mView != null) {
@@ -301,26 +306,30 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     private Observable<Boolean> setMicrophone(boolean on) {
-        return Observable.just(on).map(s -> {
-            AppLogger.d("正在切换 setMicrophone :" + on);
-            mIsMicrophoneOn = on;
-            switchSpeakAndMicroPhone();
-            return s;
-        }).subscribeOn(Schedulers.io());
+        return Observable.just(on)
+                .observeOn(Schedulers.io())
+                .map(s -> {
+                    AppLogger.d("正在切换 setMicrophone :" + on);
+                    mIsMicrophoneOn = on;
+                    switchSpeakAndMicroPhone(mIsSpeakerOn, mIsMicrophoneOn);
+                    return s;
+                }).subscribeOn(Schedulers.io());
     }
 
     protected Observable<Boolean> setSpeaker(boolean on) {
-        return Observable.just(on).map(s -> {
-            AppLogger.d("正在切换 Speaker :" + on);
-            mIsSpeakerOn = on;
-            switchSpeakAndMicroPhone();
-            return s;
-        }).subscribeOn(Schedulers.io());
+        return Observable.just(on)
+                .observeOn(Schedulers.io())
+                .map(s -> {
+                    AppLogger.d("正在切换 Speaker :" + on);
+                    mIsSpeakerOn = on;
+                    switchSpeakAndMicroPhone(mIsSpeakerOn, mIsMicrophoneOn);
+                    return s;
+                }).subscribeOn(Schedulers.io());
     }
 
-    protected void switchSpeakAndMicroPhone() {
-        getCmd().setAudio(true, mIsSpeakerOn, mIsMicrophoneOn);//开启客户端的扬声器和麦克风
-        getCmd().setAudio(false, mIsMicrophoneOn, mIsSpeakerOn);//开启设备的扬声器和麦克风
+    protected void switchSpeakAndMicroPhone(boolean speaker, boolean microphone) {
+        getCmd().setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
+        getCmd().setAudio(false, microphone, speaker);//开启设备的扬声器和麦克风
     }
 
 
@@ -331,5 +340,25 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         surfaceView.setLayoutParams(params);
         return surfaceView;
+    }
+
+    @Override
+    public boolean checkAudio(int type) {//0: speaker,1: microphone
+        if (type == 0) {
+            return mIsSpeakerOn;
+        } else if (type == 1) {
+            return mIsMicrophoneOn;
+        }
+        return false;
+    }
+
+    @Override
+    public void onFrameFailed() {
+        mView.onVideoDisconnect(BAD_FRAME_RATE);
+    }
+
+    @Override
+    public void onFrameRate(boolean slow) {
+        mView.onLoading(slow);
     }
 }

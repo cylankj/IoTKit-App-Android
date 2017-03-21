@@ -113,6 +113,10 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (getUserVisibleHint()) lazyLoad();
+        else {
+            if (srLayoutMainContentHolder != null)
+                srLayoutMainContentHolder.removeCallbacks(autoLoading);//
+        }
     }
 
     @Override
@@ -133,10 +137,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         lazyLoad();
     }
 
+    private Runnable autoLoading = () -> mPresenter.startRefresh();
+
     private void lazyLoad() {
         if (getUserVisibleHint() && isPrepaper) {
             srLayoutMainContentHolder.setRefreshing(true);
-            srLayoutMainContentHolder.postDelayed(() -> mPresenter.startRefresh(), 1000);//避免刷新过快
+            srLayoutMainContentHolder.postDelayed(autoLoading, 2000);//避免刷新过快
         }
     }
 

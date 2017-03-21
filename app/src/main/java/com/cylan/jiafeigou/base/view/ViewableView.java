@@ -29,5 +29,10 @@ public interface ViewableView extends JFGView {
 
     void onDeviceUnBind();//当前设备已解绑
 
-    int BAD_NET_WORK = -1000001;
+    void onLoading(boolean loading);
+
+    int CUSTOM_ERROR_CODE_START = -1000000;
+    int BAD_NET_WORK = CUSTOM_ERROR_CODE_START - 1;
+    int BAD_FRAME_RATE = CUSTOM_ERROR_CODE_START - 2;//帧率过低
+    int STOP_VIERER_BY_SYSTEM = CUSTOM_ERROR_CODE_START - 3;//
 }

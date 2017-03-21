@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou;
 
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.rx.RxBus;
 import com.google.gson.Gson;
 
 import org.junit.Test;
@@ -10,6 +11,9 @@ import org.msgpack.annotation.Message;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
 
 /**
  * Created by yzd on 17-1-11.
@@ -43,4 +47,24 @@ public class DP {
         T t = DpUtils.unpackData(bytes, T.class);
         System.out.println(new Gson().toJson(t));
     }
+
+    @Test
+    public void sample() {
+        Observable.interval(1, TimeUnit.SECONDS).subscribe(s -> {
+            RxBus.getCacheInstance().post("SSSSS" + s);
+        });
+
+        RxBus.getCacheInstance().toObservable(String.class)
+                .cache(2)
+                .buffer(2)
+                .subscribe(s -> {
+                    System.out.println(s);
+                });
+        try {
+            Thread.sleep(Integer.MAX_VALUE);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
 }

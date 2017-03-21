@@ -9,7 +9,10 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.huawei.hms.support.api.push.PushReceiver;
+
+import java.net.MalformedURLException;
 
 /**
  * Created by yanzhendong on 2017/2/24.
@@ -32,7 +35,16 @@ public class HuaweiPushReceiver extends PushReceiver {
 
         String cid = items[1].replace("\'", "");
         long time = Long.parseLong(items[3]);
-        launchBellLive(cid, null, time);
+
+        String url = null;
+        try {
+            url = new JFGGlideURL(cid, time + ".jpg").toURL().toString();
+            AppLogger.d("门铃截图地址:" + url);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
+
+        launchBellLive(cid, url, time);
         return super.onPushMsg(context, bytes, bundle);
     }
 

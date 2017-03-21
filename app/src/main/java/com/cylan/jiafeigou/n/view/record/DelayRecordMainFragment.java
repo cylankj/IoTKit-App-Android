@@ -328,6 +328,11 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     }
 
     @Override
+    public void onLoading(boolean loading) {
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         refreshLayout();

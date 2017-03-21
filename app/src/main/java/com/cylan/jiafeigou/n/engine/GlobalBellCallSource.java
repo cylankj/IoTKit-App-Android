@@ -55,10 +55,12 @@ public class GlobalBellCallSource {
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
         String url = null;
         try {
+            AppLogger.d("门铃呼叫 CID:" + bellCallEvent.caller.cid + ",门铃呼叫时间:" + bellCallEvent.caller.time);
             url = new JFGGlideURL(bellCallEvent.caller.cid, bellCallEvent.caller.time + ".jpg").toURL().toString();
             AppLogger.d("门铃截图地址:" + url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+            AppLogger.d("获取门铃截图地址失败");
         }
         intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, url);
         intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, bellCallEvent.caller.time);

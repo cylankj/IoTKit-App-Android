@@ -484,6 +484,15 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 .show();
     }
 
+    @Override
+    public void onLoading(boolean loading) {
+        if (loading) {
+            mVideoPlayController.setState(ILiveControl.STATE_LOADING, null);
+        } else {
+            mVideoPlayController.setState(ILiveControl.STATE_IDLE, null);
+        }
+    }
+
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     void switchSpeakerWithPermission() {
         mPresenter.switchSpeaker();
@@ -543,13 +552,16 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case JError.ErrorVideoPeerDisconnect://对端断开
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.EFAMILY_CALL_IGNORED));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case JError.ErrorP2PSocket:
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NoNetworkTips));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case BAD_NET_WORK:
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
+                break;
+            case BAD_FRAME_RATE:
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             default:
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
@@ -619,19 +631,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             mSurfaceView.setLayoutParams(params);
             mVideoViewContainer.removeAllViews();
             mVideoViewContainer.addView(mSurfaceView);
-//            mGestureDetector = new ScaleGestureDetector(this, new ScaleGestureDetector.SimpleOnScaleGestureListener() {
-//                @Override
-//                public boolean onScale(ScaleGestureDetector detector) {
-//                    mScaleFactor *= detector.getScaleFactor();
-//                    mScaleFactor = Math.max(1.0f, Math.min(mScaleFactor, 3.0f));
-//                    AppLogger.e("当前缩放比例为:" + mScaleFactor);
-//                    if (mSurfaceView instanceof ViEAndroidGLES20_Ext) {
-//                        ((ViEAndroidGLES20_Ext) mSurfaceView).setScaleFactor(mScaleFactor);
-//                    }
-//
-//                    return false;
-//                }
-//            });
         }
         AppLogger.i("initVideoView");
         mSurfaceView.getHolder().setFormat(PixelFormat.TRANSPARENT);
