@@ -323,4 +323,10 @@ public class TimeUtils {
         format.applyPattern("MM.dd HH:mm");
         return format.format(provide);
     }
+
+    public static boolean isSameDay(long time1, long time2) {
+        time1 = startOfDay(time1);
+        time2 = startOfDay(time2);
+        return time1 == time2;
+    }
 }

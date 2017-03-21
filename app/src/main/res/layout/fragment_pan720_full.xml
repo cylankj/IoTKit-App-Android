@@ -13,12 +13,14 @@
         hunt:ct_enable_shadow="false"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title_color="@color/color_white"
         hunt:ct_title_color="@color/color_white" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/y50"
         android:layout_gravity="bottom"
+        android:background="@drawable/album_mask"
         android:orientation="horizontal">
 
         <ImageView

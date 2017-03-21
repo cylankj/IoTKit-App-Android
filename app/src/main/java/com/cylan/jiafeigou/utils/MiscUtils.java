@@ -68,10 +68,10 @@ public class MiscUtils {
 
     public static String getByteFromBitRate(long bitRate) {
         bitRate = bitRate / 8;
-        return getResult(bitRate);
+        return getFlowResult(bitRate);
     }
 
-    private static String getResult(long byteData) {
+    public static String getFlowResult(long byteData) {
         if (byteData < 1024)
             return byteData + "K/s";
         if (byteData >= 1024 && byteData < 1024 * 1024) {
@@ -87,12 +87,12 @@ public class MiscUtils {
     }
 
 //    public static void main(String[] args) {
-//        System.out.println(getResult(1024 * 1024 + 1));
-//        System.out.println(getResult(1024 * 1024));
-//        System.out.println(getResult(1024 * 1024 - 1));
-//        System.out.println(getResult(1025));
-//        System.out.println(getResult(1024));
-//        System.out.println(getResult(1023));
+//        System.out.println(getFlowResult(1024 * 1024 + 1));
+//        System.out.println(getFlowResult(1024 * 1024));
+//        System.out.println(getFlowResult(1024 * 1024 - 1));
+//        System.out.println(getFlowResult(1025));
+//        System.out.println(getFlowResult(1024));
+//        System.out.println(getFlowResult(1023));
 //        System.out.println(getCount(1));
 //        System.out.println(getCount(1));
 //        System.out.println(getCount(1));

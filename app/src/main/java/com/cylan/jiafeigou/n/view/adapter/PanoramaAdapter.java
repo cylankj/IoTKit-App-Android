@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -10,12 +11,15 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.PAlbumBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,9 +33,11 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
     private boolean isInEditMode;
     private static final Object object = new Object();
     private List<PAlbumBean> mRemovedList = new ArrayList<>();
+    private String uuid;
 
-    public PanoramaAdapter(Context context, List<PAlbumBean> items, IMulItemViewType<PAlbumBean> mulItemViewType) {
+    public PanoramaAdapter(String uuid, Context context, List<PAlbumBean> items, IMulItemViewType<PAlbumBean> mulItemViewType) {
         super(context, items, mulItemViewType);
+        this.uuid = uuid;
     }
 
 
@@ -39,7 +45,7 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, PAlbumBean item) {
         switch (viewType) {
             case 0:
-                holder.setText(R.id.tv_cam_message_item_date, "12:30");
+                holder.setText(R.id.tv_cam_message_item_date, TimeUtils.getDayString(item.getDownloadFile().getTime() * 1000L));
                 holder.setVisibility(R.id.v_circle, isInEditMode ? View.INVISIBLE : View.VISIBLE);
                 break;
             default:
@@ -135,8 +141,11 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
     }
 
     private void handleImage(SuperViewHolder holder, PAlbumBean item, int position) {
+        File file = new File(JConstant.PAN_PATH + File.separator + uuid + File.separator + item.getDownloadFile().fileName);
+        if (!file.exists()) return;
+        Uri imageUri = Uri.fromFile(file);
         Glide.with(getContext())
-                .load(item.url)
+                .load(imageUri)
                 .error(R.drawable.wonderful_pic_place_holder)
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .into(new SimpleTarget<GlideDrawable>() {
@@ -149,6 +158,7 @@ public class PanoramaAdapter extends SuperAdapter<PAlbumBean> {
                     @Override
                     public void onLoadFailed(Exception e, Drawable errorDrawable) {
                         holder.getView(R.id.img_album_content).setBackground(errorDrawable);
+                        AppLogger.e("err: " + e.getLocalizedMessage());
                     }
                 });
     }

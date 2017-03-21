@@ -22,7 +22,7 @@ public interface PanoramaAlbumContact {
 
         void onDelete(ArrayList<PAlbumBean> positionList);
 
-        void onUpdate(PanoramaEvent.MsgFile needUpdate, int position);
+        void onUpdate(PAlbumBean needUpdate, int position);
 
         ArrayList<PAlbumBean> getList();
 
@@ -43,7 +43,7 @@ public interface PanoramaAlbumContact {
          *
          * @param asc
          */
-        void fresh(boolean asc);
+        void refresh(boolean asc);
 
         /**
          * 手动下载

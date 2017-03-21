@@ -119,7 +119,7 @@ public interface PanoramaEvent {
         }
 
         public boolean isInValid() {
-            return ret != 0 || TextUtils.isEmpty(fileName);
+            return ret != 0 || TextUtils.isEmpty(fileName) || offset < 0;
         }
     }
 

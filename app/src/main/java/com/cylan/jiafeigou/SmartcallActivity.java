@@ -223,7 +223,7 @@ public class SmartcallActivity extends NeedLoginActivity
     }
 
     /**
-     * check is the app is fresh
+     * check is the app is refresh
      *
      * @return
      */

@@ -14,11 +14,10 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.RandomUtils;
-import com.cylan.socket.JfgSocket;
+import com.cylan.socket.JFGSocket;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
@@ -44,7 +43,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.pack;
  * Created by yanzhendong on 2017/3/8.
  */
 
-public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter, JfgSocket.JFGSocketCallBack {
+public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter, JFGSocket.JFGSocketCallBack {
     private boolean localUDPConnected = false;
     private long socketHandler = -1;
 
@@ -84,7 +83,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 .map(s -> {
                     try {
                         if (socketHandler == -1) {
-                            socketHandler = JfgSocket.InitSocket(this);
+                            socketHandler = JFGSocket.InitSocket(this);
                         }
                         AppLogger.d("正在发送 FPing 消息");
                         JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
@@ -115,7 +114,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                                         if (!localUDPConnected) {
                                             localUDPConnected = true;
                                             AppLogger.d("获取到设备 IP 地址:" + msg.ip + ",port:" + msg.port);
-                                            JfgSocket.Connect(socketHandler, msg.ip, msg.port, true);
+                                            JFGSocket.Connect(socketHandler, msg.ip, msg.port, true);
                                             return true;
                                         }
                                     }
@@ -212,7 +211,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         .mergeWith(Observable.just("sendAndReceiveRawMsg")
                                 .map(go -> {
                                     msg.mSeq = seq;
-                                    JfgSocket.SendMsgpackBuff(socketHandler, pack(msg));
+                                    JFGSocket.SendMsgpackBuff(socketHandler, pack(msg));
                                     AppLogger.d("正在发送局域网消息:" + new Gson().toJson(msg));
                                     return msg.mSeq;
                                 })
@@ -505,22 +504,19 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     public void OnDisconnected() {
         AppLogger.d("OnDisconnected");
         localUDPConnected = false;
-        HandlerThreadUtils.postAtFrontOfQueue(() -> {
-            if (socketHandler != -1) {
-                AppLogger.d("release socket");
-                JfgSocket.Release(socketHandler);
-                AppLogger.d("release socket good");
-                socketHandler = -1;
-            }
-        });
+        Observable.just("disconnect")
+                .filter(s->socketHandler!=-1)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(s->JFGSocket.Release(socketHandler));
     }
 
     @Override
     public void dismiss() {
         super.dismiss();
-        if (socketHandler != -1) {
-            JfgSocket.Disconnect(socketHandler);
-        }
+        Observable.just("disconnect")
+                .filter(s->socketHandler!=-1)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(s->JFGSocket.Disconnect(socketHandler));
     }
 
     @Override

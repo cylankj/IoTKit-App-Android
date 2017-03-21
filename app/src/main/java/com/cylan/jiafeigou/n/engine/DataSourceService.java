@@ -140,7 +140,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                 JfgAppCmd.getInstance().setCallBack(DataSourceService.this);
                 JfgAppCmd.getInstance().initNativeParam(vid, vKey, "yf.jfgou.com:443");
                 JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
-
+                JfgAppCmd.getInstance().getSdkVersion();
             } catch (Exception e) {
                 AppLogger.d("let's go err:" + e.getLocalizedMessage());
             }

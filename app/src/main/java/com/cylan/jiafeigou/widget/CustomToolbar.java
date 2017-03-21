@@ -39,8 +39,7 @@ public class CustomToolbar extends LinearLayout {
     public CustomToolbar(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         setOrientation(VERTICAL);
-        TypedArray
-                at = context.obtainStyledAttributes(attrs, R.styleable.CustomToolbar);
+        TypedArray at = context.obtainStyledAttributes(attrs, R.styleable.CustomToolbar);
         int bgColor = at.getColor(R.styleable.CustomToolbar_ct_background_color, Color.TRANSPARENT);
         int titleColor = at.getColor(R.styleable.CustomToolbar_ct_title_color, Color.TRANSPARENT);
         int leftTitleColor = at.getColor(R.styleable.CustomToolbar_ct_left_title_color, Color.TRANSPARENT);
@@ -86,13 +85,14 @@ public class CustomToolbar extends LinearLayout {
 
     /**
      * 使用这个方法后，原来设置过的，title icon均失效。
+     *
      * @param viewFactory
      */
     public void setViewFactory(ToolbarFactory viewFactory) {
         if (viewFactory != null) {
             viewGroup.removeAllViews();
             viewGroup.addView(viewFactory.createView());
-
+            viewGroup.setBackgroundColor(viewFactory.getToolbarColor());
         }
     }
 
@@ -105,6 +105,8 @@ public class CustomToolbar extends LinearLayout {
         boolean showShadow();
 
         boolean gitSystemWindow();
+
+        int getToolbarColor();
     }
 
     public static abstract class SimpleFactory implements ToolbarFactory {

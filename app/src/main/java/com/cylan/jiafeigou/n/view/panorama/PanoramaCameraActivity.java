@@ -407,7 +407,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     @OnClick(R.id.act_panorama_camera_bottom_panel_album)
     public void clickedBottomPanelAlbumItem() {
         AppLogger.d("clickedBottomPanelAlbumItem");
-        mPresenter.dismiss();
         Intent intent = new Intent(this, PanoramaAlbumActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
         startActivity(intent);
