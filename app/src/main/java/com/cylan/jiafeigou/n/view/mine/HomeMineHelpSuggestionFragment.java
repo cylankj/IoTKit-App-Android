@@ -364,6 +364,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         KeyboardUtil.attach(getActivity(), panelRoot, new KeyboardUtil.OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
+                if (suggestionAdapter == null)return;
                 mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
             }
         });

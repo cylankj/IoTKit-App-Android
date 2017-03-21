@@ -86,7 +86,6 @@ public class DataSourceManager implements JFGSourceManager {
     private DataSourceManager() {
         dbHelper = BaseDBHelper.getInstance();
         initSubscription();
-        initFromDB();
     }
 
     private void initSubscription() {
@@ -97,7 +96,7 @@ public class DataSourceManager implements JFGSourceManager {
         subscription.add(makeCacheDeviceSub());
     }
 
-    private void initFromDB() {
+    public void initFromDB() {//根据需要初始化
         dbHelper.getActiveAccount()
                 .observeOn(Schedulers.io())
                 .filter(account -> account != null)
@@ -375,6 +374,7 @@ public class DataSourceManager implements JFGSourceManager {
             boolean isV2 = TextUtils.isEmpty(device.vid);
             try {
                 return JfgCmdInsurance.getCmd().robotGetDataEx(uuid, asc, version, MiscUtils.getChaosDpList(isV2), 0);
+
             } catch (Exception e) {
                 AppLogger.e("bad ,uuid may be null");
                 return -1;
@@ -511,6 +511,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public JFGAccount getJFGAccount() {
+        if (jfgAccount == null){
+            return new Gson().fromJson(PreferencesUtils.getString(KEY_ACCOUNT),JFGAccount.class);
+        }
         return jfgAccount;
     }
 

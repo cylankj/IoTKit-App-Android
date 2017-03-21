@@ -28,7 +28,6 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
-import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -195,7 +194,6 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     .setVersion(mCallRecord.timeInLong)
                     .setAccount(DataSourceManager.getInstance().getAJFGAccount().getAccount())
                     .setAction(DBAction.SHARED)
-                    .setOption(new DBOption.SingleSharedOption(1, 1))
                     .setBytes(item.toBytes());
             subscriber.onNext(entity);
             subscriber.onCompleted();

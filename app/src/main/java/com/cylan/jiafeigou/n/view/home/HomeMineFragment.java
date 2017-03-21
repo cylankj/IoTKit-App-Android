@@ -36,6 +36,7 @@ import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
@@ -108,12 +109,12 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void onStart() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
             //访客状态
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
             basePresenter.portraitBlur(bm);
             setAliasName(getString(R.string.Tap3_LogIn));
-            basePresenter.getUnReadMesg();
         }
         super.onStart();
     }
@@ -132,7 +133,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 点击个人头像
      */
     public void portrait() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -145,7 +147,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     public void friendItem(View view) {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -189,7 +192,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     public void settingsItem(View view) {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -203,7 +207,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     public void shareItem(View view) {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -300,6 +305,9 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     @Override
     public void setMesgNumber(final int number) {
+        if (number == 0){
+            return;
+        }
         tvHomeMineMsgCount.post(new Runnable() {
             @Override
             public void run() {
@@ -373,7 +381,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     private void helpItem(View view) {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -389,7 +398,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转到消息界面
      */
     private void jump2MesgFragment() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -408,7 +418,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 点击个人昵称
      */
     private void jump2UserInfo() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
             needStartLoginFragment();
             return;
         }

@@ -45,6 +45,7 @@ import static com.cylan.jiafeigou.dp.DpUtils.pack;
 
 public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter, JFGSocket.JFGSocketCallBack {
     private boolean localUDPConnected = false;
+    private boolean remoteServerConnected = false;
     private long socketHandler = -1;
 
     @Override
@@ -54,6 +55,30 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         if (device != null) {
             mView.onShowProperty(device);
         }
+//        checkAndInitConnection();
+    }
+
+    protected void checkAndInitConnection() {
+        Observable.just(NetUtils.ping())
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .map(remote -> {
+                    remoteServerConnected = remote;
+                    return remote;
+                })
+                .filter(ret -> NetUtils.isWiFiConnected(mView.getAppContext()));//没有连接 WiFi 就没必要初始化 local udp连接了
+
+    }
+
+    protected Observable getLocalConnectionSub() {
+        return null;
+    }
+
+    protected Observable getRemoteConnectionSub() {
+        return Observable.just(NetUtils.ping())
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .filter(connect -> remoteServerConnected = connect);
     }
 
     @Override
@@ -162,7 +187,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void makePhotograph() {
-        Subscription subscribe = verifySDCard(mSourceManager.getJFGDevice(mUUID))
+        Subscription subscribe = checkSDCard(mSourceManager.getJFGDevice(mUUID))
                 .observeOn(Schedulers.io())
                 .map(dev -> fillRawMsg(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2, TYPE_TAKE_PICTURE_REQ, pack(new PanoramaEvent.MSG_TYPE_TAKE_PICTURE_REQ())))
                 .flatMap(this::sendAndReceiveRawMsg)
@@ -226,9 +251,9 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startMakeLongVideo() {
-        Subscription subscribe = verifySDCard(mSourceManager.getJFGDevice(mUUID))
+        Subscription subscribe = checkSDCard(mSourceManager.getJFGDevice(mUUID))
                 .observeOn(Schedulers.io())
-                .flatMap(this::verifyBattery)
+                .flatMap(this::checkBattery)
                 .observeOn(Schedulers.io())
                 .flatMap(ret -> startMakeVideo(2))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -329,7 +354,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startMakeShortVideo() {
-        Subscription subscribe = verifySDCard(mSourceManager.getJFGDevice(mUUID))
+        Subscription subscribe = checkSDCard(mSourceManager.getJFGDevice(mUUID))
                 .observeOn(Schedulers.io())
                 .flatMap(ret -> startMakeVideo(1))
                 .observeOn(AndroidSchedulers.mainThread())
@@ -356,7 +381,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     RxBus.getCacheInstance().post(new RecordFinished());
                     return sec;
                 })
-                .filter(progress -> progress.second < 7)//超过8秒会在 startMakeShortVideo中完成
+                .filter(progress -> progress.second < 8)//超过8秒会在 startMakeShortVideo中完成
                 .flatMap(progress -> stopMakeVideo(1)
                         .observeOn(AndroidSchedulers.mainThread())
                         .filter(rsp -> {
@@ -456,7 +481,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         return rawReqMsg;
     }
 
-    private Observable<JFGCameraDevice> verifySDCard(JFGCameraDevice device) {
+    private Observable<JFGCameraDevice> checkSDCard(JFGCameraDevice device) {
         return Observable.just(device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -478,7 +503,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 });
     }
 
-    private Observable<JFGCameraDevice> verifyBattery(JFGCameraDevice device) {
+    private Observable<JFGCameraDevice> checkBattery(JFGCameraDevice device) {
         return Observable.just(device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

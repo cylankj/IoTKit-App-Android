@@ -9,5 +9,6 @@
         android:layout_width="@dimen/y63"
         android:layout_height="@dimen/y63"
         android:layout_gravity="center"
+        android:background="@drawable/logo_selected"
         android:src="@drawable/logo_white" />
 </FrameLayout>

@@ -21,6 +21,8 @@ import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
+
 /**
  * Created by cylan-hunt on 17-3-6.
  */

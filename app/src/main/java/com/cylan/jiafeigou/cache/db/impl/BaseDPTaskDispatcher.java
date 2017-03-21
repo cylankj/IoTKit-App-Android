@@ -43,6 +43,9 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
 
     @Override
     public synchronized void perform() {
+        if (DataSourceManager.getInstance().getAJFGAccount() == null) {
+            return;
+        }
         BaseDBHelper.getInstance().queryUnConfirmDpMsg(null, null)
                 .observeOn(Schedulers.io())
                 .flatMap(Observable::from)
@@ -69,6 +72,9 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
 
     @Override
     public Observable<IDPTaskResult> perform(IDPEntity entity) {
+        if (DataSourceManager.getInstance().getAJFGAccount() == null) {
+            return Observable.just(BaseDPTaskResult.SUCCESS);
+        }
         return Observable.just(mTaskFactory.getTask(entity.action(), false, entity))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
@@ -80,6 +86,9 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
 
     @Override
     public Observable<IDPTaskResult> perform(List<? extends IDPEntity> entities) {
+        if (DataSourceManager.getInstance().getAJFGAccount() == null) {
+            return Observable.just(BaseDPTaskResult.SUCCESS);
+        }
         return Observable.just(mTaskFactory.getTask(entities.get(0).action(), true, entities))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

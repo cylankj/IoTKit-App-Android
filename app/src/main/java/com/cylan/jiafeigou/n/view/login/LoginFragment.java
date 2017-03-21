@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.cache.JCache;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.OpenLoginHelper;
@@ -173,7 +174,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 用来点击空白处隐藏键盘
-     *
      * @param view
      */
     public void addOnTouchListener(View view) {
@@ -203,7 +203,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         ButterKnife.bind(this, view);
         return view;
     }
-
 
     @Override
     public void onStart() {
@@ -624,6 +623,10 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 ToastUtil.showNegativeToast(getString(R.string.LOGIN_ERR));
             }
             resetView();
+            PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
+            AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername),1,"")
+                    .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                    .subscribe();
         }
     }
 

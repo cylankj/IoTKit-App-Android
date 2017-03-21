@@ -19,7 +19,6 @@
         app:ct_background_color="@color/color_0ba8cf"
         app:ct_fit_system_window="true"
         app:ct_icon="@drawable/nav_tab_back_selector"
-        app:ct_icon_right="@drawable/icon_setting"
         app:ct_left_title="LOGO设置"
         app:ct_left_title_color="@color/color_white" />
 

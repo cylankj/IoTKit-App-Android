@@ -11,6 +11,12 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.cylan.ext.opt.DebugOptionsImpl;
+import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.support.Security;
+import com.cylan.jiafeigou.support.log.AppLogger;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -297,14 +303,6 @@ public class NetUtils {
         }
         return "";
     }
-//    //this can work well
-//    public static boolean isInternetAvailable(String host) {
-//        try {
-//            return InetAddress.getByName(host).equals("");
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
 
     public static boolean isInternetAvailable(String host) {
         try {
@@ -383,5 +381,48 @@ public class NetUtils {
         return "";
     }
 
+    /**
+     * 检测网络是否连接
+     *
+     * @return
+     */
 
+    private boolean isNetworkAvailable(Application context) {
+        //得到网络连接信息
+        ConnectivityManager manager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        //去进行判断网络是否连接
+        if (manager.getActiveNetworkInfo() != null) {
+            return manager.getActiveNetworkInfo().isAvailable();
+        }
+        return false;
+    }
+
+
+    public static final boolean ping() {
+        try {
+            String trimPackageName = JFGRules.getTrimPackageName();
+            //读取JConstant.getRoot()/log/config.txt的内容
+            String ip = DebugOptionsImpl.getServer();
+            String inner = Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
+            if (BuildConfig.DEBUG) {
+                if (TextUtils.isEmpty(ip))
+                    ip = inner;
+            } else ip = inner;
+            Process p = Runtime.getRuntime().exec("ping -c 3 -w 100 " + ip);// ping网址3次
+            // ping的状态
+            return p.waitFor() == 0;
+        } catch (Exception e) {
+            AppLogger.d("获取真实网络连接状态出错:" + e.getMessage());
+        }
+        return false;
+    }
+
+    public static final boolean isWiFiConnected(Context context) {
+        ConnectivityManager manager = getConnectivityManager(context);
+        NetworkInfo info = manager.getActiveNetworkInfo();
+        if (info != null && info.getType() == ConnectivityManager.TYPE_WIFI) {
+            return true;
+        }
+        return false;
+    }
 }

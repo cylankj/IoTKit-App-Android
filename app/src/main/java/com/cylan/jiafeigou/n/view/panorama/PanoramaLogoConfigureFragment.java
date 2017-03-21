@@ -30,6 +30,7 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
     FrameLayout logoContentContainer;
     private List<LogoItem> builtInLogo = Arrays.asList(new LogoItem(0), new LogoItem(1), new LogoItem(2), new LogoItem(3));
     private LogoListAdapter logoListAdapter;
+    private int lastSelectedPos = 0;
 
 
     public static PanoramaLogoConfigureFragment newInstance() {
@@ -62,10 +63,13 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
 
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
-
+        int lastPos = lastSelectedPos;
+        lastSelectedPos = position;
+        logoListAdapter.notifyItemChanged(lastPos);
+        logoListAdapter.notifyItemChanged(lastSelectedPos);
     }
 
-    private class LogoListAdapter extends SuperAdapter<LogoItem> implements View.OnClickListener {
+    private class LogoListAdapter extends SuperAdapter<LogoItem> {
 
         public LogoListAdapter(Context context, List<LogoItem> items) {
             super(context, items, null);
@@ -73,7 +77,6 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
 
         @Override
         public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, LogoItem item) {
-            holder.setOnClickListener(R.id.item_panorama_logo_img, this);
             switch (item.type) {
                 case 1:
                     holder.setImageResource(R.id.item_panorama_logo_img, R.drawable.logo_white);
@@ -84,6 +87,11 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
                 case 3:
                     holder.setImageResource(R.id.item_panorama_logo_img, R.drawable.logo_clever_dog);
                     break;
+            }
+            if (layoutPosition == lastSelectedPos) {
+                holder.itemView.setBackgroundResource(R.drawable.logo_selected);
+            } else {
+                holder.itemView.setBackgroundResource(android.R.color.transparent);
             }
         }
 
@@ -105,11 +113,6 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
                     return viewType == 0 ? R.layout.item_panorama_logo_empty : R.layout.item_panorama_logo;
                 }
             };
-        }
-
-        @Override
-        public void onClick(View v) {
-
         }
     }
 }

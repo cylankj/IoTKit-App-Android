@@ -141,9 +141,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onShowProperty(JFGCameraDevice device) {
-        if (device.charging != null && device.charging.value) {
-            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge);
-        } else if (device.battery != null) {
+        if (device.battery != null) {
             bannerChargeText.setText(device.battery.value + "%");
             int battery = device.battery.value;
             if (battery <= 20) {
@@ -153,6 +151,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             } else if (battery >= 80) {
                 bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_full);
             }
+        }
+        if (device.charging != null && device.charging.value) {
+            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge);
         }
         if (device.mac != null) {
             String routerMac = NetUtils.getRouterMacAddress(getApplication());
@@ -204,6 +205,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 case MotionEvent.ACTION_UP:
                     if (panoramaRecordMode == MODE_SHORT) {
                         AppLogger.d("录制短视频结束了");
+                        bottomPanelPhotoGraphItem.setEnabled(false);
                         mPresenter.stopMakeShortVideo();
                     }
                     break;
@@ -277,6 +279,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                 })
                 .setMessage(getString(R.string.Tap1_device_deleted))
                 .show();
+    }
+
+    @Override
+    public void onLoading(boolean loading) {
+
     }
 
 

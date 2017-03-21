@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
-import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -81,7 +80,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
             item.cid = uuid;
             Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-            item.fileName = alarmMsg.time + "_1.jpg";
+            item.fileName = alarmMsg.time + "_" + index + ".jpg";
             item.time = alarmMsg.time;
             IDPEntity entity = new DPEntity()
                     .setUuid(uuid)
@@ -89,7 +88,6 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                     .setVersion((long) alarmMsg.time * 1000L)
                     .setAction(DBAction.SHARED)
                     .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount())
-                    .setOption(new DBOption.SingleSharedOption(1, 1))
                     .setBytes(item.toBytes());
             subscriber.onNext(entity);
             subscriber.onCompleted();

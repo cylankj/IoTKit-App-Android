@@ -166,6 +166,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                 .flatMap(integer -> {
                     AppLogger.d("integer: " + integer);
                     if (integer == 0) {
+                        PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
                         PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB,true);
                         RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                                 .subscribeOn(Schedulers.newThread())
@@ -183,6 +184,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                                 .subscribe();
                     } else if (integer == -1) {
                         //emit failed event.
+                        PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                     }
                     return null;
@@ -390,7 +392,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
             AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
             AfterLoginService.resumeOfflineRequest();
         }
-        AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + "]");
+        AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + ",seq:" + jfgResult.seq + "]");
     }
 
     @Override

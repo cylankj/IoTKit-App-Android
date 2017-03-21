@@ -2,14 +2,17 @@ package com.cylan.jiafeigou.n.view.mine;
 
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -36,9 +39,11 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -46,9 +51,12 @@ import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.utils.LocaleUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.io.File;
@@ -152,6 +160,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void onStart() {
         super.onStart();
         initView();
+        initPersonalInformation(DataSourceManager.getInstance().getJFGAccount());
     }
 
     @Override
@@ -173,7 +182,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         if (presenter.checkOpenLogin()) {
             rlChangePassword.setVisibility(View.GONE);
         }
-
     }
 
     @Override
@@ -191,6 +199,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         super.onStop();
         if (presenter != null) presenter.stop();
         if (resetPhoto){
+            //我的界面刷新显示头像
             RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
             resetPhoto = false;
         }
@@ -590,7 +599,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                if (getView() != null) {
+                if (getView() != null && argumentData != null) {
                     presenter.logOut(argumentData.getAccount());
                     jump2LoginFragment();
                 }
@@ -702,15 +711,41 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openCamera();
             } else {
-                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
+                setPermissionDialog(getString(R.string.camera_auth));
             }
         } else if (requestCode == 2) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 openGallery();
             } else {
-                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
+                setPermissionDialog(getString(R.string.photo));
             }
         }
     }
 
+    public void setPermissionDialog(String permission){
+        new AlertDialog.Builder(getActivity())
+                .setMessage(getString(R.string.permission_auth, "",permission))
+                .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    dialog.dismiss();
+                })
+                .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
+                    openSetting();
+                })
+                .create()
+                .show();
+    }
+
+    private void openSetting(){
+        Intent localIntent = new Intent();
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= 9) {
+            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+            localIntent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
+        } else if (Build.VERSION.SDK_INT <= 8) {
+            localIntent.setAction(Intent.ACTION_VIEW);
+            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
+            localIntent.putExtra("com.android.settings.ApplicationPkgName",getContext().getPackageName());
+        }
+        startActivity(localIntent);
+    }
 }
