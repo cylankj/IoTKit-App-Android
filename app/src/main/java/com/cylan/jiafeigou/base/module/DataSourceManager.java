@@ -513,6 +513,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public JFGAccount getJFGAccount() {
+        if (jfgAccount == null){
+            return new Gson().fromJson(PreferencesUtils.getString(KEY_ACCOUNT),JFGAccount.class);
+        }
         return jfgAccount;
     }
 
