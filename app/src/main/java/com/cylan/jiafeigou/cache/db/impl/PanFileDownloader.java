@@ -45,45 +45,57 @@ public class PanFileDownloader implements IPanFileDbHelper {
     }
 
     @Override
-    public Observable<List<DownloadFile>> getFileFrom(int time, boolean asc, int count) {
+    public Observable<List<DownloadFile>> getFileFrom(String uuid, int time, boolean asc, int count) {
         return Observable.just("getFile")
-                .flatMap(s -> downloadFileDao.queryBuilder().where(DownloadFileDao.Properties.Time.gt(time))
+                .flatMap(s -> downloadFileDao.queryBuilder()
+                        .where(DownloadFileDao.Properties.Time.gt(time),
+                                DownloadFileDao.Properties.Uuid.eq(uuid))
                         .orderAsc(DownloadFileDao.Properties.Time)
                         .limit(20)
                         .rx().list());
     }
 
     @Override
-    public Observable<DownloadFile> getFileFrom(int time) {
+    public Observable<DownloadFile> getFileFrom(String uuid, int time) {
         return Observable.just("getFile")
                 .flatMap(s -> downloadFileDao.queryBuilder()
-                        .where(DownloadFileDao.Properties.Time.eq(time))
+                        .where(DownloadFileDao.Properties.Time.eq(time),
+                                DownloadFileDao.Properties.Uuid.eq(uuid))
                         .rx().unique());
     }
 
     @Override
-    public Observable<DownloadFile> getFileFrom(String fileName) {
+    public Observable<DownloadFile> getFileFrom(String uuid, String fileName) {
         return Observable.just("getFile")
                 .flatMap(s -> downloadFileDao.queryBuilder()
-                        .where(DownloadFileDao.Properties.FileName.eq(fileName))
+                        .where(DownloadFileDao.Properties.FileName.eq(fileName),
+                                DownloadFileDao.Properties.Uuid.eq(uuid))
                         .rx().unique());
+    }
+
+    @Override
+    public Observable<DownloadFile> getPreparedDownloadFile(String uuid) {
+        return downloadFileDao.queryBuilder().where(DownloadFileDao.Properties.State.lt(3),
+                DownloadFileDao.Properties.Uuid.eq(uuid))
+                .orderDesc(DownloadFileDao.Properties.State)
+                .limit(1)
+                .rx().unique();
     }
 
     @Override
     public Observable<Long> updateOrSaveFile(DownloadFile downloadFile) {
         return Observable.just(downloadFile)
                 .flatMap(r -> downloadFileDao.queryBuilder()
-                        .where(DownloadFileDao.Properties.FileName.eq(downloadFile.fileName))
+                        .where(DownloadFileDao.Properties.FileName.eq(downloadFile.fileName),
+                                DownloadFileDao.Properties.Uuid.eq(downloadFile.uuid))
                         .rx().unique()
                         .flatMap(item -> {
-                            Log.d("PanFileDownloader", "PanFileDownloader update:" + (item == null));
+                            Log.d("PanFileDownloader", "PanFileDownloader update:" + downloadFile);
                             if (item == null) {
-                                return downloadFileDao.rx().save(downloadFile);
+                                return downloadFileDao.rx().insert(downloadFile);
                             } else {
-                                long id = item.id;
-                                item = downloadFile;
-                                item.id = id;//id 不能变
-                                return downloadFileDao.rx().refresh(item);
+                                downloadFile.id = item.id;
+                                return downloadFileDao.rx().update(downloadFile);
                             }
                         }))
                 .flatMap(new Func1<DownloadFile, Observable<Long>>() {
@@ -97,8 +109,9 @@ public class PanFileDownloader implements IPanFileDbHelper {
     }
 
     @Override
-    public Observable<Integer> getFileDownloadState(String fileName) {
-        return downloadFileDao.queryBuilder().where(DownloadFileDao.Properties.FileName.eq(fileName))
+    public Observable<Integer> getFileDownloadState(String uuid, String fileName) {
+        return downloadFileDao.queryBuilder().where(DownloadFileDao.Properties.FileName.eq(fileName),
+                DownloadFileDao.Properties.Uuid.eq(uuid))
                 .rx().unique().flatMap(new Func1<DownloadFile, Observable<Integer>>() {
                     @Override
                     public Observable<Integer> call(DownloadFile downloadFile) {
@@ -113,7 +126,9 @@ public class PanFileDownloader implements IPanFileDbHelper {
                 .flatMap(new Func1<DownloadFile, Observable<List<Long>>>() {
                     @Override
                     public Observable<List<Long>> call(DownloadFile downloadFile) {
-                        return downloadFileDao.queryBuilder().where(DownloadFileDao.Properties.FileName.eq(downloadFile.fileName))
+                        return downloadFileDao.queryBuilder()
+                                .where(DownloadFileDao.Properties.FileName.eq(downloadFile.fileName),
+                                        DownloadFileDao.Properties.Uuid.eq(downloadFile.uuid))
                                 .rx().unique()
                                 .flatMap(new Func1<DownloadFile, Observable<Long>>() {
                                     @Override
@@ -125,7 +140,7 @@ public class PanFileDownloader implements IPanFileDbHelper {
                                             id = fromDb.id;
                                             fromDb = downloadFile;
                                             fromDb.id = id;
-                                            downloadFileDao.refresh(fromDb);
+                                            downloadFileDao.update(fromDb);
                                             AppLogger.d("updateFile: " + id);
                                         }
                                         return Observable.just(id);
@@ -135,6 +150,28 @@ public class PanFileDownloader implements IPanFileDbHelper {
                                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
                     }
                 });
+    }
+
+    @Override
+    public Observable<Long> removeFile(String uuid, String fileName) {
+        return downloadFileDao
+                .queryBuilder().where(DownloadFileDao.Properties.FileName.eq(fileName),
+                        DownloadFileDao.Properties.Uuid.eq(uuid))
+                .rx().unique().flatMap(new Func1<DownloadFile, Observable<Long>>() {
+                    @Override
+                    public Observable<Long> call(DownloadFile downloadFile) {
+                        if (downloadFile != null && downloadFile.id > -1) {
+                            downloadFileDao.deleteByKey(downloadFile.id);
+                            return Observable.just(downloadFile.id);
+                        }
+                        return Observable.just(-1L);
+                    }
+                });
+    }
+
+    @Override
+    public long insertFile(DownloadFile downloadFile) {
+        return downloadFileDao.insert(downloadFile);
     }
 
     public class GreenDaoContext extends ContextWrapper {

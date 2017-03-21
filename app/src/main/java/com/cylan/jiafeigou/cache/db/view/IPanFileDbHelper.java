@@ -21,16 +21,26 @@ public interface IPanFileDbHelper {
      * @param count
      * @return
      */
-    Observable<List<DownloadFile>> getFileFrom(int time, boolean asc, int count);
+    Observable<List<DownloadFile>> getFileFrom(String uuid, int time, boolean asc, int count);
 
-    Observable<DownloadFile> getFileFrom(int time);
+    Observable<DownloadFile> getFileFrom(String uuid, int time);
 
-    Observable<DownloadFile> getFileFrom(String fileName);
+    Observable<DownloadFile> getFileFrom(String uuid, String fileName);
+
+    /**
+     * 下一个准备好下载的文件
+     *
+     * @return
+     */
+    Observable<DownloadFile> getPreparedDownloadFile(String uuid);
 
     Observable<Long> updateOrSaveFile(DownloadFile downloadFile);
 
-    Observable<Integer> getFileDownloadState(String fileName);
+    Observable<Integer> getFileDownloadState(String uuid, String fileName);
 
     Observable<List<Long>> updateOrSaveFile(List<DownloadFile> downloadFileList);
 
+    Observable<Long> removeFile(String uuid, String fileName);
+
+    long insertFile(DownloadFile downloadFile);
 }

@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -15,11 +17,12 @@ import java.util.Arrays;
  */
 
 @Entity(generateGettersSetters = false)
-public final class DownloadFile implements Comparable<DownloadFile> {
+public final class DownloadFile implements Comparable<DownloadFile>, Parcelable {
     @Id
-    public long id;
+    public Long id;
     @Generated(hash = 735721945)
     public String fileName;
+    public String uuid;
     public long time;
     public byte[] md5;
     public int fileSize;
@@ -36,23 +39,14 @@ public final class DownloadFile implements Comparable<DownloadFile> {
         return time;
     }
 
-    @Generated(hash = 573880890)
-    public DownloadFile(long id, String fileName, long time, byte[] md5,
-            int fileSize, int offset, int state, int place) {
-        this.id = id;
-        this.fileName = fileName;
-        this.time = time;
-        this.md5 = md5;
-        this.fileSize = fileSize;
-        this.offset = offset;
-        this.state = state;
-        this.place = place;
+
+    public String getUuid() {
+        return uuid;
     }
 
-    @Generated(hash = 379234666)
-    public DownloadFile() {
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
     }
-
 
     public int getTimeStamp() {
         return MiscUtils.getValueFrom(fileName);
@@ -63,7 +57,7 @@ public final class DownloadFile implements Comparable<DownloadFile> {
         return getTimeStamp() - downloadFile.getTimeStamp();
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -91,7 +85,7 @@ public final class DownloadFile implements Comparable<DownloadFile> {
         return place;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -130,5 +124,82 @@ public final class DownloadFile implements Comparable<DownloadFile> {
                 ", state=" + state +
                 ", place=" + place +
                 '}';
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeValue(this.id);
+        dest.writeString(this.fileName);
+        dest.writeLong(this.time);
+        dest.writeByteArray(this.md5);
+        dest.writeInt(this.fileSize);
+        dest.writeInt(this.offset);
+        dest.writeInt(this.state);
+        dest.writeInt(this.place);
+    }
+
+    protected DownloadFile(Parcel in) {
+        this.id = (Long) in.readValue(Long.class.getClassLoader());
+        this.fileName = in.readString();
+        this.time = in.readLong();
+        this.md5 = in.createByteArray();
+        this.fileSize = in.readInt();
+        this.offset = in.readInt();
+        this.state = in.readInt();
+        this.place = in.readInt();
+    }
+
+    @Generated(hash = 1874457176)
+    public DownloadFile(Long id, String fileName, String uuid, long time, byte[] md5, int fileSize, int offset,
+                        int state, int place) {
+        this.id = id;
+        this.fileName = fileName;
+        this.uuid = uuid;
+        this.time = time;
+        this.md5 = md5;
+        this.fileSize = fileSize;
+        this.offset = offset;
+        this.state = state;
+        this.place = place;
+    }
+
+    @Generated(hash = 379234666)
+    public DownloadFile() {
+    }
+
+    public static final Parcelable.Creator<DownloadFile> CREATOR = new Parcelable.Creator<DownloadFile>() {
+        @Override
+        public DownloadFile createFromParcel(Parcel source) {
+            return new DownloadFile(source);
+        }
+
+        @Override
+        public DownloadFile[] newArray(int size) {
+            return new DownloadFile[size];
+        }
+    };
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        DownloadFile file = (DownloadFile) o;
+
+        if (time != file.time) return false;
+        return fileName != null ? fileName.equals(file.fileName) : file.fileName == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = fileName != null ? fileName.hashCode() : 0;
+        result = 31 * result + (int) (time ^ (time >>> 32));
+        return result;
     }
 }

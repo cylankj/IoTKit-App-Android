@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.panorama;
 
 import android.net.wifi.WifiInfo;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.ex.JfgException;
@@ -10,6 +11,7 @@ import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.impl.PanFileDownloader;
 import com.cylan.jiafeigou.cache.db.module.DownloadFile;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
@@ -20,15 +22,17 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.RandomUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.socket.JfgSocket;
+import com.cylan.socket.JFGSocket;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +61,7 @@ import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_FIRST_FILE_RSP;
  */
 
 public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.View> implements
-        PanoramaAlbumContact.Presenter, JfgSocket.JFGSocketCallBack {
+        PanoramaAlbumContact.Presenter, JFGSocket.JFGSocketCallBack {
 
     private long socketPointer = -1;
     private boolean hasConnected;
@@ -65,14 +69,14 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     @Override
     public void onStart() {
         super.onStart();
-        fresh(false);
+        refresh(false);
         Observable.just("make")
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(Schedulers.newThread())
                 .delay(2, TimeUnit.SECONDS)
                 .subscribe(s -> {
                     if (socketPointer == -1)
-                        socketPointer = JfgSocket.InitSocket(PanoramaAlbumPresenter.this);
+                        socketPointer = JFGSocket.InitSocket(PanoramaAlbumPresenter.this);
                     AppLogger.d("start: " + socketPointer);
                     makeTCPBridge();
                 });
@@ -81,11 +85,10 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     @Override
     public void onStop() {
         super.onStop();
-        PanAlbumDataManager.getInstance().setDownloading(false);
         AppLogger.d("onStop: " + socketPointer);
         try {
             if (socketPointer != -1) {
-                JfgSocket.Disconnect(socketPointer);
+                JFGSocket.Disconnect(socketPointer);
             }
         } catch (Exception e) {
             AppLogger.d("" + e.getLocalizedMessage());
@@ -110,7 +113,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         req.endTime = req.beginTime + 24 * 3600;
         req.limit = limit;
         byte[] data = fill(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2, TYPE_FILE_LIST_REQ, DpUtils.pack(req));
-        boolean send = JfgSocket.SendMsgpackBuff(socketPointer, data);
+        boolean send = JFGSocket.SendMsgpackBuff(socketPointer, data);
         AppLogger.d("send ret:" + send + " time:" + dateFormat.format(new Date(time * 1000L)));
     }
 
@@ -124,7 +127,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                     PanoramaEvent.MsgFirstFileInListReq req = new PanoramaEvent.MsgFirstFileInListReq();
                     byte[] data = fill(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2,
                             TYPE_FIRST_FILE_REQ, DpUtils.pack(req));
-                    boolean send = JfgSocket.SendMsgpackBuff(socketPointer, data);
+                    boolean send = JFGSocket.SendMsgpackBuff(socketPointer, data);
                     AppLogger.d("send ret:" + send + "请求第一条文件时间");
                 });
     }
@@ -145,13 +148,12 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         hasConnected = false;
         HandlerThreadUtils.postAtFrontOfQueue(() -> {
             if (socketPointer != -1) {
-                JfgSocket.Release(socketPointer);
+                JFGSocket.Release(socketPointer);
                 socketPointer = -1;
                 AppLogger.d("release socket good");
             }
         });
         AppLogger.d("OnDisconnected ");
-        PanAlbumDataManager.getInstance().setDownloading(false);
         Observable.just("disconnect")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -173,15 +175,18 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     private void handleFirstFileTime(int time) {
         if (time <= 0) {
             AppLogger.d("设备没有文件:" + time);
-            notifyNoFile();
+//            notifyNoFile();
             return;
         }
         int firstTime = PreferencesUtils.getInt(KEY_FIRST_FILE_TIME + mUUID, 0);
         AppLogger.d("firstTime in cache: " + firstTime + " " + time);
+
         if (time > firstTime) {
             if (firstTime != 0)
                 AppLogger.d("设备刷新了，或者更换sd卡了。:" + dateFormat.format(new Date(firstTime * 1000L)));
             PreferencesUtils.putInt(KEY_FIRST_FILE_TIME + mUUID, time);
+        } else if (time == firstTime) {
+            AppLogger.d("文件列表开始时间不变");
         } else {
             AppLogger.d("设备刷新了，或者更换sd卡了。:" + dateFormat.format(new Date(firstTime * 1000L)));
         }
@@ -206,7 +211,6 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         RxBus.getCacheInstance().post(new FileListRspEvent(fileListRsp.array));
                     break;
                 case TYPE_FILE_DOWNLOAD_RSP://文件区块响应
-                    AppLogger.d("文件下载中....");
                     RxBus.getCacheInstance().post(new DownFileRsp(header));
                     break;
             }
@@ -233,90 +237,147 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         }
     }
 
+    private Observable<PanoramaEvent.MsgFileDownloadRsp> writeFile(PanoramaEvent.MsgFileDownloadRsp rsp) {
+        return Observable.just(rsp)
+                .subscribeOn(Schedulers.io())
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .flatMap(new Func1<PanoramaEvent.MsgFileDownloadRsp, Observable<PanoramaEvent.MsgFileDownloadRsp>>() {
+                    @Override
+                    public Observable<PanoramaEvent.MsgFileDownloadRsp> call(PanoramaEvent.MsgFileDownloadRsp rsp) {
+                        try {
+                            String filePath = JConstant.PAN_PATH + File.separator + mUUID + File.separator + rsp.fileName;
+                            File file = new File(filePath);
+                            if (!file.getParentFile().exists()) {
+                                file.getParentFile().mkdir();
+                            }
+                            if (!file.exists()) file.createNewFile();
+                            RandomAccessFile aFile = new RandomAccessFile(filePath, "rw");
+                            aFile.seek(rsp.begin);
+                            aFile.write(rsp.buffer);
+                            aFile.close();
+                            Log.d(this.getClass().getSimpleName(), "write: good");
+                        } catch (IOException e) {
+                            Log.e(this.getClass().getSimpleName(), "err: " + e.getLocalizedMessage());
+                            return null;
+                        }
+                        return Observable.just(rsp);
+                    }
+                });
+    }
 
     /**
      * 开始下载
      */
     private void goonDownload() {
-        Observable.just("gotoDownload")
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<String, Observable<Pair<Long, byte[]>>>() {
-                    @Override
-                    public Observable<Pair<Long, byte[]>> call(String s) {
-                        //判断当前下载状态
-                        DownloadFile file = PanAlbumDataManager.getInstance().getNextPreparedDownloadFile();
-                        if (file == null) {
-                            AppLogger.e("err: no file need download");
-                            return Observable.just(new Pair<Long, byte[]>(-1L, null));
-                        }
-                        AppLogger.d(" need download:" + file);
-                        PanoramaEvent.MsgFileDownloadReq req = new PanoramaEvent.MsgFileDownloadReq();
-                        req.begin = file.offset;
-                        req.offset = file.offset + 64;
-                        req.fileName = file.fileName;
-                        req.md5 = file.md5;
-                        PanoramaEvent.RawReqMsg raw = new PanoramaEvent.RawReqMsg();
-                        raw.mSeq = RandomUtils.getRandom(Integer.MAX_VALUE);
-                        byte[] data = fill(raw,
-                                MIDRobotForwardDataV2,
-                                TYPE_FILE_DOWNLOAD_REQ,
-                                DpUtils.pack(req));
-                        boolean ret = JfgSocket.SendMsgpackBuff(socketPointer, data);
-                        AppLogger.d("尝试开始下载:" + ret + " " + req + " " + raw.mSeq);
-                        Pair<Long, byte[]> pair = new Pair<>(raw.mSeq, req.md5);
-                        return Observable.just(pair);
+        PanAlbumDataManager.getInstance().getNextPreparedDownloadFile(mUUID)
+                .subscribeOn(Schedulers.newThread())
+                .flatMap(file -> {
+                    if (file == null) {
+                        AppLogger.e("err: no file need download");
+                        return Observable.just(new Pair<Long, byte[]>(-1L, null));
                     }
+                    AppLogger.d(" need download:" + file);
+                    PanoramaEvent.MsgFileDownloadReq req = new PanoramaEvent.MsgFileDownloadReq();
+                    req.begin = file.offset;
+                    req.offset = file.offset + 64;
+                    req.fileName = file.fileName;
+                    req.md5 = file.md5;
+                    PanoramaEvent.RawReqMsg raw = new PanoramaEvent.RawReqMsg();
+                    raw.mSeq = System.currentTimeMillis();
+                    byte[] data = fill(raw,
+                            MIDRobotForwardDataV2,
+                            TYPE_FILE_DOWNLOAD_REQ,
+                            DpUtils.pack(req));
+                    boolean ret = JFGSocket.SendMsgpackBuff(socketPointer, data);
+                    AppLogger.d("开始下载:" + ret + " " + req + " " + raw.mSeq);
+                    return Observable.just(new Pair<>(raw.mSeq, req.md5));
                 })
                 .filter(longPair -> longPair != null && longPair.first > 0)
                 .flatMap(longPair -> {
-                    Subscription subscription = RxBus.getCacheInstance().toObservable(DownFileRsp.class)
+                    final Subscription subscription = RxBus.getCacheInstance().toObservable(DownFileRsp.class)
                             .filter(downFileRsp -> downFileRsp.data != null && downFileRsp.data.mSeq == longPair.first)
-                            .map(downFileRsp -> {
+                            .flatMap(downFileRsp -> {
                                 try {
                                     PanoramaEvent.MsgFileDownloadRsp rsp = DpUtils.unpackData(downFileRsp.data.msg, PanoramaEvent.MsgFileDownloadRsp.class);
-                                    AppLogger.e("file download get?: " + rsp);
-                                    if (rsp == null || rsp.isInValid()) {
+                                    if (rsp == null || rsp.ret == -1) {
                                         AppLogger.e("file download err: " + rsp);
-                                        return null;
+                                        return Observable.just(1);
                                     }
-                                    int updateRet = PanAlbumDataManager.getInstance().updateDownloadFile(rsp.fileName, rsp.offset);
-                                    if (updateRet == 1) {
-                                        AppLogger.d("文件下载完成...:" + rsp);
-                                        PanoramaEvent.MsgFileDownloadReq req = new PanoramaEvent.MsgFileDownloadReq();
-                                        req.begin = rsp.offset;
-                                        req.offset = rsp.offset + 30*1024;
-                                        req.fileName = rsp.fileName;
-                                        req.md5 = longPair.second;
-                                        PanoramaEvent.RawReqMsg raw = new PanoramaEvent.RawReqMsg();
-                                        raw.mSeq = longPair.first;
-                                        byte[] data = fill(raw,
-                                                MIDRobotForwardDataV2,
-                                                TYPE_FILE_DOWNLOAD_REQ,
-                                                DpUtils.pack(req));
-                                        boolean ret = JfgSocket.SendMsgpackBuff(socketPointer, data);
-                                        AppLogger.d("尝试开始下载:" + ret + " " + req + " " + raw.mSeq);
-                                        return null;
+                                    int fileSize = PanAlbumDataManager.getInstance().getFileSize(rsp.fileName);
+                                    if (rsp.begin + rsp.offset >= fileSize) {
+                                        AppLogger.e("file is finish: " + fileSize + " " + rsp);
                                     }
-                                    byte[] fileMd5 = PanAlbumDataManager.getInstance().getFileMd5(rsp.fileName);
-                                    if (fileMd5 == null || fileMd5.length == 0) {
-                                        AppLogger.e("file md5 is null: " + rsp);
-                                        return null;
-                                    }
+                                    //写文件吧。
+                                    return writeFile(rsp).filter(rsp1 -> rsp1 != null)
+                                            .subscribeOn(Schedulers.io())
+                                            .flatMap(new Func1<PanoramaEvent.MsgFileDownloadRsp, Observable<Integer>>() {
+                                                @Override
+                                                public Observable<Integer> call(PanoramaEvent.MsgFileDownloadRsp rsp) {
+                                                    int updateRet = PanAlbumDataManager.getInstance().updateFile(mUUID, rsp.fileName, rsp.begin + rsp.offset);
+                                                    if (updateRet == 0) {
+                                                        AppLogger.d("下载完成？:" + rsp + " " + (System.currentTimeMillis() - longPair.first) + "ms," + MiscUtils.getFlowResult((rsp.begin + rsp.offset) / 1024));
+                                                        notifyItemFinish(rsp);
+                                                        return Observable.just(1);
+                                                    } else if (updateRet == 1) {
+                                                        PanoramaEvent.MsgFileDownloadReq req = new PanoramaEvent.MsgFileDownloadReq();
+                                                        req.begin = rsp.begin + rsp.offset;
+                                                        req.offset = req.begin + 30 * 1024;
+                                                        req.fileName = rsp.fileName;
+                                                        req.md5 = longPair.second;
+                                                        PanoramaEvent.RawReqMsg raw = new PanoramaEvent.RawReqMsg();
+                                                        raw.mSeq = longPair.first;
+                                                        byte[] data = fill(raw,
+                                                                MIDRobotForwardDataV2,
+                                                                TYPE_FILE_DOWNLOAD_REQ,
+                                                                DpUtils.pack(req));
+                                                        boolean ret = JFGSocket.SendMsgpackBuff(socketPointer, data);
+                                                        AppLogger.d("继续下载:" + ret + " " + req + " " + raw.mSeq);
+                                                        return Observable.just(2);
+                                                    } else {
+                                                        AppLogger.d("文件下载状态：" + updateRet);
+                                                        return Observable.just(-1);
+                                                    }
+                                                }
+                                            });
                                 } catch (IOException e) {
                                     AppLogger.e("err: 下载出错" + e.getLocalizedMessage());
+                                    return Observable.just(-1);
                                 }
-                                return null;
-                            }).subscribe();
+                            }).subscribe(ret -> {
+                                AppLogger.d("downloadRet:" + ret);
+                                if (ret == 1) goonDownload();
+                            }, throwable -> AppLogger.d("download err: " + throwable.getLocalizedMessage()));
                     registerSubscription(subscription);
                     return Observable.just(longPair);
                 })
-                .subscribe(o -> AppLogger.d("download finish?"),
+                .subscribe(o -> AppLogger.d(o == null ? "没有文件下载" : "文件下载中...."),
                         throwable -> AppLogger.e("download err: " + throwable.getLocalizedMessage()),
-                        () -> {
-                            AppLogger.d("go again? ");
-                            goonDownload();
-                        });
+                        () -> AppLogger.d("流程走通...."));
 
+    }
+
+    private void notifyItemFinish(PanoramaEvent.MsgFileDownloadRsp rsp) {
+        Observable.just(rsp)
+                .subscribeOn(Schedulers.newThread())
+                .flatMap(new Func1<PanoramaEvent.MsgFileDownloadRsp, Observable<Integer>>() {
+                    @Override
+                    public Observable<Integer> call(PanoramaEvent.MsgFileDownloadRsp rsp) {
+                        ArrayList<PAlbumBean> allList = mView.getList();
+                        if (allList == null) return null;
+                        PAlbumBean bean = new PAlbumBean();
+                        DownloadFile file = new DownloadFile();
+                        file.fileName = rsp.fileName;
+                        file.time = MiscUtils.getValueFrom(file.fileName);
+                        bean.setDownloadFile(file);
+                        int index = allList.indexOf(bean);
+                        AppLogger.d("file index finish: to update ui: " + index);
+                        if (index < 0) return null;
+                        return Observable.just(index);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe(integer -> mView.onUpdate(null, integer));
     }
 
     private Subscription fileListRspSubscription() {
@@ -330,20 +391,17 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                             AppLogger.e("fileName is empty: " + file);
                             continue;
                         }
-                        PanAlbumDataManager.getInstance().putFile(file.fileName, file.md5, file.fileSize);
-                        AppLogger.d("file: " + file);
+                        PanAlbumDataManager.getInstance().insertFile(mUUID, file.fileName, file.md5, file.fileSize)
+                                .subscribeOn(Schedulers.io())
+                                .observeOn(Schedulers.io())
+                                .subscribe();
+                        AppLogger.d("insert file?: " + file);
                     }
                     goonDownload();
-                    return null;
+                    refresh(true);//刷列表
+                    return fileListRspEvent.array;
                 })
-                .map(msgFiles -> {
-                    ArrayList<PAlbumBean> viewList = mView.getList();
-                    return convert(PanAlbumDataManager.getInstance().getAllFileList());
-                })
-                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(list -> {
-                    mView.onAppend(list);
-                    AppLogger.d("fileList： " + list.size());
                 }, throwable -> {
                     AppLogger.e("err: " + throwable.getLocalizedMessage());
                     registerSubscription(fileListRspSubscription());
@@ -351,21 +409,20 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     }
 
     private ArrayList<PAlbumBean> convert(List<DownloadFile> list) {
+        if (ListUtils.getSize(list) == 0) return new ArrayList<>();
         ArrayList<PAlbumBean> arrayList = new ArrayList<>(list.size());
         Collections.sort(list);
-        AppLogger.d("sort:" + list);
         ArrayList<String> dateList = new ArrayList<>();
         for (DownloadFile file : list) {
-            String date = TimeUtils.getDayString(file.getTimeStamp() * 1000L);
+            String date = TimeUtils.getDayString(file.getTime() * 1000L);
             PAlbumBean bean = new PAlbumBean();
-            bean.timeInDate = file.getTimeStamp() * 1000L;
+            bean.setDownloadFile(file);
             if (!dateList.contains(date)) {
                 dateList.add(date);
                 bean.isDate = true;
                 arrayList.add(bean);
-            } else {
-                arrayList.add(bean);
             }
+            arrayList.add(bean);
         }
         return arrayList;
     }
@@ -426,7 +483,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                                         if (!hasConnected) {
                                             hasConnected = true;
                                             AppLogger.d("获取到设备 IP 地址:" + msg.ip + ",port:" + msg.port);
-                                            JfgSocket.Connect(socketPointer, msg.ip, msg.port, true);
+                                            JFGSocket.Connect(socketPointer, msg.ip, msg.port, true);
                                             return true;
                                         }
                                     }
@@ -464,33 +521,48 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
 
     }
 
-
-    @Override
-    public void fresh(boolean asc) {
+    private void refresh(boolean asc, boolean goNext) {
         ArrayList<PAlbumBean> list = mView.getList();
         int startTime = 0;
         if (list == null || list.size() == 0) {
         } else {
-            startTime = (int) (list.get(0).timeInDate / 1000);
+            startTime = list.get(0).getTime();
         }
-        PanFileDownloader.getDownloader().getFileFrom(0, asc, 20)
+        PanFileDownloader.getDownloader().getFileFrom(mUUID, startTime, asc, 20)
                 .subscribeOn(Schedulers.io())
                 .flatMap(downloadFiles -> {
-                    int size = ListUtils.getSize(downloadFiles);
-                    AppLogger.d("fileList: " + ListUtils.getSize(downloadFiles));
-                    return Observable.just(downloadFiles == null ? null : convert(downloadFiles));
+                    ArrayList<PAlbumBean> uiList = mView.getList();
+                    int sizeInUi = ListUtils.getSize(uiList);
+                    ArrayList<PAlbumBean> convertList = convert(downloadFiles);
+                    int convertSize = ListUtils.getSize(convertList);
+                    if (convertSize == 0) return null;
+                    convertList.removeAll(uiList);
+                    AppLogger.d("size: " + convertSize + " s:" + sizeInUi);
+                    long timeLastItem = sizeInUi > 0 ? uiList.get(sizeInUi - 1).getTime() * 1000L : 0L;
+                    long timeLast = downloadFiles.get(convertSize - 1).getTime() * 1000L;
+                    if (!TimeUtils.isSameDay(timeLast, timeLastItem) && timeLastItem > 0) {
+                        //需要组装
+                        PAlbumBean bean = new PAlbumBean();
+                        bean.isDate = true;
+                        convertList.add(0, bean);
+                    }
+                    return Observable.just(convertList);
                 })
+                .filter(finalList -> ListUtils.getSize(finalList) > 0)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(beanArrayList -> mView.onAppend(beanArrayList),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()),
                         () -> AppLogger.d("good load finish"));
-        if (hasConnected)
-            startSyncAlbumList(startTime, 20);
+    }
+
+    @Override
+    public void refresh(boolean asc) {
+        refresh(asc, false);
     }
 
     @Override
     public void downloadFile(String fileName) {
-        PanAlbumDataManager.getInstance().getDownloadFile(fileName)
+        PanAlbumDataManager.getInstance().getDownloadFile(mUUID, fileName)
                 .flatMap(downloadFile -> {
                     if (downloadFile == null) {
                         AppLogger.e("文件损坏");

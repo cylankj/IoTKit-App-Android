@@ -173,6 +173,7 @@ public class JConstant {
     public static final String OPEN_SHAKE = "open_shake";                       //开启震动提示
     public static final String OPEN_DOOR_NOTIFY = "open_door_notify";           //门磁开关提示
 
+    public static final String PAN_PATH = ROOT_DIR + File.separator + "view";
     public static final String KEY_REGISTER_SMS_TOKEN = "key_token";
     public static final String KEY_FORGET_PWD_FRIST_GET_SMS = "key_frist_get_time";
     public static final String KEY_FORGET_PWD_GET_SMS_COUNT = "key_get_sms_count";
