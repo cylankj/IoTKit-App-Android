@@ -77,6 +77,7 @@ public class JConstant {
     public static final String TWITTER_INIT_KEY = "twitter_init_key";
     public static final String FACEBOOK_INIT_KEY = "facebook_init_key";
     public static final String AUTO_SIGNIN_TAB = "auto_signin_tab";
+    public static final String FROM_LOG_OUT = "from_log_out";
     /**
      * verification code
      */

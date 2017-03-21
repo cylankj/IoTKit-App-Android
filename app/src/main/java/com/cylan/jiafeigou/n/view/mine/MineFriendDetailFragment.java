@@ -211,6 +211,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     public void showDelFriendDialog(RelAndFriendBean bean) {
         Bundle bundle = new Bundle();
         bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap3_Friends_DeleteFriends));
+        bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT,getString(R.string.CANCEL));
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
             if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {

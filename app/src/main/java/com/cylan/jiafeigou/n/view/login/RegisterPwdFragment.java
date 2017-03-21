@@ -229,11 +229,9 @@ public class RegisterPwdFragment extends SetupPwdFragment
     @Override
     public void loginResult(int code) {
         if (code == JError.ErrorOK) {
-            if (!(getActivity() instanceof NewHomeActivity))
-                getActivity().finish();
-            else {
+            if ((getActivity() instanceof NewHomeActivity)){
                 getActivity().getSupportFragmentManager().popBackStack();
-                return;
+                getActivity().finish();
             }
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));
 
