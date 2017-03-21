@@ -166,7 +166,8 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                 .flatMap(integer -> {
                     AppLogger.d("integer: " + integer);
                     if (integer == 0) {
-                        PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, true);
+                        PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
+                        PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB,true);
                         RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                                 .subscribeOn(Schedulers.newThread())
                                 .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
@@ -183,6 +184,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                                 .subscribe();
                     } else if (integer == -1) {
                         //emit failed event.
+                        PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                     }
                     return null;

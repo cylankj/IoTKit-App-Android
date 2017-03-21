@@ -59,6 +59,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         subscription = new CompositeSubscription();
         subscription.add(checkIsOpenLoginCallBack());
         subscription.add(unReadMesgBack());
+        getUnReadMesg();
     }
 
     @Override
@@ -157,7 +158,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 是否三方登录的回调
-     *
      * @return
      */
     @Override
@@ -179,6 +179,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
                     public void call(JFGAccount account) {
+                        AppLogger.d("mine_account:"+account);
                         userInfo = account;
                         if (account != null && getView() != null) {
                             if (TextUtils.isEmpty(account.getAccount()) && account.isEnablePush()) {
