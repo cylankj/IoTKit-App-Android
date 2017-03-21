@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineHelpSuggestionImpl;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
 import com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout;
@@ -90,7 +91,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine_help_suggestion, container, false);
         ButterKnife.bind(this, view);
-        initKeyBoard();
+//        initKeyBoard();
         initPresenter();
         return view;
     }
@@ -98,6 +99,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        initKeyBoard();
         ViewUtils.setViewPaddingStatusBar(rlHomeMineSuggestion);
     }
 
@@ -223,6 +225,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         }
         suggestionAdapter.add(suggestionBean);
         suggestionAdapter.notifyDataSetHasChanged();
+        mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
         presenter.sendFeedBack(suggestionBean);
     }
 
@@ -368,6 +371,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 new KPSwitchConflictUtil.SwitchClickListener() {
                     @Override
                     public void onClickSwitch(boolean switchToPanel) {
+                        AppLogger.d("KPSwitchConflictUtil:"+switchToPanel);
                         if (switchToPanel) {
                             mEtSuggestion.clearFocus();
                         } else {

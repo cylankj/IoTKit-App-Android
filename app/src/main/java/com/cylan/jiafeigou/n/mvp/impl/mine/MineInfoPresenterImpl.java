@@ -60,7 +60,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                             .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                             .subscribe();
                     //emit failed event.
-//                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
+                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                 }, new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {

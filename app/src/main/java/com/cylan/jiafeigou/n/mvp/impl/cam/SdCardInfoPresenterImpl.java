@@ -194,6 +194,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                             req = JfgCmdInsurance.getCmd().robotGetData(uuid, dpID, 1, false, 0);
                             AppLogger.d("getSdCapacity:"+ req);
                         } catch (JfgException e) {
+                            AppLogger.e("getSdCapacity_err:"+e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }
@@ -209,7 +210,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                     public Observable<DpMsgDefine.DPSdStatus> call(RobotoGetDataRsp robotoGetDataRsp) {
                         AppLogger.d("sd_version:"+robotoGetDataRsp.seq+"identify:"+robotoGetDataRsp.identity);
                         if (robotoGetDataRsp.map.size() != 0){
-                            if (req != robotoGetDataRsp.seq || uuid.equals(robotoGetDataRsp.identity)){
+                            if (req != robotoGetDataRsp.seq || !uuid.equals(robotoGetDataRsp.identity)){
                                 return Observable.just(null);
                             }
                             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
