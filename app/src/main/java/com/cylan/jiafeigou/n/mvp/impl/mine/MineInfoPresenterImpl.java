@@ -10,6 +10,7 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
@@ -17,6 +18,8 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 import java.io.File;
 
@@ -25,6 +28,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
 
 /**
  * 作者：zsl
@@ -60,6 +65,8 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                             .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                             .subscribe();
                     //emit failed event.
+                    PreferencesUtils.putString(KEY_ACCOUNT, "");
+                    PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
                     RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                 }, new Action1<Throwable>() {
                     @Override
@@ -172,7 +179,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
+                        if (getUserInfo != null) {
                             if (getView() != null)
                                 getView().initPersonalInformation(getUserInfo.jfgAccount);
                         }
@@ -189,7 +196,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
         } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(isOpenLoginBack());
-            compositeSubscription.add(getAccount());
+//            compositeSubscription.add(getAccount());
         }
     }
 

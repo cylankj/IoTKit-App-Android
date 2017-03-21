@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscription;
@@ -76,6 +77,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                     @Override
                     public void call(ArrayList<DeviceBean> deviceList) {
                         if (getView() != null && deviceList != null && deviceList.size() > 0) {
+                            AppLogger.d("share_device:"+deviceList.size());
                             allDevice.clear();
                             ArrayList<String> cidList = new ArrayList<String>();
                             for (DeviceBean bean : deviceList) {
@@ -104,7 +106,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 relAndFriendBean.alias = info.alias;
                 relAndFriendBean.markName = info.markName;
                 try {
-//                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, info.account + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
+                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", info.account));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -134,7 +136,6 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
      * desc:获取到分享设备的list集合数据
      */
     private ArrayList<DeviceBean> getShareDeviceList() {
-
         ArrayList<DeviceBean> list = new ArrayList<>();
         List<Device> devices = DataSourceManager.getInstance().getAllJFGDevice();
         for (Device info : devices) {
@@ -191,7 +192,6 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     /**
      * 获取到已经分享的亲友数的回调
-     *
      * @return
      */
     @Override
@@ -200,7 +200,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 .flatMap(new Func1<RxEvent.GetShareListCallBack, Observable<ArrayList<DeviceBean>>>() {
                     @Override
                     public Observable<ArrayList<DeviceBean>> call(RxEvent.GetShareListCallBack getShareListCallBack) {
-                        if (getShareListCallBack != null && getShareListCallBack instanceof RxEvent.GetShareListCallBack) {
+                        if (getShareListCallBack != null) {
                             if (getShareListCallBack.i == 0 && getShareListCallBack.arrayList.size() != 0) {
                                 //每个设备已分享的亲友集合
                                 hasShareFriendList.clear();

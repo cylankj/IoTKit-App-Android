@@ -2,13 +2,18 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,10 +22,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
@@ -34,6 +41,13 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
+import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
+import permissions.dispatcher.RuntimePermissions;
+
 
 /**
  * 作者：zsl
@@ -129,6 +143,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         alertDialog = builder.create();
         alertDialog.show();
     }
+
 
 
     /**
@@ -287,8 +302,71 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 jump2ShareToContractFragment();
             } else {
-                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
+                setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
             }
         }
+    }
+
+
+//    @Override
+//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+//        MineShareDeviceFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+//        if (permissions.length == 1) {
+//            if (TextUtils.equals(permissions[0], READ_CONTACTS) && grantResults[0] > -1) {
+//                MineShareDeviceFragmentPermissionsDispatcher.onReadContactsPermissionWithCheck(this);
+//            }
+//        }
+//    }
+//
+//    @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
+//    public void onReadContactsPermissionDenied() {
+//        getFragmentManager().popBackStack();
+//    }
+//
+//    @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
+//    public void onNeverAskAgainCameraPermission() {
+//        setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
+//    }
+//
+//    @NeedsPermission(Manifest.permission.READ_CONTACTS)
+//    public void onReadContactsPermission() {
+//        jump2ShareToContractFragment();
+//    }
+//
+//
+//    @OnShowRationale(Manifest.permission.READ_CONTACTS)
+//    public void showRationaleForCamera(PermissionRequest request) {
+//        // NOTE: Show activity_cloud_live_mesg_call_out_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_call_out_item dialog.
+//        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
+//        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
+//        onNeverAskAgainCameraPermission();
+//    }
+
+    public void setPermissionDialog(String permission){
+        new AlertDialog.Builder(getActivity())
+                .setMessage(getString(R.string.permission_auth, "",permission))
+                .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    dialog.dismiss();
+                })
+                .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
+                    openSetting();
+                })
+                .create()
+                .show();
+    }
+
+    private void openSetting(){
+        Intent localIntent = new Intent();
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= 9) {
+            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+            localIntent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
+        } else if (Build.VERSION.SDK_INT <= 8) {
+            localIntent.setAction(Intent.ACTION_VIEW);
+            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
+            localIntent.putExtra("com.android.settings.ApplicationPkgName",getContext().getPackageName());
+        }
+        startActivity(localIntent);
     }
 }

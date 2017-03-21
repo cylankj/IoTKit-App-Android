@@ -173,7 +173,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 用来点击空白处隐藏键盘
-     *
      * @param view
      */
     public void addOnTouchListener(View view) {

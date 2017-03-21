@@ -5,6 +5,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -302,8 +303,36 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 startSendMesgActivity(contractPhone);
             } else {
-                ToastUtil.showNegativeToast(getString(R.string.Tap0_Authorizationfailed));
+                setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
             }
         }
+    }
+
+
+    public void setPermissionDialog(String permission){
+        new android.app.AlertDialog.Builder(getActivity())
+                .setMessage(getString(R.string.permission_auth, "",permission))
+                .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    dialog.dismiss();
+                })
+                .setPositiveButton(getString(R.string.SETTINGS), (DialogInterface dialog, int which) -> {
+                    openSetting();
+                })
+                .create()
+                .show();
+    }
+
+    private void openSetting(){
+        Intent localIntent = new Intent();
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= 9) {
+            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+            localIntent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
+        } else if (Build.VERSION.SDK_INT <= 8) {
+            localIntent.setAction(Intent.ACTION_VIEW);
+            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
+            localIntent.putExtra("com.android.settings.ApplicationPkgName",getContext().getPackageName());
+        }
+        startActivity(localIntent);
     }
 }

@@ -110,7 +110,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             try {
 //                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, account.account + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
                 emMessage.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", account.account));
-
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -172,12 +171,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .flatMap(new Func1<RxEvent.GetFriendList, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
                     public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
-                        if (getFriendList != null && getFriendList instanceof RxEvent.GetFriendList) {
+                        if (getFriendList != null) {
                             return Observable.just(initRelativatesAndFriendsData(getFriendList));
                         } else {
                             return Observable.just(null);
                         }
-
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
