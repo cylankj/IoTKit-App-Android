@@ -35,7 +35,7 @@ public interface SdCardInfoContract {
 
         boolean getSdcardState();
 
-        <T extends DataPoint> void updateInfoReq(T value, long id);
+        void updateInfoReq();
 
         void clearCountTime();
 

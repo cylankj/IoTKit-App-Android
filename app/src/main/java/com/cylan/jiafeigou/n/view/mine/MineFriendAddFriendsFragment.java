@@ -32,9 +32,6 @@ import butterknife.OnClick;
  */
 public class MineFriendAddFriendsFragment extends Fragment implements MineFriendsAddFriendContract.View {
 
-
-    @BindView(R.id.iv_home_mine_relativesandfriends_add_back)
-    ImageView ivHomeMineRelativesandfriendsAddBack;
     @BindView(R.id.et_friend_phonenumber)
     EditText etFriendPhonenumber;
     @BindView(R.id.tv_scan_add)
@@ -43,6 +40,8 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     TextView tvAddFromContract;
     @BindView(R.id.fragment_container)
     FrameLayout fragmentContainer;
+    @BindView(R.id.iv_home_mine_relativesandfriends_add_back)
+    ImageView ivHomeMineRelativesandfriendsAddBack;
     @BindView(R.id.rl_home_mine_relativesandfriends)
     FrameLayout rlHomeMineRelativesandfriends;
 

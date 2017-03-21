@@ -44,12 +44,8 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 
     @BindView(R.id.recycle_share_device_list)
     RecyclerView recycleShareDeviceList;
-    @BindView(R.id.iv_home_mine_sharedevices_back)
-    ImageView ivHomeMineSharedevicesBack;
     @BindView(R.id.ll_no_device)
     LinearLayout llNoDevice;
-    @BindView(R.id.rl_home_mine_suggestion)
-    FrameLayout rlHomeMineSuggestion;
 
     private MineShareDeviceContract.Presenter presenter;
     private MineDevicesShareManagerFragment mineDevicesShareManagerFragment;
@@ -75,19 +71,9 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         return view;
     }
 
-    @OnClick({R.id.iv_home_mine_sharedevices_back})
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_home_mine_sharedevices_back:
-                getFragmentManager().popBackStack();
-                break;
-        }
-    }
-
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlHomeMineSuggestion);
     }
 
     @Override
@@ -274,7 +260,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
 //        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
-    @OnClick(R.id.iv_home_mine_sharedevices_back)
+    @OnClick(R.id.tv_toolbar_icon)
     public void onClick() {
         presenter.clearData();
         getFragmentManager().popBackStack();

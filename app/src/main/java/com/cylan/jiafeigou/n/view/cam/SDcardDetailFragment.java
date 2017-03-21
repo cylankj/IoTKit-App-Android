@@ -127,7 +127,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             simpleDialogFragment.setAction((int id, Object value) -> {
                 DpMsgDefine.DPPrimary<Integer> wFlag = new DpMsgDefine.DPPrimary<>();
                 wFlag.value = 0;
-                basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD);
+                basePresenter.updateInfoReq();
                 basePresenter.clearCountTime();
                 showLoading();
             });

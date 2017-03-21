@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.facebook.login.LoginResult;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -59,7 +60,6 @@ public class SmartcallActivity extends NeedLoginActivity
     TextView tvCopyRight;
     @Nullable
     private SplashContract.Presenter presenter;
-    private boolean first;
     private boolean isPermissionDialogShowing = false;
     private boolean firstSignIn;
     private boolean from_log_out;
@@ -73,7 +73,7 @@ public class SmartcallActivity extends NeedLoginActivity
         ButterKnife.bind(this);
         initPresenter();
         fullScreen(true);
-        from_log_out = getIntent().getBooleanExtra("from_log_out", false);
+        from_log_out = getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
     }
 
     /**
@@ -110,6 +110,7 @@ public class SmartcallActivity extends NeedLoginActivity
         } else {
             splashOver();
             from_log_out = false;
+            RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
         }
     }
 

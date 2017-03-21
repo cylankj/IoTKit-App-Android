@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:clickable="true"
     android:id="@+id/fragment_container"
     android:layout_height="match_parent">
@@ -41,6 +42,16 @@
             </RelativeLayout>
         </FrameLayout>
 
+        <!--<com.cylan.jiafeigou.widget.CustomToolbar-->
+            <!--hunt:ct_left_title="@string/Tap3_FriendsAdd"-->
+            <!--hunt:ct_left_title_color="@color/color_white"-->
+            <!--android:textSize="@dimen/sp18"-->
+            <!--hunt:ct_enable_shadow="true"-->
+            <!--android:id="@+id/custom_toolbar"-->
+            <!--hunt:ct_background_color="@color/color_0ba8cf"-->
+            <!--hunt:ct_icon="@drawable/nav_icon_back_white"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="wrap_content"/>-->
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -83,7 +94,6 @@
                     android:drawablePadding="@dimen/x15"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y67" />
-
 
                 <View
                     android:layout_marginLeft="@dimen/x15"

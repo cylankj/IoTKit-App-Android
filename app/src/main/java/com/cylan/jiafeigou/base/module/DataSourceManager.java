@@ -667,7 +667,8 @@ public class DataSourceManager implements JFGSourceManager {
         msg.packValue = value.toBytes();
         list.add(msg);
         try {
-            JfgAppCmd.getInstance().robotSetData(uuid, list);
+            long l = JfgAppCmd.getInstance().robotSetData(uuid, list);
+            AppLogger.d("setDataRsp:"+l);
             return true;
         } catch (JfgException e) {
             return false;
