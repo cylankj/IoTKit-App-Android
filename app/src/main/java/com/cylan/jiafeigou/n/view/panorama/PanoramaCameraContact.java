@@ -33,11 +33,8 @@ public interface PanoramaCameraContact {
 
         void onStartShortVideoFailed();
 
-        void onStartMakeVideoFailed();
+        void onStartLongVideoFailed();
 
-        void onSetShortVideoRecordLayout();
-
-        void onSetLongVideoRecordLayout();
 
         void onStopMakeVideoFailed();
 
@@ -63,8 +60,6 @@ public interface PanoramaCameraContact {
         void onMakePhotoGraphPreview();
 
         void onMakePhotographSuccess(Bitmap picture);
-
-
     }
 
     interface Presenter extends ViewablePresenter {

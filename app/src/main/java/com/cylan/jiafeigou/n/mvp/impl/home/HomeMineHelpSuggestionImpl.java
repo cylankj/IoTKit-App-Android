@@ -53,7 +53,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         implements HomeMineHelpSuggestionContract.Presenter {
 
     private CompositeSubscription compositeSubscription;
-    private ArrayList<MineHelpSuggestionBean> list;
     private DbManager dbManager;
     private JFGAccount userInfomation;
     private boolean isOpenLogin;
@@ -68,7 +67,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     @Override
     public void start() {
         super.start();
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
+        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
             compositeSubscription = new CompositeSubscription();

@@ -97,9 +97,7 @@ public interface PanoramaEvent {
     }
 
     @Message
-    class MsgFileDownloadRsp {
-        @Index(0)
-        public int ret;//       错误码
+    class MsgFileDownloadRsp extends RawRspRetHeader {
         @Index(1)
         public String fileName;//  文件名, 注：根据后缀区分是图片或视频
         @Index(2)
@@ -133,9 +131,7 @@ public interface PanoramaEvent {
 
     @Message
     @Deprecated
-    class MSG_TYPE_FILE_DELETE_RSP {//直接用 Integer 类,不要用这个
-        @Index(0)
-        public int ret;// 错误码
+    class MSG_TYPE_FILE_DELETE_RSP extends RawRspRetHeader {//直接用 Integer 类,不要用这个
     }
 
     @Message
@@ -189,15 +185,13 @@ public interface PanoramaEvent {
     }
 
     @Message
-    class MSG_TYPE_TAKE_PICTURE_RSP {
-        @Index(0)
-        public int ret;//       错误码
+    class MSG_TYPE_TAKE_PICTURE_RSP extends RawRspRetHeader {
         @Index(1)
         public String fileName;//  文件名， 命名格式[timestamp].jpg 或 [timestamp]_[secends].avi， timestamp是文件生成时间的unix时间戳，secends是视频录制的时长,单位秒。根据后缀区分是图片或视频。
         @Index(2)
         public int fileSize;//  文件大小, bit。
         @Index(3)
-        public String md5;//  文件的md5值
+        public byte[] md5;//  文件的md5值
     }
 
     @Message
@@ -213,9 +207,7 @@ public interface PanoramaEvent {
 
     @Message
     @Deprecated
-    class MSG_TYPE_VIDEO_BEGIN_RSP {//直接用Integer类,不要用这个
-        @Index(0)
-        public int ret;//       错误码
+    class MSG_TYPE_VIDEO_BEGIN_RSP extends RawRspRetHeader {//直接用Integer类,不要用这个
     }
 
     @Message
@@ -226,9 +218,7 @@ public interface PanoramaEvent {
     }
 
     @Message
-    class MSG_TYPE_VIDEO_END_RSP {
-        @Index(0)
-        public int ret;//       错误码
+    class MSG_TYPE_VIDEO_END_RSP extends RawRspRetHeader {
         @Index(1)
         public String fileName;//  文件名， 命名格式[timestamp].jpg 或 [timestamp]_[secends].avi， timestamp是文件生成时间的unix时间戳，secends是视频录制的时长,单位秒。根据后缀区分是图片或视频。
         @Index(2)
@@ -242,13 +232,17 @@ public interface PanoramaEvent {
     }
 
     @Message
-    class MSG_TYPE_VIDEO_STATUS_RSP {
-        @Index(0)
-        public int ret;//       错误码
+    class MSG_TYPE_VIDEO_STATUS_RSP extends RawRspRetHeader {
         @Index(1)
         public int secends;//   视频录制的时长,单位秒
         @Index(2)
         public int videoType;// 特征值定义：videoTypeShort =1 8s短视频；videoTypeLong =2长视频；
+    }
+
+    @Message
+    class RawRspRetHeader {
+        @Index(0)
+        public int ret;//       错误码
     }
 
     // type	功能	DP数组	设备型号

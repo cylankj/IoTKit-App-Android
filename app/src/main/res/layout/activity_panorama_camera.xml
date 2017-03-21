@@ -240,6 +240,15 @@
     </LinearLayout>
 
 
+    <View
+        android:id="@+id/act_panorama_camera_bottom_count_down_line"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y2"
+        android:layout_above="@+id/act_panorama_camera_bottom_panel"
+        android:layout_centerHorizontal="true"
+        android:background="@color/color_0ba8cf"
+        android:visibility="gone" />
+
     <RelativeLayout
         android:id="@+id/act_panorama_camera_bottom_panel"
         android:layout_width="match_parent"
@@ -253,8 +262,6 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@+id/act_panorama_bottom_panel_camera_photograph"
-            android:layout_alignEnd="@+id/act_panorama_bottom_panel_camera_photograph"
-            android:layout_alignStart="@+id/act_panorama_bottom_panel_camera_photograph"
             android:layout_centerHorizontal="true">
 
             <RadioGroup
@@ -288,12 +295,18 @@
                 <ImageView
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_red_dot"
                     android:layout_width="@dimen/y8"
-                    android:layout_height="@dimen/y8" />
+                    android:layout_height="@dimen/y8"
+                    android:layout_centerVertical="true"
+                    android:layout_marginEnd="@dimen/y8"
+                    android:layout_toStartOf="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
+                    android:src="@drawable/panorama_redording_red_dot"
+                    android:visibility="visible" />
 
                 <TextView
                     android:id="@+id/act_panorama_camera_bottom_panel_switcher_menu_information_record_time"
-                    android:layout_width="match_parent"
+                    android:layout_width="wrap_content"
                     android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
                     android:gravity="center"
                     android:text="00:08:07"
                     android:textColor="#FFFFFF"

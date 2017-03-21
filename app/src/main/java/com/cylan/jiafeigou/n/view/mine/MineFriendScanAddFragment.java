@@ -38,18 +38,14 @@ import rx.schedulers.Schedulers;
  */
 public class MineFriendScanAddFragment extends Fragment implements ZXingScannerView.ResultHandler, MineFriendScanAddContract.View {
 
-    @BindView(R.id.iv_home_mine_friends_scan_add_back)
-    ImageView ivHomeMineRelativesandfriendsScanAddBack;
     @BindView(R.id.zxV_scan_add_relativesandfriend)
     ZXingScannerView zxVScanAddRelativesandfriend;
     @BindView(R.id.iv_erweima)
     ImageView ivErweima;
     @BindView(R.id.rl_send_pro_hint)
     RelativeLayout rlSendProHint;
-    @BindView(R.id.rl_home_mine_relativesandfriends_scan_add)
-    FrameLayout rlHomeMineRelativesandfriendsScanAdd;
-    private MineFriendScanAddContract.Presenter presenter;
 
+    private MineFriendScanAddContract.Presenter presenter;
 
     public static MineFriendScanAddFragment newInstance() {
         return new MineFriendScanAddFragment();
@@ -73,7 +69,6 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriendsScanAdd);
     }
 
     private void initView() {       //控制显示的宽和高
@@ -96,10 +91,10 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
         this.presenter = presenter;
     }
 
-    @OnClick(R.id.iv_home_mine_friends_scan_add_back)
+    @OnClick(R.id.tv_toolbar_icon)
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_home_mine_friends_scan_add_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
         }

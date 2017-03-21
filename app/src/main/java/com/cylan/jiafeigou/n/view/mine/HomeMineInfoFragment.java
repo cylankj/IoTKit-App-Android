@@ -98,8 +98,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     TextView btnHomeMinePersonalInformation;
     @BindView(R.id.ll_container)
     LinearLayout llContainer;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
 
     private HomeMineInfoMailBoxFragment mailBoxFragment;
     private MineInfoBindPhoneFragment bindPhoneFragment;
@@ -159,7 +157,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
     /**
@@ -199,14 +196,14 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         }
     }
 
-    @OnClick({R.id.iv_home_mine_personal_back, R.id.btn_home_mine_personal_information,
+    @OnClick({R.id.tv_toolbar_icon, R.id.btn_home_mine_personal_information,
             R.id.lLayout_home_mine_personal_mailbox, R.id.rLayout_home_mine_personal_pic,
             R.id.RLayout_home_mine_personal_phone, R.id.user_ImageHead,
             R.id.rLayout_home_mine_personal_name, R.id.rl_change_password, R.id.rl_my_QRCode})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击回退到Mine的fragment
-            case R.id.iv_home_mine_personal_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
             //点击退出做相应的逻辑
@@ -534,7 +531,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void jump2LoginFragment() {
         //进入登陆页 login page
         Intent intent = new Intent(getContext(), SmartcallActivity.class);
-        intent.putExtra("from_log_out", true);
+        intent.putExtra(JConstant.FROM_LOG_OUT, true);
         getActivity().startActivity(intent);
         getActivity().finish();
 

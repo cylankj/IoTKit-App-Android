@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
+import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 
@@ -22,7 +23,7 @@ import butterknife.BindView;
  * Created by yanzhendong on 2017/3/15.
  */
 
-public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConfigureContact.Presenter> implements PanoramaLogoConfigureContact.View {
+public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConfigureContact.Presenter> implements PanoramaLogoConfigureContact.View, OnItemClickListener {
     @BindView(R.id.fragment_panorama_logo_bottom_panel)
     RecyclerView logoList;
     @BindView(R.id.fragment_panorama_logo_content_container)
@@ -50,6 +51,7 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
         manager.setOrientation(LinearLayoutManager.HORIZONTAL);
         logoList.setLayoutManager(manager);
         logoListAdapter = new LogoListAdapter(logoList.getContext(), builtInLogo);
+        logoListAdapter.setOnItemClickListener(this);
         logoList.setAdapter(logoListAdapter);
     }
 
@@ -58,13 +60,16 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
         return R.layout.fragment_panorama_logo_configure;
     }
 
+    @Override
+    public void onItemClick(View itemView, int viewType, int position) {
+
+    }
+
     private class LogoListAdapter extends SuperAdapter<LogoItem> implements View.OnClickListener {
-        private int lastPos = -1;
 
         public LogoListAdapter(Context context, List<LogoItem> items) {
             super(context, items, null);
         }
-
 
         @Override
         public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, LogoItem item) {
@@ -107,6 +112,4 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
 
         }
     }
-
-
 }

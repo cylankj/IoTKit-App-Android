@@ -78,6 +78,7 @@ public class JConstant {
     public static final String TWITTER_INIT_KEY = "twitter_init_key";
     public static final String FACEBOOK_INIT_KEY = "facebook_init_key";
     public static final String AUTO_SIGNIN_TAB = "auto_signin_tab";
+    public static final String FROM_LOG_OUT = "from_log_out";
     /**
      * verification code
      */
@@ -108,6 +109,7 @@ public class JConstant {
     public static final String KEY_CAM_SIGHT_SETTING = "cam_sight_setting";
     public static final java.lang.String LAST_ENTER_TIME = "LAST_ENTER_TIME";
     public static final String KEY_BIND_DEVICE_ALIAS = "KEY_BIND_DEVICE_ALIAS";
+    public static final java.lang.String KEY_PANORAMA_POP_HINT = "KEY_PANORAMA_POP_HINT";
     public static int ConfigApStep = 0;
 
 

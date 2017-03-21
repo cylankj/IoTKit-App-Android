@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.widget.dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentTransaction;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextUtils;
@@ -85,8 +84,9 @@ public class EditFragmentDialog extends BaseDialog {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ivClear.setOnClickListener(v -> etInputBox.getText().clear());
-        InputFilter[] filters = new InputFilter[1];
+        InputFilter[] filters = new InputFilter[2];
         filters[0] = (source, start, end, dest, dstart, dend) -> String.valueOf(source).replace(" ", "");
+        filters[1] = new InputFilter.LengthFilter(12);
         etInputBox.setFilters(filters);
         etInputBox.addTextChangedListener(new TextWatcher() {
             @Override
