@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.cache.db.module.DaoMaster;
 import com.cylan.jiafeigou.cache.db.module.DaoSession;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.DeviceDao;
-import com.cylan.jiafeigou.cache.db.module.DownloadFileDao;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -77,14 +76,14 @@ public class BaseDBHelper implements IDBHelper {
     public Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option)
-                .map(items -> items == null ? null : items.get(0)));
+                .map(items -> items == null || items.size() == 0 ? null : items.get(0)));
     }
 
     @Override
     public Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.SUCCESS, option)
-                .map(items -> items == null ? null : items.get(0)));
+                .map(items -> items == null || items.size() == 0 ? null : items.get(0)));
     }
 
     @Override

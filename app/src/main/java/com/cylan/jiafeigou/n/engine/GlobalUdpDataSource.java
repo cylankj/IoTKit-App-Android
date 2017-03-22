@@ -2,6 +2,8 @@ package com.cylan.jiafeigou.n.engine;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDoorBellCaller;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -10,6 +12,8 @@ import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
 import org.msgpack.MessagePack;
+import org.msgpack.annotation.Index;
+import org.msgpack.annotation.Message;
 
 import java.io.IOException;
 
@@ -36,6 +40,12 @@ public class GlobalUdpDataSource {
     private GlobalUdpDataSource() {
     }
 
+    @Message
+    public static class BellRing {
+        @Index(1)
+        public String cid;
+    }
+
     public void register() {
         unregister();
         subscription = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
@@ -52,33 +62,39 @@ public class GlobalUdpDataSource {
                         return true;
                     }
                 })
-                .map(new Func1<RxEvent.LocalUdpMsg, Object>() {
-                    @Override
-                    public Object call(RxEvent.LocalUdpMsg localUdpMsg) {
-                        final long time = System.currentTimeMillis();
-                        MessagePack msgPack = new MessagePack();
-                        try {
-                            JfgUdpMsg.UdpHeader header = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
-                            final String headTag = header.cmd;
-                            AppLogger.i("headerTag: " + headTag);
-                            if (TextUtils.equals(headTag, UdpConstant.PING_ACK)) {
-                                JfgUdpMsg.PingAck pingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.PingAck.class);
-                                //保存ping_ack
-                                RxBus.getCacheInstance().post(pingAck);
+                .map(localUdpMsg -> {
+                    final long time = System.currentTimeMillis();
+                    MessagePack msgPack = new MessagePack();
+                    try {
+                        JfgUdpMsg.UdpHeader header = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
+                        final String headTag = header.cmd;
+                        AppLogger.i("headerTag: " + headTag);
+                        if (TextUtils.equals(headTag, UdpConstant.PING_ACK)) {
+                            JfgUdpMsg.PingAck pingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.PingAck.class);
+                            //保存ping_ack
+                            RxBus.getCacheInstance().post(pingAck);
 //                                UdpConstant.udpObjectMap.put(UdpConstant.PingAckT.class, new UdpConstant.PingAckT(System.currentTimeMillis(), pingAck));
-                                AppLogger.i(new Gson().toJson(pingAck));
-                            } else if (TextUtils.equals(headTag, UdpConstant.F_PING_ACK)) {
-                                JfgUdpMsg.FPingAck f_pingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.FPingAck.class);
-                                RxBus.getCacheInstance().post(f_pingAck);
+                            AppLogger.i(new Gson().toJson(pingAck));
+                        } else if (TextUtils.equals(headTag, UdpConstant.F_PING_ACK)) {
+                            JfgUdpMsg.FPingAck f_pingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.FPingAck.class);
+                            RxBus.getCacheInstance().post(f_pingAck);
 //                                UdpConstant.udpObjectMap.put(UdpConstant.PingAckT.class, new UdpConstant.FPingAckT(System.currentTimeMillis(), f_pingAck));
-                                AppLogger.i(new Gson().toJson(f_pingAck));
+                            AppLogger.i(new Gson().toJson(f_pingAck));
+                        } else if (TextUtils.equals(headTag, UdpConstant.DOORBELL_RING)) {
+                            AppLogger.d("收到局域网呼叫");
+                            JfgUdpMsg.UdpRecvHeard recvHeard = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpRecvHeard.class);
+                            if (DataSourceManager.getInstance().getJFGDevice(recvHeard.cid) != null) {//说明当前账号有这个设备
+                                JFGDoorBellCaller caller = new JFGDoorBellCaller();
+                                caller.cid = recvHeard.cid;
+                                RxBus.getCacheInstance().post(new RxEvent.BellCallEvent(caller));
                             }
-                        } catch (IOException e) {
-                            AppLogger.i("unpack msgpack failed:" + e.getLocalizedMessage());
+                            AppLogger.i(new Gson().toJson(recvHeard));
                         }
-                        AppLogger.i("udp performance: " + (System.currentTimeMillis() - time));
-                        return null;
+                    } catch (IOException e) {
+                        AppLogger.i("unpack msgpack failed:" + e.getLocalizedMessage());
                     }
+                    AppLogger.i("udp performance: " + (System.currentTimeMillis() - time));
+                    return null;
                 })
                 .retry(exceptionFun)
                 .subscribe();

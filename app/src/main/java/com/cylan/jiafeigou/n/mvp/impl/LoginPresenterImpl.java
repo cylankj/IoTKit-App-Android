@@ -58,6 +58,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
      * @return
      */
     private Observable<Object> loginObservable(LoginAccountBean o) {
+
+
         return Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .map(login -> {

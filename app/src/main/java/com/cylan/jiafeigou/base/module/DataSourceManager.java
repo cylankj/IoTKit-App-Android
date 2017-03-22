@@ -19,6 +19,7 @@ import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -85,6 +86,12 @@ public class DataSourceManager implements JFGSourceManager {
 
     private DataSourceManager() {
         dbHelper = BaseDBHelper.getInstance();
+        dbHelper.getActiveAccount().subscribe(ret -> {
+            account = ret;
+        }, e -> {
+            AppLogger.d(e.getMessage());
+            e.printStackTrace();
+        });
         initSubscription();
     }
 
@@ -268,8 +275,10 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
         dbHelper.updateAccount(account)
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .doOnCompleted(() -> {
+                .subscribe(act -> this.account = act, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                }, () -> {
                     setJfgAccount(account);
                     if (jfgAccount != null)
                         setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
@@ -278,10 +287,7 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     RxBus.getCacheInstance().post(account);
                     RxBus.getCacheInstance().postSticky(new RxEvent.AccountArrived(this.account));
-                })
-                .subscribe(act -> this.account = act, e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
+                    BaseDPTaskDispatcher.getInstance().perform();
                 });
     }
 
@@ -513,8 +519,8 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public JFGAccount getJFGAccount() {
-        if (jfgAccount == null){
-            return new Gson().fromJson(PreferencesUtils.getString(KEY_ACCOUNT),JFGAccount.class);
+        if (jfgAccount == null) {
+            return new Gson().fromJson(PreferencesUtils.getString(KEY_ACCOUNT), JFGAccount.class);
         }
         return jfgAccount;
     }
@@ -671,7 +677,7 @@ public class DataSourceManager implements JFGSourceManager {
         list.add(msg);
         try {
             long l = JfgAppCmd.getInstance().robotSetData(uuid, list);
-            AppLogger.d("setDataRsp:"+l);
+            AppLogger.d("setDataRsp:" + l);
             return true;
         } catch (JfgException e) {
             return false;
@@ -753,5 +759,9 @@ public class DataSourceManager implements JFGSourceManager {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
+    }
+
+    public void initAccount() {
+        dbHelper.getActiveAccount().subscribe(ret -> this.account = ret, e -> AppLogger.d(e.getMessage()));
     }
 }

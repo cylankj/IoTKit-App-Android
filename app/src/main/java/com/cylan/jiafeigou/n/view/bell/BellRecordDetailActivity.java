@@ -18,6 +18,9 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
@@ -25,13 +28,16 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -47,6 +53,9 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -136,6 +145,20 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 })
                 .into(mPictureDetail);
 
+        check().observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    if (result.map == null || result.map.size() == 0 || result.map.get(511) == null || result.map.get(511).size() == 0) {//没有收藏
+                        AppLogger.d("未收藏啊");
+                        mCollect.setImageResource(R.drawable.icon_collection);
+                    } else {//已收藏
+                        AppLogger.d("已经收藏了啊");
+                        mCollect.setImageResource(R.drawable.icon_collected);
+                    }
+                }, e -> {
+                    AppLogger.d(e.getMessage());
+                    e.printStackTrace();
+                });
+
     }
 
 
@@ -180,18 +203,42 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_collection)
     public void collection() {
+        check().subscribe(result -> {
+            if (result.map == null || result.map.size() == 0 || result.map.get(511) == null || result.map.get(511).size() == 0) {//未收藏
+                collect();
+            } else {
+                ArrayList<JFGDPMsg> msgs = result.map.get(511);
+                JFGDPMsg msg = msgs.get(0);
+                try {
+                    Long ctime = DpUtils.unpackData(msg.packValue, Long.class);
+                    unCollect(ctime);
+                } catch (IOException e) {
+                    AppLogger.d(e.getMessage());
+                    e.printStackTrace();
+                }
+
+            }
+        }, e -> {
+            AppLogger.d(e.getMessage());
+            e.printStackTrace();
+        });
+
+
+    }
+
+    private void collect() {
         Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
             DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
             item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
             item.cid = mUUID;
             Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-            item.fileName = mCallRecord.timeInLong / 1000 + "_1.jpg";
+            item.fileName = mCallRecord.timeInLong / 1000 + ".jpg";
             item.time = (int) (mCallRecord.timeInLong / 1000);
             IDPEntity entity = new DPEntity()
                     .setUuid(mUUID)
                     .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
-                    .setVersion(mCallRecord.timeInLong)
+                    .setVersion(System.currentTimeMillis())
                     .setAccount(DataSourceManager.getInstance().getAJFGAccount().getAccount())
                     .setAction(DBAction.SHARED)
                     .setBytes(item.toBytes());
@@ -202,14 +249,46 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    if (result.getResultCode() == 200) {
-                        ToastUtil.showPositiveToast(getString(R.string.Tap1_BigPic_FavoriteTips));
-                    } else if (result.getResultCode() == 1050) {
-                        alertOver50();
+                    if (result.getResultCode() == 0) {
+                        ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
+                        mCollect.setImageResource(R.drawable.icon_collected);
                     }
                 }, e -> {
+                    if (e instanceof BaseDPTaskException) {
+                        int code = ((BaseDPTaskException) e).getErrorCode();
+                        if (code == 1050) {
+                            alertOver50();
+                        }
+                    }
                     AppLogger.d(e.getMessage());
+
+                });
+    }
+
+    private void unCollect(long ver) {
+        Observable.just(ver)
+                .observeOn(Schedulers.io())
+                .map(version -> new DPEntity()
+                        .setUuid("")
+                        .setVersion(version)
+                        .setAction(DBAction.DELETED)
+                        .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
+                .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
+                .map(ret -> new DPEntity()
+                        .setUuid(mUUID)
+                        .setVersion(mCallRecord.timeInLong / 1000L)
+                        .setAction(DBAction.DELETED)
+                        .setMsgId(511))
+                .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    if (result.getResultCode() == 0) {//成功了
+                        AppLogger.d("取消收藏成功");
+                        mCollect.setImageResource(R.drawable.icon_collection);
+                    }
+                }, e -> {
                     e.printStackTrace();
+                    AppLogger.d(e.getMessage());
                 });
     }
 
@@ -266,17 +345,38 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void onDownloadPermissionDenied() {
-        ToastUtil.showNegativeToast("下载文件需要权限,请手动开启");
+//        ToastUtil.showNegativeToast("下载文件需要权限,请手动开启");
     }
 
     @OnNeverAskAgain(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void onDownloadPermissionNerverAskAgain() {
-        ToastUtil.showNegativeToast("下载文件需要权限,请手动开启");
+//        ToastUtil.showNegativeToast("下载文件需要权限,请手动开启");
     }
 
     @Override
     @OnClick(R.id.act_bell_header_back)
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    public Observable<RobotoGetDataRsp> check() {
+        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            try {
+                ArrayList<JFGDPMsg> params = new ArrayList<>(1);
+                JFGDPMsg msg = new JFGDPMsg(511, mCallRecord.timeInLong / 1000L);
+                params.add(msg);
+                long seq = JfgCmdInsurance.getCmd().robotGetDataByTime(mUUID, params, 0);
+                subscriber.onNext(seq);
+                subscriber.onCompleted();
+            } catch (JfgException e) {
+                e.printStackTrace();
+                AppLogger.e(e.getMessage());
+                subscriber.onError(e);
+            }
+        })
+                .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
+                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> rsp.seq == seq).first())
+                .timeout(10, TimeUnit.SECONDS);
     }
 }

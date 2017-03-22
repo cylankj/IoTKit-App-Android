@@ -1082,6 +1082,19 @@ public class DpMsgDefine {
         };
     }
 
+    @Message
+    public static class DPCameraWarnAndWonder {
+        @Index(0)
+        public long ctime;
+
+        public DPCameraWarnAndWonder() {
+        }
+
+        public DPCameraWarnAndWonder(long ctime) {
+            this.ctime = ctime;
+        }
+    }
+
     public interface EMPTY {
         DPNet NET = new DPNet();
         DPStandby STANDBY = new DPStandby();

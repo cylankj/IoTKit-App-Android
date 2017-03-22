@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -39,8 +38,6 @@ public class JFGNetWorkMonitorReceiver extends BroadcastReceiver {
             connectionEvent.mobile = mobNetInfo;
             connectionEvent.wifi = wifiNetInfo;
             RxBus.getCacheInstance().post(connectionEvent);
-            BaseDPTaskDispatcher.getInstance().perform();
-
         }
     }
 }
