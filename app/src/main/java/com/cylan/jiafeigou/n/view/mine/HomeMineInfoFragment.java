@@ -599,7 +599,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             @Override
             public void onClick(View v) {
                 popupWindow.dismiss();
-                if (getView() != null) {
+                if (getView() != null && argumentData != null) {
                     presenter.logOut(argumentData.getAccount());
                     jump2LoginFragment();
                 }
