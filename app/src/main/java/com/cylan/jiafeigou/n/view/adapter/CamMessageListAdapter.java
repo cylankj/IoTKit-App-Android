@@ -231,7 +231,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                     .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + "_" + (i + 1) + ".jpg"))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .override(pic_container_width / count, pic_container_width / count)
-//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
                     .listener(loadListener)
                     .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + i));

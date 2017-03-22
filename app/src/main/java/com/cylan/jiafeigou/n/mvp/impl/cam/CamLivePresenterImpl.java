@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -74,7 +75,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
     private IData historyDataProvider;
     private int stopReason = STOP_MAUNALLY;//手动断开
-    private CompositeSubscription liveSubscription;
+    private MapSubscription liveSubscription;
 
     /**
      * 帧率记录
@@ -213,7 +214,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private void reset() {
         feedRtcp.stop();
         unSubscribe(liveSubscription);
-        liveSubscription = new CompositeSubscription();
+        liveSubscription = new MapSubscription();
     }
 
     @Override
@@ -223,7 +224,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         playType = CamLiveContract.TYPE_LIVE;
         reset();
         //加入管理,如果播放失败,收到disconnect
-        liveSubscription.add(videoDisconnectSub());
+        liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
         liveSubscription.add(prePlay(s -> {
             try {
                 int ret = JfgCmdInsurance.getCmd().playVideo(uuid);
@@ -250,10 +251,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub()
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                    .subscribe());
+                    .subscribe(), "rtcpNotifySub");
             return null;
         }).subscribe(objectObservable -> AppLogger.d("播放流程走通 done"),
-                throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
+                throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
     }
 
     /**
@@ -360,7 +361,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         playState = PLAY_STATE_PREPARE;
         reset();
         //加入管理,如果播放失败,收到disconnect
-        liveSubscription.add(videoDisconnectSub());
+        liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
         liveSubscription.add(prePlay(s -> {
             try {
                 //先停止播放{历史录像,直播都需要停止播放}
@@ -392,10 +393,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub()
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                    .subscribe());
+                    .subscribe(), "rtcpNotifySub");
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
-                throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
+                throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
     }
 
     @Override

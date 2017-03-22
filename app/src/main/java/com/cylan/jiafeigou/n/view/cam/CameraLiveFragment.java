@@ -495,6 +495,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.getImvLandMic().setTag(R.drawable.icon_land_mic_off_selector);
         camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_off_selector);
         camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_off_selector);
+        imgVCamZoomToFullScreen.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -667,13 +668,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         }
         if (liveListener != null) liveListener.liveStateChange();
         vLive.onLiveStop();
+        imgVCamZoomToFullScreen.setVisibility(View.GONE);
         AppLogger.d("onLiveStop");
     }
 
     @Override
     public void onTakeSnapShot(Bitmap bitmap) {
         if (bitmap != null) {
-            ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             showPopupWindow(bitmap);
         } else {
             ToastUtil.showPositiveToast(getString(R.string.set_failed));
