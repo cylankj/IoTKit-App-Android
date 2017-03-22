@@ -68,7 +68,6 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     private OnBindMailBoxListener onBindMailBoxListener;
     private JFGAccount userinfo;
-
     private boolean bindOrChange = false;       //绑定或者修改邮箱
 
     @Override
@@ -173,13 +172,12 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
         ViewUtils.setChineseExclude(mETMailBox,65);
-        mETMailBox.requestFocus();
         initKeyListener();
 
     }
     private void initKeyListener() {
-        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
+//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
         mETMailBox.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {

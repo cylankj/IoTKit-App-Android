@@ -248,8 +248,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         if (isRefresh) {
             homeWonderAdapter.clear();
             homeWonderAdapter.addAll(resultList);
-            //add
-            homeWonderAdapter.notifyDataSetChanged();
 
         } else {
             DPWonderItem last = homeWonderAdapter.getItem(lastPosition);
@@ -257,15 +255,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 homeWonderAdapter.remove(last);
             }
             homeWonderAdapter.addAll(resultList);
-            //add
-            homeWonderAdapter.notifyDataSetChanged();
+
         }
         if (mHasMore) {
             homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
             homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
             homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
-            //add
-            homeWonderAdapter.notifyDataSetChanged();
+
         }
         if (homeWonderAdapter.getCount() > 0) {
             srLayoutMainContentHolder.setNestedScrollingEnabled(true);
