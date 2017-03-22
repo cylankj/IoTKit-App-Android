@@ -63,7 +63,8 @@ public class AutoSignIn {
                     public Observable<Integer> call(String s) {
                         try {
                             String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
-                            DataSourceManager.getInstance().initAccount();
+                            if (aesAccount != null)
+                                DataSourceManager.getInstance().initAccount();
                             AppLogger.d("autoLogin");
                             if (TextUtils.isEmpty(aesAccount)) {
                                 AppLogger.d("account is null");

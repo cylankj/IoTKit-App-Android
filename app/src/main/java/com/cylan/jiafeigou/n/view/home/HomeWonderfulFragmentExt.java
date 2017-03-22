@@ -140,7 +140,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private Runnable autoLoading = () -> mPresenter.startRefresh();
 
     private void lazyLoad() {
-        if (getUserVisibleHint() && isPrepaper) {
+        if (getUserVisibleHint() && isPrepaper && DataSourceManager.getInstance().getAJFGAccount() != null) {
             srLayoutMainContentHolder.setRefreshing(true);
             srLayoutMainContentHolder.postDelayed(autoLoading, 100);//避免刷新过快
         }
