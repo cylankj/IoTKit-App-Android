@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
+import com.cylan.jiafeigou.support.download.utils.L;
 import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -403,5 +404,19 @@ public class MiscUtils {
         } catch (Exception e) {
             return 0;
         }
+    }
+
+    public static List<JFGDPMsg> getCamDateVersionList(long startTime) {
+        ArrayList<JFGDPMsg> list = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 222));
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 505));
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 512));
+        }
+        return list;
+    }
+
+    private static JFGDPMsg makeMsg(long version, long msgId) {
+        return new JFGDPMsg(msgId, version);
     }
 }

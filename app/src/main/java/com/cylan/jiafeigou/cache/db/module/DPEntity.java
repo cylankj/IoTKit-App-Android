@@ -10,6 +10,8 @@ import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
+import java.util.Arrays;
+
 /**
  * Created by yanzhendong on 2017/2/27.
  */
@@ -178,4 +180,19 @@ public class DPEntity extends BaseDPEntity {
         return DBOption.BaseDBOption.option(this.option, clz);
     }
 
+    @Override
+    public String toString() {
+        return "DPEntity{" +
+                "_id=" + _id +
+                ", account='" + account + '\'' +
+                ", server='" + server + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", version=" + version +
+                ", msgId=" + msgId +
+                ", bytes=" + Arrays.toString(bytes) +
+                ", action='" + action + '\'' +
+                ", state='" + state + '\'' +
+                ", option='" + option + '\'' +
+                '}';
+    }
 }

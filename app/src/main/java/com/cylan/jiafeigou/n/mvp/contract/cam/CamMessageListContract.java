@@ -1,11 +1,14 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.jiafeigou.dp.DPConstant;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -14,6 +17,8 @@ public interface CamMessageListContract {
 
 
     interface View extends BaseView<Presenter> {
+
+        void onDateMapRsp(HashMap<String, Long> dateMap);
 
         void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList);
 
@@ -39,6 +44,10 @@ public interface CamMessageListContract {
 //        void loadMore();
 
         void removeItems(ArrayList<CamMessageBean> beanList);
+
+        List<DpMsgDefine.DPAlarm> getDateList();
+
+        void refreshDateList();
     }
 }
 

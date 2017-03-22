@@ -2,13 +2,16 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.Converter;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -16,12 +19,15 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -38,7 +44,7 @@ import rx.schedulers.Schedulers;
 public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageListContract.View>
         implements CamMessageListContract.Presenter {
 
-    private Subscription qeurySub;
+    private Subscription querySub;
     private Device device;
 
     public CamMessageListPresenterImpl(CamMessageListContract.View view, String uuid) {
@@ -78,8 +84,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void fetchMessageList(final int count, boolean asc) {
-        unSubscribe(qeurySub);
-        qeurySub = queryTimeLine(count, 0, asc)
+        unSubscribe(querySub);
+        querySub = queryTimeLine(count, 0, asc)
                 .map((ArrayList<CamMessageBean> camList) -> {
                     ArrayList<CamMessageBean> list = getView().getList();
                     if (list != null)
@@ -107,7 +113,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .filter(aLong -> aLong > 0)
                 .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                         .filter(robotoGetDataRsp -> aLong == robotoGetDataRsp.seq)
-                        .timeout(1000, TimeUnit.MILLISECONDS, Observable.just("makeReq timeout")
+                        .timeout(2000, TimeUnit.MILLISECONDS, Observable.just("makeReq timeout")
                                 .subscribeOn(AndroidSchedulers.mainThread())
                                 .filter(s -> getView() != null)
                                 .map(s -> {
@@ -169,8 +175,59 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
+    public List<DpMsgDefine.DPAlarm> getDateList() {
+        return null;
+    }
+
+    @Override
+    public void refreshDateList() {
+        Observable.just("go to get and assemble Date List")
+                .subscribeOn(Schedulers.io())
+                .flatMap(s -> {
+                    //今天凌晨时间戳。
+                    long todayTimeStamp = TimeUtils.getTodayStartTime();
+                    ArrayList<JFGDPMsg> list = (ArrayList<JFGDPMsg>) MiscUtils.getCamDateVersionList(todayTimeStamp);
+                    try {
+                        long ret = JfgCmdInsurance.getCmd().robotGetData(uuid, list, 1, true, 0);
+                        return Observable.just(ret);
+                    } catch (JfgException e) {
+                        AppLogger.e("err: " + e.getLocalizedMessage());
+                        return Observable.just(-1L);
+                    }
+                })
+                .filter(aLong -> aLong != -1)
+                .flatMap(aLong ->
+                        RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                                .subscribeOn(Schedulers.computation())
+                                .filter(result -> result != null && TextUtils.equals(result.identity, uuid) && result.seq == aLong))
+                .subscribeOn(Schedulers.computation())
+                .map(robotoGetDataRsp -> {
+                    ArrayList<JFGDPMsg> list = new ArrayList<>();
+                    Iterator<Integer> iterator = robotoGetDataRsp.map.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        list.addAll(robotoGetDataRsp.map.get(iterator.next()));
+                    }
+                    int size = ListUtils.getSize(list);
+                    HashMap<String, Long> dateMap = new HashMap<>();
+                    for (int i = 0; i < size; i++) {
+                        String date = TimeUtils.getMediaPicTimeInString(list.get(i).version);
+                        if (!dateMap.containsKey(date)) {
+                            dateMap.put(date, list.get(i).version);
+                        }
+                    }
+                    AppLogger.d("dateList size :" + size + " " + dateMap);
+                    return dateMap;
+                })
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(a -> mView != null)
+                .subscribe(mapResult -> mView.onDateMapRsp(mapResult),
+                        throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+    }
+
+    @Override
     public void stop() {
         super.stop();
-        unSubscribe(qeurySub);
+        unSubscribe(querySub);
     }
 }

@@ -35,14 +35,17 @@ import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.cylan.jiafeigou.widget.wheel.WheelView;
+import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,8 +79,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     SwipeRefreshLayout srLayoutCamListRefresh;
     @BindView(R.id.tv_time_line_pop)
     TextView tvTimeLinePop;
-    @BindView(R.id.wv_wonderful_timeline)
-    WheelView wvWonderfulTimeline;
+    @BindView(R.id.wv_date_list_timeline)
+    WonderIndicatorWheelView wvWonderfulTimeline;
     @BindView(R.id.fLayout_cam_message_list_timeline)
     RelativeLayout fLayoutCamMessageListTimeline;
     @BindView(R.id.fLayout_cam_msg_edit_bar)
@@ -216,6 +219,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
 
     @Override
+    public void onDateMapRsp(HashMap<String, Long> dateMap) {
+//        wvWonderfulTimeline.setDataSet();
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    @Override
     public void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList) {
         if (camMessageListAdapter.hasFooter())
             camMessageListAdapter.remove(camMessageListAdapter.getItemCount() - 1);
@@ -294,6 +303,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             case R.id.tv_cam_message_list_date:
                 if (camMessageListAdapter.getCount() == 0)
                     return;//呼入呼出
+                if (basePresenter != null && ListUtils.getSize(basePresenter.getDateList()) == 0) {
+                    LoadingDialog.showLoading(getFragmentManager(), "加载日期中...");
+                    basePresenter.refreshDateList();
+                    return;
+                }
                 AnimatorUtils.slideAuto(fLayoutCamMessageListTimeline, false);
                 break;
             case R.id.tv_cam_message_list_edit:

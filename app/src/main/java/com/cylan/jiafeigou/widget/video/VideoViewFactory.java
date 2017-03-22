@@ -46,7 +46,11 @@ public class VideoViewFactory {
         /**
          * 释放
          */
-        void release();
+        void onDestroy();
+
+        void onPause();
+
+        void onResume();
 
         /**
          * 加载暂停 图片

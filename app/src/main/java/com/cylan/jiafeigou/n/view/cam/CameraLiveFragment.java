@@ -262,6 +262,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onPause();
         if (basePresenter != null)
             basePresenter.stopPlayVideo(basePresenter.getPlayType());
+        if (vLive != null && vLive.getVideoView() != null)
+            vLive.getVideoView().onPause();
     }
 
     @Override
@@ -303,11 +305,16 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onResume();
         //更新
         camLiveController.notifyOrientationChange(getResources().getConfiguration().orientation);
+        if (vLive != null && vLive.getVideoView() != null)
+            vLive.getVideoView().onResume();
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (vLive != null && vLive.getVideoView() != null) {
+            vLive.getVideoView().onDestroy();
+        }
     }
 
     private void startLive() {
@@ -641,7 +648,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
             case JError.ErrorVideoPeerNotExist:
-//                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case JError.ErrorVideoPeerInConnect:

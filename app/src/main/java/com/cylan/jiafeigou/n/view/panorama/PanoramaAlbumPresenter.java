@@ -149,7 +149,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
             if (socketPointer != -1) {
                 JFGSocket.Release(socketPointer);
                 socketPointer = -1;
-                AppLogger.d("release socket good");
+                AppLogger.d("onDestroy socket good");
             }
         });
         AppLogger.d("OnDisconnected ");

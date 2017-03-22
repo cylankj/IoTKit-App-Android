@@ -109,8 +109,8 @@
                 android:background="@color/color_d2d2d2" />
 
 
-            <com.cylan.jiafeigou.widget.wheel.WheelView
-                android:id="@+id/wv_wonderful_timeline"
+            <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
+                android:id="@+id/wv_date_list_timeline"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y55"
                 android:layout_alignParentBottom="true"

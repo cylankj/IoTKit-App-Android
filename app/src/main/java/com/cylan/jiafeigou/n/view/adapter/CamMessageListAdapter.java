@@ -228,10 +228,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
         for (int i = 0; i < count; i++) {
             Glide.with(getContext())
-                    .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + "_" + (i+1) + ".jpg"))
+                    .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + "_" + (i + 1) + ".jpg"))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .override(pic_container_width / count, pic_container_width / count)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .centerCrop()
                     .listener(loadListener)
                     .into((ImageView) holder.getView(R.id.imgV_cam_message_pic_0 + i));
@@ -355,9 +355,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                    Target<GlideDrawable> target,
                                    boolean isFirstResource) {
             try {
-                int position = getPositionByModel(model.toURL().toString());
-                loadFailedMap.put(position, position);//标记load失败的position
-                Log.d("onException", "onException: " + position + " " + e.getLocalizedMessage());
+                String errUri = model.toURL().toString();
+                AppLogger.d("errUri: " + errUri);
             } catch (MalformedURLException e1) {
                 AppLogger.e("onException:" + e1.getLocalizedMessage());
             }
@@ -367,9 +366,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         @Override
         public boolean onResourceReady(GlideDrawable resource, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
             try {
-                int position = getPositionByModel(model.toURL().toString());
-                loadFailedMap.remove(position);
-                Log.d("onResourceReady", "onResourceReady: " + position);
+//                int position = getPositionByModel(model.toURL().toString());
+//                loadFailedMap.remove(position);
+//                Log.d("onResourceReady", "onResourceReady: " + position);
+                String goodErrUri = model.toURL().toString();
+                AppLogger.d("errUri good: " + goodErrUri);
             } catch (MalformedURLException e) {
                 AppLogger.e("onException:" + e.getLocalizedMessage());
             }

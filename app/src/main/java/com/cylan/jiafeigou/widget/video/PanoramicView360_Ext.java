@@ -58,11 +58,6 @@ public class PanoramicView360_Ext extends Panoramic360View implements VideoViewF
     }
 
     @Override
-    public void release() {
-
-    }
-
-    @Override
     public void loadBitmap(Bitmap bitmap) {
         super.loadImage(bitmap);
     }

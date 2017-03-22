@@ -491,6 +491,7 @@ public class CamLiveController implements
                         AppLogger.i(String.format("land play history: %s", time));
                     }
                 }
+                break;
             case R.id.live_time_layout:
                 clickLiveTimeRect(view);
                 break;
@@ -659,11 +660,8 @@ public class CamLiveController implements
                     break;
                 case PLAY_STATE_PREPARE:
                 case PLAY_STATE_PLAYING:
-                    if (camLiveControlLayer.getImgVCamLiveLandPlay().getDrawable()
-                            != context.getResources().getDrawable(R.drawable.icon_landscape_playing)) {
-                        //do work here
-                        camLiveControlLayer.getImgVCamLiveLandPlay().setImageResource(R.drawable.icon_landscape_playing);
-                    }
+                    //do work here
+                    camLiveControlLayer.getImgVCamLiveLandPlay().setImageResource(R.drawable.icon_landscape_playing);
                     break;
             }
             AppLogger.i("state: " + state);

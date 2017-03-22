@@ -554,7 +554,7 @@ public class DataSourceManager implements JFGSourceManager {
         Observable.from(arrayList)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(msg -> dbHelper.saveOrUpdate(s, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED, DBState.SUCCESS, null).map(ret -> msg))
+                .flatMap(msg -> dbHelper.saveDPByte(s, msg.version, (int) msg.id, msg.packValue).map(ret -> msg))
                 .subscribe(msg -> {
                     Device device = mCachedDeviceMap.get(s);
                     if (device != null) {

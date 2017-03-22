@@ -4,6 +4,7 @@ import android.content.ContextWrapper;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -132,7 +133,10 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<DPEntity> saveDpMsg(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option) {
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
-                .rx().unique().filter(item -> {
+                .rx()
+                .unique()
+                .doOnError(throwable -> Log.e("throwable: ", "throwable:" + throwable.getLocalizedMessage()))
+                .filter(item -> {
                     if (item != null && DBAction.DELETED.action().equals(item.getAction())) {
                         return false;
                     }
@@ -141,7 +145,9 @@ public class BaseDBHelper implements IDBHelper {
                 .map(item -> {
                     if (item == null) {
                         item = new DPEntity(null, account, server, uuid, version, msgId, bytes, action == null ? null : action.action(), state == null ? null : state.state(), option == null ? null : option.option());
-                        mEntityDao.save(item);
+                        Log.d("throwable", "throwable: " + item);
+                        Log.d("throwable", "throwable: " + Thread.currentThread());
+                        mEntityDao.insertOrReplace(item);
                     }
                     return item;
                 });
@@ -154,7 +160,7 @@ public class BaseDBHelper implements IDBHelper {
                 .map(item -> {
                     if (item == null) {
                         item = new DPEntity(null, account, server, uuid, version, msgId, bytes, action == null ? null : action.action(), state == null ? null : state.state(), option == null ? null : option.option());
-                        mEntityDao.save(item);
+                        mEntityDao.insertOrReplace(item);
                     } else {
                         item.setAccount(account);
                         item.setServer(server);
