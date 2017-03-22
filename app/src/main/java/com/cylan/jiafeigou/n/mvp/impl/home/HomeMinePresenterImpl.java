@@ -257,8 +257,10 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((Object o) -> {
                     try {
-                        JfgCmdInsurance.getCmd().robotCountDataClear(uuid, new long[]{601L, 701L}, 0);
+                        long req = JfgCmdInsurance.getCmd().robotCountDataClear(uuid, new long[]{601L, 701L}, 0);
+                        AppLogger.d("mine_markHasRead:"+req);
                     } catch (JfgException e) {
+                        AppLogger.e("mine_markHasRead:"+e.getLocalizedMessage());
                         e.printStackTrace();
                     }
                 });
