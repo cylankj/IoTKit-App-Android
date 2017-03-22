@@ -1,11 +1,20 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.app.Dialog;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -22,7 +31,10 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.ShareGridView;
 import com.kyleduo.switchbutton.SwitchButton;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,8 +73,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     RelativeLayout rlHomeSettingRecommend;
 
     private HomeSettingContract.Presenter presenter;
-
     private AboutFragment aboutFragment;
+    private Dialog mShareDlg;
 
     public static HomeSettingFragment newInstance() {
         return new HomeSettingFragment();
@@ -123,7 +135,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                 break;
 
             case R.id.rl_home_setting_recommend:
-                //TODO 推荐给亲友
+                //推荐给亲友
+                share();
                 break;
         }
     }
@@ -186,6 +199,10 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         if (presenter != null) {
             presenter.stop();
         }
+        if (mShareDlg != null){
+            mShareDlg.dismiss();
+            mShareDlg = null;
+        }
     }
 
     @Override
@@ -222,6 +239,83 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             case R.id.btn_item_switch_shake:
                 presenter.savaSwitchState(isChecked, JConstant.OPEN_SHAKE);
                 break;
+        }
+    }
+
+    //*************
+    public void share() {
+        if (mShareDlg == null) {
+            mShareDlg = new Dialog(getActivity(), R.style.func_dialog);
+            View content = View.inflate(getContext(), R.layout.dialog_app_share, null);
+            TextView cancel = (TextView) content.findViewById(R.id.btn_cancle);
+            cancel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    mShareDlg.dismiss();
+                }
+            });
+            ShareGridView gridView = (ShareGridView) content.findViewById(R.id.gridview);
+            final Intent intent = new Intent(Intent.ACTION_SEND);
+            intent.setType("text/plain");
+            String con = getString(R.string.share_content);
+            if (!TextUtils.isEmpty(JConstant.EFAMILY_URL_PREFIX)) {
+                con += JConstant.EFAMILY_URL_PREFIX;
+            }
+            intent.putExtra(Intent.EXTRA_TEXT, con);
+
+            List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
+            final AppAdater appAdater = new AppAdater(getContext());
+            for (ResolveInfo info : list) {
+                appAdater.add(info);
+            }
+            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    ResolveInfo info = appAdater.getItem(position);
+                    intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
+                    startActivity(intent);
+                }
+            });
+            gridView.setAdapter(appAdater);
+            mShareDlg.setContentView(content);
+            mShareDlg.setCanceledOnTouchOutside(true);
+        }
+        try {
+            mShareDlg.show();
+        } catch (Exception e) {
+            AppLogger.e(e.toString());
+        }
+    }
+
+    class ViewHolder {
+        ImageView icon;
+        TextView name;
+        ResolveInfo info;
+    }
+
+    class AppAdater extends ArrayAdapter<ResolveInfo> {
+
+        public AppAdater(Context context) {
+            super(context, 0);
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            ViewHolder vh;
+            if (null == convertView) {
+                convertView = View.inflate(getContext(), R.layout.item_app_share, null);
+                vh = new ViewHolder();
+                vh.icon = (ImageView) convertView.findViewById(R.id.icon);
+                vh.name = (TextView) convertView.findViewById(R.id.name);
+                convertView.setTag(vh);
+            } else {
+                vh = (ViewHolder) convertView.getTag();
+            }
+            ResolveInfo info = getItem(position);
+            PackageManager pm = getContext().getPackageManager();
+            vh.name.setText(info.loadLabel(pm));
+            vh.icon.setImageDrawable(info.loadIcon(pm));
+            return convertView;
         }
     }
 
