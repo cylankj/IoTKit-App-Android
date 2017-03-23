@@ -116,11 +116,23 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_add_from_contract));
                 AppLogger.d("tv_add_from_contract");
                 if (presenter.checkContractPermission()) {
+                    AppLogger.d("from_contract_Y");
                     jump2AddFromContactFragment();
                 } else {
-                    MineFriendAddFriendsFragment.this.requestPermissions(
-                            new String[]{Manifest.permission.READ_CONTACTS},
-                            1);
+                    AppLogger.d("from_contract_N");
+                    if(MineFriendAddFriendsFragment.this.shouldShowRequestPermissionRationale(Manifest.permission.READ_CONTACTS)){
+                        AppLogger.d("request_Y");
+//                        MineFriendAddFriendsFragment.this.requestPermissions(
+//                                new String[]{Manifest.permission.READ_CONTACTS},
+//                                1);
+                        setPermissionDialog(Manifest.permission.READ_CONTACTS);
+                    }else {
+                        AppLogger.d("request_N");
+                        MineFriendAddFriendsFragment.this.requestPermissions(
+                                new String[]{Manifest.permission.READ_CONTACTS},
+                                1);
+                    }
+
                 }
                 break;
 

@@ -256,18 +256,20 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         if (isRefresh) {
             homeWonderAdapter.clear();
             homeWonderAdapter.addAll(resultList);
+
         } else {
             DPWonderItem last = homeWonderAdapter.getItem(lastPosition);
             if (last.msgType == 2) {
                 homeWonderAdapter.remove(last);
             }
-
             homeWonderAdapter.addAll(resultList);
+
         }
         if (mHasMore) {
             homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
             homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
             homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
+
         }
         if (homeWonderAdapter.getCount() > 0) {
             srLayoutMainContentHolder.setNestedScrollingEnabled(true);
