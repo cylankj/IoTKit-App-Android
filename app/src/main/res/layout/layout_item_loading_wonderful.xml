@@ -1,38 +1,32 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:hunt="http://schemas.android.com/apk/res-auto"
-             android:id="@+id/lLayout_item_wonderful"
-             android:layout_width="match_parent"
-             android:layout_height="36dp"
-             android:orientation="horizontal">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/lLayout_item_wonderful"
+    android:layout_width="match_parent"
+    android:layout_height="36dp"
+    android:orientation="horizontal">
 
-    <LinearLayout
+
+    <ProgressBar
+        android:id="@+id/v_simple_38line"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_horizontal"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_toStartOf="@+id/tv_simple_footer_text"
+        android:padding="5dp" />
 
-        <ProgressBar
-            android:id="@+id/v_simple_38line"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-
-            android:padding="5dp"/>
-
-        <TextView
-            android:id="@+id/tv_simple_footer_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:text="加载中..."
-            android:textSize="11sp"/>
-    </LinearLayout>
-
+    <TextView
+        android:id="@+id/tv_simple_footer_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:textSize="@dimen/sp14" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
+        android:layout_alignParentBottom="true"
         android:layout_gravity="bottom"
-        android:background="@color/color_e8e8e8"/>
-</FrameLayout>
+        android:background="@color/color_e8e8e8" />
+</RelativeLayout>

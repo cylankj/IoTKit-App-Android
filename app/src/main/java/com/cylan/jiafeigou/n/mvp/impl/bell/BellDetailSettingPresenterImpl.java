@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -51,14 +50,8 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     AppLogger.i("save start: " + id + " " + value);
-//                    BaseValue baseValue = new BaseValue();
-//                    baseValue.setId(dpMsgId);
-//                    baseValue.setVersion(System.currentTimeMillis());
-//                    baseValue.setValue(o);
-//                    DataSourceManager.getInstance().update(uuid, baseValue, true);
-
                     try {
-                        com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -73,16 +66,13 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
         //检测是否有新的固件
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
-                        try {
-                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, ""));
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(o -> {
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
+                    try {
+                        JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, ""));
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
                 });
     }

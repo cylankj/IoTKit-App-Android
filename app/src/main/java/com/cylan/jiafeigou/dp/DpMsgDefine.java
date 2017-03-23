@@ -930,7 +930,9 @@ public class DpMsgDefine {
         public static final int TYPE_PIC = 0;
         public static final int TYPE_VIDEO = 1;
         public static final int TYPE_LOAD = 2;
+        public static final int TYPE_NO_MORE = 3;
         private static DPWonderItem guideBean;
+        private static DPWonderItem nomore;
 
         @Index(0)
         public String cid;
@@ -993,6 +995,13 @@ public class DpMsgDefine {
                 loadBean = new DPWonderItem();
             loadBean.msgType = TYPE_LOAD;
             return loadBean;
+        }
+
+        public static DPWonderItem getNoMoreTypeBean() {
+            if (nomore == null)
+                nomore = new DPWonderItem();
+            nomore.msgType = TYPE_NO_MORE;
+            return nomore;
         }
 
         public static DPWonderItem getGuideBean() {

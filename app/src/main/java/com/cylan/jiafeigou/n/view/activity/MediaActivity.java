@@ -47,6 +47,8 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
 
 import java.io.File;
@@ -69,6 +71,7 @@ import tv.danmaku.ijk.media.exo.IjkExoMediaPlayer;
 import tv.danmaku.ijk.media.player.IMediaPlayer;
 import tv.danmaku.ijk.media.player.IjkMediaPlayer;
 
+import static com.cylan.jiafeigou.R.id.tv_dialog_btn_right;
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem;
 
 @RuntimePermissions
@@ -539,9 +542,26 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         }
     }
 
+    private SimpleDialogFragment dialogFragment;
 
-    @OnClick({R.id.act_media_header_opt_delete, R.id.act_media_picture_opt_delete})
-    public void delete() {
+    private SimpleDialogFragment initDeleteDialog() {
+        if (dialogFragment == null) {
+            //为删除dialog设置提示信息
+            Bundle args = new Bundle();
+            args.putString(BaseDialog.KEY_TITLE, "");
+            args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
+            args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.DELETE));
+            args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT,
+                    this.getString(R.string.Tips_SureDelete));
+            dialogFragment = SimpleDialogFragment.newInstance(args);
+            dialogFragment.setAction((id, value) -> {
+                if (id == tv_dialog_btn_right) del();
+            });
+        }
+        return dialogFragment;
+    }
+
+    private void del() {
         Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
             RxEvent.DeleteWonder wonder = new RxEvent.DeleteWonder();
             AppLogger.e("正在发送删除请求:" + mCurrentPosition);
@@ -562,6 +582,11 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                         }
                     }
                 });
+    }
+
+    @OnClick({R.id.act_media_header_opt_delete, R.id.act_media_picture_opt_delete})
+    public void delete() {
+        initDeleteDialog().show(getSupportFragmentManager(), "delete");
     }
 
     @Override
@@ -589,7 +614,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void downloadFile() {
         if (mCurrentViewType == DPWonderItem.TYPE_PIC) {
-            mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
+            mDownloadFile = new File(JConstant.MEDIA_PATH, mCurrentMediaBean.fileName);
         } else if (mCurrentViewType == DPWonderItem.TYPE_VIDEO) {
             mDownloadFile = new File(JConstant.MEDIA_DETAIL_VIDEO_DOWNLOAD_DIR, mCurrentMediaBean.fileName);
         } else {

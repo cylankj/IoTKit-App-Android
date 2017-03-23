@@ -44,19 +44,15 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
 
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, DpMsgDefine.DPWonderItem item) {
-        if (viewType != DpMsgDefine.DPWonderItem.TYPE_LOAD) {
-            holder.setVisibility(R.id.tv_wonderful_item_footer, View.INVISIBLE);
+        if (viewType < 2) {
             initClickListener(holder, layoutPosition);
             handleState(holder, item);
-
-
-        }
-        if (layoutPosition == getCount() - 1
-                && getItem(getCount() - 1).msgType != DpMsgDefine.DPWonderItem.TYPE_LOAD
-                && layoutPosition > 0) {
-            holder.setVisibility(R.id.tv_wonderful_item_footer, View.VISIBLE);
-        } else if (getItem(getCount() - 1).msgType != DpMsgDefine.DPWonderItem.TYPE_LOAD) {
-            holder.setVisibility(R.id.tv_wonderful_item_footer, View.INVISIBLE);
+        } else if (item.msgType == DpMsgDefine.DPWonderItem.TYPE_LOAD) {
+            holder.setText(R.id.tv_simple_footer_text, getContext().getString(R.string.PULL_TO_LOAD));
+            holder.setVisibility(R.id.v_simple_38line, View.VISIBLE);
+        } else if (item.msgType == DpMsgDefine.DPWonderItem.TYPE_NO_MORE) {
+            holder.setText(R.id.tv_simple_footer_text, getContext().getString(R.string.NO_MORE));
+            holder.setVisibility(R.id.v_simple_38line, View.GONE);
         }
 
     }
@@ -102,7 +98,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
 
             @Override
             public int getItemViewType(int position, DpMsgDefine.DPWonderItem mediaBean) {
-                return mediaBean.msgType;//0:image view  1:videoView
+                return mediaBean.msgType < 2 ? mediaBean.msgType : 2;//0:image view  1:videoView
             }
 
             @Override

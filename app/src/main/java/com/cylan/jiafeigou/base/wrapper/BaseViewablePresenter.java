@@ -280,7 +280,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void switchSpeaker() {
-        setSpeaker(!mIsMicrophoneOn)
+        setSpeaker(!mIsSpeakerOn)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(on -> {
                     if (mView != null) {
@@ -294,7 +294,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void switchMicrophone() {
-        setMicrophone(!mIsMicrophoneOn).observeOn(AndroidSchedulers.mainThread())
+        setMicrophone(!mIsMicrophoneOn)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(on -> {
                     if (mView != null) {
                         mView.onMicrophone(on);
