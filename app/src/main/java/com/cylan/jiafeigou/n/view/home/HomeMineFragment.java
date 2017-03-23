@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.home;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -35,12 +37,15 @@ import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.photoselect.models.Image;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -259,7 +264,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 设置昵称
-     *
      * @param name
      */
     @Override
@@ -270,35 +274,52 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void setUserImageHeadByUrl(String url) {
         if(getContext()==null)return;
+        MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait,getResources().getDrawable(R.drawable.me_bg_top_image),rLayoutHomeMineTop,url,basePresenter);
         Glide.with(getContext()).load(url)
                 .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        ivHomeMinePortrait.setImageBitmap(resource);
-                        if (!TextUtils.isEmpty(url)) {
-                            if (url.contains("default")) {
-                                rLayoutHomeMineTop.setBackground(getResources().getDrawable(R.drawable.me_bg_top_image));
-                            } else {
-                                Bitmap bitmap = Bitmap.createBitmap(resource);
-                                basePresenter.portraitBlur(bitmap);
-                            }
-                        } else {
-                            rLayoutHomeMineTop.setBackground(getResources().getDrawable(R.drawable.me_bg_top_image));
-                        }
-                    }
-
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        rLayoutHomeMineTop.setBackground(getResources().getDrawable(R.drawable.me_bg_top_image));
-                    }
-
-                });
+                .into(mySimpleTarget);
     }
+
+    public static class MySimpleTarget extends SimpleTarget<Bitmap>{
+        private final WeakReference<ImageView> image;
+        private final WeakReference<HomeMineContract.Presenter> basePresenter;
+        private final WeakReference<FrameLayout> mFrameLayout;
+        private final WeakReference<Drawable> mDrawable;
+        private String url;
+
+        public MySimpleTarget(ImageView view,Drawable drawable,FrameLayout frameLayout,String url,HomeMineContract.Presenter presenter) {
+            image = new WeakReference<ImageView>(view);
+            mFrameLayout = new WeakReference<FrameLayout>(frameLayout);
+            basePresenter = new WeakReference<HomeMineContract.Presenter>(presenter);
+            mDrawable = new WeakReference<Drawable>(drawable);
+            this.url = url;
+        }
+
+        @Override
+        public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {
+            image.get().setImageBitmap(resource);
+            if (!TextUtils.isEmpty(url)) {
+                if (url.contains("default")) {
+                    mFrameLayout.get().setBackground(mDrawable.get());
+                } else {
+                    Bitmap bitmap = Bitmap.createBitmap(resource);
+                    basePresenter.get().portraitBlur(bitmap);
+                }
+            } else {
+                mFrameLayout.get().setBackground(mDrawable.get());
+            }
+        }
+
+        @Override
+        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+            super.onLoadFailed(e, errorDrawable);
+            mFrameLayout.get().setBackground(mDrawable.get());
+        }
+    }
+
 
     /**
      * 设置新消息的数量

@@ -394,4 +394,11 @@ public class OpenLoginHelper {
         login.loginType = true;
         RxBus.getCacheInstance().postSticky(login);
     }
+
+    public static void release(){
+        if (instance != null){
+            instance.activity = null;
+            instance = null;
+        }
+    }
 }

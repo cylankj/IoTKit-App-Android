@@ -74,6 +74,7 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
+import rx.Observable;
 
 
 /**
@@ -976,6 +977,11 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     public void onDestroy() {
         super.onDestroy();
         clearSomeThing();
+        SinaLogin.release();
+        TencentInstance.release();
+        TwitterInstance.release();
+        FacebookInstance.release();
+        OpenLoginHelper.release();
     }
 
     @Override
@@ -1080,5 +1086,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
 
 }

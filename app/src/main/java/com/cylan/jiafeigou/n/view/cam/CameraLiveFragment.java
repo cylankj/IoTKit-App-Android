@@ -50,6 +50,7 @@ import com.cylan.jiafeigou.n.view.activity.CamSettingActivity;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -58,6 +59,8 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LiveTimeLayout;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
 import com.cylan.jiafeigou.widget.glide.RoundedCornersTransformation;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
@@ -92,7 +95,7 @@ import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_
  */
 @RuntimePermissions()
 public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
-        implements CamLiveContract.View, View.OnClickListener {
+        implements CamLiveContract.View, View.OnClickListener, BaseDialog.BaseDialogAction {
 
 
     //    @BindView(R.dpMsgId.fLayout_live_view_container)
@@ -151,7 +154,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     private String uuid;
     private boolean isNormalView;
-
+    private static final String DIALOG_KEY = "dialogFragment";
     public CameraLiveFragment() {
         // Required empty public constructor
     }
@@ -271,6 +274,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             basePresenter.fetchHistoryDataList();
             //非待机模式
             onDeviceInfoChanged(-1);
+
+            //每天检测一次新固件
+            basePresenter.checkNewHardWare();
         }
         camLiveController.setPortSafeSetter(portFlipLayout);
     }
@@ -732,6 +738,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         roundCardPopup.dismiss();//don't need try catch ,it is wrapped by rxjava
     }
 
+
+
     @Override
     public void onRtcp(JFGMsgVideoRtcp rtcp) {
         String content = MiscUtils.getByteFromBitRate(rtcp.bitRate);
@@ -779,4 +787,31 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         Log.d("OnPermissionDenied", "audioSettingPermissionDenied");
     }
 
+    @Override
+    public void hardwareResult(RxEvent.CheckDevVersionRsp rsp) {
+        if (rsp.hasNew){
+            Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
+            if (f == null) {
+                Bundle bundle = new Bundle();
+                bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap1_Device_UpgradeTips));
+                bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
+                bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+                bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
+                SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+                dialogFragment.setValue(rsp);
+                dialogFragment.setAction(this);
+                dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
+            }
+        }
+    }
+
+    @Override
+    public void onDialogAction(int id, Object value) {
+        Bundle bundle = new Bundle();
+        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp)value);
+        HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
+        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                hardwareUpdateFragment, android.R.id.content);
+    }
 }

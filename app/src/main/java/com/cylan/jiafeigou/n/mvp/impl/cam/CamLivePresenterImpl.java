@@ -35,8 +35,10 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.MD5Util;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
@@ -51,6 +53,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
 import rx.schedulers.Schedulers;
@@ -617,9 +620,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         throwable -> AppLogger.e("countdown finish")));
     }
 
+
     @Override
     protected Subscription[] register() {
-        return new Subscription[]{robotDataSync()};
+        return new Subscription[]{robotDataSync(),checkNewHardWareBack()};
     }
 
     /**
@@ -684,5 +688,39 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 stopPlayVideo(getPlayType());
             }
         }
+    }
+
+    /**
+     * 每天检测一次是否有新固件
+     */
+    @Override
+    public void checkNewHardWare() {
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(o -> {
+                    if (TimeUtils.isToday(PreferencesUtils.getLong(JConstant.CHECK_HARDWARE_TIME,0))){
+                        return;
+                    }
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
+                    try {
+                        JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, ""));
+                    } catch (JfgException e) {
+                        AppLogger.e("checkNewHardWare:"+e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    @Override
+    public Subscription checkNewHardWareBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((RxEvent.CheckDevVersionRsp checkDevVersionRsp) -> {
+                    if (checkDevVersionRsp != null && checkDevVersionRsp.hasNew){
+                        getView().hardwareResult(checkDevVersionRsp);
+                        PreferencesUtils.putLong(JConstant.CHECK_HARDWARE_TIME,System.currentTimeMillis());
+                    }
+                });
     }
 }

@@ -51,4 +51,11 @@ public class TwitterInstance {
         twitterAuthClient.authorize(activity, callback);
     }
 
+    public static void release(){
+        if (instance != null){
+            instance.twitterAuthClient = null;
+            instance = null;
+        }
+    }
+
 }
