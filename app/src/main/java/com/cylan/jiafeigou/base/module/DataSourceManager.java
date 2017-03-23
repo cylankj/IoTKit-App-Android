@@ -48,6 +48,7 @@ import java.util.TreeSet;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -517,6 +518,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp) {
+        if (true) return;
         Observable.just(dataRsp)
                 .filter(rsp -> rsp.map != null)
                 .flatMap(rsp -> Observable.from(rsp.map.entrySet()))
@@ -544,6 +546,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
+        if (true) return;
         dbHelper.saveDPByteInTx(s, arrayList)
                 .observeOn(Schedulers.io())
                 .subscribe(dpEntities -> {
@@ -565,25 +568,7 @@ public class DataSourceManager implements JFGSourceManager {
                     RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(s, updateIdList));
                 });
 //
-//        Observable.from(arrayList)
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(Schedulers.io())
-//                .flatMap(msg -> dbHelper.saveOrUpdate(s, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED, DBState.SUCCESS, null).map(ret -> msg))
-//                .subscribe(msg -> {
-//                    Device device = mCachedDeviceMap.get(s);
-//                    if (device != null) {
-//                        device.setValue(msg);
-//                    }
-//                }, e -> {
-//                    AppLogger.e(e.getMessage());
-//                    e.printStackTrace();
-//                }, () -> {
-//                    ArrayList<Long> updateIdList = new ArrayList<>();
-//                    for (JFGDPMsg msg : arrayList) {
-//                        updateIdList.add(msg.id);
-//                    }
-//                    RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(s, updateIdList));
-//                });
+
     }
 
     @Override
@@ -750,9 +735,45 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(event -> cacheRobotoGetDataRsp(event.getDataRsp), e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
+                .flatMap(event -> dbHelper.saveDPByteInTx(event.getDataRsp)
+                        .map(dpEntities -> {
+                            Device device = mCachedDeviceMap.get(event.getDataRsp.identity);
+                            for (DPEntity entity : dpEntities) {
+                                boolean change = false;
+                                if (device != null) {//优先尝试写入device中
+                                    change = device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), event.getDataRsp.seq);
+                                }
+                                if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
+                                    change |= account.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), event.getDataRsp.seq);
+                                    if (change)
+                                        account.dpMsgVersion = System.currentTimeMillis();
+                                }
+                            }
+                            RxBus.getCacheInstance().post(event.getDataRsp);
+                            return "多线程真心麻烦";
+                        })
+                )
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        AppLogger.e(e.getMessage());
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(String s) {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onStart() {
+                        request(1);
+                    }
                 });
     }
 
@@ -761,9 +782,45 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(event -> cacheRobotoSyncData(event.b, event.s, event.arrayList), e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
+                .flatMap(event -> dbHelper.saveDPByteInTx(event.s, event.arrayList)
+                        .map(dpEntities -> {
+                            ArrayList<Long> updateIdList = new ArrayList<>();
+                            Device device = mCachedDeviceMap.get(event.s);
+                            for (DPEntity entity : dpEntities) {
+                                updateIdList.add((long) entity.getMsgId());
+                                boolean change = false;
+                                if (device != null) {//优先尝试写入device中
+                                    change = device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
+                                }
+                                if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
+                                    change |= account.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
+                                    if (change)
+                                        account.dpMsgVersion = System.currentTimeMillis();
+                                }
+                            }
+                            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList));
+                            return "多线程真是麻烦";
+                        }))
+                .subscribe(new Subscriber<String>() {
+                    @Override
+                    public void onCompleted() {
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        AppLogger.e(e.getMessage());
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onNext(String dpEntities) {
+                        request(1);
+                    }
+
+                    @Override
+                    public void onStart() {
+                        request(1);
+                    }
                 });
     }
 

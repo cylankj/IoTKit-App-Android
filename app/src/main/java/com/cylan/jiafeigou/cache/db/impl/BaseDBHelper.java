@@ -10,6 +10,7 @@ import android.util.Pair;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.AccountDao;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -34,6 +35,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -77,22 +80,64 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, List<JFGDPMsg> msgs) {
-        return getActiveAccount().flatMap(account -> Observable.from(msgs)
-                .flatMap(msg -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null)
-                        .rx().unique().map(item -> {
-                            if (item != null && DBAction.DELETED.action().equals(item.getAction())) {
-                                return null;
-                            }
-                            if (item == null) {
-                                item = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
-                            }
-                            return item;
-                        })
-                        .filter(item -> item != null)
-                        .buffer(msgs.size())
-                        .map(dpEntities -> new ArrayList<>(new HashSet<>(dpEntities)))
-                        .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities))
-                ));
+//        return getActiveAccount().flatMap(account -> Observable.from(msgs)
+//                .flatMap(msg -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null)
+//                        .rx().unique().map(item -> {
+//                            if (item != null && DBAction.DELETED.action().equals(item.getAction())) {
+//                                return null;
+//                            }
+//                            if (item == null) {
+//                                item = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+//                            }
+//                            return item;
+//                        })
+//                        .filter(item -> item != null)
+//                        .buffer(msgs.size())
+//                        .map(dpEntities -> new ArrayList<>(new HashSet<>(dpEntities)))
+//                        .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities))
+//                ));
+        return getActiveAccount().map(account -> {
+            QueryBuilder<DPEntity> queryBuilder;
+            DPEntity dpEntity;
+            Set<DPEntity> result = new HashSet<>();
+            for (JFGDPMsg msg : msgs) {
+                queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
+                dpEntity = queryBuilder.unique();
+                if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
+                    continue;
+                }
+                if (dpEntity == null) {
+                    dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                }
+                result.add(dpEntity);
+            }
+            return result;
+        })
+                .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities));
+    }
+
+    @Override
+    public Observable<Iterable<DPEntity>> saveDPByteInTx(RobotoGetDataRsp dataRsp) {
+        return getActiveAccount().map(account -> {
+            QueryBuilder<DPEntity> queryBuilder;
+            DPEntity dpEntity;
+            Set<DPEntity> result = new HashSet<>();
+            for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
+                for (JFGDPMsg msg : entry.getValue()) {
+                    queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
+                    dpEntity = queryBuilder.unique();
+                    if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
+                        continue;
+                    }
+                    if (dpEntity == null) {
+                        dpEntity = new DPEntity(null, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                    }
+                    result.add(dpEntity);
+                }
+            }
+            return result;
+        })
+                .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities));
     }
 
     @Override
