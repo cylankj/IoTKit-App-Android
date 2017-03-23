@@ -181,4 +181,12 @@ public class SinaLogin {
     public static WeiboParameters getWeiboParameters() {
         return new WeiboParameters(APP_KEY);
     }
+
+    public static void release(){
+        if (instance != null){
+            instance.context = null;
+            instance.mSsoHandler = null;
+            instance = null;
+        }
+    }
 }

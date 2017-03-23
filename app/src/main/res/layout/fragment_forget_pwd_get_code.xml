@@ -16,47 +16,55 @@
             android:animateLayoutChanges="true"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@+id/fLayout_account_input_box"
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y48"
                 android:layout_marginTop="@dimen/y30">
 
-
-                <EditText
-                    android:id="@+id/et_forget_username"
+                <LinearLayout
+                    android:layout_centerVertical="true"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:layout_marginBottom="@dimen/y5"
-                    android:layout_marginTop="@dimen/y5"
-                    android:background="@null"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:gravity="center"
-                    android:hint="@string/Tap0_enterphoneoremail"
-                    android:maxLength="65"
-                    android:singleLine="true"
-                    android:inputType="textVisiblePassword"
-                    android:textColor="@color/color_666666"
-                    android:textColorHint="@color/color_cecece"
-                    android:textCursorDrawable="@drawable/bg_common_cursor"
-                    android:textSize="@dimen/sp15" />
+                    android:layout_height="wrap_content">
 
-                <ImageView
-                    android:id="@+id/iv_forget_clear_username"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:src="@drawable/icon_clear_text"
-                    android:visibility="gone" />
+                    <EditText
+                        android:id="@+id/et_forget_username"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:layout_marginBottom="@dimen/y5"
+                        android:layout_marginTop="@dimen/y5"
+                        android:background="@null"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:gravity="center"
+                        android:hint="@string/Tap0_enterphoneoremail"
+                        android:maxLength="65"
+                        android:singleLine="true"
+                        android:paddingLeft="2dp"
+                        android:paddingRight="2dp"
+                        android:inputType="textVisiblePassword"
+                        android:textColor="@color/color_666666"
+                        android:textColorHint="@color/color_cecece"
+                        android:textCursorDrawable="@drawable/bg_common_cursor"
+                        android:textSize="@dimen/sp15" />
+
+                    <ImageView
+                        android:id="@+id/iv_forget_clear_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="end"
+                        android:src="@drawable/icon_clear_text"
+                        android:visibility="gone" />
+                </LinearLayout>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y1"
-                    android:layout_gravity="bottom"
+                    android:layout_alignParentBottom="true"
                     android:background="@color/color_f2f2f2" />
-            </FrameLayout>
+            </RelativeLayout>
 
             <FrameLayout
                 android:id="@+id/fLayout_verification_code_input_box"

@@ -19,6 +19,7 @@ import java.io.File;
 import java.text.DecimalFormat;
 import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -36,6 +37,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     private CompositeSubscription compositeSubscription;
     private boolean isCheck;
     private JFGAccount userInfo;
+    private Subscription clearSub;
 
     public HomeSettingPresenterImp(HomeSettingContract.View view) {
         super(view);
@@ -55,7 +57,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     @Override
     public void clearCache() {
         getView().showClearingCacheProgress();
-        rx.Observable.just(null)
+        clearSub = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<Object, Object>() {
                     @Override
@@ -101,7 +103,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     @Override
     public void calculateCacheSize() {
         rx.Observable.just(null)
-                .subscribeOn(Schedulers.computation())
+                .subscribeOn(Schedulers.io())
                 .map(new Func1<Object, String>() {
                     @Override
                     public String call(Object o) {
@@ -211,7 +213,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo && getView() != null) {
+                        if (getUserInfo != null && getView() != null) {
                             getView().initSwitchState(getUserInfo);
                             userInfo = getUserInfo.jfgAccount;
                         }
@@ -222,8 +224,11 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
+        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
+        }
+        if (clearSub != null && clearSub.isUnsubscribed()){
+            clearSub.unsubscribe();
         }
     }
 

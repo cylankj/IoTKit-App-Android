@@ -56,7 +56,7 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
             android:layout_marginStart="@dimen/x15"
-            hunt:sv_sub_title="400-716-3232"
+            hunt:sv_sub_title="@string/service_phonenum"
             hunt:sv_title="@string/ABOUT_PHONE"
             hunt:sv_v_divider="true" />
 
