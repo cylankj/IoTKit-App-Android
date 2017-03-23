@@ -47,6 +47,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
 
     @Override
     public boolean checkOldPassword(String inputPass) {
+        //TEST
         String oldPass = "111111";
         return inputPass.equals(oldPass);
     }

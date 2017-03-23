@@ -74,7 +74,7 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                 .subscribe(new Action1<RxEvent.ResultRegister>() {
                     @Override
                     public void call(RxEvent.ResultRegister resultRegister) {
-                        if (resultRegister != null && resultRegister instanceof RxEvent.ResultRegister) {
+                        if (resultRegister != null) {
                             if (getView() != null) getView().registerResult(resultRegister.code);
                         }
                     }

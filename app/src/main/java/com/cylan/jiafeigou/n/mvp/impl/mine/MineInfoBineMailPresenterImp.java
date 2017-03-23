@@ -68,11 +68,8 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                             e.printStackTrace();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.d("checkEmailIsBinded" + throwable.getLocalizedMessage());
-                    }
+                },throwable -> {
+                    AppLogger.d("checkEmailIsBinded" + throwable.getLocalizedMessage());
                 });
     }
 
@@ -91,7 +88,6 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
      */
     @Override
     public void sendSetAccountReq(String newEmail) {
-
         rx.Observable.just(newEmail)
                 .delay(2000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())

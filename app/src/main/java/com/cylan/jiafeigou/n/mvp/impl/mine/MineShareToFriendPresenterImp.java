@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscription;
@@ -219,7 +220,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
             bean.alias = friendAccount.alias;
             bean.markName = friendAccount.markName;
             try {
-//                bean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, friendAccount.account + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
+                bean.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", friendAccount.account));
             } catch (Exception e) {
                 e.printStackTrace();
             }

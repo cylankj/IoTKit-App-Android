@@ -78,7 +78,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetA
 
     @Override
     public boolean isEditEmpty(String string) {
-        return TextUtils.isEmpty(string) ? true : false;
+        return TextUtils.isEmpty(string);
     }
 
     /**

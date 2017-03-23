@@ -129,6 +129,12 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
         loadImage();
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.stop();
+    }
+
     /**
      * desc:加载图片
      */
