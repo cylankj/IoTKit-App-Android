@@ -227,41 +227,41 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     return result;
                 })
-                .flatMap(items -> items.size() == 0 ? Observable.just(devices) : Observable.from(items).flatMap(this::unBindDevice).last().map(ret -> devices))
+                .flatMap(items -> unBindDevices(new ArrayList<>(items)))
                 .map(items -> {
                     mCachedDeviceMap.clear();
                     rawDeviceOrder.clear();
-                    return items;
+                    return devices;
                 })
                 .flatMap(items -> dbHelper.updateDevice(items))
-                .map(dev -> {
-                    Device dpDevice = create(dev.getPid()).fill(dev);
-                    DBOption.RawDeviceOrderOption option = dpDevice.option(DBOption.RawDeviceOrderOption.class);
-                    mCachedDeviceMap.put(dpDevice.getUuid(), dpDevice);
-                    rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, dpDevice.getUuid()));
-                    ArrayList<JFGDPMsg> parameters = dpDevice.getQueryParameters(false);
-                    AppLogger.d("正在同步设备数据");
+                .subscribe(dpDevices -> {
                     try {
-                        JfgCmdInsurance.getCmd().robotGetData(dpDevice.getUuid(), parameters, 1, false, 0);
+                        Device dpDevice;
+                        ArrayList<JFGDPMsg> parameters;
+                        DBOption.RawDeviceOrderOption option;
+                        ArrayList<String> uuidList = new ArrayList<>();
+                        for (Device device : dpDevices) {
+                            dpDevice = create(device.getPid()).fill(device);
+                            option = dpDevice.option(DBOption.RawDeviceOrderOption.class);
+                            mCachedDeviceMap.put(dpDevice.getUuid(), dpDevice);
+                            rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, dpDevice.getUuid()));
+                            parameters = dpDevice.getQueryParameters(false);
+                            JfgCmdInsurance.getCmd().robotGetData(dpDevice.getUuid(), parameters, 1, false, 0);
+                            AppLogger.d("正在同步设备数据");
+                            if (!JFGRules.isShareDevice(device)) {
+                                uuidList.add(device.getUuid());
+                            }
+                        }
+                        JfgCmdInsurance.getCmd().getShareList(uuidList);
+                        AppLogger.d("正在请求共享账号数据");
+                        RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
                     } catch (JfgException e) {
+                        AppLogger.d(e.getMessage());
                         e.printStackTrace();
                     }
-                    return dpDevice;
-                })
-                .subscribe(items -> {
                 }, e -> {
                     AppLogger.d(e.getMessage());
                     e.printStackTrace();
-                }, () -> {
-                    ArrayList<String> uuidList = new ArrayList<>();
-                    for (Pair<Integer, String> pair : rawDeviceOrder) {
-                        if (!JFGRules.isShareDevice(pair.second)) {
-                            uuidList.add(pair.second);
-                        }
-                    }
-                    JfgCmdInsurance.getCmd().getShareList(uuidList);
-                    Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
-                    RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
                 });
     }
 
@@ -307,6 +307,7 @@ public class DataSourceManager implements JFGSourceManager {
     /**
      * 很暴力地获取
      */
+
     public void syncDeviceUnreadCount() {
         for (Map.Entry<String, Device> entry : new HashMap<>(mCachedDeviceMap).entrySet()) {
             Device device = entry.getValue();
@@ -343,13 +344,21 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Observable<Device> unBindDevice(String uuid) {
-        return dbHelper.unBindDeviceWithConfirm(uuid)
-                .filter(dev -> dev != null)
-                .map(dev -> {
-                    mCachedDeviceMap.remove(dev.getUuid());
-                    PreferencesUtils.remove(account.getAccount() + ":" + dev.getUuid() + ":" + JConstant.LAST_ENTER_TIME);
-                    RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(dev.getUuid()));
-                    return dev;
+        return unBindDevices(Collections.singletonList(uuid))
+                .filter(devices -> devices != null && devices.iterator().hasNext())
+                .flatMap(devices -> Observable.just(devices.iterator().next()));
+    }
+
+    private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
+        return dbHelper.unBindDeviceWithConfirm(uuids)
+                .map(devices -> {
+                    if (devices == null) return null;
+                    for (Device device : devices) {
+                        mCachedDeviceMap.remove(device.getUuid());
+                        PreferencesUtils.remove(account.getAccount() + ":" + device.getUuid() + ":" + JConstant.LAST_ENTER_TIME);
+                        RxBus.getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(device.getUuid()));
+                    }
+                    return devices;
                 });
     }
 
@@ -516,61 +525,6 @@ public class DataSourceManager implements JFGSourceManager {
             return new Gson().fromJson(PreferencesUtils.getString(KEY_ACCOUNT), JFGAccount.class);
         }
         return jfgAccount;
-    }
-
-    @Override
-    public void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp) {
-        if (true) return;
-        Observable.just(dataRsp)
-                .filter(rsp -> rsp.map != null)
-                .flatMap(rsp -> Observable.from(rsp.map.entrySet()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .flatMap(set -> dbHelper.saveDPByteInTx(dataRsp.identity, set.getValue()))
-                .subscribe(items -> {
-                    Device device = mCachedDeviceMap.get(dataRsp.identity);
-                    for (DPEntity entity : items) {
-                        boolean change = false;
-                        if (device != null) {//优先尝试写入device中
-                            change = device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), dataRsp.seq);
-                        }
-                        if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
-                            change |= account.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), dataRsp.seq);
-                            if (change)
-                                account.dpMsgVersion = System.currentTimeMillis();
-                        }
-                    }
-                }, e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
-                }, () -> RxBus.getCacheInstance().post(dataRsp));
-    }
-
-    @Override
-    public void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-        if (true) return;
-        dbHelper.saveDPByteInTx(s, arrayList)
-                .observeOn(Schedulers.io())
-                .subscribe(dpEntities -> {
-                    Device device = mCachedDeviceMap.get(s);
-                    if (device != null) {
-                        for (DPEntity entity : dpEntities) {
-                            device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
-                        }
-                    }
-
-                }, e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
-                }, () -> {
-                    ArrayList<Long> updateIdList = new ArrayList<>();
-                    for (JFGDPMsg msg : arrayList) {
-                        updateIdList.add(msg.id);
-                    }
-                    RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(s, updateIdList));
-                });
-//
-
     }
 
     @Override
@@ -758,7 +712,6 @@ public class DataSourceManager implements JFGSourceManager {
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
-
                     }
 
                     @Override

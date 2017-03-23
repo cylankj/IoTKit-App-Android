@@ -4,12 +4,10 @@ package com.cylan.jiafeigou.base.view;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.JFGVideo;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -37,10 +35,6 @@ public interface JFGSourceManager {
     Account getAJFGAccount();
 
     JFGAccount getJFGAccount();
-
-    void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp);
-
-    void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList);
 
     <T extends DataPoint> T getValue(String uuid, long msgId);
 

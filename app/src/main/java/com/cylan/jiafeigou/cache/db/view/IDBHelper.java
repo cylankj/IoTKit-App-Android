@@ -59,13 +59,15 @@ public interface IDBHelper {
 
     Observable<Account> getActiveAccount();
 
-    Observable<Device> updateDevice(JFGDevice[] device);
+    Observable<Iterable<Device>> updateDevice(JFGDevice[] device);
 
     Observable<Device> updateDevice(Device device);
 
     Observable<Device> unBindDeviceNotConfirm(String uuid);
 
     Observable<Device> unBindDeviceWithConfirm(String uuid);
+
+    Observable<Iterable<Device>> unBindDeviceWithConfirm(Iterable<String> uuids);
 
     Observable<Device> getDevice(String uuid);
 
@@ -85,7 +87,7 @@ public interface IDBHelper {
 
     Observable<Void> delete(DPEntity entity);
 
-    Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, List<JFGDPMsg> msgs);
+    Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, Iterable<JFGDPMsg> msgs);
 
     Observable<Iterable<DPEntity>> saveDPByteInTx(RobotoGetDataRsp dataRsp);
 }
