@@ -28,10 +28,6 @@ public interface JFGSourceManager {
 
     List<Device> getAllJFGDevice();
 
-    void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices);
-
-    void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account);
-
     Account getAJFGAccount();
 
     JFGAccount getJFGAccount();

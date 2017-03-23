@@ -152,7 +152,16 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         bellCallRecordListAdapter.setSimpleClickListener(this);
         bellCallRecordListAdapter.setSimpleLongClickListener(this);
         rvBellList.setAdapter(bellCallRecordListAdapter);
-        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getAppContext(), LinearLayoutManager.HORIZONTAL, false);
+        final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getAppContext(), LinearLayoutManager.HORIZONTAL, false) {
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                try {
+                    super.onLayoutChildren(recycler, state);
+                } catch (IndexOutOfBoundsException e) {
+                    AppLogger.e(e.getMessage());
+                }
+            }
+        };
         rvBellList.setLayoutManager(linearLayoutManager);
         rvBellList.addItemDecoration(new SpacesItemDecoration(new Rect(ViewUtils.dp2px(10), ViewUtils.dp2px(15), 0, 0)));
         rvBellList.getViewTreeObserver().addOnGlobalLayoutListener(this);

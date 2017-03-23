@@ -83,9 +83,9 @@ public class SimpleDialogFragment extends BaseDialog {
         }
         if (!TextUtils.isEmpty(lContent))
             tvDialogBtnLeft.setText(lContent);
-        if (TextUtils.isEmpty(rContent)){
+        if (TextUtils.isEmpty(rContent)) {
             tvDialogBtnRight.setVisibility(View.GONE);
-        }else tvDialogBtnRight.setText(rContent);
+        } else tvDialogBtnRight.setText(rContent);
         if (TextUtils.isEmpty(content)) {
             tvDialogContent.setVisibility(View.GONE);
         } else tvDialogContent.setText(content);
@@ -100,6 +100,7 @@ public class SimpleDialogFragment extends BaseDialog {
                 if (action != null) action.onDialogAction(R.id.tv_dialog_btn_left, cache);
                 break;
             case R.id.tv_dialog_btn_right:
+                if (action != null) action.onDialogAction(R.id.tv_dialog_btn_right, cache);
                 break;
         }
     }

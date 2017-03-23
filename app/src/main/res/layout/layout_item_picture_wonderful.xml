@@ -127,18 +127,4 @@
             android:layout_below="@+id/fLayout_wonderful_item_bottom"
             android:background="@color/color_e8e8e8" />
     </RelativeLayout>
-
-
-    <TextView
-        android:id="@+id/tv_wonderful_item_footer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/rLayout_wonderful_item_wonder"
-        android:layout_centerHorizontal="true"
-        android:background="@android:color/white"
-        android:paddingLeft="@dimen/y5"
-        android:paddingRight="@dimen/y5"
-        android:text="@string/MSG_BOTTOM_LINE"
-        android:textColor="#333333"
-        android:textSize="@dimen/sp14" />
 </RelativeLayout>

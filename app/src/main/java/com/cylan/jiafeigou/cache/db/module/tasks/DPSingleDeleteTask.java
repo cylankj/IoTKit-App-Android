@@ -26,12 +26,12 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-            AppLogger.d("正在执行删除任务,uuid:" + entity.getUuid() + ",msgId:" + entity.getMsgId() + ",dpMsgVersion:" + entity.getVersion() + ",option:" + entity.action());
-            ArrayList<JFGDPMsg> params = new ArrayList<>();
+            ArrayList<JFGDPMsg> params = new ArrayList<>(1);
             JFGDPMsg msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
             params.add(msg);
             try {
                 long seq = JfgCmdInsurance.getCmd().robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
+                AppLogger.d("正在执行删除任务,seq:" + seq + ", uuid:" + entity.getUuid() + ",msgId:" + entity.getMsgId() + ",dpMsgVersion:" + entity.getVersion() + ",option:" + entity.action());
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {

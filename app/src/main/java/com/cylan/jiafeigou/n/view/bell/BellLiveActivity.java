@@ -48,6 +48,8 @@ import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.bell.DragLayout;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.glide.RoundedCornersTransformation;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
@@ -402,6 +404,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         imgvBellLiveSpeaker.setEnabled(true);
         imgvBellLiveSwitchToLand.setEnabled(true);
         imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
+        if (!mPresenter.checkAudio(1)) {
+            mPresenter.switchMicrophone();
+        }
         if (isLanchFromBellCall) {
             BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
         }
@@ -496,12 +501,18 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     void switchSpeakerWithPermission() {
         mPresenter.switchSpeaker();
-        mPresenter.switchMicrophone();
     }
 
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
     void hasNoAudioPermission() {
-        ToastUtil.showNegativeToast("开启麦克风需要权限,请手动开启");
+        //为删除dialog设置提示信息
+        Bundle args = new Bundle();
+        args.putString(BaseDialog.KEY_TITLE, "");
+        args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
+        args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.OK));
+        args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.permission_auth, "", getString(R.string.PERMISSION_AUDIO)));
+        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(args);
+        dialogFragment.show(getSupportFragmentManager(), "audio_permission");
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -511,7 +522,14 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void hasNoStoragePermission() {
-        ToastUtil.showNegativeToast("截屏需要 SD 卡读写权限,请手动开启");
+        //为删除dialog设置提示信息
+        Bundle args = new Bundle();
+        args.putString(BaseDialog.KEY_TITLE, "");
+        args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
+        args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.OK));
+        args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.permission_auth, "", getString(R.string.PERMISSION_STORAGE)));
+        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(args);
+        dialogFragment.show(getSupportFragmentManager(), "storage_permission");
     }
 
     @Override

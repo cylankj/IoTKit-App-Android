@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.net.MalformedURLException;
 
@@ -38,6 +39,7 @@ public class GlobalBellCallSource {
             mSubscription = new CompositeSubscription();
         }
         Subscription subscribe = RxBus.getCacheInstance().toObservable(RxEvent.BellCallEvent.class).subscribeOn(Schedulers.io())
+                .filter(event -> System.currentTimeMillis() / 1000L - PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL) - event.caller.time < 30)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(this::launchBellLive, e -> {
                     AppLogger.e(e.getMessage());

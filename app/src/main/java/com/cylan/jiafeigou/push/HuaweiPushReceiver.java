@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.huawei.hms.support.api.push.PushReceiver;
 
 import java.net.MalformedURLException;
@@ -43,8 +44,9 @@ public class HuaweiPushReceiver extends PushReceiver {
         } catch (MalformedURLException e) {
             e.printStackTrace();
         }
-
-        launchBellLive(cid, url, time);
+        if (System.currentTimeMillis() / 1000L - PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL) - time < 30) {
+            launchBellLive(cid, url, time);
+        }
         return super.onPushMsg(context, bytes, bundle);
     }
 
