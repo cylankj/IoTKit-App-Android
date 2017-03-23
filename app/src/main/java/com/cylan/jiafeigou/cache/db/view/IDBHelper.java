@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.cache.db.view;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -85,4 +86,6 @@ public interface IDBHelper {
     Observable<Void> delete(DPEntity entity);
 
     Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, List<JFGDPMsg> msgs);
+
+    Observable<Iterable<DPEntity>> saveDPByteInTx(RobotoGetDataRsp dataRsp);
 }
