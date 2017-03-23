@@ -25,7 +25,7 @@ public class DPUnBindDeviceTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public Observable<BaseDPTaskResult> performServer() {
+    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 int seq = JfgCmdInsurance.getCmd().unBindDevice(entity.getUuid());

@@ -5,7 +5,6 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -28,6 +27,7 @@ public class DPEntity extends BaseDPEntity {
     private String action;
     private String state;
     private String option;//json 格式的字符串
+
     @Generated(hash = 99264848)
     public DPEntity(Long _id, String account, String server, String uuid, Long version,
                     Integer msgId, byte[] bytes, String action, String state, String option) {

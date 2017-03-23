@@ -54,6 +54,7 @@ import permissions.dispatcher.RuntimePermissions;
  * 创建时间：2016/9/5
  * 描述：
  */
+@RuntimePermissions
 public class MineShareDeviceFragment extends Fragment implements MineShareDeviceContract.View {
 
     @BindView(R.id.recycle_share_device_list)
@@ -128,14 +129,8 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
             public void onClick(View v) {
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_to_contract));
-                AppLogger.e("tv_share_to_contract");
-                if (presenter.checkPermission()) {
-                    jump2ShareToContractFragment();
-                } else {
-                    MineShareDeviceFragment.this.requestPermissions(
-                            new String[]{Manifest.permission.READ_CONTACTS},
-                            1);
-                }
+                AppLogger.d("tv_share_to_contract");
+                MineShareDeviceFragmentPermissionsDispatcher.onReadContactsPermissionWithCheck(MineShareDeviceFragment.this);
                 alertDialog.dismiss();
             }
         });
@@ -298,50 +293,35 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                jump2ShareToContractFragment();
-            } else {
-                setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
+        MineShareDeviceFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        if (permissions.length == 1) {
+            if (TextUtils.equals(permissions[0],Manifest.permission.READ_CONTACTS) && grantResults[0] > -1) {
+//                MineShareDeviceFragmentPermissionsDispatcher.onReadContactsPermissionWithCheck(this);
             }
         }
     }
 
+    @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
+    public void onReadContactsPermissionDenied() {
+        setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
+    }
 
-//    @Override
-//    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-//        MineShareDeviceFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-//        if (permissions.length == 1) {
-//            if (TextUtils.equals(permissions[0], READ_CONTACTS) && grantResults[0] > -1) {
-//                MineShareDeviceFragmentPermissionsDispatcher.onReadContactsPermissionWithCheck(this);
-//            }
-//        }
-//    }
-//
-//    @OnPermissionDenied(Manifest.permission.READ_CONTACTS)
-//    public void onReadContactsPermissionDenied() {
-//        getFragmentManager().popBackStack();
-//    }
-//
-//    @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
-//    public void onNeverAskAgainCameraPermission() {
-//        setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
-//    }
-//
-//    @NeedsPermission(Manifest.permission.READ_CONTACTS)
-//    public void onReadContactsPermission() {
-//        jump2ShareToContractFragment();
-//    }
-//
-//
-//    @OnShowRationale(Manifest.permission.READ_CONTACTS)
-//    public void showRationaleForCamera(PermissionRequest request) {
-//        // NOTE: Show activity_cloud_live_mesg_call_out_item rationale to explain why the permission is needed, e.g. with activity_cloud_live_mesg_call_out_item dialog.
-//        // Call proceed() or cancel() on the provided PermissionRequest to continue or abort
-//        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
-//        onNeverAskAgainCameraPermission();
-//    }
+    @OnNeverAskAgain(Manifest.permission.READ_CONTACTS)
+    public void onNeverAskAgainReadContactsPermission() {
+        setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
+    }
+
+    @NeedsPermission(Manifest.permission.READ_CONTACTS)
+    public void onReadContactsPermission() {
+        jump2ShareToContractFragment();
+    }
+
+
+    @OnShowRationale(Manifest.permission.READ_CONTACTS)
+    public void showRationaleForCamera(PermissionRequest request) {
+        AppLogger.d(JConstant.LOG_TAG.PERMISSION + "showRationaleForCamera");
+        onNeverAskAgainReadContactsPermission();
+    }
 
     public void setPermissionDialog(String permission){
         new AlertDialog.Builder(getActivity())

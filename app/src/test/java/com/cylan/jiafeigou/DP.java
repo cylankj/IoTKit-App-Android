@@ -65,6 +65,29 @@ public class DP {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        //   LocalUdpMsg{ip='192.168.103.166', port=10008, data=[-109, -83, 100, 111, 111, 114, 98, 101, 108, 108, 95, 114, 105, 110, 103, -84, 53, 48, 48, 48, 48, 48, 48, 48, 49, 50, 57, 56, -96]}
+    }
+
+    @Message
+    public static class bellRing {
+        @Index(0)
+        public String cmd;
+        @Index(1)
+        public String cid;
+        @Index(2)
+        public String mac;
+    }
+
+    @Test
+    public void Bell() {
+        byte[] bytes = new byte[]{-109, -83, 100, 111, 111, 114, 98, 101, 108, 108, 95, 114, 105, 110, 103, -84, 53, 48, 48, 48, 48, 48, 48, 48, 49, 50, 57, 56, -96};
+
+        try {
+            bellRing bellRing = DpUtils.unpackData(bytes, bellRing.class);
+            System.out.println(new Gson().toJson(bellRing));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }

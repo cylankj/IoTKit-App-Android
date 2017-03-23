@@ -24,7 +24,7 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public Observable<BaseDPTaskResult> performServer() {
+    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             AppLogger.d("正在执行删除任务,uuid:" + entity.getUuid() + ",msgId:" + entity.getMsgId() + ",dpMsgVersion:" + entity.getVersion() + ",option:" + entity.action());
             ArrayList<JFGDPMsg> params = new ArrayList<>();

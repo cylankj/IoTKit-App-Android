@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -20,8 +21,6 @@ import java.io.File;
 import rx.Observable;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-
-import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
 
 /**
  * Created by cylan-hunt on 17-3-6.
@@ -64,6 +63,8 @@ public class AutoSignIn {
                     public Observable<Integer> call(String s) {
                         try {
                             String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
+                            if (aesAccount != null)
+                                DataSourceManager.getInstance().initAccount();
                             AppLogger.d("autoLogin");
                             if (TextUtils.isEmpty(aesAccount)) {
                                 AppLogger.d("account is null");
@@ -78,7 +79,7 @@ public class AutoSignIn {
                                     String finalPwd = AESUtil.decrypt(pwd.toString());
                                     if (signType.type == 1) {
                                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                                        JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()),signType.account, finalPwd);
+                                        JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd);
                                         RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
                                     } else if (signType.type >= 3) {
                                         //效验本地token是否过期
@@ -89,7 +90,7 @@ public class AutoSignIn {
                                         } else {
                                             AppLogger.d("isout:no");
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()),signType.account, finalPwd, signType.type);
+                                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd, signType.type);
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         }
                                     }

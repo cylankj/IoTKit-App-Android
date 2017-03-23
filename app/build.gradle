@@ -168,7 +168,7 @@ repositories {
 }
 
 greendao {
-    schemaVersion 2
+    schemaVersion 5
 }
 
 dependencies {
