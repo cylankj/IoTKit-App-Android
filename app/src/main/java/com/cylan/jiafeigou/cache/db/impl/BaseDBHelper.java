@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.AccountDao;
@@ -30,6 +31,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import rx.Observable;
@@ -70,6 +72,26 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<DPEntity> saveDPByte(String uuid, Long version, Integer msgId, byte[] bytes) {
         return getActiveAccount().flatMap(account -> saveDpMsg(account.getAccount(), getServer(), uuid, version, msgId, bytes, DBAction.SAVED, DBState.SUCCESS, null));
+    }
+
+    @Override
+    public Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, List<JFGDPMsg> msgs) {
+        return getActiveAccount().flatMap(account -> Observable.from(msgs)
+                .flatMap(msg -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null)
+                        .rx().unique().map(item -> {
+                            if (item != null && DBAction.DELETED.action().equals(item.getAction())) {
+                                return null;
+                            }
+                            if (item == null) {
+                                item = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                            }
+                            return item;
+                        })
+                        .filter(item -> item != null)
+                        .buffer(msgs.size())
+                        .map(dpEntities -> new ArrayList<>(new HashSet<>(dpEntities)))
+                        .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities))
+                ));
     }
 
     @Override

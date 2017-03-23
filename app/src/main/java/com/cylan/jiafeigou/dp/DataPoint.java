@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.dp;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v4.util.LongSparseArray;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ext.annotations.DPProperty;
@@ -23,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Set;
 import java.util.TreeSet;
 
+import static android.R.attr.id;
 import static com.cylan.jiafeigou.dp.DpUtils.unpackData;
 
 /**
@@ -193,10 +193,11 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
         return setValue(msg, -1);
     }
 
-    public final boolean setValue(JFGDPMsg msg, long seq) {
+
+    public final boolean setValue(long msgId, long version, byte[] packValue, long seq) {
         try {
-            if (msg == null || msg.packValue == null) return false;
-            Field field = getProperties().get(msg.id);
+            if (msgId == -1 || packValue == null) return false;
+            Field field = getProperties().get(msgId);
             if (field == null) return false;
             DataPoint value = (DataPoint) field.get(this);
             Class<?> type = field.getType();
@@ -206,9 +207,9 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                 if (setValue.value == null) setValue.value = new TreeSet<>();
                 field.set(this, setValue);
                 Class<?> paramType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-                value = (DataPoint) unpackData(msg.packValue, paramType);
-                value.dpMsgVersion = msg.version;
-                value.dpMsgId = msg.id;
+                value = (DataPoint) unpackData(packValue, paramType);
+                value.dpMsgVersion = version;
+                value.dpMsgId = msgId;
                 value.dpMsgSeq = seq;
                 setValue.value.remove(value);
                 boolean add = setValue.value.add(value);
@@ -220,28 +221,32 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                 return add;
             }
 
-            if (value != null && value.dpMsgVersion > msg.version) return false;//数据已是最新的,无需更新了
+            if (value != null && value.dpMsgVersion > version) return false;//数据已是最新的,无需更新了
 
             if ((DpMsgDefine.DPPrimary.class.isAssignableFrom(type))) {
                 type = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
                 DpMsgDefine.DPPrimary primary = new DpMsgDefine.DPPrimary();
-                primary.value = unpackData(msg.packValue, type);
-                primary.dpMsgVersion = msg.version;
-                primary.dpMsgId = msg.id;
+                primary.value = unpackData(packValue, type);
+                primary.dpMsgVersion = version;
+                primary.dpMsgId = msgId;
                 primary.dpMsgSeq = seq;
                 field.set(this, primary);
             } else {
-                value = (DataPoint) unpackData(msg.packValue, type);
-                value.dpMsgVersion = msg.version;
-                value.dpMsgId = msg.id;
+                value = (DataPoint) unpackData(packValue, type);
+                value.dpMsgVersion = version;
+                value.dpMsgId = id;
                 value.dpMsgSeq = seq;
                 field.set(this, value);
             }
         } catch (Exception e) {
-            if (msg != null)
-                AppLogger.e("err: " + msg.id + " " + e);
+            AppLogger.e("err: " + msgId + " " + e);
         }
         return true;
+    }
+
+
+    public final boolean setValue(JFGDPMsg msg, long seq) {
+        return setValue(msg.id, msg.version, msg.packValue, seq);
     }
 
     public final <T extends DataPoint> T getValue(long msgId) {

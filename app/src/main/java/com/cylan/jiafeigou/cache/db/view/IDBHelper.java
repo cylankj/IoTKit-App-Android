@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.db.view;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -82,4 +83,6 @@ public interface IDBHelper {
     Observable<DPEntity> update(DPEntity entity);
 
     Observable<Void> delete(DPEntity entity);
+
+    Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, List<JFGDPMsg> msgs);
 }

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.cache.db.module;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -26,6 +27,7 @@ public class DPEntity extends BaseDPEntity {
     private String action;
     private String state;
     private String option;//json 格式的字符串
+
     @Generated(hash = 99264848)
     public DPEntity(Long _id, String account, String server, String uuid, Long version,
                     Integer msgId, byte[] bytes, String action, String state, String option) {
@@ -176,6 +178,10 @@ public class DPEntity extends BaseDPEntity {
     @Override
     public <R extends DBOption> R option(Class<R> clz) {
         return DBOption.BaseDBOption.option(this.option, clz);
+    }
+
+    public boolean contain(JFGDPMsg msg) {
+        return msg.id == msgId && msg.version == version;
     }
 
 }
