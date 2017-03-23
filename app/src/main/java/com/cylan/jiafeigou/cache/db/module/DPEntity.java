@@ -1,15 +1,15 @@
 package com.cylan.jiafeigou.cache.db.module;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+
+import java.util.Arrays;
 
 /**
  * Created by yanzhendong on 2017/2/27.
@@ -180,8 +180,19 @@ public class DPEntity extends BaseDPEntity {
         return DBOption.BaseDBOption.option(this.option, clz);
     }
 
-    public boolean contain(JFGDPMsg msg) {
-        return msg.id == msgId && msg.version == version;
+    @Override
+    public String toString() {
+        return "DPEntity{" +
+                "_id=" + _id +
+                ", account='" + account + '\'' +
+                ", server='" + server + '\'' +
+                ", uuid='" + uuid + '\'' +
+                ", version=" + version +
+                ", msgId=" + msgId +
+                ", bytes=" + Arrays.toString(bytes) +
+                ", action='" + action + '\'' +
+                ", state='" + state + '\'' +
+                ", option='" + option + '\'' +
+                '}';
     }
-
 }

@@ -43,11 +43,11 @@ public class LoadingDialog extends BaseDialog {
     }
 
     public static void showLoading(FragmentManager fragmentManager, String content) {
-        showLoading(fragmentManager, content, false);
+        showLoading(fragmentManager, content, true);
     }
 
     public static void showLoading(FragmentManager fragmentManager) {
-        showLoading(fragmentManager, "", false);
+        showLoading(fragmentManager, "", true);
     }
 
     public static void dismissLoading(FragmentManager fragmentManager) {

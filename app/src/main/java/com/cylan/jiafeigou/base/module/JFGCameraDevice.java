@@ -52,6 +52,9 @@ public class JFGCameraDevice extends Device {
     @DPProperty(msgId = 219)
     public DPBindLog device_bind_log = DpMsgDefine.EMPTY.BIND_LOG;
 
+    @DPProperty(msgId = 223)
+    public DPPrimary<Integer> mobile_net_type = DpMsgDefine.EMPTY.DP_INT;
+
     @DPProperty(msgId = 301)
     public DPPrimary<Boolean> device_mic = DpMsgDefine.EMPTY.DP_BOOL;
 

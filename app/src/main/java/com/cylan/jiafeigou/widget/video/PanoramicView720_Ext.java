@@ -43,7 +43,7 @@ public class PanoramicView720_Ext extends Panoramic720View implements VideoViewF
     }
 
     @Override
-    public void release() {
+    public void onDestroy() {
 
     }
 

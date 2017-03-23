@@ -23,15 +23,12 @@ public class DpMsgDefineTest {
 
 
     @Test
-    public void testObject() {
+    public void testObject() throws IOException {
         DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
-        net.net = 2;
-        net.ssid = "so good";
-        Intent intent = new Intent();
-        intent.putExtra("yige", net);
+        byte[] data = new byte[]{-110,1,-85,88,105,97,111,109,105,95,65,67,70,50};
 
-        Parcelable p = intent.getParcelableExtra("yige");
-        System.out.println("..." + p);
+        System.out.println(unpackData(data, DpMsgDefine.DPNet.class));
+        System.out.println(unpackData(new byte[]{5}, int.class));
     }
 
     private <T> T unpackData(byte[] data, Class<T> clazz) throws IOException {

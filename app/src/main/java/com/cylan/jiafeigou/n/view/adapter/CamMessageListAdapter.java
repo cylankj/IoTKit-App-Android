@@ -15,7 +15,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -44,7 +43,6 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private static final int MAX_TYPE = 3;
     private String uuid;
-    private Device device;
     /**
      * 0： 正常，1:编辑
      */
@@ -53,8 +51,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private final int pic_container_width;//宽度是固定的，需要调整高度。
     private Map<Integer, Integer> selectedMap = new HashMap<>();
     private Map<Integer, Integer> loadFailedMap = new HashMap<>();
-//    private boolean hasSdcard;
-//    private boolean deviceOnlineState;
+    private boolean hasSdcard;
 
     private int pic_container_height;//5+26+48
 
@@ -64,12 +61,10 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         pic_container_width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
-        device = DataSourceManager.getInstance().getJFGDevice(uuid);
     }
 
     private boolean hasSdcard() {
-        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
-        return status != null && status.hasSdcard && status.err == 0;
+        return hasSdcard;
     }
 
     private boolean online() {
@@ -183,6 +178,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * 来自一个全局的通知消息
      */
     public void notifySdcardStatus(boolean status, int position) {
+        this.hasSdcard = status;
         updateItemFrom(position);
     }
 
@@ -200,12 +196,9 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                          CamMessageBean item) {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
-        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
-        if (sdStatus != null && sdStatus.hasSdcard && sdStatus.err != 0) {
-            holder.setVisibility(R.id.tv_jump_next, View.VISIBLE);
-            if (onClickListener != null)
-                holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
-        } else holder.setVisibility(R.id.tv_jump_next, View.GONE);
+        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
+        if (hasSdcard && onClickListener != null)
+            holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
     }
 
     private void handlePicsLayout(SuperViewHolder holder,
@@ -355,9 +348,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                    Target<GlideDrawable> target,
                                    boolean isFirstResource) {
             try {
-                int position = getPositionByModel(model.toURL().toString());
-                loadFailedMap.put(position, position);//标记load失败的position
-                Log.d("onException", "onException: " + position + " " + e == null ? null : e.getLocalizedMessage());
+                String errUri = model.toURL().toString();
+                AppLogger.d("errUri: " + errUri);
             } catch (MalformedURLException e1) {
                 AppLogger.e("onException:" + e1.getLocalizedMessage());
             }
@@ -367,9 +359,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         @Override
         public boolean onResourceReady(GlideDrawable resource, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
             try {
-                int position = getPositionByModel(model.toURL().toString());
-                loadFailedMap.remove(position);
-                Log.d("onResourceReady", "onResourceReady: " + position);
+//                int position = getPositionByModel(model.toURL().toString());
+//                loadFailedMap.remove(position);
+//                Log.d("onResourceReady", "onResourceReady: " + position);
+                String goodErrUri = model.toURL().toString();
+                AppLogger.d("errUri good: " + goodErrUri);
             } catch (MalformedURLException e) {
                 AppLogger.e("onException:" + e.getLocalizedMessage());
             }

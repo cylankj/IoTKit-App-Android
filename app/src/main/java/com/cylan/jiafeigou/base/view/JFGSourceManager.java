@@ -32,6 +32,10 @@ public interface JFGSourceManager {
 
     JFGAccount getJFGAccount();
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> dev-3.0.0-hunt
     <T extends DataPoint> T getValue(String uuid, long msgId);
 
 //    <T extends DataPoint> T getValueSafe(String uuid, long msgId, Object defaultValue);
@@ -90,6 +94,8 @@ public interface JFGSourceManager {
      * @throws IllegalAccessException
      */
     <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws IllegalAccessException;
+
+    <T extends DataPoint> boolean updateValue(String uuid, List<T> value) throws IllegalAccessException;
 
     boolean deleteByVersions(String uuid, long id, ArrayList<Long> versions);
 

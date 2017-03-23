@@ -147,15 +147,11 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         updateFocus(false, currentIndex);
     }
 
-    private static String makeFragmentName(int viewId, long id) {
-        return "android:switcher:" + viewId + ":" + id;
-    }
-
     private void updateFocus(boolean auto, int index) {
         int count = MiscUtils.getCount(alarmMsg.fileIndex);
         if (device != null && JFGRules.isNeedPanoramicView(device.pid)) {
             //全景需要兼容,这里的tag的构造方式,看FragmentPagerAdapter,最后一个方法
-            Fragment fragment = getSupportFragmentManager().findFragmentByTag(makeFragmentName(vpContainer.getId(), 0));
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(MiscUtils.makeFragmentName(vpContainer.getId(), 0));
             if (auto && fragment != null && fragment instanceof PanoramicViewFragment) {
                 ((PanoramicViewFragment) fragment).loadBitmap(index);
             }

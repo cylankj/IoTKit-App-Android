@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -44,6 +45,7 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Locale;
@@ -55,9 +57,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.functions.Func1;
-import rx.functions.Func2;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -76,7 +76,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
     private IData historyDataProvider;
     private int stopReason = STOP_MAUNALLY;//手动断开
-    private CompositeSubscription liveSubscription;
+    private MapSubscription liveSubscription = new MapSubscription();
 
     /**
      * 帧率记录
@@ -103,35 +103,29 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             //只要JFGMsgVideoDisconn返回一次 满足条件的对象,videoDisconnectSub()这个链条就会被unsubscribe,
             //即使后面,再有JFGMsgVideoDisconn对象,下面这个zipWith也不会被执行,所以不会有内存泄露
         }).zipWith(RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
-                        .subscribeOn(Schedulers.newThread())
-                        .filter((JFGMsgVideoDisconn jfgMsgVideoDisconn) -> {
-                            boolean notNull = getView() != null
-                                    && TextUtils.equals(uuid, jfgMsgVideoDisconn.remote);
-                            if (!notNull) {
-                                AppLogger.e("err: " + uuid + " remote:" + jfgMsgVideoDisconn.remote);
-                            } else {
-                                AppLogger.i("stop for reason: " + jfgMsgVideoDisconn.code);
-                            }
-                            return notNull;
-                        })
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .takeFirst(disconnect -> {
-                            playState = PLAY_STATE_IDLE;
-                            getView().onLiveStop(playType, disconnect.code);
-                            reset();
-                            AppLogger.d("reset subscription");
-                            return true;
-                        }),
-                new Func2<Object, JFGMsgVideoDisconn, Object>() {
-                    @Override
-                    public Object call(Object o, JFGMsgVideoDisconn disconn) {
-                        AppLogger.i("jfgMsgVideoDisconn finish:");
-                        return null;
+                .subscribeOn(Schedulers.newThread())
+                .filter((JFGMsgVideoDisconn jfgMsgVideoDisconn) -> {
+                    boolean notNull = getView() != null
+                            && TextUtils.equals(uuid, jfgMsgVideoDisconn.remote);
+                    if (!notNull) {
+                        AppLogger.e("err: " + uuid + " remote:" + jfgMsgVideoDisconn.remote);
+                    } else {
+                        AppLogger.i("stop for reason: " + jfgMsgVideoDisconn.code);
                     }
-                }).subscribe(o -> AppLogger.i("jfgMsgVideoDisconn finish:"),
-                (Throwable throwable) -> {
-                    AppLogger.e("videoDisconnectSub:" + throwable.getLocalizedMessage());
-                });
+                    return notNull;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .takeFirst(disconnect -> {
+                    playState = PLAY_STATE_IDLE;
+                    getView().onLiveStop(playType, disconnect.code);
+                    reset();
+                    AppLogger.d("reset subscription");
+                    return true;
+                }), (Object o, JFGMsgVideoDisconn disconn) -> {
+            AppLogger.i("jfgMsgVideoDisconn finish:");
+            return null;
+        }).subscribe(o -> AppLogger.i("jfgMsgVideoDisconn finish:"),
+                (Throwable throwable) -> AppLogger.e("videoDisconnectSub:" + throwable.getLocalizedMessage()));
     }
 
     @Override
@@ -151,7 +145,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public void fetchHistoryDataList() {
-        Observable.just(null)
+        liveSubscription.add(Observable.just(null)
                 .filter(o -> !JFGRules.isShareDevice(uuid))//过滤分享设备
                 .observeOn(Schedulers.newThread())
                 .map(o -> {
@@ -198,7 +192,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe((Object dataStack) -> {
                     AppLogger.d("get historyList finish");
-                });
+                }), "fetchHistoryDataList");
     }
 
     @Override
@@ -215,7 +209,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private void reset() {
         feedRtcp.stop();
         unSubscribe(liveSubscription);
-        liveSubscription = new CompositeSubscription();
+        liveSubscription = new MapSubscription();
     }
 
     @Override
@@ -225,7 +219,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         playType = CamLiveContract.TYPE_LIVE;
         reset();
         //加入管理,如果播放失败,收到disconnect
-        liveSubscription.add(videoDisconnectSub());
+        liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
         liveSubscription.add(prePlay(s -> {
             try {
                 int ret = JfgCmdInsurance.getCmd().playVideo(uuid);
@@ -252,10 +246,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub()
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                    .subscribe());
+                    .subscribe(), "rtcpNotifySub");
             return null;
         }).subscribe(objectObservable -> AppLogger.d("播放流程走通 done"),
-                throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
+                throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
     }
 
     /**
@@ -362,7 +356,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         playState = PLAY_STATE_PREPARE;
         reset();
         //加入管理,如果播放失败,收到disconnect
-        liveSubscription.add(videoDisconnectSub());
+        liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
         liveSubscription.add(prePlay(s -> {
             try {
                 //先停止播放{历史录像,直播都需要停止播放}
@@ -394,10 +388,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub()
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                    .subscribe());
+                    .subscribe(), "rtcpNotifySub");
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
-                throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())));
+                throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
     }
 
     @Override
@@ -493,7 +487,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public void stop() {
         super.stop();
-        reset();
+        unSubscribe(liveSubscription);
     }
 
     @Override
@@ -583,7 +577,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     public boolean needShowHistoryWheelView() {
         DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
         boolean show = JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0
                 && device != null && TextUtils.isEmpty(device.shareAccount)
@@ -634,18 +628,20 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private Subscription robotDataSync() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (
-                        getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
+                        jfgRobotSyncData.dpList != null &&
+                                getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
-                .flatMap(new Func1<RxEvent.DeviceSyncRsp, Observable<Long>>() {
-                    @Override
-                    public Observable<Long> call(RxEvent.DeviceSyncRsp deviceSyncRsp) {
-                        AppLogger.d("updateList: " + deviceSyncRsp.idList);
-                        return Observable.from(deviceSyncRsp.idList);
-                    }
+                .flatMap(deviceSyncRsp -> {
+                    AppLogger.d("updateList: " + deviceSyncRsp.dpList);
+                    return Observable.from(deviceSyncRsp.dpList);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((Long id) -> {
-                    getView().onDeviceInfoChanged(id);
+                .map(msg -> {
+                    try {
+                        getView().onDeviceInfoChanged(msg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))

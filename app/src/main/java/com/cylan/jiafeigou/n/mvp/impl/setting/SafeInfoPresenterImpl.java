@@ -38,7 +38,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
