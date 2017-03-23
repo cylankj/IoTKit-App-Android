@@ -88,7 +88,7 @@ public class GlobalUdpDataSource {
                             if (DataSourceManager.getInstance().getJFGDevice(recvHeard.cid) != null) {//说明当前账号有这个设备
                                 AppLogger.d("当前保存的 NTP 时间为:" + PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL));
                                 JFGDoorBellCaller caller = new JFGDoorBellCaller();
-                                caller.time = System.currentTimeMillis() / 1000L;
+                                caller.time = System.currentTimeMillis() / 1000L - PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL);
                                 caller.cid = recvHeard.cid;
                                 RxBus.getCacheInstance().post(new RxEvent.BellCallEvent(caller));
                             }
