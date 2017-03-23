@@ -213,77 +213,6 @@ public class DataSourceManager implements JFGSourceManager {
         return getValueWithAccountCheck(result);
     }
 
-    @Override
-    public void cacheJFGDevices(com.cylan.entity.jniCall.JFGDevice... devices) {
-        Observable.just(devices)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .map(items -> {
-                    Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
-                    JFGDevice device;
-                    for (int i = 0; i < items.length; i++) {
-                        device = items[i];
-                        result.remove(device.uuid);
-                    }
-                    return result;
-                })
-                .flatMap(items -> unBindDevices(new ArrayList<>(items)))
-                .map(items -> {
-                    mCachedDeviceMap.clear();
-                    rawDeviceOrder.clear();
-                    return devices;
-                })
-                .flatMap(items -> dbHelper.updateDevice(items))
-                .subscribe(dpDevices -> {
-                    try {
-                        Device dpDevice;
-                        ArrayList<JFGDPMsg> parameters;
-                        DBOption.RawDeviceOrderOption option;
-                        ArrayList<String> uuidList = new ArrayList<>();
-                        for (Device device : dpDevices) {
-                            dpDevice = create(device.getPid()).fill(device);
-                            option = dpDevice.option(DBOption.RawDeviceOrderOption.class);
-                            mCachedDeviceMap.put(dpDevice.getUuid(), dpDevice);
-                            rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, dpDevice.getUuid()));
-                            parameters = dpDevice.getQueryParameters(false);
-                            JfgCmdInsurance.getCmd().robotGetData(dpDevice.getUuid(), parameters, 1, false, 0);
-                            AppLogger.d("正在同步设备数据");
-                            if (!JFGRules.isShareDevice(device)) {
-                                uuidList.add(device.getUuid());
-                            }
-                        }
-                        JfgCmdInsurance.getCmd().getShareList(uuidList);
-                        AppLogger.d("正在请求共享账号数据");
-                        RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
-                    } catch (JfgException e) {
-                        AppLogger.d(e.getMessage());
-                        e.printStackTrace();
-                    }
-                }, e -> {
-                    AppLogger.d(e.getMessage());
-                    e.printStackTrace();
-                });
-    }
-
-    @Override
-    public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
-        dbHelper.updateAccount(account)
-                .subscribe(act -> this.account = act, e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
-                }, () -> {
-                    setJfgAccount(account);
-                    if (jfgAccount != null)
-                        setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
-                    else {
-                        AppLogger.e("jfgAccount is null");
-                    }
-                    RxBus.getCacheInstance().post(account);
-                    RxBus.getCacheInstance().postSticky(new RxEvent.AccountArrived(this.account));
-                    BaseDPTaskDispatcher.getInstance().perform();
-                });
-    }
-
     //主动发起请求,来获取设备所有的属性
     @Override
     public void syncAllJFGDeviceProperty() {
@@ -669,10 +598,21 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(event -> cacheJFGAccount(event.account), e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
-                });
+                .flatMap(event -> dbHelper.updateAccount(event.account)
+                        .map(dpAccount -> {
+                            this.account = dpAccount;
+                            setJfgAccount(event.account);
+                            if (jfgAccount != null)
+                                setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
+                            else {
+                                AppLogger.e("jfgAccount is null");
+                            }
+                            RxBus.getCacheInstance().post(account);
+                            RxBus.getCacheInstance().postSticky(new RxEvent.AccountArrived(this.account));
+                            BaseDPTaskDispatcher.getInstance().perform();
+                            return "";
+                        }))
+                .subscribe(serializeSubscriber);
     }
 
     private Subscription makeCacheDeviceSub() {
@@ -680,10 +620,45 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .subscribe(event -> cacheJFGDevices(event.devices), e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
-                });
+                .flatMap(event -> {
+                    Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
+                    JFGDevice device;
+                    for (int i = 0; i < event.devices.length; i++) {
+                        device = event.devices[i];
+                        result.remove(device.uuid);
+                    }
+                    mCachedDeviceMap.clear();
+                    rawDeviceOrder.clear();
+                    return unBindDevices(result).flatMap(ret -> dbHelper.updateDevice(event.devices));
+                })
+                .map(devices -> {
+                    try {
+                        Device dpDevice;
+                        ArrayList<JFGDPMsg> parameters;
+                        DBOption.RawDeviceOrderOption option;
+                        ArrayList<String> uuidList = new ArrayList<>();
+                        for (Device device : devices) {
+                            dpDevice = create(device.getPid()).fill(device);
+                            option = dpDevice.option(DBOption.RawDeviceOrderOption.class);
+                            mCachedDeviceMap.put(dpDevice.getUuid(), dpDevice);
+                            rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, dpDevice.getUuid()));
+                            parameters = dpDevice.getQueryParameters(false);
+                            JfgCmdInsurance.getCmd().robotGetData(dpDevice.getUuid(), parameters, 1, false, 0);
+                            AppLogger.d("正在同步设备数据");
+                            if (!JFGRules.isShareDevice(device)) {
+                                uuidList.add(device.getUuid());
+                            }
+                        }
+                        JfgCmdInsurance.getCmd().getShareList(uuidList);
+                        AppLogger.d("正在请求共享账号数据");
+                        RxBus.getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
+                    } catch (JfgException e) {
+                        AppLogger.d(e.getMessage());
+                        e.printStackTrace();
+                    }
+                    return "多线程真心麻烦";
+                })
+                .subscribe(serializeSubscriber);
     }
 
     private Subscription makeCacheGetDataSub() {
@@ -709,27 +684,7 @@ public class DataSourceManager implements JFGSourceManager {
                             return "多线程真心麻烦";
                         })
                 )
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        AppLogger.e(e.getMessage());
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(String s) {
-                        request(1);
-                    }
-
-                    @Override
-                    public void onStart() {
-                        request(1);
-                    }
-                });
+                .subscribe(serializeSubscriber);
     }
 
     private Subscription makeCacheSyncDataSub() {
@@ -756,30 +711,32 @@ public class DataSourceManager implements JFGSourceManager {
                             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList));
                             return "多线程真是麻烦";
                         }))
-                .subscribe(new Subscriber<String>() {
-                    @Override
-                    public void onCompleted() {
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        AppLogger.e(e.getMessage());
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onNext(String dpEntities) {
-                        request(1);
-                    }
-
-                    @Override
-                    public void onStart() {
-                        request(1);
-                    }
-                });
+                .subscribe(serializeSubscriber);
     }
 
     public void initAccount() {
         dbHelper.getActiveAccount().subscribe(ret -> this.account = ret, e -> AppLogger.d(e.getMessage()));
     }
+
+    private Subscriber<String> serializeSubscriber = new Subscriber<String>() {
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            AppLogger.e(e.getMessage());
+            e.printStackTrace();
+        }
+
+        @Override
+        public void onNext(String s) {
+            request(1);
+        }
+
+        @Override
+        public void onStart() {
+            request(1);
+        }
+    };
 }
