@@ -229,6 +229,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.UnreadCount unreadCount) -> {
                     if (unreadCount != null && unreadCount.seq == requstId) {
+                        unreadNum = 0;
                         for (JFGDPMsgCount jfgdpMsgCount : unreadCount.msgList) {
                             unreadNum += jfgdpMsgCount.count;
                         }

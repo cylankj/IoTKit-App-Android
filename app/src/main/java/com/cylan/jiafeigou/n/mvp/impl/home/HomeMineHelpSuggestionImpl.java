@@ -67,7 +67,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     @Override
     public void start() {
         super.start();
-        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
             compositeSubscription = new CompositeSubscription();
@@ -357,7 +357,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         try {
             remoteUrl = "/log/" + Security.getVId(JFGRules.getTrimPackageName()) + "/" + userInfomation.getAccount() + "/" + fileName;
             int code = JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
-            ToastUtil.showToast("" + code);
             AppLogger.d("upload log:"+remoteUrl);
         } catch (JfgException e) {
             e.printStackTrace();
