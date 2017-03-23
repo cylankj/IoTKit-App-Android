@@ -285,12 +285,4 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private static final class InternalHelp {
     }
 
-    private Subscription autoLoginTip() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(resultLogin -> {
-                    if (resultLogin != null)
-                        getView().autoLoginTip(resultLogin.code);
-                });
-    }
 }

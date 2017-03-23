@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,6 +22,8 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
+import java.lang.ref.WeakReference;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -35,7 +38,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     @BindView(R.id.iv_userinfo_big_image)
     ImageView ivUserinfoBigImage;
 
-    private boolean loadResult = false;
+    private static boolean loadResult = false;
     private String iamgeUrl;
 
     public static MineUserInfoLookBigHeadFragment newInstance(Bundle bundle) {
@@ -78,34 +81,47 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     }
 
     private void loadBigImage(String url) {
-        if (TextUtils.isEmpty(url)) {
+        if (TextUtils.isEmpty(url) || getContext() == null) {
             return;
         }
         showLoadImageProgress();
+        MyReqListener listener = new MyReqListener(getString(R.string.Item_LoadFail),getFragmentManager());
         Glide.with(getContext())
                 .load(url)
                 .asBitmap()
                 .centerCrop()
                 .skipMemoryCache(true)
                 .error(R.drawable.icon_mine_head_normal)
-                .listener(new RequestListener<String, Bitmap>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
-                        hideLoadImageProgress();
-                        loadResult = false;
-                        ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
-                        return false;
-                    }
-
-                    @Override
-                    public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        loadResult = true;
-                        hideLoadImageProgress();
-                        return false;
-                    }
-                })
+                .listener(listener)
                 .into(ivUserinfoBigImage);
     }
+
+
+    private static class MyReqListener implements RequestListener<String, Bitmap>{
+        private String totas;
+        private WeakReference<FragmentManager> managerWeakReference;
+
+        public MyReqListener(String totas,  FragmentManager manager) {
+            this.totas = totas;
+            this.managerWeakReference = new WeakReference<FragmentManager>(manager);
+        }
+
+        @Override
+        public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+            LoadingDialog.dismissLoading(managerWeakReference.get());
+            loadResult = false;
+            ToastUtil.showNegativeToast(totas);
+            return false;
+        }
+
+        @Override
+        public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            loadResult = true;
+            LoadingDialog.dismissLoading(managerWeakReference.get());
+            return false;
+        }
+    }
+
 
     @OnClick(R.id.iv_userinfo_big_image)
     public void onClick() {

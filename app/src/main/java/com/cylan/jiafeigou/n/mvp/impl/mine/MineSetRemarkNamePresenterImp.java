@@ -65,7 +65,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
 
     @Override
     public boolean isEditEmpty(String string) {
-        return TextUtils.isEmpty(string) ? true : false;
+        return TextUtils.isEmpty(string);
     }
 
     /**
@@ -83,8 +83,6 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                     public void call(RelAndFriendBean bean) {
                         try {
                             JfgCmdInsurance.getCmd().setFriendMarkName(friendBean.account, newName);
-                            SystemClock.sleep(500);
-                            JfgCmdInsurance.getCmd().getFriendInfo(friendBean.account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -95,7 +93,6 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                         AppLogger.e("sendSetmarkNameReq: " + throwable.getLocalizedMessage());
                     }
                 });
-
     }
 
     /**

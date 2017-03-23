@@ -65,7 +65,6 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     private String mailBox;
     private MineInfoBindMailContract.Presenter presenter;
-
     private OnBindMailBoxListener onBindMailBoxListener;
     private JFGAccount userinfo;
     private boolean bindOrChange = false;       //绑定或者修改邮箱
@@ -176,8 +175,6 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
 
     }
     private void initKeyListener() {
-//        InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-//        imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
         mETMailBox.setOnKeyListener(new View.OnKeyListener() {
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
