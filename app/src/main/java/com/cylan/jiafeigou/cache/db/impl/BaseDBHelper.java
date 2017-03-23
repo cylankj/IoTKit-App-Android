@@ -79,22 +79,40 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, List<JFGDPMsg> msgs) {
-        return getActiveAccount().flatMap(account -> Observable.from(msgs)
-                .flatMap(msg -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null)
-                        .rx().unique().map(item -> {
-                            if (item != null && DBAction.DELETED.action().equals(item.getAction())) {
-                                return null;
-                            }
-                            if (item == null) {
-                                item = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
-                            }
-                            return item;
-                        })
-                        .filter(item -> item != null)
-                        .buffer(msgs.size())
-                        .map(dpEntities -> new ArrayList<>(new HashSet<>(dpEntities)))
-                        .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities))
-                ));
+//        return getActiveAccount().flatMap(account -> Observable.from(msgs)
+//                .flatMap(msg -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null)
+//                        .rx().unique().map(item -> {
+//                            if (item != null && DBAction.DELETED.action().equals(item.getAction())) {
+//                                return null;
+//                            }
+//                            if (item == null) {
+//                                item = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+//                            }
+//                            return item;
+//                        })
+//                        .filter(item -> item != null)
+//                        .buffer(msgs.size())
+//                        .map(dpEntities -> new ArrayList<>(new HashSet<>(dpEntities)))
+//                        .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities))
+//                ));
+        return getActiveAccount().map(account -> {
+            QueryBuilder<DPEntity> queryBuilder;
+            DPEntity dpEntity;
+            Set<DPEntity> result = new HashSet<>();
+            for (JFGDPMsg msg : msgs) {
+                queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
+                dpEntity = queryBuilder.unique();
+                if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
+                    continue;
+                }
+                if (dpEntity == null) {
+                    dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                }
+                result.add(dpEntity);
+            }
+            return result;
+        })
+                .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities));
     }
 
     @Override
