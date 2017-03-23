@@ -11,6 +11,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
@@ -28,6 +30,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
@@ -35,6 +38,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
@@ -55,6 +59,7 @@ import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
@@ -333,6 +338,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     @Override
     public void initPersonalInformation(JFGAccount bean) {
+        MyViewTarget myViewTarget = new MyViewTarget(userImageHead,getContext());
         String photoUrl = "";
         if (bean != null) {
             argumentData = bean;
@@ -350,18 +356,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                         .placeholder(R.drawable.icon_mine_head_normal)
                         .error(R.drawable.icon_mine_head_normal)
                         .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .into(new BitmapImageViewTarget(userImageHead) {
-                            @Override
-                            protected void setResource(Bitmap resource) {
-                                if (resource == null || getContext() == null || getContext().getResources() == null)
-                                    return;
-                                RoundedBitmapDrawable circularBitmapDrawable =
-                                        RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                                circularBitmapDrawable.setCircular(true);
-                                userImageHead.setImageDrawable(circularBitmapDrawable);
-                            }
-
-                        });
+                        .into(myViewTarget);
             }
 
             tvUserAccount.setText(bean.getAccount());
@@ -385,6 +380,27 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
         }
+    }
+
+    private static class MyViewTarget extends BitmapImageViewTarget {
+        private final WeakReference<ImageView> image;
+        private final WeakReference<Context> mContext;
+
+        public MyViewTarget(ImageView view,Context context) {
+            super(view);
+            image = new WeakReference<ImageView>(view);
+            mContext = new WeakReference<Context>(context);
+        }
+        @Override
+        protected void setResource(Bitmap resource) {
+            if (resource == null)
+                return;
+            RoundedBitmapDrawable circularBitmapDrawable =
+                    RoundedBitmapDrawableFactory.create(mContext.get().getResources(), resource);
+            circularBitmapDrawable.setCircular(true);
+            image.get().setImageDrawable(circularBitmapDrawable);
+        }
+
     }
 
     @Override

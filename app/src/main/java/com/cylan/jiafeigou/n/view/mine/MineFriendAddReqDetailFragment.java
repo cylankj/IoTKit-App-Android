@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -29,8 +30,12 @@ import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.photoselect.models.Image;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -120,22 +125,35 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         showOrHideReqMesg(isFrom);
 
         //显示头像
+        MyImageTarget myImageTarget = new MyImageTarget(ivDetailUserHead,getContext().getResources());
         Glide.with(getContext()).load(addRequestItems.iconUrl)
                 .asBitmap()
                 .centerCrop()
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .error(R.drawable.icon_mine_head_normal)
-                .into(new BitmapImageViewTarget(ivDetailUserHead) {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        super.onResourceReady(resource, glideAnimation);
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        ivDetailUserHead.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                .into(myImageTarget);
+    }
+
+    private static class MyImageTarget extends BitmapImageViewTarget{
+
+        public final WeakReference<Resources> resourcesWeakReference;
+        public final WeakReference<ImageView> roundedImageViewWeakReference;
+
+        public MyImageTarget(ImageView view, Resources resources) {
+            super(view);
+            resourcesWeakReference = new WeakReference<Resources>(resources);
+            roundedImageViewWeakReference = new WeakReference<ImageView>(view);
+        }
+
+        @Override
+        protected void setResource(Bitmap resource) {
+            super.setResource(resource);
+            RoundedBitmapDrawable circularBitmapDrawable =
+                    RoundedBitmapDrawableFactory.create(resourcesWeakReference.get(), resource);
+            circularBitmapDrawable.setCircular(true);
+            roundedImageViewWeakReference.get().setImageDrawable(circularBitmapDrawable);
+        }
     }
 
     /**

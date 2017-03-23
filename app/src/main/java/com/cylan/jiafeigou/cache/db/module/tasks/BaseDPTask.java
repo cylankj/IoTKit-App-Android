@@ -27,6 +27,7 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     protected List<IDPEntity> multiEntity;
     protected IDBHelper mDPHelper;
     protected static Gson parser = new Gson();
+    public static final long GLOBAL_NET_OPERATION_TIME_OUT = 10;
 
     @Override
     public <R extends IDPMultiTask<T>> R init(List<IDPEntity> cache) {
@@ -47,12 +48,12 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     //以 make 开头的是和 DP 打交道的,因此是有网操作
     protected Observable<RobotoGetDataRsp> makeGetDataRspResponse(long seq) {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .filter(rsp -> rsp.seq == seq).first().timeout(30, TimeUnit.SECONDS);
+                .filter(rsp -> rsp.seq == seq).first().timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS);
     }
 
     protected Observable<RxEvent.SetDataRsp> makeSetDataRspResponse(int seq) {
         return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
-                .filter(rsp -> ((int) rsp.seq) == seq).first().timeout(30, TimeUnit.SECONDS);
+                .filter(rsp -> ((int) rsp.seq) == seq).first().timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS);
     }
 
     protected Observable makeGetDataRequest() {
@@ -61,16 +62,16 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
 
     protected Observable<RxEvent.DeleteDataRsp> makeDeleteDataRspResponse(long seq) {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
-                .filter(rsp -> rsp.seq == seq).first().timeout(30, TimeUnit.SECONDS);
+                .filter(rsp -> rsp.seq == seq).first().timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS);
     }
 
     protected Observable<JFGMsgHttpResult> makeHttpDoneResultResponse(long seq) {
         return RxBus.getCacheInstance().toObservable(JFGMsgHttpResult.class)
-                .filter(ret -> ret.requestId == seq).first().timeout(30, TimeUnit.SECONDS);
+                .filter(ret -> ret.requestId == seq).first().timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS);
     }
 
     protected Observable<JFGResult> makeGetJFGResultResponse(long seq) {
         return RxBus.getCacheInstance().toObservable(JFGResult.class)
-                .filter(ret -> ret.seq == seq).first().timeout(30, TimeUnit.SECONDS);
+                .filter(ret -> ret.seq == seq).first().timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS);
     }
 }

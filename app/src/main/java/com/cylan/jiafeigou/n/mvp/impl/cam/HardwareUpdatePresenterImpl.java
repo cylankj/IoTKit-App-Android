@@ -53,10 +53,12 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
 
     private SimulatePercent simulatePercent;
     private DownloadManagerPro.Config config;
+    private String uuid;
 
-    public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view, RxEvent.CheckDevVersionRsp checkDevVersion) {
+    public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view,String uuid, RxEvent.CheckDevVersionRsp checkDevVersion) {
         super(view);
         view.setPresenter(this);
+        this.uuid = uuid;
         this.checkDevVersion = checkDevVersion;
         this.simulatePercent = new SimulatePercent();
         this.simulatePercent.setOnAction(this);
@@ -293,7 +295,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     try {
                         String localUrl = "/mnt/sdcard"+downLoadBean.savePath + "/" + downLoadBean.fileName+".bin";
                         AppLogger.d("localUrl:"+localUrl);
-                        int req = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(localUrl).toBytes());
+                        int req = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(localUrl,uuid).toBytes());
                         AppLogger.d("beginUpdate:"+req);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -336,16 +338,14 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     }
 
     @org.msgpack.annotation.Message
-    public static class UpdatePing extends JfgUdpMsg.UdpHeader {
-        @Index(1)
-        public String url;
+    public static class UpdatePing extends JfgUdpMsg.UdpRecvHeard {
         @Index(2)
-        public String cid;
+        public String url;
 
-        public UpdatePing(String url) {
+        public UpdatePing(String url,String cid) {
             this.url = url;
             this.cmd = "f_upgrade";
-//            this.cid = cid;
+            this.cid = cid;
         }
     }
 

@@ -228,7 +228,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
         for (int i = 0; i < count; i++) {
             Glide.with(getContext())
-                    .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + "_" + (i+1) + ".jpg"))
+                    .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + "_" + (i + 1) + ".jpg"))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .override(pic_container_width / count, pic_container_width / count)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -357,7 +357,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
             try {
                 int position = getPositionByModel(model.toURL().toString());
                 loadFailedMap.put(position, position);//标记load失败的position
-                Log.d("onException", "onException: " + position + " " + e.getLocalizedMessage());
+                Log.d("onException", "onException: " + position + " " + e == null ? null : e.getLocalizedMessage());
             } catch (MalformedURLException e1) {
                 AppLogger.e("onException:" + e1.getLocalizedMessage());
             }

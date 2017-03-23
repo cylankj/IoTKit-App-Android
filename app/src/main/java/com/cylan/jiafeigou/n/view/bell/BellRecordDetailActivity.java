@@ -94,6 +94,8 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     private ShareDialogFragment mShareDialog;
     private File mDownloadFile;
 
+    private boolean isCollect = false;
+
     private CompositeSubscription compositeSubscription;
 
 
@@ -144,16 +146,17 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     }
                 })
                 .into(mPictureDetail);
-
+        mCollect.setEnabled(false);
         check().observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    if (result.map == null || result.map.size() == 0 || result.map.get(511) == null || result.map.get(511).size() == 0) {//没有收藏
-                        AppLogger.d("未收藏啊");
-                        mCollect.setImageResource(R.drawable.icon_collection);
-                    } else {//已收藏
+                    if (isCollect) {//没有收藏
                         AppLogger.d("已经收藏了啊");
                         mCollect.setImageResource(R.drawable.icon_collected);
+                    } else {//已收藏
+                        AppLogger.d("未收藏啊");
+                        mCollect.setImageResource(R.drawable.icon_collection);
                     }
+                    mCollect.setEnabled(true);
                 }, e -> {
                     AppLogger.d(e.getMessage());
                     e.printStackTrace();
@@ -203,8 +206,14 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_collection)
     public void collection() {
+        mCollect.setEnabled(false);
+        if (isCollect) {
+            mCollect.setImageResource(R.drawable.icon_collection);
+        } else {
+            mCollect.setImageResource(R.drawable.icon_collected);
+        }
         check().subscribe(result -> {
-            if (result.map == null || result.map.size() == 0 || result.map.get(511) == null || result.map.get(511).size() == 0) {//未收藏
+            if (!isCollect) {//未收藏
                 collect();
             } else {
                 ArrayList<JFGDPMsg> msgs = result.map.get(511);
@@ -213,12 +222,14 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     Long ctime = DpUtils.unpackData(msg.packValue, Long.class);
                     unCollect(ctime);
                 } catch (IOException e) {
+                    mCollect.setEnabled(true);
                     AppLogger.d(e.getMessage());
                     e.printStackTrace();
                 }
 
             }
         }, e -> {
+            mCollect.setEnabled(true);
             AppLogger.d(e.getMessage());
             e.printStackTrace();
         });
@@ -253,7 +264,9 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                         ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
                         mCollect.setImageResource(R.drawable.icon_collected);
                     }
+                    mCollect.setEnabled(true);
                 }, e -> {
+                    mCollect.setEnabled(true);
                     if (e instanceof BaseDPTaskException) {
                         int code = ((BaseDPTaskException) e).getErrorCode();
                         if (code == 1050) {
@@ -286,7 +299,9 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                         AppLogger.d("取消收藏成功");
                         mCollect.setImageResource(R.drawable.icon_collection);
                     }
+                    mCollect.setEnabled(true);
                 }, e -> {
+                    mCollect.setEnabled(true);
                     e.printStackTrace();
                     AppLogger.d(e.getMessage());
                 });
@@ -317,7 +332,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void downloadFile() {
-        mDownloadFile = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, mCallRecord.timeInLong / 1000 + ".jpg");
+        mDownloadFile = new File(JConstant.MEDIA_PATH, mCallRecord.timeInLong / 1000 + ".jpg");
 
         if (mDownloadFile.exists()) {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
@@ -377,6 +392,14 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> rsp.seq == seq).first())
-                .timeout(10, TimeUnit.SECONDS);
+                .timeout(10, TimeUnit.SECONDS)
+                .map(result -> {
+                    if (result.map == null || result.map.size() == 0 || result.map.get(511) == null || result.map.get(511).size() == 0) {//未收藏
+                        isCollect = false;
+                    } else {
+                        isCollect = true;
+                    }
+                    return result;
+                });
     }
 }

@@ -259,7 +259,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
         } else {
             DPWonderItem last = homeWonderAdapter.getItem(lastPosition);
-            if (last.msgType == 2) {
+            if (last.msgType == 2 || last.msgType == 3) {
                 homeWonderAdapter.remove(last);
             }
             homeWonderAdapter.addAll(resultList);
@@ -267,10 +267,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         }
         if (mHasMore) {
             homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
-            homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
-            homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
 
+        } else {
+            homeWonderAdapter.add(DPWonderItem.getNoMoreTypeBean());
         }
+        homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
+        homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
         if (homeWonderAdapter.getCount() > 0) {
             srLayoutMainContentHolder.setNestedScrollingEnabled(true);
         }
@@ -408,9 +410,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onRefresh() {
-        srLayoutMainContentHolder.removeCallbacks(autoLoading);
-        mPresenter.startRefresh();
-        srLayoutMainContentHolder.setRefreshing(true);
+        if (DataSourceManager.getInstance().getAJFGAccount() != null) {
+            srLayoutMainContentHolder.removeCallbacks(autoLoading);
+            mPresenter.startRefresh();
+            srLayoutMainContentHolder.setRefreshing(true);
+        } else {
+            srLayoutMainContentHolder.setRefreshing(false);
+        }
     }
 
     private void onEnterWonderfulContent(ArrayList<? extends Parcelable> list, int position, View v) {
@@ -557,22 +563,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onSharedElementEnd(List<String> sharedElementNames, List<View> sharedElements, List<View> sharedElementSnapshots) {
-        mWonderfulEmptyViewContainer.post(() -> ((ShadowFrameLayout) sharedElements.get(0).getParent()).adjustSize(false));
-//        if (sharedElementNames.size() == 0) {
-//            if (homeWonderAdapter.getCount() == 0) {
-//                mPresenter.startRefresh();
-//            }
-//            return;
-//        }
-//        View view = sharedElements.get(0);
-//        if (view != null) {
-//            ((ShadowFrameLayout) view.getParent()).adjustSize(false);
-//            int position = ViewUtils.getParentAdapterPosition(rVDevicesList, view, R.dpMsgId.lLayout_item_wonderful);
-//            if (position >= 0 && position < homeWonderAdapter.getCount()) {
-//                homeWonderAdapter.notifyItemChanged(position);
-//            }
-//
-//        }
+        if (sharedElements.size() > 0)
+            mWonderfulEmptyViewContainer.post(() -> ((ShadowFrameLayout) sharedElements.get(0).getParent()).adjustSize(false));
     }
 
     @Override

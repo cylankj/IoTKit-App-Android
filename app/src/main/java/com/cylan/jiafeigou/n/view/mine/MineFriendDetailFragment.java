@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
@@ -33,6 +35,8 @@ import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -67,7 +71,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     private MineLookBigImageFragment mineLookBigImageFragment;
 
     private MineFriendDetailContract.Presenter presenter;
-    private int navigationHeight;
     public OnDeleteClickLisenter lisenter;
     private RelAndFriendBean frienditembean;
 
@@ -101,7 +104,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
      */
     private void getNavigationHeigth() {
         int resourceId = getResources().getIdentifier("navigation_bar_height", "dimen", "android");
-        navigationHeight = getResources().getDimensionPixelSize(resourceId);
+        int navigationHeight = getResources().getDimensionPixelSize(resourceId);
     }
 
     @Override
@@ -130,22 +133,37 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         }
 
         tvRelativeAndFriendLikeName.setText(getString(R.string.ALIAS) + ": " + frienditembean.alias);
+
         //头像显示
+        MyImageTarget myImageTarget = new MyImageTarget(ivDetailUserHead,getContext().getResources());
         Glide.with(getContext()).load(frienditembean.iconUrl)
                 .asBitmap()
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new BitmapImageViewTarget(ivDetailUserHead) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        ivDetailUserHead.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                .into(myImageTarget);
+    }
+
+    private static class MyImageTarget extends BitmapImageViewTarget{
+
+        public final WeakReference<Resources> resourcesWeakReference;
+        public final WeakReference<RoundedImageView> roundedImageViewWeakReference;
+
+        public MyImageTarget(RoundedImageView view,Resources resources) {
+            super(view);
+            resourcesWeakReference = new WeakReference<Resources>(resources);
+            roundedImageViewWeakReference = new WeakReference<RoundedImageView>(view);
+        }
+
+        @Override
+        protected void setResource(Bitmap resource) {
+            super.setResource(resource);
+            RoundedBitmapDrawable circularBitmapDrawable =
+                    RoundedBitmapDrawableFactory.create(resourcesWeakReference.get(), resource);
+            circularBitmapDrawable.setCircular(true);
+            roundedImageViewWeakReference.get().setImageDrawable(circularBitmapDrawable);
+        }
     }
 
     private void initListener() {

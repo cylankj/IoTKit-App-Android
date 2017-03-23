@@ -79,7 +79,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         super.onAttach(context);
         this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
         this.checkDevVersion = (RxEvent.CheckDevVersionRsp) getArguments().getSerializable("version_content");
-        basePresenter = new HardwareUpdatePresenterImpl(this, checkDevVersion);
+        basePresenter = new HardwareUpdatePresenterImpl(this, uuid, checkDevVersion);
     }
 
     @Nullable

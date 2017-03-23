@@ -152,8 +152,14 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         String ssid = TextUtils.isEmpty(net.ssid) ? getString(R.string.OFF_LINE) : net.ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);
         svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(MiscUtils.safeGet(device.up_time, 0)));
-        hardwareUpdatePoint.setVisibility(View.INVISIBLE);
-        svSettingHardwareUpdate.setTvSubTitle(MiscUtils.safeGet(device.device_version, ""));
+        hardwareUpdatePoint.setVisibility(View.GONE);
+        if (!TextUtils.isEmpty(device.shareAccount)) {
+            svSettingHardwareUpdate.setVisibility(View.GONE);
+        } else {
+            svSettingHardwareUpdate.setTvSubTitle(MiscUtils.safeGet(device.device_version, ""));
+            if (mPresenter != null)
+                mPresenter.checkNewVersion(mUUID);
+        }
     }
 
     @Override
@@ -179,8 +185,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     @Override
     public void onStart() {
         super.onStart();
-        if (mPresenter != null)
-            mPresenter.checkNewVersion(mUUID);
+
     }
 
     @Override
@@ -188,7 +193,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         this.checkDevVersion = checkDevVersionRsp;
         if (checkDevVersionRsp.hasNew) {
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
-            svSettingHardwareUpdate.setTvSubTitle("新固件");
+            svSettingHardwareUpdate.setTvSubTitle(getString(R.string.Tap1_NewFirmware));
         }
     }
 }

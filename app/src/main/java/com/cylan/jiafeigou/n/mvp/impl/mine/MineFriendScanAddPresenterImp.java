@@ -23,6 +23,8 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.util.Locale;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -168,7 +170,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 resutBean.account = checkAccountCallback.s;
                 resutBean.alias = checkAccountCallback.s1;
                 try {
-//                    resutBean.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, checkAccountCallback.s + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
+                    resutBean.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", checkAccountCallback.s));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

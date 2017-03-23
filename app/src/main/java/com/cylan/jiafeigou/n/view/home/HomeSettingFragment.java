@@ -75,6 +75,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     private HomeSettingContract.Presenter presenter;
     private AboutFragment aboutFragment;
     private Dialog mShareDlg;
+    private AppAdater appAdater;
 
     public static HomeSettingFragment newInstance() {
         return new HomeSettingFragment();
@@ -264,7 +265,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             intent.putExtra(Intent.EXTRA_TEXT, con);
 
             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
-            final AppAdater appAdater = new AppAdater(getContext());
+            appAdater = new AppAdater(getContext());
             for (ResolveInfo info : list) {
                 appAdater.add(info);
             }

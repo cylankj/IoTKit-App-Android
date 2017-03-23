@@ -136,4 +136,12 @@ public class TencentInstance {
         }
     };
 
+    public static void release(){
+        if (instance != null){
+            instance.mTencent = null;
+            instance.context = null;
+            instance = null;
+        }
+    }
+
 }

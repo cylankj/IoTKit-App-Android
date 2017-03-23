@@ -106,8 +106,6 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
     LinearLayout llMailContainer;
     @BindView(R.id.cb_new_pwd_show)
     CheckBox cbNewPwdShow;
-    @BindView(R.id.fLayout_account_input_box)
-    FrameLayout fLayoutAccountInputBox;
     @BindView(R.id.tv_email_confirm)
     TextView tvEmailConfirm;
     @BindView(R.id.tv_send_email_content)

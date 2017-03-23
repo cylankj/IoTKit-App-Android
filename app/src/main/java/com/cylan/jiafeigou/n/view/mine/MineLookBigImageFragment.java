@@ -180,7 +180,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
             LoadingDialog.dismissLoading(fragmentManager.get());
 //            ToastUtil.showNegativeToast(getString(R.string.Item_LoadFail));
         }
-    };
+    }
 
     @Override
     public void setPresenter(MineLookBigImageContract.Presenter presenter) {

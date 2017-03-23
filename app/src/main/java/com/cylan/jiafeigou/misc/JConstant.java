@@ -298,4 +298,5 @@ public class JConstant {
 
 
     public static final String UN_BIND_DEVICE = "key_need_bind";
+    public static final String CHECK_HARDWARE_TIME = "check_hardware_time";
 }
