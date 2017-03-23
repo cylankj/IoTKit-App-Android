@@ -140,7 +140,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
 
     @Override
     public void startLoadMore() {
-        Observable.just(mWonderItems.get(mWonderItems.size() - 1).dpMsgVersion)
+        Subscription subscribe = Observable.just(mWonderItems.get(mWonderItems.size() - 1).dpMsgVersion)
                 .map(version -> new DPEntity()
                         .setVersion(version)
                         .setAction(DBAction.QUERY)
@@ -162,6 +162,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 }, () -> {
                     mView.onQueryTimeLineCompleted();
                 });
+        registerSubscription(subscribe);
     }
 
     @Override
@@ -173,6 +174,12 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         .setVersion(version)
                         .setAction(DBAction.DELETED)
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
+                .flatMap(this::perform)
+                .map(ret -> new DPEntity()
+                        .setUuid(mWonderItems.get(position).cid)
+                        .setVersion((long) mWonderItems.get(position).time)
+                        .setAction(DBAction.DELETED)
+                        .setMsgId(511))
                 .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {

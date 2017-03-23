@@ -140,9 +140,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private Runnable autoLoading = () -> mPresenter.startRefresh();
 
     private void lazyLoad() {
-        if (getUserVisibleHint() && isPrepaper) {
+        if (getUserVisibleHint() && isPrepaper && DataSourceManager.getInstance().getAJFGAccount() != null) {
             srLayoutMainContentHolder.setRefreshing(true);
-            srLayoutMainContentHolder.postDelayed(autoLoading, 2000);//避免刷新过快
+            srLayoutMainContentHolder.postDelayed(autoLoading, 100);//避免刷新过快
         }
     }
 
@@ -208,7 +208,14 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         //添加Handler
         srLayoutMainContentHolder.setOnRefreshListener(this);
         mLinearLayoutManager = new LinearLayoutManager(getContext()) {
-
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                try {
+                    super.onLayoutChildren(recycler, state);
+                } catch (IndexOutOfBoundsException e) {
+                    AppLogger.e(e.getMessage());
+                }
+            }
         };
         rVDevicesList.setLayoutManager(mLinearLayoutManager);
         rVDevicesList.setAdapter(homeWonderAdapter);
@@ -219,7 +226,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 int visibleItemCount = mLinearLayoutManager.getChildCount();
                 int totalItemCount = mLinearLayoutManager.getItemCount();
                 if (dy > 0) { //check for scroll down
-                    if (pastVisibleItems + visibleItemCount >= totalItemCount && mHasMore) {
+                    if (pastVisibleItems + visibleItemCount >= totalItemCount && mHasMore && getUserVisibleHint()) {
                         mPresenter.startLoadMore();
                     }
                 }
@@ -242,14 +249,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @UiThread
     @Override
     public void onQueryTimeLineSuccess(List<DPWonderItem> resultList, boolean isRefresh) {
+        if (!getUserVisibleHint()) return;
         srLayoutMainContentHolder.setRefreshing(false);
         mHasMore = resultList.size() == 20;
         int lastPosition = homeWonderAdapter.getCount() - 1;
         if (isRefresh) {
             homeWonderAdapter.clear();
             homeWonderAdapter.addAll(resultList);
-            //add
-            homeWonderAdapter.notifyDataSetChanged();
 
         } else {
             DPWonderItem last = homeWonderAdapter.getItem(lastPosition);
@@ -257,15 +263,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 homeWonderAdapter.remove(last);
             }
             homeWonderAdapter.addAll(resultList);
-            //add
-            homeWonderAdapter.notifyDataSetChanged();
+
         }
         if (mHasMore) {
             homeWonderAdapter.add(DPWonderItem.getEmptyLoadTypeBean());
             homeWonderAdapter.notifyItemRangeChanged(lastPosition, 1);
             homeWonderAdapter.notifyItemChanged(homeWonderAdapter.getCount() - 1);
-            //add
-            homeWonderAdapter.notifyDataSetChanged();
+
         }
         if (homeWonderAdapter.getCount() > 0) {
             srLayoutMainContentHolder.setNestedScrollingEnabled(true);
@@ -292,6 +296,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         homeWonderAdapter.remove(position);
         if (position < homeWonderAdapter.getCount())
             homeWonderAdapter.notifyItemChanged(position);
+        int pastVisibleItems = mLinearLayoutManager.findFirstVisibleItemPosition();
+        int visibleItemCount = mLinearLayoutManager.getChildCount();
+        int totalItemCount = mLinearLayoutManager.getItemCount();
+        if (pastVisibleItems + visibleItemCount >= totalItemCount && mHasMore) {
+            mPresenter.startLoadMore();
+
+        }
     }
 
     @Override
@@ -397,6 +408,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onRefresh() {
+        srLayoutMainContentHolder.removeCallbacks(autoLoading);
         mPresenter.startRefresh();
         srLayoutMainContentHolder.setRefreshing(true);
     }
@@ -496,7 +508,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 / appbar.getTotalScrollRange();
         if (preRatio == ratio) return;
         preRatio = ratio;
-        Log.d("WonderfulFragmentExt","WonderfulFragmentExt: "+verticalOffset);
+        Log.d("WonderfulFragmentExt", "WonderfulFragmentExt: " + verticalOffset);
         final float alpha = 1.0f - ratio;
         if (imgWonderfulTitleCover.getAlpha() != alpha) {
             imgWonderfulTitleCover.setAlpha(alpha);

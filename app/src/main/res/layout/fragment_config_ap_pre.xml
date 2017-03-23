@@ -83,7 +83,7 @@
             android:gravity="center"
             android:hint="@string/ENTER_WIFI_PWD"
             android:inputType="textPassword"
-            android:maxLength="60"
+            android:maxLength="63"
             android:textColor="@color/color_666666"
             android:textColorHint="@color/color_cecece"
             android:textCursorDrawable="@drawable/bg_common_cursor"

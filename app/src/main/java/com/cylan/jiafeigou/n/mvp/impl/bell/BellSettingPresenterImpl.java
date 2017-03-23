@@ -32,7 +32,9 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     public void onStart() {
         super.onStart();
         JFGDoorBellDevice device = mSourceManager.getJFGDevice(mUUID);
-        mView.onShowProperty(device);
+        if (device != null) {
+            mView.onShowProperty(device);
+        }
     }
 
 

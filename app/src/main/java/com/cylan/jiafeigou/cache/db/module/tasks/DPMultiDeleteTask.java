@@ -28,7 +28,7 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public Observable<BaseDPTaskResult> performServer() {
+    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             AppLogger.d("正在执行批量删除操作, uuid 为:" + entity.getUuid());
             ArrayList<JFGDPMsg> params = new ArrayList<>();

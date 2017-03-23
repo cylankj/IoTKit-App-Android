@@ -134,9 +134,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     private PANORAMA_RECORD_MODE panoramaRecordMode = PANORAMA_RECORD_MODE.MODE_NONE;
     private PopupWindow videoPopHint;
     private PanoramicView720_Ext surfaceView;
-
     private boolean isPlaying = false;
-    private int countDownLineWidth;
 
 
     @Override
@@ -181,7 +179,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onDismiss() {
-
+      if (surfaceView!=null){
+          surfaceView.onDestroy();
+      }
     }
 
     public void showLoading(String msg) {

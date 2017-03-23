@@ -19,12 +19,11 @@ import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
-import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -85,6 +84,12 @@ public class DataSourceManager implements JFGSourceManager {
 
     private DataSourceManager() {
         dbHelper = BaseDBHelper.getInstance();
+        dbHelper.getActiveAccount().subscribe(ret -> {
+            account = ret;
+        }, e -> {
+            AppLogger.d(e.getMessage());
+            e.printStackTrace();
+        });
         initSubscription();
     }
 
@@ -104,11 +109,8 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(dpAccount -> dbHelper.queryDPMsgByUuid(null)
                         .observeOn(Schedulers.io())
                         .map(dpEntities -> {
-                            JFGDPMsg msg;
                             for (DPEntity entity : dpEntities) {
-                                msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
-                                msg.packValue = entity.getBytes();
-                                dpAccount.setValue(msg);
+                                dpAccount.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
                             }
                             RxBus.getCacheInstance().postSticky(new RxEvent.AccountArrived(dpAccount));
                             return dpAccount;
@@ -126,11 +128,8 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
                         .observeOn(Schedulers.io())
                         .map(dpEntities -> {
-                            JFGDPMsg msg;
                             for (DPEntity entity : dpEntities) {
-                                msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
-                                msg.packValue = entity.getBytes();
-                                device.setValue(msg);
+                                device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
                             }
                             return dpEntities;
                         }))
@@ -268,8 +267,10 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void cacheJFGAccount(com.cylan.entity.jniCall.JFGAccount account) {
         dbHelper.updateAccount(account)
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .doOnCompleted(() -> {
+                .subscribe(act -> this.account = act, e -> {
+                    AppLogger.e(e.getMessage());
+                    e.printStackTrace();
+                }, () -> {
                     setJfgAccount(account);
                     if (jfgAccount != null)
                         setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
@@ -278,10 +279,7 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     RxBus.getCacheInstance().post(account);
                     RxBus.getCacheInstance().postSticky(new RxEvent.AccountArrived(this.account));
-                })
-                .subscribe(act -> this.account = act, e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
+                    BaseDPTaskDispatcher.getInstance().perform();
                 });
     }
 
@@ -511,8 +509,8 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public JFGAccount getJFGAccount() {
-        if (jfgAccount == null){
-            return new Gson().fromJson(PreferencesUtils.getString(KEY_ACCOUNT),JFGAccount.class);
+        if (jfgAccount == null) {
+            return new Gson().fromJson(PreferencesUtils.getString(KEY_ACCOUNT), JFGAccount.class);
         }
         return jfgAccount;
     }
@@ -524,25 +522,20 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(rsp -> Observable.from(rsp.map.entrySet()))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(set -> Observable.from(set.getValue())
-                        .flatMap(msg -> {
-                            Log.d("DataSourceManager", dataRsp.identity + ":" + msg.version + ":" + msg.id);
-                            return dbHelper.saveDPByte(dataRsp.identity, msg.version, (int) msg.id, msg.packValue)
-                                    .map(entity -> {
-                                        Device device = mCachedDeviceMap.get(dataRsp.identity);
-                                        boolean change = false;
-                                        if (device != null) {//优先尝试写入device中
-                                            change = device.setValue(msg, dataRsp.seq);
-                                        }
-                                        if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
-                                            change |= account.setValue(msg, dataRsp.seq);
-                                            if (change)
-                                                account.dpMsgVersion = System.currentTimeMillis();
-                                        }
-                                        return entity;
-                                    });
-                        }))
-                .subscribe(ret -> {
+                .flatMap(set -> dbHelper.saveDPByteInTx(dataRsp.identity, set.getValue()))
+                .subscribe(items -> {
+                    Device device = mCachedDeviceMap.get(dataRsp.identity);
+                    for (DPEntity entity : items) {
+                        boolean change = false;
+                        if (device != null) {//优先尝试写入device中
+                            change = device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), dataRsp.seq);
+                        }
+                        if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
+                            change |= account.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), dataRsp.seq);
+                            if (change)
+                                account.dpMsgVersion = System.currentTimeMillis();
+                        }
+                    }
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
@@ -551,15 +544,16 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-        Observable.from(arrayList)
-                .subscribeOn(Schedulers.io())
+        dbHelper.saveDPByteInTx(s, arrayList)
                 .observeOn(Schedulers.io())
-                .flatMap(msg -> dbHelper.saveOrUpdate(s, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED, DBState.SUCCESS, null).map(ret -> msg))
-                .subscribe(msg -> {
+                .subscribe(dpEntities -> {
                     Device device = mCachedDeviceMap.get(s);
                     if (device != null) {
-                        device.setValue(msg);
+                        for (DPEntity entity : dpEntities) {
+                            device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
+                        }
                     }
+
                 }, e -> {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
@@ -570,6 +564,26 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(s, updateIdList));
                 });
+//
+//        Observable.from(arrayList)
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
+//                .flatMap(msg -> dbHelper.saveOrUpdate(s, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED, DBState.SUCCESS, null).map(ret -> msg))
+//                .subscribe(msg -> {
+//                    Device device = mCachedDeviceMap.get(s);
+//                    if (device != null) {
+//                        device.setValue(msg);
+//                    }
+//                }, e -> {
+//                    AppLogger.e(e.getMessage());
+//                    e.printStackTrace();
+//                }, () -> {
+//                    ArrayList<Long> updateIdList = new ArrayList<>();
+//                    for (JFGDPMsg msg : arrayList) {
+//                        updateIdList.add(msg.id);
+//                    }
+//                    RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(s, updateIdList));
+//                });
     }
 
     @Override
@@ -669,7 +683,7 @@ public class DataSourceManager implements JFGSourceManager {
         list.add(msg);
         try {
             long l = JfgAppCmd.getInstance().robotSetData(uuid, list);
-            AppLogger.d("setDataRsp:"+l);
+            AppLogger.d("setDataRsp:" + l);
             return true;
         } catch (JfgException e) {
             return false;
@@ -751,5 +765,9 @@ public class DataSourceManager implements JFGSourceManager {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
+    }
+
+    public void initAccount() {
+        dbHelper.getActiveAccount().subscribe(ret -> this.account = ret, e -> AppLogger.d(e.getMessage()));
     }
 }

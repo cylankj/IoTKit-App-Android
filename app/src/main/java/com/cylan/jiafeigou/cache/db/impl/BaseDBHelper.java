@@ -7,6 +7,7 @@ import android.text.TextUtils;
 import android.util.Pair;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.AccountDao;
@@ -16,7 +17,6 @@ import com.cylan.jiafeigou.cache.db.module.DaoMaster;
 import com.cylan.jiafeigou.cache.db.module.DaoSession;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.DeviceDao;
-import com.cylan.jiafeigou.cache.db.module.DownloadFileDao;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -31,6 +31,7 @@ import org.greenrobot.greendao.query.QueryBuilder;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 import rx.Observable;
@@ -74,17 +75,37 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
+    public Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, List<JFGDPMsg> msgs) {
+        return getActiveAccount().flatMap(account -> Observable.from(msgs)
+                .flatMap(msg -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null)
+                        .rx().unique().map(item -> {
+                            if (item != null && DBAction.DELETED.action().equals(item.getAction())) {
+                                return null;
+                            }
+                            if (item == null) {
+                                item = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                            }
+                            return item;
+                        })
+                        .filter(item -> item != null)
+                        .buffer(msgs.size())
+                        .map(dpEntities -> new ArrayList<>(new HashSet<>(dpEntities)))
+                        .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities))
+                ));
+    }
+
+    @Override
     public Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option)
-                .map(items -> items == null ? null : items.get(0)));
+                .map(items -> items == null || items.size() == 0 ? null : items.get(0)));
     }
 
     @Override
     public Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.SUCCESS, option)
-                .map(items -> items == null ? null : items.get(0)));
+                .map(items -> items == null || items.size() == 0 ? null : items.get(0)));
     }
 
     @Override

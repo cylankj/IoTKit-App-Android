@@ -193,7 +193,16 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     private void initListAdapter() {
-        rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()));
+        rVDevicesList.setLayoutManager(new LinearLayoutManager(getContext()) {
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                try {
+                    super.onLayoutChildren(recycler, state);
+                } catch (IndexOutOfBoundsException e) {
+                    AppLogger.e("homepageList" + e.getMessage());
+                }
+            }
+        });
         rVDevicesList.setAdapter(homePageListAdapter);
     }
 
@@ -486,6 +495,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     private float preRatio = -1;
+
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
 //        srLayoutMainContentHolder.setEnabled(verticalOffset == 0);
@@ -493,7 +503,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 / appbar.getTotalScrollRange();
         if (preRatio == ratio) return;
         preRatio = ratio;
-        Log.d("HomePageListFragmentExt","HomePageListFragmentExt: "+verticalOffset);
+        Log.d("HomePageListFragmentExt", "HomePageListFragmentExt: " + verticalOffset);
         updateWaveViewAmplitude(ratio);
     }
 

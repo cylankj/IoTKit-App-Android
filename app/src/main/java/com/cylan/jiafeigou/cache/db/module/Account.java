@@ -25,6 +25,9 @@ public class Account extends DataPoint implements IEntity<Account> {
     private Long _id;
     @Unique
     private String account;
+    private String server;
+    private String password;
+    private int loginType;
     private String phone;
     private String token;
     private String alias;
@@ -61,12 +64,15 @@ public class Account extends DataPoint implements IEntity<Account> {
     public Account() {
     }
 
-    @Generated(hash = 447675577)
-    public Account(Long _id, String account, String phone, String token, String alias,
-                   boolean enablePush, boolean enableSound, String email, boolean enableVibrate,
-                   String photoUrl, String action, String state, String option) {
+    @Generated(hash = 1390423401)
+    public Account(Long _id, String account, String server, String password, int loginType, String phone,
+            String token, String alias, boolean enablePush, boolean enableSound, String email,
+            boolean enableVibrate, String photoUrl, String action, String state, String option) {
         this._id = _id;
         this.account = account;
+        this.server = server;
+        this.password = password;
+        this.loginType = loginType;
         this.phone = phone;
         this.token = token;
         this.alias = alias;
@@ -226,6 +232,30 @@ public class Account extends DataPoint implements IEntity<Account> {
 
     public void set_id(Long _id) {
         this._id = _id;
+    }
+
+    public String getPassword() {
+        return this.password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public int getLoginType() {
+        return this.loginType;
+    }
+
+    public void setLoginType(int loginType) {
+        this.loginType = loginType;
+    }
+
+    public String getServer() {
+        return this.server;
+    }
+
+    public void setServer(String server) {
+        this.server = server;
     }
 
 

@@ -62,7 +62,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public Observable<BaseDPTaskResult> performServer() {
+    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 AppLogger.d("正在发送查询请求,dpMsgVersion:" + entity.getVersion() + "count:" + option.asc + "acs:" + option.limit);
