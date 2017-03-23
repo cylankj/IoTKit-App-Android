@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -25,10 +26,12 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
+import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -43,7 +46,7 @@ import rx.schedulers.Schedulers;
  */
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
-    private Device device;
+    private JFGCameraDevice device;
 
     private static final int[] autoRecordMode = {
             R.string.RECORD_MODE,
@@ -116,16 +119,20 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
      */
     private Subscription robotDeviceDataSync() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (
-                        getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
+                .filter(jfgRobotSyncData -> (
+                        ListUtils.getSize(jfgRobotSyncData.dpList) > 0 &&
+                                getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
+                .flatMap(ret -> Observable.from(ret.dpList))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.DeviceSyncRsp update) -> {
-                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
-                    return null;
-                })
-                .retry(new RxHelper.RxException<>("robotDeviceDataSync"))
-                .subscribe();
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe(msg -> {
+                    try {
+                        mView.deviceUpdate(msg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     @Override
@@ -145,14 +152,11 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     }
 
     @Override
-    public String getDetailsSubTitle(Context context) {
+    public String getDetailsSubTitle(Context context, boolean hasSdcard, int err) {
         //sd卡状态
-        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
-        if (status != null) {
-            if (status.hasSdcard && status.err != 0) {
-                //sd初始化失败时候显示
-                return context.getString(R.string.SD_INIT_ERR, status.err);
-            }
+        if (hasSdcard && err != 0) {
+            //sd初始化失败时候显示
+            return context.getString(R.string.SD_INIT_ERR, err);
         }
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         return device != null && TextUtils.isEmpty(device.alias) ?

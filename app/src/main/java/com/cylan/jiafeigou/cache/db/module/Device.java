@@ -281,4 +281,21 @@ public class Device extends DataPoint implements IEntity<Device> {
         result = 31 * result + (uuid != null ? uuid.hashCode() : 0);
         return result;
     }
+
+    @Override
+    public String toString() {
+        return "Device{" +
+                "uuid='" + uuid + '\'' +
+                ", sn='" + sn + '\'' +
+                ", alias='" + alias + '\'' +
+                ", shareAccount='" + shareAccount + '\'' +
+                ", pid=" + pid +
+                ", vid='" + vid + '\'' +
+                ", account='" + account + '\'' +
+                ", regionType=" + regionType +
+                ", server='" + server + '\'' +
+                ", action='" + action + '\'' +
+                ", state='" + state + '\'' +
+                '}';
+    }
 }

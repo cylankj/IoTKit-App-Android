@@ -530,6 +530,7 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     private String getServer() {
+        AppLogger.e("需要填server");
         return null;
     }
 

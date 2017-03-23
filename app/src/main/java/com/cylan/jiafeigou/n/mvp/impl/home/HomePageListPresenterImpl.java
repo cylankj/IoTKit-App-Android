@@ -26,6 +26,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -45,7 +46,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-                getTimeTickEventSub(),
                 getShareDevicesListRsp(),
                 devicesUpdate(),
                 internalUpdateUuidList(),
@@ -111,18 +111,25 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribe();
     }
 
-    private Subscription getTimeTickEventSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.TimeTickEvent.class)
-                .throttleFirst(1000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.TimeTickEvent o) -> {
-                    //6:00 am - 17:59 pm
-                    //18:00 pm-5:59 am
-                    if (getView() != null) {
-                        getView().onTimeTick(JFGRules.getTimeRule());
-                        AppLogger.i("time tick");
-                    }
-                });
+    @Override
+    protected boolean registerTimeTick() {
+        return true;
+    }
+
+    @Override
+    protected void onTimeTick() {
+        if (mView != null) {
+            Observable.just("timeTick")
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(s -> {
+                        //6:00 am - 17:59 pm
+                        //18:00 pm-5:59 am
+                        if (getView() != null) {
+                            getView().onTimeTick(JFGRules.getTimeRule());
+                            AppLogger.i("time tick");
+                        }
+                    }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+        }
     }
 
     private Subscription JFGAccountUpdate() {

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
@@ -10,6 +11,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
+import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,7 +54,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @BindView(R.id.imgV_camera_title_top_setting)
     ImageViewTip imgVCameraTitleTopSetting;
     private String uuid;
-    private SimplePageListener simpleListener = new SimplePageListener();
 
     private Bundle currentBundle;
 
@@ -124,11 +125,22 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void initAdapter() {
-        SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(),
-                uuid);
+        SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(), uuid);
         vpCameraLive.setAdapter(simpleAdapterPager);
         vIndicator.setViewPager(vpCameraLive);
-        vIndicator.setOnPageChangeListener(simpleListener);
+        vIndicator.setOnPageChangeListener(new SimplePageListener(uuid));
+        final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
+        vpCameraLive.setPagingScrollListener(event -> {
+            Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+            if (fragment != null && fragment instanceof CameraLiveFragment) {
+                Rect rect = ((CameraLiveFragment) fragment).mLiveViewRectInWindow;
+                //true:不在区域内，
+                boolean contains = !rect.contains((int) event.getRawX(), (int) event.getY());
+                Log.d("contains", "contains:" + contains);
+                return contains;
+            } else
+                return true;
+        });
     }
 
     private void initTopBar() {
@@ -179,7 +191,12 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         }
     }
 
-    private class SimplePageListener implements ViewPager.OnPageChangeListener {
+    private static class SimplePageListener implements ViewPager.OnPageChangeListener {
+        private String uuid;
+
+        private SimplePageListener(String uuid) {
+            this.uuid = uuid;
+        }
 
         @Override
         public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {

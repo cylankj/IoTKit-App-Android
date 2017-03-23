@@ -113,6 +113,11 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
             getActivity().getSupportFragmentManager().popBackStack();
         });
         updateDetails();
+        DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+        boolean f = MiscUtils.safeGet(flag, false);
+        showDetail(flag != null && f);
+        //移动侦测
+        swMotionDetection.setChecked(flag != null && f);
         swMotionDetection.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             DpMsgDefine.DPSdStatus net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
             if (!isChecked) {
@@ -180,11 +185,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     }
 
     private void updateDetails() {
-        DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        boolean f = MiscUtils.safeGet(flag, false);
-        showDetail(flag != null && f);
-        //移动侦测
-        swMotionDetection.setChecked(flag != null && f);
+
         //提示音
         DpMsgDefine.DPNotificationInfo notificationInfo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
         fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0

@@ -517,61 +517,6 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp) {
-        if (true) return;
-        Observable.just(dataRsp)
-                .filter(rsp -> rsp.map != null)
-                .flatMap(rsp -> Observable.from(rsp.map.entrySet()))
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .flatMap(set -> dbHelper.saveDPByteInTx(dataRsp.identity, set.getValue()))
-                .subscribe(items -> {
-                    Device device = mCachedDeviceMap.get(dataRsp.identity);
-                    for (DPEntity entity : items) {
-                        boolean change = false;
-                        if (device != null) {//优先尝试写入device中
-                            change = device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), dataRsp.seq);
-                        }
-                        if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
-                            change |= account.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), dataRsp.seq);
-                            if (change)
-                                account.dpMsgVersion = System.currentTimeMillis();
-                        }
-                    }
-                }, e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
-                }, () -> RxBus.getCacheInstance().post(dataRsp));
-    }
-
-    @Override
-    public void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-        if (true) return;
-        dbHelper.saveDPByteInTx(s, arrayList)
-                .observeOn(Schedulers.io())
-                .subscribe(dpEntities -> {
-                    Device device = mCachedDeviceMap.get(s);
-                    if (device != null) {
-                        for (DPEntity entity : dpEntities) {
-                            device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
-                        }
-                    }
-
-                }, e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
-                }, () -> {
-                    ArrayList<Long> updateIdList = new ArrayList<>();
-                    for (JFGDPMsg msg : arrayList) {
-                        updateIdList.add(msg.id);
-                    }
-                    RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(s, updateIdList));
-                });
-//
-
-    }
-
-    @Override
     public <T extends DataPoint> T getValue(String uuid, long msgId) {
         return getValue(uuid, msgId, -1);
     }
@@ -656,21 +601,32 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws
             IllegalAccessException {
+        ArrayList<T> list = new ArrayList<>();
+        value.dpMsgId = msgId;
+        value.dpMsgVersion = System.currentTimeMillis();
+        list.add(value);
+        return updateValue(uuid, list);
+    }
+
+    @Override
+    public <T extends DataPoint> boolean updateValue(String uuid, List<T> value) throws IllegalAccessException {
         Device device = getJFGDevice(uuid);
         if (device == null) {
             AppLogger.e("device is null:" + uuid);
             return false;
         }
-        boolean update = device.updateValue(msgId, value);
-        ArrayList<JFGDPMsg> list = new ArrayList<>();
-        JFGDPMsg msg = new JFGDPMsg(msgId, System.currentTimeMillis());
-        msg.packValue = value.toBytes();
-        list.add(msg);
         try {
+            ArrayList<JFGDPMsg> list = new ArrayList<>();
+            for (DataPoint data : value) {
+                boolean update = device.updateValue((int) data.dpMsgId, data);
+                JFGDPMsg jfgdpMsg = new JFGDPMsg(data.dpMsgId, System.currentTimeMillis());
+                jfgdpMsg.packValue = data.toBytes();
+                list.add(jfgdpMsg);
+            }
             long l = JfgAppCmd.getInstance().robotSetData(uuid, list);
             AppLogger.d("setDataRsp:" + l);
             return true;
-        } catch (JfgException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -798,7 +754,7 @@ public class DataSourceManager implements JFGSourceManager {
                                         account.dpMsgVersion = System.currentTimeMillis();
                                 }
                             }
-                            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList));
+                            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
                             return "多线程真是麻烦";
                         }))
                 .subscribe(new Subscriber<String>() {

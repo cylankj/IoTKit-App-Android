@@ -2,11 +2,15 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import android.content.Context;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+
+import java.io.IOException;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -16,7 +20,9 @@ public interface CamSettingContract {
 
     interface View extends BaseView<Presenter> {
 
-        void deviceUpdate(Device jfgCameraDevice);
+        void deviceUpdate(JFGCameraDevice jfgCameraDevice);
+
+        void deviceUpdate(JFGDPMsg msg) throws IOException;
 
         void unbindDeviceRsp(int state);
 
@@ -30,7 +36,7 @@ public interface CamSettingContract {
         SettingTip getSettingTips();
 //        void fetchCamInfo(final String uuid);
 
-        String getDetailsSubTitle(Context context);
+        String getDetailsSubTitle(Context context,boolean hasSdcard,int err);
 
         String getAlarmSubTitle(Context context);
 

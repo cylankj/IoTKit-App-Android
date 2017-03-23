@@ -22,7 +22,9 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
+import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,6 +60,16 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         return new Subscription[]{sdcardStatusSub()};
     }
 
+    @Override
+    protected boolean registerTimeTick() {
+        return true;
+    }
+
+    @Override
+    protected void onTimeTick() {
+
+    }
+
     /**
      * sd卡状态更新
      *
@@ -66,20 +78,17 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     private Subscription sdcardStatusSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .filter((RxEvent.DeviceSyncRsp data) -> (getView() != null && TextUtils.equals(uuid, data.uuid)))
+                .filter(ret -> ret.dpList != null)
+                .flatMap(ret -> Observable.from(ret.dpList))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map(new Func1<RxEvent.DeviceSyncRsp, Boolean>() {
-                    @Override
-                    public Boolean call(RxEvent.DeviceSyncRsp update) {
-                        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
-                        getView().deviceInfoChanged(DpMsgMap.ID_204_SDCARD_STORAGE, status);
-                        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.NET);
-                        getView().deviceInfoChanged(DpMsgMap.ID_201_NET, net);
-                        AppLogger.e("收到刷新");
-                        return null;
+                .subscribe(msg -> {
+                    try {
+                        getView().deviceInfoChanged((int) msg.id, msg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
-                })
-                .retry(new RxHelper.RxException<>("sdcardStatusSub"))
-                .subscribe();
+                    AppLogger.e("收到,属性同步了");
+                });
     }
 
     @Override
@@ -174,9 +183,11 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 });
     }
 
+    private List<WonderIndicatorWheelView.WheelItem> dateItemList = new ArrayList<>();
+
     @Override
-    public List<DpMsgDefine.DPAlarm> getDateList() {
-        return null;
+    public List<WonderIndicatorWheelView.WheelItem> getDateList() {
+        return dateItemList;
     }
 
     @Override
@@ -215,13 +226,25 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                             dateMap.put(date, list.get(i).version);
                         }
                     }
+                    dateItemList.clear();
+                    long timeStart = TimeUtils.getTodayStartTime();
+                    for (int i = 0; i < 15; i++) {
+                        long time = timeStart - i * 24 * 3600 * 1000L;
+                        String date = TimeUtils.getMediaPicTimeInString(time);
+                        Long r = dateMap.get(date);
+                        WonderIndicatorWheelView.WheelItem item = new WonderIndicatorWheelView.WheelItem();
+                        item.wonderful = (r != null && r > 0);
+                        item.time = time;
+                        dateItemList.add(item);
+                    }
                     AppLogger.d("dateList size :" + size + " " + dateMap);
-                    return dateMap;
+
+                    return dateItemList;
                 })
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(a -> mView != null)
-                .subscribe(mapResult -> mView.onDateMapRsp(mapResult),
+                .subscribe(mapResult -> mView.onDateMapRsp(dateItemList),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
     }
 

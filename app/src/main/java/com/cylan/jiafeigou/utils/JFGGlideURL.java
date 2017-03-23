@@ -56,7 +56,8 @@ public class JFGGlideURL extends GlideUrl {
                 url = String.format(Locale.getDefault(), "/cid/%s/%s/%s", vid, cid, timestamp);
             }
             String furl = JfgCmdInsurance.getCmd().getSignedCloudUrl(this.regionType, url);
-            if (TextUtils.isEmpty(furl)) Log.d("JFGGlideURL", "empty: ");
+            if (TextUtils.isEmpty(furl))
+                AppLogger.d("empty: " + url + " regionType:" + regionType);
             return new URL(furl);
         } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));

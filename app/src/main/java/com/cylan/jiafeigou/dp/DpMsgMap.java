@@ -165,6 +165,7 @@ public final class DpMsgMap {
     public static final int ID_503_CAMERA_ALARM_SENSITIVITY = 503;
 
     public static final int ID_201_NET = 201;
+    public static final int ID_223_MOBILE_NET = 223;
 
     static {
         NAME_2_ID_MAP.put("net", 201);
@@ -187,6 +188,7 @@ public final class DpMsgMap {
         NAME_2_ID_MAP.put("device_format_sdcard", 218);
         NAME_2_ID_MAP.put("device_bind_log", 219);
         NAME_2_ID_MAP.put("sdk_version", 220);
+        NAME_2_ID_MAP.put("mobile_net", 223);
         NAME_2_ID_MAP.put("device_mic", 301);
         NAME_2_ID_MAP.put("device_speaker", 302);
         NAME_2_ID_MAP.put("device_auto_video_record", 303);
@@ -229,6 +231,7 @@ public final class DpMsgMap {
         ID_2_NAME_MAP.put(218, "device_format_sdcard");
         ID_2_NAME_MAP.put(219, "device_bind_log");
         ID_2_NAME_MAP.put(220, "sdk_version");
+        ID_2_NAME_MAP.put(223, "mobile_net");
         ID_2_NAME_MAP.put(301, "device_mic");
         ID_2_NAME_MAP.put(302, "device_speaker");
         ID_2_NAME_MAP.put(303, "device_auto_video_record");
@@ -271,6 +274,7 @@ public final class DpMsgMap {
         ID_2_CLASS_MAP.put(218, DpMsgDefine.DpSdcardFormatRsp.class);
         ID_2_CLASS_MAP.put(219, DpMsgDefine.DPBindLog.class);
         ID_2_CLASS_MAP.put(220, String.class);
+        ID_2_CLASS_MAP.put(223, int.class);
         ID_2_CLASS_MAP.put(301, boolean.class);
         ID_2_CLASS_MAP.put(302, int.class);
         ID_2_CLASS_MAP.put(303, int.class);

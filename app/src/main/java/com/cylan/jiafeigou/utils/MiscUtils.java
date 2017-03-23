@@ -13,7 +13,6 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
-import com.cylan.jiafeigou.support.download.utils.L;
 import com.google.gson.Gson;
 
 import org.xmlpull.v1.XmlPullParserException;
@@ -418,5 +417,16 @@ public class MiscUtils {
 
     private static JFGDPMsg makeMsg(long version, long msgId) {
         return new JFGDPMsg(msgId, version);
+    }
+
+    /**
+     * 从{@link android.support.v4.app.FragmentPagerAdapter}中抽出来
+     *
+     * @param viewId
+     * @param id
+     * @return
+     */
+    public static String makeFragmentName(int viewId, long id) {
+        return "android:switcher:" + viewId + ":" + id;
     }
 }

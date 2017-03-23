@@ -23,6 +23,7 @@ public class JConstant {
     public static final int AUTHORIZE_MAIL = 1;
     public static final int THIS_ACCOUNT_NOT_REGISTERED = -1;
 
+    public static final String KEY_TIME_TICK_ = "key_time_tick";
 
     public static final int TYPE_INVALID = -1;
     public static final int TYPE_PHONE = 0;

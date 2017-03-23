@@ -29,6 +29,14 @@ public class DpUtils {
         return mp.createBufferUnpacker(data).read(clazz);
     }
 
+    public static <T> T unpackData(byte[] data, Class<T> clazz, T defaultValue) throws IOException {
+        if (clazz == null || data == null) {
+            AppLogger.e("value is null: " + clazz);
+            return defaultValue;
+        }
+        return mp.createBufferUnpacker(data).read(clazz);
+    }
+
     public static <T> T getMsg(ArrayList<JFGDPMsg> list, int id, Class<T> tClass) {
         if (list != null) {
             for (JFGDPMsg jfgdpMsg : list) {

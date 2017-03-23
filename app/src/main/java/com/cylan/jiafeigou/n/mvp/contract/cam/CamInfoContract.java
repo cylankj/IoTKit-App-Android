@@ -1,10 +1,14 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
+
+import java.io.IOException;
 
 import rx.Subscription;
 
@@ -25,7 +29,7 @@ public interface CamInfoContract {
 
         void setAliasRsp(int code);
 
-        void deviceUpdate(Device device);
+        void deviceUpdate(JFGDPMsg msg) throws IOException;
     }
 
     interface Presenter extends BasePresenter {

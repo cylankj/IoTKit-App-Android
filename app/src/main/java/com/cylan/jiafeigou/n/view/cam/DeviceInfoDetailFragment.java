@@ -8,11 +8,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -32,6 +34,7 @@ import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
@@ -161,8 +164,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                             }
                         }
                     });
-        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
-        String statusContent = getSdcardState(status);
+        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
+        String statusContent = getSdcardState(status.hasSdcard, status.err);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
             tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
         } else {
@@ -191,18 +194,16 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         return net.ssid;
     }
 
-    private String getSdcardState(DpMsgDefine.DPSdStatus sdStatus) {
+    private String getSdcardState(boolean hasSdcard, int err) {
         //sd卡状态
-        if (sdStatus != null) {
-            if (sdStatus.hasSdcard && sdStatus.err != 0) {
-                //sd初始化失败时候显示
-                return getString(R.string.SD_INIT_ERR, sdStatus.err);
-            }
+        if (hasSdcard && err != 0) {
+            //sd初始化失败时候显示
+            return getString(R.string.SD_INIT_ERR, err);
         }
-        if (sdStatus != null && !sdStatus.hasSdcard) {
+        if (!hasSdcard) {
             return getString(R.string.SD_NO);
         }
-        return sdStatus != null ? getString(R.string.SD_NORMAL) : getString(R.string.SD_NO);
+        return getString(R.string.SD_NORMAL);
     }
 
     @OnClick({R.id.tv_toolbar_icon,
@@ -226,7 +227,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 if (status == null) {
                     return;
                 }
-                String statusContent = getSdcardState(status);
+                String statusContent = getSdcardState(status.hasSdcard, status.err);
                 if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
                     showClearSDDialog();
                     return;
@@ -391,32 +392,44 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     @Override
-    public void deviceUpdate(Device device) {
-        //sd
-        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
-        String statusContent = getSdcardState(status);
-        if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
-            tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
-        } else {
-            tvDeviceSdcardState.setTvSubTitle(statusContent, R.color.color_8c8c8c);
-        }
-        //zone
-        MiscUtils.loadTimeZoneList()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((List<TimeZoneBean> list) -> {
-                    DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
-                    if (zone == null) return;
-                    TimeZoneBean bean = new TimeZoneBean();
-                    bean.setId(zone.timezone);
-                    if (list != null) {
-                        int index = list.indexOf(bean);
-                        if (index >= 0 && index < list.size()) {
-                            tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
-                        }
+    public void deviceUpdate(JFGDPMsg msg) throws IOException {
+        switch ((int) msg.id) {
+            case 222:
+                if (msg.packValue != null) {
+                    DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
+                    if (summary == null) summary = DpMsgDefine.EMPTY.SDCARD_SUMMARY;
+                    //sd
+                    String statusContent = getSdcardState(summary.hasSdcard, summary.errCode);
+                    if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
+                        tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
+                    } else {
+                        tvDeviceSdcardState.setTvSubTitle(statusContent, R.color.color_8c8c8c);
                     }
-                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
-        //wifi
-        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
-        tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
+                }
+                break;
+            case 214:
+                //zone
+                MiscUtils.loadTimeZoneList()
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((List<TimeZoneBean> list) -> {
+                            DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
+                            if (zone == null) return;
+                            TimeZoneBean bean = new TimeZoneBean();
+                            bean.setId(zone.timezone);
+                            if (list != null) {
+                                int index = list.indexOf(bean);
+                                if (index >= 0 && index < list.size()) {
+                                    tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
+                                }
+                            }
+                        }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+                break;
+            case 201:
+                //wifi
+                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+                tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
+                break;
+        }
+
     }
 }

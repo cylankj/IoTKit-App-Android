@@ -38,9 +38,6 @@ public interface JFGSourceManager {
 
     JFGAccount getJFGAccount();
 
-    void cacheRobotoGetDataRsp(RobotoGetDataRsp dataRsp);
-
-    void cacheRobotoSyncData(boolean b, String s, ArrayList<JFGDPMsg> arrayList);
 
     <T extends DataPoint> T getValue(String uuid, long msgId);
 
@@ -100,6 +97,8 @@ public interface JFGSourceManager {
      * @throws IllegalAccessException
      */
     <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws IllegalAccessException;
+
+    <T extends DataPoint> boolean updateValue(String uuid, List<T> value) throws IllegalAccessException;
 
     boolean deleteByVersions(String uuid, long id, ArrayList<Long> versions);
 

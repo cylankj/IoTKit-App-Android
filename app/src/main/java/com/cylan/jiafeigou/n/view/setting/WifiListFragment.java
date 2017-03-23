@@ -126,24 +126,23 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
         }
     }
 
+    private AlertDialog locationGrantedDialog;
+    private AlertDialog locationDeniedDialog;
+
     @NeedsPermission(ACCESS_FINE_LOCATION)
     public void onGrantedLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             if (!MiscUtils.checkGpsAvailable(getApplicationContext())) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage(getString(R.string.GetWifiList_FaiTips))
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.OK), (@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
-                            startActivityForResult(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS), REQ_CODE);
-                        })
-                        .setNegativeButton(getString(R.string.CANCEL), (final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
-                            dialog.cancel();
-                            if (getActivity() != null) {
-                                getActivity().getSupportFragmentManager().popBackStack();
-                            }
-                        });
-                final AlertDialog alert = builder.create();
-                alert.show();
+                if (locationGrantedDialog == null) {
+                    final AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setMessage(getString(R.string.GetWifiList_FaiTips))
+                            .setCancelable(false)
+                            .setPositiveButton(getString(R.string.OK), (@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
+                            });
+                    locationGrantedDialog = builder.create();
+                }
+                if (locationGrantedDialog.isShowing()) return;
+                locationGrantedDialog.show();
                 return;
             }
         }
@@ -154,19 +153,22 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
     @OnPermissionDenied(ACCESS_FINE_LOCATION)
     public void onDeniedLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            new android.app.AlertDialog.Builder(getActivity())
-                    .setMessage(getString(R.string.turn_on_gps))
-                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+            if (locationDeniedDialog == null) {
+                locationDeniedDialog = new AlertDialog.Builder(getActivity())
+                        .setMessage(getString(R.string.turn_on_gps))
+                        .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
 //                    finishExt();
-                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
-                            ((BindDeviceActivity) getActivity()).finishExt();
-                        }
-                    })
-                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                        startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-                    })
-                    .create()
-                    .show();
+                            if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                                ((BindDeviceActivity) getActivity()).finishExt();
+                            }
+                        })
+                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
+                        })
+                        .create();
+            }
+        if (locationDeniedDialog.isShowing()) return;
+        locationDeniedDialog.show();
     }
 
     @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
