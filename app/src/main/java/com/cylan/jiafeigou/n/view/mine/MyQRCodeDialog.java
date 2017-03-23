@@ -105,16 +105,6 @@ public class MyQRCodeDialog extends BaseDialog {
                 .into(myViewTarget);
     }
 
-/*    new BitmapImageViewTarget(ivUserIcon) {
-        @Override
-        protected void setResource(Bitmap resource) {
-            RoundedBitmapDrawable circularBitmapDrawable =
-                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-            circularBitmapDrawable.setCircular(true);
-            ivUserIcon.setImageDrawable(circularBitmapDrawable);
-        }
-    }
-    */
 
     private static class MyViewTarget extends BitmapImageViewTarget{
         private WeakReference<Resources> resourcesWeakReference;

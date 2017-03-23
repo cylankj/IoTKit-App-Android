@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -129,11 +130,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public static HomeMineInfoFragment newInstance() {
         HomeMineInfoFragment fragment = new HomeMineInfoFragment();
         return fragment;
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -338,7 +334,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     @Override
     public void initPersonalInformation(JFGAccount bean) {
-        MyViewTarget myViewTarget = new MyViewTarget(userImageHead,getContext());
+        MyViewTarget myViewTarget = new MyViewTarget(userImageHead,getContext().getResources());
         String photoUrl = "";
         if (bean != null) {
             argumentData = bean;
@@ -349,7 +345,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
             }
 
-            if (!TextUtils.isEmpty(photoUrl)) {
+            if (!TextUtils.isEmpty(photoUrl) && getContext() != null) {
                 Glide.with(getContext()).load(photoUrl)
                         .asBitmap()
                         .centerCrop()
@@ -384,23 +380,22 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     private static class MyViewTarget extends BitmapImageViewTarget {
         private final WeakReference<ImageView> image;
-        private final WeakReference<Context> mContext;
+        private final WeakReference<Resources> resources;
 
-        public MyViewTarget(ImageView view,Context context) {
+        public MyViewTarget(ImageView view,Resources resource) {
             super(view);
             image = new WeakReference<ImageView>(view);
-            mContext = new WeakReference<Context>(context);
+            resources = new WeakReference<Resources>(resource);
         }
         @Override
         protected void setResource(Bitmap resource) {
             if (resource == null)
                 return;
             RoundedBitmapDrawable circularBitmapDrawable =
-                    RoundedBitmapDrawableFactory.create(mContext.get().getResources(), resource);
+                    RoundedBitmapDrawableFactory.create(resources.get(), resource);
             circularBitmapDrawable.setCircular(true);
             image.get().setImageDrawable(circularBitmapDrawable);
         }
-
     }
 
     @Override
@@ -763,5 +758,14 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             localIntent.putExtra("com.android.settings.ApplicationPkgName",getContext().getPackageName());
         }
         startActivity(localIntent);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (popupWindow != null){
+            popupWindow.dismiss();
+            popupWindow = null;
+        }
     }
 }

@@ -1,10 +1,12 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -17,6 +19,7 @@ import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
+import java.lang.ref.WeakReference;
 import java.util.List;
 
 
@@ -48,21 +51,14 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
 
         headImag = holder.getView(R.id.iv_userhead);
         //头像
+        MyViewTarget myViewTarget = new MyViewTarget(headImag,getContext().getResources());
         Glide.with(getContext()).load(item.iconUrl)
                 .asBitmap().centerCrop()
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new BitmapImageViewTarget(headImag) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        headImag.setImageDrawable(circularBitmapDrawable);
-                    }
-                });
+                .into(myViewTarget);
 
         if (layoutPosition == getItemCount() - 1) {
             holder.setVisibility(R.id.view_line, View.INVISIBLE);
@@ -97,6 +93,26 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
                 return R.layout.fragment_mine_friends_request_add_items;
             }
         };
+    }
+
+    private static class MyViewTarget extends BitmapImageViewTarget{
+        private final WeakReference<Resources> resourcesWeakReference;
+        private final WeakReference<RoundedImageView> imageViewWeakReference;
+
+        public MyViewTarget(RoundedImageView view,Resources resources) {
+            super(view);
+            resourcesWeakReference = new WeakReference<Resources>(resources);
+            imageViewWeakReference = new WeakReference<RoundedImageView>(view);
+        }
+
+        @Override
+        protected void setResource(Bitmap resource) {
+            super.setResource(resource);
+            RoundedBitmapDrawable circularBitmapDrawable =
+                    RoundedBitmapDrawableFactory.create(resourcesWeakReference.get(), resource);
+            circularBitmapDrawable.setCircular(true);
+            imageViewWeakReference.get().setImageDrawable(circularBitmapDrawable);
+        }
     }
 
 }
