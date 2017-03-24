@@ -86,7 +86,7 @@ public class JFGCameraDevice extends Device {
     public DpMsgDefine.DPStandby camera_standby = DpMsgDefine.EMPTY.STANDBY;
 
     @DPProperty(msgId = 509)
-    public DPPrimary<Integer> camera_mount_mode = DpMsgDefine.EMPTY.DP_INT;
+    public DpMsgDefine.DpHangMode camera_mount_mode = DpMsgDefine.EMPTY.dpHangMode;
 
     @DPProperty(msgId = 510)
     public DPPrimary<Boolean> camera_coordinate = DpMsgDefine.EMPTY.DP_BOOL;

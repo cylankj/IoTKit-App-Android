@@ -4,11 +4,7 @@ import android.content.ContextWrapper;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
-<<<<<<< HEAD
-=======
 import android.util.Log;
-import android.util.Pair;
->>>>>>> dev-3.0.0-hunt
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -33,6 +29,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
+import org.greenrobot.greendao.query.WhereCondition;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -130,6 +127,44 @@ public class BaseDBHelper implements IDBHelper {
             return result;
         })
                 .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities));
+    }
+
+    @Override
+    public Observable<List<DPEntity>> queryMultiDpMsg(String account, String server,
+                                                      String uuid, Long version,
+                                                      Long versionMax,
+                                                      List<Integer> msgIdList, Boolean asc,
+                                                      Integer limit, DBAction action,
+                                                      DBState state, DBOption option) {
+        QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account, server, uuid, version, versionMax,
+                msgIdList, asc, action, state, option);
+        if (limit != null) {
+            builder.limit(limit);
+        }
+        return builder.orderDesc(DPEntityDao.Properties.Version).rx().list().map(dpEntities -> {
+            if (dpEntities != null) {
+                for (DPEntity entity : dpEntities) {
+                    entity.dpMsgId = entity.getMsgId();
+                    entity.dpMsgVersion = entity.getVersion();
+                }
+            }
+            return dpEntities;
+        });
+    }
+
+    @Override
+    public Observable<DPEntity> queryDpMsg(QueryBuilder<DPEntity> builder) {
+        return builder.rx().unique();
+    }
+
+    @Override
+    public Observable<List<DPEntity>> queryMultiDpMsg(QueryBuilder<DPEntity> builder) {
+        return builder.rx().list();
+    }
+
+    @Override
+    public QueryBuilder<DPEntity> getDpEntityQueryBuilder() {
+        return mEntityDao.queryBuilder();
     }
 
     @Override
@@ -511,6 +546,75 @@ public class BaseDBHelper implements IDBHelper {
 
         if (msgId != null) {
             builder.where(DPEntityDao.Properties.MsgId.eq(msgId));
+        }
+
+        if (action != null) {
+            if (action.op() == DBAction.OP.EQ) {
+                builder.where(DPEntityDao.Properties.Action.eq(action.action()));
+            } else if (action.op() == DBAction.OP.NOT_EQ) {
+                builder.where(DPEntityDao.Properties.Action.notEq(action.action()));
+            } else if (action.op() == DBAction.OP.NOT_EQS) {
+                String[] actions = action.action().split(",");
+                for (String act : actions) {
+                    builder.where(DPEntityDao.Properties.Action.notEq(act));
+                }
+            }
+        }
+
+        if (state != null) {
+            builder.where(DPEntityDao.Properties.State.eq(state.state()));
+        }
+
+        return builder;
+    }
+
+    private QueryBuilder<DPEntity> buildDPMsgQueryBuilder(String account,
+                                                          String server,
+                                                          String uuid,
+                                                          Long version,
+                                                          Long versionMax,
+                                                          List<Integer> msgIdList,
+                                                          Boolean asc,
+                                                          DBAction action,
+                                                          DBState state,
+                                                          DBOption option) {
+        QueryBuilder<DPEntity> builder = mEntityDao.queryBuilder();
+
+        if (!TextUtils.isEmpty(account)) {
+            builder.where(DPEntityDao.Properties.Account.eq(account));//设置 dpAccount 约束
+        }
+
+        if (!TextUtils.isEmpty(server)) {
+            builder.where(DPEntityDao.Properties.Server.eq(server));//设置 server 约束
+        }
+
+        if (!TextUtils.isEmpty(uuid)) {
+            builder.where(DPEntityDao.Properties.Uuid.eq(uuid));//设置 UUID 约束
+        }
+
+        if (version != null && asc != null) {
+            if (asc) {
+                builder.where(DPEntityDao.Properties.Version.ge(version));
+                builder.where(DPEntityDao.Properties.Version.lt(versionMax));
+            } else builder.where(DPEntityDao.Properties.Version.lt(version));
+        }
+
+        if (msgIdList != null && msgIdList.size() > 0) {
+            if (msgIdList.size() == 1) {
+                builder.where(DPEntityDao.Properties.MsgId.eq(0));
+            } else {//size >=2
+                WhereCondition condition1 = DPEntityDao.Properties.MsgId.eq(msgIdList.remove(0));
+                WhereCondition condition2 = DPEntityDao.Properties.MsgId.eq(msgIdList.remove(0));
+                if (msgIdList.size() > 0) {
+                    WhereCondition[] whereConditions = new WhereCondition[msgIdList.size()];
+                    for (int i = 0; i < msgIdList.size(); i++) {
+                        whereConditions[i] = DPEntityDao.Properties.MsgId.eq(msgIdList.get(i));
+                    }
+                    builder.whereOr(condition1, condition2, whereConditions);
+                } else {
+                    builder.whereOr(condition1, condition2);
+                }
+            }
         }
 
         if (action != null) {

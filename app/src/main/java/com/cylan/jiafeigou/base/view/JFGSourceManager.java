@@ -32,10 +32,6 @@ public interface JFGSourceManager {
 
     JFGAccount getJFGAccount();
 
-<<<<<<< HEAD
-=======
-
->>>>>>> dev-3.0.0-hunt
     <T extends DataPoint> T getValue(String uuid, long msgId);
 
 //    <T extends DataPoint> T getValueSafe(String uuid, long msgId, Object defaultValue);

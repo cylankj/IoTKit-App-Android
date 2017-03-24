@@ -41,7 +41,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -93,7 +92,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @BindView(R.id.sbtn_setting_sight)
     SettingItemView0 sbtnSettingSight;
     private String uuid;
-    private Device device;
+    private JFGCameraDevice device;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
 
@@ -116,6 +115,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (getIntent().getBooleanExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, false)) {
             jumpDetail(false);
         }
+        deviceUpdate(device);
     }
 
     @Override
@@ -371,7 +371,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (simCard == null) simCard = new DpMsgDefine.DPPrimary<>(1);//1表示没卡
         svSettingDeviceMobileNetwork.setVisibility(simCard.value > 1 ? View.VISIBLE : View.GONE);
         svSettingDeviceWifi.showDivider(simCard.value > 1);
-        if (JFGRules.is3GCam(device.pid) && JFGRules.isMobileNet(net.net)) {
+        if (JFGRules.is3GCam(device.pid)) {
             DpMsgDefine.DPPrimary<Boolean> state = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
             boolean s = MiscUtils.safeGet(state, false);
             svSettingDeviceMobileNetwork.setChecked(s);
@@ -422,10 +422,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             sbtnSettingSight.setVisibility(View.GONE);
             return;
         }
-        if (device != null && JFGRules.isPanoramicCam(device.pid)) {
+        if (JFGRules.isPanoramicCam(device.pid)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
-            int defaultValue = PreferencesUtils.getInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL + uuid, 0);
-            sbtnSettingSight.setTvSubTitle(getString(defaultValue == 0 ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+            DpMsgDefine.DpHangMode dpPrimary = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+            if (dpPrimary == null) dpPrimary = new DpMsgDefine.DpHangMode();
+            sbtnSettingSight.setTvSubTitle(getString(dpPrimary.safeGetValue() == 0 ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
         }
     }
 

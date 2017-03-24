@@ -130,7 +130,6 @@ public class JConstant {
 
     public static final String KEY_DEVICE_ITEM_UUID = "key_device_uuid";
 
-    public static final String KEY_CAM_SIGHT_HORIZONTAL = "cam_sight";
     /**
      * 保存了 {@link BellLiveActivity}的进程id
      */

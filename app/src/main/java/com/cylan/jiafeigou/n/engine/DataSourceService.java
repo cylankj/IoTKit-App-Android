@@ -301,6 +301,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
         }
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
         AppLogger.d("OnRobotGetDataExRsp performance:" + (System.currentTimeMillis() - time));
+        AppLogger.d("OnRobotGetDataExRsp :" + new Gson().toJson(arrayList));
     }
 
     @Override

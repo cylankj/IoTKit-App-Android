@@ -36,6 +36,18 @@ public interface DBOption {
         }
     }
 
+    class MultiQueryOption extends BaseDBOption {
+        public long timeStart;
+        public long timeEnd;
+        public boolean asc;
+
+        public MultiQueryOption(long timeStart, long timeEnd, boolean asc) {
+            this.timeStart = timeStart;
+            this.timeEnd = timeEnd;
+            this.asc = asc;
+        }
+    }
+
     class SingleSharedOption extends BaseDBOption {
         public int type;
         public int flag;

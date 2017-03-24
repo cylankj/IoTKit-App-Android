@@ -151,6 +151,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     private String uuid;
     private boolean isNormalView;
     private static final String DIALOG_KEY = "dialogFragment";
+
     public CameraLiveFragment() {
         // Required empty public constructor
     }
@@ -308,8 +309,12 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onResume();
         //更新
         camLiveController.notifyOrientationChange(getResources().getConfiguration().orientation);
-        if (vLive != null && vLive.getVideoView() != null)
+        if (vLive != null && vLive.getVideoView() != null) {
             vLive.getVideoView().onResume();
+            DpMsgDefine.DpHangMode dpPrimary = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+            if (dpPrimary == null) dpPrimary = new DpMsgDefine.DpHangMode();
+            vLive.getVideoView().setMode(dpPrimary.safeGetValue());
+        }
     }
 
     @Override
@@ -596,8 +601,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgV_cam_switch_speaker: {
-                CameraLiveFragmentPermissionsDispatcher.audioPermissionGrantWithCheck(this);
-                CameraLiveFragmentPermissionsDispatcher.audioSettingPermissionGrantWithCheck(this);
                 boolean on = isLocalSpeakerOn();
                 int sFlag = on ? R.drawable.icon_port_speaker_off_selector : R.drawable.icon_port_speaker_on_selector;
                 ((ImageView) view).setImageResource(sFlag);
@@ -611,21 +614,23 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             }
             break;
             case R.id.imgV_cam_trigger_mic: {
+//                CameraLiveFragmentPermissionsDispatcher.s
                 boolean on = isLocalMicOn();
-                int micFlag = on ? R.drawable.icon_port_mic_off_selector : R.drawable.icon_port_mic_on_selector;
-                ((ImageView) view).setImageResource(micFlag);
-                view.setTag(micFlag);
-                camLiveController.getImvLandMic().setImageResource(on ? R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
-                camLiveController.getImvLandMic().setTag(on ? R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
-                camLiveController.getImvLandSpeaker().setEnabled(on);
-                imgVCamSwitchSpeaker.setEnabled(on);
                 if (!on) {
-                    //同时设置speaker
-                    imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_on_selector);
-                    imgVCamSwitchSpeaker.setTag(R.drawable.icon_port_speaker_on_selector);
-                    camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_on_selector);
-                    camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_on_selector);
+                    CameraLiveFragmentPermissionsDispatcher.showAudioSettingPermissionWithCheck(this);
+                    return;
                 }
+                imgVCamTriggerMic.setImageResource(R.drawable.icon_port_mic_off_selector);
+                imgVCamTriggerMic.setTag(R.drawable.icon_port_mic_off_selector);
+                camLiveController.getImvLandMic().setImageResource(R.drawable.icon_land_mic_off_selector);
+                camLiveController.getImvLandMic().setTag(R.drawable.icon_land_mic_off_selector);
+                camLiveController.getImvLandSpeaker().setEnabled(true);
+                imgVCamSwitchSpeaker.setEnabled(true);
+                //同时设置speaker
+                imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_off_selector);
+                imgVCamSwitchSpeaker.setTag(R.drawable.icon_port_speaker_off_selector);
+                camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_off_selector);
+                camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_off_selector);
                 if (basePresenter != null) {
                     basePresenter.switchMic();
                 }
@@ -775,7 +780,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
 
-
     @Override
     public void onRtcp(JFGMsgVideoRtcp rtcp) {
         String content = MiscUtils.getByteFromBitRate(rtcp.bitRate);
@@ -799,24 +803,24 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         this.basePresenter = basePresenter;
     }
 
-    @NeedsPermission({Manifest.permission.RECORD_AUDIO})
-    public void audioPermissionGrant() {
-        if (basePresenter != null) {
-            Log.d("NeedsPermission", "audioPermissionGrant");
-        }
-    }
-
     @NeedsPermission({Manifest.permission.MODIFY_AUDIO_SETTINGS})
-    public void audioSettingPermissionGrant() {
+    public void showAudioSettingPermission() {
+        imgVCamTriggerMic.setImageResource(R.drawable.icon_port_mic_on_selector);
+        imgVCamTriggerMic.setTag(R.drawable.icon_port_mic_on_selector);
+        camLiveController.getImvLandMic().setImageResource(R.drawable.icon_land_mic_on_selector);
+        camLiveController.getImvLandMic().setTag(R.drawable.icon_land_mic_on_selector);
+        camLiveController.getImvLandSpeaker().setEnabled(false);
+        imgVCamSwitchSpeaker.setEnabled(false);
+        //同时设置speaker
+        imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_on_selector);
+        imgVCamSwitchSpeaker.setTag(R.drawable.icon_port_speaker_on_selector);
+        camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_on_selector);
+        camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_on_selector);
         if (basePresenter != null) {
-            Log.d("NeedsPermission", "audioSettingPermissionGrant");
+            basePresenter.switchMic();
         }
     }
 
-    @OnPermissionDenied({Manifest.permission.RECORD_AUDIO})
-    public void audioPermissionDenied() {
-        Log.d("OnPermissionDenied", "audioPermissionDenied");
-    }
 
     @OnPermissionDenied({Manifest.permission.MODIFY_AUDIO_SETTINGS})
     public void audioSettingPermissionDenied() {
@@ -825,7 +829,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void hardwareResult(RxEvent.CheckDevVersionRsp rsp) {
-        if (rsp.hasNew){
+        if (rsp.hasNew) {
             Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
             if (f == null) {
                 Bundle bundle = new Bundle();
@@ -845,7 +849,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onDialogAction(int id, Object value) {
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp)value);
+        bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp) value);
         HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 hardwareUpdateFragment, android.R.id.content);

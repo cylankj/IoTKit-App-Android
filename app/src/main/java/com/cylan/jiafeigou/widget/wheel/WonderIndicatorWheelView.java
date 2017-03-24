@@ -185,6 +185,16 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         public long time;//这一天的时间
         public boolean init = false;//是否已经查询过了
         public boolean selected = false;//是否被选中
+
+        @Override
+        public String toString() {
+            return "WheelItem{" +
+                    "wonderful=" + wonderful +
+                    ", time=" + time +
+                    ", init=" + init +
+                    ", selected=" + selected +
+                    '}';
+        }
     }
 
     public void init(List<WheelItem> items) {

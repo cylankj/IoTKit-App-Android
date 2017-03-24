@@ -1,38 +1,32 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.text.TextUtils;
+import android.util.Log;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.module.tasks.DPCamDateQueryTask;
+import com.cylan.jiafeigou.cache.db.module.tasks.DPCamMultiQueryTask;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.Converter;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -46,13 +40,11 @@ import rx.schedulers.Schedulers;
 public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageListContract.View>
         implements CamMessageListContract.Presenter {
 
-    private Subscription querySub;
-    private Device device;
+    private List<WonderIndicatorWheelView.WheelItem> dateItemList = new ArrayList<>();
 
     public CamMessageListPresenterImpl(CamMessageListContract.View view, String uuid) {
         super(view, uuid);
         view.setPresenter(this);
-        device = DataSourceManager.getInstance().getJFGDevice(uuid);
     }
 
     @Override
@@ -91,74 +83,96 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 });
     }
 
+
+    private List<IDPEntity> buildEntity(long timeStart, long timeEnd, boolean asc) {
+        List<IDPEntity> list = new ArrayList<>();
+        list.add(new DPEntity()
+                .setMsgId(222)
+                .setUuid(uuid)
+                .setOption(new DBOption.MultiQueryOption(timeStart, timeEnd, asc))
+                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+        list.add(new DPEntity()
+                .setMsgId(505)
+                .setUuid(uuid)
+                .setOption(new DBOption.MultiQueryOption(timeStart, timeEnd, asc))
+                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+        list.add(new DPEntity()
+                .setMsgId(512)
+                .setUuid(uuid)
+                .setOption(new DBOption.MultiQueryOption(timeStart, timeEnd, asc))
+                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+        return list;
+    }
+
+    /**
+     * 消息列表请求
+     *
+     * @param timeStart
+     * @param loadMore
+     * @return
+     */
+    private Observable<BaseDPTaskResult> getMessageListQuery(long timeStart, boolean loadMore) {
+        Log.d("getMessageListQuery", "getMessageListQuery:" + timeStart + ",loadMore: " + loadMore);
+        if (DataSourceManager.getInstance().isOnline()) {
+            return new DPCamMultiQueryTask()
+                    .init(buildEntity(timeStart, TimeUtils.getSpecificDayStartTime(timeStart) + 24 * 3600 * 1000L, loadMore))
+                    .performServer(null);
+        } else {
+            return new DPCamMultiQueryTask()
+                    .init(buildEntity(timeStart, TimeUtils.getSpecificDayStartTime(timeStart) + 24 * 3600 * 1000L, loadMore))
+                    .performLocal();
+        }
+    }
+
     @Override
-    public void fetchMessageList(final int count, boolean asc) {
-        unSubscribe(querySub);
-        querySub = queryTimeLine(count, 0, asc)
-                .map((ArrayList<CamMessageBean> camList) -> {
-                    ArrayList<CamMessageBean> list = getView().getList();
-                    if (list != null)
-                        camList.removeAll(list);//删除重复的
-                    return camList;
-                })
-                .delay(1, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(new RxHelper.Filter<>("getView()=null?", getView() != null))
-                .map((ArrayList<CamMessageBean> jfgdpMsgs) -> {
-                    getView().onMessageListRsp(jfgdpMsgs);
-                    AppLogger.i("messageListSub+" + jfgdpMsgs.size());
-                    return null;
-                })
-                .retry(new RxHelper.RxException<>("messageListSub"))
-                .subscribe(o -> {
-                }, throwable -> AppLogger.e("messageList err:" + throwable.getLocalizedMessage()));
-    }
+    public void fetchMessageList(long timeStart, boolean loadMore) {
+        //1.timeStart==0->服务器，本地
+        //服务器：1.日历。2.偏移到最靠近有数据的一天。开始查。以后，点击开始查。
+        //本地，查出日历。
 
-
-    private Observable<ArrayList<CamMessageBean>> queryTimeLine(int count, long version, boolean asc) {
-        return Observable.just(null)
+        Subscription subscription = getMessageListQuery(timeStart, loadMore)
                 .subscribeOn(Schedulers.io())
-                .map(o -> DataSourceManager.getInstance().syncJFGCameraWarn(uuid, version, asc, count))
-                .filter(aLong -> aLong > 0)
-                .flatMap(aLong -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                        .filter(robotoGetDataRsp -> aLong == robotoGetDataRsp.seq)
-                        .timeout(2000, TimeUnit.MILLISECONDS, Observable.just("makeReq timeout")
-                                .subscribeOn(AndroidSchedulers.mainThread())
-                                .filter(s -> getView() != null)
-                                .map(s -> {
-                                    getView().onMessageBulkInsert(null, 0);
-                                    AppLogger.e(s);
-                                    return null;
-                                }))
-                        .first())
-                .flatMap(new Func1<RobotoGetDataRsp, Observable<ArrayList<CamMessageBean>>>() {
+                .observeOn(Schedulers.io())
+                .flatMap(new Func1<BaseDPTaskResult, Observable<ArrayList<CamMessageBean>>>() {
                     @Override
-                    public Observable<ArrayList<CamMessageBean>> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        ArrayList<DataPoint> allList = new ArrayList<>();
-                        List<DpMsgDefine.DPAlarm> list_505 = DataSourceManager.getInstance().getValueBetween(uuid, (long) DpMsgMap.ID_505_CAMERA_ALARM_MSG, (long) 0, System.currentTimeMillis());
-                        List<DpMsgDefine.DPSdcardSummary> list_222 = DataSourceManager.getInstance().getValueBetween(uuid, (long) DpMsgMap.ID_222_SDCARD_SUMMARY, (long) 0, System.currentTimeMillis());
-                        if (list_505 != null) allList.addAll(list_505);
-                        if (list_222 != null) allList.addAll(list_222);
-                        allList = new ArrayList<>(new HashSet<>(allList));
-                        Collections.sort(allList);//来个排序
-                        AppLogger.i("get msgList: " + allList.size());
-                        return Observable.just(Converter.convert(allList, device.regionType));
+                    public Observable<ArrayList<CamMessageBean>> call(BaseDPTaskResult baseDPTaskResult) {
+                        List<DataPoint> result = baseDPTaskResult.getResultResponse();
+                        AppLogger.d("fetchLocalList: " + ListUtils.getSize(result));
+                        if (ListUtils.getSize(result) == 0)
+                            return Observable.just(null);
+                        ArrayList<CamMessageBean> list = new ArrayList<>();
+                        for (DataPoint dataPoint : result) {
+                            CamMessageBean bean = new CamMessageBean();
+                            bean.id = dataPoint.dpMsgId;
+                            bean.time = dataPoint.dpMsgVersion;
+                            if (bean.id == 222) {
+                                bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) dataPoint;
+                            }
+                            if (bean.id == 512 || bean.id == 505) {
+                                bean.alarmMsg = (DpMsgDefine.DPAlarm) dataPoint;
+                            }
+                            list.add(bean);
+                        }
+                        return Observable.just(list);
                     }
-                });
-
-
+                })
+                .filter(result -> mView != null && result != null && result.size() > 0)
+                .flatMap(new Func1<ArrayList<CamMessageBean>, Observable<ArrayList<CamMessageBean>>>() {
+                    @Override
+                    public Observable<ArrayList<CamMessageBean>> call(ArrayList<CamMessageBean> camMessageBeen) {
+                        //需要和列表里面的items 融合
+                        ArrayList<CamMessageBean> list = mView.getList();
+                        AppLogger.d("uiList: " + ListUtils.getSize(list) + ",newList: " + ListUtils.getSize(camMessageBeen));
+                        return Observable.just(camMessageBeen);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null && ret != null && ret.size() > 0)
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe(list -> mView.onListAppend(list),
+                        throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> mView.onErr());
+        addSubscription(subscription, "DPCamMultiQueryTask");
     }
-
-//    private Observable<Object> makeLocalQuery(int msgId, long version, boolean asc, int count) {
-//        IDPEntity entity = new DPEntity();
-//        entity.setUuid(uuid)
-//                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount())
-//                .setMsgId(msgId)
-//                .setAction(DBAction.QUERY)
-//                .setVersion(version)
-//                .setOption(new DBOption.SingleQueryOption(asc, count));
-//        BaseDPTaskDispatcher.getInstance().perform(entity);
-//    }
 
     @Override
     public void removeItems(ArrayList<CamMessageBean> beanList) {
@@ -183,74 +197,47 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 });
     }
 
-    private List<WonderIndicatorWheelView.WheelItem> dateItemList = new ArrayList<>();
 
     @Override
     public List<WonderIndicatorWheelView.WheelItem> getDateList() {
         return dateItemList;
     }
 
+    /**
+     * 日历列表请求
+     *
+     * @return
+     */
+    private Observable<BaseDPTaskResult> getDateListQuery() {
+        DPEntity entity = new DPEntity();
+        entity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());
+        entity.setUuid(uuid);
+        if (DataSourceManager.getInstance().isOnline()) {
+            return new DPCamDateQueryTask()
+                    .init(entity)
+                    .performServer(null);
+        } else {
+            return new DPCamDateQueryTask()
+                    .init(entity)
+                    .performLocal();
+        }
+    }
+
     @Override
     public void refreshDateList() {
-        Observable.just("go to get and assemble Date List")
+        Subscription subscription = getDateListQuery()
                 .subscribeOn(Schedulers.io())
-                .flatMap(s -> {
-                    //今天凌晨时间戳。
-                    long todayTimeStamp = TimeUtils.getTodayStartTime();
-                    ArrayList<JFGDPMsg> list = (ArrayList<JFGDPMsg>) MiscUtils.getCamDateVersionList(todayTimeStamp);
-                    try {
-                        long ret = JfgCmdInsurance.getCmd().robotGetData(uuid, list, 1, true, 0);
-                        return Observable.just(ret);
-                    } catch (JfgException e) {
-                        AppLogger.e("err: " + e.getLocalizedMessage());
-                        return Observable.just(-1L);
-                    }
-                })
-                .filter(aLong -> aLong != -1)
-                .flatMap(aLong ->
-                        RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                                .subscribeOn(Schedulers.computation())
-                                .filter(result -> result != null && TextUtils.equals(result.identity, uuid) && result.seq == aLong))
-                .subscribeOn(Schedulers.computation())
-                .map(robotoGetDataRsp -> {
-                    ArrayList<JFGDPMsg> list = new ArrayList<>();
-                    Iterator<Integer> iterator = robotoGetDataRsp.map.keySet().iterator();
-                    while (iterator.hasNext()) {
-                        list.addAll(robotoGetDataRsp.map.get(iterator.next()));
-                    }
-                    int size = ListUtils.getSize(list);
-                    HashMap<String, Long> dateMap = new HashMap<>();
-                    for (int i = 0; i < size; i++) {
-                        String date = TimeUtils.getMediaPicTimeInString(list.get(i).version);
-                        if (!dateMap.containsKey(date)) {
-                            dateMap.put(date, list.get(i).version);
-                        }
-                    }
-                    dateItemList.clear();
-                    long timeStart = TimeUtils.getTodayStartTime();
-                    for (int i = 0; i < 15; i++) {
-                        long time = timeStart - i * 24 * 3600 * 1000L;
-                        String date = TimeUtils.getMediaPicTimeInString(time);
-                        Long r = dateMap.get(date);
-                        WonderIndicatorWheelView.WheelItem item = new WonderIndicatorWheelView.WheelItem();
-                        item.wonderful = (r != null && r > 0);
-                        item.time = time;
-                        dateItemList.add(item);
-                    }
-                    AppLogger.d("dateList size :" + size + " " + dateMap);
-
-                    return dateItemList;
-                })
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(a -> mView != null)
-                .subscribe(mapResult -> mView.onDateMapRsp(dateItemList),
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .filter(ret -> mView != null && ret != null && ret.getResultResponse() != null)
+                .subscribe(baseDPTaskResult ->
+                                mView.onDateMapRsp(baseDPTaskResult.getResultResponse()),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+        addSubscription(subscription, "DPCamDateQueryTask");
     }
 
     @Override
     public void stop() {
         super.stop();
-        unSubscribe(querySub);
     }
 }

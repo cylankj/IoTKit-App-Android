@@ -10,6 +10,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.NetMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -32,7 +33,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     protected T mView;//弱引用会被强制释放,我们的view需要我们手动释放,不适合弱引用
     protected String uuid;
     private CompositeSubscription compositeSubscription;
-    private Map<String, Subscription> refCacheMap = new HashMap<>();
+    private MapSubscription refCacheMap = new MapSubscription();
     private TimeTick timeTick;
 
     public AbstractPresenter(T view) {
@@ -99,16 +100,12 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
 
     protected void addSubscription(Subscription subscription, String tag) {
         if (subscription != null)
-            refCacheMap.put(tag, subscription);
+            refCacheMap.add(subscription, tag);
     }
 
     protected boolean unSubscribe(String tag) {
-        Subscription subscription = refCacheMap.get(tag);
-        if (subscription != null && subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-            return true;
-        }
-        return false;
+        refCacheMap.unsubscribe();
+        return true;
     }
 
     @CallSuper

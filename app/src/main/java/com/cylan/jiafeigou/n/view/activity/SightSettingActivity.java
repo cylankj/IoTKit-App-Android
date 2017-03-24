@@ -5,15 +5,20 @@ import android.view.View;
 import android.widget.RadioButton;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 public class SightSettingActivity extends BaseFullScreenFragmentActivity {
 
@@ -33,9 +38,10 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         customToolbar.setBackAction((View v) -> onBackPressed());
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         //平视
-        int defaultValue = PreferencesUtils.getInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL + uuid, 0);
-        rbtnSightHorizontal.setChecked(defaultValue == 0);
-        rbtnSightVertical.setChecked(defaultValue == 1);
+        DpMsgDefine.DpHangMode dpPrimary = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+        if (dpPrimary == null) dpPrimary = new DpMsgDefine.DpHangMode();
+        rbtnSightHorizontal.setChecked(dpPrimary.safeGetValue() == 0);
+        rbtnSightVertical.setChecked(dpPrimary.safeGetValue() == 1);
     }
 
     @Override
@@ -47,11 +53,34 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.sv_sight_horizontal:
-                PreferencesUtils.putInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL + uuid, 0);
+                Observable.just("save")
+                        .subscribeOn(Schedulers.newThread())
+                        .map(s -> {
+                            DpMsgDefine.DpHangMode mode = new DpMsgDefine.DpHangMode();
+                            try {
+                                DataSourceManager.getInstance().updateValue(uuid, mode, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+                            } catch (IllegalAccessException e) {
+                                AppLogger.e("err: ");
+                            }
+                            return null;
+                        })
+                        .subscribe();
                 rbtnSightHorizontal.setChecked(true);
                 break;
             case R.id.sv_sight_vertical:
-                PreferencesUtils.putInt(JConstant.KEY_CAM_SIGHT_HORIZONTAL + uuid, 1);
+                Observable.just("save")
+                        .subscribeOn(Schedulers.newThread())
+                        .map(s -> {
+                            DpMsgDefine.DpHangMode mode = new DpMsgDefine.DpHangMode();
+                            mode.mode = "1";
+                            try {
+                                DataSourceManager.getInstance().updateValue(uuid, mode, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+                            } catch (IllegalAccessException e) {
+                                AppLogger.e("err: ");
+                            }
+                            return null;
+                        })
+                        .subscribe();
                 rbtnSightVertical.setChecked(true);
                 break;
         }

@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -617,7 +618,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     protected Subscription[] register() {
-        return new Subscription[]{robotDataSync(),checkNewHardWareBack()};
+        return new Subscription[]{robotDataSync(), checkNewHardWareBack()};
     }
 
     /**
@@ -632,7 +633,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                                 getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
                 .flatMap(deviceSyncRsp -> {
-                    AppLogger.d("updateList: " + deviceSyncRsp.dpList);
+                    AppLogger.d("updateList: " + ListUtils.getSize(deviceSyncRsp.dpList));
                     return Observable.from(deviceSyncRsp.dpList);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -694,7 +695,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    if (TimeUtils.isToday(PreferencesUtils.getLong(JConstant.CHECK_HARDWARE_TIME,0))){
+                    if (TimeUtils.isToday(PreferencesUtils.getLong(JConstant.CHECK_HARDWARE_TIME, 0))) {
                         return;
                     }
                     Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
@@ -702,7 +703,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     try {
                         JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, ""));
                     } catch (JfgException e) {
-                        AppLogger.e("checkNewHardWare:"+e.getLocalizedMessage());
+                        AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
                 });
@@ -713,9 +714,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         return RxBus.getCacheInstance().toObservable(RxEvent.CheckDevVersionRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.CheckDevVersionRsp checkDevVersionRsp) -> {
-                    if (checkDevVersionRsp != null && checkDevVersionRsp.hasNew){
+                    if (checkDevVersionRsp != null && checkDevVersionRsp.hasNew) {
                         getView().hardwareResult(checkDevVersionRsp);
-                        PreferencesUtils.putLong(JConstant.CHECK_HARDWARE_TIME,System.currentTimeMillis());
+                        PreferencesUtils.putLong(JConstant.CHECK_HARDWARE_TIME, System.currentTimeMillis());
                     }
                 });
     }

@@ -27,7 +27,7 @@ public class PanoramicView360_Ext extends Panoramic360View implements VideoViewF
 
     @Override
     public void setMode(int mode) {
-
+        super.setMountMode(mode == 0 ? MountMode.TOP : MountMode.WALL);
     }
 
 
