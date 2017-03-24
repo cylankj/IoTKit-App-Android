@@ -34,6 +34,8 @@ public interface CamMessageListContract {
         void deviceInfoChanged(int id, JFGDPMsg o) throws IOException;
 
         void onErr();
+
+        void onMessageDeleteSuc();
     }
 
     interface Presenter extends BasePresenter {

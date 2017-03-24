@@ -4,12 +4,15 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPCamDateQueryTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPCamMultiQueryTask;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
@@ -24,9 +27,7 @@ import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
@@ -178,27 +179,41 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         addSubscription(subscription, "DPCamMultiQueryTask");
     }
 
+    private List<DPEntity> buildMultiEntities(ArrayList<CamMessageBean> beanList) {
+        List<DPEntity> entities = new ArrayList<>();
+        for (CamMessageBean bean : beanList) {
+            DPEntity dpEntity = new DPEntity();
+            dpEntity.setUuid(uuid);
+            dpEntity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());
+            dpEntity.setMsgId((int) bean.id);
+            dpEntity.setVersion(bean.time);
+            dpEntity.setAction(DBAction.DELETED);
+            entities.add(dpEntity);
+        }
+        return entities;
+    }
+
+    public Observable<IDPTaskResult> perform(List<? extends IDPEntity> entity) {
+        return BaseDPTaskDispatcher.getInstance().perform(entity);
+    }
+
     @Override
     public void removeItems(ArrayList<CamMessageBean> beanList) {
-        Observable.just(beanList)
-                .subscribeOn(Schedulers.computation())
-                .subscribe((ArrayList<CamMessageBean> list) -> {
-                    Map<Long, ArrayList<Long>> map = new HashMap<>();
-                    for (CamMessageBean bean : list) {
-                        ArrayList<Long> arrayList = map.get(bean.id);
-                        if (arrayList == null) {
-                            arrayList = new ArrayList<>();
-                            map.put(bean.id, arrayList);
-                        }
-                        arrayList.add(bean.time);
+        List<DPEntity> list = buildMultiEntities(beanList);
+        Subscription subscription = BaseDPTaskDispatcher.getInstance().perform(list)
+                .subscribeOn(Schedulers.io())
+                .filter(result -> mView != null)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(idpTaskResult -> {
+                    if (idpTaskResult.getResultCode() == 0) {
+                        //good
+                        mView.onMessageDeleteSuc();
                     }
-                    for (long id : map.keySet()) {
-                        boolean result = DataSourceManager.getInstance().deleteByVersions(uuid, id, map.get(id));
-                        AppLogger.i("delete: " + result + " dpMsgId:" + id);
-                    }
-                }, (Throwable throwable) -> {
-                    AppLogger.e(":" + throwable.getLocalizedMessage());
+                }, throwable -> {
+                    AppLogger.e("err:" + throwable.getLocalizedMessage());
+                    mView.onErr();
                 });
+        addSubscription(subscription, "removeItems");
     }
 
 

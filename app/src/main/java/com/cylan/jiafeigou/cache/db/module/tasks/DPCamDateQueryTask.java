@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.DPEntityDao;
+import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -58,6 +59,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     if (!TextUtils.isEmpty(uuid)) {
                         builder.where(DPEntityDao.Properties.Uuid.eq(uuid));//设置 UUID 约束
                     }
+                    builder.where(DPEntityDao.Properties.State.eq(DBState.SUCCESS));
                     builder.where(DPEntityDao.Properties.Version.ge(aLong));//设置 version 约束
                     builder.where(DPEntityDao.Properties.Version.lt(aLong + 24 * 3600 * 1000L));//设置 version 约束
                     WhereCondition condition1 = DPEntityDao.Properties.MsgId.eq(222);

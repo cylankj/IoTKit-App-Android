@@ -285,6 +285,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onErr() {
         srLayoutCamListRefresh.post(() -> srLayoutCamListRefresh.setRefreshing(false));
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    @Override
+    public void onMessageDeleteSuc() {
+        ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
@@ -344,17 +351,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             case R.id.tv_msg_delete://删除
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.Tips_SureDelete))
-                        .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
-                                camMessageListAdapter.removeAll(list);
-                                if (basePresenter != null)
-                                    basePresenter.removeItems(list);
-                                camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
-                                AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
-                                tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
-                            }
+                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
+                            camMessageListAdapter.removeAll(list);
+                            if (basePresenter != null)
+                                basePresenter.removeItems(list);
+                            camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
+                            AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
+                            tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
+                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING));
                         })
                         .setNegativeButton(getString(R.string.CANCEL), null)
                         .create().show();
@@ -365,7 +370,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @Override
     public void onClick(View v) {
-        int position = ViewUtils.getParentAdapterPosition(rvCamMessageList, v,
+        final int position = ViewUtils.getParentAdapterPosition(rvCamMessageList, v,
                 R.id.lLayout_cam_msg_container);
         switch (v.getId()) {
             case R.id.tv_cam_message_item_delete: {//删除选中
@@ -373,12 +378,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         .setMessage(getString(R.string.Tips_SureDelete))
                         .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
                             ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
+                            if (camMessageListAdapter.getCount() > position) {
+                                list.add(camMessageListAdapter.getItem(position));
+                            }
                             camMessageListAdapter.removeAll(list);
                             if (basePresenter != null)
                                 basePresenter.removeItems(list);
-                            camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
-                            AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
-                            tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
+                            LoadingDialog.showLoading(getFragmentManager(), getString(R.string.DELETEING));
                         })
                         .setNegativeButton(getString(R.string.CANCEL), null)
                         .create().show();
