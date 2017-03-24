@@ -3,12 +3,14 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -42,7 +44,6 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
 import java.io.IOException;
@@ -58,9 +59,6 @@ import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_BUNDLE;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_INDEX;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_TIME;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
-import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
-import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_LEFT_CONTENT;
-import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_RIGHT_CONTENT;
 
 
 /**
@@ -88,7 +86,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @BindView(R.id.rLayout_cam_message_list_top)
     FrameLayout rLayoutCamMessageListTop;
 
-    private SimpleDialogFragment simpleDialogFragment;
+//    private SimpleDialogFragment simpleDialogFragment;
     /**
      * 列表第一条可见item的position,用户刷新timeLine控件的位置。
      */
@@ -310,7 +308,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             R.id.tv_msg_full_select,
             R.id.tv_msg_delete})
     public void onBindClick(View view) {
-//        ViewUtils.deBounceClick(view);
+        ViewUtils.deBounceClick(view);
         final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
                 .findLastVisibleItemPosition();
         switch (view.getId()) {
@@ -344,37 +342,26 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 camMessageListAdapter.markAllAsSelected(true, lPos);
                 break;
             case R.id.tv_msg_delete://删除
-                if (initDialog()) {
-                    simpleDialogFragment.show(getActivity().getSupportFragmentManager(), "simpleDialogFragment");
-                    simpleDialogFragment.setAction((int id, Object value) -> {
-                        ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
-                        camMessageListAdapter.removeAll(list);
-                        if (basePresenter != null)
-                            basePresenter.removeItems(list);
-                        camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
-                        AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
-                        tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
-                    });
-                }
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(getString(R.string.Tips_SureDelete))
+                        .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
+                                camMessageListAdapter.removeAll(list);
+                                if (basePresenter != null)
+                                    basePresenter.removeItems(list);
+                                camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
+                                AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
+                                tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.CANCEL), null)
+                        .create().show();
                 break;
         }
     }
 
-    /**
-     * 初始化对话框
-     *
-     * @return
-     */
-    private boolean initDialog() {
-        if (simpleDialogFragment == null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(KEY_TITLE, getString(R.string.Tips_SureDelete));
-            bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-            bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
-            simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
-        }
-        return !simpleDialogFragment.isResumed();
-    }
 
     @Override
     public void onClick(View v) {
@@ -382,17 +369,19 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 R.id.lLayout_cam_msg_container);
         switch (v.getId()) {
             case R.id.tv_cam_message_item_delete: {//删除选中
-                if (initDialog()) {
-                    simpleDialogFragment.show(getActivity().getSupportFragmentManager(), "simpleDialogFragment");
-                    simpleDialogFragment.setAction((int id, Object value) -> {
-                        camMessageListAdapter.remove(position);
-                        ArrayList<CamMessageBean> list = new ArrayList<>();
-                        CamMessageBean bean = camMessageListAdapter.getItem(position);
-                        list.add(bean);
-                        if (basePresenter != null)
-                            basePresenter.removeItems(list);
-                    });
-                }
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(getString(R.string.Tips_SureDelete))
+                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
+                            camMessageListAdapter.removeAll(list);
+                            if (basePresenter != null)
+                                basePresenter.removeItems(list);
+                            camMessageListAdapter.reverseMode(false, camMessageListAdapter.getCount());
+                            AnimatorUtils.slideOut(fLayoutCamMsgEditBar, false);
+                            tvCamMessageListEdit.setText(getString(R.string.EDIT_THEME));
+                        })
+                        .setNegativeButton(getString(R.string.CANCEL), null)
+                        .create().show();
             }
             break;
             case R.id.lLayout_cam_msg_container: {//点击item,选中

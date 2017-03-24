@@ -702,7 +702,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
                     try {
                         JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, ""));
-                    } catch (JfgException e) {
+                    } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }

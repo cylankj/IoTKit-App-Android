@@ -413,12 +413,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (sdcardFormatDlg == null || sdcardFormatDlg.get() == null) {
             AlertDialog dialog = new AlertDialog.Builder(getActivity())
                     .setMessage(getString(R.string.Clear_Sdcard_tips6))
-                    .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-
-                        }
-                    })
+                    .setPositiveButton(getString(R.string.OK), null)
                     .setNegativeButton(getString(R.string.CANCEL), null)
                     .create();
             sdcardFormatDlg = new SoftReference<>(dialog);
@@ -613,12 +608,12 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                     CameraLiveFragmentPermissionsDispatcher.showAudioRecordPermission_WithCheck(this);
                     return;
                 }
-                int sFlag = on ? R.drawable.icon_port_speaker_off_selector : R.drawable.icon_port_speaker_on_selector;
-                ((ImageView) view).setImageResource(sFlag);
-                view.setTag(sFlag);
+                int sFlag = R.drawable.icon_port_speaker_off_selector;
+                imgVCamSwitchSpeaker.setImageResource(sFlag);
+                imgVCamSwitchSpeaker.setTag(sFlag);
                 //横屏
-                camLiveController.getImvLandSpeaker().setImageResource(on ? R.drawable.icon_land_speaker_off_selector : R.drawable.icon_land_speaker_on_selector);
-                camLiveController.getImvLandSpeaker().setTag(on ? R.drawable.icon_land_speaker_off_selector : R.drawable.icon_land_speaker_on_selector);
+                camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_off_selector);
+                camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_off_selector);
                 if (basePresenter != null) {
                     basePresenter.switchSpeaker();
                 }
