@@ -317,7 +317,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             case R.id.tv_cam_message_list_date:
                 if (camMessageListAdapter.getCount() == 0)
                     return;//呼入呼出
-                boolean isHide = AnimatorUtils.isReset(fLayoutCamMessageListTimeline);
+                boolean isHide = !AnimatorUtils.isReset(fLayoutCamMessageListTimeline) || !fLayoutCamMessageListTimeline.isShown();
                 if (isHide && basePresenter != null && basePresenter.getDateList().size() == 0) {
                     LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
                     AppLogger.d("日起加载中...");

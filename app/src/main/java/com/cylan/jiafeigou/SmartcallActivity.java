@@ -241,6 +241,11 @@ public class SmartcallActivity extends NeedLoginActivity
         SmartcallActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
         if (permissions.length == 1) {
             if (TextUtils.equals(permissions[0], Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+                if (grantResults[0] == -1) {
+                    //denied
+                    finish();
+                    return;
+                }
                 SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
                 isPermissionDialogShowing = true;
             }
@@ -253,7 +258,7 @@ public class SmartcallActivity extends NeedLoginActivity
         // If this is run by PermissionsDispatcher, the permission will have been granted
 //        Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
 //        if (presenter != null) presenter.finishAppDelay();
-        ToastUtil.showNegativeToast(getString(R.string.turn_on_storage, ""));
+//        ToastUtil.showNegativeToast(getString(R.string.turn_on_storage, ""));
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onWriteSdCardDenied");
         AppLogger.permissionGranted = false;
         isPermissionDialogShowing = false;

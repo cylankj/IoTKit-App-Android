@@ -231,7 +231,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .filter(ret -> mView != null && ret != null && ret.getResultResponse() != null)
                 .subscribe(baseDPTaskResult ->
-                                mView.onDateMapRsp(baseDPTaskResult.getResultResponse()),
+                                mView.onDateMapRsp(this.dateItemList = baseDPTaskResult.getResultResponse()),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
         addSubscription(subscription, "DPCamDateQueryTask");
     }

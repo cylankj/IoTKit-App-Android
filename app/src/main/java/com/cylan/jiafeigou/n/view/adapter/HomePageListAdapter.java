@@ -58,7 +58,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
     }
 
 
-    private void setItemState(SuperViewHolder holder, String uuid, DpMsgDefine.DPNet net) {
+    private void setItemState(SuperViewHolder holder, String uuid, DpMsgDefine.DPNet net, Device device) {
         //0 net type 网络类型
         int resIdNet = JConstant.getNetTypeRes(net != null ? net.net : -1);
         if (resIdNet != -1) {
@@ -66,7 +66,6 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             holder.setImageResource(R.id.img_device_state_0, resIdNet);
         } else holder.setVisibility(R.id.img_device_state_0, GONE);
         //1 已分享的设备,此设备分享给别的账号.
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
             holder.setVisibility(R.id.img_device_state_1, GONE);
         } else {
@@ -142,7 +141,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         if (TextUtils.isEmpty(shareAccount))//被分享用户,不显示 消息数
             handleMsgCountTime(holder, uuid, device.pid);
         //右下角状态
-        setItemState(holder, uuid, net);
+        setItemState(holder, uuid, net, device);
         AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,device.pid:%s", uuid, device.pid));
     }
 
