@@ -175,7 +175,8 @@ public class DataSourceManager implements JFGSourceManager {
     public List<Device> getAllJFGDevice() {
         Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
         List<Device> result = new ArrayList<>(rawDeviceOrder.size());
-        for (Pair<Integer, String> pair : rawDeviceOrder) {
+        List<Pair<Integer, String>> copyList = new ArrayList<>(rawDeviceOrder);
+        for (Pair<Integer, String> pair : copyList) {
             Device d = mCachedDeviceMap.get(pair.second);
             if (!result.contains(d))
                 result.add(d);

@@ -558,8 +558,6 @@ public class AnimatorUtils {
      * @return
      */
     public static boolean isReset(View view) {
-        ViewGroup parent = (ViewGroup) view.getParent();
-        int end = parent.getHeight() - view.getTop();
-        return (end + view.getTop() == view.getY());
+        return view.getTop() == view.getY();
     }
 }
