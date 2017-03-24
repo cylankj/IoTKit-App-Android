@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 public class BaseDPTaskResult implements IDPTaskResult {
 
     public static final BaseDPTaskResult SUCCESS = new BaseDPTaskResult().setResultCode(0);
+    public static final BaseDPTaskResult ERROR = new BaseDPTaskResult().setResultCode(-1);
 
     private int resultCode;
     private Object response;

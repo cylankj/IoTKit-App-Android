@@ -52,6 +52,7 @@ public class DPByteParser {
         mElementMap.put(508, boolean.class);
         mElementMap.put(509, int.class);
         mElementMap.put(510, boolean.class);
+        mElementMap.put(511, long.class);
         mElementMap.put(601, String.class);
         mElementMap.put(602, com.cylan.jiafeigou.dp.DpMsgDefine.DPWonderItem.class);
         mElementMap.put(701, boolean.class);

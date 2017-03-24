@@ -32,10 +32,11 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.base.module.JFGDoorBellDevice.NET;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 public class BellSettingFragment extends BaseFragment<BellSettingContract.Presenter>
-        implements BellSettingContract.View{
+        implements BellSettingContract.View {
 
     @BindView(R.id.imgV_top_bar_center)
     TextView imgVTopBarCenter;
@@ -158,7 +159,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                                 LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                             }
                         })
-                        .setNegativeButton(getString(R.string.CANCEL),null)
+                        .setNegativeButton(getString(R.string.CANCEL), null)
                         .create().show();
                 break;
         }
@@ -196,7 +197,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 v.setVisibility(View.GONE);
             }
         }
-        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.net));
+        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(NET, null)));
         tvSettingClear.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
         mNetWorkContainer.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
     }

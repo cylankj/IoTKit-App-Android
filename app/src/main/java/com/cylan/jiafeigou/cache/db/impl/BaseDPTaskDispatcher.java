@@ -8,6 +8,7 @@ package com.cylan.jiafeigou.cache.db.impl;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.jiafeigou.cache.db.view.IDPTask;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
@@ -63,10 +64,15 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
 
                     @Override
                     public void onNext(DPEntity entity) {
-                        BaseDPTaskFactory.getInstance().getTask(entity.action(), false, entity).performServer(null).subscribe(result -> request(1), e -> {
-                            AppLogger.e(e.getMessage());
-                            e.printStackTrace();
-                        });
+                        IDPTask<IDPTaskResult> task = mTaskFactory.getTask(entity.action(), false, entity);
+                        if (task != null) {
+                            task.performServer().subscribe(result -> request(1), e -> {
+                                AppLogger.e(e.getMessage());
+                                e.printStackTrace();
+                            });
+                        } else {
+                            request(1);
+                        }
                     }
                 });
     }
@@ -74,10 +80,11 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
     @Override
     public Observable<IDPTaskResult> perform(IDPEntity entity) {
         return Observable.just(mTaskFactory.getTask(entity.action(), false, entity))
+                .filter(task -> task != null)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(task -> DataSourceManager.getInstance().isOnline()
-                        ? task.performLocal().observeOn(Schedulers.io()).flatMap(task::performServer)
+                        ? task.performLocal().observeOn(Schedulers.io()).flatMap(ret -> task.performServer())
                         : task.performLocal().observeOn(Schedulers.io())
                 );
     }
@@ -91,7 +98,7 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(task -> DataSourceManager.getInstance().isOnline()
-                        ? task.performLocal().observeOn(Schedulers.io()).flatMap(task::performServer)
+                        ? task.performLocal().observeOn(Schedulers.io()).flatMap(ret -> task.performServer())
                         : task.performLocal().observeOn(Schedulers.io())
                 );
     }

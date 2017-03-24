@@ -1,7 +1,8 @@
 package com.cylan.jiafeigou.cache.db.module;
 
 import com.cylan.entity.jniCall.JFGDevice;
-import com.cylan.ext.annotations.DPProperty;
+import com.cylan.ext.annotations.DPType;
+import com.cylan.jiafeigou.base.module.DPProperty;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -10,7 +11,6 @@ import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.google.gson.Gson;
 
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -36,35 +36,39 @@ public class Device extends DataPoint implements IEntity<Device> {
     public String state;
     public String option;
 
-    @DPProperty(msgId = 202)
-    public transient DpMsgDefine.DPPrimary<String> mac;
+    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int MAC = 202;
 
-    @DPProperty(msgId = 205)
-    public transient DpMsgDefine.DPPrimary<Boolean> charging;
+    @DPProperty(type = Boolean.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int CHARGING = 205;
 
-    @DPProperty(msgId = 207)
-    public transient DpMsgDefine.DPPrimary<String> device_version;
+    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int DEVICE_VERSION = 207;
 
-    @DPProperty(msgId = 208)
-    public transient DpMsgDefine.DPPrimary<String> device_sys_version;
+    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int DEVICE_SYS_VERSION = 208;
 
-    @DPProperty(msgId = 209)
-    public transient DpMsgDefine.DPPrimary<Boolean> led_indicator;
+    @DPProperty(type = Boolean.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int LED_INDICATOR = 209;
 
-    @DPProperty(msgId = 211)
-    public transient DpMsgDefine.DPPrimary<Integer> app_upload_log;
+    @DPProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int APP_UPLOAD_LOG = 211;
 
-    @DPProperty(msgId = 212)
-    public transient DpMsgDefine.DPPrimary<String> device_upload_log;
+    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int DEVICE_UPLOAD_LOG = 212;
 
-    @DPProperty(msgId = 213)
-    public transient DpMsgDefine.DPPrimary<Integer> device_p2p_version;
+    @DPProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int DEVICE_P2P_VERSION = 213;
 
-    @DPProperty(msgId = 220)
-    public transient DpMsgDefine.DPPrimary<String> sdk_version;
+    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int SDK_VERSION = 220;
 
-    @DPProperty(msgId = 304)
-    public transient DpMsgDefine.DPPrimary<Integer> device_camera_rotate;
+    @DPProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int DEVICE_CAMERA_ROTATE = 304;
+
+    @DPProperty(type = Long.class, dpType = DPType.TYPE_PRIMARY)
+    public static final transient int COLLECT = 511;
+
     @Generated(hash = 182677992)
     public Device(Long _id, String uuid, String sn, String alias, String shareAccount,
                   int pid, String vid, String account, int regionType, String server, String action,

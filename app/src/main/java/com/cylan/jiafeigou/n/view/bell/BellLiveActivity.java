@@ -271,9 +271,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             ((GLSurfaceView) mSurfaceView).onPause();
             mVideoViewContainer.removeAllViews();
             mSurfaceView = null;
-            muteAudio(false);
             finish();
         }
+        muteAudio(false);
         clearHeadSetEventReceiver();
     }
 

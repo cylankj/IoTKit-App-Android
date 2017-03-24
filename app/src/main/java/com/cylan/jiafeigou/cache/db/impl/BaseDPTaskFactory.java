@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPMultiTask;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
 import com.cylan.jiafeigou.cache.db.view.IDPTask;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.List;
 
@@ -37,11 +38,16 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
 
     @Override
     public IDPTask getTask(DBAction action, boolean multi, Object initValue) {
-        if (multi) {
-            return getMultiTask(action).init((List<IDPEntity>) initValue);
-        } else {
-            return getSingleTask(action).init((IDPEntity) initValue);
+        try {
+            if (multi) {
+                return getMultiTask(action).init((List<IDPEntity>) initValue);
+            } else {
+                return getSingleTask(action).init((IDPEntity) initValue);
+            }
+        } catch (Exception e) {
+            AppLogger.d(e.getMessage());
         }
+        return null;
     }
 
     private IDPSingleTask getSingleTask(DBAction action) {

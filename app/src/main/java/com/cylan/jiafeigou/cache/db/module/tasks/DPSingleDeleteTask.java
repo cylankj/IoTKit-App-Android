@@ -24,7 +24,7 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
+    public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             ArrayList<JFGDPMsg> params = new ArrayList<>(1);
             JFGDPMsg msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());

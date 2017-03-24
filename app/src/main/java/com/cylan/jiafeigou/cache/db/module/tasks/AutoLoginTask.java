@@ -1,10 +1,8 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
-import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.Account;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -85,28 +83,28 @@ public class AutoLoginTask extends BaseDPTask<BaseDPTaskResult> {
 //
 
     @Override
-    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
-        Observable.just(local)
-                .subscribeOn(Schedulers.io())
-                .filter(ret -> ret.getResultResponse() != null)//如果无 account ,则无继续的必要了
-                .map(ret -> (Account) ret.getResultResponse())
-                .flatMap(account -> RxBus.getCacheInstance().toObservable(JFGResult.class)
-                        .mergeWith(Observable.just("Auto Login Perform Server Start")
-                                .observeOn(Schedulers.io())
-                                .map(ret -> {
-                                            try {
-                                                processLogin(account);
-                                            } catch (Exception e) {
-                                                e.printStackTrace();
-                                            }
-                                            return ret;
-                                        }
-                                )
-                                .flatMap(ret -> RxBus.getCacheInstance().toObservable(JFGResult.class))
-                        )
-                        .filter(ret -> ret.event == 2 && ret.code == JError.ErrorOK)//登录成功了
-                        .first()
-                );
+    public Observable<BaseDPTaskResult> performServer() {
+//        Observable.just(local)
+//                .subscribeOn(Schedulers.io())
+//                .filter(ret -> ret.getResultResponse() != null)//如果无 account ,则无继续的必要了
+//                .map(ret -> (Account) ret.getResultResponse())
+//                .flatMap(account -> RxBus.getCacheInstance().toObservable(JFGResult.class)
+//                        .mergeWith(Observable.just("Auto Login Perform Server Start")
+//                                .observeOn(Schedulers.io())
+//                                .map(ret -> {
+//                                            try {
+//                                                processLogin(account);
+//                                            } catch (Exception e) {
+//                                                e.printStackTrace();
+//                                            }
+//                                            return ret;
+//                                        }
+//                                )
+//                                .flatMap(ret -> RxBus.getCacheInstance().toObservable(JFGResult.class))
+//                        )
+//                        .filter(ret -> ret.event == 2 && ret.code == JError.ErrorOK)//登录成功了
+//                        .first()
+//                );
 
         return null;
     }

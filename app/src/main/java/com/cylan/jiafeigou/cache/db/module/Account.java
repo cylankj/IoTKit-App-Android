@@ -1,7 +1,8 @@
 package com.cylan.jiafeigou.cache.db.module;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.ext.annotations.DPProperty;
+import com.cylan.ext.annotations.DPType;
+import com.cylan.jiafeigou.base.module.DPProperty;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -9,7 +10,6 @@ import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
-import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
@@ -40,11 +40,11 @@ public class Account extends DataPoint implements IEntity<Account> {
     private String state;
     private String option;
 
-    @DPProperty(msgId = 601)
-    public transient DpMsgDefine.DPPrimary<String> account_state;
+    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    public transient static final int ACCOUNT_STATE = 601;
 
-    @DPProperty(msgId = 602)
-    public transient DpMsgDefine.DPSet<DpMsgDefine.DPWonderItem> account_wonderful_msg;
+    @DPProperty(type = DpMsgDefine.DPWonderItem.class, dpType = DPType.TYPE_SET)
+    public transient static final int ACCOUNT_WONDERFUL_MSG = 602;
 
     public Account(JFGAccount account) {
         this.account = account.getAccount();
@@ -66,8 +66,8 @@ public class Account extends DataPoint implements IEntity<Account> {
 
     @Generated(hash = 1390423401)
     public Account(Long _id, String account, String server, String password, int loginType, String phone,
-            String token, String alias, boolean enablePush, boolean enableSound, String email,
-            boolean enableVibrate, String photoUrl, String action, String state, String option) {
+                   String token, String alias, boolean enablePush, boolean enableSound, String email,
+                   boolean enableVibrate, String photoUrl, String action, String state, String option) {
         this._id = _id;
         this.account = account;
         this.server = server;

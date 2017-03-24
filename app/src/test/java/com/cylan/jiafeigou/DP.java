@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou;
 
+import com.cylan.jiafeigou.base.module.DPProperty;
+import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.google.gson.Gson;
@@ -9,6 +11,7 @@ import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -87,6 +90,18 @@ public class DP {
             System.out.println(new Gson().toJson(bellRing));
         } catch (IOException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void sss() {
+        JFGCameraDevice device = new JFGCameraDevice();
+
+        Field[] fields = device.getClass().getFields();
+        for (Field field : fields) {
+            DPProperty annotation = field.getAnnotation(DPProperty.class);
+            if (annotation != null)
+                System.out.println(annotation.type());
         }
     }
 

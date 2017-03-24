@@ -254,9 +254,9 @@ public class MiscUtils {
     }
 
     public static <T extends DataPoint> T safeGet_(DpMsgDefine.DPSingle<T> value, T defaultValue) {
-        if (value != null && value.$() != null) {
+        if (value != null) {
             try {
-                return value.$();
+                return defaultValue;
             } catch (Exception e) {
                 return defaultValue;
             }

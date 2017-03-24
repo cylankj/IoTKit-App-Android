@@ -116,7 +116,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .setUuid("")
                 .setVersion(0L)
                 .setAction(DBAction.QUERY)
-                .setOption(new DBOption.SingleQueryOption(false, 20))
+                .setOption(DBOption.SingleQueryOption.DESC_20_LIMIT)
                 .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
                 .observeOn(Schedulers.io())
                 .flatMap(this::perform)

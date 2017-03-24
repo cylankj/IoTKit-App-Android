@@ -276,6 +276,26 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(devices -> Observable.just(devices.iterator().next()));
     }
 
+    @Override
+    public void setValue(String uuid, int msgId, byte[] bytes, long version, long seq) {
+        Device device = mCachedDeviceMap.get(uuid);
+        if (device != null && device.accept(msgId)) {//优先尝试写入device中
+            device.setValue(msgId, version, bytes, -seq);
+        } else if (account != null && account.accept(msgId)) {//到这里说明无法将数据写入device中,则写入到account中
+            account.setValue(msgId, version, bytes, seq);
+        }
+    }
+
+    @Override
+    public void clearValue(String uuid, int msgId) {
+        Device device = mCachedDeviceMap.get(uuid);
+        if (device != null && device.accept(msgId)) {
+            device.clear(msgId);
+        } else if (account != null && account.accept(msgId)) {
+            account.clear(msgId);
+        }
+    }
+
     private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
         return dbHelper.unBindDeviceWithConfirm(uuids)
                 .map(devices -> {
@@ -464,11 +484,11 @@ public class DataSourceManager implements JFGSourceManager {
         Device device = mCachedDeviceMap.get(uuid);
         if (device != null) {
             //这里优先从根据UUID从device中获取数据
-            result = device.getValue(msgId, seq);
+            result = device.$(msgId, null);
         }
         if (result == null && account != null) {
             //如果无法从device中获取值,则从account中获取
-            result = account.getValue(msgId, seq);
+            result = account.$(msgId, null);
         }
         return getValueWithAccountCheck(result);
     }
@@ -711,17 +731,13 @@ public class DataSourceManager implements JFGSourceManager {
                 .observeOn(Schedulers.io())
                 .flatMap(event -> dbHelper.saveDPByteInTx(event.getDataRsp)
                         .map(dpEntities -> {
-                            Device device = mCachedDeviceMap.get(event.getDataRsp.identity);
+                            if (event.getDataRsp.map != null) {
+                                for (Integer integer : event.getDataRsp.map.keySet()) {//set 类型的每次写入前都要清空,因为无法复用
+                                    clearValue(event.getDataRsp.identity, integer);
+                                }
+                            }
                             for (DPEntity entity : dpEntities) {
-                                boolean change = false;
-                                if (device != null) {//优先尝试写入device中
-                                    change = device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), event.getDataRsp.seq);
-                                }
-                                if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
-                                    change |= account.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), event.getDataRsp.seq);
-                                    if (change)
-                                        account.dpMsgVersion = System.currentTimeMillis();
-                                }
+                                setValue(event.getDataRsp.identity, entity.getMsgId(), entity.getBytes(), entity.getVersion(), event.getDataRsp.seq);
                             }
                             getCacheInstance().post(event.getDataRsp);
                             return "多线程真心麻烦";
@@ -760,18 +776,9 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(event -> dbHelper.saveDPByteInTx(event.s, event.arrayList)
                         .map(dpEntities -> {
                             ArrayList<Long> updateIdList = new ArrayList<>();
-                            Device device = mCachedDeviceMap.get(event.s);
                             for (DPEntity entity : dpEntities) {
                                 updateIdList.add((long) entity.getMsgId());
-                                boolean change = false;
-                                if (device != null) {//优先尝试写入device中
-                                    change = device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
-                                }
-                                if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
-                                    change |= account.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
-                                    if (change)
-                                        account.dpMsgVersion = System.currentTimeMillis();
-                                }
+                                setValue(event.s, entity.getMsgId(), entity.getBytes(), entity.getVersion(), -1);
                             }
                             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList));
                             return "多线程真是麻烦";

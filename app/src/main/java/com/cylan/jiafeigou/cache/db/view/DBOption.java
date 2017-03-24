@@ -27,10 +27,20 @@ public interface DBOption {
     }
 
     class SingleQueryOption extends BaseDBOption {
+        public int type;//查询方式:0:robotGetData,1:robotGetDataByTime ,default:0
         public boolean asc;
         public int limit;
 
+        public static final SingleQueryOption ONE_BY_TIME = new SingleQueryOption(1, false, 1);
+        public static final SingleQueryOption DESC_20_LIMIT = new SingleQueryOption(false, 20);
+        public static final SingleQueryOption ASC_20_LIMIT = new SingleQueryOption(true, 20);
+
         public SingleQueryOption(boolean asc, int limit) {
+            this(0, asc, limit);
+        }
+
+        public SingleQueryOption(int type, boolean asc, int limit) {
+            this.type = type;
             this.asc = asc;
             this.limit = limit;
         }

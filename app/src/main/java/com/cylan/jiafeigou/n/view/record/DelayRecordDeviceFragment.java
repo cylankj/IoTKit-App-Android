@@ -8,8 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
@@ -130,12 +128,12 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
 
         @Override
         public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, String item) {
-            JFGCameraDevice device = DataSourceManager.getInstance().getJFGDevice(item);
-            boolean online = device.net != null && (device.net.net != 0 && device.net.net != -1);
-            holder.setEnabled(R.id.item_device_container, online);
-            holder.setText(R.id.item_device_alias, device.alias);
-            holder.setText(R.id.item_device_open_state, device.camera_time_lapse_photography == null ? mContext.getString(R.string.Tap1_Setting_Unopened) : mContext.getString(R.string.Tap2_Index_OpenTimelapse));
-            holder.setImageResource(R.id.item_device_icon, online ? R.drawable.icon_home_camera_online : R.drawable.icon_home_camera_offline);
+//            JFGCameraDevice device = DataSourceManager.getInstance().getJFGDevice(item);
+//            boolean online = device.net != null && (device.net.net != 0 && device.net.net != -1);
+//            holder.setEnabled(R.id.item_device_container, online);
+//            holder.setText(R.id.item_device_alias, device.alias);
+//            holder.setText(R.id.item_device_open_state, device.camera_time_lapse_photography == null ? mContext.getString(R.string.Tap1_Setting_Unopened) : mContext.getString(R.string.Tap2_Index_OpenTimelapse));
+//            holder.setImageResource(R.id.item_device_icon, online ? R.drawable.icon_home_camera_online : R.drawable.icon_home_camera_offline);
         }
     }
 }

@@ -351,12 +351,12 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
     @Override
     public void onShowProperty(JFGCameraDevice device) {
-        if (!device.camera_time_lapse_photography.isNull()) {
-            mRecordBeginTime = device.camera_time_lapse_photography.timeStart;
-            mRecordTimeCycle = device.camera_time_lapse_photography.timePeriod;
-            mRecordTimeDuration = device.camera_time_lapse_photography.timeDuration;
-            mRecordStatus = device.camera_time_lapse_photography.status;
-        }
+//        if (!device.camera_time_lapse_photography.isNull()) {
+//            mRecordBeginTime = device.camera_time_lapse_photography.timeStart;
+//            mRecordTimeCycle = device.camera_time_lapse_photography.timePeriod;
+//            mRecordTimeDuration = device.camera_time_lapse_photography.timeDuration;
+//            mRecordStatus = device.camera_time_lapse_photography.status;
+//        }
 
 
         refreshLayout();

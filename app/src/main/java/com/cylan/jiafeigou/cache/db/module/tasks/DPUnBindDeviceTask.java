@@ -25,7 +25,7 @@ public class DPUnBindDeviceTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
+    public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 int seq = JfgCmdInsurance.getCmd().unBindDevice(entity.getUuid());
@@ -42,7 +42,7 @@ public class DPUnBindDeviceTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(seq -> RxBus.getCacheInstance().toObservable(JFGResult.class))//无法获取 seq 只能根据类型来判断了
                 .filter(rsp -> rsp.event == JResultEvent.JFG_RESULT_UNBINDDEV)
                 .first()
-                .timeout(10, TimeUnit.SECONDS)
+                .timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS)
                 .flatMap(rsp -> {
                     if (rsp.code == 0) {//成功
                         AppLogger.d("删除设备成功");

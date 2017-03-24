@@ -23,7 +23,6 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
 import com.cylan.jiafeigou.n.view.cam.HardwareUpdateFragment;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ActivityUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.SettingItemView0;
@@ -34,6 +33,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_201_NET;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_202_MAC;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_206_BATTERY;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_207_DEVICE_VERSION;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_208_DEVICE_SYS_VERSION;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_210_UP_TIME;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_DEFAULT_EDIT_TEXT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
@@ -143,20 +148,20 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         String alias = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         svSettingDeviceAlias.setTvSubTitle(alias);
         svSettingDeviceCid.setTvSubTitle(device.uuid);
-        svSettingDeviceMac.setTvSubTitle(device.mac.value);
-        svSettingDeviceSysVersion.setTvSubTitle(device.device_sys_version.value);
-        svSettingDeviceVersion.setTvSubTitle(device.device_version.value);
-        int battery = MiscUtils.safeGet(device.battery, 0);
+        svSettingDeviceMac.setTvSubTitle(device.$(ID_202_MAC, ""));
+        svSettingDeviceSysVersion.setTvSubTitle(device.$(ID_208_DEVICE_SYS_VERSION, ""));
+        svSettingDeviceVersion.setTvSubTitle(device.$(ID_207_DEVICE_VERSION, ""));
+        int battery = device.$(ID_206_BATTERY, 0);
         svSettingDeviceBattery.setTvSubTitle(battery + "");
-        DpMsgDefine.DPNet net = MiscUtils.safeGet_(device.net, DpMsgDefine.EMPTY.NET);
+        DpMsgDefine.DPNet net = device.$(ID_201_NET, DpMsgDefine.EMPTY.NET);
         String ssid = TextUtils.isEmpty(net.ssid) ? getString(R.string.OFF_LINE) : net.ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);
-        svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(MiscUtils.safeGet(device.up_time, 0)));
+        svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(device.$(ID_210_UP_TIME, 0)));
         hardwareUpdatePoint.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(device.shareAccount)) {
             svSettingHardwareUpdate.setVisibility(View.GONE);
         } else {
-            svSettingHardwareUpdate.setTvSubTitle(MiscUtils.safeGet(device.device_version, ""));
+            svSettingHardwareUpdate.setTvSubTitle(device.$(ID_207_DEVICE_VERSION, ""));
             if (mPresenter != null)
                 mPresenter.checkNewVersion(mUUID);
         }

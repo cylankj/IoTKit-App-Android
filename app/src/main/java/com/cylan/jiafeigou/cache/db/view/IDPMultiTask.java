@@ -9,5 +9,5 @@ import java.util.List;
 //multiTask 集合Item的uuid必须相同且 option 也必须相同,否则只能使用 singleTask
 public interface IDPMultiTask<T extends IDPTaskResult> extends IDPTask<T> {
 
-    <R extends IDPMultiTask<T>> R init(List<IDPEntity> cache);
+    <R extends IDPMultiTask<T>> R init(List<IDPEntity> cache) throws Exception;
 }

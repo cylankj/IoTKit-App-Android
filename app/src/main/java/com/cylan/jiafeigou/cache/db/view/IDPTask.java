@@ -10,5 +10,5 @@ public interface IDPTask<T extends IDPTaskResult> {
 
     Observable<T> performLocal();
 
-    Observable<T> performServer(T local);
+    Observable<T> performServer();
 }

@@ -18,9 +18,6 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
-import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
@@ -32,12 +29,12 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -53,9 +50,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -95,6 +89,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     private File mDownloadFile;
 
     private boolean isCollect = false;
+    private long collectVersion = -1;
 
     private CompositeSubscription compositeSubscription;
 
@@ -149,6 +144,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         mCollect.setEnabled(false);
         check().observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
+//                    this.result = result;
                     if (isCollect) {//没有收藏
                         AppLogger.d("已经收藏了啊");
                         mCollect.setImageResource(R.drawable.icon_collected);
@@ -158,6 +154,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     }
                     mCollect.setEnabled(true);
                 }, e -> {
+                    mCollect.setEnabled(true);
                     AppLogger.d(e.getMessage());
                     e.printStackTrace();
                 });
@@ -212,29 +209,11 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         } else {
             mCollect.setImageResource(R.drawable.icon_collected);
         }
-        check().subscribe(result -> {
-            if (!isCollect) {//未收藏
-                collect();
-            } else {
-                ArrayList<JFGDPMsg> msgs = result.map.get(511);
-                JFGDPMsg msg = msgs.get(0);
-                try {
-                    Long ctime = DpUtils.unpackData(msg.packValue, Long.class);
-                    unCollect(ctime);
-                } catch (IOException e) {
-                    mCollect.setEnabled(true);
-                    AppLogger.d(e.getMessage());
-                    e.printStackTrace();
-                }
-
-            }
-        }, e -> {
-            mCollect.setEnabled(true);
-            AppLogger.d(e.getMessage());
-            e.printStackTrace();
-        });
-
-
+        if (!isCollect) {//未收藏
+            collect();
+        } else if (collectVersion != -1) {
+            unCollect(collectVersion);
+        }
     }
 
     private void collect() {
@@ -374,32 +353,49 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         super.onBackPressed();
     }
 
-    public Observable<RobotoGetDataRsp> check() {
-        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-            try {
-                ArrayList<JFGDPMsg> params = new ArrayList<>(1);
-                JFGDPMsg msg = new JFGDPMsg(511, mCallRecord.timeInLong / 1000L);
-                params.add(msg);
-                long seq = JfgCmdInsurance.getCmd().robotGetDataByTime(mUUID, params, 0);
-                subscriber.onNext(seq);
-                subscriber.onCompleted();
-            } catch (JfgException e) {
-                e.printStackTrace();
-                AppLogger.e(e.getMessage());
-                subscriber.onError(e);
-            }
-        })
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> rsp.seq == seq).first())
-                .timeout(10, TimeUnit.SECONDS)
-                .map(result -> {
-                    if (result.map == null || result.map.size() == 0 || result.map.get(511) == null || result.map.get(511).size() == 0) {//未收藏
-                        isCollect = false;
-                    } else {
+    public Observable<IDPTaskResult> check() {
+        return Observable.just(new DPEntity()
+                .setMsgId(511)
+                .setUuid(mUUID)
+                .setAction(DBAction.QUERY)
+                .setVersion(mCallRecord.timeInLong / 1000L)
+                .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
+                .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
+                .map(ret -> {
+                    DpMsgDefine.DPPrimary<Long> version = ret.getResultResponse();
+                    if (version != null) {
                         isCollect = true;
-                    }
-                    return result;
+                        collectVersion = version.value;
+                    } else isCollect = false;
+                    return ret;
                 });
+
+//        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+//            try {
+//                ArrayList<JFGDPMsg> params = new ArrayList<>(1);
+//                JFGDPMsg msg = new JFGDPMsg(511, mCallRecord.timeInLong / 1000L);
+//                params.add(msg);
+//                long seq = JfgCmdInsurance.getCmd().robotGetDataByTime(mUUID, params, 0);
+//                AppLogger.d("正在检查511消息, seq 为:" + seq);
+//                subscriber.onNext(seq);
+//                subscriber.onCompleted();
+//            } catch (JfgException e) {
+//                e.printStackTrace();
+//                AppLogger.e(e.getMessage());
+//                subscriber.onError(e);
+//            }
+//        })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(Schedulers.io())
+//                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> rsp.seq == seq).first())
+//                .timeout(10, TimeUnit.SECONDS)
+//                .map(result -> {
+//                    if (result.map == null || result.map.size() == 0 || result.map.get(511) == null || result.map.get(511).size() == 0) {//未收藏
+//                        isCollect = false;
+//                    } else {
+//                        isCollect = true;
+//                    }
+//                    return result;
+//                });
     }
 }

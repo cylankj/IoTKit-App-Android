@@ -5,5 +5,5 @@ package com.cylan.jiafeigou.cache.db.view;
  */
 
 public interface IDPSingleTask<T extends IDPTaskResult> extends IDPTask<T> {
-    <R extends IDPSingleTask<T>> R init(IDPEntity cache);
+    <R extends IDPSingleTask<T>> R init(IDPEntity cache) throws Exception;
 }

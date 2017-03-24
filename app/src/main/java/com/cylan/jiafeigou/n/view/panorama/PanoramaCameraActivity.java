@@ -61,6 +61,9 @@ import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.R.id.act_panorama_camera_banner_information_connection_icon;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_202_MAC;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_205_CHARGING;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_206_BATTERY;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_LONG;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_NONE;
 import static com.cylan.jiafeigou.n.view.panorama.PanoramaCameraContact.View.PANORAMA_RECORD_MODE.MODE_SHORT;
@@ -139,23 +142,23 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onShowProperty(JFGCameraDevice device) {
-        if (device.battery != null) {
-            bannerChargeText.setText(device.battery.value + "%");
-            int battery = device.battery.value;
-            if (battery <= 20) {
-                bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_low_power);
-            } else if (battery > 20 && battery < 80) {
-                bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_half);
-            } else if (battery >= 80) {
-                bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_full);
-            }
+        int battery = device.$(ID_206_BATTERY, 0);
+        bannerChargeText.setText(battery + "%");
+        if (battery <= 20) {
+            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_low_power);
+        } else if (battery > 20 && battery < 80) {
+            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_half);
+        } else if (battery >= 80) {
+            bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge_full);
         }
-        if (device.charging != null && device.charging.value) {
+        boolean charging = device.$(ID_205_CHARGING, false);
+        if (charging) {
             bannerChargeIcon.setImageResource(R.drawable.camera720_icon_electricity_charge);
         }
-        if (device.mac != null) {
+        String mac = device.$(ID_202_MAC, "");
+        if (mac != null) {
             String routerMac = NetUtils.getRouterMacAddress(getApplication());
-            if (TextUtils.equals(device.mac.value, routerMac)) {
+            if (TextUtils.equals(mac, routerMac)) {
                 //AP 模式
                 bannerConnectionIcon.setImageResource(R.drawable.camera720_icon_ap);
                 bannerConnectionText.setText("户外模式");
@@ -179,9 +182,9 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onDismiss() {
-      if (surfaceView!=null){
-          surfaceView.onDestroy();
-      }
+        if (surfaceView != null) {
+            surfaceView.onDestroy();
+        }
     }
 
     public void showLoading(String msg) {

@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -55,6 +54,8 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Subscription;
+
+import static com.cylan.jiafeigou.base.module.JFGDoorBellDevice.NET;
 
 public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeContract.Presenter>
         implements DoorBellHomeContract.View,
@@ -462,7 +463,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onShowProperty(JFGDoorBellDevice device) {
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         if (isNetworkConnected(this)) {
-            DpMsgDefine.DPNet net = MiscUtils.safeGet_(device.net, DpMsgDefine.EMPTY.NET);
+            DpMsgDefine.DPNet net = device.$(NET, DpMsgDefine.EMPTY.NET);
             cvBellHomeBackground.setState(net.net);
         } else {
             cvBellHomeBackground.setState(2);

@@ -1,49 +1,42 @@
 // APT自动生成的文件,请勿修改!!!!
 package com.cylan.jiafeigou.base.module;
 
-import com.cylan.ext.annotations.DPProperty;
+import com.cylan.ext.annotations.DPType;
 import com.cylan.jiafeigou.cache.db.module.Device;
 
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPBellCallRecord;
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPBindLog;
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPNet;
-import static com.cylan.jiafeigou.dp.DpMsgDefine.DPPrimary;
-import static com.cylan.jiafeigou.dp.DpMsgDefine.DPSet;
 import static com.cylan.jiafeigou.dp.DpMsgDefine.DPTimeZone;
 
 public class JFGDoorBellDevice extends Device {
-    @DPProperty(msgId = 201)
-    public DPNet net;
+    @DPProperty(type = DPNet.class)
+    public static final int NET = 201;
 
-    @DPProperty(msgId = 206)
-    public DPPrimary<Integer> battery;
+    @DPProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
+    public static final int BATTERY = 206;
 
-    @DPProperty(msgId = 210)
-    public DPPrimary<Integer> up_time;
+    @DPProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
+    public static final int UP_TIME = 210;
 
-    @DPProperty(msgId = 214)
-    public DPTimeZone device_time_zone;
+    @DPProperty(type = DPTimeZone.class)
+    public static final int DEVICE_TIME_ZONE = -214;
 
-    @DPProperty(msgId = 216)
-    public DPPrimary<Boolean> device_voltage;
+    @DPProperty(type = Boolean.class, dpType = DPType.TYPE_PRIMARY)
+    public static final int DEVICE_VOLTAGE = 216;
 
-    @DPProperty(msgId = 219)
-    public DPBindLog device_bind_log;
+    @DPProperty(type = DPBindLog.class)
+    public static final int DEVICE_BIND_LOG = 219;
 
-    @DPProperty(msgId = 301)
-    public DPPrimary<Boolean> device_mic;
+    @DPProperty(type = Boolean.class, dpType = DPType.TYPE_PRIMARY)
+    public static final int DEVICE_MIC = 301;
 
-    @DPProperty(msgId = 302)
-    public DPPrimary<Integer> device_speaker;
+    @DPProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
+    public static final int DEVICE_SPEAKER = 302;
 
-    @DPProperty(msgId = 401)
-    public DPSet<DPBellCallRecord> bell_call_state;
+    @DPProperty(type = DPBellCallRecord.class, dpType = DPType.TYPE_SET)
+    public static final int BELL_CALL_STATE = 401;
 
-    @DPProperty(msgId = 402)
-    public DPPrimary<Integer> bell_voice_msg;
-
-    @Override
-    public JFGDoorBellDevice $() {
-        return this;
-    }
+    @DPProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
+    public static final int BELL_VOICE_MSG = 402;
 }

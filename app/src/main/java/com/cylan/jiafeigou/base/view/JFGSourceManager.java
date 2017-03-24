@@ -126,4 +126,8 @@ public interface JFGSourceManager {
     Observable<Account> logout();
 
     Observable<Device> unBindDevice(String uuid);
+
+    void setValue(String uuid, int msgId, byte[] bytes, long version, long seq);
+
+    void clearValue(String uuid, int msgId);
 }

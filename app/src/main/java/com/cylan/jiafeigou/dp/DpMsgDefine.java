@@ -794,12 +794,6 @@ public class DpMsgDefine {
             return DpUtils.pack(value);
         }
 
-
-        @Override
-        public T $() {
-            return (T) ((DPPrimary) super.$()).value;
-        }
-
         protected DPPrimary(Parcel in) {
             super(in);
             this.value = (T) in.readValue(Object.class.getClassLoader());
@@ -820,19 +814,17 @@ public class DpMsgDefine {
 
     public static final class DPSet<T> extends DataPoint {
         public TreeSet<T> value;
+        private List<T> listValue = new ArrayList<>();
 
         @Override
         public int describeContents() {
             return 0;
         }
 
-        @Override
-        public T $() {
-            return (T) ((DPSet) super.$()).value;
-        }
-
         public List<T> list() {
-            return new ArrayList<>(value);
+            listValue.clear();
+            listValue.addAll(value);
+            return listValue;
         }
 
 
@@ -872,11 +864,6 @@ public class DpMsgDefine {
     public static abstract class DPSingle<T extends DataPoint> extends DataPoint {
 
         @Override
-        public T $() {
-            return (T) super.$();
-        }
-
-        @Override
         public int describeContents() {
             return 0;
         }
@@ -897,12 +884,6 @@ public class DpMsgDefine {
     public static abstract class DPMulti<T extends DataPoint> extends DataPoint {
         @Ignore
         public boolean isRead;
-
-
-        @Override
-        public T $() {
-            return (T) super.$();
-        }
 
         @Override
         public int describeContents() {

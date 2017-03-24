@@ -22,6 +22,7 @@ public class BaseDPTaskException extends RuntimeException implements IDPTaskExce
     }
 
     public BaseDPTaskException(int errorCode, String error) {
+        super("错误码为:" + errorCode + "错误消息为:" + error);
         this.errorCode = errorCode;
         this.error = error;
     }

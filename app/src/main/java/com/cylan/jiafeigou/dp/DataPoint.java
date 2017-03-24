@@ -5,21 +5,16 @@ import android.os.Parcelable;
 import android.support.v4.util.LongSparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.ext.annotations.DPProperty;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.base.module.DPProperty;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import org.msgpack.MessagePack;
 import org.msgpack.annotation.Ignore;
 
-import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.TreeSet;
 
 import static android.R.attr.id;
@@ -58,22 +53,16 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     }
 
     @Ignore
-    private LongSparseArray<Field> mDPPropertyArray;
+    private LongSparseArray<DPProperty> mDPPropertyArray;
+    @Ignore
+    private LongSparseArray<DataPoint> dpValuePool;
 
     public byte[] toBytes() {
-        try {
-            MessagePack msgpack = new MessagePack();
-            return msgpack.write(this);
-        } catch (IOException ex) {
-            AppLogger.e("msgpack read byte ex: " + ex.getLocalizedMessage());
-            return null;
-        }
+        return DpUtils.pack(this);
     }
-
 
     public DataPoint() {
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -91,7 +80,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
     }
 
     @Override
-    public int compareTo(DataPoint another) {
+    public final int compareTo(DataPoint another) {
         return dpMsgVersion == another.dpMsgVersion ? 0 : dpMsgVersion > another.dpMsgVersion ? -1 : 1;//降序
     }
 
@@ -114,17 +103,18 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
         this.dpMsgSeq = in.readLong();
     }
 
-
-    /**
-     * 避免检查空指针,只针对DataPoint,只针对获取值的情,
-     * 如果需要检查非空可调用isNull函数,
-     */
-    @Deprecated
-    public Object $() {
-        return this;
+    protected final LongSparseArray<DataPoint> getValuePool() {
+        if (dpValuePool == null) {
+            synchronized (this) {
+                if (dpValuePool == null) {
+                    dpValuePool = new LongSparseArray<>();
+                }
+            }
+        }
+        return dpValuePool;
     }
 
-    protected final LongSparseArray<Field> getProperties() {
+    protected final LongSparseArray<DPProperty> getProperties() {
         if (mDPPropertyArray == null) {
             synchronized (this) {
                 if (mDPPropertyArray == null) {
@@ -133,16 +123,16 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                     if (fields != null) {
                         long msgId;
                         Field field;
-                        int modifier;
                         for (int i = 0; i < fields.length; i++) {
                             field = fields[i];
-                            modifier = field.getModifiers();
-                            if ((modifier & Modifier.FINAL) == Modifier.FINAL || (modifier & Modifier.STATIC) == Modifier.STATIC) {
-                                continue;
-                            }
                             DPProperty dpProperty = field.getAnnotation(DPProperty.class);
-                            msgId = dpProperty != null ? dpProperty.msgId() : MSG_ID_VIRTUAL_START + i;
-                            mDPPropertyArray.put(msgId, field);
+                            if (dpProperty == null) continue;
+                            try {
+                                msgId = field.getInt(this);
+                                mDPPropertyArray.put(msgId, dpProperty);
+                            } catch (IllegalAccessException e) {
+                                e.printStackTrace();
+                            }
                         }
                     }
                 }
@@ -151,10 +141,11 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
         return mDPPropertyArray;
     }
 
-    public boolean updateValue(int msgId, Object value) throws IllegalAccessException {
-        Field field = getProperties().get(msgId);
-        if (field != null) {
-            field.set(this, value);
+    public boolean updateValue(int msgId, DataPoint value) throws IllegalAccessException {
+        if (!accept(msgId)) return false;
+        DPProperty property = getProperties().get(msgId);
+        if (property != null) {
+            getValuePool().put(msgId, value);
             return true;
         } else if (BuildConfig.DEBUG) throw new NullPointerException("empty");
         return false;
@@ -165,25 +156,19 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
      */
     public final ArrayList<JFGDPMsg> getQueryParameters(boolean init) {
         ArrayList<JFGDPMsg> result = new ArrayList<>();
-        LongSparseArray<Field> properties = getProperties();
-        try {
-            Field field;
-            DataPoint value;
-            long version = 0;
-            int msgId;
-            for (int i = 0; i < properties.size(); i++) {
-                msgId = (int) properties.keyAt(i);
-                if (msgId >= MSG_ID_VIRTUAL_START && msgId <= MSG_ID_VIRTUAL_END)
-                    continue;//说明当前是虚拟ID,则跳过
-                if (init) {
-                    field = properties.valueAt(i);
-                    value = (DataPoint) field.get(this);
-                    version = value != null ? value.dpMsgVersion : version;
-                }
-                result.add(new JFGDPMsg((int) properties.keyAt(i), version));
+        LongSparseArray<DPProperty> properties = getProperties();
+        DataPoint value;
+        long version = 0;
+        int msgId;
+        for (int i = 0; i < properties.size(); i++) {
+            msgId = (int) properties.keyAt(i);
+            if (msgId >= MSG_ID_VIRTUAL_START && msgId <= MSG_ID_VIRTUAL_END)
+                continue;//说明当前是虚拟ID,则跳过
+            if (init) {
+                value = getValuePool().get(msgId);
+                version = value == null ? 0 : value.dpMsgVersion;
             }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            result.add(new JFGDPMsg((int) properties.keyAt(i), version));
         }
         return result;
     }
@@ -193,109 +178,93 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
         return setValue(msg, -1);
     }
 
+    public final boolean accept(long msgId) {
+        return getProperties().get(msgId) != null;
+    }
 
     public final boolean setValue(long msgId, long version, byte[] packValue, long seq) {
+        if (!accept(msgId)) return false;
         try {
             if (msgId == -1 || packValue == null) return false;
-            Field field = getProperties().get(msgId);
-            if (field == null) return false;
-            DataPoint value = (DataPoint) field.get(this);
-            Class<?> type = field.getType();
-            if (DpMsgDefine.DPSet.class.isAssignableFrom(type)) {//setType
-                DpMsgDefine.DPSet<DataPoint> setValue = (DpMsgDefine.DPSet<DataPoint>) value;
-                if (setValue == null) setValue = new DpMsgDefine.DPSet<>();
-                if (setValue.value == null) setValue.value = new TreeSet<>();
-                field.set(this, setValue);
-                Class<?> paramType = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-                value = (DataPoint) unpackData(packValue, paramType);
-                value.dpMsgVersion = version;
-                value.dpMsgId = msgId;
-                value.dpMsgSeq = seq;
-                setValue.value.remove(value);
-                boolean add = setValue.value.add(value);
-                DataPoint first = setValue.value.first();
-                setValue.dpMsgVersion = first.dpMsgVersion;
-                setValue.dpMsgSeq = first.dpMsgSeq;
-                setValue.dpMsgId = first.dpMsgId;
-                ((DataPoint) setValue).isNull = false;
-                return add;
-            }
+            DPProperty property = getProperties().get(msgId);
+            if (property == null) return false;
+            DataPoint value;
+            switch (property.dpType()) {
+                case TYPE_FIELD: {
+                    value = (DataPoint) unpackData(packValue, property.type());
+                    value.dpMsgVersion = version;
+                    value.dpMsgId = id;
+                    value.dpMsgSeq = seq;
+                    getValuePool().put(msgId, value);
+                }
+                break;
+                case TYPE_PRIMARY: {
+                    DpMsgDefine.DPPrimary primary = new DpMsgDefine.DPPrimary();
+                    primary.value = unpackData(packValue, property.type());
+                    primary.dpMsgVersion = version;
+                    primary.dpMsgId = msgId;
+                    primary.dpMsgSeq = seq;
+                    getValuePool().put(msgId, primary);
+                }
+                break;
+                case TYPE_SET: {
+                    DpMsgDefine.DPSet<DataPoint> setValue = (DpMsgDefine.DPSet<DataPoint>) getValuePool().get(msgId);
+                    if (setValue == null) {
+                        setValue = new DpMsgDefine.DPSet<>(new TreeSet<>());
+                        getValuePool().put(msgId, setValue);
+                    }
 
-            if (value != null && value.dpMsgVersion > version) return false;//数据已是最新的,无需更新了
-
-            if ((DpMsgDefine.DPPrimary.class.isAssignableFrom(type))) {
-                type = (Class<?>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-                DpMsgDefine.DPPrimary primary = new DpMsgDefine.DPPrimary();
-                primary.value = unpackData(packValue, type);
-                primary.dpMsgVersion = version;
-                primary.dpMsgId = msgId;
-                primary.dpMsgSeq = seq;
-                field.set(this, primary);
-            } else {
-                value = (DataPoint) unpackData(packValue, type);
-                value.dpMsgVersion = version;
-                value.dpMsgId = id;
-                value.dpMsgSeq = seq;
-                field.set(this, value);
+                    Class<?> paramType = property.type();
+                    value = (DataPoint) unpackData(packValue, paramType);
+                    value.dpMsgVersion = version;
+                    value.dpMsgId = msgId;
+                    value.dpMsgSeq = seq;
+                    setValue.value.remove(value);
+                    boolean add = setValue.value.add(value);
+                    DataPoint first = setValue.value.first();
+                    setValue.dpMsgVersion = first.dpMsgVersion;
+                    setValue.dpMsgSeq = first.dpMsgSeq;
+                    setValue.dpMsgId = first.dpMsgId;
+                    ((DataPoint) setValue).isNull = false;
+                    return add;
+                }
             }
         } catch (Exception e) {
-            AppLogger.e("err: " + msgId + " " + e);
+            AppLogger.d("解析消息出现异常: msgId 为:" + msgId + "," + e.getMessage());
         }
         return true;
     }
 
 
     public final boolean setValue(JFGDPMsg msg, long seq) {
-        return setValue(msg.id, msg.version, msg.packValue, seq);
+        return accept(msg.id) && setValue(msg.id, msg.version, msg.packValue, seq);
     }
 
-    public final <T extends DataPoint> T getValue(long msgId) {
-        return getValue(msgId, -1);
-    }
-
-    public final <T extends DataPoint> T getValue(long msgId, long seq) {
-        try {
-            Field field = getProperties().get(msgId);
-            if (field == null) return null;
-            Object value = field.get(this);
-            if (value == null || seq == -1) return (T) value;
-
-            if (value instanceof DpMsgDefine.DPSet) {
-                TreeSet<DataPoint> origin = new TreeSet<>();
-                Set<DataPoint> temp = getValue(value);
-                for (DataPoint point : temp) {
-                    if (point.dpMsgSeq == seq) origin.add(point);
-                }
-                DpMsgDefine.DPSet<DataPoint> result = new DpMsgDefine.DPSet<>();
-                result.value = origin;
-                result.dpMsgId = msgId;
-                result.dpMsgSeq = seq;
-                if (origin.size() > 0) {
-                    DataPoint first = origin.first();
-                    result.dpMsgSeq = first.dpMsgSeq;
-                    result.dpMsgId = first.dpMsgId;
-                    result.dpMsgVersion = first.dpMsgVersion;
-                }
-                return (T) result;
+    //针对 set 类型使用
+    public final void clear(int msgId) {
+        if (accept(msgId)) {
+            DataPoint dataPoint = getValuePool().get(msgId);
+            if (dataPoint instanceof DpMsgDefine.DPSet) {
+                ((DpMsgDefine.DPSet) dataPoint).value.clear();
+            } else {
+                getValuePool().remove(msgId);
             }
-            return (T) value;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
         }
-        return null;
     }
 
-    public static final <T> T getValue(Object value) {
-        if (value == null) return null;
-
-        if (value instanceof DpMsgDefine.DPSet) {
-            return (T) ((DpMsgDefine.DPSet<DataPoint>) value).value;
-        }
-
-        if (value instanceof DpMsgDefine.DPPrimary) {
+    public final <T> T $(long msgId, T defaultValue) {
+        if (!accept(msgId)) return defaultValue;
+        DataPoint value = getValuePool().get(msgId);
+        if (value == null) {
+            return defaultValue;
+        } else if (defaultValue instanceof DataPoint || defaultValue == null) {
+            return (T) value;
+        } else if (value instanceof DpMsgDefine.DPSet) {
+            return (T) ((DpMsgDefine.DPSet) value).list();
+        } else if (value instanceof DpMsgDefine.DPPrimary) {
             return (T) ((DpMsgDefine.DPPrimary) value).value;
+        } else {
+            return defaultValue;
         }
-
-        return (T) value;
     }
 }

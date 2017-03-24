@@ -1,11 +1,24 @@
 package com.cylan.jiafeigou.cache.db.view;
 
+import android.text.TextUtils;
+
 /**
  * Created by yanzhendong on 2017/3/6.
  */
 
 public enum DBAction {
-    SAVED, DELETED, SHARED, QUERY, CLEARED, AVAILABLE(OP.NOT_EQS, DELETED.name() + "," + CLEARED.name()), UNBIND;
+    SAVED, DELETED, SHARED, QUERY, CLEARED, AVAILABLE(OP.NOT_EQS, DELETED.name() + "," + CLEARED.name()) {
+        @Override
+        public boolean accept(DBAction action) {
+            String[] actions = action().split(",");
+            for (String s : actions) {
+                if (TextUtils.equals(action.action, s)) {
+                    return false;
+                }
+            }
+            return true;
+        }
+    }, UNBIND;
     private OP op;//op 只是在查询时有用,并不会保存到数据库
     private String action;
 
@@ -17,6 +30,10 @@ public enum DBAction {
     DBAction() {
         this.op = OP.EQ;
         this.action = name();
+    }
+
+    public boolean accept(DBAction action) {
+        return action == this;
     }
 
     public OP op() {

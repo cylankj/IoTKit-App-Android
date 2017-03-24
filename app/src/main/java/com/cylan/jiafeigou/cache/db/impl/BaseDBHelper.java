@@ -104,6 +104,7 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(RobotoGetDataRsp dataRsp) {
         return getActiveAccount().map(account -> {
+            if (dataRsp.map == null) return null;
             Set<DPEntity> result = new HashSet<>();
             QueryBuilder<DPEntity> queryBuilder;
             DPEntity dpEntity;

@@ -12,6 +12,8 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }
 
 
+
+
     public void testMy() {
 //        JFGDevice jfgDevice = new JFGDevice();
 //        jfgDevice.pid = 5;
