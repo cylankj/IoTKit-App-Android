@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -18,9 +17,8 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNamePresenterImpl;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
@@ -35,18 +33,14 @@ import butterknife.OnTextChanged;
  */
 public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAliasContract.View {
 
-    @BindView(R.id.iv_top_bar_left_back)
-    ImageView ivTopBarLeftBack;
-    @BindView(R.id.iv_mine_personal_setname_bind)
-    ImageView ivMinePersonalSetnameBind;
     @BindView(R.id.et_mine_personal_information_new_name)
     EditText etMinePersonalInformationNewName;
     @BindView(R.id.view_mine_personal_information_new_name_line)
     View viewMinePersonalInformationNewNameLine;
     @BindView(R.id.iv_mine_personal_information_new_name_clear)
     ImageView ivMinePersonalInformationNewNameClear;
-    @BindView(R.id.rl_tab_bar_container)
-    FrameLayout rlTabBarContainer;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
 
     private MineInfoSetAliasContract.Presenter presenter;
@@ -82,7 +76,6 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     @Override
@@ -103,20 +96,21 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
     public void onEditChange(CharSequence s, int start, int before, int count) {
         boolean isEmpty = TextUtils.isEmpty(getEditName());
         if (isEmpty) {
-            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-            ivMinePersonalSetnameBind.setEnabled(false);
+            customToolbar.setTvToolbarRightEnable(false);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
+
             viewMinePersonalInformationNewNameLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
             ivMinePersonalInformationNewNameClear.setVisibility(View.GONE);
         } else {
-            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
-            ivMinePersonalSetnameBind.setEnabled(true);
+            customToolbar.setTvToolbarRightEnable(true);
+            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
             viewMinePersonalInformationNewNameLine.setBackgroundColor(Color.parseColor("#36bdff"));
             ivMinePersonalInformationNewNameClear.setVisibility(View.VISIBLE);
         }
     }
 
     private void initEditText() {
-        etMinePersonalInformationNewName.setText(TextUtils.isEmpty(userinfo.getAlias()) ? "":userinfo.getAlias());
+        etMinePersonalInformationNewName.setText(TextUtils.isEmpty(userinfo.getAlias()) ? "" : userinfo.getAlias());
     }
 
     private void initPresenter() {
@@ -175,13 +169,13 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
 
     }
 
-    @OnClick({R.id.iv_top_bar_left_back, R.id.iv_mine_personal_setname_bind, R.id.iv_mine_personal_information_new_name_clear})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.iv_mine_personal_information_new_name_clear})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_top_bar_left_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
-            case R.id.iv_mine_personal_setname_bind:
+            case R.id.tv_toolbar_right:
                 if (presenter.isEditEmpty(getEditName())) {
                     return;
                 } else {
@@ -198,11 +192,11 @@ public class MineSetUserAliasFragment extends Fragment implements MineInfoSetAli
     public void onResume() {
         super.onResume();
         if (TextUtils.isEmpty(getEditName())) {
-            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-            ivMinePersonalSetnameBind.setEnabled(false);
+            customToolbar.setTvToolbarRightEnable(false);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
         } else {
-            ivMinePersonalSetnameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
-            ivMinePersonalSetnameBind.setEnabled(true);
+            customToolbar.setTvToolbarRightEnable(true);
+            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
         }
     }
 

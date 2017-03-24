@@ -11,8 +11,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -26,7 +24,7 @@ import com.cylan.jiafeigou.n.view.adapter.MineHasShareAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -42,18 +40,15 @@ import butterknife.OnClick;
  */
 public class MineDevicesShareManagerFragment extends Fragment implements MineDevicesShareManagerContract.View, MineHasShareAdapter.OnCancleShareListenter {
 
-    @BindView(R.id.iv_home_mine_share_devices_manager_back)
-    ImageView ivHomeMineShareDevicesManagerBack;
-    @BindView(R.id.tv_home_mine_share_devices_name)
-    TextView tvHomeMineShareDevicesName;
     @BindView(R.id.recycler_had_share_relatives_and_friend)
     RecyclerView recyclerHadShareRelativesAndFriend;
     @BindView(R.id.tv_has_share_title)
     TextView tvHasShareTitle;
     @BindView(R.id.ll_no_share_friend)
     LinearLayout llNoShareFriend;
-    @BindView(R.id.rl_tab_bar_container)
-    FrameLayout rlTabBarContainer;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
+
 
     private MineDevicesShareManagerContract.Presenter presenter;
     private MineHasShareAdapter hasShareAdapter;
@@ -92,7 +87,6 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     @Override
@@ -112,10 +106,10 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
 
     }
 
-    @OnClick(R.id.iv_home_mine_share_devices_manager_back)
+    @OnClick(R.id.tv_toolbar_icon)
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_home_mine_share_devices_manager_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
         }
@@ -254,7 +248,7 @@ public class MineDevicesShareManagerFragment extends Fragment implements MineDev
      */
     @Override
     public void setTopTitle(String name) {
-        tvHomeMineShareDevicesName.setText(name);
+        customToolbar.setToolbarLeftTitle(name);
     }
 
     /**

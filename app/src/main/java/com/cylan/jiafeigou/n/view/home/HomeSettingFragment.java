@@ -47,8 +47,6 @@ import butterknife.OnClick;
  */
 public class HomeSettingFragment extends Fragment implements HomeSettingContract.View, CompoundButton.OnCheckedChangeListener {
 
-    @BindView(R.id.iv_home_setting_back)
-    ImageView ivHomeSettingBack;
     @BindView(R.id.rl_home_setting_about)
     RelativeLayout rlHomeSettingAbout;
     @BindView(R.id.rl_home_setting_clear)
@@ -67,8 +65,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     RelativeLayout rlSoundContainer;
     @BindView(R.id.rl_vibrate_container)
     RelativeLayout rlVibrateContainer;
-    @BindView(R.id.rl_title_bar)
-    FrameLayout rlTitleBar;
     @BindView(R.id.rl_home_setting_recommend)
     RelativeLayout rlHomeSettingRecommend;
 
@@ -100,7 +96,6 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlTitleBar);
         rlHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
     }
 
@@ -113,10 +108,10 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         this.presenter = presenter;
     }
 
-    @OnClick({R.id.iv_home_setting_back, R.id.rl_home_setting_about, R.id.rl_home_setting_clear, R.id.rl_home_setting_recommend})
+    @OnClick({R.id.tv_toolbar_icon, R.id.rl_home_setting_about, R.id.rl_home_setting_clear, R.id.rl_home_setting_recommend})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_home_setting_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
             case R.id.rl_home_setting_about:

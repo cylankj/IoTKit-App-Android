@@ -3,13 +3,11 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.InputFilter;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -20,6 +18,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetPassWordPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,10 +32,6 @@ import butterknife.OnTextChanged;
  */
 public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSetPassWordContract.View {
 
-    @BindView(R.id.iv_mine_personal_setpassword_back)
-    ImageView ivMinePersonalSetpasswordBack;
-    @BindView(R.id.iv_mine_personal_setpassword_bind)
-    ImageView ivMinePersonalSetpasswordBind;
     @BindView(R.id.et_mine_personal_information_old_password)
     EditText etMinePersonalInformationOldPassword;
     @BindView(R.id.view_mine_personal_information_old_password_line)
@@ -49,8 +44,8 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     View viewMinePersonalInformationNewPasswordLine;
     @BindView(R.id.iv_mine_personal_information_new_password_clear)
     ImageView ivMinePersonalInformationNewPasswordClear;
-    @BindView(R.id.rl_tab_bar_container)
-    FrameLayout rlTabBarContainer;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     private MineInfoSetPassWordContract.Presenter presenter;
     private JFGAccount userinfo;
@@ -85,10 +80,9 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
         ViewUtils.setChineseExclude(etMinePersonalInformationOldPassword, 12);
         ViewUtils.setChineseExclude(etMinePersonalInformationNewPassword, 12);
-        ivMinePersonalSetpasswordBind.setEnabled(false);
+        customToolbar.setTvToolbarRightEnable(false);
     }
 
     @Override
@@ -107,13 +101,11 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     public void onOldPwdUpdate(CharSequence s, int start, int before, int count) {
         boolean isEmpty = s.length() < 6;
         if (isEmpty || getNewPassword().trim().length() < 6) {
-            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-            ivMinePersonalSetpasswordBind.setEnabled(false);
-            ivMinePersonalSetpasswordBind.setClickable(false);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
+            customToolbar.setTvToolbarRightEnable(false);
         } else {
-            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
-            ivMinePersonalSetpasswordBind.setEnabled(true);
-            ivMinePersonalSetpasswordBind.setClickable(true);
+            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightEnable(true);
         }
         ivMinePersonalInformationOldPasswordClear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
         viewMinePersonalInformationOldPasswordLine.setBackgroundColor(TextUtils.isEmpty(s) ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36BDFF));
@@ -123,13 +115,11 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     public void onNewPwdUpdate(CharSequence s, int start, int before, int count) {
         boolean isEmpty = s.length() < 6;
         if (isEmpty || getOldPassword().trim().length() < 6) {
-            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-            ivMinePersonalSetpasswordBind.setClickable(false);
-            ivMinePersonalSetpasswordBind.setEnabled(false);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
+            customToolbar.setTvToolbarRightEnable(false);
         } else {
-            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
-            ivMinePersonalSetpasswordBind.setClickable(true);
-            ivMinePersonalSetpasswordBind.setEnabled(true);
+            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightEnable(true);
         }
         ivMinePersonalInformationNewPasswordClear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
         viewMinePersonalInformationNewPasswordLine.setBackgroundColor(TextUtils.isEmpty(s) ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36BDFF));
@@ -139,9 +129,9 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
     public void onResume() {
         super.onResume();
         if (TextUtils.isEmpty(getNewPassword()) || TextUtils.isEmpty(getOldPassword())) {
-            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
         } else {
-            ivMinePersonalSetpasswordBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
+            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
         }
     }
 
@@ -150,11 +140,11 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
 
     }
 
-    @OnClick({R.id.iv_mine_personal_setpassword_back, R.id.iv_mine_personal_information_old_password_clear,
-            R.id.iv_mine_personal_information_new_password_clear, R.id.iv_mine_personal_setpassword_bind})
+    @OnClick({R.id.tv_toolbar_icon, R.id.iv_mine_personal_information_old_password_clear,
+            R.id.iv_mine_personal_information_new_password_clear, R.id.tv_toolbar_right})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_mine_personal_setpassword_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_mine_personal_information_old_password_clear:
@@ -165,7 +155,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
                 etMinePersonalInformationNewPassword.setText("");
                 break;
 
-            case R.id.iv_mine_personal_setpassword_bind:
+            case R.id.tv_toolbar_right:
                 saveNewPassword();
                 break;
         }

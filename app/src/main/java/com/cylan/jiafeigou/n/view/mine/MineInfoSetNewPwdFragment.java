@@ -9,9 +9,7 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JError;
@@ -20,6 +18,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNewPwdContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNewPwdPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,20 +33,14 @@ import butterknife.OnTextChanged;
  */
 public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfoSetNewPwdContract.View {
 
-    @BindView(R.id.iv_mine_set_newpwd_back)
-    ImageView ivMineSetNewpwdBack;
-    @BindView(R.id.tv_top_title)
-    TextView tvTopTitle;
-    @BindView(R.id.iv_mine_info_set_newpwd_able)
-    ImageView ivMineInfoSetNewpwdAble;
     @BindView(R.id.et_mine_set_newpwd)
     EditText etMineSetNewpwd;
     @BindView(R.id.iv_mine_new_pwd_clear)
     ImageView ivMineNewPwdClear;
     @BindView(R.id.cb_new_pwd_show)
     CheckBox cbNewPwdShow;
-    @BindView(R.id.rl_tab_bar_container)
-    FrameLayout rlTabBarContainer;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private MineInfoSetNewPwdContract.Presenter presenter;
     private String useraccount;
     private String token;
@@ -79,7 +72,6 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         ViewUtils.setChineseExclude(etMineSetNewpwd, 65);
-        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     private void initPresenter() {
@@ -95,8 +87,8 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     public void onNewPwdChance(CharSequence s, int start, int before, int count) {
         boolean isEmpty = TextUtils.isEmpty(s);
         ivMineNewPwdClear.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-        ivMineInfoSetNewpwdAble.setImageDrawable(isEmpty ? getResources().getDrawable(R.drawable.icon_finish_disable) : getResources().getDrawable(R.drawable.me_icon_finish_normal));
-        ivMineInfoSetNewpwdAble.setEnabled(isEmpty ? false : true);
+        customToolbar.setTvToolbarRightIcon(isEmpty ? R.drawable.icon_finish_disable:R.drawable.me_icon_finish_normal);
+        customToolbar.setTvToolbarRightEnable(isEmpty);
     }
 
     @OnCheckedChanged(R.id.cb_new_pwd_show)
@@ -105,13 +97,13 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
         etMineSetNewpwd.setSelection(etMineSetNewpwd.length());
     }
 
-    @OnClick({R.id.iv_mine_set_newpwd_back, R.id.iv_mine_info_set_newpwd_able, R.id.iv_mine_new_pwd_clear})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.iv_mine_new_pwd_clear})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_mine_set_newpwd_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
-            case R.id.iv_mine_info_set_newpwd_able:
+            case R.id.tv_toolbar_right:
                 if (getNewPwd().length() < 6) {
                     ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
                     return;

@@ -154,7 +154,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(MiscUtils.safeGet(device.up_time, 0)));
         hardwareUpdatePoint.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(device.shareAccount)) {
-            svSettingHardwareUpdate.setVisibility(View.GONE);
+            rlHardwareUpdate.setVisibility(View.GONE);
         } else {
             svSettingHardwareUpdate.setTvSubTitle(MiscUtils.safeGet(device.device_version, ""));
             if (mPresenter != null)
@@ -185,7 +185,6 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     @Override
     public void onStart() {
         super.onStart();
-
     }
 
     @Override

@@ -11,10 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
@@ -25,7 +22,7 @@ import com.cylan.jiafeigou.n.view.adapter.ShareToFriendsAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -42,17 +39,12 @@ import butterknife.OnClick;
  */
 public class MineShareToFriendFragment extends Fragment implements MineShareToFriendContract.View {
 
-
-    @BindView(R.id.iv_mine_share_to_relative_friend_back)
-    ImageView ivMineShareToRelativeFriendBack;
-    @BindView(R.id.tv_mine_share_to_relative_friend_true)
-    TextView tvMineShareToRelativeFriendTrue;
     @BindView(R.id.rcy_mine_share_to_relative_and_friend_list)
     RecyclerView rcyMineShareToRelativeAndFriendList;
     @BindView(R.id.ll_no_friend)
     LinearLayout llNoFriend;
-    @BindView(R.id.rl_mine_share_to_relative_friend)
-    FrameLayout rlMineShareToRelativeFriend;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     private MineShareToFriendContract.Presenter presenter;
     private ShareToFriendsAdapter shareToFriendsAdapter;
@@ -94,7 +86,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlMineShareToRelativeFriend);
     }
 
     /**
@@ -132,17 +123,17 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     }
 
-    @OnClick({R.id.iv_mine_share_to_relative_friend_back, R.id.tv_mine_share_to_relative_friend_true})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_mine_share_to_relative_friend_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 if (listener != null) {
                     listener.shareSucceed(shareSucceedNum, shareSucceedFriend);
                 }
                 break;
 
-            case R.id.tv_mine_share_to_relative_friend_true:
+            case R.id.tv_toolbar_right:
                 if (!presenter.checkNetConnetion()) {
                     presenter.sendShareToFriendReq(deviceinfo.uuid, isChooseToShareList);
                 } else {
@@ -168,17 +159,17 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void setHasShareFriendNum(boolean isChange, int number) {
         if (number == 0) {
-            tvMineShareToRelativeFriendTrue.setClickable(false);
-            tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK) + "（0/5）");
-            tvMineShareToRelativeFriendTrue.setTextColor(Color.parseColor("#d8d8d8"));
+            customToolbar.setToolbarRightTitle(getString(R.string.OK) + "（0/5）");
+            customToolbar.setTvToolbarRightEnable(false);
+            customToolbar.setTvToolbarRightColor("#d8d8d8");
         } else if (isChange) {
-            tvMineShareToRelativeFriendTrue.setClickable(true);
-            tvMineShareToRelativeFriendTrue.setTextColor(Color.WHITE);
-            tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK) + "（" + number + "/5）");
+            customToolbar.setToolbarRightTitle(getString(R.string.OK) + "（" + number + "/5）");
+            customToolbar.setTvToolbarRightEnable(true);
+            customToolbar.setTvToolbarRightColor("#ffffff");
         } else {
-            tvMineShareToRelativeFriendTrue.setClickable(false);
-            tvMineShareToRelativeFriendTrue.setTextColor(Color.parseColor("#d8d8d8"));
-            tvMineShareToRelativeFriendTrue.setText(getString(R.string.OK) + "（" + number + "/5）");
+            customToolbar.setToolbarRightTitle(getString(R.string.OK) + "（" + number + "/5）");
+            customToolbar.setTvToolbarRightEnable(false);
+            customToolbar.setTvToolbarRightColor("#d8d8d8");
         }
     }
 
