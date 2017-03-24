@@ -2,35 +2,30 @@ package com.cylan.jiafeigou.n.view.mine;
 
 
 import android.app.Activity;
-import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoBineMailPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
-import com.cylan.jiafeigou.support.softkeyboard.util.ViewUtil;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+
+import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -54,14 +49,8 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     View mViewMailBox;
     @BindView(R.id.et_mine_personal_information_mailbox)
     EditText mETMailBox;
-    @BindView(R.id.iv_mine_personal_mailbox_bind)
-    ImageView mIvMailBoxBind;
-    @BindView(R.id.iv_mine_personal_mailbox_bind_disable)
-    ImageView mIvMailBoxBindDisable;
-    @BindView(R.id.tv_top_title)
-    TextView tvTopTitle;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     private String mailBox;
     private MineInfoBindMailContract.Presenter presenter;
@@ -108,7 +97,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
                 bindOrChange = true;
             } else {
                 bindOrChange = false;
-                tvTopTitle.setText(getString(R.string.CHANGE_EMAIL));
+                customToolbar.setToolbarLeftTitle(getString(R.string.CHANGE_EMAIL));
             }
         }
     }
@@ -149,11 +138,8 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     @Override
     public void onResume() {
         super.onResume();
-        mIvMailBoxBindDisable.setVisibility(View.VISIBLE);
-        mIvMailBoxBind.setVisibility(View.GONE);
-        mIvMailBoxBindDisable.setClickable(false);
-        mIvMailBoxBindDisable.setEnabled(false);
-        mIvMailBoxBindDisable.setFocusable(false);
+        customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
+        customToolbar.setTvToolbarRightEnable(false);
     }
 
     @Nullable
@@ -169,11 +155,18 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
-        ViewUtils.setChineseExclude(mETMailBox,65);
+        ViewUtils.setChineseExclude(mETMailBox, 65);
         initKeyListener();
-
+        initMailEdit();
     }
+
+    private void initMailEdit() {
+        Bundle arguments = getArguments();
+        JFGAccount jfgAccount = (JFGAccount) arguments.getSerializable("userinfo");
+        if (jfgAccount != null)
+        mETMailBox.setText(jfgAccount.getEmail());
+    }
+
     private void initKeyListener() {
         mETMailBox.setOnKeyListener(new View.OnKeyListener() {
             @Override
@@ -203,13 +196,9 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     public void onEditChange(CharSequence s, int start, int before, int count) {
         boolean isEmpty = TextUtils.isEmpty(s);
         mIvMailBox.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-        mIvMailBoxBind.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
-        mIvMailBoxBindDisable.setVisibility(isEmpty ? View.VISIBLE : View.GONE);
         mViewMailBox.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36BDFF));
-        mIvMailBoxBindDisable.setClickable(false);
-        mIvMailBoxBindDisable.setEnabled(false);
-        mIvMailBoxBind.setClickable(true);
-        mIvMailBoxBind.setEnabled(true);
+        customToolbar.setTvToolbarRightIcon(isEmpty ? R.drawable.icon_finish_disable:R.drawable.me_icon_finish_normal);
+        customToolbar.setTvToolbarRightEnable(!isEmpty);
     }
 
     /**
@@ -235,16 +224,16 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         });
     }
 
-    @OnClick({R.id.tv_top_title, R.id.iv_mine_personal_mailbox_bind})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
     public void onClick(View v) {
         switch (v.getId()) {
             //返回上一个fragment
-            case R.id.tv_top_title:
+            case R.id.tv_toolbar_icon:
                 IMEUtils.hide((Activity) getContext());
                 getFragmentManager().popBackStack();
                 break;
             //绑定邮箱
-            case R.id.iv_mine_personal_mailbox_bind:
+            case R.id.tv_toolbar_right:
                 mailBox = getEditText();
                 if (TextUtils.isEmpty(mailBox)) {
                     return;

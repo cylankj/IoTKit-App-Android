@@ -48,8 +48,6 @@ import butterknife.OnClick;
  */
 public class MineFriendAddReqDetailFragment extends Fragment implements MineFriendAddReqDetailContract.View {
 
-    @BindView(R.id.iv_top_bar_left_back)
-    ImageView ivTopBarLeftBack;
     @BindView(R.id.iv_detail_user_head)
     ImageView ivDetailUserHead;
     @BindView(R.id.tv_relative_and_friend_name)
@@ -62,8 +60,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     TextView tvAddAsRelativeAndFriend;
     @BindView(R.id.rl_add_request_mesg)
     RelativeLayout rlAddRequestMesg;
-    @BindView(R.id.rl_title_bar)
-    FrameLayout rlTitleBar;
+
 
     private MineLookBigImageFragment lookBigImageFragment;
     private MineFriendAddReqDetailContract.Presenter presenter;
@@ -101,7 +98,6 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlTitleBar);
     }
 
     private void initPresenter() {
@@ -173,10 +169,10 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         this.presenter = presenter;
     }
 
-    @OnClick({R.id.iv_top_bar_left_back, R.id.iv_detail_user_head, R.id.tv_add_as_relative_and_friend})
+    @OnClick({R.id.tv_toolbar_icon, R.id.iv_detail_user_head, R.id.tv_add_as_relative_and_friend})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_top_bar_left_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
             case R.id.iv_detail_user_head:                      //查看大头像

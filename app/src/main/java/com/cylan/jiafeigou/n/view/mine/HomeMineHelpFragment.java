@@ -35,14 +35,8 @@ import butterknife.OnClick;
  */
 public class HomeMineHelpFragment extends Fragment {
 
-    @BindView(R.id.tv_mine_help_suggestion)
-    TextView mTvHelpSuggestion;
     @BindView(R.id.wv_mine_help)
     WebView mWvHelp;
-    @BindView(R.id.iv_home_mine_message_back)
-    TextView ivHomeMineMessageBack;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
 
     private HomeMineHelpSuggestionFragment homeMineHelpSuggestionFragment;
 
@@ -69,7 +63,6 @@ public class HomeMineHelpFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
         showWebView();
     }
 
@@ -111,17 +104,17 @@ public class HomeMineHelpFragment extends Fragment {
         mWvHelp.loadUrl(agreementUrl);
     }
 
-    @OnClick({R.id.iv_home_mine_message_back, R.id.tv_mine_help_suggestion})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
     public void onClick(View view) {
         switch (view.getId()) {
             //点击退回home_mine的fragment
-            case R.id.iv_home_mine_message_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
             //点击进入意见反馈的页面
-            case R.id.tv_mine_help_suggestion:
+            case R.id.tv_toolbar_right:
                 if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_mine_help_suggestion));
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_toolbar_right));
                 AppLogger.e("tv_mine_help_suggestion");
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

@@ -1,12 +1,10 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +24,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
@@ -40,10 +39,6 @@ import butterknife.OnTextChanged;
  */
 public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhoneContract.View {
 
-    @BindView(R.id.iv_mine_bind_phone_back)
-    ImageView ivMineBindPhoneBack;
-    @BindView(R.id.iv_mine_info_bind_phone)
-    ImageView ivMineInfoBindPhone;
     @BindView(R.id.et_mine_bind_phone)
     EditText etMineBindPhone;
     @BindView(R.id.iv_mine_bind_phone_clear)
@@ -52,16 +47,14 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     EditText etVerificationInput;
     @BindView(R.id.tv_meter_get_code)
     TextView tvMeterGetCode;
-    @BindView(R.id.tv_title)
-    TextView tvTitle;
     @BindView(R.id.fLayout_verification_code_input_box)
     FrameLayout fLayoutVerificationCodeInputBox;
-    @BindView(R.id.rl_tab_bar_container)
-    FrameLayout rlTabBarContainer;
     @BindView(R.id.view_mine_personal_information_mailbox)
     View viewMinePersonalInformationMailbox;
     @BindView(R.id.vertify_code_line)
     View vertifyCodeLine;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private JFGAccount userinfo;
     private boolean isBindOrChange;
     private MineBindPhoneContract.Presenter presenter;
@@ -81,9 +74,8 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
         ViewUtils.setChineseExclude(etMineBindPhone, 11);
-        ivMineInfoBindPhone.setClickable(false);
+        customToolbar.setTvToolbarRightEnable(false);
     }
 
     /**
@@ -93,12 +85,12 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     public void initCheckCodeListener(CharSequence s, int start, int before, int count) {
 
         if (s.length() == 6 && getInputPhone().length() == 11) {
-            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
-            ivMineInfoBindPhone.setClickable(true);
+            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightEnable(true);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
         } else {
-            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-            ivMineInfoBindPhone.setClickable(false);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
+            customToolbar.setTvToolbarRightEnable(false);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         }
     }
@@ -137,12 +129,12 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         }
 
         if (s.length() == 11 && getInputCheckCode().length() == 6) {
-            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
-            ivMineInfoBindPhone.setClickable(true);
+            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightEnable(true);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#36bdff"));
         } else {
-            ivMineInfoBindPhone.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-            ivMineInfoBindPhone.setClickable(false);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
+            customToolbar.setTvToolbarRightEnable(false);
             vertifyCodeLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         }
 
@@ -180,7 +172,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     }
 
-    @OnClick({R.id.iv_mine_bind_phone_back, R.id.tv_meter_get_code, R.id.iv_mine_bind_phone_clear, R.id.iv_mine_info_bind_phone})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_meter_get_code, R.id.iv_mine_bind_phone_clear, R.id.tv_toolbar_right})
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_meter_get_code:
@@ -192,7 +184,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 }
                 break;
 
-            case R.id.iv_mine_bind_phone_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
 
@@ -200,7 +192,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 etMineBindPhone.setText("");
                 break;
 
-            case R.id.iv_mine_info_bind_phone:
+            case R.id.tv_toolbar_right:
                 //点击完成
                 if (!JConstant.PHONE_REG.matcher(getInputPhone()).find()) {
                     ToastUtil.showNegativeToast(getString(R.string.PHONE_NUMBER_2));
@@ -261,7 +253,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     @Override
     public void initToolbarTitle(String title) {
-        tvTitle.setText(title);
+        customToolbar.setToolbarLeftTitle(title);
         if (title.equals(getString(R.string.CHANGE_PHONE_NUM))) {
             isBindOrChange = false;
         } else {

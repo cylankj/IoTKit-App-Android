@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
@@ -19,7 +18,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineSetRemarkNamePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.BindView;
@@ -34,18 +33,14 @@ import butterknife.OnTextChanged;
  */
 public class MineSetRemarkNameFragment extends Fragment implements MineSetRemarkNameContract.View {
 
-    @BindView(R.id.iv_top_bar_left_back)
-    ImageView ivTopBarLeftBack;
-    @BindView(R.id.iv_mine_set_remarkname_bind)
-    ImageView ivMineSetRemarknameBind;
     @BindView(R.id.et_mine_set_remarkname_new_name)
     EditText etMineSetRemarknameNewName;
     @BindView(R.id.view_mine_personal_set_remarkname_new_name_line)
     View viewMinePersonalSetRemarknameNewNameLine;
     @BindView(R.id.iv_mine_personal_set_remarkname_clear)
     ImageView ivMinePersonalSetRemarknameClear;
-    @BindView(R.id.rl_tab_bar_container)
-    FrameLayout rlTabBarContainer;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
 
     private MineSetRemarkNameContract.Presenter presenter;
@@ -80,7 +75,6 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     @Override
@@ -108,25 +102,25 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     public void onEditChange(CharSequence s, int start, int before, int count) {
         boolean isEmpty = TextUtils.isEmpty(getEditName());
         if (isEmpty) {
-            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-            ivMineSetRemarknameBind.setEnabled(false);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
+            customToolbar.setTvToolbarRightEnable(false);
             ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
             viewMinePersonalSetRemarknameNewNameLine.setBackgroundColor(Color.parseColor("#f2f2f2"));
         } else {
-            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
-            ivMineSetRemarknameBind.setEnabled(true);
+            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightEnable(true);
             ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
             viewMinePersonalSetRemarknameNewNameLine.setBackgroundColor(Color.parseColor("#36bdff"));
         }
     }
 
-    @OnClick({R.id.iv_top_bar_left_back, R.id.iv_mine_set_remarkname_bind, R.id.iv_mine_personal_set_remarkname_clear})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.iv_mine_personal_set_remarkname_clear})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_top_bar_left_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
-            case R.id.iv_mine_set_remarkname_bind:
+            case R.id.tv_toolbar_right:
                 if (presenter != null) {
                     presenter.sendSetmarkNameReq(getEditName(), friendBean);
                 }
@@ -202,12 +196,12 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
     public void onResume() {
         super.onResume();
         if (TextUtils.isEmpty(getEditName())) {
-            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
-            ivMineSetRemarknameBind.setEnabled(false);
+            customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
+            customToolbar.setTvToolbarRightEnable(false);
             ivMinePersonalSetRemarknameClear.setVisibility(View.GONE);
         } else {
-            ivMineSetRemarknameBind.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
-            ivMineSetRemarknameBind.setEnabled(true);
+            customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
+            customToolbar.setTvToolbarRightEnable(true);
             ivMinePersonalSetRemarknameClear.setVisibility(View.VISIBLE);
         }
     }

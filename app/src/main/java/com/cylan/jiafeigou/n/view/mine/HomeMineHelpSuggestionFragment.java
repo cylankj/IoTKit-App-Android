@@ -58,8 +58,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     RecyclerView mRvMineSuggestion;
     @BindView(R.id.et_home_mine_suggestion)
     EditText mEtSuggestion;
-    @BindView(R.id.tv_mine_help_suggestion_clear)
-    TextView tvMineHelpSuggestionClear;
     @BindView(R.id.tv_home_mine_suggestion)
     TextView tvHomeMineSuggestion;
     @BindView(R.id.panel_root)
@@ -68,8 +66,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     ImageView ivLoadingRotate;
     @BindView(R.id.fl_loading_container)
     FrameLayout flLoadingContainer;
-    @BindView(R.id.rl_home_mine_suggestion)
-    FrameLayout rlHomeMineSuggestion;
+
 
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
     private String suggestion;
@@ -100,7 +97,6 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         initKeyBoard();
-        ViewUtils.setViewPaddingStatusBar(rlHomeMineSuggestion);
     }
 
     private void initPresenter() {
@@ -119,10 +115,14 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         if (presenter != null) presenter.stop();
     }
 
-    @OnClick({R.id.tv_mine_help_suggestion_clear, R.id.tv_home_mine_suggestion})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.tv_home_mine_suggestion})
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.tv_mine_help_suggestion_clear:
+            case R.id.tv_toolbar_icon:
+                getFragmentManager().popBackStack();
+                break;
+
+            case R.id.tv_toolbar_right:
                 //弹出对话框
                 if (suggestionAdapter.getItemCount() == 0) {
                     return;

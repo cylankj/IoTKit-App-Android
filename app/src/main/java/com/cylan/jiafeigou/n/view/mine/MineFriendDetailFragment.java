@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -49,8 +50,6 @@ import butterknife.OnClick;
  */
 public class MineFriendDetailFragment extends Fragment implements MineFriendDetailContract.View {
 
-    @BindView(R.id.iv_top_bar_left_back)
-    ImageView ivTopBarLeftBack;
     @BindView(R.id.iv_detail_user_head)
     RoundedImageView ivDetailUserHead;
     @BindView(R.id.tv_relative_and_friend_name)
@@ -63,8 +62,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     RelativeLayout rlDeleteRelativeandfriend;
     @BindView(R.id.tv_share_device)
     TextView tvShareDevice;
-    @BindView(R.id.rl_title_bar)
-    FrameLayout rlTitleBar;
 
     private MineFriendsListShareDevicesFragment mineShareDeviceFragment;
     private MineSetRemarkNameFragment mineSetRemarkNameFragment;
@@ -110,7 +107,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlTitleBar);
     }
 
     @Override
@@ -186,11 +182,11 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
 
     }
 
-    @OnClick({R.id.iv_top_bar_left_back, R.id.rl_change_name, R.id.rl_delete_relativeandfriend,
+    @OnClick({R.id.tv_toolbar_icon, R.id.rl_change_name, R.id.rl_delete_relativeandfriend,
             R.id.tv_share_device, R.id.iv_detail_user_head})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_top_bar_left_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
             case R.id.rl_change_name:
@@ -332,5 +328,6 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         if (presenter != null) {
             presenter.stop();
         }
+        IMEUtils.hide(getActivity());
     }
 }

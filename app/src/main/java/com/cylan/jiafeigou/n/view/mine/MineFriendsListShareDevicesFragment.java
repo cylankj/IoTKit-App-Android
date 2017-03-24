@@ -9,8 +9,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -22,7 +20,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ChooseShareDeviceAdapter;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -39,20 +37,15 @@ import butterknife.OnClick;
  */
 public class MineFriendsListShareDevicesFragment extends Fragment implements MineFriendListShareDevicesToContract.View {
 
-    @BindView(R.id.iv_mine_friends_share_devices_back)
-    ImageView ivMineFriendsShareDevicesBack;
-    @BindView(R.id.iv_mine_friends_share_devices_ok)
-    ImageView ivMineFriendsShareDevicesOk;
     @BindView(R.id.rcy_share_device_list)
     RecyclerView rcyShareDeviceList;
-    @BindView(R.id.tv_share_to)
-    TextView tvShareTo;
     @BindView(R.id.ll_no_device)
     LinearLayout llNoDevice;
     @BindView(R.id.tv_choose_device_title)
     TextView tvChooseDeviceTitle;
-    @BindView(R.id.rl_tab_bar_container)
-    FrameLayout rlTabBarContainer;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
+
 
     private MineFriendListShareDevicesToContract.Presenter presenter;
     private RelAndFriendBean shareDeviceBean;
@@ -93,7 +86,6 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     @Override
@@ -117,13 +109,13 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
 
     }
 
-    @OnClick({R.id.iv_mine_friends_share_devices_back, R.id.iv_mine_friends_share_devices_ok})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_mine_friends_share_devices_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
-            case R.id.iv_mine_friends_share_devices_ok:
+            case R.id.tv_toolbar_right:
                 if (chooseList.size() == 0) return;
                 presenter.sendShareToReq(chooseList, shareDeviceBean);
                 break;
@@ -138,9 +130,9 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
     @Override
     public void initTitleView(RelAndFriendBean bean) {
         if (TextUtils.isEmpty(bean.markName.trim())) {
-            tvShareTo.setText(String.format(getString(R.string.Tap3_Friends_Share), bean.alias));
+            customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), bean.alias)));
         } else {
-            tvShareTo.setText(String.format(getString(R.string.Tap3_Friends_Share), bean.markName));
+            customToolbar.setToolbarLeftTitle((String.format(getString(R.string.Tap3_Friends_Share), bean.markName)));
         }
     }
 
@@ -213,8 +205,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void showFinishBtn() {
-        ivMineFriendsShareDevicesOk.setClickable(true);
-        ivMineFriendsShareDevicesOk.setImageDrawable(getResources().getDrawable(R.drawable.me_icon_finish_normal));
+        customToolbar.setTvToolbarRightEnable(true);
+        customToolbar.setTvToolbarRightIcon(R.drawable.me_icon_finish_normal);
     }
 
     /**
@@ -222,8 +214,8 @@ public class MineFriendsListShareDevicesFragment extends Fragment implements Min
      */
     @Override
     public void hideFinishBtn() {
-        ivMineFriendsShareDevicesOk.setClickable(false);
-        ivMineFriendsShareDevicesOk.setImageDrawable(getResources().getDrawable(R.drawable.icon_finish_disable));
+        customToolbar.setTvToolbarRightEnable(false);
+        customToolbar.setTvToolbarRightIcon(R.drawable.icon_finish_disable);
     }
 
     /**

@@ -1,42 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:background="@color/color_white"
     android:clickable="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/rl_title_bar"
-        android:background="@color/color_0ba8cf"
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/iv_top_bar_left_back"
-                android:clickable="true"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="@dimen/x15"
-                android:layout_centerVertical="true"
-                android:src="@drawable/nav_tab_back_selector" />
-
-            <TextView
-                android:layout_toRightOf="@id/iv_top_bar_left_back"
-                android:gravity="center_vertical"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:text="@string/Tap3_Friends_Details"
-                android:textSize="@dimen/sp18"
-                android:textColor="@color/color_white" />
-        </RelativeLayout>
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_shadow="false"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title="@string/Tap3_Friends_Details"
+        hunt:ct_left_title_color="@color/color_white" />
 
     <FrameLayout
-        android:layout_below="@id/rl_title_bar"
+        android:layout_below="@id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

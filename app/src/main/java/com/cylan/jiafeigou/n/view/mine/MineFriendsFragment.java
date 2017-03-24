@@ -46,14 +46,10 @@ import butterknife.OnClick;
  */
 public class MineFriendsFragment extends Fragment implements MineFriendsContract.View, AddRelativesAndFriendsAdapter.OnAcceptClickLisenter {
 
-    @BindView(R.id.iv_home_mine_relativesandfriends_back)
-    ImageView ivHomeMineRelativesandfriendsBack;
     @BindView(R.id.recyclerview_request_add)
     RecyclerView recyclerviewRequestAdd;
     @BindView(R.id.recyclerview_relativesandfriends_list)
     RecyclerView recyclerviewRelativesandfriendsList;
-    @BindView(R.id.tv_home_mine_relativesandfriends_add)
-    TextView tvHomeMineRelativesandfriendsAdd;
     @BindView(R.id.ll_relative_and_friend)
     LinearLayout llRelativeAndFriend;
     @BindView(R.id.ll_relative_and_friend_none)
@@ -62,10 +58,8 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     TextView tvAddRequestTitle;
     @BindView(R.id.tv_friend_list_title)
     TextView tvFriendListTitle;
-    @BindView(R.id.btn_add_relative_and_friend)
-    TextView btnAddRelativeAndFriend;
-    @BindView(R.id.rl_home_mine_relativesandfriends)
-    FrameLayout rlHomeMineRelativesandfriends;
+
+
 
     private MineFriendsContract.Presenter presenter;
 
@@ -98,7 +92,6 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriends);
 //        showLoadingDialog();
     }
 
@@ -264,17 +257,17 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void setPresenter(MineFriendsContract.Presenter presenter) {
     }
 
-    @OnClick({R.id.iv_home_mine_relativesandfriends_back, R.id.tv_home_mine_relativesandfriends_add})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_home_mine_relativesandfriends_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
 
-            case R.id.tv_home_mine_relativesandfriends_add:
+            case R.id.tv_toolbar_right:
                 if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_home_mine_relativesandfriends_add));
-                AppLogger.d("tv_home_mine_relativesandfriends_add");
+                    ViewUtils.deBounceClick(getView().findViewById(R.id.tv_toolbar_right));
+                AppLogger.d("tv_toolbar_right");
                 jump2AddReAndFriendFragment();
                 break;
         }
