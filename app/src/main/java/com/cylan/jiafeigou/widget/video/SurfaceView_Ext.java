@@ -55,7 +55,16 @@ public class SurfaceView_Ext extends SurfaceView implements VideoViewFactory.IVi
     }
 
     @Override
-    public void release() {
+    public void onDestroy() {
+    }
+
+    @Override
+    public void onPause() {
+
+    }
+
+    @Override
+    public void onResume() {
 
     }
 

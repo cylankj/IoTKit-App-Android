@@ -404,4 +404,29 @@ public class MiscUtils {
             return 0;
         }
     }
+
+    public static List<JFGDPMsg> getCamDateVersionList(long startTime) {
+        ArrayList<JFGDPMsg> list = new ArrayList<>();
+        for (int i = 0; i < 15; i++) {
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 222));
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 505));
+            list.add(makeMsg(startTime - 24 * 3600 * 1000L * i, 512));
+        }
+        return list;
+    }
+
+    private static JFGDPMsg makeMsg(long version, long msgId) {
+        return new JFGDPMsg(msgId, version);
+    }
+
+    /**
+     * 从{@link android.support.v4.app.FragmentPagerAdapter}中抽出来
+     *
+     * @param viewId
+     * @param id
+     * @return
+     */
+    public static String makeFragmentName(int viewId, long id) {
+        return "android:switcher:" + viewId + ":" + id;
+    }
 }

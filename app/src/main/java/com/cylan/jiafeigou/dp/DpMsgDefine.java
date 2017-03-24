@@ -328,6 +328,27 @@ public class DpMsgDefine {
                     ", errCode=" + errCode +
                     '}';
         }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+
+            DPSdcardSummary summary = (DPSdcardSummary) o;
+
+            if (hasSdcard != summary.hasSdcard) return false;
+            return errCode == summary.errCode;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + (hasSdcard ? 1 : 0);
+            result = 31 * result + errCode;
+            return result;
+        }
     }
 
     @Message
@@ -459,7 +480,8 @@ public class DpMsgDefine {
         public int fileIndex;
         @Index(3)
         public int type;
-
+        @Index(4)
+        public String tly;//全景设备陀螺仪。'0'俯视, '1' 平视。
         @Ignore
         public static DPAlarm empty = new DPAlarm();
 
@@ -509,6 +531,33 @@ public class DpMsgDefine {
                 return new DPAlarm[size];
             }
         };
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+            if (!super.equals(o)) return false;
+
+            DPAlarm dpAlarm = (DPAlarm) o;
+
+            if (time != dpAlarm.time) return false;
+            if (isRecording != dpAlarm.isRecording) return false;
+            if (fileIndex != dpAlarm.fileIndex) return false;
+            if (type != dpAlarm.type) return false;
+            return tly != null ? tly.equals(dpAlarm.tly) : dpAlarm.tly == null;
+
+        }
+
+        @Override
+        public int hashCode() {
+            int result = super.hashCode();
+            result = 31 * result + time;
+            result = 31 * result + isRecording;
+            result = 31 * result + fileIndex;
+            result = 31 * result + type;
+            result = 31 * result + (tly != null ? tly.hashCode() : 0);
+            return result;
+        }
     }
 
     @Message//504
@@ -1085,6 +1134,52 @@ public class DpMsgDefine {
         }
     }
 
+    @Message
+    public static class DpHangMode extends DPSingle<DpHangMode> implements Parcelable {
+        @Index(0)
+        public String mode = "0";
+
+
+        public int safeGetValue() {
+            try {
+                return Integer.parseInt(mode);
+            } catch (Exception e) {
+                return 0;
+            }
+        }
+
+        @Override
+        public int describeContents() {
+            return 0;
+        }
+
+        @Override
+        public void writeToParcel(Parcel dest, int flags) {
+            super.writeToParcel(dest, flags);
+            dest.writeString(this.mode);
+        }
+
+        public DpHangMode() {
+        }
+
+        protected DpHangMode(Parcel in) {
+            super(in);
+            this.mode = in.readString();
+        }
+
+        public static final Creator<DpHangMode> CREATOR = new Creator<DpHangMode>() {
+            @Override
+            public DpHangMode createFromParcel(Parcel source) {
+                return new DpHangMode(source);
+            }
+
+            @Override
+            public DpHangMode[] newArray(int size) {
+                return new DpHangMode[size];
+            }
+        };
+    }
+
     public interface EMPTY {
         DPNet NET = new DPNet();
         DPStandby STANDBY = new DPStandby();
@@ -1107,5 +1202,6 @@ public class DpMsgDefine {
         DPMineMesg MINE_MESG = new DPMineMesg();
         DPSystemMesg SYSTEM_MESG = new DPSystemMesg();
         DpSdcardFormatRsp SDCARD_FORMAT_RSP = new DpSdcardFormatRsp();
+        DpHangMode dpHangMode = new DpHangMode();
     }
 }

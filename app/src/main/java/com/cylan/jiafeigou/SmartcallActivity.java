@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.facebook.login.LoginResult;
 
 import java.text.SimpleDateFormat;
@@ -213,10 +214,10 @@ public class SmartcallActivity extends NeedLoginActivity
         } else if (code == JError.StartLoginPage && !firstSignIn) {
             splashOver();
             firstSignIn = true;
-        } else if ((code == JError.ErrorLoginInvalidPass || code == JError.ErrorAccountNotExist )&& PreferencesUtils.getBoolean(JConstant.AUTO_SIGNIN_TAB,false)) {
+        } else if ((code == JError.ErrorLoginInvalidPass || code == JError.ErrorAccountNotExist) && PreferencesUtils.getBoolean(JConstant.AUTO_SIGNIN_TAB, false)) {
 //          密码错误且是自动登录才走此
             splashOver();
-            PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB,false);
+            PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
         }
     }
 
@@ -238,7 +239,6 @@ public class SmartcallActivity extends NeedLoginActivity
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         SmartcallActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-        Log.d("onRequesResult", "onRequesResult");
         if (permissions.length == 1) {
             if (TextUtils.equals(permissions[0], Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
                 SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
@@ -253,6 +253,7 @@ public class SmartcallActivity extends NeedLoginActivity
         // If this is run by PermissionsDispatcher, the permission will have been granted
 //        Toast.makeText(this, "请你开启SD卡读写权限,应用才能正常工作", Toast.LENGTH_SHORT).show();
 //        if (presenter != null) presenter.finishAppDelay();
+        ToastUtil.showNegativeToast(getString(R.string.turn_on_storage, ""));
         AppLogger.d(JConstant.LOG_TAG.PERMISSION + "onWriteSdCardDenied");
         AppLogger.permissionGranted = false;
         isPermissionDialogShowing = false;

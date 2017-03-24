@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import android.graphics.Bitmap;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
@@ -11,6 +12,7 @@ import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
+import java.io.IOException;
 import java.util.Map;
 
 import rx.Subscription;
@@ -41,6 +43,8 @@ public interface CamLiveContract {
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
         void onDeviceInfoChanged(long id);
+
+        void onDeviceInfoChanged(JFGDPMsg msg) throws IOException;
 
         /**
          * 准备播放

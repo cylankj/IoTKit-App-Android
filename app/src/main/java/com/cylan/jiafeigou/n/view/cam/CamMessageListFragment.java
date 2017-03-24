@@ -18,12 +18,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
@@ -34,15 +35,19 @@ import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.adapter.CamMessageListAdapter;
 import com.cylan.jiafeigou.n.view.media.CamMediaActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-import com.cylan.jiafeigou.widget.wheel.WheelView;
+import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -63,7 +68,7 @@ import static com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment.KEY_RIGHT_C
  */
 public class CamMessageListFragment extends IBaseFragment<CamMessageListContract.Presenter>
         implements CamMessageListContract.View, SwipeRefreshLayout.OnRefreshListener,
-        View.OnClickListener {
+        View.OnClickListener, OnItemClickListener {
 
 
     @BindView(R.id.tv_cam_message_list_date)
@@ -74,12 +79,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     RecyclerView rvCamMessageList;
     @BindView(R.id.srLayout_cam_list_refresh)
     SwipeRefreshLayout srLayoutCamListRefresh;
-    @BindView(R.id.tv_time_line_pop)
-    TextView tvTimeLinePop;
-    @BindView(R.id.wv_wonderful_timeline)
-    WheelView wvWonderfulTimeline;
     @BindView(R.id.fLayout_cam_message_list_timeline)
-    RelativeLayout fLayoutCamMessageListTimeline;
+    WonderIndicatorWheelView fLayoutCamMessageListTimeline;
     @BindView(R.id.fLayout_cam_msg_edit_bar)
     FrameLayout fLayoutCamMsgEditBar;
     @BindView(R.id.lLayout_no_message)
@@ -139,6 +140,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         srLayoutCamListRefresh.setOnRefreshListener(this);
         camMessageListAdapter = new CamMessageListAdapter(this.uuid, getContext(), null, null);
         rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+//        camMessageListAdapter.setOnItemClickListener(this);
         rvCamMessageList.setAdapter(camMessageListAdapter);
         rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
             int pastVisibleItems, visibleItemCount, totalItemCount;
@@ -157,7 +159,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             endlessLoading = true;
                             mIsLastLoadFinish = false;
                             Log.d("tag", "tag.....load more");
-                            startRequest(20, true);
+                            startRequest(true);
                         }
                     }
                 }
@@ -183,18 +185,23 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && basePresenter != null && getActivity() != null && isResumed()) {
-            startRequest(5, false);
+            if (camMessageListAdapter.getCount() == 0)
+                startRequest(false);
         }
     }
 
-    private void startRequest(int count, boolean loadMore) {
+    private void startRequest(boolean loadMore) {
+        long time = System.currentTimeMillis();
         if (loadMore) {
             setupFootView();
-            if (basePresenter != null) basePresenter.fetchMessageList(count, true);
+            if (camMessageListAdapter.getCount() > 0)
+                time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).time;
         } else {
             srLayoutCamListRefresh.setRefreshing(true);
-            if (basePresenter != null) basePresenter.fetchMessageList(count, false);
+            if (camMessageListAdapter.getCount() > 0)
+                time = camMessageListAdapter.getItem(0).time;
         }
+        if (basePresenter != null) basePresenter.fetchMessageList(time, loadMore);
     }
 
     /**
@@ -216,7 +223,18 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
 
     @Override
-    public void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList) {
+    public void onDateMapRsp(List<WonderIndicatorWheelView.WheelItem> dateMap) {
+        LoadingDialog.dismissLoading(getFragmentManager());
+        AnimatorUtils.slideAuto(fLayoutCamMessageListTimeline, false);
+        fLayoutCamMessageListTimeline.init(dateMap);
+        if (!fLayoutCamMessageListTimeline.hasInit())
+            fLayoutCamMessageListTimeline.setListener(time -> {
+                AppLogger.d("scroll dat： " + TimeUtils.getDayInMonth(time));
+            });
+    }
+
+    @Override
+    public void onListAppend(ArrayList<CamMessageBean> beanArrayList) {
         if (camMessageListAdapter.hasFooter())
             camMessageListAdapter.remove(camMessageListAdapter.getItemCount() - 1);
         endlessLoading = false;
@@ -236,34 +254,39 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     @Override
-    public void onMessageBulkInsert(ArrayList<CamMessageBean> beanArrayList, int position) {
-        if (beanArrayList == null || beanArrayList.size() == 0) {
-            srLayoutCamListRefresh.setRefreshing(false);
-            return;
-        }
-        AppLogger.e("还没实现");
-    }
-
-    @Override
     public ArrayList<CamMessageBean> getList() {
         return (ArrayList<CamMessageBean>) camMessageListAdapter.getList();
     }
 
     @Override
-    public void deviceInfoChanged(int id, Object o) {
+    public void deviceInfoChanged(int id, JFGDPMsg o) throws IOException {
         final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
                 .findLastVisibleItemPosition();
         switch (id) {
-            case DpMsgMap.ID_204_SDCARD_STORAGE:
-                camMessageListAdapter.notifySdcardStatus(o != null && ((DpMsgDefine.DPSdStatus) o).hasSdcard,
-                        lPos);
-                break;
             case DpMsgMap.ID_201_NET:
-                camMessageListAdapter.notifyDeviceOnlineState(o != null && ((DpMsgDefine.DPNet) o).net != 0,
-                        lPos);
+                DpMsgDefine.DPNet net = DpUtils.unpackData(o.packValue, DpMsgDefine.DPNet.class);
+                if (net == null) net = DpMsgDefine.EMPTY.NET;
+                camMessageListAdapter.notifyDeviceOnlineState(net.net > 0, lPos);
+                break;
+            case 222:
+                DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(o.packValue, DpMsgDefine.DPSdcardSummary.class);
+                if (summary == null) summary = DpMsgDefine.EMPTY.SDCARD_SUMMARY;
+                camMessageListAdapter.notifySdcardStatus(summary.hasSdcard, lPos);
+                CamMessageBean bean = new CamMessageBean();
+                bean.sdcardSummary = summary;
+                bean.id = 222;
+                bean.version = bean.time = o.version;
+                camMessageListAdapter.add(0, bean);
+                rvCamMessageList.scrollToPosition(0);
+                lLayoutNoMessage.setVisibility(View.GONE);
                 break;
         }
 
+    }
+
+    @Override
+    public void onErr() {
+        srLayoutCamListRefresh.post(() -> srLayoutCamListRefresh.setRefreshing(false));
     }
 
     @Override
@@ -279,7 +302,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             return;
         }
         srLayoutCamListRefresh.setRefreshing(true);
-        startRequest(20, false);
+        startRequest(false);
     }
 
     @OnClick({R.id.tv_cam_message_list_date,
@@ -294,7 +317,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             case R.id.tv_cam_message_list_date:
                 if (camMessageListAdapter.getCount() == 0)
                     return;//呼入呼出
+                boolean isHide = AnimatorUtils.isReset(fLayoutCamMessageListTimeline);
+                if (isHide && basePresenter != null && basePresenter.getDateList().size() == 0) {
+                    LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
+                    AppLogger.d("日起加载中...");
+                    basePresenter.refreshDateList();
+                    return;
+                }
                 AnimatorUtils.slideAuto(fLayoutCamMessageListTimeline, false);
+                tvCamMessageListEdit.setEnabled(!isHide);
                 break;
             case R.id.tv_cam_message_list_edit:
                 if (camMessageListAdapter.getCount() == 0) return;
@@ -416,5 +447,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         Log.d("imgV_cam_message_pic_0", "imgV_cam_:" + position + " " + camMessageListAdapter.getItem(position).alarmMsg);
         return intent;
+    }
+
+    @Override
+    public void onItemClick(View itemView, int viewType, int position) {
+
     }
 }

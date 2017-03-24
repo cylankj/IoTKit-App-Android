@@ -91,6 +91,8 @@ public interface JFGSourceManager {
      */
     <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws IllegalAccessException;
 
+    <T extends DataPoint> boolean updateValue(String uuid, List<T> value) throws IllegalAccessException;
+
     boolean deleteByVersions(String uuid, long id, ArrayList<Long> versions);
 
     /**

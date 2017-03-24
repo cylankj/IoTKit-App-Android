@@ -1,14 +1,21 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.CallSuper;
+import android.support.v4.content.LocalBroadcastManager;
 
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
+import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.NetMonitor;
+import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.lang.ref.WeakReference;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +33,8 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     protected T mView;//弱引用会被强制释放,我们的view需要我们手动释放,不适合弱引用
     protected String uuid;
     private CompositeSubscription compositeSubscription;
-    private Map<String, Subscription> refCacheMap = new HashMap<>();
+    private MapSubscription refCacheMap = new MapSubscription();
+    private TimeTick timeTick;
 
     public AbstractPresenter(T view) {
         mView = view;
@@ -50,6 +58,10 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         }
     }
 
+    protected boolean registerTimeTick() {
+        return false;
+    }
+
     @CallSuper
     @Override
     public void start() {
@@ -70,6 +82,11 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         if (action != null && action.length > 0) {
             NetMonitor.getNetMonitor().registerNet(this, action);
         }
+        if (registerTimeTick()) {
+            if (timeTick == null) timeTick = new TimeTick(this);
+            LocalBroadcastManager.getInstance(ContextUtils.getContext())
+                    .registerReceiver(timeTick, new IntentFilter(JConstant.KEY_TIME_TICK_));
+        }
     }
 
     protected String[] registerNetworkAction() {
@@ -83,16 +100,12 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
 
     protected void addSubscription(Subscription subscription, String tag) {
         if (subscription != null)
-            refCacheMap.put(tag, subscription);
+            refCacheMap.add(subscription, tag);
     }
 
     protected boolean unSubscribe(String tag) {
-        Subscription subscription = refCacheMap.get(tag);
-        if (subscription != null && subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-            return true;
-        }
-        return false;
+        refCacheMap.unsubscribe();
+        return true;
     }
 
     @CallSuper
@@ -100,6 +113,10 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     public void stop() {
         unSubscribe(compositeSubscription);
         NetMonitor.getNetMonitor().unregister();
+        if (registerTimeTick()) {
+            if (timeTick != null)
+                LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
+        }
     }
 
     protected Subscription[] register() {
@@ -109,5 +126,22 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
 
+    }
+
+    protected void onTimeTick() {
+    }
+
+    private static class TimeTick extends BroadcastReceiver {
+        private WeakReference<AbstractPresenter> abstractPresenter;
+
+        public TimeTick(AbstractPresenter abstractPresenter) {
+            this.abstractPresenter = new WeakReference<>(abstractPresenter);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (abstractPresenter != null && abstractPresenter.get() != null)
+                abstractPresenter.get().onTimeTick();
+        }
     }
 }

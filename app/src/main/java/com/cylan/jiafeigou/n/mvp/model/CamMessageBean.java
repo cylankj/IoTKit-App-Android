@@ -7,16 +7,14 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
  */
 public class CamMessageBean {
 
-    public long id = 0;
     /**
      * 直接类型，不需要转型。
      */
     public DpMsgDefine.DPAlarm alarmMsg;
-    //    public ArrayList<String> urlList;//最终的url
     public DpMsgDefine.DPSdcardSummary sdcardSummary;//204消息
+    public long id = 0;
     public long time;
     public long version;
-    public int regionType;
     public int viewType = 0;
 
     @Override
@@ -39,15 +37,22 @@ public class CamMessageBean {
 
         if (id != that.id) return false;
         if (time != that.time) return false;
-        return version == that.version;
+        if (version != that.version) return false;
+        if (viewType != that.viewType) return false;
+        if (alarmMsg != null ? !alarmMsg.equals(that.alarmMsg) : that.alarmMsg != null)
+            return false;
+        return sdcardSummary != null ? sdcardSummary.equals(that.sdcardSummary) : that.sdcardSummary == null;
 
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (id ^ (id >>> 32));
+        int result = alarmMsg != null ? alarmMsg.hashCode() : 0;
+        result = 31 * result + (sdcardSummary != null ? sdcardSummary.hashCode() : 0);
+        result = 31 * result + (int) (id ^ (id >>> 32));
         result = 31 * result + (int) (time ^ (time >>> 32));
         result = 31 * result + (int) (version ^ (version >>> 32));
+        result = 31 * result + viewType;
         return result;
     }
 }

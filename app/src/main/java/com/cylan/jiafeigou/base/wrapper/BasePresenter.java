@@ -1,6 +1,11 @@
 package com.cylan.jiafeigou.base.wrapper;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.support.annotation.CallSuper;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
 
@@ -15,13 +20,16 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -74,6 +82,11 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @CallSuper
     public void onStart() {
         onRegisterSubscription();
+        if (registerTimeTick()) {
+            if (timeTick == null) timeTick = new TimeTick(this);
+            LocalBroadcastManager.getInstance(ContextUtils.getContext())
+                    .registerReceiver(timeTick, new IntentFilter(JConstant.KEY_TIME_TICK_));
+        }
     }
 
     @CallSuper
@@ -103,6 +116,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @CallSuper
     public void onStop() {
         onUnRegisterSubscription();
+        if (registerTimeTick()) {
+            if (timeTick != null)
+                LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
+        }
     }
 
     @Override
@@ -282,4 +299,26 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         robotGetData(peer, queryDps, limit, asc, timeoutMs, null);
     }
 
+    private TimeTick timeTick;
+
+    private static class TimeTick extends BroadcastReceiver {
+        private WeakReference<BasePresenter> abstractPresenter;
+
+        public TimeTick(BasePresenter abstractPresenter) {
+            this.abstractPresenter = new WeakReference<>(abstractPresenter);
+        }
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (abstractPresenter != null && abstractPresenter.get() != null)
+                abstractPresenter.get().onTimeTick();
+        }
+    }
+
+    protected boolean registerTimeTick() {
+        return false;
+    }
+
+    protected void onTimeTick() {
+    }
 }

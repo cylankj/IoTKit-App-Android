@@ -42,7 +42,7 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(getTimeTickEventSub(), getPageScrolledSub());
+        registerSubscription(getPageScrolledSub());
     }
 
     @Override
@@ -82,18 +82,25 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
         return PreferencesUtils.getBoolean(JConstant.KEY_WONDERFUL_GUIDE, true);
     }
 
+    @Override
+    protected boolean registerTimeTick() {
+        return true;
+    }
 
-    private Subscription getTimeTickEventSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.TimeTickEvent.class)
-                .subscribeOn(Schedulers.newThread())
-                .throttleFirst(1000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(timeTickEvent -> {
-                    mView.onTimeTick(JFGRules.getTimeRule());
-                }, e -> {
-                    AppLogger.e(e.getMessage());
-                    e.printStackTrace();
-                });
+    @Override
+    protected void onTimeTick() {
+        if (mView != null) {
+            Observable.just("timeTick")
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(s -> {
+                        //6:00 am - 17:59 pm
+                        //18:00 pm-5:59 am
+                        if (mView != null) {
+                            mView.onTimeTick(JFGRules.getTimeRule());
+                            AppLogger.i("time tick");
+                        }
+                    }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+        }
     }
 
     private Subscription getPageScrolledSub() {

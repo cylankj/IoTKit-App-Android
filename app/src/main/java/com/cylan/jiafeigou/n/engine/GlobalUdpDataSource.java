@@ -116,7 +116,7 @@ public class GlobalUdpDataSource {
         @Override
         public Boolean call(Integer integer, Throwable throwable) {
             //此处return true:表示继续订阅，
-            AppLogger.e("GlobalUdpDataSource: " + throwable.getLocalizedMessage());
+            AppLogger.d("GlobalUdpDataSource: " + throwable.getLocalizedMessage());
             return true;
         }
     };

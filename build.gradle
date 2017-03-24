@@ -71,7 +71,6 @@ ext {
     switchButton = 'com.kyleduo.switchbutton:library:1.4.1'
     leakcanaryAndroid = 'com.squareup.leakcanary:leakcanary-android:1.5'
     leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
-    leakcanaryAndroidNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.5'
     cySdk = 'JfgAndroidSDK-3.0.189'
     facebookSDK = 'facebook-android-sdk-4.19.0'
 }

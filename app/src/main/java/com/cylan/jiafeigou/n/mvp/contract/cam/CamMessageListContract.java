@@ -1,11 +1,15 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.dp.DPConstant;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
+import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -15,9 +19,9 @@ public interface CamMessageListContract {
 
     interface View extends BaseView<Presenter> {
 
-        void onMessageListRsp(ArrayList<CamMessageBean> beanArrayList);
+        void onDateMapRsp(List<WonderIndicatorWheelView.WheelItem> dateMap);
 
-        void onMessageBulkInsert(ArrayList<CamMessageBean> beanArrayList, int position);
+        void onListAppend(ArrayList<CamMessageBean> beanArrayList);
 
         ArrayList<CamMessageBean> getList();
 
@@ -27,18 +31,23 @@ public interface CamMessageListContract {
          * @param id:消息id
          * @param o:      {@link DPConstant}
          */
-        void deviceInfoChanged(int id, Object o);
+        void deviceInfoChanged(int id, JFGDPMsg o) throws IOException;
+
+        void onErr();
     }
 
     interface Presenter extends BasePresenter {
         /**
-         * @param count
+         * @param timeStart
          */
-        void fetchMessageList(int count, boolean loadMore);
+        void fetchMessageList(long timeStart, boolean loadMore);
 
-//        void loadMore();
 
         void removeItems(ArrayList<CamMessageBean> beanList);
+
+        List<WonderIndicatorWheelView.WheelItem> getDateList();
+
+        void refreshDateList();
     }
 }
 

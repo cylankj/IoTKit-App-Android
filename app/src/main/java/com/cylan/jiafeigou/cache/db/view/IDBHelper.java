@@ -8,6 +8,8 @@ import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 
+import org.greenrobot.greendao.query.QueryBuilder;
+
 import java.util.List;
 
 import rx.Observable;
@@ -90,4 +92,12 @@ public interface IDBHelper {
     Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, Iterable<JFGDPMsg> msgs);
 
     Observable<Iterable<DPEntity>> saveDPByteInTx(RobotoGetDataRsp dataRsp);
+
+    Observable<List<DPEntity>> queryMultiDpMsg(String account, String server, String uuid, Long version, Long versionMax, List<Integer> msgIdList, Boolean asc, Integer limit, DBAction action, DBState state, DBOption option);
+
+    Observable<DPEntity> queryDpMsg(QueryBuilder<DPEntity> builder);
+
+    Observable<List<DPEntity>> queryMultiDpMsg(QueryBuilder<DPEntity> builder);
+
+    QueryBuilder<DPEntity> getDpEntityQueryBuilder();
 }

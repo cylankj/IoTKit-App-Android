@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.widget;
 
 import android.content.Context;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
@@ -22,12 +23,26 @@ public class CustomViewPager extends ViewPager {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        return this.isPagingEnabled && super.onTouchEvent(event);
+        switch (event.getAction() & MotionEventCompat.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN: {
+                if (isPagingEnabled && enableScrollListener != null && enableScrollListener.enable(event)) {
+                    return super.onTouchEvent(event);
+                } else return false;
+            }
+        }
+        return super.onTouchEvent(event);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        return this.isPagingEnabled && super.onInterceptTouchEvent(event);
+        switch (event.getAction() & MotionEventCompat.ACTION_MASK) {
+            case MotionEvent.ACTION_DOWN: {
+                if (isPagingEnabled && enableScrollListener != null && enableScrollListener.enable(event)) {
+                    return super.onInterceptTouchEvent(event);
+                } else return false;
+            }
+        }
+        return super.onInterceptTouchEvent(event);
     }
 
     /**
@@ -37,4 +52,13 @@ public class CustomViewPager extends ViewPager {
         this.isPagingEnabled = enable;
     }
 
+    private EnableScrollListener enableScrollListener;
+
+    public void setPagingScrollListener(EnableScrollListener listener) {
+        this.enableScrollListener = listener;
+    }
+
+    public interface EnableScrollListener {
+        boolean enable(MotionEvent event);
+    }
 }

@@ -72,7 +72,7 @@ public class ViEAndroidGLES20_Ext extends ViEAndroidGLES20 implements VideoViewF
     }
 
     @Override
-    public void release() {
+    public void onDestroy() {
         this.interActListener = null;
     }
 

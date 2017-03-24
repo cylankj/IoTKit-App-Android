@@ -117,6 +117,9 @@ public class TimePickDialogFragment extends BaseDialog<Integer> {
             switch (wheel.getId()) {
                 case R.id.wheel_hour_pick:
                     newHour = newValue;
+                    if (newValue == 0 && TextUtils.equals(getArguments().getString(KEY_TITLE), getString(R.string.TO))) {
+                        initWheel(newMinute, wheelMinutePick, 59);
+                    }
                     break;
                 case R.id.wheel_minute_pick:
                     newMinute = newValue;

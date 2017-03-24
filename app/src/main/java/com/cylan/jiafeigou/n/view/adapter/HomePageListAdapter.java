@@ -99,7 +99,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         }
         //5 安全待机
         if (isStandBY.standby) {
-            holder.setVisibility(R.id.img_device_state_4, GONE);
+            holder.setVisibility(R.id.img_device_state_4, VISIBLE);
             holder.setImageResource(R.id.img_device_state_4, R.drawable.home_icon_net_standby);
         } else holder.setVisibility(R.id.img_device_state_4, GONE);
 

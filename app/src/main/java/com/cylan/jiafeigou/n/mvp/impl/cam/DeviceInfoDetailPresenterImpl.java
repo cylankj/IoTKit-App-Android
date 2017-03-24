@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.google.gson.Gson;
@@ -67,16 +66,18 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
      */
     private Subscription robotDeviceDataSync() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (
-                        getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
-                ))
+                .filter((RxEvent.DeviceSyncRsp jfgRobotSyncData) -> (getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)))
+                .filter(j -> j.dpList != null)
+                .flatMap(deviceSyncRsp -> Observable.from(deviceSyncRsp.dpList))
                 .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.DeviceSyncRsp update) -> {
-                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
-                    return null;
-                })
-                .retry(new RxHelper.RxException<>("robotDeviceDataSync"))
-                .subscribe();
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe(msg -> {
+                    try {
+                        mView.deviceUpdate(msg);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     @Override
@@ -105,7 +106,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
                         DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
                         try {
-                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, ""));
+                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, "0.0"));
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -147,10 +148,10 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .flatMap(new Func1<RxEvent.SdcardClearFinishRsp, Observable<DpMsgDefine.DPSdStatus>>() {
                     @Override
                     public Observable<DpMsgDefine.DPSdStatus> call(RxEvent.SdcardClearFinishRsp rsp) {
-                        if (rsp != null && rsp.arrayList.size() >0){
+                        if (rsp != null && rsp.arrayList.size() > 0) {
                             for (JFGDPMsg dp : rsp.arrayList) {
                                 try {
-                                    if (dp.id == 203 && TextUtils.equals(uuid,rsp.s)) {
+                                    if (dp.id == 203 && TextUtils.equals(uuid, rsp.s)) {
                                         DpMsgDefine.DPSdStatus sdStatus = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdStatus.class);
                                         return Observable.just(sdStatus);
                                     }
@@ -165,7 +166,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> {
-                    if (o != null){
+                    if (o != null) {
                         //清空SD卡提示
                         getView().clearSdResult(0);
                     }

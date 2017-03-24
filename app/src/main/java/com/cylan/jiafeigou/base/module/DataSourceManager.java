@@ -328,8 +328,6 @@ public class DataSourceManager implements JFGSourceManager {
         if (device != null) {
             boolean isV2 = TextUtils.isEmpty(device.vid);
             try {
-                AppLogger.e("还没实现。。。。。");
-//                return  -1;
                 return JfgCmdInsurance.getCmd().robotGetDataEx(uuid, asc, version, MiscUtils.getChaosDpList(isV2), 0);
 
             } catch (Exception e) {
@@ -559,21 +557,32 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws
             IllegalAccessException {
+        ArrayList<T> list = new ArrayList<>();
+        value.dpMsgId = msgId;
+        value.dpMsgVersion = System.currentTimeMillis();
+        list.add(value);
+        return updateValue(uuid, list);
+    }
+
+    @Override
+    public <T extends DataPoint> boolean updateValue(String uuid, List<T> value) throws IllegalAccessException {
         Device device = getJFGDevice(uuid);
         if (device == null) {
             AppLogger.e("device is null:" + uuid);
             return false;
         }
-        boolean update = device.updateValue(msgId, value);
-        ArrayList<JFGDPMsg> list = new ArrayList<>();
-        JFGDPMsg msg = new JFGDPMsg(msgId, System.currentTimeMillis());
-        msg.packValue = value.toBytes();
-        list.add(msg);
         try {
+            ArrayList<JFGDPMsg> list = new ArrayList<>();
+            for (DataPoint data : value) {
+                boolean update = device.updateValue((int) data.dpMsgId, data);
+                JFGDPMsg jfgdpMsg = new JFGDPMsg(data.dpMsgId, System.currentTimeMillis());
+                jfgdpMsg.packValue = data.toBytes();
+                list.add(jfgdpMsg);
+            }
             long l = JfgAppCmd.getInstance().robotSetData(uuid, list);
             AppLogger.d("setDataRsp:" + l);
             return true;
-        } catch (JfgException e) {
+        } catch (Exception e) {
             return false;
         }
     }
@@ -780,7 +789,7 @@ public class DataSourceManager implements JFGSourceManager {
                                 updateIdList.add((long) entity.getMsgId());
                                 setValue(event.s, entity.getMsgId(), entity.getBytes(), entity.getVersion(), -1);
                             }
-                            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList));
+                            RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
                             return "多线程真是麻烦";
                         }))
                 .subscribe(new Subscriber<String>() {

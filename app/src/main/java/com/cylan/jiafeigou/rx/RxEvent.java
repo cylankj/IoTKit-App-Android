@@ -30,21 +30,6 @@ import java.util.List;
  */
 public class RxEvent {
 
-//    public static class NeedLoginEvent {
-//        public static final String KEY = "show_login_fragment";
-//        public Bundle bundle;
-//
-//        public NeedLoginEvent(Bundle bundle) {
-//            this.bundle = bundle;
-//        }
-//    }
-
-    /**
-     * 系统TimeTick广播
-     */
-    public static class TimeTickEvent {
-
-    }
 
     @Deprecated //账号状态不依据这个消息
     public static class OnlineStatusRsp {
@@ -700,6 +685,14 @@ public class RxEvent {
             return this;
         }
 
+        public DeviceSyncRsp setUuid(String uuid, ArrayList<Long> idList, ArrayList<JFGDPMsg> dpList) {
+            this.uuid = uuid;
+            this.idList = idList;
+            this.dpList = dpList;
+            return this;
+        }
+
+        public ArrayList<JFGDPMsg> dpList;
         public ArrayList<Long> idList;
         public String uuid;
     }

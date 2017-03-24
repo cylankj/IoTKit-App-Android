@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import butterknife.ButterKnife;
+import butterknife.Unbinder;
 
 /**
  * Created by yzd on 16-12-28.
@@ -31,6 +32,8 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     protected String mUUID;
 
     private static Toast sToast;
+
+    Unbinder unbinder;
 
     @Override
     public Context getAppContext() {
@@ -58,7 +61,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View contentView = inflater.inflate(getContentViewID(), container, false);
-        ButterKnife.bind(this, contentView);
+        unbinder = ButterKnife.bind(this, contentView);
         return contentView;
     }
 
@@ -77,6 +80,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         if (mPresenter != null) {
             mPresenter.onViewDetached();
         }
+        if (unbinder != null) unbinder.unbind();
     }
 
     @Override

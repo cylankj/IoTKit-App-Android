@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -28,6 +29,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
@@ -38,6 +40,7 @@ import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -74,8 +77,8 @@ import com.google.gson.Gson;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -136,7 +139,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @BindView(R.id.v_live)
     LiveViewWithThumbnail vLive;
-
+    public Rect mLiveViewRectInWindow = new Rect();
     private SoftReference<AlertDialog> sdcardPulloutDlg;
     private SoftReference<AlertDialog> sdcardFormatDlg;
     private CamLiveController camLiveController;
@@ -144,17 +147,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 //     * 直播状态监听
 //     */
     private ILiveStateListener liveListener;
-    /**
-     * |安全防护|----直播|5/16 16:30|---|
-     */
-//    private VideoViewFactory.IVideoView videoView;
-    //流量显示
-    private WeakReference<TextView> tvFlowRef;
-
 
     private String uuid;
     private boolean isNormalView;
     private static final String DIALOG_KEY = "dialogFragment";
+
     public CameraLiveFragment() {
         // Required empty public constructor
     }
@@ -258,6 +255,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
         } else
             vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(basePresenter.getThumbnailKey()));
+        vLive.post(() -> vLive.getLocalVisibleRect(mLiveViewRectInWindow));
     }
 
     @Override
@@ -265,6 +263,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onPause();
         if (basePresenter != null)
             basePresenter.stopPlayVideo(basePresenter.getPlayType());
+        if (vLive != null && vLive.getVideoView() != null)
+            vLive.getVideoView().onPause();
     }
 
     @Override
@@ -309,11 +309,20 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         super.onResume();
         //更新
         camLiveController.notifyOrientationChange(getResources().getConfiguration().orientation);
+        if (vLive != null && vLive.getVideoView() != null) {
+            vLive.getVideoView().onResume();
+            DpMsgDefine.DpHangMode dpPrimary = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+            if (dpPrimary == null) dpPrimary = new DpMsgDefine.DpHangMode();
+            vLive.getVideoView().setMode(dpPrimary.safeGetValue());
+        }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
+        if (vLive != null && vLive.getVideoView() != null) {
+            vLive.getVideoView().onDestroy();
+        }
     }
 
     private void startLive() {
@@ -434,21 +443,53 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             }
             setupStandByView(flag);
         }
-        if (msgId == DpMsgMap.ID_204_SDCARD_STORAGE) {
-            DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
+    }
+
+    @Override
+    public void onDeviceInfoChanged(JFGDPMsg msg) throws IOException {
+        int msgId = (int) msg.id;
+        if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY) {
+            DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
+            if (sdStatus == null) sdStatus = DpMsgDefine.EMPTY.SDCARD_SUMMARY;
             //sd卡状态变化，
             camLiveController.updateLiveButtonState(sdStatus != null && sdStatus.hasSdcard);
             if (sdStatus == null || !sdStatus.hasSdcard) {
                 AppLogger.d("sdcard 被拔出");
                 if (sdcardPulloutDlg != null && sdcardPulloutDlg.get() != null && sdcardPulloutDlg.get().isShowing())
                     return;
-                initSdcardStateDialog();
-                sdcardPulloutDlg.get().show();
-                if (basePresenter.getPlayType() == TYPE_HISTORY) {
-                    basePresenter.stopPlayVideo(TYPE_HISTORY);
+                if (!getUserVisibleHint()) {
+                    AppLogger.d("隐藏了，sd卡更新");
+                    return;
+                }
+                if (basePresenter.getPlayType() == PLAY_STATE_PLAYING) {
+                    initSdcardStateDialog();
+                    sdcardPulloutDlg.get().show();
+                    if (basePresenter.getPlayType() == TYPE_HISTORY) {
+                        basePresenter.stopPlayVideo(TYPE_HISTORY);
+                    }
                 }
             }
             AppLogger.e("sdcard数据被清空，唐宽，还没实现");
+        }
+        if (msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
+            onDeviceInfoChanged(msgId);
+        }
+        if (msgId == DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD) {
+//            DpMsgDefine.DpSdcardFormatRsp formatRsp = DpUtils.unpackData(msg.packValue, DpMsgDefine.DpSdcardFormatRsp.class);
+//            if (formatRsp == null) formatRsp = DpMsgDefine.EMPTY.SDCARD_FORMAT_RSP;
+            if (!getUserVisibleHint()) {
+                AppLogger.d("隐藏了，sd卡被格式化");
+                return;
+            }
+            if (basePresenter.getPlayType() != TYPE_HISTORY)
+                return;
+            if (sdcardFormatDlg != null && sdcardFormatDlg.get() != null && sdcardFormatDlg.get().isShowing())
+                return;
+            if (sdcardPulloutDlg != null && sdcardPulloutDlg.get() != null && sdcardPulloutDlg.get().isShowing()) {
+                sdcardPulloutDlg.get().dismiss();//其他对话框要隐藏。
+            }
+//            if(formatRsp)
+            initSdcardFormatDialog();
         }
     }
 
@@ -494,6 +535,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.getImvLandMic().setTag(R.drawable.icon_land_mic_off_selector);
         camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_off_selector);
         camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_off_selector);
+        imgVCamZoomToFullScreen.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -559,8 +601,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.imgV_cam_switch_speaker: {
-                CameraLiveFragmentPermissionsDispatcher.audioPermissionGrantWithCheck(this);
-                CameraLiveFragmentPermissionsDispatcher.audioSettingPermissionGrantWithCheck(this);
                 boolean on = isLocalSpeakerOn();
                 int sFlag = on ? R.drawable.icon_port_speaker_off_selector : R.drawable.icon_port_speaker_on_selector;
                 ((ImageView) view).setImageResource(sFlag);
@@ -574,21 +614,23 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             }
             break;
             case R.id.imgV_cam_trigger_mic: {
+//                CameraLiveFragmentPermissionsDispatcher.s
                 boolean on = isLocalMicOn();
-                int micFlag = on ? R.drawable.icon_port_mic_off_selector : R.drawable.icon_port_mic_on_selector;
-                ((ImageView) view).setImageResource(micFlag);
-                view.setTag(micFlag);
-                camLiveController.getImvLandMic().setImageResource(on ? R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
-                camLiveController.getImvLandMic().setTag(on ? R.drawable.icon_land_mic_off_selector : R.drawable.icon_land_mic_on_selector);
-                camLiveController.getImvLandSpeaker().setEnabled(on);
-                imgVCamSwitchSpeaker.setEnabled(on);
                 if (!on) {
-                    //同时设置speaker
-                    imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_on_selector);
-                    imgVCamSwitchSpeaker.setTag(R.drawable.icon_port_speaker_on_selector);
-                    camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_on_selector);
-                    camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_on_selector);
+                    CameraLiveFragmentPermissionsDispatcher.showAudioSettingPermissionWithCheck(this);
+                    return;
                 }
+                imgVCamTriggerMic.setImageResource(R.drawable.icon_port_mic_off_selector);
+                imgVCamTriggerMic.setTag(R.drawable.icon_port_mic_off_selector);
+                camLiveController.getImvLandMic().setImageResource(R.drawable.icon_land_mic_off_selector);
+                camLiveController.getImvLandMic().setTag(R.drawable.icon_land_mic_off_selector);
+                camLiveController.getImvLandSpeaker().setEnabled(true);
+                imgVCamSwitchSpeaker.setEnabled(true);
+                //同时设置speaker
+                imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_off_selector);
+                imgVCamSwitchSpeaker.setTag(R.drawable.icon_port_speaker_off_selector);
+                camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_off_selector);
+                camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_off_selector);
                 if (basePresenter != null) {
                     basePresenter.switchMic();
                 }
@@ -647,7 +689,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
             case JError.ErrorVideoPeerNotExist:
-//                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR));
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case JError.ErrorVideoPeerInConnect:
@@ -667,13 +708,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         }
         if (liveListener != null) liveListener.liveStateChange();
         vLive.onLiveStop();
+        imgVCamZoomToFullScreen.setVisibility(View.GONE);
         AppLogger.d("onLiveStop");
     }
 
     @Override
     public void onTakeSnapShot(Bitmap bitmap) {
         if (bitmap != null) {
-            ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             showPopupWindow(bitmap);
         } else {
             ToastUtil.showPositiveToast(getString(R.string.set_failed));
@@ -739,7 +780,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
 
-
     @Override
     public void onRtcp(JFGMsgVideoRtcp rtcp) {
         String content = MiscUtils.getByteFromBitRate(rtcp.bitRate);
@@ -763,24 +803,24 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         this.basePresenter = basePresenter;
     }
 
-    @NeedsPermission({Manifest.permission.RECORD_AUDIO})
-    public void audioPermissionGrant() {
-        if (basePresenter != null) {
-            Log.d("NeedsPermission", "audioPermissionGrant");
-        }
-    }
-
     @NeedsPermission({Manifest.permission.MODIFY_AUDIO_SETTINGS})
-    public void audioSettingPermissionGrant() {
+    public void showAudioSettingPermission() {
+        imgVCamTriggerMic.setImageResource(R.drawable.icon_port_mic_on_selector);
+        imgVCamTriggerMic.setTag(R.drawable.icon_port_mic_on_selector);
+        camLiveController.getImvLandMic().setImageResource(R.drawable.icon_land_mic_on_selector);
+        camLiveController.getImvLandMic().setTag(R.drawable.icon_land_mic_on_selector);
+        camLiveController.getImvLandSpeaker().setEnabled(false);
+        imgVCamSwitchSpeaker.setEnabled(false);
+        //同时设置speaker
+        imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_on_selector);
+        imgVCamSwitchSpeaker.setTag(R.drawable.icon_port_speaker_on_selector);
+        camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_on_selector);
+        camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_on_selector);
         if (basePresenter != null) {
-            Log.d("NeedsPermission", "audioSettingPermissionGrant");
+            basePresenter.switchMic();
         }
     }
 
-    @OnPermissionDenied({Manifest.permission.RECORD_AUDIO})
-    public void audioPermissionDenied() {
-        Log.d("OnPermissionDenied", "audioPermissionDenied");
-    }
 
     @OnPermissionDenied({Manifest.permission.MODIFY_AUDIO_SETTINGS})
     public void audioSettingPermissionDenied() {
@@ -789,7 +829,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void hardwareResult(RxEvent.CheckDevVersionRsp rsp) {
-        if (rsp.hasNew){
+        if (rsp.hasNew) {
             Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
             if (f == null) {
                 Bundle bundle = new Bundle();
@@ -809,7 +849,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onDialogAction(int id, Object value) {
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp)value);
+        bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp) value);
         HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 hardwareUpdateFragment, android.R.id.content);
