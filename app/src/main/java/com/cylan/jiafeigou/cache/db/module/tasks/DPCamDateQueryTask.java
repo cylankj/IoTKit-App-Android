@@ -91,7 +91,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
+    public Observable<BaseDPTaskResult> performServer() {
         return Observable.just("go to get and assemble Date List")
                 .subscribeOn(Schedulers.io())
                 .flatMap(s -> {

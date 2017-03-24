@@ -1180,6 +1180,7 @@ public class DpMsgDefine {
         };
     }
 
+    @Deprecated
     public interface EMPTY {
         DPNet NET = new DPNet();
         DPStandby STANDBY = new DPStandby();

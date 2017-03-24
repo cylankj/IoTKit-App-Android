@@ -473,6 +473,7 @@ public class DataSourceManager implements JFGSourceManager {
         return jfgAccount;
     }
 
+
     @Override
     public <T extends DataPoint> T getValue(String uuid, long msgId) {
         return getValue(uuid, msgId, -1);

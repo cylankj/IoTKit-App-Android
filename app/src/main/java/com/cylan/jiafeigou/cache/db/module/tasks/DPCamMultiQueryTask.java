@@ -32,7 +32,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public <R extends IDPMultiTask<BaseDPTaskResult>> R init(List<IDPEntity> cache) {
+    public <R extends IDPMultiTask<BaseDPTaskResult>> R init(List<IDPEntity> cache) throws Exception {
         this.option = cache.get(0).option(DBOption.MultiQueryOption.class);
         return super.init(cache);
     }
@@ -68,7 +68,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
+    public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 AppLogger.d("正在发送查询请求,dpMsgVersion:" + entity.getVersion() + "count:" + option.asc + ",acs:" + 20);

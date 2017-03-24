@@ -28,7 +28,7 @@ public class DPMultiDeleteConfirmTaskTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
+    public Observable<BaseDPTaskResult> performServer() {
         AppLogger.d("no need to invoke");
         return null;
     }
