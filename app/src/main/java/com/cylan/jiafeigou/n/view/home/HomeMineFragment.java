@@ -56,11 +56,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         implements HomeMineContract.View {
     @BindView(R.id.iv_home_mine_portrait)
     RoundedImageView ivHomeMinePortrait;
-
     @BindView(R.id.tv_home_mine_nick)
     TextView tvHomeMineNick;
-
-    //    FrameLayout fLayoutMsgBox;
     @BindView(R.id.tv_home_mine_msg_count)
     MsgBoxView tvHomeMineMsgCount;
     @BindView(R.id.rLayout_home_mine_top)
@@ -148,7 +145,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 我的亲友
-     *
      * @param view
      */
     public void friendItem(View view) {

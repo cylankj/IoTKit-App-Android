@@ -104,44 +104,11 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     @NonNull
     public ArrayList<RelAndFriendBean> getAllContactList() {
         ArrayList<RelAndFriendBean> list = new ArrayList<RelAndFriendBean>();
-//        Cursor cursor = null;
-//        Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
-//        // 这里是获取联系人表的电话里的信息  包括：名字，名字拼音，联系人id,电话号码；
-//        // 然后在根据"sort-key"排序
-//        cursor = getView().getContext().getContentResolver().query(
-//                uri,
-//                new String[]{"display_name", "sort_key", "contact_id",
-//                        "data1"}, null, null, "sort_key");
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                RelAndFriendBean friendBean = new RelAndFriendBean();
-//                String contact_phone = cursor
-//                        .getString(cursor
-//                                .getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-//                String name = cursor.getString(0);
-//                friendBean.account = contact_phone;
-//                friendBean.alias = name;
-//                if (name != null) {
-//                    if (friendBean.account.startsWith("+86")) {
-//                        friendBean.account = friendBean.account.substring(3);
-//                    } else if (friendBean.account.startsWith("86")) {
-//                        friendBean.account = friendBean.account.substring(2);
-//                    }
-//
-//                    if (JConstant.PHONE_REG.matcher(friendBean.account).find()) {
-//                        list.add(friendBean);
-//                    }
-//                }
-//
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-
         //得到ContentResolver对象
         ContentResolver cr = getView().getContext().getContentResolver();
         //取得电话本中开始一项的光标
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        if (cursor == null)return list;
         //向下移动光标
         while (cursor.moveToNext()) {
             //取得联系人名字
@@ -164,6 +131,23 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 }
                 list.add(friendBean);
             }
+            phone.close();
+
+            Cursor emails = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + ContactId, null, null);
+            int emailIndex = 0;
+            if(emails.getCount() > 0) {
+                emailIndex = emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
+            }
+            while(emails.moveToNext()) {
+                RelAndFriendBean friendBean = new RelAndFriendBean();
+                String email = emails.getString(emailIndex);
+                friendBean.alias = contact;
+                friendBean.account = email;
+                if (JConstant.EMAIL_REG.matcher(email).find()){
+                    list.add(friendBean);
+                }
+            }
+            emails.close();
         }
         cursor.close();
         return list;

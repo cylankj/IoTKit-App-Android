@@ -120,7 +120,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
 //                        MineFriendAddFriendsFragment.this.requestPermissions(
 //                                new String[]{Manifest.permission.READ_CONTACTS},
 //                                1);
-                        setPermissionDialog(Manifest.permission.READ_CONTACTS);
+                        setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
                     }else {
                         AppLogger.d("request_N");
                         MineFriendAddFriendsFragment.this.requestPermissions(
