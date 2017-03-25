@@ -307,16 +307,28 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
     }
 
     @Override
-    public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
+    public void OnRobotSetDataRsp(long l, String s, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SdcardClearReqRsp(l, arrayList));
     }
 
     @Override
-    public void OnRobotGetDataTimeout(long l) {
+    public void OnRobotGetDataTimeout(long l, String s) {
         AppLogger.d("OnRobotGetDataTimeout :");
     }
+
+//    @Override
+//    public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
+//        AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
+//        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, arrayList));
+//        RxBus.getCacheInstance().post(new RxEvent.SdcardClearReqRsp(l, arrayList));
+//    }
+//
+//    @Override
+//    public void OnRobotGetDataTimeout(long l) {
+//        AppLogger.d("OnRobotGetDataTimeout :");
+//    }
 
     @Override
     public ArrayList<JFGDPMsg> OnQuerySavedDatapoint(String s, ArrayList<JFGDPMsg> arrayList) {
@@ -536,6 +548,11 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
     }
 
     @Override
+    public void OnUnBindDevRsp(int i, String s) {
+
+    }
+
+    @Override
     public void OnGetVideoShareUrl(String s) {
 
     }
@@ -550,5 +567,15 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
             e.printStackTrace();
             AppLogger.e("OnForwardData:解析局域网消息失败!!!");
         }
+    }
+
+    @Override
+    public void OnMultiShareDevices(int i, String s, String s1) {
+
+    }
+
+    @Override
+    public void OnCheckClientVersion(int i, String s, int i1) {
+
     }
 }

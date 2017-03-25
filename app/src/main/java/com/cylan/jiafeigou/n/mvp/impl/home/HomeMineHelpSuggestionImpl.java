@@ -143,7 +143,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo userInfo) {
-                        if (userInfo != null && userInfo instanceof RxEvent.GetUserInfo) {
+                        if (userInfo != null) {
                             userInfomation = userInfo.jfgAccount;
                             dbManager = DataBaseUtil.getInstance(userInfo.jfgAccount.getAccount()).dbManager;
                             initData();
@@ -227,11 +227,8 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                             upLoadLogFile(bean);
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.d("sendFeedBack" + throwable.getLocalizedMessage());
-                    }
+                }, throwable -> {
+                    AppLogger.d("sendFeedBack" + throwable.getLocalizedMessage());
                 });
     }
 
@@ -247,11 +244,8 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     public void call(Object o) {
 //                    JfgCmdInsurance.getCmd().getFeedbackList();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("getSystemAutoReply" + throwable.getLocalizedMessage());
-                    }
+                },throwable -> {
+                    AppLogger.e("getSystemAutoReply" + throwable.getLocalizedMessage());
                 });
     }
 
@@ -267,7 +261,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<RxEvent.GetFeedBackRsp>() {
                     @Override
                     public void call(RxEvent.GetFeedBackRsp getFeedBackRsp) {
-                        if (getFeedBackRsp != null && getFeedBackRsp instanceof RxEvent.GetFeedBackRsp) {
+                        if (getFeedBackRsp != null) {
                             if (getView() != null && getFeedBackRsp.arrayList.size() != 0) {
                                 JFGFeedbackInfo jfgFeedbackInfo = getFeedBackRsp.arrayList.get(0);
                                 getView().addSystemAutoReply(jfgFeedbackInfo.time, jfgFeedbackInfo.msg);
@@ -356,7 +350,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         String remoteUrl = null;
         try {
             remoteUrl = "/log/" + Security.getVId(JFGRules.getTrimPackageName()) + "/" + userInfomation.getAccount() + "/" + fileName;
-            int code = JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
+            JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
             AppLogger.d("upload log:"+remoteUrl);
         } catch (JfgException e) {
             e.printStackTrace();

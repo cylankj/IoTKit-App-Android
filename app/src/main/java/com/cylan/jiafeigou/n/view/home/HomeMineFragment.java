@@ -74,10 +74,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     private HomeMineHelpFragment mineHelpFragment;
     private HomeMineInfoFragment personalInformationFragment;
     private HomeSettingFragment homeSettingFragment;
-    private HomeMineMessageFragment homeMineMessageFragment;
     private MineShareDeviceFragment mineShareDeviceFragment;
     private MineFriendsFragment mineRelativesandFriendsFragment;
-    private MineInfoBindPhoneFragment bindPhoneFragment;
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -422,7 +420,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         }
         Bundle bundle = new Bundle();
         bundle.putBoolean("hasNewMesg", basePresenter.hasUnReadMesg());
-        homeMineMessageFragment = HomeMineMessageFragment.newInstance(bundle);
+        HomeMineMessageFragment homeMineMessageFragment = HomeMineMessageFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)

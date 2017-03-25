@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
+import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,6 +36,8 @@ public interface HomeMineMessageContract {
          * 消息不为空时显示
          */
         void hideNoMesgView();
+
+        void deleteMesgReuslt(RxEvent.DeleteDataRsp rsp);
     }
 
     interface Presenter extends BasePresenter {
@@ -81,6 +84,10 @@ public interface HomeMineMessageContract {
          * @return
          */
         Subscription getMesgDpDataCallBack();
+
+        void deleteServiceMsg(long type,long version);
+
+        Subscription deleteMsgBack();
 
     }
 

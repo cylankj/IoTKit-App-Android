@@ -8,25 +8,6 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <!--<FrameLayout-->
-        <!--android:id="@+id/fLayout_top_bar_container"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="@color/color_0ba8cf">-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/iv_home_mine_personal_back"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="@dimen/y48"-->
-            <!--android:drawableLeft="@drawable/nav_tab_back_selector"-->
-            <!--android:drawablePadding="@dimen/x15"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:paddingLeft="@dimen/x15"-->
-            <!--android:text="@string/Tap3_Friends_UserInfo"-->
-            <!--android:textColor="@color/color_white"-->
-            <!--android:textSize="@dimen/sp18" />-->
-    <!--</FrameLayout>-->
-
     <com.cylan.jiafeigou.widget.CustomToolbar
         hunt:ct_left_title="@string/Tap3_Friends_UserInfo"
         hunt:ct_left_title_color="@color/color_white"
@@ -37,15 +18,14 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
-    <ScrollView
-        android:scrollbars="none"
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <FrameLayout
+        <ScrollView
+            android:scrollbars="none"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,9 +63,7 @@
                         android:layout_marginLeft="@dimen/x20"
                         android:layout_marginRight="@dimen/x20"
                         android:background="@color/color_f2f2f2" />
-
                 </RelativeLayout>
-
 
                 <RelativeLayout
                     android:id="@+id/rLayout_home_mine_personal_pic"
@@ -142,9 +120,7 @@
                         android:layout_marginLeft="@dimen/x20"
                         android:layout_marginRight="@dimen/x20"
                         android:background="@color/color_f2f2f2" />
-
                 </RelativeLayout>
-
 
                 <RelativeLayout
                     android:id="@+id/rLayout_home_mine_personal_name"
@@ -285,11 +261,12 @@
                     android:textColor="@color/color_ff3b30"
                     android:textSize="@dimen/sp16" />
             </LinearLayout>
+        </ScrollView>
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y10"
-                android:background="@drawable/little_shape" />
-        </FrameLayout>
-    </ScrollView>
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y10"
+            android:background="@drawable/little_shape" />
+    </FrameLayout>
+
 </LinearLayout>

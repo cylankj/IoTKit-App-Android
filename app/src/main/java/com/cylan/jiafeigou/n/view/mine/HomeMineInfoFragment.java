@@ -113,11 +113,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @BindView(R.id.ll_container)
     LinearLayout llContainer;
 
-    private HomeMineInfoMailBoxFragment mailBoxFragment;
-    private MineInfoBindPhoneFragment bindPhoneFragment;
-    private MineUserInfoLookBigHeadFragment bigHeadFragment;
-    private MineSetUserAliasFragment setUserNameFragment;
-    private MineInfoSetPassWordFragment setPassWordFragment;
     private MineInfoContract.Presenter presenter;
     private JFGAccount argumentData;
     private Uri outPutUri;
@@ -283,7 +278,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void jump2ChangePasswordFragment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", argumentData);
-        setPassWordFragment = MineInfoSetPassWordFragment.newInstance(bundle);
+        MineInfoSetPassWordFragment setPassWordFragment = MineInfoSetPassWordFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -298,7 +293,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void jump2SetUserNameFragment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", argumentData);
-        setUserNameFragment = MineSetUserAliasFragment.newInstance(bundle);
+        MineSetUserAliasFragment setUserNameFragment = MineSetUserAliasFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -323,7 +318,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void lookBigImageHead() {
         Bundle bundle = new Bundle();
         bundle.putString("imageUrl", argumentData.getPhotoUrl());
-        bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
+        MineUserInfoLookBigHeadFragment bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -402,7 +397,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void jump2SetEmailFragment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", argumentData);
-        mailBoxFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);
+        HomeMineInfoMailBoxFragment mailBoxFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -454,7 +449,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     /**
      * popupwindow条目点击
-     *
      * @param view
      */
     private void setOnPopupViewClick(View view) {
@@ -536,7 +530,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", argumentData);
-        bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
+        MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)

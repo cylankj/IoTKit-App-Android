@@ -177,11 +177,8 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             e.printStackTrace();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("getMesgDpData" + throwable.getLocalizedMessage());
-                    }
+                }, throwable -> {
+                    AppLogger.e("getMesgDpData" + throwable.getLocalizedMessage());
                 });
     }
 
@@ -199,7 +196,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
                         if (results.size() != 0)
                             results.clear();
-                        AppLogger.d("getMesgDpDataCallBack:" + robotoGetDataRsp.seq + ":" + robotoGetDataRsp.identity);
                         if (robotoGetDataRsp != null && robotoGetDataRsp.seq == seq) {
                             results.addAll(convertData(robotoGetDataRsp));
                         }
@@ -218,6 +214,8 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     }
                 });
     }
+
+
 
     /**
      * 解析转换数据
@@ -260,7 +258,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
         return sortAddReqList(results);
     }
 
-
     public ArrayList<MineMessageBean> sortAddReqList(ArrayList<MineMessageBean> list) {
         Comparator<MineMessageBean> comparator = new Comparator<MineMessageBean>() {
             @Override
@@ -276,6 +273,38 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
         };
         Collections.sort(list,comparator);
         return list;
+    }
+
+    @Override
+    public void deleteServiceMsg(long type,long version) {
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        try {
+                            ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
+                            JFGDPMsg msg = new JFGDPMsg(type,version);
+                            list.add(msg);
+                            long req = JfgCmdInsurance.getCmd().robotDelData("", list, 0);
+                            AppLogger.d("deleteServiceMsg:"+req);
+                        } catch (JfgException e) {
+                            AppLogger.e("deleteServiceMsg:"+e.getLocalizedMessage());
+                            e.printStackTrace();
+                        }
+                    }
+                },throwable -> {
+                    AppLogger.e("deleteServiceMsg:"+throwable.getLocalizedMessage());
+                });
+    }
+
+    @Override
+    public Subscription deleteMsgBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(deleteDataRspClass -> {
+                    if (getView() != null)getView().deleteMesgReuslt(deleteDataRspClass);
+                });
     }
 
 }

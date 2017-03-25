@@ -59,10 +59,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @BindView(R.id.tv_friend_list_title)
     TextView tvFriendListTitle;
 
-
-
     private MineFriendsContract.Presenter presenter;
-
     private MineFriendAddFriendsFragment friendsFragment;
     private MineFriendDetailFragment relativeAndFrienDetialFragment;
     private MineFriendAddReqDetailFragment addReqDetailFragment;
@@ -156,7 +153,6 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     /**
      * 添加请求列表删除一个条目
-     *
      * @param bean
      */
     @Override
