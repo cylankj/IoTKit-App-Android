@@ -45,6 +45,11 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         for (IDPEntity entity : multiEntity) {
             list.add(entity.getMsgId());
         }
+        if (option.timeStart > option.timeEnd) {
+            long tmp = option.timeStart;
+            option.timeStart = option.timeEnd;
+            option.timeEnd = tmp;
+        }
         AppLogger.d("let's go for local cache:" + option);
         return BaseDBHelper.getInstance().queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
                 option.timeStart, option.timeEnd, list, 1000, null, DBState.SUCCESS, null)

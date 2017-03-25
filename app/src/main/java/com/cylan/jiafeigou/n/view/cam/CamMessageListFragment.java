@@ -200,7 +200,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             if (camMessageListAdapter.getCount() > 0)
                 time = camMessageListAdapter.getItem(0).time;
         } else {
-            setupFootView();
+            if (!camMessageListAdapter.hasFooter())
+                setupFootView();
             if (camMessageListAdapter.getCount() > 0)
                 time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).time;
         }

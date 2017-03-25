@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
@@ -60,36 +61,37 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                         builder.where(DPEntityDao.Properties.Uuid.eq(uuid));//设置 UUID 约束
                     }
                     builder.where(DPEntityDao.Properties.State.eq(DBState.SUCCESS));
-                    builder.where(DPEntityDao.Properties.Version.ge(aLong));//设置 version 约束
-                    builder.where(DPEntityDao.Properties.Version.lt(aLong + 24 * 3600 * 1000L));//设置 version 约束
-                    builder.orderDesc(DPEntityDao.Properties.Version);//降序排列，得到最大的一个值。
+                    builder.where(DPEntityDao.Properties.Version.ge(aLong),
+                            DPEntityDao.Properties.Version.lt(aLong + 24 * 3600 * 1000L));//设置 version 约束
                     WhereCondition condition1 = DPEntityDao.Properties.MsgId.eq(222);
                     WhereCondition condition2 = DPEntityDao.Properties.MsgId.eq(505);
                     WhereCondition conditions3 = DPEntityDao.Properties.MsgId.eq(512);
                     builder.whereOr(condition1, condition2, conditions3);
+                    builder.orderDesc(DPEntityDao.Properties.Version);//降序排列，得到最大的一个值。
                     builder.limit(1);
-                    return Observable.just(builder.unique());
+                    DPEntity entity = builder.unique();
+                    return Observable.just(entity);
                 })
                 .toList()
-                .flatMap(dpEntities -> {
+                .flatMap(result -> {
                     //已经是降序
                     long startTime = TimeUtils.getTodayStartTime();//今天凌晨时间戳
                     ArrayList<WonderIndicatorWheelView.WheelItem> finalList = new ArrayList<>();
-                    if (dpEntities != null) {
+                    if (result != null) {
                         for (int i = 0; i < 15; i++) {
-                            DPEntity entity = dpEntities.get(i);
+                            DPEntity entity = result.get(i);
                             WonderIndicatorWheelView.WheelItem item = new WonderIndicatorWheelView.WheelItem();
-                            item.time = startTime - i * 3600 * 24 * 1000L;
+                            item.time = entity == null ? (startTime - i * 3600 * 24 * 1000L) : entity.getVersion();
                             item.wonderful = entity != null;
                             finalList.add(item);
                         }
                     }
-                    AppLogger.d("localDateList: " + ListUtils.getSize(finalList) + "," + (System.currentTimeMillis() - performanceTime));
+                    AppLogger.d("localDateList: " + ListUtils.getSize(finalList) + "," + (System.currentTimeMillis() - performanceTime) + "ms");
                     AppLogger.d("localDateList: " + finalList);
-                    BaseDPTaskResult result = new BaseDPTaskResult();
-                    result.setResultCode(0);
-                    result.setResultResponse(finalList);
-                    return Observable.just(result);
+                    BaseDPTaskResult good = new BaseDPTaskResult();
+                    good.setResultCode(0);
+                    good.setResultResponse(finalList);
+                    return Observable.just(good);
                 });
     }
 

@@ -116,17 +116,17 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     private Observable<BaseDPTaskResult> getMessageListQuery(long timeStart, boolean asc) {
         Log.d("getMessageListQuery", "getMessageListQuery:" + timeStart + ",asc: " + asc);
         try {
-            long timeEnd = asc ? TimeUtils.getSpecificDayStartTime(timeStart) : System.currentTimeMillis();
+            long timeEnd = asc ? System.currentTimeMillis() : TimeUtils.getSpecificDayStartTime(timeStart);
             //需要注意这个timeEnd,他可以小于timeStart.可以大于timeStart.
             //查询本地的时候，不用asc.只用timeStart,timeEnd
             //查询服务器的时候，用timeStart中大的一个，加上asc.
             if (DataSourceManager.getInstance().isOnline()) {
                 return new DPCamMultiQueryTask()
-                        .init(buildEntity(timeStart, timeEnd, asc))
+                        .init(buildEntity(timeStart, timeEnd, asc))//服务器查询不理会timeEnd
                         .performServer();
             } else {
                 return new DPCamMultiQueryTask()
-                        .init(buildEntity(timeStart, timeEnd, asc))
+                        .init(buildEntity(timeStart, timeEnd, asc))//本地查询不理会asc
                         .performLocal();
             }
         } catch (Exception e) {

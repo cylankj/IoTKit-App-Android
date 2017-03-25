@@ -1,8 +1,12 @@
 package com.cylan.jiafeigou;
 
-import com.cylan.jiafeigou.rx.RxBus;
-
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by cylan-hunt on 17-2-17.
@@ -12,13 +16,34 @@ public class RxJavaTest {
     @Test
     public void testRetryWhen() {
 
-        RxBus.getCacheInstance().post("nihao");
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        RxBus.getCacheInstance().post("men");
+        Observable.just("")
+                .flatMap(new Func1<String, Observable<Integer>>() {
+                    @Override
+                    public Observable<Integer> call(String s) {
+                        ArrayList<Integer> list = new ArrayList<Integer>();
+                        for (int i = 0; i < 15; i++) {
+                            list.add(i);
+                        }
+                        return Observable.from(list);
+                    }
+                })
+                .flatMap(new Func1<Integer, Observable<Integer>>() {
+                    @Override
+                    public Observable<Integer> call(Integer integer) {
+                        return Observable.just(integer % 2 == 0 ? null : integer);
+                    }
+                })
+                .toList()
+                .map(new Func1<List<Integer>, Object>() {
+                    @Override
+                    public Object call(List<Integer> list) {
+                        System.out.println(list);
+                        return null;
+                    }
+                })
+                .toList()
+
+                .subscribe();
 
 //        final AtomicInteger atomicInteger = new AtomicInteger(3);
 //        Observable.create(new Observable.OnSubscribe<String>() {
