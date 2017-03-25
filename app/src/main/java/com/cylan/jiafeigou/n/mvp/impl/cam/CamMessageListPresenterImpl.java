@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.text.TextUtils;
 import android.util.Log;
+import android.util.Pair;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
@@ -177,20 +178,32 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                 })
                 .filter(result -> mView != null && result != null)
-                .flatMap(new Func1<ArrayList<CamMessageBean>, Observable<ArrayList<CamMessageBean>>>() {
+                .flatMap(new Func1<ArrayList<CamMessageBean>, Observable<Pair<ArrayList<CamMessageBean>, Boolean>>>() {
                     @Override
-                    public Observable<ArrayList<CamMessageBean>> call(ArrayList<CamMessageBean> camList) {
+                    public Observable<Pair<ArrayList<CamMessageBean>, Boolean>> call(ArrayList<CamMessageBean> camList) {
                         //需要和列表里面的items 融合
                         ArrayList<CamMessageBean> list = new ArrayList<>(mView.getList());
                         camList.removeAll(list);
                         AppLogger.d("uiList: " + ListUtils.getSize(list) + ",newList: " + ListUtils.getSize(camList));
-                        return Observable.just(camList);
+                        if (camList.size() > 0) {
+                            //检查是否 append 或者insert
+                            if (ListUtils.getSize(list) == 0) {
+                                return Observable.just(new Pair<>(camList, true));
+                            }
+                            if (camList.get(camList.size() - 1).time >= list.get(0).time) {
+                                return Observable.just(new Pair<>(camList, false));
+                            }
+                            return Observable.just(new Pair<>(camList, true));
+                        }
+                        return Observable.just(new Pair<>(camList, true));
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null && ret != null)
-                .map(camMessageBeen -> {
-                    mView.onListAppend(camMessageBeen);
+                .map(result -> {
+                    if (result.second) {
+                        mView.onListAppend(result.first);
+                    } else mView.onListInsert(result.first, 0);
                     return null;
                 })
                 .subscribeOn(Schedulers.newThread())

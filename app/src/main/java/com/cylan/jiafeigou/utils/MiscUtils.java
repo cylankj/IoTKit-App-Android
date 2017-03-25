@@ -253,16 +253,17 @@ public class MiscUtils {
         return defaultValue;
     }
 
-    public static <T extends DataPoint> T safeGet_(DpMsgDefine.DPSingle<T> value, T defaultValue) {
-        if (value != null) {
-            try {
-                return defaultValue;
-            } catch (Exception e) {
-                return defaultValue;
-            }
-        }
-        return defaultValue;
-    }
+//    @Deprecated
+//    public static <T extends DataPoint> T safeGet_(DpMsgDefine.DPSingle<T> value, T defaultValue) {
+//        if (value != null && value.$() != null) {
+//            try {
+//                return value.$();
+//            } catch (Exception e) {
+//                return defaultValue;
+//            }
+//        }
+//        return defaultValue;
+//    }
 
     /**
      * @param set

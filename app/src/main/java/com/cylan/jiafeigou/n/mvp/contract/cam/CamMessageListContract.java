@@ -23,6 +23,8 @@ public interface CamMessageListContract {
 
         void onListAppend(ArrayList<CamMessageBean> beanArrayList);
 
+        void onListInsert(ArrayList<CamMessageBean> beanArrayList, int position);
+
         ArrayList<CamMessageBean> getList();
 
         /**

@@ -255,6 +255,21 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     @Override
+    public void onListInsert(ArrayList<CamMessageBean> beanArrayList, int position) {
+        if (beanArrayList != null && beanArrayList.size() > 0) {
+            for (CamMessageBean bean : beanArrayList)
+                camMessageListAdapter.add(0, bean);
+        }
+        endlessLoading = false;
+        mIsLastLoadFinish = true;
+        srLayoutCamListRefresh.setRefreshing(false);
+        lLayoutNoMessage.post(() -> {
+            lLayoutNoMessage.setVisibility(camMessageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+            rLayoutCamMessageListTop.setVisibility(camMessageListAdapter.getCount() == 0 ? View.GONE : View.VISIBLE);
+        });
+    }
+
+    @Override
     public ArrayList<CamMessageBean> getList() {
         return (ArrayList<CamMessageBean>) camMessageListAdapter.getList();
     }

@@ -576,12 +576,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public boolean needShowHistoryWheelView() {
-        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
+        DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+        DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         boolean show = JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0
-                && device != null && TextUtils.isEmpty(device.shareAccount)
+                && TextUtils.isEmpty(device.shareAccount)
                 && sdStatus.hasSdcard && sdStatus.err == 0
                 && historyDataProvider != null && historyDataProvider.getDataCount() > 0;
         AppLogger.i("show: " + show);

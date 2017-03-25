@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -87,7 +88,8 @@ public class DelayRecordGuideFragment extends BaseFragment {
     }
 
     private boolean isDeviceSleeping() {
-        DpMsgDefine.DPStandby isStandBY = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG), DpMsgDefine.DPStandby.empty());
+        Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+        DpMsgDefine.DPStandby isStandBY = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         return isStandBY.standby;
     }
 

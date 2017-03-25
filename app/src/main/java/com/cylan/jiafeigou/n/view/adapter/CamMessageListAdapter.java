@@ -68,8 +68,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private boolean online() {
-        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.NET);
-        return net.net > 0;
+        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET);
+        return net != null && net.net > 0;
     }
 
     public boolean isEditMode() {

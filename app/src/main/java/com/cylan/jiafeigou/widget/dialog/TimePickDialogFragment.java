@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -81,9 +82,10 @@ public class TimePickDialogFragment extends BaseDialog<Integer> {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         String title = getArguments().getString(KEY_TITLE);
         tvDialogTitle.setText(title);
-        DpMsgDefine.DPAlarmInfo alarmInfo = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), DpMsgDefine.EMPTY.ALARM_INFO);
+        DpMsgDefine.DPAlarmInfo alarmInfo = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
         boolean isStart = TextUtils.equals(title, getString(R.string.FROME));
         newHour = isStart ? alarmInfo.timeStart >> 8 : alarmInfo.timeEnd >> 8;
         newMinute = isStart ? ((byte) alarmInfo.timeStart << 8) >> 8 : ((byte) alarmInfo.timeEnd << 8) >> 8;
