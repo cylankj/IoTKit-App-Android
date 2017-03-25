@@ -157,7 +157,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                             endlessLoading = true;
                             mIsLastLoadFinish = false;
                             Log.d("tag", "tag.....load more");
-                            startRequest(true);
+                            startRequest(false);
                         }
                     }
                 }
@@ -169,6 +169,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     private void setupFootView() {
         CamMessageBean bean = new CamMessageBean();
         bean.viewType = 2;
+        if (camMessageListAdapter.getCount() > 0)
+            bean.time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).time;
         camMessageListAdapter.add(bean);
     }
 
@@ -184,22 +186,25 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         super.setUserVisibleHint(isVisibleToUser);
         if (isVisibleToUser && basePresenter != null && getActivity() != null && isResumed()) {
             if (camMessageListAdapter.getCount() == 0)
-                startRequest(false);
+                startRequest(true);
         }
     }
 
-    private void startRequest(boolean loadMore) {
-        long time = System.currentTimeMillis();
-        if (loadMore) {
-            setupFootView();
-            if (camMessageListAdapter.getCount() > 0)
-                time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).time;
-        } else {
+    /**
+     * @param asc：true:向前，false:向后(loadMore)
+     */
+    private void startRequest(boolean asc) {
+        long time = 0;
+        if (asc) {
             srLayoutCamListRefresh.setRefreshing(true);
             if (camMessageListAdapter.getCount() > 0)
                 time = camMessageListAdapter.getItem(0).time;
+        } else {
+            setupFootView();
+            if (camMessageListAdapter.getCount() > 0)
+                time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).time;
         }
-        if (basePresenter != null) basePresenter.fetchMessageList(time, loadMore);
+        if (basePresenter != null) basePresenter.fetchMessageList(time, asc);
     }
 
     /**
@@ -222,19 +227,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @Override
     public void onDateMapRsp(List<WonderIndicatorWheelView.WheelItem> dateMap) {
-        LoadingDialog.dismissLoading(getFragmentManager());
-        AnimatorUtils.slideAuto(fLayoutCamMessageListTimeline, false);
         fLayoutCamMessageListTimeline.init(dateMap);
         if (!fLayoutCamMessageListTimeline.hasInit())
             fLayoutCamMessageListTimeline.setListener(time -> {
-                AppLogger.d("scroll dat： " + TimeUtils.getDayInMonth(time));
+                AppLogger.d("scroll date： " + TimeUtils.getDayInMonth(time));
             });
+        LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
     public void onListAppend(ArrayList<CamMessageBean> beanArrayList) {
-        if (camMessageListAdapter.hasFooter())
-            camMessageListAdapter.remove(camMessageListAdapter.getItemCount() - 1);
         endlessLoading = false;
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
@@ -266,13 +268,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 if (net == null) net = DpMsgDefine.EMPTY.NET;
                 camMessageListAdapter.notifyDeviceOnlineState(net.net > 0, lPos);
                 break;
-            case 222:
+            case DpMsgMap.ID_222_SDCARD_SUMMARY:
                 DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(o.packValue, DpMsgDefine.DPSdcardSummary.class);
                 if (summary == null) summary = DpMsgDefine.EMPTY.SDCARD_SUMMARY;
                 camMessageListAdapter.notifySdcardStatus(summary.hasSdcard, lPos);
                 CamMessageBean bean = new CamMessageBean();
                 bean.sdcardSummary = summary;
-                bean.id = 222;
+                bean.id = DpMsgMap.ID_222_SDCARD_SUMMARY;
                 bean.version = bean.time = o.version;
                 camMessageListAdapter.add(0, bean);
                 rvCamMessageList.scrollToPosition(0);
@@ -285,12 +287,23 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onErr() {
         srLayoutCamListRefresh.post(() -> srLayoutCamListRefresh.setRefreshing(false));
-        LoadingDialog.dismissLoading(getFragmentManager());
+        if (getView() != null && getActivity() != null) {
+            getView().postDelayed(() -> LoadingDialog.dismissLoading(getFragmentManager()), 100);
+        }
     }
 
     @Override
     public void onMessageDeleteSuc() {
         ToastUtil.showPositiveToast(getString(R.string.DELETED_SUC));
+        if (getView() != null && getActivity() != null) {
+            getView().postDelayed(() -> LoadingDialog.dismissLoading(getFragmentManager()), 100);
+        }
+    }
+
+    @Override
+    public void loadingDismiss() {
+        if (camMessageListAdapter.hasFooter() && getView() != null)
+            camMessageListAdapter.remove(camMessageListAdapter.getItemCount() - 1);
         LoadingDialog.dismissLoading(getFragmentManager());
     }
 
@@ -307,7 +320,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             return;
         }
         srLayoutCamListRefresh.setRefreshing(true);
-        startRequest(false);
+        startRequest(true);
     }
 
     @OnClick({R.id.tv_cam_message_list_date,
@@ -315,22 +328,25 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             R.id.tv_msg_full_select,
             R.id.tv_msg_delete})
     public void onBindClick(View view) {
-        ViewUtils.deBounceClick(view);
         final int lPos = ((LinearLayoutManager) rvCamMessageList.getLayoutManager())
                 .findLastVisibleItemPosition();
         switch (view.getId()) {
             case R.id.tv_cam_message_list_date:
                 if (camMessageListAdapter.getCount() == 0)
                     return;//呼入呼出
-                boolean isHide = !AnimatorUtils.isReset(fLayoutCamMessageListTimeline) || !fLayoutCamMessageListTimeline.isShown();
-                if (isHide && basePresenter != null && basePresenter.getDateList().size() == 0) {
+                if (basePresenter != null && basePresenter.getDateList().size() == 0) {
                     LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
                     AppLogger.d("日起加载中...");
                     basePresenter.refreshDateList();
-                    return;
                 }
-                AnimatorUtils.slideAuto(fLayoutCamMessageListTimeline, false);
-                tvCamMessageListEdit.setEnabled(!isHide);
+                boolean reset = tvCamMessageListDate.getTag() == null ||
+                        ((int) tvCamMessageListDate.getTag() == R.drawable.wonderful_arrow_down);
+                tvCamMessageListDate.setTag(reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down);
+                ViewUtils.setDrawablePadding(tvCamMessageListDate, reset ? R.drawable.wonderful_arrow_up : R.drawable.wonderful_arrow_down, 2);
+                if (reset)
+                    AnimatorUtils.slideIn(fLayoutCamMessageListTimeline, false);
+                else AnimatorUtils.slideOut(fLayoutCamMessageListTimeline, false);
+                tvCamMessageListEdit.setEnabled(!reset);
                 break;
             case R.id.tv_cam_message_list_edit:
                 if (camMessageListAdapter.getCount() == 0) return;

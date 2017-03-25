@@ -36,13 +36,15 @@ public interface CamMessageListContract {
         void onErr();
 
         void onMessageDeleteSuc();
+
+        void loadingDismiss();
     }
 
     interface Presenter extends BasePresenter {
         /**
          * @param timeStart
          */
-        void fetchMessageList(long timeStart, boolean loadMore);
+        void fetchMessageList(long timeStart, boolean asc);
 
 
         void removeItems(ArrayList<CamMessageBean> beanList);

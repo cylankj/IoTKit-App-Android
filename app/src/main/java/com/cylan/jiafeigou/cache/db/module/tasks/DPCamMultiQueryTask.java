@@ -7,7 +7,6 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPByteParser;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
-import com.cylan.jiafeigou.cache.db.module.DPEntityDao;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
@@ -46,9 +45,9 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         for (IDPEntity entity : multiEntity) {
             list.add(entity.getMsgId());
         }
-        AppLogger.d("let's go for local cache");
+        AppLogger.d("let's go for local cache:" + option);
         return BaseDBHelper.getInstance().queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
-                option.timeStart, option.timeEnd, list, option.asc, 1000, null, DBState.SUCCESS, null)
+                option.timeStart, option.timeEnd, list, 1000, null, DBState.SUCCESS, null)
                 .flatMap(new Func1<List<DPEntity>, Observable<BaseDPTaskResult>>() {
                     @Override
                     public Observable<BaseDPTaskResult> call(List<DPEntity> items) {
@@ -73,7 +72,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                AppLogger.d("正在发送查询请求,dpMsgVersion:" + entity.getVersion() + "count:" + option.asc + ",acs:" + 20);
+                AppLogger.d("正在发送查询请求,dpMsgVersion:" + option + "count:" + 20);
                 long seq = DataSourceManager.getInstance().syncJFGCameraWarn(entity.getUuid() == null ? "" : entity.getUuid(), option.timeStart, option.asc, 100);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();

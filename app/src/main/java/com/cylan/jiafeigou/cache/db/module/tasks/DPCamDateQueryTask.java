@@ -62,6 +62,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     builder.where(DPEntityDao.Properties.State.eq(DBState.SUCCESS));
                     builder.where(DPEntityDao.Properties.Version.ge(aLong));//设置 version 约束
                     builder.where(DPEntityDao.Properties.Version.lt(aLong + 24 * 3600 * 1000L));//设置 version 约束
+                    builder.orderDesc(DPEntityDao.Properties.Version);//降序排列，得到最大的一个值。
                     WhereCondition condition1 = DPEntityDao.Properties.MsgId.eq(222);
                     WhereCondition condition2 = DPEntityDao.Properties.MsgId.eq(505);
                     WhereCondition conditions3 = DPEntityDao.Properties.MsgId.eq(512);

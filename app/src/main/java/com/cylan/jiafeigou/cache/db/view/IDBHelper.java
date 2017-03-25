@@ -93,7 +93,7 @@ public interface IDBHelper {
 
     Observable<Iterable<DPEntity>> saveDPByteInTx(RobotoGetDataRsp dataRsp);
 
-    Observable<List<DPEntity>> queryMultiDpMsg(String account, String server, String uuid, Long version, Long versionMax, List<Integer> msgIdList, Boolean asc, Integer limit, DBAction action, DBState state, DBOption option);
+    Observable<List<DPEntity>> queryMultiDpMsg(String account, String server, String uuid, Long version, Long versionMax, List<Integer> msgIdList, Integer limit, DBAction action, DBState state, DBOption option);
 
     Observable<DPEntity> queryDpMsg(QueryBuilder<DPEntity> builder);
 
