@@ -4,11 +4,15 @@ package com.cylan.jiafeigou.n.mvp.impl.splash;
 import android.app.ActivityManager;
 import android.content.Context;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
