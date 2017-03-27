@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -21,6 +22,7 @@ import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -111,21 +113,14 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
             });
 
             clientImage = holder.getView(R.id.iv_mine_suggestion_client);
+            MyImageViewTarget myImageViewTarget = new MyImageViewTarget(clientImage,getContext().getResources());
             Glide.with(getContext()).load(item.getIcon())
                     .asBitmap()
                     .error(R.drawable.icon_mine_head_normal)
                     .centerCrop()
                     .placeholder(R.drawable.icon_mine_head_normal)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(new BitmapImageViewTarget(clientImage) {
-                        @Override
-                        protected void setResource(Bitmap resource) {
-                            RoundedBitmapDrawable circularBitmapDrawable =
-                                    RoundedBitmapDrawableFactory.create(getContext().getResources(), resource);
-                            circularBitmapDrawable.setCircular(true);
-                            clientImage.setImageDrawable(circularBitmapDrawable);
-                        }
-                    });
+                    .into(myImageViewTarget);
 
         } else {     //服务端
 
@@ -186,6 +181,27 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm");
         String nowDate = sdf.format(new Date(Long.parseLong(magDate)));
         return nowDate;
+    }
+
+    private static class MyImageViewTarget extends BitmapImageViewTarget{
+
+        private final WeakReference<Resources> resourcesWeakReference;
+        private final WeakReference<ImageView> imageViewWeakReference;
+
+        public MyImageViewTarget(ImageView view,Resources resources) {
+            super(view);
+            resourcesWeakReference = new WeakReference<Resources>(resources);
+            imageViewWeakReference = new WeakReference<ImageView>(view);
+        }
+
+        @Override
+        protected void setResource(Bitmap resource) {
+            super.setResource(resource);
+            RoundedBitmapDrawable circularBitmapDrawable =
+                    RoundedBitmapDrawableFactory.create(resourcesWeakReference.get(), resource);
+            circularBitmapDrawable.setCircular(true);
+            imageViewWeakReference.get().setImageDrawable(circularBitmapDrawable);
+        }
     }
 
 }

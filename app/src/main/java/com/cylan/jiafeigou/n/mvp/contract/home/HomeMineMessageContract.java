@@ -42,7 +42,6 @@ public interface HomeMineMessageContract {
 
     interface Presenter extends BasePresenter {
 
-
         /**
          * 加载消息数据
          */
@@ -72,7 +71,6 @@ public interface HomeMineMessageContract {
          */
         void saveIntoDb(MineMessageBean bean);
 
-
         /**
          * Dp获取消息记录数据
          */
@@ -88,6 +86,8 @@ public interface HomeMineMessageContract {
         void deleteServiceMsg(long type,long version);
 
         Subscription deleteMsgBack();
+
+        void deleteOneItem(MineMessageBean bean);
 
     }
 

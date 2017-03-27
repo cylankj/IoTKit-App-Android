@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
+import com.cylan.jiafeigou.support.db.sqlite.WhereBuilder;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.IOException;
@@ -45,8 +46,8 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     public HomeMineMessagePresenterImp(HomeMineMessageContract.View view, boolean hasNewMesg) {
         super(view);
         view.setPresenter(this);
-//        this.hasNewMesg = hasNewMesg;
-        this.hasNewMesg = true;
+        this.hasNewMesg = hasNewMesg;
+//        this.hasNewMesg = true;
     }
 
     @Override
@@ -109,7 +110,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 获取到本地数据库中的所有消息记录
-     *
      * @return
      */
     @Override
@@ -304,6 +304,19 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleteDataRspClass -> {
                     if (getView() != null)getView().deleteMesgReuslt(deleteDataRspClass);
+                });
+    }
+
+    @Override
+    public void deleteOneItem(MineMessageBean bean) {
+        Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .subscribe(o -> {
+                    try {
+                        dbManager.delete(MineMessageBean.class,WhereBuilder.b("name","=",bean.name).and("startTime","=",bean.time));
+                    } catch (DbException e) {
+                        e.printStackTrace();
+                    }
                 });
     }
 

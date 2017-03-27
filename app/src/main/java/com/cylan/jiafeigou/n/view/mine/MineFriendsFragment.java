@@ -305,7 +305,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void initAddReqRecyList(ArrayList<MineAddReqBean> list) {
         hideLoadingDialog();
         recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
-        addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(), list, null);
+        addReqListAdater = new AddRelativesAndFriendsAdapter(getContext(), list, null);
         recyclerviewRequestAdd.setAdapter(addReqListAdater);
         initAddReqAdaListener();
     }

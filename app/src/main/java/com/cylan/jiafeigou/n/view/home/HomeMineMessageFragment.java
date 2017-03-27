@@ -174,6 +174,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
                     if (bean.type == 601){
                         presenter.deleteServiceMsg(bean.type,Long.parseLong(bean.getTime()));
                     }
+                    presenter.deleteOneItem(bean);
                 }
                 hasCheckData.clear();
                 messageAdapter.notifyDataSetHasChanged();
@@ -236,7 +237,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
             serviceDelRsp = new ArrayList<>();
         }
         serviceDelRsp.add(rsp.resultCode);
-        //TODO 完善
+        //TODO
     }
 
 }

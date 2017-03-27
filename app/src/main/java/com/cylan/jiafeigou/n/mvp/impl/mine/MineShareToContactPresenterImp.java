@@ -76,7 +76,6 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
-
     }
 
     @Override
@@ -157,7 +156,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
                     public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetHasShareFriendCallBack getHasShareFriendCallBack) {
-                        if (getHasShareFriendCallBack != null && getHasShareFriendCallBack instanceof RxEvent.GetHasShareFriendCallBack) {
+                        if (getHasShareFriendCallBack != null) {
 
                             if (getHasShareFriendCallBack.arrayList.size() != 0) {
                                 return Observable.just(converData(getHasShareFriendCallBack.arrayList));
@@ -191,7 +190,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 .subscribe(new Action1<RxEvent.ShareDeviceCallBack>() {
                     @Override
                     public void call(RxEvent.ShareDeviceCallBack shareDeviceCallBack) {
-                        if (shareDeviceCallBack != null && shareDeviceCallBack instanceof RxEvent.ShareDeviceCallBack) {
+                        if (shareDeviceCallBack != null) {
                             if (getView() != null) {
                                 getView().hideShareingProHint();
                                 getView().handlerCheckRegister(shareDeviceCallBack.requestId, shareDeviceCallBack.account);
@@ -260,7 +259,6 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         return list;
     }
 
-
     /**
      * desc:处理得到的数据结果
      *
@@ -305,7 +303,10 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 } else if (friendBean.account.startsWith("86")) {
                     friendBean.account = friendBean.account.substring(2);
                 }
-                list.add(friendBean);
+
+                if (JConstant.PHONE_REG.matcher(friendBean.account).find()){
+                    list.add(friendBean);
+                }
             }
             phone.close();
 
