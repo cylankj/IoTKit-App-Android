@@ -52,8 +52,6 @@ public class DPSingleFindTask extends BaseDPTask<BaseDPTaskResult> {
                     Object result = null;
                     if (dataPoint == null) {
                         result = null;
-                    } else if (dataPoint instanceof DpMsgDefine.DPSet) {
-                        result = ((DpMsgDefine.DPSet) dataPoint).list();
                     } else if (dataPoint instanceof DpMsgDefine.DPPrimary) {
                         result = dataPoint;
                     }

@@ -119,7 +119,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         //移动侦测
         swMotionDetection.setChecked(flag != null && f);
         swMotionDetection.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            DpMsgDefine.DPSdStatus net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
+            DpMsgDefine.DPSdStatus net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), new DpMsgDefine.DPSdStatus());
             if (!isChecked) {
                 if (!JFGRules.hasSdcard(net)) {
                     DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
@@ -197,7 +197,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         fLayoutProtectionSensitivity.setTvSubTitle(s == 0 ? getString(R.string.SENSITIVI_LOW)
                 : (s == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期
-        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), DpMsgDefine.EMPTY.ALARM_INFO);
+        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), new DpMsgDefine.DPAlarmInfo());
         fLayoutProtectionRepeatPeriod.setTvSubTitle(basePresenter.getRepeatMode(getContext()));
         if (info != null) {
             fLayoutProtectionStartTime.setTvSubTitle(MiscUtils.parse2Time(info.timeStart));
@@ -245,7 +245,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentStart");
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), DpMsgDefine.EMPTY.ALARM_INFO);
+                        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), new DpMsgDefine.DPAlarmInfo());
                         if (info.timeStart != (int) value) {
                             info.timeStart = (int) value;
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
@@ -261,7 +261,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentEnd");
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), DpMsgDefine.EMPTY.ALARM_INFO);
+                        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), new DpMsgDefine.DPAlarmInfo());
                         if (info.timeEnd != (int) value) {
                             info.timeEnd = (int) value;
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);
@@ -277,7 +277,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 fragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         int result = (int) value;
-                        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), DpMsgDefine.EMPTY.ALARM_INFO);
+                        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), new DpMsgDefine.DPAlarmInfo());
                         if (info.day != result) {
                             info.day = result;
                             basePresenter.updateInfoReq(info, DpMsgMap.ID_502_CAMERA_ALARM_INFO);

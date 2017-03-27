@@ -11,7 +11,7 @@ import com.cylan.jiafeigou.support.db.annotation.Table;
 @Table(name = "MagBean")
 public class MagBean {
 
-    @Column(name = "dpMsgId", isId = true)
+    @Column(name = "msgId", isId = true)
     public int id;
 
     @Column(name = "magTime")

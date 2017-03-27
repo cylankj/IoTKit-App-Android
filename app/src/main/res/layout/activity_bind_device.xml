@@ -69,7 +69,7 @@
             hunt:textSize="@dimen/sp16" />
 
         <!--<com.cylan.jiafeigou.widget.HomeMineItemView-->
-        <!--android:dpMsgId="@+dpMsgId/v_to_bind_cloud_album"-->
+        <!--android:msgId="@+msgId/v_to_bind_cloud_album"-->
         <!--android:layout_width="match_parent"-->
         <!--android:layout_height="@dimen/y67"-->
         <!--android:background="@color/color_white"-->

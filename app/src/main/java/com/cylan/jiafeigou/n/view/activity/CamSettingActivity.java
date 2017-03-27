@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.JFGCameraDevice;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -322,8 +321,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             return;
         }
         ////////////////////////////////////////////////////////////////////////
-        DpMsgDefine.DPSdStatus sdStatus = device.sdcard_storage;
-        if (sdStatus == null) sdStatus = DpMsgDefine.EMPTY.SD_STATUS;
+        DpMsgDefine.DPSdStatus sdStatus = device.$(JFGCameraDevice.SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
+        if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdStatus();
         String detailInfo = basePresenter.getDetailsSubTitle(getContext(), sdStatus.hasSdcard, sdStatus.err);
         if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
             svSettingDeviceDetail.setTvSubTitle(detailInfo, android.R.color.holo_red_dark);
@@ -364,13 +363,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
 
         ////////////////////////////net////////////////////////////////////////
-        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.NET);
+        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), new DpMsgDefine.DPNet());
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
         //是否有sim卡
-        DpMsgDefine.DPPrimary<Integer> simCard = device.mobile_net_type;
-        if (simCard == null) simCard = new DpMsgDefine.DPPrimary<>(1);//1表示没卡
-        svSettingDeviceMobileNetwork.setVisibility(simCard.value > 1 ? View.VISIBLE : View.GONE);
-        svSettingDeviceWifi.showDivider(simCard.value > 1);
+        int simCard = device.$(JFGCameraDevice.MOBILE_NET, 0);
+        svSettingDeviceMobileNetwork.setVisibility(simCard > 1 ? View.VISIBLE : View.GONE);
+        svSettingDeviceWifi.showDivider(simCard > 1);
         if (JFGRules.is3GCam(device.pid)) {
             DpMsgDefine.DPPrimary<Boolean> state = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
             boolean s = MiscUtils.safeGet(state, false);
@@ -436,7 +434,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case 222:
                 if (msg.packValue != null) {
                     DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-                    if (summary == null) summary = DpMsgDefine.EMPTY.SDCARD_SUMMARY;
+                    if (summary == null) summary =new DpMsgDefine.DPSdcardSummary();
                     //sd
                     String statusContent = basePresenter.getDetailsSubTitle(getContext(), summary.hasSdcard, summary.errCode);
                     if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {

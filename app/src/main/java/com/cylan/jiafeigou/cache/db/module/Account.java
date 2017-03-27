@@ -2,12 +2,10 @@ package com.cylan.jiafeigou.cache.db.module;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ext.annotations.DPType;
-import com.cylan.jiafeigou.base.module.DPProperty;
+import com.cylan.jiafeigou.base.module.DProperty;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
-import com.cylan.jiafeigou.cache.db.view.IEntity;
-import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import org.greenrobot.greendao.annotation.Entity;
@@ -20,7 +18,7 @@ import org.greenrobot.greendao.annotation.Unique;
  */
 
 @Entity
-public class Account extends DataPoint implements IEntity<Account> {
+public class Account extends BasePropertyHolder<Account> {
     @Id
     private Long _id;
     @Unique
@@ -40,10 +38,10 @@ public class Account extends DataPoint implements IEntity<Account> {
     private String state;
     private String option;
 
-    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
     public transient static final int ACCOUNT_STATE = 601;
 
-    @DPProperty(type = DpMsgDefine.DPWonderItem.class, dpType = DPType.TYPE_SET)
+    @DProperty(type = DpMsgDefine.DPWonderItem.class, dpType = DPType.TYPE_SET)
     public transient static final int ACCOUNT_WONDERFUL_MSG = 602;
 
     public Account(JFGAccount account) {
@@ -259,4 +257,13 @@ public class Account extends DataPoint implements IEntity<Account> {
     }
 
 
+    @Override
+    protected int pid() {
+        return -1;
+    }
+
+    @Override
+    protected String uuid() {
+        return null;
+    }
 }

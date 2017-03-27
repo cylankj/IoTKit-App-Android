@@ -132,4 +132,5 @@ public interface JFGSourceManager {
     void setValue(String uuid, int msgId, byte[] bytes, long version, long seq);
 
     void clearValue(String uuid, int msgId);
+
 }

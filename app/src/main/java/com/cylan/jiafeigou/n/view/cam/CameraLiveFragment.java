@@ -101,7 +101,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         implements CamLiveContract.View, View.OnClickListener, BaseDialog.BaseDialogAction {
 
 
-    //    @BindView(R.dpMsgId.fLayout_live_view_container)
+    //    @BindView(R.msgId.fLayout_live_view_container)
 //    FrameLayout fLayoutLiveViewContainer;
     @BindView(R.id.vs_progress)
     ViewStub vs_control;//中间loading那个view
@@ -450,7 +450,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         int msgId = (int) msg.id;
         if (msgId == DpMsgMap.ID_222_SDCARD_SUMMARY) {
             DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-            if (sdStatus == null) sdStatus = DpMsgDefine.EMPTY.SDCARD_SUMMARY;
+            if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdcardSummary();
             //sd卡状态变化，
             camLiveController.updateLiveButtonState(sdStatus != null && sdStatus.hasSdcard);
             if (sdStatus == null || !sdStatus.hasSdcard) {

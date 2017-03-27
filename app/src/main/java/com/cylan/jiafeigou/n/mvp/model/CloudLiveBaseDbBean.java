@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.support.db.annotation.Table;
  */
 @Table(name = "CloudLiveBaseDbBean")
 public class CloudLiveBaseDbBean {
-    @Column(name = "dpMsgId", isId = true)
+    @Column(name = "msgId", isId = true)
     public int id;
     @Column(name = "type")
     public int type;

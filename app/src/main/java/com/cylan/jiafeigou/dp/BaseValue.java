@@ -31,8 +31,8 @@ public class BaseValue implements Comparable<BaseValue> {
     @Override
     public String toString() {
         return "BaseValue{" +
-                "dpMsgId=" + id +
-                ", dpMsgVersion=" + version +
+                "msgId=" + id +
+                ", version=" + version +
                 ", value=" + value +
                 '}';
     }

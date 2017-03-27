@@ -82,9 +82,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @BindView(R.id.rl_hardware_update)
     SettingItemView0 rlHardwareUpdate;
 
-    //    @BindView(R.dpMsgId.hardware_update_point)
+    //    @BindView(R.msgId.hardware_update_point)
 //    View hardwareUpdatePoint;
-//    @BindView(R.dpMsgId.tv_new_software)
+//    @BindView(R.msgId.tv_new_software)
 //    TextView tvNewSoftware;
     @BindView(R.id.tv_device_cid)
     SettingItemView0 tvDeviceCid;
@@ -148,9 +148,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         //是否显示移动网络
         boolean hasSimCard = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY), false);
         tvDeviceMobileNet.setVisibility(hasSimCard && device != null && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
-        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), DpMsgDefine.EMPTY.NET);
+        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), new DpMsgDefine.DPNet());
         tvDeviceMobileNet.setTvSubTitle(getMobileNet(hasSimCard, net));
-        DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
+        DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), new DpMsgDefine.DPTimeZone());
         if (zone != null)
             MiscUtils.loadTimeZoneList()
                     .observeOn(AndroidSchedulers.mainThread())
@@ -164,7 +164,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                             }
                         }
                     });
-        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
+        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), new DpMsgDefine.DPSdStatus());
         String statusContent = getSdcardState(status.hasSdcard, status.err);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
             tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
@@ -296,7 +296,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 return;
             }
             //更新ui
-            DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
+            DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), new DpMsgDefine.DPTimeZone());
             if (zone != null)
                 MiscUtils.loadTimeZoneList()
                         .observeOn(AndroidSchedulers.mainThread())
@@ -397,7 +397,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             case 222:
                 if (msg.packValue != null) {
                     DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-                    if (summary == null) summary = DpMsgDefine.EMPTY.SDCARD_SUMMARY;
+                    if (summary == null) summary = new DpMsgDefine.DPSdcardSummary();
                     //sd
                     String statusContent = getSdcardState(summary.hasSdcard, summary.errCode);
                     if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
@@ -412,7 +412,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 MiscUtils.loadTimeZoneList()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((List<TimeZoneBean> list) -> {
-                            DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), DpMsgDefine.EMPTY.TIME_ZONE);
+                            DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), new DpMsgDefine.DPTimeZone());
                             if (zone == null) return;
                             TimeZoneBean bean = new TimeZoneBean();
                             bean.setId(zone.timezone);

@@ -27,7 +27,6 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -106,14 +105,14 @@ public class DataSourceManager implements JFGSourceManager {
                 .filter(account -> account != null)
                 .map(dpAccount -> account = dpAccount)
                 .flatMap(dpAccount -> dbHelper.queryDPMsgByUuid(null)
-                        .observeOn(Schedulers.io())
-                        .map(dpEntities -> {
-                            for (DPEntity entity : dpEntities) {
-                                dpAccount.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
-                            }
-                            getCacheInstance().postSticky(new RxEvent.AccountArrived(dpAccount));
-                            return dpAccount;
-                        })
+                                .observeOn(Schedulers.io())
+                                .map(dpEntities -> {
+                                    for (DPEntity entity : dpEntities) {
+//                                dpAccount.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
+                                    }
+                                    getCacheInstance().postSticky(new RxEvent.AccountArrived(dpAccount));
+                                    return dpAccount;
+                                })
                 )
                 .flatMap(account -> dbHelper.getAccountDevice(account.getAccount()))
                 .flatMap(Observable::from)
@@ -128,7 +127,7 @@ public class DataSourceManager implements JFGSourceManager {
                         .observeOn(Schedulers.io())
                         .map(dpEntities -> {
                             for (DPEntity entity : dpEntities) {
-                                device.setValue(entity.getMsgId(), entity.getVersion(), entity.getBytes(), -1);
+                                device.setValue(entity.getMsgId(), entity.getBytes(), entity.getVersion());
                             }
                             return dpEntities;
                         }))
@@ -279,21 +278,21 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void setValue(String uuid, int msgId, byte[] bytes, long version, long seq) {
         Device device = mCachedDeviceMap.get(uuid);
-        if (device != null && device.accept(msgId)) {//优先尝试写入device中
-            device.setValue(msgId, version, bytes, -seq);
-        } else if (account != null && account.accept(msgId)) {//到这里说明无法将数据写入device中,则写入到account中
-            account.setValue(msgId, version, bytes, seq);
+        if (device != null) {//优先尝试写入device中
+            device.setValue(msgId, bytes, version);
+        } else if (account != null) {//到这里说明无法将数据写入device中,则写入到account中
+            account.setValue(msgId, bytes, version);
         }
     }
 
     @Override
     public void clearValue(String uuid, int msgId) {
         Device device = mCachedDeviceMap.get(uuid);
-        if (device != null && device.accept(msgId)) {
-            device.clear(msgId);
-        } else if (account != null && account.accept(msgId)) {
-            account.clear(msgId);
-        }
+//        if (device != null && device.accept(msgId)) {
+//            device.clear(msgId);
+//        } else if (account != null && account.accept(msgId)) {
+//            account.clear(msgId);
+//        }
     }
 
     private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
@@ -428,27 +427,14 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion) {
-        List<T> result = new ArrayList<>();
-        Object origin = getValue(uuid, msgId);
-        if (origin == null)
-            return result;
-        if (origin instanceof DpMsgDefine.DPSet) {
-            DpMsgDefine.DPSet<T> set = (DpMsgDefine.DPSet<T>) origin;
-            if (set.value == null) return result;
-            for (T t : set.value) {
-                if (t.dpMsgVersion >= startVersion && t.dpMsgVersion < endVersion) {
-                    result.add(t);
-                }
-            }
-            return result;
-        } else return null;
+        return null;
     }
 
     public void syncJFGDeviceProperty(String uuid) {
         if (TextUtils.isEmpty(uuid) || account == null) return;
         Device device = mCachedDeviceMap.get(uuid);
         if (device != null) {
-            ArrayList<JFGDPMsg> parameters = device.getQueryParameters(false);
+            ArrayList<JFGDPMsg> parameters = device.getQueryParams();
             AppLogger.d("syncJFGDeviceProperty: " + uuid + " " + new Gson().toJson(parameters));
             try {
                 JfgCmdInsurance.getCmd().robotGetData(uuid, parameters, 1, false, 0);
@@ -482,11 +468,11 @@ public class DataSourceManager implements JFGSourceManager {
         Device device = mCachedDeviceMap.get(uuid);
         if (device != null) {
             //这里优先从根据UUID从device中获取数据
-            result = device.$(msgId, null);
+            result = device.$((int) msgId, null);
         }
         if (result == null && account != null) {
             //如果无法从device中获取值,则从account中获取
-            result = account.$(msgId, null);
+            result = account.$((int) msgId, null);
         }
         return getValueWithAccountCheck(result);
     }
@@ -558,8 +544,8 @@ public class DataSourceManager implements JFGSourceManager {
     public <T extends DataPoint> boolean updateValue(String uuid, T value, int msgId) throws
             IllegalAccessException {
         ArrayList<T> list = new ArrayList<>();
-        value.dpMsgId = msgId;
-        value.dpMsgVersion = System.currentTimeMillis();
+        value.msgId = msgId;
+        value.version = System.currentTimeMillis();
         list.add(value);
         return updateValue(uuid, list);
     }
@@ -574,8 +560,8 @@ public class DataSourceManager implements JFGSourceManager {
         try {
             ArrayList<JFGDPMsg> list = new ArrayList<>();
             for (DataPoint data : value) {
-                boolean update = device.updateValue((int) data.dpMsgId, data);
-                JFGDPMsg jfgdpMsg = new JFGDPMsg(data.dpMsgId, System.currentTimeMillis());
+                boolean update = device.setValue((int) data.msgId, data);
+                JFGDPMsg jfgdpMsg = new JFGDPMsg(data.msgId, System.currentTimeMillis());
                 jfgdpMsg.packValue = data.toBytes();
                 list.add(jfgdpMsg);
             }
@@ -691,7 +677,8 @@ public class DataSourceManager implements JFGSourceManager {
                             option = dpDevice.option(DBOption.RawDeviceOrderOption.class);
                             mCachedDeviceMap.put(dpDevice.getUuid(), dpDevice);
                             rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, dpDevice.getUuid()));
-                            parameters = dpDevice.getQueryParameters(false);
+                            parameters = dpDevice.getQueryParams();
+                            AppLogger.d("QueryParams:" + new Gson().toJson(parameters));
                             JfgCmdInsurance.getCmd().robotGetData(dpDevice.getUuid(), parameters, 1, false, 0);
                             AppLogger.d("正在同步设备数据");
                             if (!JFGRules.isShareDevice(device)) {
@@ -740,14 +727,14 @@ public class DataSourceManager implements JFGSourceManager {
                 .observeOn(Schedulers.io())
                 .flatMap(event -> dbHelper.saveDPByteInTx(event.getDataRsp)
                         .map(dpEntities -> {
-                            if (event.getDataRsp.map != null) {
-                                for (Integer integer : event.getDataRsp.map.keySet()) {//set 类型的每次写入前都要清空,因为无法复用
-                                    clearValue(event.getDataRsp.identity, integer);
-                                }
-                            }
-                            for (DPEntity entity : dpEntities) {
-                                setValue(event.getDataRsp.identity, entity.getMsgId(), entity.getBytes(), entity.getVersion(), event.getDataRsp.seq);
-                            }
+//                            if (event.getDataRsp.map != null) {
+//                                for (Integer integer : event.getDataRsp.map.keySet()) {//set 类型的每次写入前都要清空,因为无法复用
+//                                    clearValue(event.getDataRsp.identity, integer);
+//                                }
+//                            }
+//                            for (DPEntity entity : dpEntities) {
+//                                setValue(event.getDataRsp.identity, entity.getMsgId(), entity.getBytes(), entity.getVersion(), event.getDataRsp.seq);
+//                            }
                             getCacheInstance().post(event.getDataRsp);
                             return "多线程真心麻烦";
                         })
@@ -787,7 +774,7 @@ public class DataSourceManager implements JFGSourceManager {
                             ArrayList<Long> updateIdList = new ArrayList<>();
                             for (DPEntity entity : dpEntities) {
                                 updateIdList.add((long) entity.getMsgId());
-                                setValue(event.s, entity.getMsgId(), entity.getBytes(), entity.getVersion(), -1);
+//                                setValue(event.s, entity.getMsgId(), entity.getBytes(), entity.getVersion(), -1);
                             }
                             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
                             return "多线程真是麻烦";

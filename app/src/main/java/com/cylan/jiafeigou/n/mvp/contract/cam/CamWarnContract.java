@@ -21,7 +21,7 @@ public interface CamWarnContract {
 //         *
 //         * @param info
 //         */
-//        void saveCamInfoBean(BeanCamInfo info, int dpMsgId);
+//        void saveCamInfoBean(BeanCamInfo info, int msgId);
 
         /**
          * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }

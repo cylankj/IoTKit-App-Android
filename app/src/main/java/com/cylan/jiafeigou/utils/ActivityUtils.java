@@ -32,7 +32,7 @@ import com.cylan.jiafeigou.R;
 public class ActivityUtils {
 
     /**
-     * The {@code fragment} is added to the container view with dpMsgId {@code frameId}. The operation is
+     * The {@code fragment} is added to the container view with msgId {@code frameId}. The operation is
      * performed by the {@code fragmentManager}.
      */
     public static void addFragmentToActivity(@NonNull FragmentManager fragmentManager,

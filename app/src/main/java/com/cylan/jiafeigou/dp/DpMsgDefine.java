@@ -8,10 +8,7 @@ import org.msgpack.annotation.Ignore;
 import org.msgpack.annotation.Index;
 import org.msgpack.annotation.Message;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.TimeZone;
-import java.util.TreeSet;
 
 /**
  * Created by cylan-hunt on 16-11-9.
@@ -20,7 +17,7 @@ import java.util.TreeSet;
 
 public class DpMsgDefine {
     @Message
-    public static final class DPStandby extends DPSingle<DPStandby> {
+    public static final class DPStandby extends DataPoint {
         @Index(0)
         public boolean standby;
         @Index(1)
@@ -83,7 +80,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPNet extends DPSingle<DPNet> {
+    public static final class DPNet extends DataPoint {
         /**
          * |NET_CONNECT | -1 | #绑定后的连接中 |
          * |NET_OFFLINE |  0 | #不在线 |
@@ -175,7 +172,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPTimeZone extends DPSingle<DPTimeZone> {
+    public static final class DPTimeZone extends DataPoint {
         @Index(0)
         public String timezone;
         @Index(1)
@@ -226,7 +223,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPBindLog extends DPSingle<DPBindLog> {
+    public static final class DPBindLog extends DataPoint {
 
         @Index(0)
         public boolean isBind;
@@ -282,7 +279,7 @@ public class DpMsgDefine {
 
     //系统消息使用
     @Message
-    public static final class DPSdcardSummary extends DPSingle<DPSdcardSummary> implements Parcelable {
+    public static final class DPSdcardSummary extends DataPoint implements Parcelable {
         @Index(0)
         public boolean hasSdcard;
         @Index(1)
@@ -352,7 +349,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPSdStatus extends DPSingle<DPSdStatus> implements Parcelable {
+    public static final class DPSdStatus extends DataPoint implements Parcelable {
         @Index(0)
         public long total;
         @Index(1)
@@ -411,7 +408,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPAlarmInfo extends DPSingle<DPAlarmInfo> implements Parcelable {
+    public static final class DPAlarmInfo extends DataPoint implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -471,7 +468,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPAlarm extends DPSingle<DPAlarm> implements Parcelable {//505 报警消息
+    public static final class DPAlarm extends DataPoint implements Parcelable {//505 报警消息
         @Index(0)
         public int time;
         @Index(1)
@@ -561,7 +558,7 @@ public class DpMsgDefine {
     }
 
     @Message//504
-    public static final class DPNotificationInfo extends DPSingle<DPNotificationInfo> implements Parcelable {
+    public static final class DPNotificationInfo extends DataPoint implements Parcelable {
         @Index(0)
         public int notification;
         @Index(1)
@@ -632,7 +629,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPTimeLapse extends DPSingle<DPTimeLapse> implements Parcelable {
+    public static final class DPTimeLapse extends DataPoint implements Parcelable {
         @Index(0)
         public int timeStart;
         @Index(1)
@@ -694,7 +691,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPCamCoord extends DPSingle<DPCamCoord> implements Parcelable {
+    public static final class DPCamCoord extends DataPoint implements Parcelable {
         @Index(0)
         public int x;
         @Index(1)
@@ -751,7 +748,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPBellCallRecord extends DPMulti<DPBellCallRecord> implements Parcelable {
+    public static final class DPBellCallRecord extends DataPoint implements Parcelable {
 
         @Index(0)
         public int isOK;
@@ -861,101 +858,8 @@ public class DpMsgDefine {
         };
     }
 
-    public static final class DPSet<T> extends DataPoint {
-        public TreeSet<T> value;
-        private List<T> listValue = new ArrayList<>();
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        public List<T> list() {
-            listValue.clear();
-            listValue.addAll(value);
-            return listValue;
-        }
-
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeList(new ArrayList<>(value));
-        }
-
-        public DPSet() {
-        }
-
-        public DPSet(TreeSet<T> value) {
-            this.value = value;
-        }
-
-        protected DPSet(Parcel in) {
-            super(in);
-            List<T> list = new ArrayList<>();
-            in.readList(list, ArrayList.class.getClassLoader());
-            this.value = new TreeSet<>(list);
-        }
-
-        public static final Creator<DPSet> CREATOR = new Creator<DPSet>() {
-            @Override
-            public DPSet createFromParcel(Parcel source) {
-                return new DPSet(source);
-            }
-
-            @Override
-            public DPSet[] newArray(int size) {
-                return new DPSet[size];
-            }
-        };
-    }
-
-    public static abstract class DPSingle<T extends DataPoint> extends DataPoint {
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-        }
-
-        public DPSingle() {
-        }
-
-        protected DPSingle(Parcel in) {
-            super(in);
-        }
-    }
-
-    public static abstract class DPMulti<T extends DataPoint> extends DataPoint {
-        @Ignore
-        public boolean isRead;
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-            super.writeToParcel(dest, flags);
-            dest.writeByte(this.isRead ? (byte) 1 : (byte) 0);
-        }
-
-        public DPMulti() {
-        }
-
-        protected DPMulti(Parcel in) {
-            super(in);
-            this.isRead = in.readByte() != 0;
-        }
-    }
-
     @Message
-    public static final class DPWonderItem extends DPMulti<DPWonderItem> implements Parcelable {
+    public static final class DPWonderItem extends DataPoint implements Parcelable {
 
         public static final int TYPE_PIC = 0;
         public static final int TYPE_VIDEO = 1;
@@ -994,7 +898,7 @@ public class DpMsgDefine {
         }
 
         public DPWonderItem() {
-            dpMsgId = 602;
+            msgId = 602;
         }
 
         protected DPWonderItem(Parcel in) {
@@ -1085,7 +989,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DpSdcardFormatRsp extends DPSingle<DpSdcardFormatRsp> implements Parcelable {
+    public static final class DpSdcardFormatRsp extends DataPoint implements Parcelable {
         @Index(0)
         public int placeHolder;
 
@@ -1135,7 +1039,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static class DpHangMode extends DPSingle<DpHangMode> implements Parcelable {
+    public static class DpHangMode extends DataPoint implements Parcelable {
         @Index(0)
         public String mode = "0";
 
@@ -1178,30 +1082,5 @@ public class DpMsgDefine {
                 return new DpHangMode[size];
             }
         };
-    }
-
-    public interface EMPTY {
-        DPNet NET = new DPNet();
-        DPStandby STANDBY = new DPStandby();
-        DPTimeZone TIME_ZONE = new DPTimeZone();
-        DPBindLog BIND_LOG = new DPBindLog();
-        DPSdcardSummary SDCARD_SUMMARY = new DPSdcardSummary();
-        DPSdStatus SD_STATUS = new DPSdStatus();
-        DPAlarmInfo ALARM_INFO = new DPAlarmInfo();
-        DPAlarm ALARM = new DPAlarm();
-        DPNotificationInfo NOTIFICATION_INFO = new DPNotificationInfo();
-        DPTimeLapse TIME_LAPSE = new DPTimeLapse();
-        DPCamCoord CAM_COORD = new DPCamCoord();
-        DPBellCallRecord BELL_CALL_RECORD = new DPBellCallRecord();
-        DPPrimary<Integer> DP_INT = new DPPrimary<>(0);
-        DPPrimary<Boolean> DP_BOOL = new DPPrimary<>(false);
-        DPPrimary<Long> DP_LONG = new DPPrimary<>(0L);
-        DPPrimary<String> DP_STRING = new DPPrimary<>("");
-        DPSet DP_SET = new DPSet<>(new TreeSet<>());
-        DPWonderItem WONDER_ITEM = new DPWonderItem();
-        DPMineMesg MINE_MESG = new DPMineMesg();
-        DPSystemMesg SYSTEM_MESG = new DPSystemMesg();
-        DpSdcardFormatRsp SDCARD_FORMAT_RSP = new DpSdcardFormatRsp();
-        DpHangMode dpHangMode = new DpHangMode();
     }
 }

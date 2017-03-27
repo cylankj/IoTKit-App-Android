@@ -1,19 +1,34 @@
 package com.cylan.jiafeigou.base.module;
 
-import com.cylan.ext.annotations.DPType;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
- * Created by yanzhendong on 2017/3/24.
+ * Created by yanzhendong on 2017/3/25.
  */
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.FIELD)
-public @interface DPProperty {
-    Class<?> type();
 
-    DPType dpType() default DPType.TYPE_FIELD;
+public class DPProperty {
+    private Class<?> type;
+    private List<DPDevice> devices;
+
+    public Class<?> type() {
+        return this.type;
+    }
+
+    public boolean accept(DPDevice device) {
+        if (devices == null) return false;
+        return devices.contains(device);//以后有时间在搞
+    }
+
+    public DPProperty(Class<?> type, DPDevice... devices) {
+        this.type = type;
+        if (devices != null) {
+            this.devices = new ArrayList<>();
+            for (DPDevice device : devices) {
+                this.devices.add(device);
+            }
+        }
+    }
+
+
 }

@@ -61,4 +61,4 @@
     </android.support.v7.widget.CardView>
 </com.cylan.jiafeigou.widget.GreatDragView>
 
-    <!--<com.cylan.jiafeigou.widget.GuideIndicatorLayout--><!--android:background="#eee000"--><!--android:dpMsgId="@+dpMsgId/v_guide_indicator"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_gravity="bottom|center_horizontal"--><!--android:layout_marginBottom="@dimen/y50" />--><!--</merge>-->
+    <!--<com.cylan.jiafeigou.widget.GuideIndicatorLayout--><!--android:background="#eee000"--><!--android:msgId="@+msgId/v_guide_indicator"--><!--android:layout_width="wrap_content"--><!--android:layout_height="wrap_content"--><!--android:layout_gravity="bottom|center_horizontal"--><!--android:layout_marginBottom="@dimen/y50" />--><!--</merge>-->

@@ -1,26 +1,30 @@
 package com.cylan.jiafeigou.cache.db.module;
 
+import android.support.annotation.IntDef;
+
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.ext.annotations.DPType;
-import com.cylan.jiafeigou.base.module.DPProperty;
+import com.cylan.jiafeigou.base.module.DProperty;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
-import com.cylan.jiafeigou.cache.db.view.IEntity;
-import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.google.gson.Gson;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
 /**
  * Created by yanzhendong on 2017/3/4.
  */
 
 @Entity
-public class Device extends DataPoint implements IEntity<Device> {
+public class Device extends BasePropertyHolder<Device> {
     @Id
     public Long _id;
     public String uuid;
@@ -36,37 +40,38 @@ public class Device extends DataPoint implements IEntity<Device> {
     public String state;
     public String option;
 
-    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+
+    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int MAC = 202;
 
-    @DPProperty(type = Boolean.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = Boolean.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int CHARGING = 205;
 
-    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int DEVICE_VERSION = 207;
 
-    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int DEVICE_SYS_VERSION = 208;
 
-    @DPProperty(type = Boolean.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = Boolean.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int LED_INDICATOR = 209;
 
-    @DPProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int APP_UPLOAD_LOG = 211;
 
-    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int DEVICE_UPLOAD_LOG = 212;
 
-    @DPProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int DEVICE_P2P_VERSION = 213;
 
-    @DPProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int SDK_VERSION = 220;
 
-    @DPProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int DEVICE_CAMERA_ROTATE = 304;
 
-    @DPProperty(type = Long.class, dpType = DPType.TYPE_PRIMARY)
+    @DProperty(type = Long.class, dpType = DPType.TYPE_PRIMARY)
     public static final transient int COLLECT = 511;
 
     @Generated(hash = 182677992)
@@ -288,7 +293,7 @@ public class Device extends DataPoint implements IEntity<Device> {
 
     @Override
     public String toString() {
-        return "Device{" +
+        return "DPDevice{" +
                 "uuid='" + uuid + '\'' +
                 ", sn='" + sn + '\'' +
                 ", alias='" + alias + '\'' +
@@ -301,5 +306,26 @@ public class Device extends DataPoint implements IEntity<Device> {
                 ", action='" + action + '\'' +
                 ", state='" + state + '\'' +
                 '}';
+    }
+
+    @Override
+    protected int pid() {
+        return this.pid;
+    }
+
+    @IntDef({})
+    @Target(ElementType.PARAMETER)
+    @Retention(RetentionPolicy.SOURCE)
+    @interface MsgId {
+    }
+
+    @Override
+    public <V> V $(@MsgId int msgId, V defaultValue) {
+        return super.$(msgId, defaultValue);
+    }
+
+    @Override
+    protected String uuid() {
+        return uuid;
     }
 }

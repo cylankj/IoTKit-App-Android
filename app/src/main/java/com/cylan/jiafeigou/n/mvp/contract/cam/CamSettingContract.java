@@ -45,13 +45,13 @@ public interface CamSettingContract {
 //        BeanCamInfo getCamInfoBean();
 
 //        @Deprecated//不再使用
-//        void saveCamInfoBean(BeanCamInfo camInfoBean, int dpMsgId);
+//        void saveCamInfoBean(BeanCamInfo camInfoBean, int msgId);
 
         /**
          * @param value {@link com.cylan.jiafeigou.dp.BaseValue#setValue(Object)}  }
          * @param id
          */
-//        void updateInfoReq(Object value, long dpMsgId);
+//        void updateInfoReq(Object value, long msgId);
         public <T extends DataPoint> void updateInfoReq(T value, long id);
 
         void unbindDevice();

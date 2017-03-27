@@ -196,7 +196,7 @@ public class DownloadManagerPro {
      * first of all check task state and depend on start download process from where ever need
      * </p>
      *
-     * @param token now token is download task dpMsgId
+     * @param token now token is download task msgId
      * @throws IOException
      */
     public void startDownload(int token) {
@@ -417,7 +417,7 @@ public class DownloadManagerPro {
     private int insertNewTask(String taskName, String url, int chunk, String save_address, boolean priority) {
         Task task = new Task(0, taskName, url, TaskStates.INIT, chunk, save_address, priority);
         task.id = (int) tasksDataSource.insertTask(task);
-        L.d("task dpMsgId " + String.valueOf(task.id));
+        L.d("task msgId " + String.valueOf(task.id));
         return task.id;
     }
 

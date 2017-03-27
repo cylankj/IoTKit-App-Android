@@ -100,4 +100,8 @@ public interface IDBHelper {
     Observable<List<DPEntity>> queryMultiDpMsg(QueryBuilder<DPEntity> builder);
 
     QueryBuilder<DPEntity> getDpEntityQueryBuilder();
+
+    DPEntity getProperty(String uuid, int msgId);
+
+    Device getJFGDevice(String uuid);
 }

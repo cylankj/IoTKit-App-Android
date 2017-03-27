@@ -26,7 +26,7 @@
         </shape>
     </item>
     <!--<item-->
-    <!--android:dpMsgId="@android:dpMsgId/secondaryProgress"-->
+    <!--android:msgId="@android:msgId/secondaryProgress"-->
     <!--android:gravity="center_vertical|fill_horizontal">-->
     <!--<scale android:scaleWidth="100%">-->
     <!--<selector>-->

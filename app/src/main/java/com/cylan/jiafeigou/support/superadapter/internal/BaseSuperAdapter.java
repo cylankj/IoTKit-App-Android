@@ -169,10 +169,10 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
     }
 
     /**
-     * Get the row dpMsgId associated with the specified position in the list.
+     * Get the row msgId associated with the specified position in the list.
      *
-     * @param position The position of the item within the adapter's data set whose row dpMsgId we want.
-     * @return The dpMsgId of the item at the specified position.
+     * @param position The position of the item within the adapter's data set whose row msgId we want.
+     * @return The msgId of the item at the specified position.
      */
     @Override
     public long getItemId(int position) {

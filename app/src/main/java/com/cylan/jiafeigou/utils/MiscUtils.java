@@ -253,7 +253,7 @@ public class MiscUtils {
         return defaultValue;
     }
 
-    public static <T extends DataPoint> T safeGet_(DpMsgDefine.DPSingle<T> value, T defaultValue) {
+    public static <T extends DataPoint> T safeGet_(DataPoint value, T defaultValue) {
         if (value != null) {
             try {
                 return defaultValue;
@@ -270,13 +270,13 @@ public class MiscUtils {
      * @param <T>
      * @return
      */
-    public static <T extends DataPoint> long getVersion(DpMsgDefine.DPSet<T> set, boolean min) {
-        if (set != null && set.value != null && set.list().size() > 0) {
-            Collections.sort(set.list());
+    public static <T extends DataPoint> long getVersion(List<T> set, boolean min) {
+        if (set != null && set.size() > 0) {
+            Collections.sort(set);
             if (min)
-                return set.list().get(set.list().size() - 1).dpMsgVersion;
+                return set.get(set.size() - 1).version;
             else {
-                return set.list().get(0).dpMsgVersion;
+                return set.get(0).version;
             }
         }
         return 0L;

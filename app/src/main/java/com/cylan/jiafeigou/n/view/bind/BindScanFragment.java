@@ -268,7 +268,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
 //            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT,
 //                    this.getString(R.string.RET_EISBIND_BYOTHER));
 //            rebindDialog = SimpleDialogFragment.newInstance(bundle);
-//            rebindDialog.setAction((int dpMsgId, Object value) -> {
+//            rebindDialog.setAction((int msgId, Object value) -> {
 //                bindBundle.putInt("bindWay", 1);
 //                basePresenter.submit(bindBundle);
 //            });

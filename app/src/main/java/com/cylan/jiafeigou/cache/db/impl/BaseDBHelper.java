@@ -10,6 +10,8 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
+import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.AccountDao;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -51,6 +53,7 @@ public class BaseDBHelper implements IDBHelper {
     private AccountDao accountDao;
     private DeviceDao deviceDao;
     private static BaseDBHelper instance;
+    private IPropertyParser propertyParser;
     private Account dpAccount;
 
     public static BaseDBHelper getInstance() {
@@ -71,6 +74,7 @@ public class BaseDBHelper implements IDBHelper {
         mEntityDao = daoSession.getDPEntityDao();
         accountDao = daoSession.getAccountDao();
         deviceDao = daoSession.getDeviceDao();
+        propertyParser = BasePropertyParser.getInstance();
     }
 
     @Override
@@ -94,8 +98,6 @@ public class BaseDBHelper implements IDBHelper {
                 if (dpEntity == null) {
                     dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                 }
-                dpEntity.dpMsgId = dpEntity.getMsgId();
-                dpEntity.dpMsgVersion = dpEntity.getVersion();
                 result.add(dpEntity);
             }
             return result;
@@ -120,8 +122,6 @@ public class BaseDBHelper implements IDBHelper {
                     if (dpEntity == null) {
                         dpEntity = new DPEntity(null, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                     }
-                    dpEntity.dpMsgId = dpEntity.getMsgId();
-                    dpEntity.dpMsgVersion = dpEntity.getVersion();
                     result.add(dpEntity);
                 }
             }
@@ -144,10 +144,6 @@ public class BaseDBHelper implements IDBHelper {
         }
         return builder.orderDesc(DPEntityDao.Properties.Version).rx().list().map(dpEntities -> {
             if (dpEntities != null) {
-                for (DPEntity entity : dpEntities) {
-                    entity.dpMsgId = entity.getMsgId();
-                    entity.dpMsgVersion = entity.getVersion();
-                }
             }
             return dpEntities;
         });
@@ -169,15 +165,30 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
+    public DPEntity getProperty(String uuid, int msgId) {
+        QueryBuilder<DPEntity> queryBuilder = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, DBAction.SAVED, DBState.SUCCESS, null);
+        queryBuilder.where(DPEntityDao.Properties.Version.le(Long.MAX_VALUE));
+        queryBuilder.limit(1);
+        return queryBuilder.unique();
+    }
+
+    @Override
+    public Device getJFGDevice(String uuid) {
+        QueryBuilder<Device> queryBuilder = buildDPDeviceQueryBuilder(dpAccount.getAccount(), getServer(), uuid, DBAction.SAVED, DBState.SUCCESS, null);
+        queryBuilder.limit(1);
+        return queryBuilder.unique();
+    }
+
+    @Override
     public Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option) {
-        AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId);
+        AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option)
                 .map(items -> items == null || items.size() == 0 ? null : items.get(0)));
     }
 
     @Override
     public Observable<DPEntity> deleteDPMsgWithConfirm(String uuid, Long version, Integer msgId, DBOption option) {
-        AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId);
+        AppLogger.d("正在将本地数据标记为已确认的删除状态,deleteDPMsgWithConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.SUCCESS, option)
                 .map(items -> items == null || items.size() == 0 ? null : items.get(0)));
     }
@@ -243,8 +254,6 @@ public class BaseDBHelper implements IDBHelper {
                         Log.d("throwable", "throwable: " + Thread.currentThread());
                         mEntityDao.insertOrReplace(item);
                     }
-                    item.dpMsgId = item.getMsgId();
-                    item.dpMsgVersion = item.getVersion();
                     return item;
                 });
     }
@@ -268,8 +277,6 @@ public class BaseDBHelper implements IDBHelper {
                         item.setState(state);
                         mEntityDao.update(item);
                     }
-                    item.dpMsgId = item.getMsgId();
-                    item.dpMsgVersion = item.getVersion();
                     return item;
                 });
     }
@@ -290,10 +297,7 @@ public class BaseDBHelper implements IDBHelper {
         }
         return builder.orderDesc(DPEntityDao.Properties.Version).rx().list().map(dpEntities -> {
             if (dpEntities != null) {
-                for (DPEntity entity : dpEntities) {
-                    entity.dpMsgId = entity.getMsgId();
-                    entity.dpMsgVersion = entity.getVersion();
-                }
+
             }
             return dpEntities;
         });
@@ -301,7 +305,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option) {
-        AppLogger.d("正在标记本地数据, dpAccount:" + account + ",server:" + server + ",uuid:" + uuid + ",dpMsgVersion:" + version + ",msgId:" + msgId + ",action:" + action + ",state:" + state + ",option:" + option);
+        AppLogger.d("正在标记本地数据, dpAccount:" + account + ",server:" + server + ",uuid:" + uuid + ",version:" + version + ",msgId:" + msgId + ",action:" + action + ",state:" + state + ",option:" + option);
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().list()
                 .map(items -> {
@@ -310,8 +314,6 @@ public class BaseDBHelper implements IDBHelper {
                         item.setAction(action);
                         item.setState(state);
                         item.setOption(option);
-                        item.dpMsgId = item.getMsgId();
-                        item.dpMsgVersion = item.getVersion();
                     }
                     mEntityDao.updateInTx(items);
                     return items;
@@ -320,7 +322,7 @@ public class BaseDBHelper implements IDBHelper {
 
 
     /**
-     * 一般不推荐使用这个方法,但有些情境下无法获取正确的 dpMsgVersion 所以必须把那条记录删除,否则就是脏数据了
+     * 一般不推荐使用这个方法,但有些情境下无法获取正确的 version 所以必须把那条记录删除,否则就是脏数据了
      */
     @Override
     public Observable<DPEntity> deleteDPMsgForce(String account, String server, String uuid, Long version, Integer msgId) {

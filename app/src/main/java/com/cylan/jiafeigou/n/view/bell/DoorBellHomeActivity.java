@@ -463,7 +463,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onShowProperty(JFGDoorBellDevice device) {
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         if (isNetworkConnected(this)) {
-            DpMsgDefine.DPNet net = device.$(NET, DpMsgDefine.EMPTY.NET);
+            DpMsgDefine.DPNet net = device.$(NET, new DpMsgDefine.DPNet());
             cvBellHomeBackground.setState(net.net);
         } else {
             cvBellHomeBackground.setState(2);

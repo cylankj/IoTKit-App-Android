@@ -14,7 +14,7 @@ import com.cylan.jiafeigou.support.db.annotation.Table;
 @Table(name = "MineMessageBean")
 public class MineMessageBean implements Parcelable {
 
-    @Column(name = "dpMsgId", isId = true)
+    @Column(name = "msgId", isId = true)
     public int id;
     @Column(name = "content")
     public String content;

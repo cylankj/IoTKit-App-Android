@@ -31,7 +31,7 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
             params.add(msg);
             try {
                 long seq = JfgCmdInsurance.getCmd().robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
-                AppLogger.d("正在执行删除任务,seq:" + seq + ", uuid:" + entity.getUuid() + ",msgId:" + entity.getMsgId() + ",dpMsgVersion:" + entity.getVersion() + ",option:" + entity.action());
+                AppLogger.d("正在执行删除任务,seq:" + seq + ", uuid:" + entity.getUuid() + ",msgId:" + entity.getMsgId() + ",version:" + entity.getVersion() + ",option:" + entity.action());
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {

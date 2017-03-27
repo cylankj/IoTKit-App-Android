@@ -1,6 +1,6 @@
 package com.cylan.jiafeigou;
 
-import com.cylan.jiafeigou.base.module.DPProperty;
+import com.cylan.jiafeigou.base.module.DProperty;
 import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -99,7 +99,7 @@ public class DP {
 
         Field[] fields = device.getClass().getFields();
         for (Field field : fields) {
-            DPProperty annotation = field.getAnnotation(DPProperty.class);
+            DProperty annotation = field.getAnnotation(DProperty.class);
             if (annotation != null)
                 System.out.println(annotation.type());
         }

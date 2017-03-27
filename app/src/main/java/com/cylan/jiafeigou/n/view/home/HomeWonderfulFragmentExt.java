@@ -68,7 +68,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     RecyclerView rVDevicesList;
     @BindView(R.id.fLayout_main_content_holder)
     SwipeRefreshLayout srLayoutMainContentHolder;
-    //    @BindView(R.dpMsgId.fLayoutHomeWonderfulHeaderContainer)
+    //    @BindView(R.msgId.fLayoutHomeWonderfulHeaderContainer)
 //    FrameLayout fLayoutHomeHeaderContainer;
     @BindView(R.id.rl_top_head_wonder)
     RelativeLayout rlTopHeadWonder;
@@ -82,7 +82,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     FrameLayout mWonderfulEmptyViewContainer;
     @BindView(R.id.fragment_wonderful_empty)
     ViewGroup mWonderfulEmptyContainer;
-//    @BindView(R.dpMsgId.fragment_wonderful_guide)
+//    @BindView(R.msgId.fragment_wonderful_guide)
 //    ViewGroup mWonderfulGuideContainer;
 
     private ShareDialogFragment shareDialogFragment;
@@ -345,7 +345,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     }
 
-    //    @OnClick(R.dpMsgId.item_wonderful_to_start)
+    //    @OnClick(R.msgId.item_wonderful_to_start)
     public void openWonderful() {
         if (DataSourceManager.getInstance().getLoginState() == LogState.STATE_ACCOUNT_ON) {//在线表示已登录
             Intent intent = new Intent(getActivityContext(), DelayRecordActivity.class);
@@ -363,13 +363,13 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         srLayoutMainContentHolder.setRefreshing(false);
     }
 
-    //    @OnClick(R.dpMsgId.tv_wonderful_item_share)
+    //    @OnClick(R.msgId.tv_wonderful_item_share)
     public void shareWonderful() {//分享官方演示视频
         DPWonderItem bean = DPWonderItem.getGuideBean();
         onShareWonderfulContent(bean);
     }
 
-    //    @OnClick(R.dpMsgId.iv_wonderful_item_content)
+    //    @OnClick(R.msgId.iv_wonderful_item_content)
     public void viewWonderful(View view) {
         DPWonderItem bean = DPWonderItem.getGuideBean();
         ArrayList<Parcelable> list = new ArrayList<>();
@@ -377,7 +377,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         onEnterWonderfulContent(list, 0, view);
     }
 
-    //    @OnClick(R.dpMsgId.tv_wonderful_item_delete)
+    //    @OnClick(R.msgId.tv_wonderful_item_delete)
     public void removeAnymore() {
         deleteItem(-1);
     }
@@ -539,7 +539,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             if (holder != null) {
                 newSharedElement = holder.getView(R.id.iv_wonderful_item_content);
             } else {
-//                newSharedElement = mWonderfulGuideContainer.findViewById(R.dpMsgId.iv_wonderful_item_content);
+//                newSharedElement = mWonderfulGuideContainer.findViewById(R.msgId.iv_wonderful_item_content);
             }
             if (newSharedElement == null) return;
             ((ShadowFrameLayout) newSharedElement.getParent()).adjustSize(true);
@@ -548,7 +548,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             if (holders != null) {
                 oldView = holders.getView(R.id.iv_wonderful_item_content);
             } else {
-//                oldView = mWonderfulGuideContainer.findViewById(R.dpMsgId.iv_wonderful_item_content);
+//                oldView = mWonderfulGuideContainer.findViewById(R.msgId.iv_wonderful_item_content);
             }
             ((ShadowFrameLayout) oldView.getParent()).adjustSize(false);
             AppLogger.d("transition newTransitionName: " + newTransitionName);

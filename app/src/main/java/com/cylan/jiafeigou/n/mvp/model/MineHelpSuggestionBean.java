@@ -15,7 +15,7 @@ import com.cylan.jiafeigou.support.db.annotation.Table;
  */
 @Table(name = "MineHelpSuggestionBean")
 public class MineHelpSuggestionBean {
-    @Column(name = "dpMsgId", isId = true)
+    @Column(name = "msgId", isId = true)
     public int id;
     @Column(name = "icon")
     public String icon;

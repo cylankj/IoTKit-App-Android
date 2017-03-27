@@ -51,7 +51,7 @@ public class TimeZoneBean {
     public String toString() {
         return "TimeZoneBean{" +
                 "gmt='" + gmt + '\'' +
-                ", dpMsgId='" + id + '\'' +
+                ", msgId='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", offset=" + offset +
                 '}';

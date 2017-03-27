@@ -75,7 +75,7 @@ public class SdCardUtils {
             ArrayList<File> externalForApp = new ArrayList<>();
 
             if (!TextUtils.isEmpty(rawEmulatedTarget)) {
-                // Device has emulated storage; external storage paths should have
+                // DPDevice has emulated storage; external storage paths should have
                 // userId burned into them.
                 final String rawUserId = Integer.toString(0);//
                 final File emulatedSourceBase = new File(rawEmulatedSource);
@@ -89,7 +89,7 @@ public class SdCardUtils {
                 mEmulatedDirForDirect = buildPath(mediaBase, rawUserId);
 
             } else {
-                // Device has physical external storage; use plain paths.
+                // DPDevice has physical external storage; use plain paths.
                 if (TextUtils.isEmpty(rawExternalStorage)) {
                     Log.w("UserEnvironment", "EXTERNAL_STORAGE undefined; falling back to default");
                     rawExternalStorage = "/storage/sdcard0";

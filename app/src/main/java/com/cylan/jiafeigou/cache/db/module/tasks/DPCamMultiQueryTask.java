@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
-import com.cylan.jiafeigou.cache.db.module.DPByteParser;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
@@ -32,7 +31,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public <R extends IDPMultiTask<BaseDPTaskResult>> R init(List<IDPEntity> cache) {
+    public <R extends IDPMultiTask<BaseDPTaskResult>> R init(List<IDPEntity> cache) throws Exception {
         this.option = cache.get(0).option(DBOption.MultiQueryOption.class);
         return super.init(cache);
     }
@@ -52,10 +51,10 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     public Observable<BaseDPTaskResult> call(List<DPEntity> items) {
                         List<DataPoint> result = new ArrayList<>();
                         for (DPEntity item : items) {
-                            DataPoint parse = DPByteParser.parse(item);
+                            DataPoint parse = propertyParser.parser(item.getMsgId(), item.getBytes(), item.getVersion());
                             if (parse != null) {
-                                parse.dpMsgVersion = item.getVersion();
-                                parse.dpMsgId = item.getMsgId();
+                                parse.version = item.getVersion();
+                                parse.msgId = item.getMsgId();
                             }
                             result.add(parse);
                         }
@@ -68,10 +67,10 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     @Override
-    public Observable<BaseDPTaskResult> performServer(BaseDPTaskResult local) {
+    public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                AppLogger.d("正在发送查询请求,dpMsgVersion:" + entity.getVersion() + "count:" + option.asc + ",acs:" + 20);
+                AppLogger.d("正在发送查询请求,version:" + entity.getVersion() + "count:" + option.asc + ",acs:" + 20);
                 long seq = DataSourceManager.getInstance().syncJFGCameraWarn(entity.getUuid() == null ? "" : entity.getUuid(), option.timeStart, option.asc, 100);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();

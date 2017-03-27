@@ -361,7 +361,7 @@ public class FileUtils {
     //-----------------------------------------------------------------------
 
     /**
-     * Returns a human-readable dpMsgVersion of the file size, where the input represents a specific number of bytes.
+     * Returns a human-readable version of the file size, where the input represents a specific number of bytes.
      * <p>
      * If the size is over 1GB, the size is returned as the number of whole GB, i.e. the size is rounded down to the
      * nearest GB boundary.
@@ -398,7 +398,7 @@ public class FileUtils {
     }
 
     /**
-     * Returns a human-readable dpMsgVersion of the file size, where the input represents a specific number of bytes.
+     * Returns a human-readable version of the file size, where the input represents a specific number of bytes.
      * <p>
      * If the size is over 1GB, the size is returned as the number of whole GB, i.e. the size is rounded down to the
      * nearest GB boundary.
@@ -591,9 +591,9 @@ public class FileUtils {
     /**
      * Convert from a <code>URL</code> to a <code>File</code>.
      * <p/>
-     * From dpMsgVersion 1.1 this method will decode the URL.
+     * From version 1.1 this method will decode the URL.
      * Syntax such as <code>file:///my%20docs/file.txt</code> will be
-     * correctly decoded to <code>/my docs/file.txt</code>. Starting with dpMsgVersion
+     * correctly decoded to <code>/my docs/file.txt</code>. Starting with version
      * 1.5, this method uses UTF-8 to decode percent-encoded octets to characters.
      * Additionally, malformed percent-encoded octets are handled leniently by
      * passing them through literally.
@@ -1429,7 +1429,7 @@ public class FileUtils {
      * @param encoding the encoding to use, {@code null} means platform default
      * @return the file contents, never {@code null}
      * @throws IOException                                  in case of an I/O error
-     * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in dpMsgVersion 2.2 if the encoding is not
+     * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
      *                                                      supported.
      * @since 2.3
      */
@@ -1497,7 +1497,7 @@ public class FileUtils {
      * @param encoding the encoding to use, {@code null} means platform default
      * @return the list of Strings representing each line in the file, never {@code null}
      * @throws IOException                                  in case of an I/O error
-     * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in dpMsgVersion 2.2 if the encoding is not
+     * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
      *                                                      supported.
      * @since 1.1
      */
@@ -1584,7 +1584,7 @@ public class FileUtils {
      * @param append   if {@code true}, then the String will be added to the
      *                 end of the file rather than overwriting
      * @throws IOException                                  in case of an I/O error
-     * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in dpMsgVersion 2.2 if the encoding is not
+     * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
      *                                                      supported by the VM
      * @since 2.1
      */
@@ -1695,7 +1695,7 @@ public class FileUtils {
      * @param append   if {@code true}, then the data will be added to the
      *                 end of the file rather than overwriting
      * @throws IOException                                  in case of an I/O error
-     * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in dpMsgVersion 2.2 if the encoding is not
+     * @throws java.nio.charset.UnsupportedCharsetException thrown instead of {@link UnsupportedEncodingException} in version 2.2 if the encoding is not
      *                                                      supported by the VM
      * @since IO 2.1
      */
@@ -2541,7 +2541,7 @@ public class FileUtils {
     public static class FileExistsException extends IOException {
 
         /**
-         * Defines the serial dpMsgVersion UID.
+         * Defines the serial version UID.
          */
         private static final long serialVersionUID = 1L;
 

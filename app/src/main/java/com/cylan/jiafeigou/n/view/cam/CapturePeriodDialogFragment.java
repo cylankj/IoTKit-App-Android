@@ -77,7 +77,7 @@ public class CapturePeriodDialogFragment extends BaseDialog {
 
     private void initView() {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        DpMsgDefine.DPAlarmInfo alarmInfo = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), DpMsgDefine.EMPTY.ALARM_INFO);
+        DpMsgDefine.DPAlarmInfo alarmInfo = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), new DpMsgDefine.DPAlarmInfo());
         if (alarmInfo == null) {
             AppLogger.e("should not happen");
             return;

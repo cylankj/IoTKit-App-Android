@@ -44,7 +44,7 @@ public class WechatShare {
         WeakReference<Activity> weakReference = new WeakReference<>(activity);
         String appId = Security.getWeChatKey(JFGRules.getTrimPackageName());
         if (TextUtils.isEmpty(appId)) {
-            AppLogger.e("wechat app dpMsgId is null");
+            AppLogger.e("wechat app msgId is null");
         }
         Log.e("WechatShare", "WechatShare: " + appId);
         // 第三个参数作用:checkSignature

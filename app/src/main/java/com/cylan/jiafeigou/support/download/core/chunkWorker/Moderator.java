@@ -38,7 +38,7 @@ public class Moderator {
     public Moderator(TasksDataSource tasksDS, ChunksDataSource chunksDS) {
         tasksDataSource = tasksDS;
         chunksDataSource = chunksDS;
-        workerList = new HashMap<Integer, Thread>(); // chunk downloader with they dpMsgId key
+        workerList = new HashMap<Integer, Thread>(); // chunk downloader with they msgId key
         processReports = new HashMap<Integer, ReportStructure>();
     }
 
@@ -95,7 +95,7 @@ public class Moderator {
                     }
                 }
 //                Thread chunkDownloaderThread = new AsyncWorker(task, chunk, this);
-//                workerList.put(chunk.dpMsgId, chunkDownloaderThread);
+//                workerList.put(chunk.msgId, chunkDownloaderThread);
 //                chunkDownloaderThread.start();
             }
 

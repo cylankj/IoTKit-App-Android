@@ -1,7 +1,8 @@
-package com.cylan.jiafeigou.dp;
+package com.cylan.jiafeigou.base.module;
 
 import com.cylan.ext.annotations.DPMessage;
 import com.cylan.ext.annotations.DpAnnotation;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import static com.cylan.ext.annotations.DPTarget.ACCOUNT;
 import static com.cylan.ext.annotations.DPTarget.CAMERA;
@@ -9,7 +10,6 @@ import static com.cylan.ext.annotations.DPTarget.DEVICE;
 import static com.cylan.ext.annotations.DPTarget.DOORBELL;
 import static com.cylan.ext.annotations.DPTarget.EFAMILY;
 import static com.cylan.ext.annotations.DPTarget.MAGNETOMETER;
-import static com.cylan.ext.annotations.DPType.TYPE_FIELD;
 import static com.cylan.ext.annotations.DPType.TYPE_PRIMARY;
 import static com.cylan.ext.annotations.DPType.TYPE_SET;
 

@@ -123,7 +123,7 @@ public class Task {
     public JSONObject toJsonObject() {
         JSONObject json = new JSONObject();
         try {
-            json.put("dpMsgId", id)
+            json.put("msgId", id)
                     .put("name", name)
                     .put("size", size)
                     .put("state", state)

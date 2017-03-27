@@ -165,7 +165,7 @@ public class EditFragmentDialog extends BaseDialog {
                 dismiss();
                 etInputBox.getText().clear();
 //                if (option != null) {
-//                    option.onDialogAction(R.dpMsgId.tv_cancel, null);
+//                    option.onDialogAction(R.msgId.tv_cancel, null);
 //                }
                 break;
         }

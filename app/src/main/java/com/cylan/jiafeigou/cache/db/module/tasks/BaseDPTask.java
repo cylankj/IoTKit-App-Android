@@ -3,7 +3,9 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
@@ -29,6 +31,7 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     protected List<IDPEntity> multiEntity;
     protected IDBHelper mDPHelper;
     protected JFGSourceManager sourceManager;
+    protected IPropertyParser propertyParser;
     protected static Gson parser = new Gson();
     public static final long GLOBAL_NET_OPERATION_TIME_OUT = 10;
 
@@ -36,6 +39,7 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     public <R extends IDPMultiTask<T>> R init(List<IDPEntity> cache) throws Exception {
         this.mDPHelper = BaseDBHelper.getInstance();
         this.sourceManager = DataSourceManager.getInstance();
+        this.propertyParser = BasePropertyParser.getInstance();
         this.multiEntity = cache;
         this.entity = cache.get(0);
         return (R) this;
@@ -45,6 +49,7 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     public <R extends IDPSingleTask<T>> R init(IDPEntity cache) throws Exception {
         this.mDPHelper = BaseDBHelper.getInstance();
         this.sourceManager = DataSourceManager.getInstance();
+        this.propertyParser = BasePropertyParser.getInstance();
         this.entity = cache;
         return (R) this;
     }

@@ -80,7 +80,7 @@ public class BellCallRecordBean implements Comparable<BellCallRecordBean>, Parce
         result.timeStr = TimeUtils.getHH_MM(record.time * 1000L);
         result.date = TimeUtils.getBellRecordTime(record.time * 1000L);
         result.type = record.type;
-        result.version = record.dpMsgVersion;
+        result.version = record.version;
         return result;
     }
 }

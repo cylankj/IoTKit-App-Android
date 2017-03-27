@@ -113,14 +113,18 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
      */
     private Observable<BaseDPTaskResult> getMessageListQuery(long timeStart, boolean loadMore) {
         Log.d("getMessageListQuery", "getMessageListQuery:" + timeStart + ",loadMore: " + loadMore);
-        if (DataSourceManager.getInstance().isOnline()) {
-            return new DPCamMultiQueryTask()
-                    .init(buildEntity(timeStart, TimeUtils.getSpecificDayStartTime(timeStart) + 24 * 3600 * 1000L, loadMore))
-                    .performServer(null);
-        } else {
-            return new DPCamMultiQueryTask()
-                    .init(buildEntity(timeStart, TimeUtils.getSpecificDayStartTime(timeStart) + 24 * 3600 * 1000L, loadMore))
-                    .performLocal();
+        try {
+            if (DataSourceManager.getInstance().isOnline()) {
+                return new DPCamMultiQueryTask()
+                        .init(buildEntity(timeStart, TimeUtils.getSpecificDayStartTime(timeStart) + 24 * 3600 * 1000L, loadMore))
+                        .performServer();
+            } else {
+                return new DPCamMultiQueryTask()
+                        .init(buildEntity(timeStart, TimeUtils.getSpecificDayStartTime(timeStart) + 24 * 3600 * 1000L, loadMore))
+                        .performLocal();
+            }
+        } catch (Exception e) {
+            return Observable.just(BaseDPTaskResult.ERROR);
         }
     }
 
@@ -143,8 +147,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         ArrayList<CamMessageBean> list = new ArrayList<>();
                         for (DataPoint dataPoint : result) {
                             CamMessageBean bean = new CamMessageBean();
-                            bean.id = dataPoint.dpMsgId;
-                            bean.time = dataPoint.dpMsgVersion;
+                            bean.id = dataPoint.msgId;
+                            bean.time = dataPoint.version;
                             if (bean.id == 222) {
                                 bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) dataPoint;
                             }
@@ -190,7 +194,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                     for (long id : map.keySet()) {
                         boolean result = DataSourceManager.getInstance().deleteByVersions(uuid, id, map.get(id));
-                        AppLogger.i("delete: " + result + " dpMsgId:" + id);
+                        AppLogger.i("delete: " + result + " msgId:" + id);
                     }
                 }, (Throwable throwable) -> {
                     AppLogger.e(":" + throwable.getLocalizedMessage());
@@ -209,17 +213,21 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
      * @return
      */
     private Observable<BaseDPTaskResult> getDateListQuery() {
-        DPEntity entity = new DPEntity();
-        entity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());
-        entity.setUuid(uuid);
-        if (DataSourceManager.getInstance().isOnline()) {
-            return new DPCamDateQueryTask()
-                    .init(entity)
-                    .performServer(null);
-        } else {
-            return new DPCamDateQueryTask()
-                    .init(entity)
-                    .performLocal();
+        try {
+            DPEntity entity = new DPEntity();
+            entity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());
+            entity.setUuid(uuid);
+            if (DataSourceManager.getInstance().isOnline()) {
+                return new DPCamDateQueryTask()
+                        .init(entity)
+                        .performServer();
+            } else {
+                return new DPCamDateQueryTask()
+                        .init(entity)
+                        .performLocal();
+            }
+        } catch (Exception e) {
+            return Observable.just(BaseDPTaskResult.ERROR);
         }
     }
 

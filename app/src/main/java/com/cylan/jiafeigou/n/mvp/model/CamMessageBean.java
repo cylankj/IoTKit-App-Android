@@ -20,11 +20,11 @@ public class CamMessageBean {
     @Override
     public String toString() {
         return "CamMessageBean{" +
-                "dpMsgId=" + id +
+                "msgId=" + id +
                 ", alarmMsgs=" + alarmMsg +
                 ", sdcardSummary=" + sdcardSummary +
                 ", startTime=" + time +
-                ", dpMsgVersion=" + version +
+                ", version=" + version +
                 '}';
     }
 

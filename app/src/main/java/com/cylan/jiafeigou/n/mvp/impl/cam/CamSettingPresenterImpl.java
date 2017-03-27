@@ -189,7 +189,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public String getAlarmSubTitle(Context context) {
         DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, (long) DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
         boolean f = MiscUtils.safeGet(flag, false);
-        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), DpMsgDefine.EMPTY.ALARM_INFO);
+        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), new DpMsgDefine.DPAlarmInfo());
         return MiscUtils.getChaosTime(context, info, f);
     }
 
@@ -200,7 +200,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
         }
-        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), DpMsgDefine.EMPTY.SD_STATUS);
+        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), new DpMsgDefine.DPSdStatus());
         if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0)
             return "";
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);

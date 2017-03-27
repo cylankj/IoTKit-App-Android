@@ -9,7 +9,7 @@
 
 
     <!--<FrameLayout-->
-    <!--android:dpMsgId="@+dpMsgId/fLayout_information_message"-->
+    <!--android:msgId="@+msgId/fLayout_information_message"-->
     <!--android:layout_width="match_parent"-->
     <!--android:layout_height="wrap_content">-->
 

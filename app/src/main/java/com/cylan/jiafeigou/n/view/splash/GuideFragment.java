@@ -21,7 +21,7 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
 
     @BindView(R.id.v_great_drag)
     GreatDragView vGreatDrag;
-//    @BindView(R.dpMsgId.v_guide_indicator)
+//    @BindView(R.msgId.v_guide_indicator)
 //    GuideIndicatorLayout vGuideIndicator;
 
     public static GuideFragment newInstance() {
