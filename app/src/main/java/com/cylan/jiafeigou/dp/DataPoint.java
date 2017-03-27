@@ -230,7 +230,7 @@ public abstract class DataPoint implements Parcelable, Comparable<DataPoint> {
                 }
             }
         } catch (Exception e) {
-            AppLogger.d("解析消息出现异常: msgId 为:" + msgId + "," + e.getMessage());
+            AppLogger.e("解析消息出现异常: msgId 为:" + msgId + "," + e.getMessage());
         }
         return true;
     }

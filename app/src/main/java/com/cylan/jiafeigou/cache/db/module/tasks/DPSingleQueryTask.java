@@ -61,7 +61,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                         for (DPEntity item : items) {
                             sourceManager.setValue(item.getUuid(), item.getMsgId(), item.getBytes(), item.getVersion(), -1);
                         }
-                        Object result = sourceManager.getValue(entity.getUuid(), entity.getMsgId(), -1);
+                        Object result = sourceManager.getValue(entity.getUuid(), entity.getMsgId());
                         if (result instanceof DpMsgDefine.DPSet) {
                             result = ((DpMsgDefine.DPSet) result).list();
                         }
@@ -97,7 +97,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(this::makeGetDataRspResponse)
                 .map(rsp -> {
                     AppLogger.d("收到从服务器返回数据!!!");
-                    Object result = sourceManager.getValue(entity.getUuid(), entity.getMsgId(), rsp.seq);
+                    Object result = sourceManager.getValue(entity.getUuid(), entity.getMsgId());
                     if (result instanceof DpMsgDefine.DPSet) {
                         result = ((DpMsgDefine.DPSet) result).list();
                     }

@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.contract.cam;
 
-import com.bumptech.glide.load.model.GlideUrl;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
@@ -20,12 +18,20 @@ public interface CamMediaContract {
          *
          * @param err
          */
-        void onErr(int err);
+        void onCollectingRsp(int err);
+
+        int getCurrentIndex();
+
+        void onItemCollectionCheckRsp(boolean state);
     }
 
     interface Presenter extends BasePresenter {
         void saveImage(CamWarnGlideURL glideURL);
 
-        void collect(int index, DpMsgDefine.DPAlarm alarmMsg, GlideUrl bitmapGlideUrl);
+        void collect(int index, long version);
+
+        void unCollect(int index, long version);
+
+        void checkCollection(long time, int index);
     }
 }

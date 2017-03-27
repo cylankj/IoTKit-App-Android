@@ -34,10 +34,6 @@ public interface JFGSourceManager {
 
     <T extends DataPoint> T getValue(String uuid, long msgId);
 
-//    <T extends DataPoint> T getValueSafe(String uuid, long msgId, Object defaultValue);
-
-    <T extends DataPoint> T getValue(String uuid, long msgId, long seq);
-
     List<Device> getJFGDeviceByPid(int... pids);
 
     List<String> getJFGDeviceUUIDByPid(int... pids);
