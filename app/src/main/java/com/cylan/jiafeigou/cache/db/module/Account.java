@@ -45,6 +45,10 @@ public class Account extends BasePropertyHolder<Account> {
     public transient static final int ACCOUNT_WONDERFUL_MSG = 602;
 
     public Account(JFGAccount account) {
+        setAccount(account);
+    }
+
+    public Account setAccount(JFGAccount account) {
         this.account = account.getAccount();
         this.phone = account.getPhone();
         this.token = account.getToken();
@@ -56,6 +60,7 @@ public class Account extends BasePropertyHolder<Account> {
         this.photoUrl = account.getPhotoUrl();
         this.action = DBAction.SAVED.action();
         this.state = DBState.SUCCESS.state();
+        return this;
     }
 
     @Generated(hash = 882125521)
