@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.contract.bell;
 
-import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -14,7 +13,7 @@ import rx.Subscription;
 public interface BellDetailContract {
 
 
-    interface View extends PropertyView<JFGDoorBellDevice> {
+    interface View extends PropertyView {
         void checkResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp);
     }
 

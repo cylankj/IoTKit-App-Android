@@ -12,10 +12,10 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
@@ -32,7 +32,6 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.base.module.JFGDoorBellDevice.NET;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 public class BellSettingFragment extends BaseFragment<BellSettingContract.Presenter>
@@ -187,7 +186,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     }
 
     @Override
-    public void onShowProperty(JFGDoorBellDevice device) {
+    public void onShowProperty(Device device) {
         svSettingDeviceDetail.setTvSubTitle(TextUtils.isEmpty(device.alias)
                 ? device.uuid : device.alias);
         if (!TextUtils.isEmpty(device.shareAccount)) {
@@ -197,7 +196,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 v.setVisibility(View.GONE);
             }
         }
-        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(NET, null)));
+        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(DpMsgMap.ID_201_NET, null)));
         tvSettingClear.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
         mNetWorkContainer.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
     }

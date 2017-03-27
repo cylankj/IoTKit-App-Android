@@ -1,10 +1,13 @@
 package com.cylan.jiafeigou.cache.db.module;
 
+import com.cylan.jiafeigou.base.module.BasePropertyParser;
+import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import org.greenrobot.greendao.DaoException;
 import org.greenrobot.greendao.annotation.Entity;
@@ -30,7 +33,39 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     private String state;
     private String option;//json 格式的字符串
 
-    public transient DataPoint value;
+    private transient DataPoint value;//bytes 转换好了会放在这里,这样就不用每次都转换了
+    private transient static IPropertyParser propertyParser = BasePropertyParser.getInstance();
+
+    public <V> V getValue(V defaultValue) {
+        if (this.value == null) {
+            this.value = propertyParser.parser(msgId, bytes, version);
+        }
+        if (this.value == null) {
+            return defaultValue;
+        } else if (defaultValue instanceof DataPoint || defaultValue == null) {
+            return (V) this.value;
+        } else if (this.value instanceof DpMsgDefine.DPPrimary) {
+            return (V) ((DpMsgDefine.DPPrimary) this.value).value;
+        } else {
+            return defaultValue;
+        }
+    }
+
+    public final boolean setValue(byte[] bytes, long version) {
+        DataPoint dataPoint = propertyParser.parser(this.msgId, bytes, version);
+        this.value = dataPoint;
+        this.bytes = dataPoint == null ? null : dataPoint.toBytes();
+        this.update();
+        return dataPoint != null;
+    }
+
+    public final boolean setValue(DataPoint value) {
+        this.value = value;
+        this.bytes = value == null ? null : value.toBytes();
+        this.update();
+        return value != null;
+    }
+
     /**
      * Used to resolve relations
      */

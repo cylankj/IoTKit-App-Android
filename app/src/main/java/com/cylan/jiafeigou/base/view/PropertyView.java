@@ -6,6 +6,6 @@ import com.cylan.jiafeigou.cache.db.module.Device;
  * Created by yzd on 17-1-9.
  */
 
-public interface PropertyView<T extends Device> extends JFGView {
-    void onShowProperty(T device);
+public interface PropertyView extends JFGView {
+    void onShowProperty(Device device);
 }

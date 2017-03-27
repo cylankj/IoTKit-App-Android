@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.PAlbumBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -38,7 +39,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.cache.db.module.Device.MAC;
 import static com.cylan.panorama.Panoramic720View.DM_Equirectangular;
 import static com.cylan.panorama.Panoramic720View.DM_Fisheye;
 import static com.cylan.panorama.Panoramic720View.DM_LittlePlanet;
@@ -146,7 +146,7 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
             return;
         }
         Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
-        String mac = device.$(MAC, "");
+        String mac = device.$(DpMsgMap.ID_202_MAC, "");
         if (!TextUtils.equals(mac, NetUtils.getRouterMacAddress((Application) ContextUtils.getContext()))) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
             return;

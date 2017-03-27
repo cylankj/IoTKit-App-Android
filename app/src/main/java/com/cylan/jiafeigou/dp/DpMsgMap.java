@@ -129,7 +129,7 @@ public final class DpMsgMap {
     public static final int ID_303_DEVICE_AUTO_VIDEO_RECORD = 303;
 
     public static final int ID_402_BELL_VOICE_MSG = 402;
-
+    public static final int ID_511_CAMERAWARNANDWONDER=511;
     public static final int ID_510_CAMERA_COORDINATE = 510;
 
     public static final int ID_218_DEVICE_FORMAT_SDCARD = 218;

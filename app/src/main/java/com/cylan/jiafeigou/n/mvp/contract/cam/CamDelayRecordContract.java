@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.view.PropertyView;
 import com.cylan.jiafeigou.base.view.ViewableView;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
@@ -22,7 +21,7 @@ import rx.Subscription;
 
 public interface CamDelayRecordContract {
 
-    interface View extends ViewableView, PropertyView<JFGCameraDevice> {
+    interface View extends ViewableView, PropertyView {
         String HANDLE_TIME_INTERVAL = "HANDLE_TIME_INTERVAL";
         String HANDLE_TIME_DURATION = "HANDLE_TIME_DURATION";
 

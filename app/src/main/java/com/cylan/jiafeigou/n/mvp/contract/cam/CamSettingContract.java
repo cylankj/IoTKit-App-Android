@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.contract.cam;
 import android.content.Context;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.misc.SettingTip;
@@ -20,7 +19,7 @@ public interface CamSettingContract {
 
     interface View extends BaseView<Presenter> {
 
-        void deviceUpdate(JFGCameraDevice jfgCameraDevice);
+        void deviceUpdate(Device device);
 
         void deviceUpdate(JFGDPMsg msg) throws IOException;
 
@@ -36,7 +35,7 @@ public interface CamSettingContract {
         SettingTip getSettingTips();
 //        void fetchCamInfo(final String uuid);
 
-        String getDetailsSubTitle(Context context,boolean hasSdcard,int err);
+        String getDetailsSubTitle(Context context, boolean hasSdcard, int err);
 
         String getAlarmSubTitle(Context context);
 

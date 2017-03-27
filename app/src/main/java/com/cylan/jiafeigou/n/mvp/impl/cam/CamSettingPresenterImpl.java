@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -46,7 +45,7 @@ import rx.schedulers.Schedulers;
  */
 public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContract.View> implements
         CamSettingContract.Presenter {
-    private JFGCameraDevice device;
+    private Device device;
 
     private static final int[] autoRecordMode = {
             R.string.RECORD_MODE,

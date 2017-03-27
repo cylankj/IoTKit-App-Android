@@ -3,8 +3,6 @@ package com.cylan.jiafeigou.cache.db.module;
 import android.support.annotation.IntDef;
 
 import com.cylan.entity.jniCall.JFGDevice;
-import com.cylan.ext.annotations.DPType;
-import com.cylan.jiafeigou.base.module.DProperty;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -40,40 +38,6 @@ public class Device extends BasePropertyHolder<Device> {
     public String state;
     public String option;
 
-
-    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int MAC = 202;
-
-    @DProperty(type = Boolean.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int CHARGING = 205;
-
-    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int DEVICE_VERSION = 207;
-
-    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int DEVICE_SYS_VERSION = 208;
-
-    @DProperty(type = Boolean.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int LED_INDICATOR = 209;
-
-    @DProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int APP_UPLOAD_LOG = 211;
-
-    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int DEVICE_UPLOAD_LOG = 212;
-
-    @DProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int DEVICE_P2P_VERSION = 213;
-
-    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int SDK_VERSION = 220;
-
-    @DProperty(type = Integer.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int DEVICE_CAMERA_ROTATE = 304;
-
-    @DProperty(type = Long.class, dpType = DPType.TYPE_PRIMARY)
-    public static final transient int COLLECT = 511;
-
     @Generated(hash = 182677992)
     public Device(Long _id, String uuid, String sn, String alias, String shareAccount,
                   int pid, String vid, String account, int regionType, String server, String action,
@@ -105,21 +69,6 @@ public class Device extends BasePropertyHolder<Device> {
         this.state = DBState.SUCCESS.state();
         return this;
     }
-
-    public Device fill(Device device) {
-        this.uuid = device.uuid;
-        this.sn = device.sn;
-        this.alias = device.alias;
-        this.shareAccount = device.shareAccount;
-        this.pid = device.pid;
-        this.vid = device.vid;
-        this.regionType = device.regionType;
-        this.action = device.action;
-        this.state = device.state;
-        this.option = device.option;
-        return this;
-    }
-
 
     @Generated(hash = 1469582394)
     public Device() {

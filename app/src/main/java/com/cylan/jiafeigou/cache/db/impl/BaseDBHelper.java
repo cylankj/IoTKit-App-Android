@@ -90,13 +90,22 @@ public class BaseDBHelper implements IDBHelper {
             QueryBuilder<DPEntity> queryBuilder;
             DPEntity dpEntity;
             for (JFGDPMsg msg : msgs) {
-                queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
-                dpEntity = queryBuilder.unique();
+                if (propertyParser.isProperty((int) msg.id)) {
+                    dpEntity = getProperty(uuid, (int) msg.id);
+                } else {
+                    queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
+                    dpEntity = queryBuilder.unique();
+                }
                 if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
+                    continue;
+                }
+                if (dpEntity != null && dpEntity.getVersion() == msg.version) {
                     continue;
                 }
                 if (dpEntity == null) {
                     dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                } else {
+                    dpEntity.setValue(msg.packValue, msg.version);
                 }
                 result.add(dpEntity);
             }
@@ -114,13 +123,22 @@ public class BaseDBHelper implements IDBHelper {
             DPEntity dpEntity;
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
                 for (JFGDPMsg msg : entry.getValue()) {
-                    queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
-                    dpEntity = queryBuilder.unique();
+                    if (propertyParser.isProperty((int) msg.id)) {
+                        dpEntity = getProperty(dataRsp.identity, (int) msg.id);
+                    } else {
+                        queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
+                        dpEntity = queryBuilder.unique();
+                    }
                     if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
+                        continue;
+                    }
+                    if (dpEntity != null && dpEntity.getVersion() == msg.version) {
                         continue;
                     }
                     if (dpEntity == null) {
                         dpEntity = new DPEntity(null, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
+                    } else {
+                        dpEntity.setValue(msg.packValue, msg.version);
                     }
                     result.add(dpEntity);
                 }
@@ -166,10 +184,11 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public DPEntity getProperty(String uuid, int msgId) {
-        QueryBuilder<DPEntity> queryBuilder = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, DBAction.SAVED, DBState.SUCCESS, null);
+        QueryBuilder<DPEntity> queryBuilder = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, null, null, null);
         queryBuilder.where(DPEntityDao.Properties.Version.le(Long.MAX_VALUE));
         queryBuilder.limit(1);
-        return queryBuilder.unique();
+        DPEntity unique = queryBuilder.unique();
+        return (unique != null && unique.action() != DBAction.DELETED) ? unique : null;
     }
 
     @Override

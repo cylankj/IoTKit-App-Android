@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
@@ -65,7 +65,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     @Override
     public void onStart() {
         super.onStart();
-        JFGDoorBellDevice device = mSourceManager.getJFGDevice(mUUID);
+        Device device = mSourceManager.getJFGDevice(mUUID);
         if (device == null) {
             mView.onDeviceUnBind();
         } else {

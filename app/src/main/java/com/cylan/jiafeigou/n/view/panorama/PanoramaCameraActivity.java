@@ -33,8 +33,8 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -141,7 +141,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
 
     @Override
-    public void onShowProperty(JFGCameraDevice device) {
+    public void onShowProperty(Device device) {
         int battery = device.$(ID_206_BATTERY, 0);
         bannerChargeText.setText(battery + "%");
         if (battery <= 20) {

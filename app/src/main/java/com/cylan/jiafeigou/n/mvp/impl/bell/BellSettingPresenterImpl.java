@@ -1,8 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
-import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
@@ -31,7 +31,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     @Override
     public void onStart() {
         super.onStart();
-        JFGDoorBellDevice device = mSourceManager.getJFGDevice(mUUID);
+        Device device = mSourceManager.getJFGDevice(mUUID);
         if (device != null) {
             mView.onShowProperty(device);
         }

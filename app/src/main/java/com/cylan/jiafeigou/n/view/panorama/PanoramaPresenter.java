@@ -4,10 +4,11 @@ import android.net.wifi.WifiInfo;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -33,8 +34,6 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.base.module.JFGCameraDevice.BATTERY;
-import static com.cylan.jiafeigou.base.module.JFGCameraDevice.SDCARD_STORAGE;
 import static com.cylan.jiafeigou.base.module.PanoramaEvent.MIDRobotForwardDataV2;
 import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_TAKE_PICTURE_REQ;
 import static com.cylan.jiafeigou.base.module.PanoramaEvent.TYPE_VIDEO_BEGIN_REQ;
@@ -54,7 +53,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void onStart() {
         super.onStart();
-        JFGCameraDevice device = mSourceManager.getJFGDevice(mUUID);
+        Device device = mSourceManager.getJFGDevice(mUUID);
         if (device != null) {
             mView.onShowProperty(device);
         }
@@ -484,12 +483,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
         return rawReqMsg;
     }
 
-    private Observable<JFGCameraDevice> checkSDCard(JFGCameraDevice device) {
+    private Observable<Device> checkSDCard(Device device) {
         return Observable.just(device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(dev -> {
-                    DpMsgDefine.DPSdStatus status = dev.$(SDCARD_STORAGE, null);
+                    DpMsgDefine.DPSdStatus status = dev.$(DpMsgMap.ID_204_SDCARD_STORAGE, null);
                     if (status == null || !status.hasSdcard) {
                         //没有存储设备
 //                        mView.onSDCardUnMounted();
@@ -498,7 +497,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                     return true;
                 })
                 .filter(dev -> {
-                    DpMsgDefine.DPSdStatus status = dev.$(SDCARD_STORAGE, null);
+                    DpMsgDefine.DPSdStatus status = dev.$(DpMsgMap.ID_204_SDCARD_STORAGE, null);
                     if (status != null && status.total - status.used < 1000) {
                         //存储设备内存不足
 //                        mView.onSDCardMemoryFull();
@@ -508,12 +507,12 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                 });
     }
 
-    private Observable<JFGCameraDevice> checkBattery(JFGCameraDevice device) {
+    private Observable<Device> checkBattery(Device device) {
         return Observable.just(device)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(dev -> {
-                    if (dev.$(BATTERY, 0) < 5) {
+                    if (dev.$(DpMsgMap.ID_206_BATTERY, 0) < 5) {
                         //电量低于5%
 //                        mView.onDeviceBatteryLow();
 //                        return false;

@@ -13,7 +13,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -144,7 +143,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
 
 
     @Override
-    public void onShowProperty(JFGDoorBellDevice device) {
+    public void onShowProperty(Device device) {
         String alias = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         svSettingDeviceAlias.setTvSubTitle(alias);
         svSettingDeviceCid.setTvSubTitle(device.uuid);

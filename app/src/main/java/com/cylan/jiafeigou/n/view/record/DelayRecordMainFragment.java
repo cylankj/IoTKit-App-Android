@@ -13,8 +13,8 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
@@ -350,7 +350,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     }
 
     @Override
-    public void onShowProperty(JFGCameraDevice device) {
+    public void onShowProperty(Device device) {
 //        if (!device.camera_time_lapse_photography.isNull()) {
 //            mRecordBeginTime = device.camera_time_lapse_photography.timeStart;
 //            mRecordTimeCycle = device.camera_time_lapse_photography.timePeriod;

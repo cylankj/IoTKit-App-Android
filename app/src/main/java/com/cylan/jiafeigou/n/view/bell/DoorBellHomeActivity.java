@@ -27,7 +27,7 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -55,7 +55,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import rx.Subscription;
 
-import static com.cylan.jiafeigou.base.module.JFGDoorBellDevice.NET;
+import static com.cylan.jiafeigou.base.module.DPConstant.NET;
 
 public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeContract.Presenter>
         implements DoorBellHomeContract.View,
@@ -460,7 +460,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    public void onShowProperty(JFGDoorBellDevice device) {
+    public void onShowProperty(Device device) {
         imgVTopBarCenter.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
         if (isNetworkConnected(this)) {
             DpMsgDefine.DPNet net = device.$(NET, new DpMsgDefine.DPNet());

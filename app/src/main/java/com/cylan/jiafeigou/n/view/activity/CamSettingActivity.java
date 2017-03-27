@@ -19,7 +19,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -91,7 +91,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @BindView(R.id.sbtn_setting_sight)
     SettingItemView0 sbtnSettingSight;
     private String uuid;
-    private JFGCameraDevice device;
+    private Device device;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
 
@@ -308,7 +308,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     @Override
-    public void deviceUpdate(JFGCameraDevice device) {
+    public void deviceUpdate(Device device) {
         //////////////////////////分享账号////////////////////////////////////////////
         if (!TextUtils.isEmpty(device.shareAccount)) {
             //分享账号 隐藏
@@ -321,7 +321,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             return;
         }
         ////////////////////////////////////////////////////////////////////////
-        DpMsgDefine.DPSdStatus sdStatus = device.$(JFGCameraDevice.SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdStatus();
         String detailInfo = basePresenter.getDetailsSubTitle(getContext(), sdStatus.hasSdcard, sdStatus.err);
         if (!TextUtils.isEmpty(detailInfo) && detailInfo.contains("(")) {
@@ -366,7 +366,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), new DpMsgDefine.DPNet());
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
         //是否有sim卡
-        int simCard = device.$(JFGCameraDevice.MOBILE_NET, 0);
+        int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
         svSettingDeviceMobileNetwork.setVisibility(simCard > 1 ? View.VISIBLE : View.GONE);
         svSettingDeviceWifi.showDivider(simCard > 1);
         if (JFGRules.is3GCam(device.pid)) {
@@ -434,7 +434,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case 222:
                 if (msg.packValue != null) {
                     DpMsgDefine.DPSdcardSummary summary = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
-                    if (summary == null) summary =new DpMsgDefine.DPSdcardSummary();
+                    if (summary == null) summary = new DpMsgDefine.DPSdcardSummary();
                     //sd
                     String statusContent = basePresenter.getDetailsSubTitle(getContext(), summary.hasSdcard, summary.errCode);
                     if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {

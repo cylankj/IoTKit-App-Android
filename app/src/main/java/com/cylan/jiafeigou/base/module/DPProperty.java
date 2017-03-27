@@ -30,5 +30,8 @@ public class DPProperty {
         }
     }
 
+    public boolean isProperty() {
+        return devices != null && devices.size() > 0;
+    }
 
 }

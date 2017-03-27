@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.module.JFGDoorBellDevice;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -40,8 +39,10 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     @Override
     public void onStart() {
         super.onStart();
-        JFGDoorBellDevice device = mSourceManager.getJFGDevice(mUUID);
-        mView.onShowProperty(device);
+        Device device = mSourceManager.getJFGDevice(mUUID);
+        if (device != null) {
+            mView.onShowProperty(device);
+        }
     }
 
     @Override

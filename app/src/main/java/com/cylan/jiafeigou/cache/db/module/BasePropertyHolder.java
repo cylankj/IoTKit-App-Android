@@ -9,7 +9,6 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import java.util.ArrayList;
 
@@ -25,20 +24,8 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
     protected abstract int pid();
 
     public <V> V $(int msgId, V defaultValue) {
-        DPEntity value = getProperty(msgId);
-        if (value == null) return defaultValue;
-        if (value.value == null) {
-            value.value = propertyParser.parser(value.getMsgId(), value.getBytes(), value.getVersion());
-        }
-        if (value.value == null) {
-            return defaultValue;
-        } else if (defaultValue instanceof DataPoint || defaultValue == null) {
-            return (V) value.value;
-        } else if (value.value instanceof DpMsgDefine.DPPrimary) {
-            return (V) ((DpMsgDefine.DPPrimary) value.value).value;
-        } else {
-            return defaultValue;
-        }
+        DPEntity entity = getProperty(msgId);
+        return entity == null ? defaultValue : entity.getValue(defaultValue);
     }
 
     @Override
@@ -49,21 +36,13 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
     @Override
     public final boolean setValue(int msgId, byte[] bytes, long version) {
         DPEntity property = getProperty(msgId);
-        if (property == null) return false;
-        DataPoint dataPoint = propertyParser.parser(msgId, bytes, version);
-        property.value = dataPoint;
-        property.setBytes(dataPoint == null ? null : dataPoint.toBytes());
-        property.update();
-        return dataPoint != null;
+        return property != null && property.setValue(bytes, version);
     }
 
     @Override
     public final boolean setValue(int msgId, DataPoint value) {
         DPEntity property = getProperty(msgId);
-        property.value = value;
-        property.setBytes(value == null ? null : value.toBytes());
-        property.update();
-        return value != null;
+        return property != null && property.setValue(value);
     }
 
     protected DPEntity getProperty(int msgId) {

@@ -1,7 +1,7 @@
 package com.cylan.jiafeigou;
 
 import com.cylan.jiafeigou.base.module.DProperty;
-import com.cylan.jiafeigou.base.module.JFGCameraDevice;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.google.gson.Gson;
@@ -95,7 +95,7 @@ public class DP {
 
     @Test
     public void sss() {
-        JFGCameraDevice device = new JFGCameraDevice();
+        Device device = new Device();
 
         Field[] fields = device.getClass().getFields();
         for (Field field : fields) {
