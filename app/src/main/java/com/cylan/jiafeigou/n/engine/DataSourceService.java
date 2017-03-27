@@ -64,6 +64,7 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 
@@ -177,7 +178,10 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                                             if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
                                                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.NoNet));
                                             } else {
-                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+                                                if (!PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR,false)){
+                                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+                                                    PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR,true);
+                                                }
                                             }
                                             DataSourceManager.getInstance().initFromDB();
                                             return null;
