@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.utils;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
+import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -36,7 +37,7 @@ public class WonderGlideURL extends GlideUrl {
 
     @Override
     public String getCacheKey() {
-        return mBean.cid + mBean.msgType + mBean.time + mBean.fileName;
+        return DebugOptionsImpl.getServer() + "-" + mBean.cid + "-" + mBean.msgType + "-" + mBean.time + "-" + mBean.fileName;
     }
 
     @Override

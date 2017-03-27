@@ -160,7 +160,10 @@ public class DataSourceService extends Service implements AppCallBack {
                                             if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
                                                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.NoNet));
                                             } else {
-                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+                                                if (!PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false)) {
+                                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+                                                }
+                                                PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                                             }
                                             DataSourceManager.getInstance().initFromDB();
                                             return null;
@@ -295,9 +298,21 @@ public class DataSourceService extends Service implements AppCallBack {
     }
 
     @Override
-    public void OnRobotGetDataTimeout(long l, String uuid) {
+    public void OnRobotGetDataTimeout(long l, String s) {
         AppLogger.d("OnRobotGetDataTimeout :");
     }
+
+//    @Override
+//    public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
+//        AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
+//        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, arrayList));
+//        RxBus.getCacheInstance().post(new RxEvent.SdcardClearReqRsp(l, arrayList));
+//    }
+//
+//    @Override
+//    public void OnRobotGetDataTimeout(long l) {
+//        AppLogger.d("OnRobotGetDataTimeout :");
+//    }
 
     @Override
     public ArrayList<JFGDPMsg> OnQuerySavedDatapoint(String s, ArrayList<JFGDPMsg> arrayList) {

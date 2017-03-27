@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.utils;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
+import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -42,7 +42,7 @@ public class JFGGlideURL extends GlideUrl {
 
     @Override
     public String getCacheKey() {
-        return vid + "-" + cid + "-" + timestamp + "-" + V2 + "-" + regionType;
+        return DebugOptionsImpl.getServer() + vid + "-" + cid + "-" + timestamp + "-" + V2 + "-" + regionType;
     }
 
 

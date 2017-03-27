@@ -129,7 +129,9 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 } else if (friendBean.account.startsWith("86")) {
                     friendBean.account = friendBean.account.substring(2);
                 }
-                list.add(friendBean);
+                if (JConstant.PHONE_REG.matcher(friendBean.account).find()){
+                    list.add(friendBean);
+                }
             }
             phone.close();
 

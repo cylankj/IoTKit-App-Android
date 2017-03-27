@@ -31,7 +31,7 @@
             android:layout_height="wrap_content">
             <!--添加请求-->
             <TextView
-                android:visibility="invisible"
+                android:visibility="gone"
                 android:id="@+id/tv_add_request_title"
                 android:layout_marginTop="@dimen/y19"
                 android:layout_marginLeft="@dimen/x15"

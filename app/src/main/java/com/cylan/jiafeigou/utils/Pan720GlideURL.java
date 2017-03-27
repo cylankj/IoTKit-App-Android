@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.utils;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
+import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.misc.JConstant;
 
 import java.io.File;
@@ -29,6 +30,6 @@ public class Pan720GlideURL extends GlideUrl {
 
     @Override
     public String getCacheKey() {
-        return this.uuid + "-" + this.fileName;
+        return DebugOptionsImpl.getServer() + "-" + this.uuid + "-" + this.fileName;
     }
 }

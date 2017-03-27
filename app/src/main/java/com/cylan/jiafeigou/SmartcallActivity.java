@@ -20,6 +20,8 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -111,6 +113,7 @@ public class SmartcallActivity extends NeedLoginActivity
         } else {
             splashOver();
             from_log_out = false;
+            firstSignIn = true;
             RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
         }
     }
@@ -217,6 +220,9 @@ public class SmartcallActivity extends NeedLoginActivity
         } else if ((code == JError.ErrorLoginInvalidPass || code == JError.ErrorAccountNotExist) && PreferencesUtils.getBoolean(JConstant.AUTO_SIGNIN_TAB, false)) {
 //          密码错误且是自动登录才走此
             splashOver();
+            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
+            AutoSignIn.getInstance().autoSave(DataSourceManager.getInstance().getJFGAccount().getAccount(),1,"");
+            PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR,true);
             PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
         }
     }

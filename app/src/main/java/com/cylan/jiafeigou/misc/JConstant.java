@@ -18,6 +18,8 @@ public class JConstant {
     /**
      * {@link NewHomeActivity}底部menu对应的FrameLayout的id。用来存放每日精彩的时间控件
      */
+
+
     public static final String KEY_NEW_HOME_ACTIVITY_BOTTOM_MENU_CONTAINER_ID = "new_home_menu_id";
     public static final int AUTHORIZE_PHONE = 0;
     public static final int AUTHORIZE_MAIL = 1;
@@ -81,6 +83,7 @@ public class JConstant {
     public static final String AUTO_SIGNIN_TAB = "auto_signin_tab";
     public static final String FROM_LOG_OUT = "from_log_out";
     public static final String IS_lOGINED = "is_logined";   //是否登录过
+    public static final String AUTO_lOGIN_PWD_ERR = "auto_login_pwd_err";
     /**
      * verification code
      */

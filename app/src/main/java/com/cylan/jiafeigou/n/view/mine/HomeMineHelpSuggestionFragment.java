@@ -67,9 +67,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     @BindView(R.id.fl_loading_container)
     FrameLayout flLoadingContainer;
 
-
     private HomeMineHelpSuggestionAdapter suggestionAdapter;
-    private String suggestion;
     private HomeMineHelpSuggestionContract.Presenter presenter;
     private int itemPosition;
     private boolean resendFlag;
@@ -193,7 +191,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
      */
     @Override
     public void addInputItem() {
-        suggestion = mEtSuggestion.getText().toString();
+        String suggestion = mEtSuggestion.getText().toString();
 
         MineHelpSuggestionBean suggestionBean = new MineHelpSuggestionBean();
         suggestionBean.setType(1);
