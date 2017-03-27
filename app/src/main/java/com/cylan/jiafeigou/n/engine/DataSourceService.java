@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.engine;
 
 import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.Process;
@@ -50,7 +49,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -61,6 +59,7 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -68,39 +67,25 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 
-public class DataSourceService extends Service implements AppCallBack {//这里用 services 避免 APP进入后台被挂起
+public class DataSourceService extends Service implements AppCallBack {
+    //这里用 services 避免 APP进入后台被挂起
 
     static {
         System.loadLibrary("jfgsdk");
-//        System.loadLibrary("sqlcipher");
     }
-
-    private static DataSourceService instance;
-    private static DataSourceManager manager;
 
     public DataSourceService() {
-    }
-
-    public static DataSourceService getInstance() {
-        if (instance == null) {
-            synchronized (DataSourceService.class) {
-                if (instance == null)
-                    instance = new DataSourceService();
-                manager = DataSourceManager.getInstance();
-            }
-        }
-        return instance;
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-
+        initNative();
         return START_STICKY;
     }
 
+    @Override
     public void onCreate() {
-        initNative();
         GlobalUdpDataSource.getInstance().register();
         GlobalBellCallSource.getInstance().register();
         GlobalResetPwdSource.getInstance().register();
@@ -123,7 +108,6 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
     public void initNative() {
         HandlerThreadUtils.clean();
         HandlerThreadUtils.postAtFrontOfQueue(() -> {
-            Context context = ContextUtils.getContext();
             Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             try {
                 String trimPackageName = JFGRules.getTrimPackageName();
@@ -147,7 +131,6 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
             }
             try2autoLogin();
             AppLogger.d("let's go initNative:");
-            MtaManager.customEvent(context, "DataSourceService", "NativeInit");
             try {
                 JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
             } catch (JfgException e) {
@@ -282,7 +265,7 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
     public void OnRobotGetDataRsp(RobotoGetDataRsp robotoGetDataRsp) {
         AppLogger.d("OnRobotGetDataRsp :" + new Gson().toJson(robotoGetDataRsp));
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
-        JFGDoorBellDevice doorBellDevice=null;
+        JFGDoorBellDevice doorBellDevice = null;
     }
 
     @Override
@@ -307,14 +290,14 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
     }
 
     @Override
-    public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
+    public void OnRobotSetDataRsp(long l, String uuid, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, arrayList));
         RxBus.getCacheInstance().post(new RxEvent.SdcardClearReqRsp(l, arrayList));
     }
 
     @Override
-    public void OnRobotGetDataTimeout(long l) {
+    public void OnRobotGetDataTimeout(long l, String uuid) {
         AppLogger.d("OnRobotGetDataTimeout :");
     }
 
@@ -536,8 +519,13 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
     }
 
     @Override
-    public void OnGetVideoShareUrl(String s) {
+    public void OnUnBindDevRsp(int i, String s) {
+        AppLogger.d(String.format(Locale.getDefault(), "OnUnBindDevRsp:%d,%s", i, s));
+    }
 
+    @Override
+    public void OnGetVideoShareUrl(String s) {
+        AppLogger.d(String.format(Locale.getDefault(), "OnGetVideoShareUrl:%s", s));
     }
 
     @Override
@@ -550,5 +538,15 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
             e.printStackTrace();
             AppLogger.e("OnForwardData:解析局域网消息失败!!!");
         }
+    }
+
+    @Override
+    public void OnMultiShareDevices(int i, String s, String s1) {
+        AppLogger.d(String.format(Locale.getDefault(), "check OnMultiShareDevices:%d,%s,%s", i, s, s1));
+    }
+
+    @Override
+    public void OnCheckClientVersion(int i, String s, int i1) {
+        AppLogger.d(String.format(Locale.getDefault(), "check version:%d,%s,%d", i, s, i1));
     }
 }

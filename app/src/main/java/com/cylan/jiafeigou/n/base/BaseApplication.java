@@ -8,8 +8,6 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.net.wifi.WifiInfo;
-import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
@@ -20,9 +18,7 @@ import com.cylan.jiafeigou.DaemonReceiver1;
 import com.cylan.jiafeigou.DaemonReceiver2;
 import com.cylan.jiafeigou.DaemonService1;
 import com.cylan.jiafeigou.DaemonService2;
-import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -30,10 +26,8 @@ import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
-import com.cylan.jiafeigou.support.stat.MtaManager;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -44,12 +38,7 @@ import com.marswin89.marsdaemon.DaemonClient;
 import com.marswin89.marsdaemon.DaemonConfigurations;
 import com.squareup.leakcanary.LeakCanary;
 
-import java.util.concurrent.TimeUnit;
-
 import permissions.dispatcher.PermissionUtils;
-import rx.Observable;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 /**
  * Created by hunt on 16-5-14.
@@ -125,7 +114,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
         //每一个新的进程启动时，都会调用onCreate方法。
         try2init();
         initBugMonitor();
-        MtaManager.init(getApplicationContext(), true);
         initLeakCanary();
         registerBootComplete();
         registerActivityLifecycleCallbacks(this);
@@ -178,13 +166,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
     }
 
     private void initBugMonitor() {
-        HandlerThreadUtils.post(new Runnable() {
-            @Override
-            public void run() {
+        HandlerThreadUtils.post(() ->
                 //bugLy
-                BugMonitor.init(ContextUtils.getContext());
-            }
-        });
+                BugMonitor.init(ContextUtils.getContext()));
     }
 
     /**

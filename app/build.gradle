@@ -4,8 +4,8 @@ apply plugin: 'org.greenrobot.greendao'
 
 //apply plugin: 'io.fabric'
 
-//多渠道包
-apply plugin: 'packer'
+////多渠道包没人愿意维护多渠道包，算了，删了吧。
+//apply plugin: 'packer'
 
 //从version.properties中读取versionName
 def vCode
@@ -204,19 +204,6 @@ dependencies {
     compile rootProject.ext.rxAndroid
     compile rootProject.ext.permis
     annotationProcessor rootProject.ext.permisApt
-    //    compile project(':jlib')
-    //    compile files('libs/aliyun-oss-sdk-android-2.2.0.jar')
-    //    compile files('libs/gson-2.2.4.jar')
-    //    compile files('libs/mid-sdk-2.3.jar')
-    //    compile files('libs/mta-android-stat-sdk-2.2.0.jar')
-    //    compile files('libs/nineoldandroids-2.4.0.jar')
-    //    compile files('libs/okhttp-3.2.0.jar')
-    //    compile files('libs/okio-1.6.0.jar')
-    //    compile files('libs/open_sdk_r5756.jar')
-    //    compile files('libs/weiboSDKCore_3.1.4.jar')
-    //    compile files('libs/zxing.jar')
-    //    compile files('libs/zbar.jar')
-    //    compile files('libs/libammsdk-3.1.1.jar')
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
     compile rootProject.ext.buglySdk
@@ -247,8 +234,8 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
-    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
-    //先用本地依赖的方式，打包平台还部支持
+//    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
+    //先用本地依赖的方式，打包平台还部支持 没人愿意维护多渠道包，算了，删了吧。
     compile(name: 'constraint-layout-1.0.1', ext: 'aar')
     //    compile 'com.android.support.constraint:constraint-layout:1.0.1'
     //aar通用依赖，不需要指定名字
