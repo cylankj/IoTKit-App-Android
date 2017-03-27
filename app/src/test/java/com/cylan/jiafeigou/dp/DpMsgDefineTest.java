@@ -27,7 +27,7 @@ public class DpMsgDefineTest {
 
         data = new byte[]{-107, -50, 88, -44, -46, 55, 0, 0, 1, -95, 48};
         System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
-        data = new byte[]{-107, -50, 88, -44, -34, -58, 0, 0, 1, -95, 48};
+        data = new byte[]{-107, -50, 88, -42, 98, 115, 0, 0, 1, -95, 48};
         System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
 
         data = new byte[]{-49, 0, 0, 1, 91, 14, 80, -82, -98};

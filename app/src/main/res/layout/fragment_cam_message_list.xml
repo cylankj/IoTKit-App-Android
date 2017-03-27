@@ -79,7 +79,7 @@
     <com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView
         android:id="@+id/fLayout_cam_message_list_timeline"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y55"
+        android:layout_height="@dimen/y86"
         android:layout_alignParentBottom="true"
         android:layout_marginTop="@dimen/y5"
         android:visibility="invisible" />

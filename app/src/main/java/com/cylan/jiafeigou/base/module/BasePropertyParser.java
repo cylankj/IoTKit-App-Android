@@ -33,6 +33,7 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_219_DEVICE_BIND_LOG;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_220_SDK_VERSION;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_222_SDCARD_SUMMARY;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_223_MOBILE_NET;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_301_DEVICE_MIC;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_302_DEVICE_SPEAKER;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
@@ -90,6 +91,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_303_DEVICE_AUTO_VIDEO_RECORD, new DPProperty(int.class, CAMERA));
         properties.put(ID_302_DEVICE_SPEAKER, new DPProperty(int.class, CAMERA, DOORBELL));
         properties.put(ID_301_DEVICE_MIC, new DPProperty(boolean.class, CAMERA, DOORBELL));
+        properties.put(ID_223_MOBILE_NET, new DPProperty(int.class, CAMERA));//
         properties.put(ID_222_SDCARD_SUMMARY, new DPProperty(DpMsgDefine.DPSdcardSummary.class));//set
         properties.put(ID_220_SDK_VERSION, new DPProperty(String.class, CAMERA, DOORBELL));
         properties.put(ID_219_DEVICE_BIND_LOG, new DPProperty(DpMsgDefine.DPBindLog.class, CAMERA, DOORBELL));

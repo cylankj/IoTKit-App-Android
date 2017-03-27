@@ -334,7 +334,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
         DpMsgDefine.DPStandby isStandBY = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-        if (isStandBY == null || isStandBY.standby) return;
+        if (isStandBY != null && isStandBY.standby) return;
+        if (!getUserVisibleHint()) return;//看不见，就不需要播放了。
         basePresenter.startPlayVideo(TYPE_LIVE);
     }
 

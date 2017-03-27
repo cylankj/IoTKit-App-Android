@@ -335,7 +335,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             ToastUtil.showToast(getString(R.string.NoNetworkTips));
             return;
         }
-        srLayoutCamListRefresh.setRefreshing(true);
+//        srLayoutCamListRefresh.setRefreshing(true);
         startRequest(true);
     }
 

@@ -121,7 +121,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             return;
         }
         String uuid = device.uuid;
-        DpMsgDefine.DPNet net = com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         String alias = device.alias;
         String shareAccount = device.shareAccount;
         final int onLineState = net != null ? net.net : (device.pid == JConstant.OS_MAGNET ? 1 : 0);

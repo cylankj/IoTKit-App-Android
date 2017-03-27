@@ -132,7 +132,7 @@ public class BaseDBHelper implements IDBHelper {
                         dpEntity = getProperty(dataRsp.identity, (int) msg.id);
                     } else {
                         queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
-                        dpEntity = queryBuilder.unique();
+                        dpEntity = queryBuilder.limit(1).unique();
                     }
                     if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                         continue;

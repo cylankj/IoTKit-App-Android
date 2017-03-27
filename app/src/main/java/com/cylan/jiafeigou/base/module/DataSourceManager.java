@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
@@ -294,6 +295,7 @@ public class DataSourceManager implements JFGSourceManager {
         if (device != null) {
             boolean isV2 = TextUtils.isEmpty(device.vid);
             try {
+                AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,version:%s,asc:%s,count:%s", uuid, version, asc, count));
                 return JfgCmdInsurance.getCmd().robotGetDataEx(uuid, asc, version, MiscUtils.getChaosDpList(isV2), 0);
 
             } catch (Exception e) {
@@ -673,7 +675,7 @@ public class DataSourceManager implements JFGSourceManager {
 
                     @Override
                     public void onError(Throwable e) {
-                        AppLogger.d(e.getMessage());
+                        AppLogger.e(e.getMessage());
                         e.printStackTrace();
                         makeCacheGetDataSub();
                     }

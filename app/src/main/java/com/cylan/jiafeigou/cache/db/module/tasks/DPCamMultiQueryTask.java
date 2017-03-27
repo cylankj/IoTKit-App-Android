@@ -76,7 +76,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                AppLogger.d("正在发送查询请求,version:" + entity.getVersion() + "count:" + option.asc + ",acs:" + 20);
+                AppLogger.d("let's go for local cache:" + option);
                 long seq = DataSourceManager.getInstance().syncJFGCameraWarn(entity.getUuid() == null ? "" : entity.getUuid(), option.timeStart, option.asc, 100);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();

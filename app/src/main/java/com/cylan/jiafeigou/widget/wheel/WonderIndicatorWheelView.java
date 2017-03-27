@@ -2,25 +2,30 @@ package com.cylan.jiafeigou.widget.wheel;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.PointF;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.LinearSmoothScroller;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -35,15 +40,19 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     private int mLastPosition = -1;
     private SuperAdapter<WheelItem> mAdapter;
     private WheelLayoutManager mManager;
-    private ValueAnimator mAnimator;
-    private FrameLayout mWonderItemsContainer;
-    private float mFactor = 2.0F;
-    private int mViewWidth;
     private static final long DAY_TIME = 24 * 60 * 60 * 1000L;
+
+    private final int HALF_SCREEN_COUNT;
+    private final int ITEM_WIDTH;
 
     public WonderIndicatorWheelView(Context context, AttributeSet attrs) {
         super(context, attrs);
         LayoutInflater.from(context).inflate(R.layout.wonder_time_indicator, this, true);
+        int screenWidth = Resources.getSystem().getDisplayMetrics().widthPixels;
+        ITEM_WIDTH = getResources().getDimensionPixelSize(R.dimen.x27);//item是固定宽度的。
+        //原理，需要保证最左边一个有数据的一天的左边还有N个item.所以最左边的一个item才能移到中间。
+        //item之间没有间隙。
+        HALF_SCREEN_COUNT = screenWidth / 2 / ITEM_WIDTH + 1;//半屏有这么多个
     }
 
     @Override
@@ -51,62 +60,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         super.onFinishInflate();
         mTitle = (TextView) findViewById(R.id.wonder_item_title);
         mIndicatorList = (RecyclerView) findViewById(R.id.wonder_item_indicator_list);
-        mWonderItemsContainer = (FrameLayout) findViewById(R.id.wonder_indicator_container);
         initView();
-    }
-
-    private int mRestoreX = 0;
-    private int mMaxPullDistance;
-
-    public float getInterpolation(float input) {
-        float result;
-        if (mFactor == 1.0f) {
-            result = 1.0f - (1.0f - input) * (1.0f - input);
-        } else {
-            result = (float) (1.0f - Math.pow((1.0f - input), 2 * mFactor));
-        }
-        return result;
-    }
-
-    @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
-        mMaxPullDistance = w / 8;
-        mViewWidth = w;
-    }
-
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        int x = (int) ev.getX();
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mLastX = x;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                int distance = mLastX - x;
-                mLastX = x;
-                if ((distance > 0 && mManager.findLastCompletelyVisibleItemPosition() == mAdapter.getCount() - 1) ||
-                        (distance < 0 && mManager.findFirstCompletelyVisibleItemPosition() == 0)) {
-                    if (mRestoreX == 0) mRestoreX = x;
-                    int max = distance > 0 ? mRestoreX : mViewWidth - mRestoreX;
-                    int distanceX = (int) (mMaxPullDistance * getInterpolation(Math.abs(mRestoreX - x) / (float) max));
-                    distanceX = distance > 0 ? distanceX : -distanceX;
-                    mWonderItemsContainer.scrollTo(distanceX, 0);
-                    return true;
-                }
-                break;
-            case MotionEvent.ACTION_UP:
-                if (mRestoreX > 0) {
-                    View view = mManager.getChildAt(mManager.getChildCount() - 1);
-                    if (view == null) view = mManager.getChildAt(0);
-                    mAnimator.setIntValues(mWonderItemsContainer.getScrollX(), 0, mWonderItemsContainer.getScrollX() > 0 ? -view.getWidth() / 2 : view.getWidth() / 2);
-                    mScrolledX = 0;
-                    mAnimator.start();
-                }
-
-        }
-        return mAnimator.isRunning() || super.dispatchTouchEvent(ev);
     }
 
     public void setListener(OnDayChangedListener listener) {
@@ -114,28 +68,23 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     }
 
     private void initView() {
-        mAnimator = new ValueAnimator();
-        mAnimator.setDuration(200);
-        mAnimator.addUpdateListener(this);
         mManager = new WheelLayoutManager(getContext());
         mManager.setOrientation(HORIZONTAL);
         mIndicatorList.setLayoutManager(mManager);
         mAdapter = new SuperAdapter<WheelItem>(getContext(), null, R.layout.wonder_indicaror_item) {
             @Override
             public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, WheelItem item) {
-                holder.setEnabled(R.id.wonder_indicator_item_container, item.wonderful);
                 holder.setEnabled(R.id.wonder_indicator_item, item.wonderful);
                 holder.setSelected(R.id.wonder_indicator_item, item.selected);
                 holder.setText(R.id.wonder_indicator_item, TimeUtils.getDayInMonth(item.time));
                 holder.setTag(R.id.wonder_indicator_item, item);
                 mTitle.setText(TimeUtils.getMonthInYear(item.time));
+                Log.d("onBind", "onBind: " + layoutPosition);
             }
         };
         mIndicatorList.setAdapter(mAdapter);
         mAdapter.setOnItemClickListener(this);
     }
-
-    private int mLastX;
 
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
@@ -153,34 +102,15 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         }
     }
 
-    private int mScrolledX;
-
     @Override
     public void onAnimationUpdate(ValueAnimator animation) {
-        int value = (int) animation.getAnimatedValue();
-        int containerX = mWonderItemsContainer.getScrollX();
-        if ((containerX > 0 && value <= 0) || (containerX < 0 && value >= 0)) {
-            mWonderItemsContainer.scrollTo(0, 0);
-            int scrollX = value - mScrolledX;
-            mIndicatorList.scrollBy(scrollX, 0);
-            mScrolledX = value;
-        } else if ((containerX > 0 && value >= 0) || (containerX < 0 && value <= 0)) {
-            mWonderItemsContainer.scrollTo(value, 0);
-        } else {
-            int scrollX = value - mScrolledX;
-            mIndicatorList.scrollBy(scrollX, 0);
-            mScrolledX = (int) animation.getAnimatedValue();
-        }
-        if (animation.getAnimatedFraction() >= 1) {
-            mRestoreX = 0;
-        }
     }
 
     public interface OnDayChangedListener {
         void onChanged(long time);
     }
 
-    public static class WheelItem {
+    public static class WheelItem implements Comparable<WheelItem> {
         public boolean wonderful = false;//这一天是否有数据
         public long time;//这一天的时间
         public boolean init = false;//是否已经查询过了
@@ -195,10 +125,69 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
                     ", selected=" + selected +
                     '}';
         }
+
+        @Override
+        public int compareTo(@NonNull WheelItem another) {
+            return (int) (time - another.time);
+        }
     }
 
     public void init(List<WheelItem> items) {
+        if (ListUtils.getSize(items) == 0) return;
+        Collections.reverse(items);//反向一下。
+        //需要auto append data,左边右边都需要填充数据
+        AppLogger.d(String.format(Locale.getDefault(), "initSize half screen item counts:%s", HALF_SCREEN_COUNT));
+        long startTime = TimeUtils.getSpecificDayStartTime(items.get(0).time);
+        for (int j = 0; j < HALF_SCREEN_COUNT; j++) {
+            WheelItem item = new WheelItem();
+            item.time = startTime - j * 24 * 3600 * 1000L;
+            items.add(0, item);
+        }
+        startTime = items.get(items.size() - 1).time;
+        for (int j = 0; j < HALF_SCREEN_COUNT; j++) {
+            WheelItem item = new WheelItem();
+            item.time = startTime + j * 24 * 3600 * 1000L;
+            items.add(item);
+        }
+        mAdapter.clear();
         mAdapter.addAll(items);
+        post(() -> {
+            final int rightIndex = findIndexFromRight();
+            AppLogger.d("rightIndex: " + rightIndex);
+            //自动偏移
+            float scrollX = mIndicatorList.computeHorizontalScrollOffset();
+            int targetOffset = ITEM_WIDTH * rightIndex;
+            AppLogger.d("scrollX:" + scrollX + ",targetOffset:" + targetOffset);
+        });
+    }
+
+    private int findIndex(long time) {
+        int size = mAdapter.getCount();
+        for (int i = 0; i < size; i++) {
+            if (mAdapter.getItem(i).time == time) return i;
+        }
+        return -1;
+    }
+
+    private int findIndexFromRight() {
+        int finalSize = ListUtils.getSize(mAdapter.getList());
+        for (int i = finalSize - 1; i >= 0; i--) {
+            if (mAdapter.getItem(i).wonderful) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private void autoFocusIndex(long time) {
+        int index = findIndex(time);
+        if (index != -1 && index < mAdapter.getCount()) {
+            autoFocusIndex(index);
+        }
+    }
+
+    private void autoFocusIndex(int index) {
+
     }
 
     public void notify(long time, boolean hasDate, boolean selected) {
@@ -218,14 +207,6 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
                 return;
             }
         }
-    }
-
-    private void changeSelected(long time) {
-
-    }
-
-    public void scrollPositionToCenter() {
-        mIndicatorList.smoothScrollToPosition(mLastPosition);
     }
 
     public boolean hasInit() {
