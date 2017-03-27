@@ -144,13 +144,13 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     }
 
     @Override
-    public IDPEntity setVersion(Long version) {
+    public IDPEntity setVersion(long version) {
         this.version = version;
         return this;
     }
 
     @Override
-    public Long getVersion() {
+    public long getVersion() {
         return this.version;
     }
 

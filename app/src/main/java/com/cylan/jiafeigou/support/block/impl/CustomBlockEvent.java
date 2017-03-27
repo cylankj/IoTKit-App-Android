@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.support.block.OnBlockEventInterceptor;
-import com.cylan.jiafeigou.support.stat.MtaManager;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -34,7 +33,7 @@ public class CustomBlockEvent implements OnBlockEventInterceptor {
                 }
             });
         } else {
-            MtaManager.customEvent(context, "blockContent", blockContent);
+//            MtaManager.customEvent(context, "blockContent", blockContent);
         }
     }
 }

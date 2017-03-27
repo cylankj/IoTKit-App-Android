@@ -15,6 +15,7 @@ import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -274,10 +275,10 @@ public class CamLiveController implements
     public void notifyOrientationChange(final int orientation) {
         boolean land = orientation == Configuration.ORIENTATION_LANDSCAPE;
         boolean isShareDevice = presenterRef != null && presenterRef.get() != null && presenterRef.get().isShareDevice();
-        DpMsgDefine.DPSdStatus sd = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), new DpMsgDefine.DPSdStatus());
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        DpMsgDefine.DPSdStatus sd = device.$(204, new DpMsgDefine.DPSdStatus());
         boolean sdCardStatus = sd.hasSdcard && sd.err == 0;
-        DpMsgDefine.DPPrimary<Boolean> safe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-
+        boolean safe = device.$(501, false);
         //竖屏事件区域 考虑 分享账号，sd卡
         if (liveTimeSetterPort != null && presenterRef.get().getPlayState() == PLAY_STATE_PLAYING) {
             liveTimeSetterPort.setVisibility(!land && !isShareDevice);
@@ -285,7 +286,7 @@ public class CamLiveController implements
         if (iSafeStateSetterPort != null)
             iSafeStateSetterPort.setVisibility(!land && !isShareDevice);
         //全屏底部区域
-        camLiveControlLayer.setOrientation(presenterRef.get().getLocalMicSpeakerBit(), orientation, isShareDevice, sdCardStatus, MiscUtils.safeGet(safe, false));
+        camLiveControlLayer.setOrientation(presenterRef.get().getLocalMicSpeakerBit(), orientation, isShareDevice, sdCardStatus, safe);
         //安全防护
         camLiveControlLayer.setLandSafeClickListener(this);
         AppLogger.i("orientation: " + orientation);

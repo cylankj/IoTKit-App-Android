@@ -14,6 +14,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
@@ -43,6 +44,7 @@ import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
@@ -68,6 +70,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     FrameLayout fLayoutCamHandleBar;
     @BindView(R.id.lLayout_preview)
     LinearLayout lLayoutPreview;
+    @BindView(R.id.imgV_big_pic_collect)
+    ImageView imgVBigPicCollect;
 
     private int currentIndex = -1, previewFocusIndex = -1;
     private DpMsgDefine.DPAlarm alarmMsg;
@@ -98,6 +102,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
             @Override
             public void onPageSelected(int position) {
                 currentIndex = position;
+                if (basePresenter != null)
+                    basePresenter.checkCollection(alarmMsg.version, currentIndex);
             }
         });
         decideWhichView();
@@ -172,6 +178,14 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 v.setScaleY(0.8f);
             }
         }
+        if (basePresenter != null)
+            basePresenter.checkCollection(alarmMsg.version, index);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
     }
 
     @Override
@@ -179,6 +193,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         super.onResume();
         customToolbar.setToolbarTitle(TimeUtils.getMediaPicTimeInString(alarmMsg.time * 1000L));
     }
+
 
     @OnClick({R.id.imgV_big_pic_download,
             R.id.imgV_big_pic_share,
@@ -204,8 +219,16 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     ToastUtil.showToast(getString(R.string.NoNetworkTips));
                     return;
                 }
-                if (basePresenter != null)
-                    basePresenter.collect(currentIndex, alarmMsg, new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (currentIndex + 1) + ".jpg"));
+                Object tag = imgVBigPicCollect.getTag();
+                if (tag == null || !(boolean) tag) {
+                    if (basePresenter != null)
+                        basePresenter.collect(currentIndex, alarmMsg.version);
+                } else {
+                    if (basePresenter != null)
+                        basePresenter.unCollect(currentIndex, alarmMsg.version);
+                }
+                LoadingDialog.showLoading(getSupportFragmentManager());
+                imgVBigPicCollect.setEnabled(false);
                 break;
         }
     }
@@ -242,12 +265,28 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     @Override
-    public void onErr(int err) {
+    public void onCollectingRsp(int err) {
+        imgVBigPicCollect.setEnabled(true);
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
         switch (err) {
             case 1050:
                 ToastUtil.showNegativeToast(getString(R.string.DailyGreatTips_Full));
                 break;
+            case 0:
+                imgVBigPicCollect.setImageResource(R.drawable.icon_collected);
+                break;
         }
+    }
+
+    @Override
+    public int getCurrentIndex() {
+        return currentIndex;
+    }
+
+    @Override
+    public void onItemCollectionCheckRsp(boolean state) {
+        imgVBigPicCollect.setImageResource(state ? R.drawable.icon_collected : R.drawable.icon_collection);
+        imgVBigPicCollect.setTag(state);
     }
 
     private class CustomAdapter extends FragmentPagerAdapter {

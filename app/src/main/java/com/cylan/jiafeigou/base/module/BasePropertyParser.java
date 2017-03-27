@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -65,7 +66,9 @@ public class BasePropertyParser implements IPropertyParser {
         init();
     }
 
-
+    /**
+     * set类型不需要指定设备类型。
+     */
     private void init() {
         properties.put(ID_701_SYS_PUSH_FLAG, new DPProperty(boolean.class));//set
         properties.put(ID_602_ACCOUNT_WONDERFUL_MSG, new DPProperty(DpMsgDefine.DPWonderItem.class));
@@ -73,8 +76,8 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_512_CAMERA_ALARM_MSG_V3, new DPProperty(DpMsgDefine.DPAlarm.class));//set
         properties.put(ID_511_CAMERAWARNANDWONDER, new DPProperty(long.class));//set
         properties.put(ID_510_CAMERA_COORDINATE, new DPProperty(boolean.class, CAMERA));
-        properties.put(ID_509_CAMERA_MOUNT_MODE, new DPProperty(int.class, CAMERA));
-        properties.put(ID_508_CAMERA_STANDBY_FLAG, new DPProperty(boolean.class, CAMERA));
+        properties.put(ID_509_CAMERA_MOUNT_MODE, new DPProperty(DpMsgDefine.DpHangMode.class, CAMERA));
+        properties.put(ID_508_CAMERA_STANDBY_FLAG, new DPProperty(DpMsgDefine.DPStandby.class, CAMERA));
         properties.put(ID_506_CAMERA_TIME_LAPSE_PHOTOGRAPHY, new DPProperty(DpMsgDefine.DPTimeLapse.class));
         properties.put(ID_505_CAMERA_ALARM_MSG, new DPProperty(DpMsgDefine.DPAlarm.class));//set
         properties.put(ID_504_CAMERA_ALARM_NOTIFICATION, new DPProperty(DpMsgDefine.DPNotificationInfo.class, CAMERA));
@@ -143,7 +146,7 @@ public class BasePropertyParser implements IPropertyParser {
             result.version = version;
             return result;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.d("parser", "parser:" + msgId + " " + e.getLocalizedMessage());
         }
         return null;
     }

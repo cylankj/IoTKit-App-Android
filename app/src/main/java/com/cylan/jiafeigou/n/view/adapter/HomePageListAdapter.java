@@ -78,7 +78,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         }
         //2 电量
         if (device != null && JFGRules.isBell(device.pid)) {
-            int battery = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY), 0);
+            int battery = device.$(206, 0);
             if (battery < 20 && (net != null && net.net >= 1)) {//在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
@@ -87,10 +87,9 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         //3 延时摄影
 
         //4 安全防护
-        DpMsgDefine.DPStandby isStandBY = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG), DpMsgDefine.DPStandby.empty());
-        DpMsgDefine.DPPrimary<Boolean> dpSafe = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        boolean safe = MiscUtils.safeGet(dpSafe, false);
-        if (device != null && !isStandBY.standby && safe && JFGRules.isCamera(device.pid)) {
+        DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
+        boolean safe = device.$(501, false);
+        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {

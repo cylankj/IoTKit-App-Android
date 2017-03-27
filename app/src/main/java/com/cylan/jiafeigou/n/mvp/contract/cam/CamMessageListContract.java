@@ -23,6 +23,8 @@ public interface CamMessageListContract {
 
         void onListAppend(ArrayList<CamMessageBean> beanArrayList);
 
+        void onListInsert(ArrayList<CamMessageBean> beanArrayList, int position);
+
         ArrayList<CamMessageBean> getList();
 
         /**
@@ -34,13 +36,17 @@ public interface CamMessageListContract {
         void deviceInfoChanged(int id, JFGDPMsg o) throws IOException;
 
         void onErr();
+
+        void onMessageDeleteSuc();
+
+        void loadingDismiss();
     }
 
     interface Presenter extends BasePresenter {
         /**
          * @param timeStart
          */
-        void fetchMessageList(long timeStart, boolean loadMore);
+        void fetchMessageList(long timeStart, boolean asc);
 
 
         void removeItems(ArrayList<CamMessageBean> beanList);

@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -186,20 +185,21 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 //            4:12:01-12:00显示：12:01-次日12:00
     @Override
     public String getAlarmSubTitle(Context context) {
-        DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, (long) DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        boolean f = MiscUtils.safeGet(flag, false);
-        DpMsgDefine.DPAlarmInfo info = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_502_CAMERA_ALARM_INFO), new DpMsgDefine.DPAlarmInfo());
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        boolean f = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
         return MiscUtils.getChaosTime(context, info, f);
     }
 
 
     @Override
     public String getAutoRecordTitle(Context context) {
-        int deviceAutoVideoRecord = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD), 0);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        int deviceAutoVideoRecord = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
         }
-        DpMsgDefine.DPSdStatus sdStatus = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0)
             return "";
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
@@ -218,11 +218,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     }
                     AppLogger.i("save end: " + id + " " + value);
                 }, (Throwable throwable) -> AppLogger.e(throwable.getLocalizedMessage()));
-    }
-
-    public static String parse2Time(int value) {
-        return String.format(Locale.getDefault(), "%02d", value >> 8)
-                + String.format(Locale.getDefault(), ":%02d", (((byte) value << 8) >> 8));
     }
 
     @Override

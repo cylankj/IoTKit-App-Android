@@ -10,9 +10,9 @@ public interface IDPEntity extends IEntity<IDPEntity> {
 
     Integer getMsgId();
 
-    IDPEntity setVersion(Long version);
+    IDPEntity setVersion(long version);
 
-    Long getVersion();
+    long getVersion();
 
     IDPEntity setUuid(String uuid);
 

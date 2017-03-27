@@ -428,10 +428,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public <T extends DataPoint> T getValue(String uuid, long msgId) {
-        return getValue(uuid, msgId, -1);
-    }
-
-    public <T extends DataPoint> T getValue(String uuid, long msgId, long seq) {
         T result = null;
         Device device = mCachedDeviceMap.get(uuid);
         if (device != null) {

@@ -1,13 +1,8 @@
 package com.cylan.jiafeigou.dp;
 
-import android.content.Intent;
-import android.os.Parcelable;
-
 import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.MyTestRunner;
 
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.msgpack.MessagePack;
 import org.robolectric.annotation.Config;
 
@@ -34,6 +29,18 @@ public class DpMsgDefineTest {
         System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
         data = new byte[]{-107, -50, 88, -44, -34, -58, 0, 0, 1, -95, 48};
         System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
+
+        data = new byte[]{-49, 0, 0, 1, 91, 14, 80, -82, -98};
+        System.out.println(unpackData(data, Long.class));
+
+        data = new byte[]{-107, -51, 2, -119, -51, 1, -20, -51, 1, -49, -51, 5, 0, -51, 3, -64};
+        System.out.println(unpackData(data, Long.class));
+        data = new byte[]{-65, 59};
+        System.out.println(unpackData(data, int.class));
+    }
+
+    private void setData(long version) {
+        System.out.println("version:" + version);
     }
 
     private <T> T unpackData(byte[] data, Class<T> clazz) throws IOException {

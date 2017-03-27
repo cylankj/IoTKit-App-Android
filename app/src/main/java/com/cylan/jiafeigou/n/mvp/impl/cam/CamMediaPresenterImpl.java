@@ -5,14 +5,15 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -27,6 +28,7 @@ import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import java.io.File;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -73,19 +75,47 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
     }
 
     @Override
-    public void collect(int index, DpMsgDefine.DPAlarm alarmMsg, GlideUrl bitmapGlideUrl) {
+    public void unCollect(int index, long ver) {
+        Observable.just(ver)
+                .observeOn(Schedulers.io())
+                .map(version -> new DPEntity()
+                        .setUuid("")
+                        .setVersion(version)
+                        .setAction(DBAction.DELETED)
+                        .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
+                .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
+                .map(ret -> new DPEntity()
+                        .setUuid(uuid)
+                        .setVersion(ver)
+                        .setAction(DBAction.DELETED)
+                        .setMsgId(511))
+                .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(result -> {
+                    if (result.getResultCode() == 0) {//成功了
+                        AppLogger.d("取消收藏成功");
+                    }
+                }, e -> {
+                    e.printStackTrace();
+                    AppLogger.d(e.getMessage());
+                });
+    }
+
+    @Override
+    public void collect(int index, long version) {
         Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
             DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
             item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
             item.cid = uuid;
             Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-            item.fileName = alarmMsg.time + "_" + index + ".jpg";
-            item.time = alarmMsg.time;
+            item.fileName = version / 1000 + "_" + (index + 1) + ".jpg";
+            item.time = (int) (version / 1000) + index + 1;//
             IDPEntity entity = new DPEntity()
                     .setUuid(uuid)
                     .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
-                    .setVersion((long) alarmMsg.time * 1000L)
+                    .setVersion(System.currentTimeMillis())
                     .setAction(DBAction.SHARED)
                     .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount())
                     .setBytes(item.toBytes());
@@ -94,51 +124,43 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
         })
                 .subscribeOn(Schedulers.io())
                 .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
+                .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
-                    if (result.getResultCode() == 200) {
-                        getView().savePicResult(true);
-//                        ToastUtil.showPositiveToast(getString(R.string.Tap1_BigPic_FavoriteTips));
-                    } else if (result.getResultCode() == 1050) {
-//                        ToastUtil.showNegativeToast(getString(R.string.DailyGreatTips_Full));
-                        getView().onErr(1050);
+                    getView().onCollectingRsp(0);
+                }, e -> {
+                    if (e != null && e instanceof BaseDPTaskException) {
+                        getView().onCollectingRsp(((BaseDPTaskException) e).getErrorCode());
+                        AppLogger.e("err: " + e.getLocalizedMessage());
                     }
-                }, e -> AppLogger.e("err: " + e.getLocalizedMessage()));
-//        
-//        Observable.just(alarmMsg)
-//                .subscribeOn(Schedulers.newThread())
-//                .subscribe((DpMsgDefine.DPAlarm alarm) -> {
-//
-//                    FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-//                            .load(bitmapGlideUrl)
-//                            .downloadOnly(10, 10);
-//                    try {
-//                        File cacheFile = future.get();
-//                        String path = cacheFile.getAbsolutePath();
-//                        StringBuilder remotePath = new StringBuilder();
-//                        remotePath.append("/long/")
-//                                .append(Security.getVId(JFGRules.getTrimPackageName()))
-//                                .append("/")
-//                                .append(uuid)
-//                                .append("/wonder/")
-//                                .append(alarm.time)
-//                                .append("_")
-//                                .append(index)
-//                                .append(".jpg");
-//                        Log.d(TAG, "localPath:" + path);
-//                        Log.d(TAG, "remotePath:" + remotePath);
-//                        try {
-//                            JfgCmdInsurance.getCmd().putFileToCloud(remotePath.toString(), path);
-//                        } catch (JfgException e) {
-//                            e.printStackTrace();
-//                        }
-//                    } catch (InterruptedException e) {
-//                        e.printStackTrace();
-//                    } catch (ExecutionException e) {
-//                        e.printStackTrace();
-//                    }
-//                }, (Throwable th) -> AppLogger.e("" + th.getLocalizedMessage()));
+                });
+    }
 
+    @Override
+    public void checkCollection(long time, int index) {
+        Subscription subscription = Observable.just(new DPEntity()
+                .setMsgId(511)
+                .setUuid(uuid)
+                .setAction(DBAction.QUERY)
+                .setVersion(time / 1000 + index + 1)
+                .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
+                .subscribeOn(Schedulers.io())
+                .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null)
+                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                .subscribe(idpTaskResult -> {
+                    DpMsgDefine.DPPrimary<Long> version = idpTaskResult.getResultResponse();
+                    if (version != null && version.value != null) {
+                        int delta = (int) Math.abs(time / 1000 - version.version);
+                        mView.onItemCollectionCheckRsp(delta - 1 == index);
+                        AppLogger.d("当前index:" + delta);
+                    } else {
+                        mView.onItemCollectionCheckRsp(false);
+                    }
+                    AppLogger.d("检查是否被收藏...: " + idpTaskResult.getResultCode());
+                });
+        addSubscription(subscription, "checkCollection");
     }
 
     @Override

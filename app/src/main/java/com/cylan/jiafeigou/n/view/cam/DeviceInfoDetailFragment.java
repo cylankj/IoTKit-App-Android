@@ -137,8 +137,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private void updateDetails() {
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        if (device == null) return;
         //是否分享设备
-        if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
+        if (!TextUtils.isEmpty(device.shareAccount)) {
             tvDeviceAlias.showDivider(false);
             tvDeviceTimeZone.setVisibility(View.GONE);
             tvDeviceSdcardState.setVisibility(View.GONE);
@@ -147,10 +149,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         }
         //是否显示移动网络
         boolean hasSimCard = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY), false);
-        tvDeviceMobileNet.setVisibility(hasSimCard && device != null && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
-        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), new DpMsgDefine.DPNet());
+        tvDeviceMobileNet.setVisibility(hasSimCard && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         tvDeviceMobileNet.setTvSubTitle(getMobileNet(hasSimCard, net));
-        DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), new DpMsgDefine.DPTimeZone());
+        DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
         if (zone != null)
             MiscUtils.loadTimeZoneList()
                     .observeOn(AndroidSchedulers.mainThread())
@@ -164,14 +166,13 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                             }
                         }
                     });
-        DpMsgDefine.DPSdStatus status = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE), new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         String statusContent = getSdcardState(status.hasSdcard, status.err);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
             tvDeviceSdcardState.setTvSubTitle(statusContent, android.R.color.holo_red_dark);
         } else {
             tvDeviceSdcardState.setTvSubTitle(statusContent, R.color.color_8c8c8c);
         }
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         tvDeviceAlias.setTvSubTitle(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
         tvDeviceCid.setTvSubTitle(uuid);
         DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
@@ -295,8 +296,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             if (!(o instanceof DpMsgDefine.DPTimeZone)) {
                 return;
             }
+            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
             //更新ui
-            DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), new DpMsgDefine.DPTimeZone());
+            DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
             if (zone != null)
                 MiscUtils.loadTimeZoneList()
                         .observeOn(AndroidSchedulers.mainThread())
@@ -412,7 +414,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 MiscUtils.loadTimeZoneList()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((List<TimeZoneBean> list) -> {
-                            DpMsgDefine.DPTimeZone zone = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_214_DEVICE_TIME_ZONE), new DpMsgDefine.DPTimeZone());
+                            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                            //更新ui
+                            DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
                             if (zone == null) return;
                             TimeZoneBean bean = new TimeZoneBean();
                             bean.setId(zone.timezone);

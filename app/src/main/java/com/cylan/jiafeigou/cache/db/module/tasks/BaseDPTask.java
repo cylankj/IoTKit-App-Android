@@ -61,9 +61,9 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
                 .filter(rsp -> rsp.seq == seq).first().timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS);
     }
 
-    protected Observable<RxEvent.SetDataRsp> makeSetDataRspResponse(int seq) {
+    protected Observable<RxEvent.SetDataRsp> makeSetDataRspResponse(long seq) {
         return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
-                .filter(rsp -> ((int) rsp.seq) == seq).first().timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS);
+                .filter(rsp -> (rsp.seq) == seq).first().timeout(GLOBAL_NET_OPERATION_TIME_OUT, TimeUnit.SECONDS);
     }
 
     protected Observable makeGetDataRequest() {

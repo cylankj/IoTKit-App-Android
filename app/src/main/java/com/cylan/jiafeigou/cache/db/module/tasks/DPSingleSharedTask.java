@@ -130,13 +130,13 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                             });
                 })
                 .map(ent -> {
-                    int result = -1;
+                    long result = -1;
                     try {
                         ArrayList<JFGDPMsg> req = new ArrayList<>(1);
                         JFGDPMsg msg511 = new JFGDPMsg(511, wonderItem.time);
                         msg511.packValue = DpUtils.pack(entity.getVersion());
                         req.add(msg511);
-                        result = (int) JfgCmdInsurance.getCmd().robotSetDataByTime(entity.getUuid(), req);
+                        result = JfgCmdInsurance.getCmd().robotSetDataByTime(entity.getUuid(), req);
                         AppLogger.d("正在执行分享操作步骤三:设置511 DP消息" + result);
                     } catch (Exception e) {
                         AppLogger.d("分享操作步骤三操作失败!!!" + e.getMessage());

@@ -42,7 +42,12 @@ public class CustomViewPager extends ViewPager {
                 } else return false;
             }
         }
-        return super.onInterceptTouchEvent(event);
+        try {
+            return super.onInterceptTouchEvent(event);
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     /**

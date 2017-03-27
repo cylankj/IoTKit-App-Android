@@ -95,6 +95,9 @@
         <meta-data
             android:name="com.huawei.hms.client.appid"
             android:value="10826402" />
+        <meta-data
+            android:name="BUGLY_APPID"
+            android:value="900026046" />
 
         <provider
             android:name="com.huawei.hms.update.provider.UpdateProvider"
@@ -395,9 +398,9 @@
 
         <activity android:name=".n.view.panorama.PanoramaAlbumActivity">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
 

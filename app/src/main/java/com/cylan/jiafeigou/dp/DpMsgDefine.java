@@ -1028,13 +1028,20 @@ public class DpMsgDefine {
     @Message
     public static class DPCameraWarnAndWonder {
         @Index(0)
-        public long ctime;
+        public Long ctime;
 
         public DPCameraWarnAndWonder() {
         }
 
-        public DPCameraWarnAndWonder(long ctime) {
-            this.ctime = ctime;
+//        public DPCameraWarnAndWonder(long ctime) {
+//            this.ctime = ctime;
+//        }
+
+        @Override
+        public String toString() {
+            return "DPCameraWarnAndWonder{" +
+                    "ctime=" + ctime +
+                    '}';
         }
     }
 
@@ -1082,5 +1089,12 @@ public class DpMsgDefine {
                 return new DpHangMode[size];
             }
         };
+
+        @Override
+        public String toString() {
+            return "DpHangMode{" +
+                    "mode='" + mode + '\'' +
+                    '}';
+        }
     }
 }

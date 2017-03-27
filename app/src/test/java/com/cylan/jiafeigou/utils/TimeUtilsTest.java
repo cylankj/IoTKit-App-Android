@@ -38,7 +38,10 @@ public class TimeUtilsTest {
 
     @Test
     public void getSpecificDayStartTime() throws Exception {
-
+        System.out.println("" + TimeUtils.getSpecificDayStartTime(1490410868253L));
+        long result = 1490371200253L + 24 * 3600 * 1000L;
+        System.out.println(result);
+        //1490371200253
     }
 
     @Test

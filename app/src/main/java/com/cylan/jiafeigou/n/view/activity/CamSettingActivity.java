@@ -332,7 +332,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (!JFGRules.showStandbyItem(device.pid)) {
             svSettingDeviceStandbyMode.setVisibility(View.GONE);
         } else {
-            this.dpStandby = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG), DpMsgDefine.DPStandby.empty());
+            this.dpStandby = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
             ((SwitchButton) svSettingDeviceStandbyMode.findViewById(R.id.btn_item_switch)).setChecked(dpStandby.standby);
             svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 switchBtn(lLayoutSettingItemContainer, !isChecked);
@@ -344,12 +344,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 basePresenter.updateInfoReq(dpStandby, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
                 basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(!isChecked && dpStandby.led), DpMsgMap.ID_209_LED_INDICATOR);
                 basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(isChecked ? 0 : dpStandby.autoRecord), DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-                basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(isChecked ? 0 : dpStandby.warnEnable), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(isChecked ? false : dpStandby.warnEnable), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
             });
             switchBtn(lLayoutSettingItemContainer, !this.dpStandby.standby);
             triggerStandby(dpStandby.standby);
             /////////////////////////////led/////////////////////////////////////
-            if (device != null && JFGRules.showLedIndicator(device.pid)) {
+            if (JFGRules.showLedIndicator(device.pid)) {
                 svSettingDeviceLedIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                     if (this.dpStandby != null && dpStandby.standby) return;//开启待机模式引起的
                     DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();

@@ -152,11 +152,11 @@ public class BaseDBHelper implements IDBHelper {
     public Observable<List<DPEntity>> queryMultiDpMsg(String account, String server,
                                                       String uuid, Long version,
                                                       Long versionMax,
-                                                      List<Integer> msgIdList, Boolean asc,
+                                                      List<Integer> msgIdList,
                                                       Integer limit, DBAction action,
                                                       DBState state, DBOption option) {
         QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account, server, uuid, version, versionMax,
-                msgIdList, asc, action, state, option);
+                msgIdList, action, state, option);
         if (limit != null) {
             builder.limit(limit);
         }
@@ -591,7 +591,6 @@ public class BaseDBHelper implements IDBHelper {
                                                           Long version,
                                                           Long versionMax,
                                                           List<Integer> msgIdList,
-                                                          Boolean asc,
                                                           DBAction action,
                                                           DBState state,
                                                           DBOption option) {
@@ -608,12 +607,10 @@ public class BaseDBHelper implements IDBHelper {
         if (!TextUtils.isEmpty(uuid)) {
             builder.where(DPEntityDao.Properties.Uuid.eq(uuid));//设置 UUID 约束
         }
-
-        if (version != null && asc != null) {
-            if (asc) {
-                builder.where(DPEntityDao.Properties.Version.ge(version));
-                builder.where(DPEntityDao.Properties.Version.lt(versionMax));
-            } else builder.where(DPEntityDao.Properties.Version.lt(version));
+        //取哪一个？
+        if (version != null && versionMax != null) {
+            builder.where(DPEntityDao.Properties.Version.ge(version));
+            builder.where(DPEntityDao.Properties.Version.lt(versionMax));
         }
 
         if (msgIdList != null && msgIdList.size() > 0) {

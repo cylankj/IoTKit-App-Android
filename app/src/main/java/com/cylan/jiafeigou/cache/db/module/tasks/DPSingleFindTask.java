@@ -48,7 +48,7 @@ public class DPSingleFindTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(this::makeGetDataRspResponse)
                 .map(rsp -> {
                     AppLogger.d("收到从服务器返回数据!!!");
-                    DataPoint dataPoint = sourceManager.getValue(entity.getUuid(), entity.getMsgId(), rsp.seq);
+                    DataPoint dataPoint = sourceManager.getValue(entity.getUuid(), entity.getMsgId());
                     Object result = null;
                     if (dataPoint == null) {
                         result = null;
