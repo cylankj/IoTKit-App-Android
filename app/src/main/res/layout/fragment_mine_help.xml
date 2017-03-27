@@ -2,39 +2,23 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:background="@color/color_white"
     android:clickable="true"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/fLayout_top_bar_container"
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_0ba8cf">
-
-        <TextView
-            android:id="@+id/iv_home_mine_message_back"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/y48"
-            android:drawablePadding="@dimen/x15"
-            android:drawableLeft="@drawable/nav_tab_back_selector"
-            android:paddingLeft="@dimen/x15"
-            android:gravity="center_vertical"
-            android:text="@string/Tap3_Feedback"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp18" />
-
-        <TextView
-            android:id="@+id/tv_mine_help_suggestion"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:clickable="true"
-            android:padding="@dimen/x15"
-            android:text="@string/FEEDBACK"
-            android:textColor="@color/color_white"
-            android:textSize="@dimen/sp14" />
-    </FrameLayout>
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_shadow="false"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_right_title="@string/FEEDBACK"
+        hunt:ct_right_title_color="@color/color_white"
+        hunt:ct_left_title="@string/Tap3_Feedback"
+        hunt:ct_left_title_color="@color/color_white" />
 
     <FrameLayout
         android:layout_width="match_parent"

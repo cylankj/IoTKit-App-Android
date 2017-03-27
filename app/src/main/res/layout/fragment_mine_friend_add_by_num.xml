@@ -41,6 +41,8 @@
                 android:textSize="@dimen/sp18" />
         </RelativeLayout>
     </FrameLayout>
+
+
     <FrameLayout
         android:id="@+id/fl_display_find_result"
         android:layout_width="match_parent"

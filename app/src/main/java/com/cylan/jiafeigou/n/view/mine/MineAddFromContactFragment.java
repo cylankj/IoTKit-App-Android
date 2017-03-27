@@ -31,15 +31,8 @@ import butterknife.OnClick;
  */
 public class MineAddFromContactFragment extends Fragment implements MineAddFromContactContract.View {
 
-
-    @BindView(R.id.iv_mine_add_from_contact_back)
-    ImageView ivMineAddFromContactBack;
-    @BindView(R.id.iv_mine_add_from_contact_send)
-    ImageView ivMineAddFromContactSend;
     @BindView(R.id.et_mine_add_contact_mesg)
     EditText etMineAddContactMesg;
-    @BindView(R.id.rl_tab_bar_container)
-    FrameLayout rlTabBarContainer;
 
     private MineAddFromContactContract.Presenter presenter;
     private String contactItem;
@@ -58,12 +51,6 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
         initPresenter();
         getIntentData();
         return view;
-    }
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlTabBarContainer);
     }
 
     /**
@@ -154,13 +141,13 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
         if (presenter != null) presenter.start();
     }
 
-    @OnClick({R.id.iv_mine_add_from_contact_send, R.id.iv_mine_add_from_contact_back})
+    @OnClick({R.id.tv_toolbar_right, R.id.tv_toolbar_icon})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_mine_add_from_contact_send:
+            case R.id.tv_toolbar_right:
                 presenter.checkAccount(contactItem);
                 break;
-            case R.id.iv_mine_add_from_contact_back:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
         }

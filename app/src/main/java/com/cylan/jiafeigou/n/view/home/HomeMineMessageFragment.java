@@ -8,7 +8,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -18,7 +17,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineMessagePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineMessageAdapter;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.ArrayList;
 
@@ -33,10 +32,6 @@ import butterknife.OnClick;
  */
 public class HomeMineMessageFragment extends Fragment implements HomeMineMessageContract.View {
 
-    @BindView(R.id.iv_home_mine_message_back)
-    TextView ivHomeMineMessageBack;
-    @BindView(R.id.tv_home_mine_message_clear)
-    TextView tvHomeMineMessageClear;
     @BindView(R.id.rcl_home_mine_message_recyclerview)
     RecyclerView rclHomeMineMessageRecyclerview;
     @BindView(R.id.ll_no_mesg)
@@ -47,8 +42,9 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     TextView tvDelete;
     @BindView(R.id.rl_delete_dialog)
     RelativeLayout rlDeleteDialog;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
+
     private boolean isCheckAll;
 
     private HomeMineMessageContract.Presenter presenter;
@@ -81,15 +77,10 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initTopBar();
     }
 
     private void initPresenter() {
         presenter = new HomeMineMessagePresenterImp(this, hasNewMesg);
-    }
-
-    private void initTopBar() {
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
     @Override
@@ -139,16 +130,16 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
 
     }
 
-    @OnClick({R.id.iv_home_mine_message_back, R.id.tv_home_mine_message_clear, R.id.tv_check_all, R.id.tv_delete})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_toolbar_right, R.id.tv_check_all, R.id.tv_delete})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_home_mine_message_back:        //返回
+            case R.id.tv_toolbar_icon:        //返回
                 getFragmentManager().popBackStack();
                 break;
-            case R.id.tv_home_mine_message_clear:       //删除
-                if (messageAdapter == null)return;
+            case R.id.tv_toolbar_right:       //删除
+                if (messageAdapter == null) return;
                 if (messageAdapter.getItemCount() == 0) return;
-                if (tvHomeMineMessageClear.getText().equals(getString(R.string.CANCEL))) {
+                if (customToolbar.getTvToolbarRight().getText().equals(getString(R.string.CANCEL))) {
                     handleCancle();
                     return;
                 }
@@ -183,7 +174,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
                 if (messageAdapter.getItemCount() == 0) {
                     showNoMesgView();
                     rlDeleteDialog.setVisibility(View.GONE);
-                    tvHomeMineMessageClear.setText(getString(R.string.DELETE));
+                    customToolbar.setToolbarRightTitle(getString(R.string.DELETE));
                 }
                 break;
         }
@@ -195,7 +186,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     private void handleDelete() {
         isCheckAll = true;
         rlDeleteDialog.setVisibility(View.VISIBLE);
-        tvHomeMineMessageClear.setText(getString(R.string.CANCEL));
+        customToolbar.setToolbarRightTitle(getString(R.string.CANCEL));
         if (hasCheckData == null) {
             hasCheckData = new ArrayList<>();
         }
@@ -221,7 +212,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     private void handleCancle() {
         isCheckAll = false;
         rlDeleteDialog.setVisibility(View.GONE);
-        tvHomeMineMessageClear.setText(getString(R.string.DELETE));
+        customToolbar.setToolbarRightTitle(getString(R.string.DELETE));
         hasCheckData.clear();
         hasCheckData = null;
         for (MineMessageBean bean : messageAdapter.getList()) {

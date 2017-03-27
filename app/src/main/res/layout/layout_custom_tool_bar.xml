@@ -46,6 +46,7 @@
                 android:textSize="@dimen/sp14"
                 android:visibility="gone" />
         </FrameLayout>
+
     </FrameLayout>
 
     <View

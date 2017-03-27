@@ -7,36 +7,6 @@
     android:clickable="true"
     android:orientation="vertical">
 
-    <!--<FrameLayout-->
-        <!--android:background="#0BA8CF"-->
-        <!--android:id="@+id/rl_home_mine_suggestion"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content">-->
-
-        <!--<RelativeLayout-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="wrap_content">-->
-
-            <!--<ImageView-->
-                <!--android:id="@+id/iv_home_mine_sharedevices_back"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_centerVertical="true"-->
-                <!--android:padding="@dimen/x15"-->
-                <!--android:src="@drawable/nav_tab_back_selector" />-->
-
-            <!--<TextView-->
-                <!--android:layout_toRightOf="@id/iv_home_mine_sharedevices_back"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="@dimen/y48"-->
-                <!--android:gravity="center_vertical"-->
-                <!--android:text="@string/Tap3_ShareDevice"-->
-                <!--android:textColor="@color/color_white"-->
-                <!--android:textSize="@dimen/sp18" />-->
-
-        <!--</RelativeLayout>-->
-    <!--</FrameLayout>-->
-
     <com.cylan.jiafeigou.widget.CustomToolbar
         hunt:ct_left_title="@string/Tap3_ShareDevice"
         hunt:ct_left_title_color="@color/color_white"

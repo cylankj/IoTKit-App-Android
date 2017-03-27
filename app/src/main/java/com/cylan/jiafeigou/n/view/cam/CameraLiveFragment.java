@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -83,7 +84,10 @@ import java.lang.ref.SoftReference;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import permissions.dispatcher.NeedsPermission;
+import permissions.dispatcher.OnNeverAskAgain;
 import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.OnShowRationale;
+import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
@@ -595,6 +599,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         CameraLiveFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        if (permissions.length == 1) {
+            AppLogger.d("permission:" + permissions + " " + grantResults);
+        }
     }
 
     @Override
@@ -602,6 +609,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         switch (view.getId()) {
             case R.id.imgV_cam_switch_speaker: {
                 boolean on = isLocalSpeakerOn();
+                if (!on) {
+                    CameraLiveFragmentPermissionsDispatcher.showAudioRecordPermission_WithCheck(this);
+                    return;
+                }
                 int sFlag = on ? R.drawable.icon_port_speaker_off_selector : R.drawable.icon_port_speaker_on_selector;
                 ((ImageView) view).setImageResource(sFlag);
                 view.setTag(sFlag);
@@ -617,7 +628,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 //                CameraLiveFragmentPermissionsDispatcher.s
                 boolean on = isLocalMicOn();
                 if (!on) {
-                    CameraLiveFragmentPermissionsDispatcher.showAudioSettingPermissionWithCheck(this);
+                    CameraLiveFragmentPermissionsDispatcher.showAudioRecordPermissionWithCheck(this);
                     return;
                 }
                 imgVCamTriggerMic.setImageResource(R.drawable.icon_port_mic_off_selector);
@@ -803,8 +814,21 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         this.basePresenter = basePresenter;
     }
 
-    @NeedsPermission({Manifest.permission.MODIFY_AUDIO_SETTINGS})
-    public void showAudioSettingPermission() {
+    @NeedsPermission({Manifest.permission.RECORD_AUDIO})
+    public void showAudioRecordPermission_() {
+        int sFlag = R.drawable.icon_port_speaker_on_selector;
+        imgVCamSwitchSpeaker.setImageResource(sFlag);
+        imgVCamSwitchSpeaker.setTag(sFlag);
+        //横屏
+        camLiveController.getImvLandSpeaker().setImageResource(R.drawable.icon_land_speaker_on_selector);
+        camLiveController.getImvLandSpeaker().setTag(R.drawable.icon_land_speaker_on_selector);
+        if (basePresenter != null) {
+            basePresenter.switchSpeaker();
+        }
+    }
+
+    @NeedsPermission({Manifest.permission.RECORD_AUDIO})
+    public void showAudioRecordPermission() {
         imgVCamTriggerMic.setImageResource(R.drawable.icon_port_mic_on_selector);
         imgVCamTriggerMic.setTag(R.drawable.icon_port_mic_on_selector);
         camLiveController.getImvLandMic().setImageResource(R.drawable.icon_land_mic_on_selector);
@@ -822,9 +846,19 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
 
-    @OnPermissionDenied({Manifest.permission.MODIFY_AUDIO_SETTINGS})
-    public void audioSettingPermissionDenied() {
-        Log.d("OnPermissionDenied", "audioSettingPermissionDenied");
+    @OnPermissionDenied({Manifest.permission.RECORD_AUDIO})
+    public void audioRecordPermissionDenied() {
+        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth), ""));
+    }
+
+    @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO})
+    public void audioRecordPermissionNeverAsk() {
+        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth), ""));
+    }
+
+    @OnShowRationale({Manifest.permission.RECORD_AUDIO})
+    public void audioRecordPermissionRational(PermissionRequest request) {
+        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth), ""));
     }
 
     @Override

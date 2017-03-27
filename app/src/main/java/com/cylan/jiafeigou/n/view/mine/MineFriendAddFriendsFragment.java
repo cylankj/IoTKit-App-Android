@@ -45,10 +45,6 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     TextView tvAddFromContract;
     @BindView(R.id.fragment_container)
     FrameLayout fragmentContainer;
-    @BindView(R.id.iv_home_mine_relativesandfriends_add_back)
-    ImageView ivHomeMineRelativesandfriendsAddBack;
-    @BindView(R.id.rl_home_mine_relativesandfriends)
-    FrameLayout rlHomeMineRelativesandfriends;
 
     private MineFriendScanAddFragment scanAddFragment;
     private MineFriendAddFromContactFragment addFromContactFragment;
@@ -84,17 +80,16 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriends);
     }
 
     private void initPresenter() {
         presenter = new MineFriendsAddFriendPresenterImp(this);
     }
 
-    @OnClick({R.id.iv_home_mine_relativesandfriends_add_back, R.id.tv_scan_add, R.id.tv_add_from_contract, R.id.et_friend_phonenumber})
+    @OnClick({R.id.tv_toolbar_icon, R.id.tv_scan_add, R.id.tv_add_from_contract, R.id.et_friend_phonenumber})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_home_mine_relativesandfriends_add_back:        //返回
+            case R.id.tv_toolbar_icon:        //返回
                 getFragmentManager().popBackStack();
                 break;
 
@@ -125,7 +120,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
 //                        MineFriendAddFriendsFragment.this.requestPermissions(
 //                                new String[]{Manifest.permission.READ_CONTACTS},
 //                                1);
-                        setPermissionDialog(Manifest.permission.READ_CONTACTS);
+                        setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
                     }else {
                         AppLogger.d("request_N");
                         MineFriendAddFriendsFragment.this.requestPermissions(

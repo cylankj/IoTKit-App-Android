@@ -59,7 +59,7 @@ public class CustomToolbar extends LinearLayout {
         tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
         tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
         tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
-        if (rightTitleColor != 0) tvToolbarTitle.setTextColor(rightTitleColor);
+        if (rightTitleColor != 0) tvToolbarRight.setTextColor(rightTitleColor);
         tvToolbarTitle.setVisibility(VISIBLE);
         tvToolbarTitle.setText(title);
         if (titleColor != 0)
@@ -144,6 +144,10 @@ public class CustomToolbar extends LinearLayout {
         ViewUtils.setDrawablePadding(tvToolbarIcon, resId, 2);
     }
 
+    public void setTvToolbarRightIcon(int resId) {
+        ViewUtils.setDrawablePadding(tvToolbarRight, resId, 2);
+    }
+
     public void setToolbarTitle(int resId) {
         if (!tvToolbarTitle.isShown()) tvToolbarTitle.setVisibility(View.VISIBLE);
         tvToolbarTitle.setText(resId);
@@ -167,6 +171,20 @@ public class CustomToolbar extends LinearLayout {
     public void setToolbarRightTitle(int resId) {
         if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
         tvToolbarRight.setText(resId);
+    }
+
+    public void setToolbarRightTitle(String resId) {
+        if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
+        tvToolbarRight.setText(resId);
+    }
+
+    public void setTvToolbarRightColor(String color){
+        if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
+            tvToolbarRight.setTextColor(Color.parseColor(color));
+    }
+
+    public void setTvToolbarRightEnable(boolean isEnable){
+        tvToolbarRight.setEnabled(isEnable);
     }
 
     public CharSequence getTitle() {

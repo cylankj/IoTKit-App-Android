@@ -213,10 +213,10 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
      * @return
      */
     private Observable<BaseDPTaskResult> getDateListQuery() {
+        DPEntity entity = new DPEntity();
+        entity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());
+        entity.setUuid(uuid);
         try {
-            DPEntity entity = new DPEntity();
-            entity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());
-            entity.setUuid(uuid);
             if (DataSourceManager.getInstance().isOnline()) {
                 return new DPCamDateQueryTask()
                         .init(entity)
@@ -239,7 +239,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .filter(ret -> mView != null && ret != null && ret.getResultResponse() != null)
                 .subscribe(baseDPTaskResult ->
-                                mView.onDateMapRsp(baseDPTaskResult.getResultResponse()),
+                                mView.onDateMapRsp(this.dateItemList = baseDPTaskResult.getResultResponse()),
                         throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
         addSubscription(subscription, "DPCamDateQueryTask");
     }

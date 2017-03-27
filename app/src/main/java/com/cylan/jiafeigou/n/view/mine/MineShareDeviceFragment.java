@@ -139,8 +139,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         alertDialog.show();
     }
 
-
-
     /**
      * desc；跳转到通过联系人分享的界面
      */

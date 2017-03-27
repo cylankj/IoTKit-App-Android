@@ -157,7 +157,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                 .flatMap(new Func1<RxEvent.GetHasShareFriendCallBack, Observable<ArrayList<RelAndFriendBean>>>() {
                     @Override
                     public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetHasShareFriendCallBack getFriendList) {
-                        if (getFriendList != null && getFriendList instanceof RxEvent.GetHasShareFriendCallBack) {
+                        if (getFriendList != null) {
                             if (getFriendList.i == 0 && getFriendList.arrayList.size() != 0) {
                                 return Observable.just(converData(getFriendList.arrayList));
                             } else {
