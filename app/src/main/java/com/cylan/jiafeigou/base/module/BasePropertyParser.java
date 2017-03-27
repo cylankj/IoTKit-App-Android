@@ -67,43 +67,43 @@ public class BasePropertyParser implements IPropertyParser {
 
 
     private void init() {
-        properties.put(ID_701_SYS_PUSH_FLAG, new DPProperty(Boolean.class));//set
+        properties.put(ID_701_SYS_PUSH_FLAG, new DPProperty(boolean.class));//set
         properties.put(ID_602_ACCOUNT_WONDERFUL_MSG, new DPProperty(DpMsgDefine.DPWonderItem.class));
         properties.put(ID_601_ACCOUNT_STATE, new DPProperty(String.class));
         properties.put(ID_512_CAMERA_ALARM_MSG_V3, new DPProperty(DpMsgDefine.DPAlarm.class));//set
-        properties.put(ID_511_CAMERAWARNANDWONDER, new DPProperty(Long.class));//set
-        properties.put(ID_510_CAMERA_COORDINATE, new DPProperty(Boolean.class, CAMERA));
-        properties.put(ID_509_CAMERA_MOUNT_MODE, new DPProperty(Integer.class, CAMERA));
-        properties.put(ID_508_CAMERA_STANDBY_FLAG, new DPProperty(Boolean.class, CAMERA));
+        properties.put(ID_511_CAMERAWARNANDWONDER, new DPProperty(long.class));//set
+        properties.put(ID_510_CAMERA_COORDINATE, new DPProperty(boolean.class, CAMERA));
+        properties.put(ID_509_CAMERA_MOUNT_MODE, new DPProperty(int.class, CAMERA));
+        properties.put(ID_508_CAMERA_STANDBY_FLAG, new DPProperty(boolean.class, CAMERA));
         properties.put(ID_506_CAMERA_TIME_LAPSE_PHOTOGRAPHY, new DPProperty(DpMsgDefine.DPTimeLapse.class));
         properties.put(ID_505_CAMERA_ALARM_MSG, new DPProperty(DpMsgDefine.DPAlarm.class));//set
         properties.put(ID_504_CAMERA_ALARM_NOTIFICATION, new DPProperty(DpMsgDefine.DPNotificationInfo.class, CAMERA));
-        properties.put(ID_503_CAMERA_ALARM_SENSITIVITY, new DPProperty(Integer.class));
+        properties.put(ID_503_CAMERA_ALARM_SENSITIVITY, new DPProperty(int.class));
         properties.put(ID_502_CAMERA_ALARM_INFO, new DPProperty(DpMsgDefine.DPAlarmInfo.class, CAMERA));
-        properties.put(ID_501_CAMERA_ALARM_FLAG, new DPProperty(Boolean.class, CAMERA));
-        properties.put(ID_402_BELL_VOICE_MSG, new DPProperty(Integer.class, DOORBELL));
+        properties.put(ID_501_CAMERA_ALARM_FLAG, new DPProperty(boolean.class, CAMERA));
+        properties.put(ID_402_BELL_VOICE_MSG, new DPProperty(int.class, DOORBELL));
         properties.put(ID_401_BELL_CALL_STATE, new DPProperty(DpMsgDefine.DPBellCallRecord.class));//set
-        properties.put(ID_304_DEVICE_CAMERA_ROTATE, new DPProperty(Integer.class, CAMERA, DOORBELL));
-        properties.put(ID_303_DEVICE_AUTO_VIDEO_RECORD, new DPProperty(Integer.class, CAMERA));
-        properties.put(ID_302_DEVICE_SPEAKER, new DPProperty(Integer.class, CAMERA, DOORBELL));
-        properties.put(ID_301_DEVICE_MIC, new DPProperty(Boolean.class, CAMERA, DOORBELL));
+        properties.put(ID_304_DEVICE_CAMERA_ROTATE, new DPProperty(int.class, CAMERA, DOORBELL));
+        properties.put(ID_303_DEVICE_AUTO_VIDEO_RECORD, new DPProperty(int.class, CAMERA));
+        properties.put(ID_302_DEVICE_SPEAKER, new DPProperty(int.class, CAMERA, DOORBELL));
+        properties.put(ID_301_DEVICE_MIC, new DPProperty(boolean.class, CAMERA, DOORBELL));
         properties.put(ID_222_SDCARD_SUMMARY, new DPProperty(DpMsgDefine.DPSdcardSummary.class));//set
         properties.put(ID_220_SDK_VERSION, new DPProperty(String.class, CAMERA, DOORBELL));
         properties.put(ID_219_DEVICE_BIND_LOG, new DPProperty(DpMsgDefine.DPBindLog.class, CAMERA, DOORBELL));
         properties.put(ID_218_DEVICE_FORMAT_SDCARD, new DPProperty(DpMsgDefine.DpSdcardFormatRsp.class, CAMERA));
-        properties.put(ID_217_DEVICE_MOBILE_NET_PRIORITY, new DPProperty(Boolean.class, CAMERA));
-        properties.put(ID_216_DEVICE_VOLTAGE, new DPProperty(Boolean.class, CAMERA, DOORBELL));
-        properties.put(ID_215_DEVICE_RTMP, new DPProperty(Boolean.class, CAMERA));
+        properties.put(ID_217_DEVICE_MOBILE_NET_PRIORITY, new DPProperty(boolean.class, CAMERA));
+        properties.put(ID_216_DEVICE_VOLTAGE, new DPProperty(boolean.class, CAMERA, DOORBELL));
+        properties.put(ID_215_DEVICE_RTMP, new DPProperty(boolean.class, CAMERA));
         properties.put(ID_214_DEVICE_TIME_ZONE, new DPProperty(DpMsgDefine.DPTimeZone.class, CAMERA, DOORBELL));
-        properties.put(ID_213_DEVICE_P2P_VERSION, new DPProperty(Integer.class, CAMERA, DOORBELL));
+        properties.put(ID_213_DEVICE_P2P_VERSION, new DPProperty(int.class, CAMERA, DOORBELL));
         properties.put(ID_212_DEVICE_UPLOAD_LOG, new DPProperty(String.class, CAMERA, DOORBELL));
-        properties.put(ID_211_APP_UPLOAD_LOG, new DPProperty(Integer.class, CAMERA, DOORBELL));
-        properties.put(ID_210_UP_TIME, new DPProperty(Integer.class, CAMERA, DOORBELL));
-        properties.put(ID_209_LED_INDICATOR, new DPProperty(Boolean.class, CAMERA, DOORBELL));
+        properties.put(ID_211_APP_UPLOAD_LOG, new DPProperty(int.class, CAMERA, DOORBELL));
+        properties.put(ID_210_UP_TIME, new DPProperty(int.class, CAMERA, DOORBELL));
+        properties.put(ID_209_LED_INDICATOR, new DPProperty(boolean.class, CAMERA, DOORBELL));
         properties.put(ID_208_DEVICE_SYS_VERSION, new DPProperty(String.class, CAMERA, DOORBELL));
         properties.put(ID_207_DEVICE_VERSION, new DPProperty(String.class, CAMERA, DOORBELL));
-        properties.put(ID_206_BATTERY, new DPProperty(Integer.class, CAMERA, DOORBELL));
-        properties.put(ID_205_CHARGING, new DPProperty(Boolean.class, CAMERA, DOORBELL));
+        properties.put(ID_206_BATTERY, new DPProperty(int.class, CAMERA, DOORBELL));
+        properties.put(ID_205_CHARGING, new DPProperty(boolean.class, CAMERA, DOORBELL));
         properties.put(ID_204_SDCARD_STORAGE, new DPProperty(DpMsgDefine.DPSdStatus.class, CAMERA));
         properties.put(ID_202_MAC, new DPProperty(String.class, CAMERA, DOORBELL));
         properties.put(ID_201_NET, new DPProperty(DpMsgDefine.DPNet.class, CAMERA, DOORBELL));

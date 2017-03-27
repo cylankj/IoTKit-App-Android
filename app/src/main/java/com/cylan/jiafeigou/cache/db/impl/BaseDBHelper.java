@@ -396,8 +396,8 @@ public class BaseDBHelper implements IDBHelper {
                 dpDevice = queryBuilder.unique();
                 if (dpDevice == null) {
                     dpDevice = new Device();
+                    dpDevice.setDevice(dev);
                 }
-                dpDevice.setDevice(dev);
                 dpDevice.setAccount(account.getAccount());
                 dpDevice.setOption(new DBOption.RawDeviceOrderOption(i));
                 result.add(dpDevice);
