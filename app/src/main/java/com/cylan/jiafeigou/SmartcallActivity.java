@@ -113,6 +113,7 @@ public class SmartcallActivity extends NeedLoginActivity
         } else {
             splashOver();
             from_log_out = false;
+            firstSignIn = true;
             RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
         }
     }
