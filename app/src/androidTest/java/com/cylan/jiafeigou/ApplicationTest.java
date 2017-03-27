@@ -3,6 +3,11 @@ package com.cylan.jiafeigou;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
+import rx.schedulers.Schedulers;
+
 /**
  * <activity_cloud_live_mesg_call_out_item href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</activity_cloud_live_mesg_call_out_item>
  */
@@ -12,6 +17,16 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
     }
 
 
+    public void testDBHelper() {
+
+        Observable.interval(10, TimeUnit.MILLISECONDS)
+                .observeOn(Schedulers.io())
+                .subscribe(s->{
+
+
+                },e->{e.printStackTrace();});
+
+    }
 
 
     public void testMy() {
