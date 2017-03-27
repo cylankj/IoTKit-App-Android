@@ -18,6 +18,8 @@ public class JConstant {
     /**
      * {@link NewHomeActivity}底部menu对应的FrameLayout的id。用来存放每日精彩的时间控件
      */
+
+
     public static final String KEY_NEW_HOME_ACTIVITY_BOTTOM_MENU_CONTAINER_ID = "new_home_menu_id";
     public static final int AUTHORIZE_PHONE = 0;
     public static final int AUTHORIZE_MAIL = 1;

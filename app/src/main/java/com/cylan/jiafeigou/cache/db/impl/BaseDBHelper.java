@@ -10,6 +10,8 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ext.opt.DebugOptionsImpl;
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.module.Account;
@@ -25,8 +27,10 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
@@ -55,6 +59,7 @@ public class BaseDBHelper implements IDBHelper {
     private static BaseDBHelper instance;
     private IPropertyParser propertyParser;
     private Account dpAccount;
+    private String serverAddress;
 
     public static BaseDBHelper getInstance() {
         if (instance == null) {
@@ -109,9 +114,9 @@ public class BaseDBHelper implements IDBHelper {
                 }
                 result.add(dpEntity);
             }
+            mEntityDao.insertOrReplaceInTx(result);
             return result;
-        })
-                .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities));
+        });
     }
 
     @Override
@@ -143,9 +148,9 @@ public class BaseDBHelper implements IDBHelper {
                     result.add(dpEntity);
                 }
             }
+            mEntityDao.insertOrReplaceInTx(result);
             return result;
-        })
-                .flatMap(dpEntities -> mEntityDao.rx().saveInTx(dpEntities));
+        });
     }
 
     @Override
@@ -185,8 +190,6 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public DPEntity getProperty(String uuid, int msgId) {
         QueryBuilder<DPEntity> queryBuilder = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, null, null, null);
-        queryBuilder.where(DPEntityDao.Properties.Version.le(Long.MAX_VALUE));
-        queryBuilder.limit(1);
         DPEntity unique = queryBuilder.unique();
         return (unique != null && unique.action() != DBAction.DELETED) ? unique : null;
     }
@@ -194,7 +197,6 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Device getJFGDevice(String uuid) {
         QueryBuilder<Device> queryBuilder = buildDPDeviceQueryBuilder(dpAccount.getAccount(), getServer(), uuid, DBAction.SAVED, DBState.SUCCESS, null);
-        queryBuilder.limit(1);
         return queryBuilder.unique();
     }
 
@@ -349,23 +351,31 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Account> updateAccount(JFGAccount account) {
-        return accountDao.queryBuilder().where(AccountDao.Properties.Account.notEq(account.getAccount()))
-                .rx().list().flatMap(accounts -> {
-                    if (accounts != null) {
+        return accountDao.queryBuilder().where(AccountDao.Properties.Server.eq(getServer()))
+                .rx().list().map(accounts -> {
+                    List<Account> changed = new ArrayList<>();
+                    if (accounts != null && accounts.size() > 0) {
                         for (Account account1 : accounts) {
-                            account1.setState(DBState.SUCCESS.state());
-                            accountDao.update(account1);
+                            if (TextUtils.equals(account1.getAccount(), account.getAccount())) {
+                                this.dpAccount = account1;
+                                dpAccount.setAccount(account);
+                                dpAccount.setState(DBState.ACTIVE);
+                                changed.add(dpAccount);
+                                continue;
+                            }
+                            if (account1.state() != DBState.SUCCESS) {
+                                account1.setState(DBState.SUCCESS.state());
+                                changed.add(account1);
+                            }
                         }
                     }
-                    return accountDao.queryBuilder().where(AccountDao.Properties.Account.eq(account.getAccount()))
-                            .rx().unique().map(account1 -> {
-                                if (account1 == null) {
-                                    account1 = new Account(account);
-                                }
-                                account1.setState(DBState.ACTIVE.state());
-                                accountDao.save(account1);
-                                return this.dpAccount = account1;
-                            });
+                    if (dpAccount == null) {
+                        dpAccount = new Account(account);
+                        dpAccount.setServer(getServer());
+                        changed.add(dpAccount);
+                    }
+                    accountDao.insertOrReplaceInTx(changed);
+                    return dpAccount;
                 });
     }
 
@@ -374,7 +384,7 @@ public class BaseDBHelper implements IDBHelper {
     public Observable<Account> getActiveAccount() {
         return Observable.just(this.dpAccount).filter(item -> item != null)
                 .mergeWith(RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class).map(item -> this.dpAccount = item.account))
-                .mergeWith(accountDao.queryBuilder().where(AccountDao.Properties.State.eq(DBState.ACTIVE.state())).rx().unique().filter(item -> item != null).map(item -> this.dpAccount = item))
+                .mergeWith(accountDao.queryBuilder().where(AccountDao.Properties.Server.eq(getServer()), AccountDao.Properties.State.eq(DBState.ACTIVE.state())).rx().unique().filter(item -> item != null).map(item -> this.dpAccount = item))
                 .first();
     }
 
@@ -387,18 +397,20 @@ public class BaseDBHelper implements IDBHelper {
             JFGDevice dev;
             for (int i = 0; i < device.length; i++) {
                 dev = device[i];
-                queryBuilder = deviceDao.queryBuilder().where(DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(account.getAccount()));
+                queryBuilder = deviceDao.queryBuilder().where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(account.getAccount()));
                 dpDevice = queryBuilder.unique();
                 if (dpDevice == null) {
                     dpDevice = new Device();
-                    dpDevice.setDevice(dev);
+                    dpDevice.setServer(getServer());
+                    dpDevice.setAccount(account.getAccount());
                 }
-                dpDevice.setAccount(account.getAccount());
+                dpDevice.setDevice(dev);
                 dpDevice.setOption(new DBOption.RawDeviceOrderOption(i));
                 result.add(dpDevice);
             }
+            deviceDao.insertOrReplaceInTx(result);
             return result;
-        }).flatMap(devices -> deviceDao.rx().saveInTx(devices));
+        });
     }
 
     @Override
@@ -435,8 +447,9 @@ public class BaseDBHelper implements IDBHelper {
                     result.add(device);
                 }
             }
+            deviceDao.saveInTx(result);
             return result;
-        }).flatMap(devices -> deviceDao.rx().updateInTx(devices));
+        });
     }
 
     @Override
@@ -464,7 +477,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<List<Device>> getAccountDevice(String account) {
-        return deviceDao.queryBuilder().where(DeviceDao.Properties.Account.eq(account), DeviceDao.Properties.Action.notEq(DBAction.UNBIND.action())).rx().list();
+        return deviceDao.queryBuilder().where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Account.eq(account), DeviceDao.Properties.Action.notEq(DBAction.UNBIND.action())).rx().list();
     }
 
     @Override
@@ -664,8 +677,15 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     private String getServer() {
-        AppLogger.e("需要填server");
-        return null;
+        if (TextUtils.isEmpty(serverAddress)) {
+            serverAddress = DebugOptionsImpl.getServer();
+            String inner = Security.getServerPrefix(JFGRules.getTrimPackageName()) + ".jfgou.com:443";
+            if (BuildConfig.DEBUG) {
+                if (TextUtils.isEmpty(serverAddress))
+                    serverAddress = inner;
+            }
+        }
+        return serverAddress;
     }
 
     public class GreenDaoContext extends ContextWrapper {
