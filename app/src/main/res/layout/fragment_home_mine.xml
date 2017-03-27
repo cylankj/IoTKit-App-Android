@@ -23,7 +23,6 @@
             android:layout_gravity="center"
             android:orientation="vertical">
 
-
             <com.cylan.jiafeigou.widget.wave.ShadowLayout
                 android:id="@+id/shadow_layout"
                 android:layout_width="wrap_content"

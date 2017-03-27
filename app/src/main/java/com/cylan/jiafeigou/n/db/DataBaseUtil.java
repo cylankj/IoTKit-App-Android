@@ -17,7 +17,7 @@ public class DataBaseUtil {
 
     private static DataBaseUtil uniqueInstance = null;
 
-    public static DbManager dbManager;
+    public DbManager dbManager;
 
     private DataBaseUtil(String dbName) {
         if (dbManager == null) {
@@ -51,7 +51,6 @@ public class DataBaseUtil {
     }
 
     private class MyDbLisenter implements DbManager.DbUpgradeListener {
-
         @Override
         public void onUpgrade(DbManager DbManager, int oldVersion, int newVersion) {
             //TODO 数据库的升级

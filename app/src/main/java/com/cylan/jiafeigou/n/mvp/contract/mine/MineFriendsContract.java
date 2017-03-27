@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.contract.mine;
 
+import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -7,6 +8,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import rx.Subscription;
 
@@ -113,7 +115,7 @@ public interface MineFriendsContract {
          * @param friendList
          * @return
          */
-        ArrayList<RelAndFriendBean> initRelativatesAndFriendsData(RxEvent.GetFriendList friendList);
+        ArrayList<RelAndFriendBean> initRelFriendsData(RxEvent.GetFriendList friendList);
 
         boolean checkAddRequestOutTime(MineAddReqBean bean);        //检测添加请求是否超时
 

@@ -42,7 +42,6 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
         resMap.put(JConstant.OS_CAMERA_UCOS_V3, R.drawable.me_icon_head_camera);
         resMap.put(JConstant.OS_CAMERA_UCOS_V2, R.drawable.me_icon_head_camera);
         resMap.put(JConstant.OS_CAMERA_UCOS, R.drawable.me_icon_head_camera);
-
         resMap.put(JConstant.PID_CAMERA_ANDROID_3_0, R.drawable.me_icon_head_camera);
 
         //MAG
@@ -176,6 +175,6 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
     public boolean compareTime(String preStrTime, String nowStrTime) {
         long preTime = Long.parseLong(preStrTime);
         long nowTime = Long.parseLong(nowStrTime);
-        return (nowTime - preTime >= 20000) ? true : false;
+        return (nowTime - preTime >= 20000);
     }
 }

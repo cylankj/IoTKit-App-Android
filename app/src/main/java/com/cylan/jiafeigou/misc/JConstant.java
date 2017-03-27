@@ -83,6 +83,7 @@ public class JConstant {
     public static final String AUTO_SIGNIN_TAB = "auto_signin_tab";
     public static final String FROM_LOG_OUT = "from_log_out";
     public static final String IS_lOGINED = "is_logined";   //是否登录过
+    public static final String AUTO_lOGIN_PWD_ERR = "auto_login_pwd_err";
     /**
      * verification code
      */
