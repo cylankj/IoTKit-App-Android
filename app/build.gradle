@@ -228,7 +228,15 @@ dependencies {
     compile(name: rootProject.ext.facebookSDK, ext: 'aar') {
         transitive = true
     }
-    compile(name: rootProject.ext.cySdk, ext: 'aar')
+    fileTree(dir: 'libs', include: '**/*.aar')
+            .each { File file ->
+        dependencies.add("compile", [
+                name: file.name.lastIndexOf('.').with {
+                    it != -1 ? file.name[0..<it] : file.name
+                },
+                ext : 'aar'
+        ])
+    }
     //aar通用依赖，不需要指定名字
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
@@ -237,7 +245,6 @@ dependencies {
 //    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
     //先用本地依赖的方式，打包平台还部支持 没人愿意维护多渠道包，算了，删了吧。
     compile(name: 'constraint-layout-1.0.1', ext: 'aar')
-    //    compile 'com.android.support.constraint:constraint-layout:1.0.1'
     //aar通用依赖，不需要指定名字
     compile files('libs/open_sdk_r5781.jar')
     testCompile files('libs/javassist.jar')
