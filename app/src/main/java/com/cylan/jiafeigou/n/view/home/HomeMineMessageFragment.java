@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineMessagePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineMessageBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineMessageAdapter;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.ArrayList;
@@ -51,6 +52,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     private HomeMineMessageAdapter messageAdapter;
     private boolean hasNewMesg;
     private ArrayList<MineMessageBean> hasCheckData;
+    private ArrayList<Integer> serviceDelRsp;
 
     public static HomeMineMessageFragment newInstance(Bundle bundle) {
         HomeMineMessageFragment fragment = new HomeMineMessageFragment();
@@ -125,6 +127,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
         llNoMesg.setVisibility(View.GONE);
     }
 
+
     @Override
     public void setPresenter(HomeMineMessageContract.Presenter presenter) {
 
@@ -168,6 +171,10 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
                 }
                 for (MineMessageBean bean : hasCheckData) {
                     messageAdapter.remove(bean);
+                    if (bean.type == 601){
+                        presenter.deleteServiceMsg(bean.type,Long.parseLong(bean.getTime()));
+                    }
+                    presenter.deleteOneItem(bean);
                 }
                 hasCheckData.clear();
                 messageAdapter.notifyDataSetHasChanged();
@@ -222,6 +229,15 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
         messageAdapter.checkAll = false;
         messageAdapter.isShowCheck = false;
         rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
+    }
+
+    @Override
+    public void deleteMesgReuslt(RxEvent.DeleteDataRsp rsp) {
+        if (serviceDelRsp == null){
+            serviceDelRsp = new ArrayList<>();
+        }
+        serviceDelRsp.add(rsp.resultCode);
+        //TODO
     }
 
 }

@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -76,6 +77,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 .subscribe(new Action1<ArrayList<DeviceBean>>() {
                     @Override
                     public void call(ArrayList<DeviceBean> deviceList) {
+
                         if (getView() != null && deviceList != null && deviceList.size() > 0) {
                             AppLogger.d("share_device:"+deviceList.size());
                             allDevice.clear();
@@ -86,7 +88,24 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                                     allDevice.add(bean);
                                 }
                             }
-                            getDeviceInfo(cidList);
+
+                            if (NetUtils.getNetType(getView().getContext()) == -1){
+                                ArrayList<JFGShareListInfo> shareList = DataSourceManager.getInstance().getShareList();
+                                if (shareList == null || shareList.size() == 0){
+                                    handlerShareDeviceListData(allDevice);
+                                    return;
+                                }
+                                hasShareFriendList.clear();
+                                hasShareFriendList.addAll(shareList);
+                                for (int i = 0; i < allDevice.size(); i++) {
+                                    if (allDevice.get(i).uuid.equals(shareList.get(i).cid)) {
+                                        allDevice.get(i).hasShareCount = shareList.get(i).friends.size();
+                                    }
+                                }
+                                handlerShareDeviceListData(allDevice);
+                            }else {
+                                getDeviceInfo(cidList);
+                            }
                         } else {
                             getView().hideLoadingDialog();
                             getView().showNoDeviceView();
@@ -182,11 +201,8 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                             JfgCmdInsurance.getCmd().getShareList(cid);
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("getDeviceInfo" + throwable.getLocalizedMessage());
-                    }
+                }, throwable -> {
+                    AppLogger.e("getDeviceInfo" + throwable.getLocalizedMessage());
                 });
     }
 

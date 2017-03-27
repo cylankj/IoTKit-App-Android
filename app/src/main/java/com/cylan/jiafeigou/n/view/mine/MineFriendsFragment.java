@@ -59,10 +59,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @BindView(R.id.tv_friend_list_title)
     TextView tvFriendListTitle;
 
-
-
     private MineFriendsContract.Presenter presenter;
-
     private MineFriendAddFriendsFragment friendsFragment;
     private MineFriendDetailFragment relativeAndFrienDetialFragment;
     private MineFriendAddReqDetailFragment addReqDetailFragment;
@@ -156,7 +153,6 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     /**
      * 添加请求列表删除一个条目
-     *
      * @param bean
      */
     @Override
@@ -309,7 +305,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void initAddReqRecyList(ArrayList<MineAddReqBean> list) {
         hideLoadingDialog();
         recyclerviewRequestAdd.setLayoutManager(new LinearLayoutManager(getContext()));
-        addReqListAdater = new AddRelativesAndFriendsAdapter(getView().getContext(), list, null);
+        addReqListAdater = new AddRelativesAndFriendsAdapter(getContext(), list, null);
         recyclerviewRequestAdd.setAdapter(addReqListAdater);
         initAddReqAdaListener();
     }

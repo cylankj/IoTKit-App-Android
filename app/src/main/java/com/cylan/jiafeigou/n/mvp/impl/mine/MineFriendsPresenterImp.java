@@ -8,27 +8,30 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
-import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.Security;
+import com.cylan.jiafeigou.support.db.DbManager;
+import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 import java.util.Locale;
 
 import rx.Observable;
@@ -50,10 +53,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     private boolean addReqNull;
     private boolean friendListNull;
     private Network network;
-
+    private String account;
     public MineFriendsPresenterImp(MineFriendsContract.View view) {
         super(view);
         view.setPresenter(this);
+        account = DataSourceManager.getInstance().getJFGAccount().getAccount();
     }
 
     @Override
@@ -100,7 +104,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     }
 
     @Override
-    public ArrayList<RelAndFriendBean> initRelativatesAndFriendsData(RxEvent.GetFriendList friendList) {
+    public ArrayList<RelAndFriendBean> initRelFriendsData(RxEvent.GetFriendList friendList) {
+        clearAll();
         ArrayList<RelAndFriendBean> list = new ArrayList<RelAndFriendBean>();
         for (JFGFriendAccount account : friendList.arrayList) {
             RelAndFriendBean emMessage = new RelAndFriendBean();
@@ -108,12 +113,12 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.account = account.account;
             emMessage.alias = account.alias;
             try {
-//                emMessage.iconUrl = JfgCmdInsurance.getCmd().getCloudUrlByType(JfgEnum.JFG_URL.PORTRAIT, 0, account.account + ".jpg", "", Security.getVId(JFGRules.getTrimPackageName()));
                 emMessage.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", account.account));
             } catch (Exception e) {
                 e.printStackTrace();
             }
             list.add(emMessage);
+            saveInDb(emMessage);
         }
         return list;
     }
@@ -126,7 +131,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * desc：添加请求集合的排序
-     *
      * @param list
      * @return
      */
@@ -154,7 +158,6 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         Comparator<RelAndFriendBean> comparator = new Comparator<RelAndFriendBean>() {
             @Override
             public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
-                //TODO 获取到首字母
                 return 0;
             }
         };
@@ -172,7 +175,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     @Override
                     public Observable<ArrayList<RelAndFriendBean>> call(RxEvent.GetFriendList getFriendList) {
                         if (getFriendList != null) {
-                            return Observable.just(initRelativatesAndFriendsData(getFriendList));
+                            return Observable.just(initRelFriendsData(getFriendList));
                         } else {
                             return Observable.just(null);
                         }
@@ -204,7 +207,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(new Action1<RxEvent.GetAddReqList>() {
                     @Override
                     public void call(RxEvent.GetAddReqList o) {
-                        if (o != null && o instanceof RxEvent.GetAddReqList) {
+                        if (o != null) {
                             handleInitAddReqListDataResult(o);
                         }
                     }
@@ -237,11 +240,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     public void call(Object o) {
                         JfgCmdInsurance.getCmd().getFriendRequestList();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("getAddRequest: " + throwable.getLocalizedMessage());
-                    }
+                },throwable -> {
+                    AppLogger.e("getAddRequest: " + throwable.getLocalizedMessage());
                 });
     }
 
@@ -252,18 +252,30 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
      */
     @Override
     public Subscription getFriendList() {
-        return rx.Observable.just(null)
+        return Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
+                .map(new Func1<Object, List<RelAndFriendBean>>() {
                     @Override
-                    public void call(Object o) {
-                        JfgCmdInsurance.getCmd().getFriendList();
+                    public List<RelAndFriendBean> call(Object o) {
+                        if (NetUtils.getNetType(getView().getContext())== -1){
+                            return getAllFromDb();
+                        }else {
+                            JfgCmdInsurance.getCmd().getFriendList();
+                            return null;
+                        }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("getFriendList: " + throwable.getLocalizedMessage());
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list->{
+                    if (list != null){
+                        if (list.size() > 0){
+                            ArrayList<RelAndFriendBean> allList = new ArrayList<RelAndFriendBean>();
+                            allList.addAll(list);
+                            handleInitFriendListDataResult(allList);
+                        }
                     }
+                },throwable -> {
+                    AppLogger.e("getFriendList: " + throwable.getLocalizedMessage());
                 });
     }
 
@@ -283,11 +295,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             e.printStackTrace();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("sendAddReq: " + throwable.getLocalizedMessage());
-                    }
+                }, throwable -> {
+                    AppLogger.e("sendAddReq: " + throwable.getLocalizedMessage());
                 });
     }
 
@@ -307,14 +316,10 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             e.printStackTrace();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("acceptAddSDK: " + throwable.getLocalizedMessage());
-                    }
+                }, throwable -> {
+                    AppLogger.e("acceptAddSDK: " + throwable.getLocalizedMessage());
                 });
     }
-
 
     /**
      * desc:处理请求列表数据
@@ -394,11 +399,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             e.printStackTrace();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("deleteAddReq" + throwable.getLocalizedMessage());
-                    }
+                },throwable -> {
+                    AppLogger.e("deleteAddReq" + throwable.getLocalizedMessage());
                 });
     }
 
@@ -414,12 +416,13 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(new Action1<RxEvent.DeleteAddReqBack>() {
                     @Override
                     public void call(RxEvent.DeleteAddReqBack deleteAddReqBack) {
-                        if (deleteAddReqBack != null && deleteAddReqBack instanceof RxEvent.DeleteAddReqBack) {
+                        if (deleteAddReqBack != null) {
                             getView().longClickDeleteItem(deleteAddReqBack.jfgResult.code);
                         }
                     }
                 });
     }
+
 
     /**
      * 监听网络状态
@@ -453,6 +456,32 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                         getView().onNetStateChanged(integer);
                     }
                 });
+    }
+
+    public void saveInDb(RelAndFriendBean bean) {
+        try {
+            DataBaseUtil.getInstance(account).dbManager.save(bean);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void clearAll(){
+        try {
+            DataBaseUtil.getInstance(account).dbManager.delete(RelAndFriendBean.class);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<RelAndFriendBean> getAllFromDb(){
+        List<RelAndFriendBean> all = null;
+        try {
+            all = DataBaseUtil.getInstance(account).dbManager.findAll(RelAndFriendBean.class);
+        } catch (DbException e) {
+            e.printStackTrace();
+        }
+        return all;
     }
 
 }
