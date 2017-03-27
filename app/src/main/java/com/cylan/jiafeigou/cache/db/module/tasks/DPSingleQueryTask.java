@@ -42,7 +42,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
             return mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId())
                     .map(ret -> {
                         Object result = null;
-                        if (DBAction.AVAILABLE.accept(ret.action())) {
+                        if (ret != null && DBAction.AVAILABLE.accept(ret.action())) {
                             result = propertyParser.parser(ret.getMsgId(), ret.getBytes(), ret.getVersion());
                         }
                         return new BaseDPTaskResult().setResultCode(0).setResultResponse(result);
@@ -50,11 +50,14 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
         } else if (option.type == 0) {
             return mDPHelper.queryDPMsg(entity.getUuid(), entity.getVersion() == 0 ? Long.MAX_VALUE : entity.getVersion(), entity.getMsgId(), option.asc, option.limit)
                     .map(items -> {
-                        List<DataPoint> result = new ArrayList<>(items.size());
-                        DataPoint dataPoint;
-                        for (DPEntity item : items) {
-                            dataPoint = propertyParser.parser(item.getMsgId(), item.getBytes(), item.getVersion());
-                            result.add(dataPoint);
+                        List<DataPoint> result = null;
+                        if (items != null && items.size() > 0) {
+                            result = new ArrayList<>(items.size());
+                            DataPoint dataPoint;
+                            for (DPEntity item : items) {
+                                dataPoint = propertyParser.parser(item.getMsgId(), item.getBytes(), item.getVersion());
+                                result.add(dataPoint);
+                            }
                         }
                         return new BaseDPTaskResult().setResultResponse(result).setResultCode(0);
                     });

@@ -369,33 +369,5 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     } else isCollect = false;
                     return ret;
                 });
-
-//        Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
-//            try {
-//                ArrayList<JFGDPMsg> params = new ArrayList<>(1);
-//                JFGDPMsg msg = new JFGDPMsg(511, mCallRecord.timeInLong / 1000L);
-//                params.add(msg);
-//                long seq = JfgCmdInsurance.getCmd().robotGetDataByTime(mUUID, params, 0);
-//                AppLogger.d("正在检查511消息, seq 为:" + seq);
-//                subscriber.onNext(seq);
-//                subscriber.onCompleted();
-//            } catch (JfgException e) {
-//                e.printStackTrace();
-//                AppLogger.e(e.getMessage());
-//                subscriber.onError(e);
-//            }
-//        })
-//                .subscribeOn(Schedulers.io())
-//                .observeOn(Schedulers.io())
-//                .flatMap(seq -> RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> rsp.seq == seq).first())
-//                .timeout(10, TimeUnit.SECONDS)
-//                .map(result -> {
-//                    if (result.map == null || result.map.size() == 0 || result.map.get(511) == null || result.map.get(511).size() == 0) {//未收藏
-//                        isCollect = false;
-//                    } else {
-//                        isCollect = true;
-//                    }
-//                    return result;
-//                });
     }
 }

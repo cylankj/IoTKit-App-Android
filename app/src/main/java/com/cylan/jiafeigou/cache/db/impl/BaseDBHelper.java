@@ -314,12 +314,7 @@ public class BaseDBHelper implements IDBHelper {
         if (limit != null) {
             builder.limit(limit);
         }
-        return builder.orderDesc(DPEntityDao.Properties.Version).rx().list().map(dpEntities -> {
-            if (dpEntities != null) {
-
-            }
-            return dpEntities;
-        });
+        return builder.orderDesc(DPEntityDao.Properties.Version).rx().list();
     }
 
     @Override
