@@ -180,8 +180,8 @@ public class DataSourceService extends Service implements AppCallBack {//这里�
                                             } else {
                                                 if (!PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR,false)){
                                                     RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
-                                                    PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR,true);
                                                 }
+                                                PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR,false);
                                             }
                                             DataSourceManager.getInstance().initFromDB();
                                             return null;
