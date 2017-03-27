@@ -354,7 +354,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Account> updateAccount(JFGAccount account) {
-        return accountDao.queryBuilder().where(AccountDao.Properties.Server.eq(getServer()), AccountDao.Properties.Account.notEq(account.getAccount()))
+        return accountDao.queryBuilder().where(AccountDao.Properties.Server.eq(getServer()))
                 .rx().list().map(accounts -> {
                     List<Account> changed = new ArrayList<>();
                     if (accounts != null && accounts.size() > 0) {
