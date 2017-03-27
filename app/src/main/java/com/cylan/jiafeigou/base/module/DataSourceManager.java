@@ -48,7 +48,6 @@ import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
-import rx.Subscription;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
@@ -70,7 +69,6 @@ public class DataSourceManager implements JFGSourceManager {
     private Account account;//账号相关的数据全部保存到这里面
     private static DataSourceManager mDataSourceManager;
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
-    private Subscription unreadCountFetcher;
     private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
     /**
      * 未读消息数
@@ -97,6 +95,7 @@ public class DataSourceManager implements JFGSourceManager {
         makeCacheSyncDataSub();
         makeCacheAccountSub();
         makeCacheDeviceSub();
+        makeUnreadCountFetcherSub();
     }
 
     public void initFromDB() {//根据需要初始化
@@ -234,14 +233,15 @@ public class DataSourceManager implements JFGSourceManager {
         }
     }
 
-    private Subscription getUnreadCountFetcherSub() {
-        return getCacheInstance().toObservable(RobotoGetDataRsp.class)
+    private void makeUnreadCountFetcherSub() {
+        getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .throttleLast(5, TimeUnit.SECONDS)
                 .subscribe(rsp -> syncDeviceUnreadCount(), e -> {
                     AppLogger.d(e.getMessage());
                     e.printStackTrace();
+                    makeUnreadCountFetcherSub();
                 });
     }
 
@@ -366,14 +366,13 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public void clear() {
         getCacheInstance().removeAllStickyEvents();
-        if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
         isOnline = false;
         account = null;
         jfgAccount = null;
         if (unreadMap != null) unreadMap.clear();
         if (shareList != null) shareList.clear();
-        if (unreadCountFetcher != null && unreadCountFetcher.isUnsubscribed())
-            unreadCountFetcher.unsubscribe();
+        if (rawDeviceOrder != null) rawDeviceOrder.clear();
+        if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
     }
 
     @Override
@@ -492,9 +491,6 @@ public class DataSourceManager implements JFGSourceManager {
 
     public void setJfgAccount(JFGAccount jfgAccount) {
         this.jfgAccount = jfgAccount;
-        if (unreadCountFetcher == null) {
-            unreadCountFetcher = getUnreadCountFetcherSub();
-        }
         AppLogger.i("setJfgAccount:" + (jfgAccount == null));
         if (jfgAccount != null) {
             PreferencesUtils.putString(KEY_ACCOUNT, new Gson().toJson(jfgAccount));
@@ -688,7 +684,7 @@ public class DataSourceManager implements JFGSourceManager {
 
                     @Override
                     public void onNext(RxEvent.SerializeCacheGetDataEvent event) {
-                        getCacheInstance().post(event.getDataRsp);
+                        RxBus.getCacheInstance().post(event.getDataRsp);
                         request(1);
                     }
 

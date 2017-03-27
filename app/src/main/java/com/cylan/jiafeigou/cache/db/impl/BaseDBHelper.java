@@ -190,8 +190,6 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public DPEntity getProperty(String uuid, int msgId) {
         QueryBuilder<DPEntity> queryBuilder = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, null, null, null);
-        queryBuilder.where(DPEntityDao.Properties.Version.le(Long.MAX_VALUE));
-        queryBuilder.limit(1);
         DPEntity unique = queryBuilder.unique();
         return (unique != null && unique.action() != DBAction.DELETED) ? unique : null;
     }
@@ -199,7 +197,6 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Device getJFGDevice(String uuid) {
         QueryBuilder<Device> queryBuilder = buildDPDeviceQueryBuilder(dpAccount.getAccount(), getServer(), uuid, DBAction.SAVED, DBState.SUCCESS, null);
-        queryBuilder.limit(1);
         return queryBuilder.unique();
     }
 
