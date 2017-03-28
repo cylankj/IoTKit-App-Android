@@ -236,7 +236,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         getView().setMesgNumber(unreadNum);
                         if (unreadNum != 0) {
                             hasUnRead = true;
-                            markHasRead();
+                            //markHasRead();
                         } else {
                             hasUnRead = false;
                         }

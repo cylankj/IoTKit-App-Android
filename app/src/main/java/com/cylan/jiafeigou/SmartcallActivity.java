@@ -217,7 +217,7 @@ public class SmartcallActivity extends NeedLoginActivity
         } else if (code == JError.StartLoginPage && !firstSignIn) {
             splashOver();
             firstSignIn = true;
-        } else if ((code == JError.ErrorLoginInvalidPass || code == JError.ErrorAccountNotExist) && PreferencesUtils.getBoolean(JConstant.AUTO_SIGNIN_TAB, false)) {
+        } else if ((code == JError.ErrorLoginInvalidPass || code == JError.ErrorAccountNotExist || code == 162) && PreferencesUtils.getBoolean(JConstant.AUTO_SIGNIN_TAB, false)) {
 //          密码错误且是自动登录才走此
             splashOver();
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));

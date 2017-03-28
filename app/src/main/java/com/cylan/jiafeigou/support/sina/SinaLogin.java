@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.sina.weibo.sdk.auth.AuthInfo;
 import com.sina.weibo.sdk.auth.Oauth2AccessToken;
@@ -47,8 +49,9 @@ public class SinaLogin {
 
     public SinaLogin(Context context) {
         this.context = context;
-//        APP_KEY = PackageUtils.getMetaString(context, "sina_app_key");
-        APP_KEY = "1315129656";
+        APP_KEY = Security.getSinaAppKey(JFGRules.getTrimPackageName());
+//        APP_KEY = "1315129656";
+        AppLogger.d("sinaKey:"+APP_KEY);
         mWeibo = new AuthInfo(context, APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
         LogUtil.enableLog();
     }

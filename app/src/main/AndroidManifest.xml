@@ -106,7 +106,6 @@
             android:grantUriPermissions="true" />
         <!-- 华为推送 End -->
 
-
         <!-- server address -->
         <!-- <meta-data -->
         <!-- android:name="ServerAddress" -->

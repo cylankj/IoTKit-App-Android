@@ -352,7 +352,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             }
                             String decryption = AESUtil.decrypt(aesAccount);
                             AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
-                            return Observable.just(signType.account);
+                            if (signType.type != 1){
+                                return Observable.just("");
+                            }else {
+                                return Observable.just(signType.account);
+                            }
                         } catch (Exception e) {
                             e.printStackTrace();
                             return null;

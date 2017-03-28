@@ -89,6 +89,7 @@ public interface HomeMineMessageContract {
 
         void deleteOneItem(MineMessageBean bean);
 
+        void markMesgHasRead();
     }
 
 }

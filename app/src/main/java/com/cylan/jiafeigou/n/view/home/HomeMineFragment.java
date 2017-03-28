@@ -71,12 +71,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @BindView(R.id.home_mine_item_settings)
     HomeMineItemView homeMineItemSettings;
 
-    private HomeMineHelpFragment mineHelpFragment;
-    private HomeMineInfoFragment personalInformationFragment;
-    private HomeSettingFragment homeSettingFragment;
-    private MineShareDeviceFragment mineShareDeviceFragment;
-    private MineFriendsFragment mineRelativesandFriendsFragment;
-
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
         fragment.setArguments(bundle);
@@ -87,10 +81,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         this.basePresenter = new HomeMinePresenterImpl(this);
-        mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
-        homeSettingFragment = HomeSettingFragment.newInstance();
-        mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
-        mineRelativesandFriendsFragment = MineFriendsFragment.newInstance();
     }
 
     @Override
@@ -117,16 +107,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             setAliasName(getString(R.string.Tap3_LogIn));
         }
         super.onStart();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
     }
 
     /**
@@ -159,7 +139,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 return;
             }
         }
-
+        MineFriendsFragment mineRelativesandFriendsFragment = MineFriendsFragment.newInstance();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -196,6 +176,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             needStartLoginFragment();
             return;
         }
+        HomeSettingFragment homeSettingFragment = HomeSettingFragment.newInstance();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -211,6 +192,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             needStartLoginFragment();
             return;
         }
+        MineShareDeviceFragment mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -392,7 +374,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 帮助与反馈
-     *
      * @param view
      */
     private void helpItem(View view) {
@@ -401,6 +382,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             needStartLoginFragment();
             return;
         }
+        HomeMineHelpFragment mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -445,7 +427,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转个人信息页
      */
     private void jump2UserInfoFrgment() {
-        personalInformationFragment = HomeMineInfoFragment.newInstance();
+        HomeMineInfoFragment personalInformationFragment = HomeMineInfoFragment.newInstance();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
