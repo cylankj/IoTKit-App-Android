@@ -340,7 +340,7 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <!-- 进程保活 Start -->
+        <!--进程保活 Start-->
         <service
             android:name=".DaemonService1"
             android:process=":process1" />
@@ -356,7 +356,7 @@
         <receiver
             android:name=".DaemonReceiver2"
             android:process=":process2" />
-        <!-- 进程保活 End -->
+        <!--进程保活 End-->
 
         <receiver android:name=".push.HuaweiPushReceiver">
             <intent-filter>

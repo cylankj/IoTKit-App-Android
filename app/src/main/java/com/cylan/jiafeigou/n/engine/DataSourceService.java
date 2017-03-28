@@ -31,7 +31,6 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jfgapp.interfases.AppCallBack;
-import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
@@ -79,12 +78,12 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         super.onStartCommand(intent, flags, startId);
-        initNative();
         return START_STICKY;
     }
 
     @Override
     public void onCreate() {
+        initNative();
         GlobalUdpDataSource.getInstance().register();
         GlobalBellCallSource.getInstance().register();
         GlobalResetPwdSource.getInstance().register();
@@ -105,6 +104,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
 
     public void initNative() {
+
         HandlerThreadUtils.clean();
         HandlerThreadUtils.postAtFrontOfQueue(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
@@ -121,10 +121,10 @@ public class DataSourceService extends Service implements AppCallBack {
                 //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
                 String vid = Security.getVId(trimPackageName);
                 String vKey = Security.getVKey(trimPackageName);
-                JfgAppCmd.getInstance().setCallBack(DataSourceService.this);
-                JfgAppCmd.getInstance().initNativeParam(vid, vKey, extra);
-                JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
-                JfgAppCmd.getInstance().getSdkVersion();
+                JfgCmdInsurance.getCmd().setCallBack(DataSourceService.this);
+                JfgCmdInsurance.getCmd().initNativeParam(vid, vKey, extra);
+                JfgCmdInsurance.getCmd().enableLog(true, JConstant.LOG_PATH);
+                JfgCmdInsurance.getCmd().getSdkVersion();
             } catch (Exception e) {
                 AppLogger.d("let's go err:" + e.getLocalizedMessage());
             }
@@ -137,11 +137,6 @@ public class DataSourceService extends Service implements AppCallBack {
             }
 
         });
-        try {
-            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-        } catch (JfgException e) {
-            e.printStackTrace();
-        }
     }
 
     private void try2autoLogin() {

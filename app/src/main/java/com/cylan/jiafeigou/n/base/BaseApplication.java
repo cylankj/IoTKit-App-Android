@@ -48,7 +48,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private static final String TAG = "BaseApplication";
     private HttpProxyCacheServer proxy;
 
-    private DaemonClient mDaemonClient;
+        private DaemonClient mDaemonClient;
     private HuaweiApiClient client;
 
     @Override
@@ -94,14 +94,17 @@ public class BaseApplication extends MultiDexApplication implements Application.
     class MyDaemonListener implements DaemonConfigurations.DaemonListener {
         @Override
         public void onPersistentStart(Context context) {
+            AppLogger.d("onPersistentStart");
         }
 
         @Override
         public void onDaemonAssistantStart(Context context) {
+            AppLogger.d("onDaemonAssistantStart");
         }
 
         @Override
         public void onWatchDaemonDaed() {
+            AppLogger.d("onWatchDaemonDaed");
         }
     }
 
@@ -118,6 +121,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         registerBootComplete();
         registerActivityLifecycleCallbacks(this);
         initHuaweiPushSDK();
+        startService(new Intent(this, DataSourceService.class));
         Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
     }
 
@@ -126,13 +130,15 @@ public class BaseApplication extends MultiDexApplication implements Application.
      */
     public void try2init() {
         if (PermissionUtils.hasSelfPermissions(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            startService(new Intent(this, DataSourceService.class));
+
             initBlockCanary();
         } else {
             RxBus.getCacheInstance().postSticky(new RxEvent.ShouldCheckPermission());
             Log.d("try2init", "try2init failed");
         }
     }
+
+
 
     private void initHuaweiPushSDK() {
         AppLogger.d("正在初始化华为推送SDK");
