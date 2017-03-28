@@ -23,9 +23,23 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     protected abstract int pid();
 
+    /**
+     * @param msgId
+     * @param defaultValue
+     * @param <V>
+     * @return
+     */
     public <V> V $(int msgId, V defaultValue) {
-        DPEntity entity = getProperty(msgId);
-        return entity == null || entity.getValue(defaultValue) == null ? defaultValue : entity.getValue(defaultValue);
+        try {
+            DPEntity entity = getProperty(msgId);
+            V r = entity == null ? null : entity.getValue(defaultValue);
+            if (r != null && defaultValue != null && defaultValue.getClass().isInstance(r)) {
+                return r;
+            }
+            return defaultValue;
+        } catch (ClassCastException e) {
+            return defaultValue;
+        }
     }
 
     @Override

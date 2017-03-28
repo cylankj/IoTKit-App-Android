@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
+import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -91,7 +92,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     @Override
     public void onDetach() {
         super.onDetach();
-        JConstant.ConfigApStep=0;
+        JConstant.ConfigApStep = 0;
         if (basePresenter != null) {
             basePresenter.clean();
         } else {
@@ -106,34 +107,6 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
         progressLoading.setLayoutParams(l);
     }
 
-//    private AlertDialog getDialog() {
-//        if (needRebindDialog == null)
-//            needRebindDialog = new AlertDialog.Builder(getActivity())
-//                    .setMessage(getString(R.string.BIND_NEED_REBIND))
-//                    .setPositiveButton(getString(R.string.OK), null)
-//                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-//                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
-//                            ((BindDeviceActivity) getActivity()).finishExt();
-//                        }
-//                    })
-//                    .create();
-//        needRebindDialog.setOnShowListener(dialog -> {
-//            Button button = ((AlertDialog) dialog).getButton(AlertDialog.BUTTON_POSITIVE);
-//            button.setOnClickListener(view -> {
-//                int net = NetUtils.getJfgNetType(getActivity());
-//                if (net == 0) {
-//                    ToastUtil.showToast(getString(R.string.NoNetworkTips));
-//                    return;
-//                }
-//                basePresenter.startCounting();
-//                basePresenter.setBindState(BindUtils.BIND_PREPARED);
-//                basePresenter.start();
-//                ToastUtil.showToast("还没有强绑接口");
-//            });
-//        });
-//        return needRebindDialog;
-//    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -142,12 +115,6 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     @Override
     public void onResume() {
         super.onResume();
-//        if (needRebindDialog != null && needRebindDialog.isShowing()) return;
-//        int result = basePresenter.getBindState();
-//        if (result == BindUtils.BIND_NEED_REBIND) {
-//            needRebindDialog = getDialog();
-//            needRebindDialog.show();
-//        }
     }
 
     @Override
@@ -155,13 +122,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
         if (state == BindUtils.BIND_FAILED) {//失败
             //绑定失败
             vsLayoutSwitch.showNext();
-//            if (needRebindDialog != null && needRebindDialog.isShowing())
-//                needRebindDialog.dismiss();
         } else if (state == BindUtils.BIND_NEED_REBIND) {//强绑
-//            if (needRebindDialog != null && needRebindDialog.isShowing())
-//                needRebindDialog.dismiss();
-//            getDialog();
-//            needRebindDialog.show();
             basePresenter.endCounting();
         } else if (state == BindUtils.BIND_SUC) {//成功
             progressLoading.setVisibility(View.INVISIBLE);
@@ -175,20 +136,14 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
         } else if (state == BindUtils.BIND_NULL) {
             if (nullCidDialog != null && nullCidDialog.isShowing()) return;
             nullCidDialog = new AlertDialog.Builder(getActivity())
-                    .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
-                                ((BindDeviceActivity) getActivity()).finishExt();
-                            }
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                            ((BindDeviceActivity) getActivity()).finishExt();
                         }
                     })
-                    .setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
-                                ((BindDeviceActivity) getActivity()).finishExt();
-                            }
+                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                        if (getActivity() != null && getActivity() instanceof BindDeviceActivity) {
+                            ((BindDeviceActivity) getActivity()).finishExt();
                         }
                     })
                     .create();
@@ -214,7 +169,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     @OnClick(R.id.btn_bind_failed_repeat)
     public void onClick() {
         getActivity().finish();
-        Intent intent = new Intent(getActivity(), BindDeviceActivity.class);
+        Intent intent = new Intent(getActivity(), BindCamActivity.class);
         intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
         startActivity(intent);
     }

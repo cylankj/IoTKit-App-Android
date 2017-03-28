@@ -527,7 +527,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnBindDevRsp(int i, String s) {
         AppLogger.d("onBindDev: " + i + " uuid:" + s);
         RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(i, s));
-        PreferencesUtils.putString(JConstant.UN_BIND_DEVICE, "");
+        PreferencesUtils.putString(JConstant.BINDING_DEVICE, "");
     }
 
     @Override

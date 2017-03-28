@@ -119,7 +119,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid))
                 .doOnCompleted(() -> {
                     Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
-                    getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
+                    getCacheInstance().post(new RxEvent.DevicesArrived(getAllJFGDevice()));
                 })
                 .subscribe(ret -> {
                 }, e -> {
@@ -628,7 +628,7 @@ public class DataSourceManager implements JFGSourceManager {
                         }
                         JfgCmdInsurance.getCmd().getShareList(uuidList);
                         AppLogger.d("正在请求共享账号数据");
-                        getCacheInstance().postSticky(new RxEvent.DevicesArrived(getAllJFGDevice()));
+                        getCacheInstance().post(new RxEvent.DevicesArrived(getAllJFGDevice()));
                     } catch (JfgException e) {
                         AppLogger.d(e.getMessage());
                         e.printStackTrace();

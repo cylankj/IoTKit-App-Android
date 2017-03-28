@@ -1,10 +1,15 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGResult;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SimulatePercent;
+import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -12,17 +17,21 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_SUC;
+import static com.cylan.jiafeigou.utils.BindUtils.BIND_TIME_OUT;
 
 /**
  * Created by cylan-hunt on 16-11-12.
@@ -34,6 +43,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
     private SimulatePercent simulatePercent;
     private CompositeSubscription subscription;
     private int bindResult;
+    private long startTick;
 
     public SubmitBindingInfoContractImpl(SubmitBindingInfoContract.View view, String uuid) {
         super(view, uuid);
@@ -70,9 +80,40 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
     }
 
+    private void getUUid() {
+        if (!TextUtils.isEmpty(uuid)) return;
+        String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
+        try {
+            UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
+            AppLogger.d("portrait: " + portrait);
+            uuid = portrait.uuid;
+        } catch (Exception e) {
+        }
+    }
+
     @Override
     public void start() {
         super.start();
+        getUUid();
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        DpMsgDefine.DPNet net = device == null ? null : device.$(201, new DpMsgDefine.DPNet());
+        if (startTick == 0) {//可能是覆盖绑定.
+            startTick = System.currentTimeMillis();
+            if (net != null) {//不能填null
+                device.setValue(201, new DpMsgDefine.DPNet());//先清空
+            }
+        }
+        if (System.currentTimeMillis() - startTick > 90 * 1000) {
+            //timeout
+            mView.bindState(BIND_TIME_OUT);
+            return;
+        }
+        if (!TextUtils.isEmpty(uuid) && net != null && net.net > 0) {
+            //good
+            mView.bindState(BIND_SUC);
+            endCounting();
+            return;
+        }
         //超时
         if (bindResult == BindUtils.BIND_PREPARED) {
             bindResult = BindUtils.BIND_ING;
@@ -81,6 +122,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 AppLogger.d("add sub result");
                 subscription.add(bindResultSub());
                 subscription.add(bindResultSub1());
+                subscription.add(robotDeviceDataSync());
             }
         }
         if (bindResult == BindUtils.BIND_ING) {
@@ -98,54 +140,73 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.BindDeviceEvent.class)
                 .observeOn(Schedulers.newThread())
                 .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null/** && TextUtils.equals(bindDeviceEvent.uuid, uuid)**/)
-                .timeout(90, TimeUnit.SECONDS, Observable.just("timeout")
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .filter(s -> getView() != null)
-                        .map(s -> {
-                            getView().bindState(bindResult = BindUtils.BIND_FAILED);
-                            AppLogger.e("timeout: " + s);
-                            return null;
-                        }))
                 .filter(viceEvent -> getView() != null && viceEvent != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RxEvent.BindDeviceEvent result) -> {
                     getView().bindState(bindResult = result.bindResult);
-                    if (simulatePercent != null && bindResult == 0) {
-                        simulatePercent.boost();
-                    }
-                    AppLogger.i("bind success: " + result);
+                    AppLogger.i("bind result: " + result);
                     return null;
                 })
                 .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
                 .subscribe();
     }
 
-    private Subscription bindResultSub1() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.DevicesArrived.class)
-                .observeOn(Schedulers.newThread())
-                .flatMap(new Func1<RxEvent.DevicesArrived, Observable<Device>>() {
-                    @Override
-                    public Observable<Device> call(RxEvent.DevicesArrived devicesArrived) {
-                        return Observable.from(devicesArrived.devices);
+    /**
+     * robot同步数据
+     *
+     * @return
+     */
+    private Subscription robotDeviceDataSync() {
+        long time = System.currentTimeMillis() - startTick;
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .subscribeOn(Schedulers.newThread())
+                .timeout(90 * 1000L - time, TimeUnit.MILLISECONDS)
+                .filter(jfgRobotSyncData -> (ListUtils.getSize(jfgRobotSyncData.dpList) > 0))
+                .filter(ret -> uuid != null && TextUtils.equals(uuid, ret.uuid) && mView != null)
+                .flatMap(ret -> Observable.from(ret.dpList))
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(msg -> {
+                    try {
+                        if (msg.id == 201)//网络
+                        {
+                            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                            if (device != null) {
+                                DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+                                if (net.net > 0) {
+                                    mView.bindState(0);
+                                    endCounting();
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
-                })
+                }, throwable -> {
+                    if (throwable instanceof TimeoutException) {
+                        mView.bindState(BIND_TIME_OUT);
+                    } else {
+                        addSubscription(robotDeviceDataSync());
+                    }
+                    AppLogger.e("err: " + throwable.getLocalizedMessage());
+                });
+    }
+
+    private Subscription bindResultSub1() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class)
+                .observeOn(Schedulers.newThread())
+                .flatMap(ret -> Observable.from(ret.devices))
                 .filter(device -> getView() != null && TextUtils.equals(device.uuid, uuid))
-                .timeout(90, TimeUnit.SECONDS, Observable.just("timeout")
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .filter(s -> getView() != null)
-                        .map(s -> {
-                            getView().bindState(bindResult = BindUtils.BIND_FAILED);
-                            AppLogger.e("timeout: " + s);
-                            return null;
-                        }))
                 .filter(viceEvent -> getView() != null && viceEvent != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((Device result) -> {
-                    getView().bindState(bindResult = BIND_SUC);
-                    if (simulatePercent != null && bindResult == BIND_SUC) {
-                        simulatePercent.boost();
+                    DpMsgDefine.DPNet net = result.$(201, new DpMsgDefine.DPNet());
+                    if (net.net > 0) {
+                        getView().bindState(bindResult = BIND_SUC);
+                        if (simulatePercent != null && bindResult == BIND_SUC) {
+                            simulatePercent.boost();
+                        }
+                        AppLogger.i("bind success: " + result);
                     }
-                    AppLogger.i("bind success: " + result);
                     return null;
                 })
                 .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))

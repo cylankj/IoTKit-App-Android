@@ -300,6 +300,6 @@ public class JConstant {
     public static final String KEY_DEVICE_SETTING_SHOW_RED = "device_setting_show";
 
 
-    public static final String UN_BIND_DEVICE = "key_need_bind";
+    public static final String BINDING_DEVICE = "key_need_bind";//
     public static final String CHECK_HARDWARE_TIME = "check_hardware_time";
 }
