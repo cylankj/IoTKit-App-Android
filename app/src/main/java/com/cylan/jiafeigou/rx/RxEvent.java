@@ -344,6 +344,7 @@ public class RxEvent {
         }
     }
 
+    @Deprecated
     public static final class BindDeviceEvent {
         public int bindResult;
         public String uuid;
@@ -674,16 +675,6 @@ public class RxEvent {
 //    }
 
     public static class DeviceSyncRsp {
-        public DeviceSyncRsp setUuid(String uuid) {
-            this.uuid = uuid;
-            return this;
-        }
-
-        public DeviceSyncRsp setUuid(String uuid, ArrayList<Long> idList) {
-            this.uuid = uuid;
-            this.idList = idList;
-            return this;
-        }
 
         public DeviceSyncRsp setUuid(String uuid, ArrayList<Long> idList, ArrayList<JFGDPMsg> dpList) {
             this.uuid = uuid;

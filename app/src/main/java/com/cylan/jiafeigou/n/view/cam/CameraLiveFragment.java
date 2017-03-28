@@ -315,9 +315,12 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (vLive != null && vLive.getVideoView() != null) {
             vLive.getVideoView().onResume();
             Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-            DpMsgDefine.DpHangMode dpPrimary = device.$(509, new DpMsgDefine.DpHangMode());
-            if (dpPrimary == null) dpPrimary = new DpMsgDefine.DpHangMode();
-            vLive.getVideoView().setMode(dpPrimary.safeGetValue());
+            String dpPrimary = device.$(509, "0");
+            try {
+                vLive.getVideoView().setMode(Integer.parseInt(dpPrimary));
+            } catch (Exception e) {
+
+            }
         }
     }
 

@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.misc.bind;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.ex.JfgException;
 import com.cylan.ext.opt.DebugOptionsImpl;
@@ -254,7 +253,7 @@ public class SimpleBindFlow extends AFullBind {
                 .subscribe((UdpConstant.UdpDevicePortrait portrait) -> {
                     //此时,设备还没恢复连接,需要加入队列
                     portrait.bindCode = bindCode;
-                    PreferencesUtils.putString(JConstant.UN_BIND_DEVICE, new Gson().toJson(portrait));
+                    PreferencesUtils.putString(JConstant.BINDING_DEVICE, new Gson().toJson(portrait));
                     AppLogger.i(BIND_TAG + "onLocalFlowFinish: " + portrait);
                     //恢复wifi
                     iBindResult.onLocalFlowFinish();

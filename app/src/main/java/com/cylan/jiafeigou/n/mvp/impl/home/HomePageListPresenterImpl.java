@@ -20,13 +20,13 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ListUtils;
 
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -50,6 +50,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 devicesUpdate(),
                 internalUpdateUuidList(),
                 devicesUpdate1(),
+                robotDeviceDataSync(),
                 JFGAccountUpdate(),
                 unreadCountUpdate(),
         };
@@ -152,6 +153,32 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private void subUuidList() {
         getView().onItemsInsert(DataSourceManager.getInstance().getAllJFGDevice());
         getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
+    }
+
+    /**
+     * robot同步数据
+     *
+     * @return
+     */
+    private Subscription robotDeviceDataSync() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(jfgRobotSyncData -> (ListUtils.getSize(jfgRobotSyncData.dpList) > 0 && getView() != null))
+                .flatMap(ret -> Observable.from(ret.dpList))
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .subscribe(msg -> {
+                    try {
+                        if (msg.id == 508 //待机
+                                || msg.id == 201//网络
+                                || msg.id == 501 //安全防护
+                                || msg.id == 223) {//3g
+                            RxBus.getCacheInstance().post(new InternalHelp());
+                        }
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     private Subscription internalUpdateUuidList() {

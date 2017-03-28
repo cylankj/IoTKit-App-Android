@@ -87,8 +87,8 @@ public class DPConstant {
     @DPMessage(type = Boolean.class, dpType = TYPE_PRIMARY)
     public static final int DEVICE_MOBILE_NET_PRIORITY = 217;
 
-    @DpAnnotation(msgId = 218, clazz = DpMsgDefine.DpSdcardFormatRsp.class)
-    @DPMessage(type = DpMsgDefine.DpSdcardFormatRsp.class, dpType = TYPE_PRIMARY, target = {CAMERA})
+    @DpAnnotation(msgId = 218, clazz = int.class)
+    @DPMessage(type = int.class, dpType = TYPE_PRIMARY, target = {CAMERA})
     public static final int DEVICE_FORMAT_SDCARD = 218;
 
     @DpAnnotation(msgId = 219, clazz = DpMsgDefine.DPBindLog.class)

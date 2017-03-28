@@ -39,11 +39,12 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     private OnDayChangedListener mListener;
     private int mLastPosition = -1;
     private SuperAdapter<WheelItem> mAdapter;
-    private WheelLayoutManager mManager;
+    //    private WheelLayoutManager mManager;
     private static final long DAY_TIME = 24 * 60 * 60 * 1000L;
 
     private final int HALF_SCREEN_COUNT;
     private final int ITEM_WIDTH;
+    private final float HALF_SCREEN_WIDTH;
 
     public WonderIndicatorWheelView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -53,6 +54,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         //原理，需要保证最左边一个有数据的一天的左边还有N个item.所以最左边的一个item才能移到中间。
         //item之间没有间隙。
         HALF_SCREEN_COUNT = screenWidth / 2 / ITEM_WIDTH + 1;//半屏有这么多个
+        HALF_SCREEN_WIDTH = screenWidth / 2;
     }
 
     @Override
@@ -68,7 +70,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     }
 
     private void initView() {
-        mManager = new WheelLayoutManager(getContext());
+        WheelLayoutManager mManager = new WheelLayoutManager(getContext());
         mManager.setOrientation(HORIZONTAL);
         mIndicatorList.setLayoutManager(mManager);
         mAdapter = new SuperAdapter<WheelItem>(getContext(), null, R.layout.wonder_indicaror_item) {
@@ -138,13 +140,15 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         //需要auto append data,左边右边都需要填充数据
         AppLogger.d(String.format(Locale.getDefault(), "initSize half screen item counts:%s", HALF_SCREEN_COUNT));
         long startTime = TimeUtils.getSpecificDayStartTime(items.get(0).time);
-        for (int j = 0; j < HALF_SCREEN_COUNT; j++) {
+        //头也加
+        for (int j = 1; j < HALF_SCREEN_COUNT + 1; j++) {
             WheelItem item = new WheelItem();
             item.time = startTime - j * 24 * 3600 * 1000L;
             items.add(0, item);
         }
+        //尾部也加
         startTime = items.get(items.size() - 1).time;
-        for (int j = 0; j < HALF_SCREEN_COUNT; j++) {
+        for (int j = 1; j < HALF_SCREEN_COUNT + 1; j++) {
             WheelItem item = new WheelItem();
             item.time = startTime + j * 24 * 3600 * 1000L;
             items.add(item);
@@ -158,15 +162,8 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
             float scrollX = mIndicatorList.computeHorizontalScrollOffset();
             int targetOffset = ITEM_WIDTH * rightIndex;
             AppLogger.d("scrollX:" + scrollX + ",targetOffset:" + targetOffset);
+            mIndicatorList.smoothScrollBy((int) (targetOffset - scrollX - HALF_SCREEN_WIDTH + ITEM_WIDTH / 2), 0);
         });
-    }
-
-    private int findIndex(long time) {
-        int size = mAdapter.getCount();
-        for (int i = 0; i < size; i++) {
-            if (mAdapter.getItem(i).time == time) return i;
-        }
-        return -1;
     }
 
     private int findIndexFromRight() {
@@ -177,17 +174,6 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
             }
         }
         return -1;
-    }
-
-    private void autoFocusIndex(long time) {
-        int index = findIndex(time);
-        if (index != -1 && index < mAdapter.getCount()) {
-            autoFocusIndex(index);
-        }
-    }
-
-    private void autoFocusIndex(int index) {
-
     }
 
     public void notify(long time, boolean hasDate, boolean selected) {

@@ -6,6 +6,7 @@ import android.widget.RadioButton;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -37,11 +38,14 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         ButterKnife.bind(this);
         customToolbar.setBackAction((View v) -> onBackPressed());
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         //平视
-        DpMsgDefine.DpHangMode dpPrimary = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
-        if (dpPrimary == null) dpPrimary = new DpMsgDefine.DpHangMode();
-        rbtnSightHorizontal.setChecked(dpPrimary.safeGetValue() == 0);
-        rbtnSightVertical.setChecked(dpPrimary.safeGetValue() == 1);
+        String dpPrimary = device.$(509, "0");
+        try {
+            rbtnSightHorizontal.setChecked(Integer.parseInt(dpPrimary) == 0);
+            rbtnSightVertical.setChecked(Integer.parseInt(dpPrimary) == 1);
+        } catch (Exception e) {
+        }
     }
 
     @Override
@@ -56,9 +60,9 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
                 Observable.just("save")
                         .subscribeOn(Schedulers.newThread())
                         .map(s -> {
-                            DpMsgDefine.DpHangMode mode = new DpMsgDefine.DpHangMode();
                             try {
-                                DataSourceManager.getInstance().updateValue(uuid, mode, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+                                DpMsgDefine.DPPrimary<String> dpPrimary = new DpMsgDefine.DPPrimary<String>("0");
+                                DataSourceManager.getInstance().updateValue(uuid, dpPrimary, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
                             } catch (IllegalAccessException e) {
                                 AppLogger.e("err: ");
                             }
@@ -71,10 +75,9 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
                 Observable.just("save")
                         .subscribeOn(Schedulers.newThread())
                         .map(s -> {
-                            DpMsgDefine.DpHangMode mode = new DpMsgDefine.DpHangMode();
-                            mode.mode = "1";
+                            DpMsgDefine.DPPrimary<String> dpPrimary = new DpMsgDefine.DPPrimary<String>("1");
                             try {
-                                DataSourceManager.getInstance().updateValue(uuid, mode, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+                                DataSourceManager.getInstance().updateValue(uuid, dpPrimary, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
                             } catch (IllegalAccessException e) {
                                 AppLogger.e("err: ");
                             }

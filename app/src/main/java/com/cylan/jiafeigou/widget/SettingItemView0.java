@@ -15,7 +15,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.kyleduo.switchbutton.SwitchButton;
 
 /**
  * Created by cylan-hunt on 16-7-29.
@@ -34,7 +33,7 @@ public class SettingItemView0 extends RelativeLayout {
     ImageView imgvIcon;
     ImageView imgvRedHint;
 
-    SwitchButton switchButton;
+    SafeCheckBox switchButton;
     View v_divider;
 
     public SettingItemView0(Context context) {
@@ -55,7 +54,7 @@ public class SettingItemView0 extends RelativeLayout {
         imgvRedHint = (ImageView) view.findViewById(R.id.imv_item_red_hint);
         imgvIcon.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_image_show, true)
                 ? VISIBLE : GONE);
-        switchButton = (SwitchButton) view.findViewById(R.id.btn_item_switch);
+        switchButton = (SafeCheckBox) view.findViewById(R.id.btn_item_switch);
         final String title = ta.getString(R.styleable.SettingItemViewStyle_sv_title);
         final String subTitle = ta.getString(R.styleable.SettingItemViewStyle_sv_sub_title);
         final Drawable srcId = ta.getDrawable(R.styleable.SettingItemViewStyle_sv_image_src);
@@ -125,7 +124,11 @@ public class SettingItemView0 extends RelativeLayout {
     }
 
     public void setChecked(boolean checked) {
-        switchButton.setChecked(checked);
+        switchButton.setChecked(checked, false);
+    }
+
+    public void setChecked(boolean checked, boolean toggle) {
+        switchButton.setChecked(checked, toggle);
     }
 
     @Override

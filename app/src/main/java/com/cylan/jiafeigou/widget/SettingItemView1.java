@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.kyleduo.switchbutton.SwitchButton;
 
 /**
  * Created by cylan-hunt on 16-7-29.
@@ -23,7 +22,7 @@ public class SettingItemView1 extends FrameLayout {
      * 主标题
      */
     TextView tvTitle;
-    com.kyleduo.switchbutton.SwitchButton switchButton;
+    SafeCheckBox switchButton;
 
     public SettingItemView1(Context context) {
         this(context, null);
@@ -38,7 +37,7 @@ public class SettingItemView1 extends FrameLayout {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SettingItemViewStyle);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_settings_item1, this, true);
         tvTitle = (TextView) view.findViewById(R.id.tv_settings_item_title);
-        switchButton = (SwitchButton) view.findViewById(R.id.btn_item_switch);
+        switchButton = (SafeCheckBox) view.findViewById(R.id.btn_item_switch);
         switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_switch_visibility, true)
                 ? VISIBLE : GONE);
         final String title = ta.getString(R.styleable.SettingItemViewStyle_sv_title);
@@ -67,7 +66,11 @@ public class SettingItemView1 extends FrameLayout {
     }
 
     public void setChecked(boolean checked) {
-        switchButton.setChecked(checked);
+        switchButton.setChecked(checked, false);
+    }
+
+    public void setChecked(boolean checked, boolean toggle) {
+        switchButton.setChecked(checked, toggle);
     }
 
     @Override

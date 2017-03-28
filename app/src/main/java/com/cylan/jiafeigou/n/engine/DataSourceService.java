@@ -124,7 +124,7 @@ public class DataSourceService extends Service implements AppCallBack {
                 JfgCmdInsurance.getCmd().setCallBack(DataSourceService.this);
                 JfgCmdInsurance.getCmd().initNativeParam(vid, vKey, extra);
                 JfgCmdInsurance.getCmd().enableLog(true, JConstant.LOG_PATH);
-                JfgCmdInsurance.getCmd().getSdkVersion();
+                AppLogger.d("sdk version:" + JfgCmdInsurance.getCmd().getSdkVersion());
             } catch (Exception e) {
                 AppLogger.d("let's go err:" + e.getLocalizedMessage());
             }
@@ -523,7 +523,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnBindDevRsp(int i, String s) {
         AppLogger.d("onBindDev: " + i + " uuid:" + s);
         RxBus.getCacheInstance().postSticky(new RxEvent.BindDeviceEvent(i, s));
-        PreferencesUtils.putString(JConstant.UN_BIND_DEVICE, "");
+        PreferencesUtils.putString(JConstant.BINDING_DEVICE, "");
     }
 
     @Override
