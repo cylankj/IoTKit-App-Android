@@ -196,14 +196,12 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
         } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(isOpenLoginBack());
-//            compositeSubscription.add(getAccount());
+            compositeSubscription.add(getAccount());
         }
     }
 
-
     /**
      * 判断是否是三方登录
-     *
      * @return
      */
     @Override
@@ -213,7 +211,6 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     /**
      * 三方登录的回调
-     *
      * @return
      */
     @Override

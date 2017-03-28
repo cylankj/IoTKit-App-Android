@@ -56,6 +56,7 @@ import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.utils.LocaleUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -156,7 +157,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void onStart() {
         super.onStart();
         initView();
-        initPersonalInformation(DataSourceManager.getInstance().getJFGAccount());
+        if(NetUtils.getNetType(getContext()) == -1){
+            initPersonalInformation(DataSourceManager.getInstance().getJFGAccount());
+        }
     }
 
     @Override

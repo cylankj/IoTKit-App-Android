@@ -25,6 +25,17 @@ extern "C" JNIEXPORT jstring JNICALL native_getQQKey(JNIEnv *env, jclass clazz, 
         result = "1103156296";
         return env->NewStringUTF(result.c_str());
     }
+
+    if (strcmp(content, "test1") == 0) {
+        result = "1106028314";
+        return env->NewStringUTF(result.c_str());
+    }
+
+    if (strcmp(content, "yf") == 0) {
+        result = "1106028314";
+        return env->NewStringUTF(result.c_str());
+    }
+
     env->ReleaseStringUTFChars(content_, content);
     return env->NewStringUTF(result.c_str());
 }
@@ -60,6 +71,19 @@ extern "C" jstring JNICALL native_getWeChatKey(JNIEnv *env, jclass clazz, jstrin
         env->ReleaseStringUTFChars(content_, content);
         return env->NewStringUTF(result.c_str());
     }
+
+    if (strcmp(content, "") == 0) {
+        result = "wx3081bcdae8a842cf";
+        env->ReleaseStringUTFChars(content_, content);
+        return env->NewStringUTF(result.c_str());
+    }
+
+    if (strcmp(content, "doby") == 0) {
+        result = "wx382033a16e5cc4a5";
+        env->ReleaseStringUTFChars(content_, content);
+        return env->NewStringUTF(result.c_str());
+    }
+
     env->ReleaseStringUTFChars(content_, content);
     return env->NewStringUTF(result.c_str());
 }

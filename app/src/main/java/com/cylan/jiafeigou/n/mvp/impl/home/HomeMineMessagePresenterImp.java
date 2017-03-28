@@ -198,6 +198,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             results.clear();
                         if (robotoGetDataRsp != null && robotoGetDataRsp.seq == seq) {
                             results.addAll(convertData(robotoGetDataRsp));
+                            markMesgHasRead();
                         }
                         return results;
                     }
@@ -315,6 +316,21 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     try {
                         dbManager.delete(MineMessageBean.class,WhereBuilder.b("name","=",bean.name).and("startTime","=",bean.time));
                     } catch (DbException e) {
+                        e.printStackTrace();
+                    }
+                });
+    }
+
+    @Override
+    public void markMesgHasRead() {
+        rx.Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe((Object o) -> {
+                    try {
+                        long req = JfgCmdInsurance.getCmd().robotCountDataClear("", new long[]{601L, 701L}, 0);
+                        AppLogger.d("mine_markHasRead:"+req);
+                    } catch (JfgException e) {
+                        AppLogger.e("mine_markHasRead:"+e.getLocalizedMessage());
                         e.printStackTrace();
                     }
                 });
