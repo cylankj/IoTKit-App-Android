@@ -31,7 +31,6 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jfgapp.interfases.AppCallBack;
-import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
@@ -121,10 +120,10 @@ public class DataSourceService extends Service implements AppCallBack {
                 //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
                 String vid = Security.getVId(trimPackageName);
                 String vKey = Security.getVKey(trimPackageName);
-                JfgAppCmd.getInstance().setCallBack(DataSourceService.this);
-                JfgAppCmd.getInstance().initNativeParam(vid, vKey, extra);
-                JfgAppCmd.getInstance().enableLog(true, JConstant.LOG_PATH);
-                JfgAppCmd.getInstance().getSdkVersion();
+                JfgCmdInsurance.getCmd().setCallBack(DataSourceService.this);
+                JfgCmdInsurance.getCmd().initNativeParam(vid, vKey, extra);
+                JfgCmdInsurance.getCmd().enableLog(true, JConstant.LOG_PATH);
+                AppLogger.d("sdk version:" + JfgCmdInsurance.getCmd().getSdkVersion());
             } catch (Exception e) {
                 AppLogger.d("let's go err:" + e.getLocalizedMessage());
             }

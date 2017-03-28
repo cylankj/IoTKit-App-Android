@@ -42,6 +42,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -194,7 +195,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
-        if (resetPhoto){
+        if (resetPhoto) {
             //我的界面刷新显示头像
             RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
             resetPhoto = false;
@@ -329,7 +330,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     @Override
     public void initPersonalInformation(JFGAccount bean) {
-        MyViewTarget myViewTarget = new MyViewTarget(userImageHead,getContext().getResources());
+        MyViewTarget myViewTarget = new MyViewTarget(userImageHead, getContext().getResources());
         String photoUrl = "";
         if (bean != null) {
             argumentData = bean;
@@ -377,11 +378,12 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         private final WeakReference<ImageView> image;
         private final WeakReference<Resources> resources;
 
-        public MyViewTarget(ImageView view,Resources resource) {
+        public MyViewTarget(ImageView view, Resources resource) {
             super(view);
             image = new WeakReference<ImageView>(view);
             resources = new WeakReference<Resources>(resource);
         }
+
         @Override
         protected void setResource(Bitmap resource) {
             if (resource == null)
@@ -449,6 +451,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     /**
      * popupwindow条目点击
+     *
      * @param view
      */
     private void setOnPopupViewClick(View view) {
@@ -607,6 +610,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 if (getView() != null && argumentData != null) {
                     presenter.logOut(argumentData.getAccount());
                     jump2LoginFragment();
+                    if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
+                        ((NewHomeActivity) getActivity()).finishExt();
+                    }
                 }
             }
         });
@@ -727,9 +733,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         }
     }
 
-    public void setPermissionDialog(String permission){
+    public void setPermissionDialog(String permission) {
         new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, "",permission))
+                .setMessage(getString(R.string.permission_auth, "", permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                 })
@@ -740,7 +746,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 .show();
     }
 
-    private void openSetting(){
+    private void openSetting() {
         Intent localIntent = new Intent();
         localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (Build.VERSION.SDK_INT >= 9) {
@@ -749,7 +755,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         } else if (Build.VERSION.SDK_INT <= 8) {
             localIntent.setAction(Intent.ACTION_VIEW);
             localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
-            localIntent.putExtra("com.android.settings.ApplicationPkgName",getContext().getPackageName());
+            localIntent.putExtra("com.android.settings.ApplicationPkgName", getContext().getPackageName());
         }
         startActivity(localIntent);
     }
@@ -757,7 +763,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if (popupWindow != null){
+        if (popupWindow != null) {
             popupWindow.dismiss();
             popupWindow = null;
         }

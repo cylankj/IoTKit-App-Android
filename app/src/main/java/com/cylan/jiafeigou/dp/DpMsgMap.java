@@ -271,7 +271,7 @@ public final class DpMsgMap {
         ID_2_CLASS_MAP.put(215, boolean.class);
         ID_2_CLASS_MAP.put(216, boolean.class);
         ID_2_CLASS_MAP.put(217, boolean.class);
-        ID_2_CLASS_MAP.put(218, DpMsgDefine.DpSdcardFormatRsp.class);
+        ID_2_CLASS_MAP.put(218, int.class);
         ID_2_CLASS_MAP.put(219, DpMsgDefine.DPBindLog.class);
         ID_2_CLASS_MAP.put(220, String.class);
         ID_2_CLASS_MAP.put(223, int.class);

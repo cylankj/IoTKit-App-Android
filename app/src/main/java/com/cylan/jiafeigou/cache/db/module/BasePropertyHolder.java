@@ -25,7 +25,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     public <V> V $(int msgId, V defaultValue) {
         DPEntity entity = getProperty(msgId);
-        return entity == null ? defaultValue : entity.getValue(defaultValue);
+        return entity == null || entity.getValue(defaultValue) == null ? defaultValue : entity.getValue(defaultValue);
     }
 
     @Override

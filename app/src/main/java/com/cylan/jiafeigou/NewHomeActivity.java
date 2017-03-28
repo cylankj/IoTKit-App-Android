@@ -52,7 +52,6 @@ public class NewHomeActivity extends NeedLoginActivity implements
     private SharedElementCallBackListener sharedElementCallBackListener;
     private Subscription subscribe;
     private Subscription resetPwdSubscribe;
-    private HomeViewAdapter viewAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,9 +95,9 @@ public class NewHomeActivity extends NeedLoginActivity implements
         resetPwdSubscribe = RxBus.getCacheInstance().toObservable(RxEvent.LogOutByResetPwdTab.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event ->{
+                .subscribe(event -> {
                     if (event.b)
-                    finish();
+                        finish();
                 });
     }
 
@@ -124,7 +123,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
     }
 
     private void initMainContentAdapter() {
-        viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
+        HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
         vpHomeContent.setPagingEnabled(true);
         vpHomeContent.setAdapter(viewAdapter);
         vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {

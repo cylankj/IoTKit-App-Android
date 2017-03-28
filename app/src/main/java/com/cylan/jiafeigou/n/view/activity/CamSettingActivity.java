@@ -46,7 +46,6 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.SettingItemView1;
-import com.kyleduo.switchbutton.SwitchButton;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -91,7 +90,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     @BindView(R.id.sbtn_setting_sight)
     SettingItemView0 sbtnSettingSight;
     private String uuid;
-    private Device device;
+    //    private Device device;
     private WeakReference<DeviceInfoDetailFragment> informationWeakReference;
     private WeakReference<VideoAutoRecordFragment> videoAutoRecordFragmentWeakReference;
 
@@ -104,7 +103,6 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         ButterKnife.bind(this);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
         if (TextUtils.isEmpty(uuid)) {
             AppLogger.e("uuid is null");
             finishExt();
@@ -114,7 +112,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (getIntent().getBooleanExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, false)) {
             jumpDetail(false);
         }
-        deviceUpdate(device);
+        deviceUpdate(DataSourceManager.getInstance().getJFGDevice(this.uuid));
     }
 
     @Override
@@ -181,6 +179,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
+                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
                 new AlertDialog.Builder(this)
                         .setMessage(getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)))
                         .setPositiveButton(getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
@@ -227,6 +226,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             break;
             case R.id.sv_setting_device_wifi:
+                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
                 if (device != null && JFGRules.isFreeCam(device.pid)) {
                     Intent intent = new Intent(this, BindDeviceActivity.class);
                     intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
@@ -333,7 +333,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDeviceStandbyMode.setVisibility(View.GONE);
         } else {
             this.dpStandby = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
-            ((SwitchButton) svSettingDeviceStandbyMode.findViewById(R.id.btn_item_switch)).setChecked(dpStandby.standby);
+            svSettingDeviceStandbyMode.setChecked(dpStandby.standby);
             svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 switchBtn(lLayoutSettingItemContainer, !isChecked);
                 this.dpStandby.standby = isChecked;
@@ -350,6 +350,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             triggerStandby(dpStandby.standby);
             /////////////////////////////led/////////////////////////////////////
             if (JFGRules.showLedIndicator(device.pid)) {
+                boolean ledTrigger = device.$(209, false);
+                svSettingDeviceLedIndicator.setChecked(ledTrigger);
                 svSettingDeviceLedIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                     if (this.dpStandby != null && dpStandby.standby) return;//开启待机模式引起的
                     DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
@@ -381,8 +383,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
         /////////////////////////////////110v//////////////////////////////////
         if ((JFGRules.isWifiCam(device.pid) || JFGRules.isPanoramicCam(device.pid))) {
-            DpMsgDefine.DPPrimary<Boolean> dpState = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_216_DEVICE_VOLTAGE);
-            boolean state = MiscUtils.safeGet(dpState, false);
+            boolean state = device.$(216, false);
             sbtnSetting110v.setChecked(state);
             sbtnSetting110v.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
@@ -392,11 +393,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else sbtnSetting110v.setVisibility(View.GONE);
 
         /////////////////////////旋转/////////////////////////////////////////
-        if (device != null && JFGRules.isPanoramicCam(device.pid)) {
+        if (JFGRules.isPanoramicCam(device.pid)) {
             svSettingDeviceRotate.setVisibility(View.GONE);
         } else {
-            DpMsgDefine.DPPrimary<Integer> state = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
-            svSettingDeviceRotate.setChecked(MiscUtils.safeGet(state, 0) == 1);
+            int state = device.$(DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE, 0);
+            svSettingDeviceRotate.setChecked(state == 1);
             svSettingDeviceRotate.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 DpMsgDefine.DPPrimary<Integer> check = new DpMsgDefine.DPPrimary<>();
                 check.value = isChecked ? 1 : 0;
@@ -422,9 +423,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
         if (JFGRules.isPanoramicCam(device.pid)) {
             sbtnSettingSight.setVisibility(View.VISIBLE);
-            DpMsgDefine.DpHangMode dpPrimary = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
-            if (dpPrimary == null) dpPrimary = new DpMsgDefine.DpHangMode();
-            sbtnSettingSight.setTvSubTitle(getString(dpPrimary.safeGetValue() == 0 ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+            try {
+                String dpPrimary = device.$(509, "0");
+                sbtnSettingSight.setTvSubTitle(getString(Integer.parseInt(dpPrimary) == 0 ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+            } catch (Exception e) {
+            }
         }
     }
 
@@ -446,6 +449,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 break;
             case DpMsgMap.ID_223_MOBILE_NET:
             case DpMsgMap.ID_209_LED_INDICATOR:
+            case DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE:
                 deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                 //	0 未知, 1 没卡, 2 user's PIN, 3 user's PUK, 4 network PIN, 5 正常
                 break;

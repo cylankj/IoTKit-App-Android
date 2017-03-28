@@ -42,7 +42,7 @@
             android:visibility="gone" />
     </LinearLayout>
 
-    <com.kyleduo.switchbutton.SwitchButton
+    <com.cylan.jiafeigou.widget.SafeCheckBox
         android:id="@+id/btn_item_switch"
         style="@style/SwitchButtonStyleMD"
         android:layout_width="wrap_content"

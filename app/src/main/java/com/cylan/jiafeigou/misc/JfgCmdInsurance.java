@@ -24,7 +24,7 @@ public class JfgCmdInsurance {
             ContextUtils.getContext().startService(new Intent(ContextUtils.getContext(), DataSourceService.class));
             while (JfgAppCmd.getInstance() == null) {
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(5);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
