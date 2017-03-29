@@ -341,7 +341,7 @@ public class OpenLoginHelper {
                         GraphRequest request = GraphRequest.newMeRequest(accessToken, getUserinfo);
 
                         Bundle parameters = new Bundle();
-                        parameters.putString("fields", "msgId,name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
+                        parameters.putString("fields", "name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
                         request.setParameters(parameters);
                         request.executeAsync();
                     }
@@ -376,6 +376,9 @@ public class OpenLoginHelper {
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, photo);
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, name);
                 AppLogger.d("facebook_getUserinfo:" + name + photo);
+            }else {
+                AppLogger.d("facebook_getUserinfo:obj null");
+                AppLogger.d("facebook_back:"+graphResponse.toString());
             }
         }
     };
