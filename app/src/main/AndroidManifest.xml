@@ -407,8 +407,12 @@
 
         <activity
             android:name=".n.view.activity.BindCamActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:label="@string/title_activity_bind_cam"
-            android:theme="@style/CamActivityTheme" />
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
     </application>
 
 </manifest>
