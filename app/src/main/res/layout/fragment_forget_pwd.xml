@@ -13,6 +13,7 @@
         android:layout_height="@dimen/y33" />
 
     <com.cylan.jiafeigou.widget.CustomToolbar
+        layout="@layout/layout_default_custom_tool_bar"
         hunt:ct_title_color="@color/color_black"
         android:id="@+id/rLayout_forget_pwd_toolbar"
         android:layout_width="match_parent"
@@ -25,9 +26,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/x19"
-        android:layout_marginRight="@dimen/x19" >
+        android:layout_marginRight="@dimen/x19">
 
-        <include layout="@layout/fragment_forget_pwd_get_code"/>
+        <include layout="@layout/fragment_forget_pwd_get_code" />
 
         <include
             android:id="@+id/layout_to_be_update"

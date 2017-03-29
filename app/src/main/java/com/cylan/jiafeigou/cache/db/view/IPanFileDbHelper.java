@@ -17,7 +17,7 @@ public interface IPanFileDbHelper {
      * 从表中读取
      *
      * @param time
-     * @param lt less than
+     * @param lt    less than
      * @param count
      * @return
      */

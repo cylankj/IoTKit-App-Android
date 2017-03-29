@@ -72,8 +72,8 @@ public class HomeMineHelpFragment extends Fragment {
     private void showWebView() {
 //        String agreementUrl= "https://yf.jfgou.com:8081/helps/zh-rCN.html";
         String agreementUrl = getString(R.string.help_url);
-        if(agreementUrl.contains("–")){
-            agreementUrl = agreementUrl.replace("–","-");
+        if (agreementUrl.contains("–")) {
+            agreementUrl = agreementUrl.replace("–", "-");
         }
         WebSettings settings = mWvHelp.getSettings();
         settings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
@@ -95,7 +95,7 @@ public class HomeMineHelpFragment extends Fragment {
 
             @Override
             public void onReceivedSslError(WebView view,
-                SslErrorHandler handler, SslError error) {
+                                           SslErrorHandler handler, SslError error) {
                 handler.proceed();  //接受所有证书
             }
 

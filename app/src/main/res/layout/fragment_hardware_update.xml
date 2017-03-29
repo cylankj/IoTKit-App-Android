@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:clickable="true"
     android:background="@color/color_white"
     android:layout_width="match_parent"
@@ -80,7 +79,7 @@
             android:layout_marginLeft="@dimen/x16"
             android:layout_marginRight="@dimen/x16"
             android:layout_width="match_parent"
-            android:layout_height="1dip"/>
+            android:layout_height="1dip" />
 
 
         <LinearLayout
@@ -121,7 +120,7 @@
                     android:layout_centerVertical="true"
                     android:background="@drawable/hardware_update_point"
                     android:layout_width="@dimen/x7"
-                    android:layout_height="@dimen/y7"/>
+                    android:layout_height="@dimen/y7" />
             </RelativeLayout>
 
             <TextView
@@ -160,7 +159,7 @@
         <View
             android:background="@color/color_e1e1e1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"/>
+            android:layout_height="@dimen/y1" />
 
         <TextView
             android:id="@+id/tv_loading_show"

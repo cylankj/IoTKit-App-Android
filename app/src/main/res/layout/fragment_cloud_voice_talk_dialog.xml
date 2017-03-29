@@ -37,8 +37,8 @@
         android:layout_marginRight="@dimen/x15"
         android:background="#f26b6b"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/y2"/>
-    
+        android:layout_height="@dimen/y2" />
+
     <RelativeLayout
         android:background="#f9fbfc"
         android:layout_width="match_parent"
@@ -57,8 +57,7 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@id/iv_voice_delete"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
 
         <com.cylan.jiafeigou.widget.CloudLiveVoiceTalkView
             android:id="@+id/voidTalkView_right"
@@ -66,8 +65,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@id/iv_voice_delete"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            />
+            android:layout_height="wrap_content" />
 
     </RelativeLayout>
 

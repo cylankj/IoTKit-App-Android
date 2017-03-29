@@ -164,7 +164,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         Bundle arguments = getArguments();
         JFGAccount jfgAccount = (JFGAccount) arguments.getSerializable("userinfo");
         if (jfgAccount != null)
-        mETMailBox.setText(jfgAccount.getEmail());
+            mETMailBox.setText(jfgAccount.getEmail());
     }
 
     private void initKeyListener() {
@@ -197,7 +197,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         boolean isEmpty = TextUtils.isEmpty(s);
         mIvMailBox.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
         mViewMailBox.setBackgroundColor(isEmpty ? getResources().getColor(R.color.color_f2f2f2) : getResources().getColor(R.color.color_36BDFF));
-        customToolbar.setTvToolbarRightIcon(isEmpty ? R.drawable.icon_finish_disable:R.drawable.me_icon_finish_normal);
+        customToolbar.setTvToolbarRightIcon(isEmpty ? R.drawable.icon_finish_disable : R.drawable.me_icon_finish_normal);
         customToolbar.setTvToolbarRightEnable(!isEmpty);
     }
 

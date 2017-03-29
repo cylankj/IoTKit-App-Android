@@ -280,7 +280,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         ContentResolver cr = getView().getContext().getContentResolver();
         //取得电话本中开始一项的光标
         Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
-        if (cursor == null){
+        if (cursor == null) {
             return list;
         }
         //向下移动光标
@@ -304,19 +304,19 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     friendBean.account = friendBean.account.substring(2);
                 }
 
-                if (JConstant.PHONE_REG.matcher(friendBean.account).find()){
+                if (JConstant.PHONE_REG.matcher(friendBean.account).find()) {
                     list.add(friendBean);
                 }
             }
             phone.close();
 
             //****获取邮箱
-            Cursor emails = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + ContactId,null, null);
+            Cursor emails = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, null, ContactsContract.CommonDataKinds.Email.CONTACT_ID + "=" + ContactId, null, null);
             int emailIndex = 0;
-            if(emails.getCount() > 0) {
+            if (emails.getCount() > 0) {
                 emailIndex = emails.getColumnIndex(ContactsContract.CommonDataKinds.Email.DATA);
             }
-            while(emails.moveToNext()) {
+            while (emails.moveToNext()) {
                 String email = emails.getString(emailIndex);
                 RelAndFriendBean friendBean = new RelAndFriendBean();
                 friendBean.alias = contact;

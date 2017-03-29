@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2014 pengjianbo(pengjianbosoft@gmail.com), Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,16 +19,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
-    android:orientation="vertical"
-    >
+    android:orientation="vertical">
 
     <LinearLayout
         android:id="@+id/titlebar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/gf_title_bar_height"
         android:gravity="center_vertical"
-        android:orientation="horizontal"
-        >
+        android:orientation="horizontal">
 
         <ImageView
             android:id="@+id/iv_back"
@@ -37,8 +34,7 @@
             android:layout_height="@dimen/gf_title_bar_height"
             android:layout_gravity="center_vertical"
             android:scaleType="centerInside"
-            android:src="@drawable/ic_gf_back"
-            />
+            android:src="@drawable/ic_gf_back" />
 
         <TextView
             android:id="@+id/tv_title"
@@ -47,8 +43,7 @@
             android:layout_weight="1"
             android:text="@string/EDIT_IMAGE"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/sp18"
-            />
+            android:textSize="@dimen/sp18" />
 
         <ImageView
             android:id="@+id/iv_preview"
@@ -57,8 +52,7 @@
             android:padding="@dimen/x6"
             android:scaleType="centerInside"
             android:src="@drawable/ic_gf_preview"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/iv_crop"
@@ -67,8 +61,7 @@
             android:padding="@dimen/x6"
             android:scaleType="centerInside"
             android:src="@drawable/ic_gf_crop"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/iv_rotate"
@@ -77,8 +70,7 @@
             android:padding="@dimen/x6"
             android:scaleType="centerInside"
             android:src="@drawable/ic_gf_rotate"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <ImageView
             android:id="@+id/iv_take_photo"
@@ -88,30 +80,26 @@
             android:scaleType="centerInside"
             android:src="@drawable/ic_gf_camera"
             android:visibility="gone"
-            android:layout_marginRight="@dimen/x9"
-            />
+            android:layout_marginRight="@dimen/x9" />
     </LinearLayout>
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/y0"
-        android:layout_weight="1"
-        >
+        android:layout_weight="1">
 
         <com.cylan.jiafeigou.support.galleryfinal.widget.zoonview.PhotoView
             android:id="@+id/iv_source_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/bg_gf_crop_texture"
-            />
+            android:background="@drawable/bg_gf_crop_texture" />
 
         <com.cylan.jiafeigou.support.galleryfinal.widget.crop.CropImageView
             android:id="@+id/iv_crop_photo"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/bg_gf_crop_texture"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_empty_view"
@@ -120,35 +108,31 @@
             android:layout_gravity="center"
             android:textColor="@android:color/black"
             android:textSize="@dimen/sp16"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
         <com.cylan.jiafeigou.support.galleryfinal.widget.FloatingActionButton
             android:id="@+id/fab_crop"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right|bottom"
-            app:fabIcon="@drawable/ic_gf_done"
-            />
+            app:fabIcon="@drawable/ic_gf_done" />
     </FrameLayout>
 
     <LinearLayout
         android:id="@+id/ll_gallery"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
 
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/y1"
-            android:background="#d2d2d7"
-            />
+            android:background="#d2d2d7" />
+
         <com.cylan.jiafeigou.support.galleryfinal.widget.HorizontalListView
             android:id="@+id/lv_gallery"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y100"
-            />
+            android:layout_height="@dimen/y100" />
     </LinearLayout>
 
 </LinearLayout>

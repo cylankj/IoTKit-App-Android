@@ -101,7 +101,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void onStart() {
 //        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             //访客状态
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
             basePresenter.portraitBlur(bm);
@@ -115,7 +115,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     public void portrait() {
 //        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -124,11 +124,12 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 我的亲友
+     *
      * @param view
      */
     public void friendItem(View view) {
 //        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -173,7 +174,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     public void settingsItem(View view) {
 //        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -189,7 +190,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     public void shareItem(View view) {
 //        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -241,6 +242,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 设置昵称
+     *
      * @param name
      */
     @Override
@@ -250,8 +252,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void setUserImageHeadByUrl(String url) {
-        if(getContext()==null)return;
-        MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait,getResources().getDrawable(R.drawable.me_bg_top_image),rLayoutHomeMineTop,url,basePresenter);
+        if (getContext() == null) return;
+        MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait, getResources().getDrawable(R.drawable.me_bg_top_image), rLayoutHomeMineTop, url, basePresenter);
         Glide.with(getContext()).load(url)
                 .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
@@ -260,14 +262,14 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .into(mySimpleTarget);
     }
 
-    public static class MySimpleTarget extends SimpleTarget<Bitmap>{
+    public static class MySimpleTarget extends SimpleTarget<Bitmap> {
         private final WeakReference<ImageView> image;
         private final WeakReference<HomeMineContract.Presenter> basePresenter;
         private final WeakReference<FrameLayout> mFrameLayout;
         private final WeakReference<Drawable> mDrawable;
         private String url;
 
-        public MySimpleTarget(ImageView view,Drawable drawable,FrameLayout frameLayout,String url,HomeMineContract.Presenter presenter) {
+        public MySimpleTarget(ImageView view, Drawable drawable, FrameLayout frameLayout, String url, HomeMineContract.Presenter presenter) {
             image = new WeakReference<ImageView>(view);
             mFrameLayout = new WeakReference<FrameLayout>(frameLayout);
             basePresenter = new WeakReference<HomeMineContract.Presenter>(presenter);
@@ -303,7 +305,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     @Override
     public void setMesgNumber(final int number) {
-        if (number == 0){
+        if (number == 0) {
             return;
         }
         tvHomeMineMsgCount.post(new Runnable() {
@@ -375,11 +377,12 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     /**
      * 帮助与反馈
+     *
      * @param view
      */
     private void helpItem(View view) {
 //        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -397,7 +400,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     private void jump2MesgFragment() {
 //        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -417,7 +420,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     private void jump2UserInfo() {
 //        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED,0) == 0) {
+        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }

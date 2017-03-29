@@ -153,6 +153,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     /**
      * 添加请求列表删除一个条目
+     *
      * @param bean
      */
     @Override

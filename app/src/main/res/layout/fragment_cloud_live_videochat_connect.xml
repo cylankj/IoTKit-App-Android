@@ -77,6 +77,6 @@
 
     </RelativeLayout>
 
-    <include layout="@layout/fragment_cloud_live_videochat"/>
+    <include layout="@layout/fragment_cloud_live_videochat" />
 
 </FrameLayout>

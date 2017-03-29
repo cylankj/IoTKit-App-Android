@@ -115,7 +115,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
             hardwareUpdatePoint.setVisibility(View.VISIBLE);
             tvVersionDescribe.setVisibility(View.VISIBLE);
             tvVersionDescribe.setText(checkDevVersion.tip);
-            if (basePresenter != null)basePresenter.getFileSize(basePresenter.creatDownLoadBean());
+            if (basePresenter != null) basePresenter.getFileSize(basePresenter.creatDownLoadBean());
         }
     }
 
@@ -278,7 +278,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void onDownloadErr(int reason) {
-        AppLogger.d("downLoadErr:"+reason);
+        AppLogger.d("downLoadErr:" + reason);
         handlerResult(reason);
     }
 
@@ -297,7 +297,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void initFileSize(String size) {
-        if (TextUtils.isEmpty(size))return;
+        if (TextUtils.isEmpty(size)) return;
         fileSize = size;
         tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), size));
     }

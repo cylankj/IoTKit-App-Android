@@ -39,8 +39,8 @@ public class FacebookInstance {
         LoginManager.getInstance().registerCallback(callbackManager, callback);
     }
 
-    public static void release(){
-        if (instance != null){
+    public static void release() {
+        if (instance != null) {
             instance.callbackManager = null;
             instance = null;
         }

@@ -1,17 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_theme="true"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
         hunt:ct_left_title="@string/Tap0_register_EmailVerification"
@@ -20,14 +22,15 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/y55"
-            android:textColor="@color/color_7c7c7c"
-            android:textSize="@dimen/sp15"
             android:text="@string/Tap0_AlreadyEmailed"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textColor="@color/color_7c7c7c"
+            android:textSize="@dimen/sp15" />
 
         <View
             android:layout_width="match_parent"
@@ -38,22 +41,22 @@
 
     <TextView
         android:id="@+id/tv_mail_address"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/y18"
-        android:textSize="@dimen/sp15"
-        android:textColor="@color/color_7c7c7c"
         android:text="22220@sina.com"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textColor="@color/color_7c7c7c"
+        android:textSize="@dimen/sp15" />
 
     <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/y18"
-        android:textSize="@dimen/sp15"
-        android:textColor="@color/color_7c7c7c"
         android:text="@string/Tap0_Click_ActivateAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:textColor="@color/color_7c7c7c"
+        android:textSize="@dimen/sp15" />
 
     <TextView
         android:id="@+id/tv_mail_connect_submit"

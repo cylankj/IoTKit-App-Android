@@ -121,7 +121,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         showOrHideReqMesg(isFrom);
 
         //显示头像
-        MyImageTarget myImageTarget = new MyImageTarget(ivDetailUserHead,getContext().getResources());
+        MyImageTarget myImageTarget = new MyImageTarget(ivDetailUserHead, getContext().getResources());
         Glide.with(getContext()).load(addRequestItems.iconUrl)
                 .asBitmap()
                 .centerCrop()
@@ -131,7 +131,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 .into(myImageTarget);
     }
 
-    private static class MyImageTarget extends BitmapImageViewTarget{
+    private static class MyImageTarget extends BitmapImageViewTarget {
 
         public final WeakReference<Resources> resourcesWeakReference;
         public final WeakReference<ImageView> roundedImageViewWeakReference;

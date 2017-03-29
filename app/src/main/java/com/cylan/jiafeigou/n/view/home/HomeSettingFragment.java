@@ -16,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -30,6 +29,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.ShareGridView;
 import com.kyleduo.switchbutton.SwitchButton;
@@ -67,6 +67,8 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     RelativeLayout rlVibrateContainer;
     @BindView(R.id.rl_home_setting_recommend)
     RelativeLayout rlHomeSettingRecommend;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     private HomeSettingContract.Presenter presenter;
     private AboutFragment aboutFragment;
@@ -97,6 +99,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rlHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
+        customToolbar.setBackAction(click->getFragmentManager().popBackStack());
     }
 
     private void initPresenter() {
@@ -108,12 +111,9 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         this.presenter = presenter;
     }
 
-    @OnClick({R.id.tv_toolbar_icon, R.id.rl_home_setting_about, R.id.rl_home_setting_clear, R.id.rl_home_setting_recommend})
+    @OnClick({R.id.rl_home_setting_about, R.id.rl_home_setting_clear, R.id.rl_home_setting_recommend})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
-                break;
             case R.id.rl_home_setting_about:
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.rl_home_setting_about));
@@ -195,7 +195,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         if (presenter != null) {
             presenter.stop();
         }
-        if (mShareDlg != null){
+        if (mShareDlg != null) {
             mShareDlg.dismiss();
             mShareDlg = null;
         }
@@ -281,6 +281,11 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         } catch (Exception e) {
             AppLogger.e(e.toString());
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 
     class ViewHolder {

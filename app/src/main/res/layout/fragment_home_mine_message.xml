@@ -1,24 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/color_f9f9f9"
     android:clickable="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_background_color="@color/color_0ba8cf"
         hunt:ct_enable_shadow="false"
+        hunt:ct_enable_theme="true"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
-        hunt:ct_right_title="@string/DELETE"
-        hunt:ct_right_title_color="@color/color_white"
         hunt:ct_left_title="@string/Tap1_Camera_Messages"
-        hunt:ct_left_title_color="@color/color_white" />
+        hunt:ct_left_title_color="@color/color_white"
+        hunt:ct_right_title="@string/DELETE"
+        hunt:ct_right_title_color="@color/color_white" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -30,10 +32,9 @@
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rcl_home_mine_message_recyclerview"
-                android:overScrollMode="never"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
 
             <View
                 android:layout_width="match_parent"
@@ -44,70 +45,70 @@
 
         <RelativeLayout
             android:id="@+id/rl_delete_dialog"
-            android:visibility="gone"
-            android:background="#f2f2f2"
-            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y50">
+            android:layout_height="@dimen/y50"
+            android:layout_alignParentBottom="true"
+            android:background="#f2f2f2"
+            android:visibility="gone">
 
             <View
-                android:layout_alignParentTop="true"
-                android:background="#33000000"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y1"/>
+                android:layout_height="@dimen/y1"
+                android:layout_alignParentTop="true"
+                android:background="#33000000" />
 
             <TextView
                 android:id="@+id/tv_check_all"
-                android:layout_centerVertical="true"
-                android:layout_alignParentLeft="true"
-                android:textColor="@color/color_4b9fd5"
-                android:text="@string/SELECT_ALL"
-                android:layout_marginStart="@dimen/x35"
-                android:layout_marginEnd="@dimen/x35"
-                android:textSize="@dimen/sp18"
-                android:padding="@dimen/x10"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/x35"
+                android:layout_marginStart="@dimen/x35"
+                android:padding="@dimen/x10"
+                android:text="@string/SELECT_ALL"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp18" />
 
             <TextView
                 android:id="@+id/tv_delete"
-                android:layout_centerVertical="true"
-                android:layout_alignParentRight="true"
-                android:textColor="@color/color_4b9fd5"
-                android:text="@string/DELETE"
-                android:layout_marginStart="@dimen/x35"
-                android:layout_marginEnd="@dimen/x35"
-                android:padding="@dimen/x10"
-                android:textSize="@dimen/sp18"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="@dimen/x35"
+                android:layout_marginStart="@dimen/x35"
+                android:padding="@dimen/x10"
+                android:text="@string/DELETE"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp18" />
         </RelativeLayout>
 
     </RelativeLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/ll_no_mesg"
-        android:layout_marginTop="@dimen/y120"
-        android:layout_gravity="center"
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/y120"
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <ImageView
-            android:layout_gravity="center_horizontal"
-            android:src="@drawable/pic_no_message"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/pic_no_message" />
 
         <TextView
-            android:layout_marginTop="@dimen/y16"
-            android:layout_gravity="center_horizontal"
-            android:text="@string/NO_CONTENTS_1"
-            android:textSize="@dimen/sp15"
-            android:textColor="#aaaaaa"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y16"
+            android:text="@string/NO_CONTENTS_1"
+            android:textColor="#aaaaaa"
+            android:textSize="@dimen/sp15" />
     </LinearLayout>
 
 </LinearLayout>

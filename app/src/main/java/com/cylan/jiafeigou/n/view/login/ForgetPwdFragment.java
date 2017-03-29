@@ -432,7 +432,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         ImageView iv_Clear = (ImageView) phoneNewPwdView.findViewById(R.id.iv_new_clear_pwd);
         EditText et_newpass = (EditText) phoneNewPwdView.findViewById(R.id.et_new_pwd_input);
         CheckBox cb_pwd_visiable = (CheckBox) phoneNewPwdView.findViewById(R.id.cb_new_pwd_show);
-        ViewUtils.setChineseExclude(et_newpass,12);
+        ViewUtils.setChineseExclude(et_newpass, 12);
         et_newpass.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -653,9 +653,9 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void onDialogAction(int id, Object value) {
-            rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
-            vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
-            vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);
-            vsSetAccountPwd.showPrevious();
+        rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
+        vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
+        vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);
+        vsSetAccountPwd.showPrevious();
     }
 }

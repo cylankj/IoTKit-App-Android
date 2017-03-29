@@ -170,7 +170,7 @@ public class BindCamActivity extends BaseFullScreenFragmentActivity {
     public void onDeniedLocationPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
             new AlertDialog.Builder(this)
-                    .setMessage(String.format(getString(R.string.turn_on_gps),""))
+                    .setMessage(String.format(getString(R.string.turn_on_gps), ""))
                     .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                         finishExt();
                     })

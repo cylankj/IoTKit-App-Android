@@ -1,8 +1,8 @@
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-                                    xmlns:tools="http://schemas.android.com/tools"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="match_parent"
-                                    tools:context="com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -19,7 +19,7 @@
             android:gravity="center"
             android:textColor="@color/color_979797"
             android:textSize="@dimen/sp16"
-            android:visibility="gone"/>
+            android:visibility="gone" />
 
         <TextView
             android:id="@+id/tv_dialog_content"
@@ -44,7 +44,7 @@
                 android:padding="@dimen/y10"
                 android:text="@string/OK"
                 android:textColor="@color/color_4b9fd5"
-                android:textSize="@dimen/sp14"/>
+                android:textSize="@dimen/sp14" />
 
             <TextView
                 android:id="@+id/tv_dialog_btn_right"
@@ -55,7 +55,7 @@
                 android:padding="@dimen/y10"
                 android:text="@string/CANCEL"
                 android:textColor="@color/color_4b9fd5"
-                android:textSize="@dimen/sp14"/>
+                android:textSize="@dimen/sp14" />
         </LinearLayout>
     </LinearLayout>
 </android.support.v7.widget.CardView>

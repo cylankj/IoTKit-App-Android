@@ -244,7 +244,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     public void call(Object o) {
 //                    JfgCmdInsurance.getCmd().getFeedbackList();
                     }
-                },throwable -> {
+                }, throwable -> {
                     AppLogger.e("getSystemAutoReply" + throwable.getLocalizedMessage());
                 });
     }
@@ -351,7 +351,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         try {
             remoteUrl = "/log/" + Security.getVId(JFGRules.getTrimPackageName()) + "/" + userInfomation.getAccount() + "/" + fileName;
             JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
-            AppLogger.d("upload log:"+remoteUrl);
+            AppLogger.d("upload log:" + remoteUrl);
         } catch (JfgException e) {
             e.printStackTrace();
         }

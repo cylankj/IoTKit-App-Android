@@ -54,6 +54,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     private boolean friendListNull;
     private Network network;
     private String account;
+
     public MineFriendsPresenterImp(MineFriendsContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -131,6 +132,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     /**
      * desc：添加请求集合的排序
+     *
      * @param list
      * @return
      */
@@ -240,7 +242,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     public void call(Object o) {
                         JfgCmdInsurance.getCmd().getFriendRequestList();
                     }
-                },throwable -> {
+                }, throwable -> {
                     AppLogger.e("getAddRequest: " + throwable.getLocalizedMessage());
                 });
     }
@@ -257,24 +259,24 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .map(new Func1<Object, List<RelAndFriendBean>>() {
                     @Override
                     public List<RelAndFriendBean> call(Object o) {
-                        if (NetUtils.getNetType(getView().getContext())== -1){
+                        if (NetUtils.getNetType(getView().getContext()) == -1) {
                             return getAllFromDb();
-                        }else {
+                        } else {
                             JfgCmdInsurance.getCmd().getFriendList();
                             return null;
                         }
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(list->{
-                    if (list != null){
-                        if (list.size() > 0){
+                .subscribe(list -> {
+                    if (list != null) {
+                        if (list.size() > 0) {
                             ArrayList<RelAndFriendBean> allList = new ArrayList<RelAndFriendBean>();
                             allList.addAll(list);
                             handleInitFriendListDataResult(allList);
                         }
                     }
-                },throwable -> {
+                }, throwable -> {
                     AppLogger.e("getFriendList: " + throwable.getLocalizedMessage());
                 });
     }
@@ -399,7 +401,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             e.printStackTrace();
                         }
                     }
-                },throwable -> {
+                }, throwable -> {
                     AppLogger.e("deleteAddReq" + throwable.getLocalizedMessage());
                 });
     }
@@ -466,7 +468,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         }
     }
 
-    public void clearAll(){
+    public void clearAll() {
         try {
             DataBaseUtil.getInstance(account).dbManager.delete(RelAndFriendBean.class);
         } catch (DbException e) {
@@ -474,7 +476,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
         }
     }
 
-    public List<RelAndFriendBean> getAllFromDb(){
+    public List<RelAndFriendBean> getAllFromDb() {
         List<RelAndFriendBean> all = null;
         try {
             all = DataBaseUtil.getInstance(account).dbManager.findAll(RelAndFriendBean.class);

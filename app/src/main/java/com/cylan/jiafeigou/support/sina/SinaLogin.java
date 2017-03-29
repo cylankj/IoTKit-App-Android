@@ -51,7 +51,7 @@ public class SinaLogin {
         this.context = context;
         APP_KEY = Security.getSinaAppKey(JFGRules.getTrimPackageName());
 //        APP_KEY = "1315129656";
-        AppLogger.d("sinaKey:"+APP_KEY);
+        AppLogger.d("sinaKey:" + APP_KEY);
         mWeibo = new AuthInfo(context, APP_KEY, Constants.REDIRECT_URL, Constants.SCOPE);
         LogUtil.enableLog();
     }
@@ -185,8 +185,8 @@ public class SinaLogin {
         return new WeiboParameters(APP_KEY);
     }
 
-    public static void release(){
-        if (instance != null){
+    public static void release() {
+        if (instance != null) {
             instance.context = null;
             instance.mSsoHandler = null;
             instance = null;

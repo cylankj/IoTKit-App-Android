@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2014 pengjianbo(pengjianbosoft@gmail.com), Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,8 +16,7 @@
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/x70"
-    android:layout_height="@dimen/y100"
-    >
+    android:layout_height="@dimen/y100">
 
     <com.cylan.jiafeigou.support.galleryfinal.widget.GFImageView
         android:id="@+id/iv_photo"
@@ -27,8 +25,7 @@
         android:src="@drawable/ic_gf_default_photo"
         android:padding="@dimen/x4"
         android:layout_margin="@dimen/x4"
-        android:scaleType="centerCrop"
-        />
+        android:scaleType="centerCrop" />
 
     <ImageView
         android:id="@+id/iv_delete"
@@ -36,7 +33,6 @@
         android:layout_height="wrap_content"
         android:src="@drawable/ic_delete_photo"
         android:layout_alignParentRight="true"
-        android:layout_marginTop="@dimen/y4"
-        />
+        android:layout_marginTop="@dimen/y4" />
 
 </RelativeLayout>

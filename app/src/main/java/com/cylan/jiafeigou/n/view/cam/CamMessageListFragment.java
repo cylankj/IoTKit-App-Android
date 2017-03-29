@@ -281,7 +281,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         switch (id) {
             case DpMsgMap.ID_201_NET:
                 DpMsgDefine.DPNet net = DpUtils.unpackData(o.packValue, DpMsgDefine.DPNet.class);
-                if (net == null) net =new DpMsgDefine.DPNet();
+                if (net == null) net = new DpMsgDefine.DPNet();
                 camMessageListAdapter.notifyDeviceOnlineState(net.net > 0, lPos);
                 break;
             case DpMsgMap.ID_222_SDCARD_SUMMARY:

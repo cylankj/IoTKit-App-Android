@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.base.view.PropertyView;
 public interface BellSettingContract {
 
 
-    interface View extends PropertyView{
+    interface View extends PropertyView {
         /**
          * 解绑设备回调
          *

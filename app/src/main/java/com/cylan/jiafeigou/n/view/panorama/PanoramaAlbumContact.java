@@ -32,6 +32,7 @@ public interface PanoramaAlbumContact {
 
         /**
          * 文件损坏，文件不存
+         *
          * @param state
          */
         void onFileState(int state);

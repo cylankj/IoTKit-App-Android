@@ -3,8 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/y54"
     android:focusable="true"
-    android:focusableInTouchMode="true"
-    >
+    android:focusableInTouchMode="true">
 
     <RelativeLayout
         android:id="@+id/rl_home_mine_suggestion_bottom"
@@ -17,7 +16,7 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="@dimen/y1"
-            android:background="@color/color_e1e1e1"/>
+            android:background="@color/color_e1e1e1" />
 
         <EditText
             android:id="@+id/et_home_mine_suggestion"

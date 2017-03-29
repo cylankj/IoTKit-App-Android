@@ -1,15 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
-    android:clickable="true"
-    tools:context="com.cylan.jiafeigou.n.view.bind.BindCameraFragment">
+    android:clickable="true">
 
 
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_fit_system_window="true"
@@ -40,17 +39,17 @@
         android:textSize="@dimen/sp16" />
 
     <!--<android.support.v4.widget.Space-->
-        <!--android:id="@+id/s_place_holder"-->
-        <!--android:layout_width="@dimen/x1"-->
-        <!--android:layout_height="@dimen/y1"-->
-        <!--android:layout_centerInParent="true" />-->
+    <!--android:id="@+id/s_place_holder"-->
+    <!--android:layout_width="@dimen/x1"-->
+    <!--android:layout_height="@dimen/y1"-->
+    <!--android:layout_centerInParent="true" />-->
 
     <FrameLayout
-        android:layout_marginTop="@dimen/y57"
-        android:layout_below="@+id/tv_sub_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_sub_title"
         android:layout_centerInParent="true"
+        android:layout_marginTop="@dimen/y57"
         android:background="@drawable/image_camera">
 
 

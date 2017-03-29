@@ -43,7 +43,9 @@
         <attr name="longLineHeight" format="float|dimension" />
     </declare-styleable>
     <declare-styleable name="CustomToolbar">
+        <attr name="ct_content_layout" format="integer|reference" />
         <attr name="ct_background_color" format="color" />
+        <attr name="ct_enable_theme" format="boolean|reference" />
         <attr name="ct_title" format="string|reference" />
         <attr name="ct_left_title" format="string|reference" />
         <attr name="ct_right_title" format="string|reference" />

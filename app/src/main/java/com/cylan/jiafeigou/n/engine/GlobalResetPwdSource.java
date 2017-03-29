@@ -60,28 +60,28 @@ public class GlobalResetPwdSource {
             mSubscription = null;
         }
 
-        if (clearSub != null && !clearSub.isUnsubscribed()){
+        if (clearSub != null && !clearSub.isUnsubscribed()) {
             clearSub.unsubscribe();
             clearSub = null;
         }
 
-        if (dialog != null){
+        if (dialog != null) {
             dialog.dismiss();
             dialog = null;
         }
     }
 
-    public void pwdResetedDialog(int code){
-        if (code == 16008 || code == 1007){
-            AppLogger.d("pwdResetedDialog:"+code);
+    public void pwdResetedDialog(int code) {
+        if (code == 16008 || code == 1007) {
+            AppLogger.d("pwdResetedDialog:" + code);
             AlertDialog.Builder builder = new AlertDialog.Builder(ContextUtils.getContext().getApplicationContext());
-            LayoutInflater mLayoutInflater=LayoutInflater.from(ContextUtils.getContext().getApplicationContext());
-            View view=mLayoutInflater.inflate(R.layout.dialog_reset_pwd_tab_view,null);
+            LayoutInflater mLayoutInflater = LayoutInflater.from(ContextUtils.getContext().getApplicationContext());
+            View view = mLayoutInflater.inflate(R.layout.dialog_reset_pwd_tab_view, null);
             builder.setView(view);
             dialog = builder.create();
             dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
             dialog.show();
-            view.findViewById(R.id.tv_dialog_btn_left).setOnClickListener(v->{
+            view.findViewById(R.id.tv_dialog_btn_left).setOnClickListener(v -> {
                 //跳转到SmartcallActivity
                 jump2LoginFragment();
                 dialog.dismiss();
@@ -101,10 +101,10 @@ public class GlobalResetPwdSource {
         ContextUtils.getContext().getApplicationContext().startActivity(intent);
     }
 
-    public void clearPwd(){
+    public void clearPwd() {
         clearSub = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(o->{
+                .subscribe(o -> {
                     AutoSignIn.getInstance().autoSave(DataSourceManager.getInstance().getJFGAccount().getAccount(), 1, "")
                             .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                             .subscribe();

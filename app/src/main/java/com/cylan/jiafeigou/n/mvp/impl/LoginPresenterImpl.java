@@ -66,9 +66,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
                         if (o.loginType) {
-                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()),o.pwd, o.userName, o.openLoginType);
+                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), o.pwd, o.userName, o.openLoginType);
                         } else {
-                            JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()),o.userName, o.pwd);
+                            JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
                             //账号和密码
                         }
                         PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
@@ -207,7 +207,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    JfgCmdInsurance.getCmd().sendCheckCode(phone,JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
+                    JfgCmdInsurance.getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
                     AppLogger.d("phone:" + phone);
                 }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
     }
@@ -352,9 +352,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             }
                             String decryption = AESUtil.decrypt(aesAccount);
                             AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
-                            if (signType.type != 1){
+                            if (signType.type != 1) {
                                 return Observable.just("");
-                            }else {
+                            } else {
                                 return Observable.just(signType.account);
                             }
                         } catch (Exception e) {

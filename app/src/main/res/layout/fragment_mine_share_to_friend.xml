@@ -8,6 +8,7 @@
     android:layout_height="match_parent">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
+        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,8 +29,7 @@
             android:id="@+id/rcy_mine_share_to_relative_and_friend_list"
             android:overScrollMode="never"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
         <LinearLayout
             android:visibility="gone"

@@ -38,7 +38,7 @@
             android:layout_alignParentRight="true"
             android:padding="@dimen/x14"
             android:src="@drawable/icon_setting" />
-        
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -83,11 +83,11 @@
         android:layout_below="@id/rLayout_cloud_live_top_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <android.support.v7.widget.RecyclerView
             android:id="@+id/rcy_cloud_mesg_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
         <LinearLayout
             android:visibility="gone"

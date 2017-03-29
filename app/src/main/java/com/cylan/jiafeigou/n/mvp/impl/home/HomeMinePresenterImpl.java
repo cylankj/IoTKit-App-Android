@@ -158,6 +158,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 是否三方登录的回调
+     *
      * @return
      */
     @Override
@@ -179,7 +180,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(new Action1<JFGAccount>() {
                     @Override
                     public void call(JFGAccount account) {
-                        AppLogger.d("mine_account:"+account);
+                        AppLogger.d("mine_account:" + account);
                         userInfo = account;
                         if (account != null && getView() != null) {
                             if (TextUtils.isEmpty(account.getAccount()) && account.isEnablePush()) {
@@ -259,9 +260,9 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe((Object o) -> {
                     try {
                         long req = JfgCmdInsurance.getCmd().robotCountDataClear("", new long[]{601L, 701L}, 0);
-                        AppLogger.d("mine_markHasRead:"+req);
+                        AppLogger.d("mine_markHasRead:" + req);
                     } catch (JfgException e) {
-                        AppLogger.e("mine_markHasRead:"+e.getLocalizedMessage());
+                        AppLogger.e("mine_markHasRead:" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
                 });
@@ -272,7 +273,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginMeTab -> {
                     if (loginMeTab.b)
-                    start();
+                        start();
                 });
     }
 

@@ -51,7 +51,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                     @Override
                     public void call(Object s) {
                         try {
-                            JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()),account, pwd, type, token);
+                            JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, type, token);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -72,7 +72,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                     @Override
                     public LoginAccountBean call(LoginAccountBean o) {
                         try {
-                            JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()),o.userName, o.pwd);
+                            JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

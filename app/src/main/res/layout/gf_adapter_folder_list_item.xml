@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (C) 2014 pengjianbo(pengjianbosoft@gmail.com), Inc.
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,8 +19,7 @@
     android:layout_height="match_parent"
     android:gravity="center_vertical"
     android:orientation="horizontal"
-    android:background="#FFFFFF"
-    >
+    android:background="#FFFFFF">
 
     <com.cylan.jiafeigou.support.galleryfinal.widget.GFImageView
         android:id="@+id/iv_cover"
@@ -29,24 +27,22 @@
         android:layout_height="@dimen/y68"
         android:layout_margin="@dimen/x8"
         android:scaleType="centerCrop"
-        android:src="@drawable/ic_gf_default_photo"
-        />
+        android:src="@drawable/ic_gf_default_photo" />
 
     <LinearLayout
         android:layout_width="@dimen/x0"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center_vertical"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/tv_folder_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="string/all_photo"
             android:textColor="@android:color/black"
-            android:textSize="@dimen/sp18"
-            />
+            android:textSize="@dimen/sp18" />
 
         <TextView
             android:id="@+id/tv_photo_count"
@@ -54,8 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/y4"
             android:textColor="#d2d2d7"
-            android:textSize="@dimen/sp14"
-            />
+            android:textSize="@dimen/sp14" />
     </LinearLayout>
 
     <ImageView
@@ -64,7 +59,6 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/x8"
         android:layout_marginRight="@dimen/x8"
-        android:src="@drawable/ic_gf_done"
-        />
+        android:src="@drawable/ic_gf_done" />
 
 </LinearLayout>

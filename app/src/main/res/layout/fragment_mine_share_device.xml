@@ -1,21 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:background="@color/color_white"
     android:clickable="true"
     android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
-        hunt:ct_left_title="@string/Tap3_ShareDevice"
-        hunt:ct_left_title_color="@color/color_white"
-        android:textSize="@dimen/sp18"
         android:id="@+id/custom_toolbar"
-        hunt:ct_background_color="@color/color_0ba8cf"
-        hunt:ct_icon="@drawable/nav_icon_back_white"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp18"
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_theme="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title="@string/Tap3_ShareDevice"
+        hunt:ct_left_title_color="@color/color_white" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -23,10 +25,9 @@
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/recycle_share_device_list"
-            android:overScrollMode="never"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-        </android.support.v7.widget.RecyclerView>
+            android:layout_height="wrap_content"
+            android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
 
         <LinearLayout
             android:id="@+id/ll_no_device"

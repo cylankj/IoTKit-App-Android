@@ -9,8 +9,7 @@
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/y130"
-        android:background="#000000">
-    </RelativeLayout>
+        android:background="#000000"></RelativeLayout>
     <!--圆形裁剪框示例
         app:clipBorderWidth="@dimen/x5"     ： 裁剪框边框宽度
         app:clipType="circle"         ： 裁剪框类型为圆形
@@ -20,15 +19,14 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/y0"
-        android:layout_weight="1"
-        >
+        android:layout_weight="1">
+
         <com.cylan.jiafeigou.support.photoselect.ClipViewLayout
             android:id="@+id/clipViewLayout1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:clipBorderWidth="@dimen/x0"
-            app:clipType="circle"
-            />
+            app:clipType="circle" />
 
         <!--矩形裁剪框示例 -->
         <com.cylan.jiafeigou.support.photoselect.ClipViewLayout
@@ -39,8 +37,7 @@
             app:clipBorderWidth="@dimen/x2"
             app:clipType="rectangle"
             app:mHorizontalPadding="@dimen/x30"
-            android:visibility="gone"
-            />
+            android:visibility="gone" />
 
     </FrameLayout>
 

@@ -21,8 +21,8 @@
             android:layout_toRightOf="@id/iv_userhead"
             android:paddingLeft="@dimen/x15"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y67"
-            >
+            android:layout_height="@dimen/y67">
+
             <TextView
                 android:id="@+id/tv_username"
                 android:textSize="@dimen/sp16"
@@ -62,7 +62,7 @@
             android:id="@+id/view_line"
             android:background="@color/color_f2f2f2"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y1"/>
+            android:layout_height="@dimen/y1" />
 
     </RelativeLayout>
 

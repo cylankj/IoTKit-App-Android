@@ -139,7 +139,7 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
      * desc:加载图片
      */
     private void loadImage() {
-        myViewTarget = new MyViewTarget(ivLookBigImage, ContextUtils.getContext(),getFragmentManager());
+        myViewTarget = new MyViewTarget(ivLookBigImage, ContextUtils.getContext(), getFragmentManager());
         showLoadImageProgress();
         Glide.with(getContext())
                 .load(imageUrl)
@@ -153,12 +153,13 @@ public class MineLookBigImageFragment extends Fragment implements MineLookBigIma
     }
 
     private MyViewTarget myViewTarget;
+
     private static class MyViewTarget extends BitmapImageViewTarget {
         private final WeakReference<ImageView> image;
         private final WeakReference<Context> mContext;
         private final WeakReference<FragmentManager> fragmentManager;
 
-        public MyViewTarget(ImageView view,Context context,FragmentManager manager) {
+        public MyViewTarget(ImageView view, Context context, FragmentManager manager) {
             super(view);
             image = new WeakReference<ImageView>(view);
             mContext = new WeakReference<Context>(context);

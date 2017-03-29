@@ -10,6 +10,7 @@
         android:id="@+id/fl_video_container"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <VideoView
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
@@ -32,24 +33,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
-            <TextView
-                android:layout_centerInParent="true"
-                android:id="@+id/tv_connet_text"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18"
-                android:text="@string/DOOR_ANSWERING"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:layout_centerInParent="true"
+            android:id="@+id/tv_connet_text"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp18"
+            android:text="@string/DOOR_ANSWERING"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
-            <TextView
-                android:layout_toEndOf="@id/tv_connet_text"
-                android:layout_centerVertical="true"
-                android:id="@+id/tv_loading"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18"
-                android:text="..."
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+        <TextView
+            android:layout_toEndOf="@id/tv_connet_text"
+            android:layout_centerVertical="true"
+            android:id="@+id/tv_loading"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp18"
+            android:text="..."
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <ImageView
             android:id="@+id/iv_hang_up"
@@ -72,6 +73,7 @@
             android:gravity="center"
             android:layout_width="@dimen/x88"
             android:layout_height="@dimen/y134">
+
             <VideoView
                 android:layout_width="@dimen/x86"
                 android:layout_height="@dimen/y132" />

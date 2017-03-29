@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal">
@@ -35,8 +34,7 @@
                 android:layout_centerInParent="true"
                 android:layout_below="@id/iv_mag_live"
                 android:layout_width="wrap_content"
-                android:layout_height="@dimen/y21">
-            </com.cylan.jiafeigou.widget.DashLineView>
+                android:layout_height="@dimen/y21"></com.cylan.jiafeigou.widget.DashLineView>
 
             <TextView
                 android:id="@+id/tv_mag_live_time"

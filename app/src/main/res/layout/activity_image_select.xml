@@ -35,14 +35,14 @@
         android:id="@+id/progress_bar_image_select"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
 
     <TextView
         android:id="@+id/text_view_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:text="相册打开失败"/>
+        android:text="相册打开失败" />
 
     <GridView
         android:id="@+id/grid_view_image_select"
@@ -53,5 +53,5 @@
         android:paddingBottom="@dimen/y1"
         android:paddingLeft="@dimen/x1"
         android:paddingRight="@dimen/x1"
-        android:stretchMode="columnWidth"/>
+        android:stretchMode="columnWidth" />
 </RelativeLayout>

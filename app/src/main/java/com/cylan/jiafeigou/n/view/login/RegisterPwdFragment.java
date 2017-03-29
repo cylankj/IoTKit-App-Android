@@ -163,8 +163,8 @@ public class RegisterPwdFragment extends SetupPwdFragment
                 pwdPresenter.executeLogin(login);
                 //账号和密码
                 try {
-                    AutoSignIn.getInstance().autoSave(login.userName,1,login.pwd);
-                    AppLogger.e("AutoSignIn:"+login.userName+":"+login.pwd);
+                    AutoSignIn.getInstance().autoSave(login.userName, 1, login.pwd);
+                    AppLogger.e("AutoSignIn:" + login.userName + ":" + login.pwd);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -229,7 +229,7 @@ public class RegisterPwdFragment extends SetupPwdFragment
     @Override
     public void loginResult(int code) {
         if (code == JError.ErrorOK) {
-            if ((getActivity() instanceof NewHomeActivity)){
+            if ((getActivity() instanceof NewHomeActivity)) {
                 getActivity().getSupportFragmentManager().popBackStack();
                 getActivity().finish();
             }

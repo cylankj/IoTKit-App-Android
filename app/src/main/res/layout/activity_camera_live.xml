@@ -7,54 +7,14 @@
     android:orientation="vertical"
     tools:context="com.cylan.jiafeigou.n.view.activity.CameraLiveActivity">
 
-
-    <!--<FrameLayout-->
-    <!--android:msgId="@+msgId/fLayout_information_message"-->
-    <!--android:layout_width="match_parent"-->
-    <!--android:layout_height="wrap_content">-->
-
-    <FrameLayout
-        android:id="@+id/rLayout_camera_live_top_bar"
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_toolbar_camera_live"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/color_0ba8cf">
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/imgV_nav_back"
-                style="@style/ripple_background"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:paddingEnd="@dimen/x20"
-                android:paddingStart="@dimen/x20"
-                android:src="@drawable/nav_icon_back_white" />
-
-            <com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip
-                android:id="@+id/v_indicator"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                app:pstsTabPaddingLeftRight="14dip" />
-        </LinearLayout>
-
-        <com.cylan.jiafeigou.widget.ImageViewTip
-            android:id="@+id/imgV_camera_title_top_setting"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:padding="@dimen/y10"
-            android:src="@drawable/icon_setting"
-            app:t_border_color="@color/color_white"
-            app:t_border_width="@dimen/y1"
-            app:t_point_color="@color/color_red_dot_f43531"
-            app:t_radius="@dimen/x4"
-            app:t_round_image="true" />
-    </FrameLayout>
-
-    <!--</FrameLayout>-->
+        app:ct_background_color="@color/color_0ba8cf"
+        app:ct_enable_theme="true"
+        app:ct_fit_system_window="true" />
 
     <com.cylan.jiafeigou.widget.CustomViewPager
         android:id="@+id/vp_camera_live"

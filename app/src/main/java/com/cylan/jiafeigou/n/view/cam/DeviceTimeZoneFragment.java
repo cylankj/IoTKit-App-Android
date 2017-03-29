@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -26,8 +27,8 @@ import com.cylan.jiafeigou.n.mvp.impl.setting.TimezonePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.DeviceTimeZoneAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
@@ -64,6 +65,8 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
     RecyclerView lvTimezoneDetail;
     @BindView(R.id.tv_timezone_no_result)
     TextView tvTimezoneNoResult;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
     private DeviceTimeZoneAdapter adapter;
     private SimpleDialogFragment simpleDialog;
     private String uuid;
@@ -75,6 +78,11 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
             adapter.addAll(list);
         }
         tvTimezoneNoResult.setVisibility(list == null || list.size() == 0 ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void onNextTheme(@ColorInt int color) {
+
     }
 
     @Override
@@ -121,7 +129,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         etTimezoneSearch.setEnabled(false);
-        ViewUtils.setViewPaddingStatusBar(view.findViewById(R.id.rLayout_timezone_list));
+        customToolbar.setBackAction(click -> getFragmentManager().popBackStack());
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         lvTimezoneDetail.setLayoutManager(layoutManager);
         adapter = new DeviceTimeZoneAdapter(getActivity().getApplicationContext());
@@ -204,5 +212,10 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                 break;
         }
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

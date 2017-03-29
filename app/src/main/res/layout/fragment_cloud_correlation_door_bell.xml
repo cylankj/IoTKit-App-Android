@@ -5,6 +5,7 @@
     android:clickable="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -52,8 +53,7 @@
                 android:layout_marginLeft="@dimen/x15"
                 android:id="@+id/rcy_has_correlation"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
 
             <TextView
                 android:id="@+id/tv_unrelative_door_bell"
@@ -68,8 +68,7 @@
                 android:layout_marginLeft="@dimen/x15"
                 android:id="@+id/rcy_uncorrelation"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="wrap_content"></android.support.v7.widget.RecyclerView>
         </LinearLayout>
 
         <TextView

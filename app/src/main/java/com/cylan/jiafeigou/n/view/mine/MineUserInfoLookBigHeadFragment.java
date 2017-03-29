@@ -85,7 +85,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
             return;
         }
         showLoadImageProgress();
-        MyReqListener listener = new MyReqListener(getString(R.string.Item_LoadFail),getFragmentManager());
+        MyReqListener listener = new MyReqListener(getString(R.string.Item_LoadFail), getFragmentManager());
         Glide.with(getContext())
                 .load(url)
                 .asBitmap()
@@ -97,11 +97,11 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     }
 
 
-    private static class MyReqListener implements RequestListener<String, Bitmap>{
+    private static class MyReqListener implements RequestListener<String, Bitmap> {
         private String totas;
         private WeakReference<FragmentManager> managerWeakReference;
 
-        public MyReqListener(String totas,  FragmentManager manager) {
+        public MyReqListener(String totas, FragmentManager manager) {
             this.totas = totas;
             this.managerWeakReference = new WeakReference<FragmentManager>(manager);
         }
