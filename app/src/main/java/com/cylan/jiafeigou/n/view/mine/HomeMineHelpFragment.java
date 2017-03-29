@@ -1,9 +1,11 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+import android.graphics.Bitmap;
 import android.net.http.SslError;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,6 +21,9 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.LoadingDialog;
+
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -98,7 +103,6 @@ public class HomeMineHelpFragment extends Fragment {
                                            SslErrorHandler handler, SslError error) {
                 handler.proceed();  //接受所有证书
             }
-
         });
         AppLogger.d("url:" + agreementUrl);
         mWvHelp.loadUrl(agreementUrl);
