@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.io.File;
 import java.text.DecimalFormat;
@@ -62,7 +63,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 .map(new Func1<Object, Object>() {
                     @Override
                     public Object call(Object o) {
-                        File directory = getCacheDirectory(getView().getContext(), "");
+                        File directory = getCacheDirectory(ContextUtils.getContext(), "");
                         deleteCacheFile(directory);
                         return null;
                     }
@@ -73,7 +74,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                     @Override
                     public void call(Object o) {
                         getView().hideClearingCacheProgress();
-                        File directory = getCacheDirectory(getView().getContext(), "");
+                        File directory = getCacheDirectory(ContextUtils.getContext(), "");
                         if (directory.getTotalSpace() == directory.getFreeSpace()) {
                             getView().clearNoCache();
                         } else {
@@ -109,7 +110,8 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                     public String call(Object o) {
                         getView().showLoadCacheSizeProgress();
                         long cacheSize = 0l;
-                        File directory = getCacheDirectory(getView().getContext(), "");
+                        //getContent 更换
+                        File directory = getCacheDirectory(ContextUtils.getContext(), "");
                         if (directory.exists()) {
                             try {
                                 cacheSize = getFolderSize(directory);

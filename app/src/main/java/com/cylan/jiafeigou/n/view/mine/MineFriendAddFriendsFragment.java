@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsAddFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsAddFriendPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -35,7 +36,7 @@ import butterknife.OnClick;
  * 创建时间：2016/9/6
  * 描述：
  */
-public class MineFriendAddFriendsFragment extends Fragment implements MineFriendsAddFriendContract.View {
+public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFriendContract.Presenter> implements MineFriendsAddFriendContract.View {
 
     @BindView(R.id.et_friend_phonenumber)
     EditText etFriendPhonenumber;
@@ -46,9 +47,6 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     @BindView(R.id.fragment_container)
     FrameLayout fragmentContainer;
 
-    private MineFriendScanAddFragment scanAddFragment;
-    private MineFriendAddFromContactFragment addFromContactFragment;
-    private MineFriendAddByNumFragment addByNumFragment;
     private MineFriendsAddFriendContract.Presenter presenter;
 
     public static MineFriendAddFriendsFragment newInstance() {
@@ -58,14 +56,6 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     @Override
     public void setPresenter(MineFriendsAddFriendContract.Presenter presenter) {
 
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        scanAddFragment = MineFriendScanAddFragment.newInstance();
-        addFromContactFragment = MineFriendAddFromContactFragment.newInstance();
-        addByNumFragment = MineFriendAddByNumFragment.newInstance();
     }
 
     @Nullable
@@ -132,15 +122,14 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
                 break;
 
             case R.id.et_friend_phonenumber:                            //根据对方账号添加
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.et_friend_phonenumber));
-                AppLogger.d("et_friend_phonenumber");
+                ViewUtils.deBounceClick(view);//防重复点击
                 jump2AddByNumberFragment();
                 break;
         }
     }
 
     private void jump2AddByNumberFragment() {
+        MineFriendAddByNumFragment addByNumFragment = MineFriendAddByNumFragment.newInstance();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -150,6 +139,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     }
 
     private void jump2AddFromContactFragment() {
+        MineFriendAddFromContactFragment addFromContactFragment = MineFriendAddFromContactFragment.newInstance();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -159,6 +149,7 @@ public class MineFriendAddFriendsFragment extends Fragment implements MineFriend
     }
 
     private void jump2ScanAddFragment() {
+        MineFriendScanAddFragment scanAddFragment = MineFriendScanAddFragment.newInstance();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(0, 0
                         , R.anim.slide_in_left, R.anim.slide_out_right)

@@ -46,6 +46,7 @@ import com.cylan.jiafeigou.widget.MsgBoxView;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -452,6 +453,23 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         super.onActivityResult(requestCode, resultCode, data);
         Fragment mineInfoFragment = getFragmentManager().findFragmentByTag("personalInformationFragment");
         mineInfoFragment.onActivityResult(requestCode, resultCode, data);
+    }
+
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        try {
+            Field childFragmentManager = Fragment.class.getDeclaredField("mChildFragmentManager");
+            childFragmentManager.setAccessible(true);
+            childFragmentManager.set(this, null);
+        } catch (NoSuchFieldException e) {
+            AppLogger.e("onDetach:"+e.getLocalizedMessage());
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            AppLogger.e("onDetach:"+e.getLocalizedMessage());
+            throw new RuntimeException(e);
+        }
     }
 
 }

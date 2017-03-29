@@ -189,9 +189,13 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
         //提示音
         DpMsgDefine.DPNotificationInfo notificationInfo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
-        fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
-                ? R.string.MUTE : (notificationInfo.notification == 1
-                ? R.string.BARKING : R.string.ALARM)));
+
+        if (notificationInfo != null){
+            fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
+                    ? R.string.MUTE : (notificationInfo.notification == 1
+                    ? R.string.BARKING : R.string.ALARM)));
+        }
+
         //灵敏度
         DpMsgDefine.DPPrimary<Integer> sensitivity = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
         int s = MiscUtils.safeGet(sensitivity, 0);
