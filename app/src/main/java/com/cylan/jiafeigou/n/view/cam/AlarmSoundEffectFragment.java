@@ -12,6 +12,7 @@ import android.widget.RadioGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -92,7 +93,8 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
             if (getActivity() != null)
                 getActivity().getSupportFragmentManager().popBackStack();
         });
-        notificationInfo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        notificationInfo = device.$(DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
         if (notificationInfo == null) notificationInfo = new DpMsgDefine.DPNotificationInfo();
         int effect = notificationInfo.notification;
         final int count = rgWarnEffect.getChildCount();
@@ -108,7 +110,8 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     public void onDetach() {
         super.onDetach();
         if (callBack != null) {
-            DpMsgDefine.DPNotificationInfo notificationInfo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+            notificationInfo = device.$(DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
             callBack.callBack(notificationInfo);
         }
     }

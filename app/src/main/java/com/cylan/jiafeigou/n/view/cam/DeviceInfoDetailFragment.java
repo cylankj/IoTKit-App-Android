@@ -43,6 +43,9 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.android.schedulers.AndroidSchedulers;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_202_MAC;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_208_DEVICE_SYS_VERSION;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_210_UP_TIME;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
@@ -148,7 +151,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             getView().findViewById(R.id.tv_storage).setVisibility(View.GONE);
         }
         //是否显示移动网络
-        boolean hasSimCard = MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY), false);
+        boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
         tvDeviceMobileNet.setVisibility(hasSimCard && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         tvDeviceMobileNet.setTvSubTitle(getMobileNet(hasSimCard, net));
@@ -175,17 +178,13 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         }
         tvDeviceAlias.setTvSubTitle(device == null ? "" : TextUtils.isEmpty(device.alias) ? uuid : device.alias);
         tvDeviceCid.setTvSubTitle(uuid);
-        DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
-        String m = MiscUtils.safeGet(mac, "");
+        String m = device.$(ID_202_MAC, "");
         tvDeviceMac.setTvSubTitle(m);
-        DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
-        int b = MiscUtils.safeGet(battery, 0);
+        int b = device.$(206, 0);
         tvDeviceBatteryLevel.setTvSubTitle(String.format(Locale.getDefault(), "%s", b));
-        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION);
-        String v = MiscUtils.safeGet(sVersion, "");
+        String v = device.$(ID_208_DEVICE_SYS_VERSION, "");
         tvDeviceSystemVersion.setTvSubTitle(v);
-        DpMsgDefine.DPPrimary<Integer> uptime = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_210_UP_TIME);
-        int u = MiscUtils.safeGet(uptime, 0);
+        int u = device.$(ID_210_UP_TIME, 0);
         tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(u));
         tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
     }
@@ -224,10 +223,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 toEditTimezone();
                 break;
             case R.id.tv_device_sdcard_state:
-                DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
-                if (status == null) {
-                    return;
-                }
+                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
                 String statusContent = getSdcardState(status.hasSdcard, status.err);
                 if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
                     showClearSDDialog();
@@ -359,8 +356,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     @Override
     public void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
-        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
-        String s = MiscUtils.safeGet(sVersion, "");
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        String s = device.$(207, "");
         checkDevVersion = checkDevVersionRsp;
         rlHardwareUpdate.setTvSubTitle(checkDevVersionRsp.hasNew ? getString(R.string.Tap1_NewFirmware) : s);
         rlHardwareUpdate.showRedHint(checkDevVersionRsp.hasNew);
@@ -430,7 +427,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 break;
             case 201:
                 //wifi
-                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
                 tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
                 break;
         }

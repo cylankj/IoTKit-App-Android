@@ -253,16 +253,6 @@ public class MiscUtils {
         return defaultValue;
     }
 
-    public static <T extends DataPoint> T safeGet_(DataPoint value, T defaultValue) {
-        if (value != null) {
-            try {
-                return defaultValue;
-            } catch (Exception e) {
-                return defaultValue;
-            }
-        }
-        return defaultValue;
-    }
 
     /**
      * @param set

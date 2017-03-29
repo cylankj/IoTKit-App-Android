@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -29,9 +28,10 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_207_DEVICE_VERSION;
 
 /**
  * Created by cylan-hunt on 16-11-25.
@@ -100,16 +100,12 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
         // TODO 检测是否有新的固件
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
-                        try {
-                            JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, "0.0"));
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(o -> {
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    try {
+                        JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, device.$(ID_207_DEVICE_VERSION, "0.0"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 });
     }

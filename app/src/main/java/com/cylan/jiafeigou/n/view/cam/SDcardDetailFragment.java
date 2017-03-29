@@ -217,7 +217,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             tvClearRestart.setVisibility(View.VISIBLE);
         }
 
-        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         boolean show = net != null && JFGRules.isDeviceOnline(net);
         if (!show || NetUtils.getNetType(getContext()) == -1) {
             tvClecrSdcard.setTextColor(Color.parseColor("#8c8c8c"));

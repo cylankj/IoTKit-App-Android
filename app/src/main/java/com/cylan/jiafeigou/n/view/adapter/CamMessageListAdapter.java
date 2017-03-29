@@ -15,6 +15,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -68,7 +69,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private boolean online() {
-        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_201_NET);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         return net != null && net.net > 0;
     }
 
