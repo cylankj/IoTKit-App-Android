@@ -127,6 +127,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                 break;
 
             case R.id.rl_home_setting_clear:
+                if ("0.0M".equals(tvCacheSize.getText()))return;
                 presenter.clearCache();
                 break;
 
@@ -164,13 +165,13 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public void clearFinish() {
-        tvCacheSize.setText("0.0MB");
+        tvCacheSize.setText("0.0M");
         ToastUtil.showToast(getString(R.string.Clear_Sdcard_tips3));
     }
 
     @Override
     public void clearNoCache() {
-        ToastUtil.showToast("暂无缓存");
+        ToastUtil.showToast(getString(R.string.RET_EREPORT_NO_DATA));
     }
 
     @Override
