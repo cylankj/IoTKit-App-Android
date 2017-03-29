@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.content.Context;
+import android.content.pm.ResolveInfo;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.io.File;
 import java.text.DecimalFormat;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -103,12 +105,14 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     @Override
     public void calculateCacheSize() {
+        if (getView() != null){
+            getView().showLoadCacheSizeProgress();
+        }
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .map(new Func1<Object, String>() {
                     @Override
                     public String call(Object o) {
-                        getView().showLoadCacheSizeProgress();
                         long cacheSize = 0l;
                         //getContent 更换
                         File directory = getCacheDirectory(ContextUtils.getContext(), "");

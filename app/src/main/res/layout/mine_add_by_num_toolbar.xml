@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <FrameLayout
+        android:id="@+id/rl_home_mine_relativesandfriends_add_by_num"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/iv_home_mine_friends_add_by_num_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/x15"
+                android:clickable="true"
+                android:src="@drawable/nav_tab_back_selector" />
+
+            <EditText
+                android:layout_centerVertical="true"
+                android:id="@+id/et_add_by_number"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y48"
+                android:layout_marginLeft="@dimen/x48"
+                android:hint="@string/SHARE_ACCOUNT"
+                android:maxLength="65"
+                android:inputType="textVisiblePassword"
+                android:textColor="#ffffff"
+                android:textColorHint="#60ffffff"
+                android:textCursorDrawable="@drawable/search_friend_cursor_color"
+                android:background="@null"
+                android:textSize="@dimen/sp18" />
+        </RelativeLayout>
+    </FrameLayout>
+
+</LinearLayout>

@@ -61,8 +61,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     TextView tvTopTitle;
     @BindView(R.id.et_search_contact)
     EditText etSearchContact;
-    @BindView(R.id.rl_mine_share_to_contact)
-    FrameLayout rlMineShareToContact;
+
 
 
     private MineShareToContactContract.Presenter presenter;
@@ -99,7 +98,6 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlMineShareToContact);
     }
 
     @Override

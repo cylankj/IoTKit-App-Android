@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -36,6 +38,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_207_DEVICE_VERSION;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
 /**
@@ -57,8 +60,6 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     ProgressBar downloadProgress;
     @BindView(R.id.ll_download_pg_container)
     LinearLayout llDownloadPgContainer;
-    @BindView(R.id.imgV_top_bar_center)
-    TextView imgVTopBarCenter;
     @BindView(R.id.tv_version_describe)
     TextView tvVersionDescribe;
     @BindView(R.id.tv_loading_show)
@@ -93,7 +94,6 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(view.findViewById(R.id.fLayout_top_bar_container));
     }
 
     @Override
@@ -104,10 +104,12 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     private void initView() {
         tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
-        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
-        String s = MiscUtils.safeGet(sVersion, "");
-        tvHardwareNowVersion.setText(s);
-        tvHardwareNewVersion.setText(s);
+//        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
+//        String s = MiscUtils.safeGet(sVersion, "");
+        JFGSourceManager manager = DataSourceManager.getInstance();
+        Device device = manager.getJFGDevice(uuid);
+        tvHardwareNowVersion.setText(device.$(ID_207_DEVICE_VERSION, ""));
+        tvHardwareNewVersion.setText(device.$(ID_207_DEVICE_VERSION, ""));
 
         // 有新版本
         if (checkDevVersion != null && checkDevVersion.hasNew) {
@@ -124,10 +126,10 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     }
 
-    @OnClick({R.id.tv_download_soft_file, R.id.imgV_top_bar_center})
+    @OnClick({R.id.tv_download_soft_file, R.id.tv_toolbar_icon})
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.imgV_top_bar_center:
+            case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;
 

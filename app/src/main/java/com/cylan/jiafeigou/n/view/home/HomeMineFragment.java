@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.home;
 
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -413,6 +412,12 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .add(android.R.id.content, homeMineMessageFragment, "homeMineMessageFragment")
                 .addToBackStack("HomeMineFragment")
                 .commit();
+        homeMineMessageFragment.setOnClearMsgCountListener(new HomeMineMessageFragment.OnClearMsgCountListener() {
+            @Override
+            public void OnClear() {
+                tvHomeMineMsgCount.setText("");
+            }
+        });
     }
 
     /**

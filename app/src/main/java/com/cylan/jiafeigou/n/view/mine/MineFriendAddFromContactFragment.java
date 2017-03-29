@@ -54,8 +54,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     RecyclerView rcyContactList;
     @BindView(R.id.ll_no_contact)
     LinearLayout llNoContact;
-    @BindView(R.id.rl_home_mine_relativesandfriends_scan_add)
-    RelativeLayout rlHomeMineRelativesandfriendsScanAdd;
+
 
     private MineFriendAddFromContactContract.Presenter presenter;
     private FriendAddFromContactAdapter contactListAdapter;
@@ -91,7 +90,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriendsScanAdd);
+//        ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriendsScanAdd);
         ViewUtils.setChineseExclude(etAddPhoneNumber, 65);
     }
 

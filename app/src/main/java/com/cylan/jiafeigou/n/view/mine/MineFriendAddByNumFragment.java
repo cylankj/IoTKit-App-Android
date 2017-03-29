@@ -57,8 +57,6 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     RelativeLayout rlRelativeAndFriendContainer;
     @BindView(R.id.fl_display_find_result)
     FrameLayout flDisplayFindResult;
-    @BindView(R.id.rl_home_mine_relativesandfriends_add_by_num)
-    FrameLayout rlHomeMineRelativesandfriendsAddByNum;
     @BindView(R.id.ll_no_friend)
     LinearLayout llNoFriend;
 
@@ -81,7 +79,6 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setViewPaddingStatusBar(rlHomeMineRelativesandfriendsAddByNum);
         ViewUtils.setChineseExclude(etAddByNumber, 65);
         initKeyListener();
     }

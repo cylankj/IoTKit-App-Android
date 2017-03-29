@@ -11,26 +11,24 @@
         android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        layout="@layout/layout_default_custom_tool_bar"
         hunt:ct_background_color="@color/color_0ba8cf"
         hunt:ct_enable_shadow="false"
         hunt:ct_enable_theme="true"
         hunt:ct_fit_system_window="true"
-        hunt:ct_icon="@drawable/nav_tab_back_selector"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
         hunt:ct_left_title="@string/SETTINGS"
         hunt:ct_left_title_color="@color/color_white"
         hunt:ct_title_color="@color/color_black" />
 
-
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/custom_toolbar">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-
 
             <RelativeLayout
                 android:id="@+id/rLayout_home_setting_accessMes"
