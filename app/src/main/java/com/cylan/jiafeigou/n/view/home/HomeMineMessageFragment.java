@@ -54,6 +54,16 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     private ArrayList<MineMessageBean> hasCheckData;
     private ArrayList<Integer> serviceDelRsp;
 
+    private OnClearMsgCountListener listener;
+
+    public interface OnClearMsgCountListener{
+        void OnClear();
+    }
+
+    public void setOnClearMsgCountListener(OnClearMsgCountListener listener){
+        this.listener = listener;
+    }
+
     public static HomeMineMessageFragment newInstance(Bundle bundle) {
         HomeMineMessageFragment fragment = new HomeMineMessageFragment();
         fragment.setArguments(bundle);
@@ -95,6 +105,9 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
+        if (hasNewMesg){
+            if (listener != null)listener.OnClear();
+        }
     }
 
     /**

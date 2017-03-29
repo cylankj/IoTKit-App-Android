@@ -4,6 +4,8 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.rx.RxEvent;
 
+import java.util.List;
+
 import rx.Subscription;
 
 /**
@@ -67,6 +69,7 @@ public interface HomeSettingContract {
          * @return
          */
         Subscription getAccountInfo();
+
     }
 
 }

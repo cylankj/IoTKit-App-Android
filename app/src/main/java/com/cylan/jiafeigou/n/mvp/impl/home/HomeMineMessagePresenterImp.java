@@ -126,7 +126,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 e.printStackTrace();
             }
         }
-        return tempList;
+        return sortAddReqList(tempList);
     }
 
     /**
@@ -220,7 +220,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 解析转换数据
-     *
      * @param robotoGetDataRsp
      */
     private ArrayList<MineMessageBean> convertData(RobotoGetDataRsp robotoGetDataRsp) {

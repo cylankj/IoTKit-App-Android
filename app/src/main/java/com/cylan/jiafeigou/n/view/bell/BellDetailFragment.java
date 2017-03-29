@@ -6,10 +6,9 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
+import android.widget.Switch;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -23,7 +22,7 @@ import com.cylan.jiafeigou.n.view.cam.HardwareUpdateFragment;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
-import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
@@ -48,10 +47,6 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         implements BellDetailContract.View,
         BaseDialog.BaseDialogAction {
 
-    @BindView(R.id.imgV_top_bar_center)
-    TextView imgVTopBarCenter;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
     @BindView(R.id.sv_setting_device_alias)
     SettingItemView0 svSettingDeviceAlias;
     @BindView(R.id.sv_setting_device_cid)
@@ -76,6 +71,8 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     View hardwareUpdatePoint;
     @BindView(R.id.rl_hardware_update)
     RelativeLayout rlHardwareUpdate;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     private RxEvent.CheckDevVersionRsp checkDevVersion;
 
@@ -97,11 +94,6 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        initTopBar();
-    }
-
-    private void initTopBar() {
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
     @Override
@@ -174,16 +166,24 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         return rootView;
     }
 
-    @OnClick(R.id.rl_hardware_update)
-    public void OnClick() {
-        if (checkDevVersion != null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
-            bundle.putSerializable("version_content", checkDevVersion);
-            HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
-            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                    hardwareUpdateFragment, android.R.id.content);
+    @OnClick({R.id.tv_toolbar_icon,R.id.rl_hardware_update})
+    public void OnClick(View view) {
+        switch(view.getId()){
+            case R.id.tv_toolbar_icon:
+                getFragmentManager().popBackStack();
+                break;
+            case R.id.rl_hardware_update:
+                if (checkDevVersion != null) {
+                    Bundle bundle = new Bundle();
+                    bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+                    bundle.putSerializable("version_content", checkDevVersion);
+                    HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
+                    ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                            hardwareUpdateFragment, android.R.id.content);
+                }
+                break;
         }
+
     }
 
     @Override

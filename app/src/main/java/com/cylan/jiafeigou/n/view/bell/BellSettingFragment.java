@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -36,11 +37,6 @@ import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 public class BellSettingFragment extends BaseFragment<BellSettingContract.Presenter>
         implements BellSettingContract.View {
-
-    @BindView(R.id.imgV_top_bar_center)
-    TextView imgVTopBarCenter;
-    @BindView(R.id.fLayout_top_bar_container)
-    FrameLayout fLayoutTopBarContainer;
 
     @BindView(R.id.sv_setting_device_detail)
     SettingItemView0 svSettingDeviceDetail;
@@ -88,11 +84,11 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     }
 
     private void initTopBar() {
-        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
+//        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
 
-    @OnClick({R.id.imgV_top_bar_center,
+    @OnClick({R.id.tv_toolbar_icon,
             R.id.sv_setting_device_detail,
             R.id.sv_setting_device_wifi,
             R.id.tv_setting_clear_,
@@ -109,7 +105,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 loadFragment(android.R.id.content, getActivity().getSupportFragmentManager(), fragment);
             }
             break;
-            case R.id.imgV_top_bar_center:
+            case R.id.tv_toolbar_icon:
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.sv_setting_device_wifi:
@@ -196,7 +192,10 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 v.setVisibility(View.GONE);
             }
         }
-        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(DpMsgMap.ID_201_NET, null)));
+//        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(DpMsgMap.ID_201_NET, null)));
+
+        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_201_NET), new DpMsgDefine.DPNet());
+        svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
         tvSettingClear.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
         mNetWorkContainer.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
     }

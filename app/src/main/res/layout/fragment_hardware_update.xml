@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:clickable="true"
     android:background="@color/color_white"
     android:layout_width="match_parent"
@@ -11,30 +12,18 @@
         android:layout_height="wrap_content">
 
         <!-- 顶部栏 -->
-        <LinearLayout
+        <com.cylan.jiafeigou.widget.CustomToolbar
+            android:id="@+id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:id="@+id/fLayout_top_bar_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@color/color_0ba8cf">
-
-                <TextView
-                    android:id="@+id/imgV_top_bar_center"
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/y48"
-                    android:drawableLeft="@drawable/nav_tab_back_selector"
-                    android:drawablePadding="@dimen/x15"
-                    android:gravity="center_vertical"
-                    android:paddingLeft="@dimen/x15"
-                    android:text="@string/Tap1_FirmwareUpdate"
-                    android:textColor="@color/color_white"
-                    android:textSize="@dimen/sp18" />
-            </FrameLayout>
-        </LinearLayout>
+            hunt:ct_background_color="@color/color_0ba8cf"
+            hunt:ct_enable_shadow="false"
+            hunt:ct_enable_theme="true"
+            hunt:ct_fit_system_window="true"
+            hunt:ct_icon="@drawable/nav_icon_back_white"
+            hunt:ct_left_title="@string/Tap1_FirmwareUpdate"
+            hunt:ct_left_title_color="@color/color_white" />
 
         <FrameLayout
             android:layout_width="match_parent"

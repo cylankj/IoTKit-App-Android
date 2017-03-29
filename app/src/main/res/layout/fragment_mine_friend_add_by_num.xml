@@ -1,46 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:clickable="true"
     android:background="@color/color_white"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/rl_home_mine_relativesandfriends_add_by_num"
-        android:background="#0BA8CF"
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/mine_add_by_num_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <ImageView
-                android:id="@+id/iv_home_mine_friends_add_by_num_back"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:padding="@dimen/x15"
-                android:clickable="true"
-                android:src="@drawable/nav_tab_back_selector" />
-
-            <EditText
-                android:layout_centerVertical="true"
-                android:id="@+id/et_add_by_number"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y48"
-                android:layout_marginLeft="@dimen/x48"
-                android:hint="@string/SHARE_ACCOUNT"
-                android:maxLength="65"
-                android:inputType="textVisiblePassword"
-                android:textColor="#ffffff"
-                android:textColorHint="#60ffffff"
-                android:textCursorDrawable="@drawable/search_friend_cursor_color"
-                android:background="@null"
-                android:textSize="@dimen/sp18" />
-        </RelativeLayout>
-    </FrameLayout>
+        android:layout_height="wrap_content"
+        app:ct_background_color="@color/color_0ba8cf"
+        app:ct_enable_theme="true"
+        app:ct_fit_system_window="true" />
 
 
     <FrameLayout

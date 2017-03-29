@@ -6,30 +6,18 @@
     android:background="@color/color_white"
     android:orientation="vertical">
 
-    <LinearLayout
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-        <FrameLayout
-            android:id="@+id/fLayout_top_bar_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/color_0ba8cf">
-
-            <TextView
-                android:id="@+id/imgV_top_bar_center"
-                android:layout_width="wrap_content"
-                android:layout_height="@dimen/y48"
-                android:drawableLeft="@drawable/nav_tab_back_selector"
-                android:drawablePadding="@dimen/y15"
-                android:gravity="center_vertical"
-                android:paddingLeft="@dimen/y15"
-                android:text="@string/EQUIPMENT_INFO"
-                android:textColor="@color/color_white"
-                android:textSize="@dimen/sp18" />
-        </FrameLayout>
-    </LinearLayout>
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_shadow="true"
+        hunt:ct_enable_theme="true"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title="@string/EQUIPMENT_INFO"
+        hunt:ct_left_title_color="@color/color_white" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -40,11 +28,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y10"
-                android:background="@drawable/little_shape" />
 
             <com.cylan.jiafeigou.widget.SettingItemView0
                 android:id="@+id/sv_setting_device_alias"

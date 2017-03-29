@@ -20,6 +20,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_207_DEVICE_VERSION;
+
 /**
  * Created by cylan-hunt on 16-8-3.
  */
@@ -31,9 +33,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
-        registerSubscription(
-                checkNewVersionBack()
-        );
+        registerSubscription(checkNewVersionBack());
     }
 
     @Override
@@ -71,9 +71,11 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                     Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
                     DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
                     try {
-                        JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, ""));
+                        long req = JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, device.$(ID_207_DEVICE_VERSION, ""));
+                        AppLogger.d("Bell_checkNewVersion:"+req);
                     } catch (JfgException e) {
                         e.printStackTrace();
+                        AppLogger.e("Bell_checkNewVersion:"+e.getLocalizedMessage());
                     }
                 });
     }

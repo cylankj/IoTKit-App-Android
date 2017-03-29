@@ -278,6 +278,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             mShareDlg.setCanceledOnTouchOutside(true);
         }
         try {
+            if(mShareDlg.isShowing())return;
             mShareDlg.show();
         } catch (Exception e) {
             AppLogger.e(e.toString());
