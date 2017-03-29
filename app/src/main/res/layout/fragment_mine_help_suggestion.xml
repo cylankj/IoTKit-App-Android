@@ -16,7 +16,6 @@
         hunt:ct_enable_shadow="false"
         hunt:ct_enable_theme="true"
         hunt:ct_fit_system_window="true"
-        hunt:ct_enable_theme="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
         hunt:ct_left_title="@string/FEEDBACK"
         hunt:ct_left_title_color="@color/color_white"
