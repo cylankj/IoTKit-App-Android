@@ -42,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 
 /**
@@ -186,16 +187,14 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     }
 
     private void updateDetails() {
-
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         //提示音
-        DpMsgDefine.DPNotificationInfo notificationInfo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
-        if (notificationInfo == null) notificationInfo = new DpMsgDefine.DPNotificationInfo();
+        DpMsgDefine.DPNotificationInfo notificationInfo = device.$(504, new DpMsgDefine.DPNotificationInfo());
         fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
                 ? R.string.MUTE : (notificationInfo.notification == 1
                 ? R.string.BARKING : R.string.ALARM)));
         //灵敏度
-        DpMsgDefine.DPPrimary<Integer> sensitivity = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
-        int s = MiscUtils.safeGet(sensitivity, 0);
+        int s = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 0);
         fLayoutProtectionSensitivity.setTvSubTitle(s == 0 ? getString(R.string.SENSITIVI_LOW)
                 : (s == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期
@@ -222,7 +221,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         int level = (int) value;
                         DpMsgDefine.DPPrimary<Integer> wFlag = new DpMsgDefine.DPPrimary<>();
                         wFlag.value = level;
-                        basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
+                        basePresenter.updateInfoReq(wFlag, ID_503_CAMERA_ALARM_SENSITIVITY);
                         updateDetails();
                     }
                 });

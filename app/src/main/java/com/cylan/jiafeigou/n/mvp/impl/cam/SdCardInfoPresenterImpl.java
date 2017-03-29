@@ -67,7 +67,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
      */
     @Override
     public boolean getSdcardState() {
-        DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+        DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
         //sd卡状态
         if (sdStatus != null) {
             if (!sdStatus.hasSdcard && sdStatus.err != 0) {

@@ -111,6 +111,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     @CallSuper
     @Override
     public void stop() {
+        unSubscribe(refCacheMap);
         unSubscribe(compositeSubscription);
         NetMonitor.getNetMonitor().unregister();
         if (registerTimeTick()) {

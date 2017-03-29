@@ -207,7 +207,7 @@ dependencies {
     //其中latest.release指代最新版本号，也可以指定明确的版本号，例如2.2.0
     compile rootProject.ext.buglyNdk
     compile rootProject.ext.buglySdk
-    debugCompile rootProject.ext.leakcanaryAndroidNoOp
+    debugCompile rootProject.ext.leakcanaryAndroid
     releaseCompile rootProject.ext.leakcanaryAndroidNoOp
     testCompile rootProject.ext.leakcanaryAndroidNoOp
     //add by hunt 2016-08-01

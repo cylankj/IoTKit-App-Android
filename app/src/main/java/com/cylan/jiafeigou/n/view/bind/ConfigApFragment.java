@@ -195,7 +195,7 @@ public class ConfigApFragment extends IBaseFragment<ConfigApContract.Presenter>
     public void onPwdUpdate(CharSequence s, int start, int before, int count) {
         boolean flag = TextUtils.isEmpty(s);
         ivWifiClearPwd.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
-        tvWifiPwdSubmit.setEnabled(s.length() > 6);
+//        tvWifiPwdSubmit.setEnabled(s.length() > 6);
     }
 
 

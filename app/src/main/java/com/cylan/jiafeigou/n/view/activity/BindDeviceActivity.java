@@ -122,7 +122,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 Intent intent = new Intent(this, BindCamActivity.class);
                 intent.putExtra("fromBindActivity", "fromBindActivity");
                 startActivity(intent);
-                finish();
+//                finish();
                 break;
             }
             case R.id.v_to_bind_panorama_camera: {
@@ -161,7 +161,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(android.R.id.content, fragment)
-//                    .addToBackStack("BindCameraFragment")
                     .commit();
         }
     }

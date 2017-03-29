@@ -207,7 +207,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public <T extends DataPoint> void updateInfoReq(T value, long id) {
-        Observable.just(value)
+        Subscription subscription = Observable.just(value)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     AppLogger.i("save start: " + id + " " + value);
@@ -218,6 +218,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     }
                     AppLogger.i("save end: " + id + " " + value);
                 }, (Throwable throwable) -> AppLogger.e(throwable.getLocalizedMessage()));
+        addSubscription(subscription, "updateInfoReq");
     }
 
     @Override
@@ -237,6 +238,6 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     e.printStackTrace();
                 }, () -> {
                 });
-        addSubscription(subscribe);
+        addSubscription(subscribe, "unbindDevice");
     }
 }

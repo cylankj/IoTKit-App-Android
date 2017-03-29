@@ -37,7 +37,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MD5Util;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -698,9 +697,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         return;
                     }
                     Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                    DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
                     try {
-                        JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, MiscUtils.safeGet(sVersion, ""));
+                        String version = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "");
+                        JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, version);
                     } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
                         e.printStackTrace();

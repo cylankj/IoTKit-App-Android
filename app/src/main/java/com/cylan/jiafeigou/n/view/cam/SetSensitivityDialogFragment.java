@@ -15,15 +15,15 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -79,12 +79,12 @@ public class SetSensitivityDialogFragment extends BaseDialog {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         getDialog().setCanceledOnTouchOutside(false);
-        DpMsgDefine.DPPrimary<Integer> level = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         final int count = rgSensitivity.getChildCount();
         for (int i = 0; i < count; i++) {
             final int index = i;
             RadioButton box = (RadioButton) rgSensitivity.getChildAt(i);
-            int l = MiscUtils.safeGet(level, 0);
+            int l = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 0);
             box.setChecked(l == (2 - i));
             box.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 if (isChecked) {

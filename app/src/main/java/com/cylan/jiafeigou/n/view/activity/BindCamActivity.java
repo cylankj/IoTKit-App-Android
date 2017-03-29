@@ -73,6 +73,10 @@ public class BindCamActivity extends BaseFullScreenFragmentActivity {
         return false;
     }
 
+    protected int[] getOverridePendingTransition() {
+        return new int[]{R.anim.slide_in_right, R.anim.slide_out_left};
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -89,7 +93,9 @@ public class BindCamActivity extends BaseFullScreenFragmentActivity {
         } else if (checkExtraFragment())
             return;
         if (getIntent() != null && getIntent().hasExtra("fromBindActivity")) {
-            startActivity(new Intent(BindCamActivity.this, BindDeviceActivity.class));
+            Intent intent = new Intent(BindCamActivity.this, BindDeviceActivity.class);
+            intent.putExtra("fromBindActivity", "fromBindActivity");
+            startActivity(intent);
         }
         finishExt();
     }

@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
@@ -30,7 +31,7 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
 
     @Override
     public void setupAlias(String alias) {
-        Observable.just(alias)
+        Subscription subscription = Observable.just(alias)
                 .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
                     try {
@@ -46,5 +47,6 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                 .subscribe((String s) -> {
                     getView().setupAliasDone();
                 });
+        addSubscription(subscription, "setupAlias");
     }
 }

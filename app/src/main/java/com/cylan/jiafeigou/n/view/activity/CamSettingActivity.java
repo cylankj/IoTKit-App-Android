@@ -38,7 +38,6 @@ import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.n.view.setting.WifiListFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -227,12 +226,16 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             break;
             case R.id.sv_setting_device_wifi:
                 Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                if (device != null && JFGRules.isFreeCam(device.pid)) {
+                if (device == null) {
+                    finishExt();
+                    return;
+                }
+                if (JFGRules.isFreeCam(device.pid)) {
                     Intent intent = new Intent(this, BindDeviceActivity.class);
                     intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
                     startActivity(intent);
                 } else {
-                    DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+                    DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
                     if (!JFGRules.isDeviceOnline(net)) {
                         //设备离线
                         Intent intent = new Intent(this, BindCamActivity.class);
@@ -365,15 +368,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         }
 
         ////////////////////////////net////////////////////////////////////////
-        DpMsgDefine.DPNet net = MiscUtils.safeGet_(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET), new DpMsgDefine.DPNet());
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
         svSettingDeviceMobileNetwork.setVisibility(simCard > 1 ? View.VISIBLE : View.GONE);
         svSettingDeviceWifi.showDivider(simCard > 1);
         if (JFGRules.is3GCam(device.pid)) {
-            DpMsgDefine.DPPrimary<Boolean> state = DataSourceManager.getInstance().getValue(this.uuid, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
-            boolean s = MiscUtils.safeGet(state, false);
+            boolean s = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
             svSettingDeviceMobileNetwork.setChecked(s);
             svSettingDeviceMobileNetwork.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
@@ -457,8 +459,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private boolean ledPreState() {
-        DpMsgDefine.DPPrimary<Boolean> ret = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_209_LED_INDICATOR);
-        return MiscUtils.safeGet(ret, false);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        return device.$(DpMsgMap.ID_209_LED_INDICATOR, false);
     }
 
     /**
@@ -467,12 +469,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      * @return
      */
     private boolean warnPreState() {
-        DpMsgDefine.DPPrimary<Boolean> flag = DataSourceManager.getInstance().getValue(uuid, (long) DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
-        return MiscUtils.safeGet(flag, false);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        return device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
     }
 
     private int autoRecordPreState() {
-        return MiscUtils.safeGet(DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD), 0);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        return device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
     }
 
     private void triggerStandby(boolean triggered) {
