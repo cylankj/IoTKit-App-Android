@@ -1,86 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:clickable="true"
     android:id="@+id/fragment_container"
-    android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true">
 
     <LinearLayout
-        android:orientation="vertical"
-        android:background="@color/color_white"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="@color/color_white"
+        android:orientation="vertical">
 
         <com.cylan.jiafeigou.widget.CustomToolbar
-            layout="@layout/layout_default_custom_tool_bar"
-            hunt:ct_left_title="@string/Tap3_FriendsAdd"
-            hunt:ct_left_title_color="@color/color_white"
-            android:textSize="@dimen/sp18"
-            hunt:ct_enable_shadow="false"
             android:id="@+id/custom_toolbar"
-            hunt:ct_background_color="@color/color_0ba8cf"
-            hunt:ct_icon="@drawable/nav_icon_back_white"
+            layout="@layout/layout_default_custom_tool_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/sp18"
+            hunt:ct_background_color="@color/color_0ba8cf"
+            hunt:ct_enable_shadow="false"
+            hunt:ct_enable_theme="true"
+            hunt:ct_icon="@drawable/nav_icon_back_white"
+            hunt:ct_left_title="@string/Tap3_FriendsAdd"
+            hunt:ct_left_title_color="@color/color_white" />
 
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <LinearLayout
-                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <EditText
-                    android:focusableInTouchMode="false"
-                    android:clickable="true"
                     android:id="@+id/et_friend_phonenumber"
-                    android:layout_marginTop="@dimen/y8"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y53"
                     android:layout_marginLeft="@dimen/x20"
                     android:layout_marginRight="@dimen/x20"
-                    android:hint="@string/SHARE_ACCOUNT"
-                    android:textSize="@dimen/sp16"
-                    android:inputType="phone"
+                    android:layout_marginTop="@dimen/y8"
                     android:background="@null"
+                    android:clickable="true"
+                    android:focusableInTouchMode="false"
+                    android:hint="@string/SHARE_ACCOUNT"
+                    android:inputType="phone"
                     android:textColorHint="@color/color_cecece"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y53" />
+                    android:textSize="@dimen/sp16" />
 
                 <View
-                    android:layout_marginLeft="@dimen/x20"
-                    android:layout_marginRight="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y1"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="#36bdff" />
 
                 <TextView
-                    android:layout_marginTop="@dimen/y8"
                     android:id="@+id/tv_scan_add"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y67"
                     android:layout_marginLeft="@dimen/x20"
-                    android:gravity="center_vertical"
-                    android:text="@string/Tap3_FriendsAdd_QR"
+                    android:layout_marginTop="@dimen/y8"
                     android:drawableLeft="@drawable/me_icon_scan_code"
                     android:drawablePadding="@dimen/x15"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y67" />
+                    android:gravity="center_vertical"
+                    android:text="@string/Tap3_FriendsAdd_QR" />
 
                 <View
-                    android:layout_marginLeft="@dimen/x15"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y1"
+                    android:layout_marginLeft="@dimen/x15"
                     android:background="#f2f2f2" />
 
                 <TextView
                     android:id="@+id/tv_add_from_contract"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y67"
                     android:layout_marginLeft="@dimen/x20"
-                    android:gravity="center_vertical"
-                    android:text="@string/Tap3_FriendsAdd_Contacts"
                     android:drawableLeft="@drawable/me_icon_tongxunlu"
                     android:drawablePadding="@dimen/x15"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y67" />
+                    android:gravity="center_vertical"
+                    android:text="@string/Tap3_FriendsAdd_Contacts" />
 
             </LinearLayout>
 

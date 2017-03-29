@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.contract.setting;
 
+import android.support.annotation.ColorInt;
+
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
@@ -14,6 +16,8 @@ public interface TimezoneContract {
 
     interface View extends BaseView<Presenter> {
         void timezoneList(List<TimeZoneBean> list);
+
+        void onNextTheme(@ColorInt int color);
     }
 
     interface Presenter extends BasePresenter {

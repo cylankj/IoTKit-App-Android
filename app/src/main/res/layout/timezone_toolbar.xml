@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y48"
+    android:clickable="true"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/iv_back"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:padding="@dimen/x15"
+        android:src="@drawable/nav_tab_back_selector" />
+
+    <EditText
+        android:id="@+id/et_timezone_search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="@dimen/x48"
+        android:layout_marginStart="@dimen/x48"
+        android:background="@null"
+        android:focusable="true"
+        android:hint="@string/Search"
+        android:inputType="none"
+        android:text="@string/TIMEZONE_CHOOSE"
+        android:textColor="@color/color_white"
+        android:textColorHint="#B9DFED"
+        android:textSize="@dimen/sp18" />
+
+    <ImageView
+        android:id="@+id/iv_timezone_search"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="end|center_vertical"
+        android:padding="@dimen/x15"
+        android:src="@drawable/icon_search"
+        android:visibility="visible" />
+</FrameLayout>

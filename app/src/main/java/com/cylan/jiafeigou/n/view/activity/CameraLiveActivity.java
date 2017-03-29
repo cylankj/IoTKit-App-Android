@@ -15,8 +15,6 @@ import android.util.Log;
 import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -30,6 +28,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
@@ -43,16 +42,15 @@ import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_
 
 
 public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
-    @BindView(R.id.imgV_nav_back)
-    ImageView imgVNavBack;
-    @BindView(R.id.v_indicator)
-    PagerSlidingTabStrip vIndicator;
-    @BindView(R.id.rLayout_camera_live_top_bar)
-    FrameLayout rLayoutCameraLiveTopBar;
+
     @BindView(R.id.vp_camera_live)
     CustomViewPager vpCameraLive;
-    @BindView(R.id.imgV_camera_title_top_setting)
-    ImageViewTip imgVCameraTitleTopSetting;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
+
+    private ImageViewTip imgVCameraTitleTopSetting;
+    private PagerSlidingTabStrip vIndicator;
+
     private String uuid;
 
     private Bundle currentBundle;
@@ -63,7 +61,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         setContentView(R.layout.activity_camera_live);
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         ButterKnife.bind(this);
-        initTopBar();
+        initToolbar();
         initAdapter();
     }
 
@@ -85,7 +83,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         final boolean isLandScape = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         getWindow().getDecorView().post(() -> {
             handleSystemBar(!isLandScape, 1000);
-            rLayoutCameraLiveTopBar.setVisibility(isLandScape ? View.GONE : View.VISIBLE);
+            customToolbar.setVisibility(isLandScape ? View.GONE : View.VISIBLE);
             vpCameraLive.setPagingEnabled(!isLandScape);
         });
     }
@@ -102,9 +100,11 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void updateRedHint() {
-        SettingTip settingTip = MiscUtils.getObjectFromSP(JConstant.KEY_DEVICE_SETTING_SHOW_RED + uuid, SettingTip.class);
-        //延时摄影，暂时隐藏。
-        imgVCameraTitleTopSetting.setShowDot(settingTip == null || settingTip.isBeautiful());
+        if (imgVCameraTitleTopSetting != null) {
+            SettingTip settingTip = MiscUtils.getObjectFromSP(JConstant.KEY_DEVICE_SETTING_SHOW_RED + uuid, SettingTip.class);
+            //延时摄影，暂时隐藏。
+            imgVCameraTitleTopSetting.setShowDot(settingTip == null || settingTip.isBeautiful());
+        }
     }
 
     @Override
@@ -127,8 +127,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     private void initAdapter() {
         SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(), uuid);
         vpCameraLive.setAdapter(simpleAdapterPager);
-        vIndicator.setViewPager(vpCameraLive);
-        vIndicator.setOnPageChangeListener(new SimplePageListener(uuid));
         final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
         vpCameraLive.setPagingScrollListener(event -> {
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
@@ -143,8 +141,15 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         });
     }
 
-    private void initTopBar() {
-        ViewUtils.setViewPaddingStatusBar(rLayoutCameraLiveTopBar);
+    private void initToolbar() {
+        customToolbar.post(() -> {
+            vIndicator = (PagerSlidingTabStrip) customToolbar.findViewById(R.id.v_indicator);
+            vIndicator.setViewPager(vpCameraLive);
+            vIndicator.setOnPageChangeListener(new SimplePageListener(uuid));
+            imgVCameraTitleTopSetting = (ImageViewTip) customToolbar.findViewById(R.id.imgV_camera_title_top_setting);
+            updateRedHint();
+            customToolbar.findViewById(R.id.imgV_nav_back).setOnClickListener(v -> onNavBack());
+        });
     }
 
 
@@ -163,7 +168,6 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         finishExt();
     }
 
-    @OnClick(R.id.imgV_nav_back)
     public void onNavBack() {
         onBackPressed();
     }

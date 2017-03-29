@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -18,7 +19,7 @@ import com.cylan.jiafeigou.R;
  * Created by hunt on 15-5-19.
  * This file aims to ....
  */
-public class ImageViewTip extends ImageView {
+public class ImageViewTip extends AppCompatImageView {
 
     private float mDotRadius = 8;
     private boolean showDot = false;

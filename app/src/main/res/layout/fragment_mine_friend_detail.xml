@@ -1,82 +1,83 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:background="@color/color_white"
-    android:clickable="true"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
-        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_background_color="@color/color_0ba8cf"
         hunt:ct_enable_shadow="false"
+        hunt:ct_enable_theme="true"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
         hunt:ct_left_title="@string/Tap3_Friends_Details"
         hunt:ct_left_title_color="@color/color_white" />
 
     <FrameLayout
-        android:layout_below="@id/custom_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/custom_toolbar">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
-                android:clickable="true"
                 android:id="@+id/iv_detail_user_head"
-                android:layout_marginTop="@dimen/y42"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/icon_mine_head_normal"
                 android:layout_width="@dimen/x80"
-                android:layout_height="@dimen/y80" />
+                android:layout_height="@dimen/y80"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y42"
+                android:clickable="true"
+                android:src="@drawable/icon_mine_head_normal" />
 
             <TextView
                 android:id="@+id/tv_relative_and_friend_name"
-                android:layout_marginTop="@dimen/y8"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/color_333333"
-                android:textSize="@dimen/sp16"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y8"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16" />
 
             <TextView
                 android:id="@+id/tv_relative_and_friend_account"
-                android:layout_marginTop="@dimen/y3"
-                android:layout_gravity="center_horizontal"
-                android:textColor="@color/color_777777"
-                android:textSize="@dimen/sp14"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y3"
+                android:textColor="@color/color_777777"
+                android:textSize="@dimen/sp14" />
 
             <RelativeLayout
                 android:id="@+id/rl_change_name"
-                android:layout_marginTop="@dimen/y41"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y54">
+                android:layout_height="@dimen/y54"
+                android:layout_marginTop="@dimen/y41">
 
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54"
                     android:layout_marginLeft="@dimen/x15"
                     android:gravity="center_vertical"
                     android:text="@string/Tap3_Friends_UserInfo_ModName"
-                    android:textSize="@dimen/sp15"
                     android:textColor="@color/color_333333"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54" />
+                    android:textSize="@dimen/sp15" />
 
                 <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y1"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="@dimen/x15"
                     android:layout_marginRight="@dimen/x15"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/color_f2f2f2"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y1" />
+                    android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
 
@@ -86,21 +87,21 @@
                 android:layout_height="@dimen/y54">
 
                 <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y54"
                     android:layout_marginLeft="@dimen/x15"
                     android:gravity="center_vertical"
                     android:text="@string/Tap3_DeleteFriends"
-                    android:textSize="@dimen/sp15"
                     android:textColor="@color/color_333333"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y54" />
+                    android:textSize="@dimen/sp15" />
 
                 <View
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/y1"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="@dimen/x15"
                     android:layout_marginRight="@dimen/x15"
-                    android:layout_alignParentBottom="true"
-                    android:background="@color/color_f2f2f2"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/y1" />
+                    android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
 
@@ -115,16 +116,16 @@
 
     <TextView
         android:id="@+id/tv_share_device"
-        android:layout_marginBottom="@dimen/y28"
+        android:layout_width="@dimen/x268"
+        android:layout_height="@dimen/y42"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:gravity="center"
+        android:layout_marginBottom="@dimen/y28"
         android:background="@drawable/share_device_btn_selector"
-        android:text="@string/Tap3_ShareDevice"
-        android:textSize="@dimen/sp15"
         android:clickable="true"
+        android:gravity="center"
+        android:text="@string/Tap3_ShareDevice"
         android:textColor="@color/color_white"
-        android:layout_width="@dimen/x268"
-        android:layout_height="@dimen/y42" />
+        android:textSize="@dimen/sp15" />
 
 </RelativeLayout>

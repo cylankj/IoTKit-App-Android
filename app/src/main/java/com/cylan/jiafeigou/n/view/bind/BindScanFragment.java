@@ -226,8 +226,8 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
                 BindDoorBellFragment fragment = BindDoorBellFragment.newInstance(new Bundle());
                 getActivity().getSupportFragmentManager()
                         .beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
+                        .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out,
+                                R.anim.slide_in_left, R.anim.slide_out_right)
                         .replace(android.R.id.content, fragment)
                         .addToBackStack("BindDoorBellFragment")
                         .commit();

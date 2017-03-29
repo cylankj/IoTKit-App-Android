@@ -1,58 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:clickable="true"
     android:orientation="vertical">
 
-    <FrameLayout
-        android:id="@+id/rLayout_timezone_list"
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/timezone_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#0BA8CF"
-        android:minHeight="@dimen/y48">
-
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="center_vertical"
-            android:padding="@dimen/x15"
-            android:src="@drawable/nav_tab_back_selector" />
-
-        <EditText
-            android:id="@+id/et_timezone_search"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginEnd="@dimen/x48"
-            android:layout_marginStart="@dimen/x48"
-            android:background="@null"
-            android:focusable="true"
-            android:hint="@string/Search"
-            android:inputType="none"
-            android:text="@string/TIMEZONE_CHOOSE"
-            android:textColor="@color/color_white"
-            android:textColorHint="#B9DFED"
-            android:textSize="@dimen/sp18" />
-
-        <ImageView
-            android:id="@+id/iv_timezone_search"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="end|center_vertical"
-            android:padding="@dimen/x15"
-            android:src="@drawable/icon_search"
-            android:visibility="visible" />
-    </FrameLayout>
-
+        app:ct_enable_theme="true"
+        app:ct_fit_system_window="true" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/lv_timezone_detail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rLayout_timezone_list"
+        android:layout_below="@+id/custom_toolbar"
         android:layout_margin="@dimen/x16" />
 
 
@@ -60,7 +27,7 @@
         android:id="@+id/tv_timezone_no_result"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/rLayout_timezone_list"
+        android:layout_below="@+id/custom_toolbar"
         android:layout_marginTop="@dimen/y90"
         android:background="@color/color_white"
         android:gravity="center_horizontal"

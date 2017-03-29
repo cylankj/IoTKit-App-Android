@@ -9,24 +9,25 @@
     android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
-        layout="@layout/layout_default_custom_tool_bar"
-        hunt:ct_left_title="@string/Tap3_Friends_UserInfo"
-        hunt:ct_left_title_color="@color/color_white"
-        android:textSize="@dimen/sp18"
         android:id="@+id/custom_toolbar"
-        hunt:ct_background_color="@color/color_0ba8cf"
-        hunt:ct_icon="@drawable/nav_icon_back_white"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/sp18"
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_theme="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title="@string/Tap3_Friends_UserInfo"
+        hunt:ct_left_title_color="@color/color_white" />
 
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <ScrollView
-            android:scrollbars="none"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:scrollbars="none">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -252,10 +253,10 @@
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y42"
                     android:layout_centerVertical="true"
+                    android:layout_marginBottom="@dimen/y42"
                     android:layout_marginEnd="@dimen/x30"
                     android:layout_marginStart="@dimen/x30"
                     android:layout_marginTop="@dimen/y10"
-                    android:layout_marginBottom="@dimen/y42"
                     android:background="@drawable/long_btn_bg_shape_white"
                     android:gravity="center"
                     android:padding="@dimen/x10"

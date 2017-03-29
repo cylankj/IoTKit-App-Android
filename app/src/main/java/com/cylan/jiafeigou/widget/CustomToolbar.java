@@ -3,10 +3,10 @@ package com.cylan.jiafeigou.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +22,7 @@ import static com.cylan.jiafeigou.utils.ViewUtils.getCompatStatusBarHeight;
  * Created by cylan-hunt on 17-2-12.
  */
 
-public class CustomToolbar extends LinearLayout {
+public class CustomToolbar extends LinearLayout implements ITheme {
 
     private TextView tvToolbarIcon;
     private TextView tvToolbarTitle;
@@ -44,15 +44,11 @@ public class CustomToolbar extends LinearLayout {
         super(context, attrs, defStyleAttr);
         setOrientation(VERTICAL);
         TypedArray at = context.obtainStyledAttributes(attrs, R.styleable.CustomToolbar);
-//        customContentLayoutId = at.getInteger(R.styleable.CustomToolbar_ct_content_layout, -1);
         final String value = attrs.getAttributeValue(null, "layout");
-        if (value == null || value.length() <= 0) {
-            throw new InflateException("You must specify a layout in the"
-                    + " include tag:  layout=\"@layout/layoutID\" />");
+        if (value != null && value.length() >= 8) {
+            customContentLayoutId = context.getResources().getIdentifier(value.substring(8), "layout",
+                    context.getPackageName());
         }
-        // Attempt to resolve the "?attr/name" string to an identifier.
-        customContentLayoutId = context.getResources().getIdentifier(value.substring(8), "layout",
-                context.getPackageName());
         int bgColor = at.getColor(R.styleable.CustomToolbar_ct_background_color, Color.TRANSPARENT);
         int titleColor = at.getColor(R.styleable.CustomToolbar_ct_title_color, Color.TRANSPARENT);
         int leftTitleColor = at.getColor(R.styleable.CustomToolbar_ct_left_title_color, Color.TRANSPARENT);
@@ -63,21 +59,25 @@ public class CustomToolbar extends LinearLayout {
         int iconResIdLeft = at.getResourceId(R.styleable.CustomToolbar_ct_icon, -1);
         int iconResIdRight = at.getResourceId(R.styleable.CustomToolbar_ct_icon_right, -1);
         boolean showShadow = at.getBoolean(R.styleable.CustomToolbar_ct_enable_shadow, false);
+        boolean enableTheme = at.getBoolean(R.styleable.CustomToolbar_ct_enable_theme, false);
+
         fitSystemWindow = at.getBoolean(R.styleable.CustomToolbar_ct_fit_system_window, true);
         at.recycle();
-        //
         View view = LayoutInflater.from(context).inflate(R.layout.layout_custom_tool_bar, this, true);
         if (showShadow) {
             findViewById(R.id.v_shadow).setVisibility(VISIBLE);
         }
-        View viewChild = LayoutInflater.from(context).inflate(customContentLayoutId, this, false);
-        ((ViewGroup) findViewById(R.id.fLayout_toolbar_content))
-                .addView(viewChild);
+        viewGroup = (ViewGroup) findViewById(R.id.fLayout_toolbar_content);
+        if (enableTheme) {
+            bgColor = ToolbarTheme.getInstance().getCurrentTheme().getToolbarBackground() == 0 ? R.color.color_0ba8cf : R.color.color_23344e;
+            viewGroup.setBackgroundColor(getResources().getColor(bgColor));
+        }
+        if (customContentLayoutId != -1) {
+            View viewChild = LayoutInflater.from(context).inflate(customContentLayoutId, this, false);
+            viewGroup.addView(viewChild);
+        }
         //处理默认布局
         if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
-            viewGroup = (ViewGroup) findViewById(R.id.fLayout_toolbar_content);
-            if (bgColor != 0)
-                viewGroup.setBackgroundColor(bgColor);
             tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
             tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
             tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
@@ -118,6 +118,11 @@ public class CustomToolbar extends LinearLayout {
     }
 
     private ToolbarFactory toolbarFactory;
+
+    @Override
+    public void onNextTheme(@ColorInt int color) {
+        viewGroup.setBackgroundColor(color);
+    }
 
     /**
      * toolbar自定义view

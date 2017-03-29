@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:clickable="true"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/color_white"
-    android:layout_height="match_parent">
+    android:clickable="true"
+    android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
@@ -12,6 +13,7 @@
         android:layout_height="wrap_content"
         hunt:ct_background_color="@color/color_0ba8cf"
         hunt:ct_enable_shadow="false"
+        hunt:ct_enable_theme="true"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_tab_back_selector"
         hunt:ct_left_title="@string/SETTINGS"
@@ -20,14 +22,14 @@
 
 
     <FrameLayout
-        android:layout_below="@id/custom_toolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_below="@id/custom_toolbar">
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
 
             <RelativeLayout
@@ -36,30 +38,30 @@
                 android:layout_height="@dimen/y54">
 
                 <TextView
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/x20"
                     android:text="@string/PUSH_MSG"
-                    android:textSize="@dimen/sp16"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/sp16" />
 
                 <com.kyleduo.switchbutton.SwitchButton
-                    android:layout_alignParentRight="true"
                     android:id="@+id/btn_item_switch_accessMes"
                     style="@style/SwitchButtonStyleMD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:paddingRight="@dimen/x26"
-                    android:checked="false" />
+                    android:checked="false"
+                    android:paddingRight="@dimen/x26" />
 
                 <View
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginRight="@dimen/x20"
-                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
@@ -70,30 +72,30 @@
                 android:layout_height="@dimen/y54">
 
                 <TextView
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/x20"
                     android:text="@string/IN_APP_SOUND"
-                    android:textSize="@dimen/sp16"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/sp16" />
 
                 <com.kyleduo.switchbutton.SwitchButton
-                    android:layout_alignParentRight="true"
                     android:id="@+id/btn_item_switch_voide"
                     style="@style/SwitchButtonStyleMD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:paddingRight="@dimen/x26"
-                    android:checked="true" />
+                    android:checked="true"
+                    android:paddingRight="@dimen/x26" />
 
                 <View
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginRight="@dimen/x20"
-                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
@@ -104,30 +106,30 @@
                 android:layout_height="@dimen/y54">
 
                 <TextView
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/x20"
                     android:text="@string/IN_APP_VIBRATE"
-                    android:textSize="@dimen/sp16"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/sp16" />
 
                 <com.kyleduo.switchbutton.SwitchButton
-                    android:layout_alignParentRight="true"
                     android:id="@+id/btn_item_switch_shake"
                     style="@style/SwitchButtonStyleMD"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:paddingRight="@dimen/x26"
-                    android:checked="true" />
+                    android:checked="true"
+                    android:paddingRight="@dimen/x26" />
 
                 <View
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginRight="@dimen/x20"
-                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
@@ -138,51 +140,51 @@
                 android:layout_height="@dimen/y70">
 
                 <LinearLayout
-                    android:layout_centerVertical="true"
-                    android:orientation="vertical"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:orientation="vertical">
 
                     <TextView
-                        android:layout_centerVertical="true"
-                        android:layout_marginLeft="@dimen/x20"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="@dimen/x20"
                         android:text="@string/CLEAR_DATA"
-                        android:textSize="@dimen/sp16"
-                        android:textColor="@color/color_black" />
+                        android:textColor="@color/color_black"
+                        android:textSize="@dimen/sp16" />
 
                     <FrameLayout
-                        android:layout_centerVertical="true"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true">
 
                         <ProgressBar
-                            android:visibility="gone"
-                            android:layout_marginLeft="@dimen/x20"
                             android:id="@+id/progressbar_load_cache_size"
                             android:layout_width="@dimen/x20"
-                            android:layout_height="@dimen/y20" />
+                            android:layout_height="@dimen/y20"
+                            android:layout_marginLeft="@dimen/x20"
+                            android:visibility="gone" />
 
                         <TextView
                             android:id="@+id/tv_cache_size"
-                            android:layout_marginLeft="@dimen/x20"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/x20"
                             android:text="2.3M"
-                            android:textSize="@dimen/sp13"
-                            android:textColor="@color/color_8c8c8c" />
+                            android:textColor="@color/color_8c8c8c"
+                            android:textSize="@dimen/sp13" />
 
                     </FrameLayout>
 
                 </LinearLayout>
 
                 <View
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginRight="@dimen/x20"
-                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
@@ -194,20 +196,20 @@
                 android:layout_height="@dimen/y54">
 
                 <TextView
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/x20"
                     android:text="@string/app_share"
-                    android:textSize="@dimen/sp16"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/sp16" />
 
                 <View
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginRight="@dimen/x20"
-                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="1dip"
+                    android:layout_alignParentBottom="true"
+                    android:layout_marginLeft="@dimen/x20"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@color/color_f2f2f2" />
 
             </RelativeLayout>
@@ -218,13 +220,13 @@
                 android:layout_height="@dimen/y54">
 
                 <TextView
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/x20"
                     android:text="@string/ABOUT"
-                    android:textSize="@dimen/sp16"
-                    android:textColor="@color/color_black" />
+                    android:textColor="@color/color_black"
+                    android:textSize="@dimen/sp16" />
 
             </RelativeLayout>
 
@@ -236,4 +238,4 @@
             android:background="@drawable/little_shape" />
     </FrameLayout>
 
-</RelativeLayout>
+</LinearLayout>
