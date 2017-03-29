@@ -93,6 +93,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
                 getActivity().getSupportFragmentManager().popBackStack();
         });
         notificationInfo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+        if (notificationInfo == null) notificationInfo = new DpMsgDefine.DPNotificationInfo();
         int effect = notificationInfo.notification;
         final int count = rgWarnEffect.getChildCount();
         for (int i = 0; i < count; i++) {

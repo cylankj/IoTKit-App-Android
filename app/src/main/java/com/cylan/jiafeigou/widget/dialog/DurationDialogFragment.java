@@ -68,7 +68,7 @@ public class DurationDialogFragment extends BaseDialog<Integer> {
 
             @Override
             protected CharSequence getItemText(int index) {
-                return getResources().getString(R.string.SECOND, index + 1);
+                return index + 1 + " s";
             }
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));

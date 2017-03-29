@@ -1,15 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SimulatePercent;
-import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -18,8 +15,6 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.google.gson.Gson;
 
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -80,26 +75,15 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
     }
 
-    private void getUUid() {
-        if (!TextUtils.isEmpty(uuid)) return;
-        String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
-        try {
-            UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
-            AppLogger.d("portrait: " + portrait);
-            uuid = portrait.uuid;
-        } catch (Exception e) {
-        }
-    }
-
     @Override
     public void start() {
         super.start();
-        getUUid();
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        DpMsgDefine.DPNet net = device == null ? null : device.$(201, new DpMsgDefine.DPNet());
         if (startTick == 0) {//可能是覆盖绑定.
             startTick = System.currentTimeMillis();
-            if (net != null) {//不能填null
+            //1.可能是覆盖绑定,或者设备列表中已经有了该设备,并且在线状态.
+            if (device != null) {
+                //2.清空net状态
                 device.setValue(201, new DpMsgDefine.DPNet());//先清空
             }
         }
@@ -108,10 +92,13 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
             mView.bindState(BIND_TIME_OUT);
             return;
         }
-        if (!TextUtils.isEmpty(uuid) && net != null && net.net > 0) {
-            //good
+        //3.重新获取,
+        DpMsgDefine.DPNet net = device == null ? null : device.$(201, new DpMsgDefine.DPNet());
+        if (device != null && !TextUtils.isEmpty(uuid) && net != null && net.net > 0) {
+            //4.net数据可能已经被更新了(重新进入该页面时候使用.)
             mView.bindState(BIND_SUC);
             endCounting();
+            AppLogger.d("finish? ;" + net);
             return;
         }
         //超时
@@ -228,22 +215,24 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
 
     @Override
     public void actionDone() {
-        Observable.just(null)
+        Subscription subscription = Observable.just(null)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object integer) -> {
                     AppLogger.i("actionDone: " + integer);
                     getView().bindState(BIND_SUC);
                 });
+        addSubscription(subscription, "actionDone");
     }
 
     @Override
     public void actionPercent(int percent) {
-        Observable.just(percent)
+        Subscription subscription = Observable.just(percent)
                 .filter((Integer integer) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Integer integer) -> {
                     getView().onCounting(integer);
                 });
+        addSubscription(subscription, "actionPercent");
     }
 
 }

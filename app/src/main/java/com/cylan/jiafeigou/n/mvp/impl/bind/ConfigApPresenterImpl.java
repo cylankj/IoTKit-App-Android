@@ -24,11 +24,13 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.ShareUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -70,7 +72,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             getView().lossDogConnection();
             return;
         }
-        aFullBind.getBindObservable(false, shortCid)
+        Subscription subscription = aFullBind.getBindObservable(false, shortCid)
                 .subscribeOn(Schedulers.newThread())
                 .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net != 3)
                 .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
@@ -83,6 +85,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     AppLogger.e("err: " + throwable.getLocalizedMessage());
                 });
         aFullBind.startPingFPing(shortCid);
+        addSubscription(subscription, "startPingFPing");
     }
 
     @Override
@@ -102,7 +105,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
             getView().lossDogConnection();
             return;
         }
-        aFullBind.getBindObservable(false, shortCid)
+        Subscription subscription = aFullBind.getBindObservable(false, shortCid)
                 .subscribeOn(Schedulers.newThread())
                 //网络为3
                 .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net == 3)
@@ -114,6 +117,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     }
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
         aFullBind.startPingFPing(shortCid);
+        addSubscription(subscription, "getBindObservable");
     }
 
     @Override
@@ -146,7 +150,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     private void updateWifiResults() {
         WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
         List<ScanResult> scanResults = wifiManager.getScanResults();
-        Observable.just(scanResults)
+        Subscription subscription = Observable.just(scanResults)
                 //别那么频繁
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
@@ -159,18 +163,20 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribe((List<ScanResult> s) -> {
                     getView().onWiFiResult(s);
                 }, new RxHelper.EmptyException("resultList call"));
+        addSubscription(subscription, "updateWifiResults");
     }
 
     /**
      * 连接状态变化
      */
     private void updateConnectivityStatus(int network) {
-        Observable.just(network)
+        Subscription subscription = Observable.just(network)
                 .filter((Integer integer) -> getView() != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Integer integer) -> {
                     getView().onNetStateChanged(integer);
                 });
+        addSubscription(subscription, "updateConnectivityStatus");
     }
 
     /**
@@ -179,7 +185,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
      * @param networkInfo
      */
     private void updateConnectInfo(NetworkInfo networkInfo) {
-        Observable.just(networkInfo)
+        Subscription subscription = Observable.just(networkInfo)
                 .filter((NetworkInfo info) -> {
                     //连上其他ap
                     final String ssid = info.getExtraInfo().replace("\"", "");
@@ -191,11 +197,12 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribe((NetworkInfo info) -> {
                     getView().lossDogConnection();
                 });
+        addSubscription(subscription, "updateConnectInfo");
     }
 
     @Override
     public void pingFPingFailed() {
-        Observable.just(null)
+        Subscription subscription = Observable.just(null)
                 .filter((Object o) -> {
                     return getView() != null;
                 })
@@ -204,12 +211,13 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribe((Object o) -> {
                     getView().pingFailed();
                 });
+        addSubscription(subscription, "pingFPingFailed");
     }
 
 
     @Override
     public void needToUpgrade() {
-        Observable.just(getView())
+        Subscription subscription = Observable.just(getView())
                 .flatMap(new Func1<ConfigApContract.View, Observable<ConfigApContract.View>>() {
                     @Override
                     public Observable<ConfigApContract.View> call(ConfigApContract.View view) {
@@ -225,6 +233,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribe((ConfigApContract.View view) -> {
                     view.upgradeDogState(0);
                 });
+        addSubscription(subscription, "needToUpgrade");
     }
 
     @Override
@@ -245,7 +254,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     @Override
     public void onLocalFlowFinish() {
         getView().onSetWifiFinished(aFullBind.getDevicePortrait());
-        Observable.just(null)
+        Subscription subscription = Observable.just(null)
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
                 .map((Object o) -> {
@@ -276,6 +285,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     }
                     return null;
                 }).subscribe();
+        addSubscription(subscription, "onLocalFlowFinish");
     }
 
     @Override
