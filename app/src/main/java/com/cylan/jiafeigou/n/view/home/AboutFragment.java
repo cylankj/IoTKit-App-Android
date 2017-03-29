@@ -139,9 +139,9 @@ public class AboutFragment extends Fragment {
         }
     }
 
-    public void setPermissionDialog(String permission){
+    public void setPermissionDialog(String permission) {
         new AlertDialog.Builder(getActivity())
-                .setMessage(getString(R.string.permission_auth, "",permission))
+                .setMessage(getString(R.string.permission_auth, "", permission))
                 .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
                     dialog.dismiss();
                 })
@@ -152,7 +152,7 @@ public class AboutFragment extends Fragment {
                 .show();
     }
 
-    private void openSetting(){
+    private void openSetting() {
         Intent localIntent = new Intent();
         localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (Build.VERSION.SDK_INT >= 9) {
@@ -161,7 +161,7 @@ public class AboutFragment extends Fragment {
         } else if (Build.VERSION.SDK_INT <= 8) {
             localIntent.setAction(Intent.ACTION_VIEW);
             localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
-            localIntent.putExtra("com.android.settings.ApplicationPkgName",getContext().getPackageName());
+            localIntent.putExtra("com.android.settings.ApplicationPkgName", getContext().getPackageName());
         }
         startActivity(localIntent);
     }

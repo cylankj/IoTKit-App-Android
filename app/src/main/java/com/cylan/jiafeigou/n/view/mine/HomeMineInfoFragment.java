@@ -158,7 +158,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void onStart() {
         super.onStart();
         initView();
-        if(NetUtils.getNetType(getContext()) == -1){
+        if (NetUtils.getNetType(getContext()) == -1) {
             initPersonalInformation(DataSourceManager.getInstance().getJFGAccount());
         }
     }

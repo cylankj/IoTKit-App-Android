@@ -322,7 +322,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         mRvMineSuggestion.setAdapter(suggestionAdapter);
 
         //从最后一行显示
-        mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount()-1);
+        mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
 
         suggestionAdapter.setOnResendFeedBack(new HomeMineHelpSuggestionAdapter.OnResendFeedBackListener() {
             @Override
@@ -362,7 +362,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         KeyboardUtil.attach(getActivity(), panelRoot, new KeyboardUtil.OnKeyboardShowingListener() {
             @Override
             public void onKeyboardShowing(boolean isShowing) {
-                if (suggestionAdapter == null)return;
+                if (suggestionAdapter == null) return;
                 mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
             }
         });
@@ -370,7 +370,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
                 new KPSwitchConflictUtil.SwitchClickListener() {
                     @Override
                     public void onClickSwitch(boolean switchToPanel) {
-                        AppLogger.d("KPSwitchConflictUtil:"+switchToPanel);
+                        AppLogger.d("KPSwitchConflictUtil:" + switchToPanel);
                         if (switchToPanel) {
                             mEtSuggestion.clearFocus();
                         } else {

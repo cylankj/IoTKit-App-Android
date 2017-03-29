@@ -6,10 +6,9 @@
         android:pivotX="50%"
         android:pivotY="50%"
         android:toDegrees="359"
-        android:duration = "1000"
-        android:repeatCount = "-1"
-        android:drawable = "@drawable/listview_loading"
-        android:visible = "true">
-    </rotate>
+        android:duration="1000"
+        android:repeatCount="-1"
+        android:drawable="@drawable/listview_loading"
+        android:visible="true"></rotate>
 
 </rotate>

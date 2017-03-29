@@ -110,6 +110,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     /**
      * 获取到本地数据库中的所有消息记录
+     *
      * @return
      */
     @Override
@@ -217,7 +218,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     }
 
 
-
     /**
      * 解析转换数据
      *
@@ -272,12 +272,12 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 return 1;
             }
         };
-        Collections.sort(list,comparator);
+        Collections.sort(list, comparator);
         return list;
     }
 
     @Override
-    public void deleteServiceMsg(long type,long version) {
+    public void deleteServiceMsg(long type, long version) {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
@@ -285,17 +285,17 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     public void call(Object o) {
                         try {
                             ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
-                            JFGDPMsg msg = new JFGDPMsg(type,version);
+                            JFGDPMsg msg = new JFGDPMsg(type, version);
                             list.add(msg);
                             long req = JfgCmdInsurance.getCmd().robotDelData("", list, 0);
-                            AppLogger.d("deleteServiceMsg:"+req);
+                            AppLogger.d("deleteServiceMsg:" + req);
                         } catch (JfgException e) {
-                            AppLogger.e("deleteServiceMsg:"+e.getLocalizedMessage());
+                            AppLogger.e("deleteServiceMsg:" + e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }
-                },throwable -> {
-                    AppLogger.e("deleteServiceMsg:"+throwable.getLocalizedMessage());
+                }, throwable -> {
+                    AppLogger.e("deleteServiceMsg:" + throwable.getLocalizedMessage());
                 });
     }
 
@@ -304,7 +304,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
         return RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleteDataRspClass -> {
-                    if (getView() != null)getView().deleteMesgReuslt(deleteDataRspClass);
+                    if (getView() != null) getView().deleteMesgReuslt(deleteDataRspClass);
                 });
     }
 
@@ -314,7 +314,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .subscribeOn(Schedulers.io())
                 .subscribe(o -> {
                     try {
-                        dbManager.delete(MineMessageBean.class,WhereBuilder.b("name","=",bean.name).and("startTime","=",bean.time));
+                        dbManager.delete(MineMessageBean.class, WhereBuilder.b("name", "=", bean.name).and("startTime", "=", bean.time));
                     } catch (DbException e) {
                         e.printStackTrace();
                     }
@@ -328,9 +328,9 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .subscribe((Object o) -> {
                     try {
                         long req = JfgCmdInsurance.getCmd().robotCountDataClear("", new long[]{601L, 701L}, 0);
-                        AppLogger.d("mine_markHasRead:"+req);
+                        AppLogger.d("mine_markHasRead:" + req);
                     } catch (JfgException e) {
-                        AppLogger.e("mine_markHasRead:"+e.getLocalizedMessage());
+                        AppLogger.e("mine_markHasRead:" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
                 });

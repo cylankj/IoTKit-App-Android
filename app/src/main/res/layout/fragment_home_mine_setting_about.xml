@@ -15,6 +15,7 @@
 
         <com.cylan.jiafeigou.widget.CustomToolbar
             android:id="@+id/custom_toolbar"
+            layout="@layout/layout_default_custom_tool_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             hunt:ct_background_color="@color/color_0ba8cf"
@@ -79,12 +80,12 @@
             android:textSize="@dimen/sp16" />
 
         <TextView
-            android:layout_gravity="center_horizontal"
+            android:id="@+id/tv_copy_right"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/tv_copy_right"
+            android:layout_gravity="center_horizontal"
             android:textColor="@color/color_adadad"
-            android:textSize="@dimen/sp11"/>
+            android:textSize="@dimen/sp11" />
     </LinearLayout>
 
 </FrameLayout>

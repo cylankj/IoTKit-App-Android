@@ -14,6 +14,7 @@
         android:layout_height="@dimen/y33" />
 
     <com.cylan.jiafeigou.widget.CustomToolbar
+        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/rLayout_login_top"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

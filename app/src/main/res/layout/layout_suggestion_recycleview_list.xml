@@ -9,8 +9,7 @@
         android:overScrollMode="never"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/rv_home_mine_suggestion"
-    />
+        android:id="@+id/rv_home_mine_suggestion" />
 
     <include layout="@layout/layout_loading_progress_rotate" />
 

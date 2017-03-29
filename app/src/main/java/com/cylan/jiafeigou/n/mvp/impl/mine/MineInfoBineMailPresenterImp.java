@@ -68,7 +68,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                             e.printStackTrace();
                         }
                     }
-                },throwable -> {
+                }, throwable -> {
                     AppLogger.d("checkEmailIsBinded" + throwable.getLocalizedMessage());
                 });
     }

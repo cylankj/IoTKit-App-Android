@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
 
 import java.io.File;
+import java.util.Locale;
 import java.util.UnknownFormatConversionException;
 
 /**
@@ -235,7 +236,7 @@ public class AppLogger {
             android.util.Log.w(TAG, buildMessage(""), thr);
     }
 
-//    /**
+    //    /**
 //     * Send an ERROR log message and log the exception.
 //     *
 //     * @param msg The message you would like logged.
@@ -252,6 +253,7 @@ public class AppLogger {
 //        if (DEBUG)
 //            android.util.Log.e(TAG, buildMessage(message, args));
 //    }
+    private static final String content = "%s-%s(L:%s):%s";
 
     /**
      * Building Message
@@ -262,17 +264,8 @@ public class AppLogger {
     protected static String buildMessage(String msg, Object... args) {
         StackTraceElement caller = new Throwable().fillInStackTrace()
                 .getStackTrace()[2];
-        builder.setLength(0);
-        return builder
-                .append(Thread.currentThread().toString())
-                .append("-")
-                .append(caller.getFileName())
-                .append(tagLeft)
-                .append(tagL)
-                .append(caller.getLineNumber())
-                .append(tagRight)
-                .append(createMessage(msg, args))
-                .toString();
+        return String.format(Locale.getDefault(), content, Thread.currentThread().toString(),
+                caller.getFileName(), caller.getLineNumber(), createMessage(msg, args));
     }
 
     private static String createMessage(String message, Object... args) throws UnknownFormatConversionException {

@@ -62,6 +62,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     /**
      * 是否有SD卡
+     *
      * @return
      */
     @Override
@@ -96,7 +97,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                         AppLogger.e("err_sd: " + e.getLocalizedMessage());
                     }
                 }, (Throwable throwable) -> {
-                    AppLogger.e("updateInfoReq_sd"+throwable.getLocalizedMessage());
+                    AppLogger.e("updateInfoReq_sd" + throwable.getLocalizedMessage());
                 });
     }
 
@@ -119,10 +120,10 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                     if (sdcardClearRsp != null) {
                         JFGDPMsgRet jfgdpMsgRet = sdcardClearRsp.arrayList.get(0);
                         if (jfgdpMsgRet.id == 218) {
-                            if (jfgdpMsgRet.ret == 0){
+                            if (jfgdpMsgRet.ret == 0) {
                                 isClearSucc = true;
                                 isClearFin = true;
-                            }else {
+                            } else {
                                 getView().clearSdResult(1);
                             }
                         }
@@ -137,13 +138,13 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .flatMap(new Func1<RxEvent.SdcardClearFinishRsp, Observable<Object>>() {
                     @Override
                     public Observable<Object> call(RxEvent.SdcardClearFinishRsp rsp) {
-                        if (rsp != null && rsp.arrayList.size() >0){
+                        if (rsp != null && rsp.arrayList.size() > 0) {
                             for (JFGDPMsg dp : rsp.arrayList) {
                                 try {
-                                    if (dp.id == 203 && TextUtils.equals(uuid,rsp.s)) {
+                                    if (dp.id == 203 && TextUtils.equals(uuid, rsp.s)) {
                                         DpMsgDefine.DPSdStatus sdStatus = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdStatus.class);
                                         return Observable.just(sdStatus);
-                                    }else if (dp.id == 222 && TextUtils.equals(uuid,rsp.s)){
+                                    } else if (dp.id == 222 && TextUtils.equals(uuid, rsp.s)) {
                                         DpMsgDefine.DPSdcardSummary isPopSd = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdcardSummary.class);
                                         return Observable.just(isPopSd);
                                     }
@@ -158,20 +159,20 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> {
-                    if (o != null){
-                        if (o instanceof DpMsgDefine.DPSdStatus){
+                    if (o != null) {
+                        if (o instanceof DpMsgDefine.DPSdStatus) {
                             //清空SD卡提示
-                            if (isClearFin){
+                            if (isClearFin) {
                                 getView().clearSdResult(0);
                                 getView().initSdUseDetail((DpMsgDefine.DPSdStatus) o);
                                 isClearFin = false;
                             }
 
-                        }else if (o instanceof DpMsgDefine.DPSdcardSummary){
+                        } else if (o instanceof DpMsgDefine.DPSdcardSummary) {
                             //SD卡已被拔出提示
                             DpMsgDefine.DPSdcardSummary sdcardSummary = (DpMsgDefine.DPSdcardSummary) o;
                             if (!sdcardSummary.hasSdcard)
-                            getView().showSdPopDialog();
+                                getView().showSdPopDialog();
                         }
                     }
                 });
@@ -179,22 +180,23 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     /**
      * 获取到sd卡的容量
+     *
      * @param uuid
      */
     @Override
     public void getSdCapacity(String uuid) {
         Observable.just(uuid)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(s->{
+                .subscribe(s -> {
                     if (!TextUtils.isEmpty(s)) {
                         try {
                             ArrayList<JFGDPMsg> dpID = new ArrayList<JFGDPMsg>();
                             JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_204_SDCARD_STORAGE, System.currentTimeMillis());
                             dpID.add(msg);
                             req = JfgCmdInsurance.getCmd().robotGetData(uuid, dpID, 1, false, 0);
-                            AppLogger.d("getSdCapacity:"+ req);
+                            AppLogger.d("getSdCapacity:" + req);
                         } catch (JfgException e) {
-                            AppLogger.e("getSdCapacity_err:"+e.getLocalizedMessage());
+                            AppLogger.e("getSdCapacity_err:" + e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }
@@ -208,21 +210,21 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .flatMap(new Func1<RobotoGetDataRsp, Observable<DpMsgDefine.DPSdStatus>>() {
                     @Override
                     public Observable<DpMsgDefine.DPSdStatus> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        AppLogger.d("sd_version:"+robotoGetDataRsp.seq+"identify:"+robotoGetDataRsp.identity);
-                        if (robotoGetDataRsp.map.size() != 0){
-                            if (req != robotoGetDataRsp.seq || !uuid.equals(robotoGetDataRsp.identity)){
+                        AppLogger.d("sd_version:" + robotoGetDataRsp.seq + "identify:" + robotoGetDataRsp.identity);
+                        if (robotoGetDataRsp.map.size() != 0) {
+                            if (req != robotoGetDataRsp.seq || !uuid.equals(robotoGetDataRsp.identity)) {
                                 return Observable.just(null);
                             }
                             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
                                 try {
-                                    if (entry.getKey() == 204){
+                                    if (entry.getKey() == 204) {
                                         ArrayList<JFGDPMsg> value = entry.getValue();
                                         JFGDPMsg jfgdpMsg = value.get(0);
                                         DpMsgDefine.DPSdStatus sysMesg = DpUtils.unpackData(jfgdpMsg.packValue, DpMsgDefine.DPSdStatus.class);
                                         return Observable.just(sysMesg);
                                     }
-                                }catch (Exception e){
-                                    AppLogger.e("getSdCapacityBack:"+e.getLocalizedMessage());
+                                } catch (Exception e) {
+                                    AppLogger.e("getSdCapacityBack:" + e.getLocalizedMessage());
                                     return Observable.just(null);
                                 }
                             }
@@ -232,7 +234,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(sdStatus -> {
-                    if (sdStatus != null && getView() != null)getView().initSdUseDetail(sdStatus);
+                    if (sdStatus != null && getView() != null) getView().initSdUseDetail(sdStatus);
                 });
     }
 

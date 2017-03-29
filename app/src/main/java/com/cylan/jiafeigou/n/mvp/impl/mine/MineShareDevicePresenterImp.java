@@ -79,7 +79,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                     public void call(ArrayList<DeviceBean> deviceList) {
 
                         if (getView() != null && deviceList != null && deviceList.size() > 0) {
-                            AppLogger.d("share_device:"+deviceList.size());
+                            AppLogger.d("share_device:" + deviceList.size());
                             allDevice.clear();
                             ArrayList<String> cidList = new ArrayList<String>();
                             for (DeviceBean bean : deviceList) {
@@ -89,9 +89,9 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                                 }
                             }
 
-                            if (NetUtils.getNetType(getView().getContext()) == -1){
+                            if (NetUtils.getNetType(getView().getContext()) == -1) {
                                 ArrayList<JFGShareListInfo> shareList = DataSourceManager.getInstance().getShareList();
-                                if (shareList == null || shareList.size() == 0){
+                                if (shareList == null || shareList.size() == 0) {
                                     handlerShareDeviceListData(allDevice);
                                     return;
                                 }
@@ -103,7 +103,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                                     }
                                 }
                                 handlerShareDeviceListData(allDevice);
-                            }else {
+                            } else {
                                 getDeviceInfo(cidList);
                             }
                         } else {
@@ -208,6 +208,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
 
     /**
      * 获取到已经分享的亲友数的回调
+     *
      * @return
      */
     @Override

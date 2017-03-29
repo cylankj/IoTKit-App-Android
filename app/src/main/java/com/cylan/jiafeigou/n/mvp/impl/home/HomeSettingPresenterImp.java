@@ -227,7 +227,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
         if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
-        if (clearSub != null && clearSub.isUnsubscribed()){
+        if (clearSub != null && clearSub.isUnsubscribed()) {
             clearSub.unsubscribe();
         }
     }
@@ -243,8 +243,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
         String fileSizeString = "";
         if (fileS == 0) {
             fileSizeString = "0.0M";
-        }
-        else if (fileS < 1073741824) {
+        } else if (fileS < 1073741824) {
             fileSizeString = df.format((double) fileS / 1048576) + "M";
         } else {
             fileSizeString = df.format((double) fileS / 1073741824) + "G";

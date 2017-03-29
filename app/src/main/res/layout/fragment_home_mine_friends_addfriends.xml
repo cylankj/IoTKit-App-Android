@@ -13,6 +13,7 @@
         android:layout_height="match_parent">
 
         <com.cylan.jiafeigou.widget.CustomToolbar
+            layout="@layout/layout_default_custom_tool_bar"
             hunt:ct_left_title="@string/Tap3_FriendsAdd"
             hunt:ct_left_title_color="@color/color_white"
             android:textSize="@dimen/sp18"
@@ -21,7 +22,8 @@
             hunt:ct_background_color="@color/color_0ba8cf"
             hunt:ct_icon="@drawable/nav_icon_back_white"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content" />
+
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
@@ -51,8 +53,7 @@
                     android:layout_marginRight="@dimen/x20"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y1"
-                    android:background="#36bdff"
-                    />
+                    android:background="#36bdff" />
 
                 <TextView
                     android:layout_marginTop="@dimen/y8"
@@ -69,8 +70,7 @@
                     android:layout_marginLeft="@dimen/x15"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/y1"
-                    android:background="#f2f2f2"
-                    />
+                    android:background="#f2f2f2" />
 
                 <TextView
                     android:id="@+id/tv_add_from_contract"

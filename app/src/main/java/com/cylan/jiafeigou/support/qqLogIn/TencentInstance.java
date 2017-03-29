@@ -42,7 +42,7 @@ public class TencentInstance {
     public TencentInstance(Activity activity) {
 //        APP_KEY = "1106028314";
         APP_KEY = Security.getQQKey(JFGRules.getTrimPackageName());
-        AppLogger.d("qqKey:"+APP_KEY);
+        AppLogger.d("qqKey:" + APP_KEY);
         context = activity;
         mTencent = Tencent.createInstance(APP_KEY, activity);
     }
@@ -140,8 +140,8 @@ public class TencentInstance {
         }
     };
 
-    public static void release(){
-        if (instance != null){
+    public static void release() {
+        if (instance != null) {
             instance.mTencent = null;
             instance.context = null;
             instance = null;

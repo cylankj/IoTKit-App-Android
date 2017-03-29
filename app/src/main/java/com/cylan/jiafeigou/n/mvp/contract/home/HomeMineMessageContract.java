@@ -83,7 +83,7 @@ public interface HomeMineMessageContract {
          */
         Subscription getMesgDpDataCallBack();
 
-        void deleteServiceMsg(long type,long version);
+        void deleteServiceMsg(long type, long version);
 
         Subscription deleteMsgBack();
 

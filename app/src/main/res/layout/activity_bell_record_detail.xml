@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/activity_bell_record_detail"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -19,16 +18,16 @@
             android:layout_gravity="center"
             android:src="@drawable/ic_delete_photo" />
         <!--<com.cylan.jiafeigou.widget.SimpleProgressBar-->
-            <!--android:msgId="@+msgId/act_bell_detail_loading"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:padding="@dimen/x5"-->
-            <!--app:progress_point_radius="@dimen/y2"-->
-            <!--app:progress_radius="@dimen/y20"-->
-            <!--app:progress_stroke_color="@color/color_white"-->
-            <!--android:visibility="visible"-->
-            <!--app:progress_swipe_degree="310"  />-->
+        <!--android:msgId="@+msgId/act_bell_detail_loading"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:padding="@dimen/x5"-->
+        <!--app:progress_point_radius="@dimen/y2"-->
+        <!--app:progress_radius="@dimen/y20"-->
+        <!--app:progress_stroke_color="@color/color_white"-->
+        <!--android:visibility="visible"-->
+        <!--app:progress_swipe_degree="310"  />-->
     </FrameLayout>
 
     <FrameLayout

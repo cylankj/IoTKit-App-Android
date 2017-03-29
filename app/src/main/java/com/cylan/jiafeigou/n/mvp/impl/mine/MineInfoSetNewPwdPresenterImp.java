@@ -43,10 +43,10 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                     public void call(Object o) {
                         try {
                             if (JConstant.PHONE_REG.matcher(account).find()) {
-                                JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()),account, pwd, JConstant.TYPE_PHONE, "");
+                                JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, JConstant.TYPE_PHONE, "");
 //                                JfgCmdInsurance.getCmd().setPwdWithBindAccount(pwd,JConstant.TYPE_PHONE,token);
                             } else if (JConstant.EMAIL_REG.matcher(account).find()) {
-                                JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()),account, pwd, JConstant.TYPE_EMAIL, "");
+                                JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, JConstant.TYPE_EMAIL, "");
 //                                JfgCmdInsurance.getCmd().setPwdWithBindAccount(pwd,JConstant.TYPE_EMAIL,token);
                             }
 

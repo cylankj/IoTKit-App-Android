@@ -33,7 +33,7 @@ public class RelativesAndFriendsAdapter extends SuperAdapter<RelAndFriendBean> {
         holder.setText(R.id.tv_add_message, item.account);
         RoundedImageView userImag = holder.getView(R.id.iv_userhead);
         //头像
-        MyViewTarget myViewTarget = new MyViewTarget(userImag,getContext().getResources());
+        MyViewTarget myViewTarget = new MyViewTarget(userImag, getContext().getResources());
         Glide.with(getContext()).load(item.iconUrl)
                 .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
@@ -64,11 +64,11 @@ public class RelativesAndFriendsAdapter extends SuperAdapter<RelAndFriendBean> {
     }
 
 
-    private static class MyViewTarget extends BitmapImageViewTarget{
+    private static class MyViewTarget extends BitmapImageViewTarget {
         private final WeakReference<Resources> resourcesWeakReference;
         private final WeakReference<RoundedImageView> imageViewWeakReference;
 
-        public MyViewTarget(RoundedImageView view,Resources resources) {
+        public MyViewTarget(RoundedImageView view, Resources resources) {
             super(view);
             resourcesWeakReference = new WeakReference<Resources>(resources);
             imageViewWeakReference = new WeakReference<RoundedImageView>(view);

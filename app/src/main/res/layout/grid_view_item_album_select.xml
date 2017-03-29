@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:id="@+id/frame_layout_album_select"
     android:paddingTop="@dimen/y1"
     android:paddingRight="@dimen/x1"
@@ -11,7 +12,7 @@
         android:id="@+id/image_view_album_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerCrop"/>
+        android:scaleType="centerCrop" />
 
     <TextView
         android:id="@+id/text_view_album_name"
@@ -22,6 +23,6 @@
         android:textColor="#212121"
         android:textSize="@dimen/sp20"
         android:lines="1"
-        android:gravity="center"/>
+        android:gravity="center" />
 
 </FrameLayout>

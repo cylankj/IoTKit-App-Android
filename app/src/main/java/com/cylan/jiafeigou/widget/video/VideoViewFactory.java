@@ -93,6 +93,8 @@ public class VideoViewFactory {
         void showFlowView(boolean show, String content);
 
         void detectOrientationChanged(boolean port);
+
+        void onDestroy();
     }
 
     public interface InterActListener {

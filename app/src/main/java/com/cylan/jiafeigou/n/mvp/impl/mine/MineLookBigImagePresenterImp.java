@@ -76,7 +76,7 @@ public class MineLookBigImagePresenterImp extends AbstractPresenter<MineLookBigI
     @Override
     public void stop() {
         super.stop();
-        if (saveSub != null && !saveSub.isUnsubscribed()){
+        if (saveSub != null && !saveSub.isUnsubscribed()) {
             saveSub.unsubscribe();
         }
     }

@@ -67,8 +67,8 @@
                 android:layout_toRightOf="@id/iv_userhead"
                 android:paddingLeft="@dimen/x15"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/y67"
-                >
+                android:layout_height="@dimen/y67">
+
                 <TextView
                     android:id="@+id/tv_username"
                     android:textSize="@dimen/sp16"

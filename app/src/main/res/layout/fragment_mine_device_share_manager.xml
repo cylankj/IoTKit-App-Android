@@ -8,6 +8,7 @@
     android:layout_height="match_parent">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
+        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -43,8 +44,7 @@
                 android:id="@+id/recycler_had_share_relatives_and_friend"
                 android:layout_width="match_parent"
                 android:layout_weight="1"
-                android:layout_height="@dimen/y0">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="@dimen/y0"></android.support.v7.widget.RecyclerView>
 
         </LinearLayout>
 

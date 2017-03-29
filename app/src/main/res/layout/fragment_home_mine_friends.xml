@@ -1,24 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_background_color="@color/color_0ba8cf"
         hunt:ct_enable_shadow="false"
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
-        hunt:ct_right_title="@string/Tap3_FriendsAdd"
-        hunt:ct_right_title_color="@color/color_white"
         hunt:ct_left_title="@string/Tap3_Friends"
-        hunt:ct_left_title_color="@color/color_white" />
+        hunt:ct_left_title_color="@color/color_white"
+        hunt:ct_right_title="@string/Tap3_FriendsAdd"
+        hunt:ct_right_title_color="@color/color_white" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -26,72 +27,70 @@
 
         <LinearLayout
             android:id="@+id/ll_relative_and_friend"
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
             <!--添加请求-->
             <TextView
-                android:visibility="gone"
                 android:id="@+id/tv_add_request_title"
-                android:layout_marginTop="@dimen/y19"
-                android:layout_marginLeft="@dimen/x15"
-                android:textColor="@color/color_4b9fd5"
-                android:text="@string/Tap3_FriendsAdd_Request"
-                android:textSize="@dimen/sp14"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/x15"
+                android:layout_marginTop="@dimen/y19"
+                android:text="@string/Tap3_FriendsAdd_Request"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp14"
+                android:visibility="gone" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_request_add"
-                android:overScrollMode="never"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"></android.support.v7.widget.RecyclerView>
 
             <!--亲友列表-->
             <TextView
-                android:visibility="invisible"
                 android:id="@+id/tv_friend_list_title"
-                android:layout_marginTop="@dimen/y19"
-                android:layout_marginLeft="@dimen/x15"
-                android:textColor="@color/color_4b9fd5"
-                android:text="@string/Tap3_FriendsList"
-                android:textSize="@dimen/sp14"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/x15"
+                android:layout_marginTop="@dimen/y19"
+                android:text="@string/Tap3_FriendsList"
+                android:textColor="@color/color_4b9fd5"
+                android:textSize="@dimen/sp14"
+                android:visibility="invisible" />
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/recyclerview_relativesandfriends_list"
-                android:scrollbars="vertical"
-                android:overScrollMode="never"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </android.support.v7.widget.RecyclerView>
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:scrollbars="vertical"></android.support.v7.widget.RecyclerView>
         </LinearLayout>
 
         <LinearLayout
-            android:visibility="gone"
             android:id="@+id/ll_relative_and_friend_none"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/y120"
             android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:visibility="gone">
 
             <ImageView
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/icon_no_friends"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:src="@drawable/icon_no_friends" />
 
             <TextView
                 android:id="@+id/btn_add_relative_and_friend"
-                android:layout_marginTop="@dimen/y16"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/Tap3_ShareDevice_NoneFriends"
-                android:textSize="@dimen/sp15"
-                android:textColor="#aaaaaa"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/y16"
+                android:text="@string/Tap3_ShareDevice_NoneFriends"
+                android:textColor="#aaaaaa"
+                android:textSize="@dimen/sp15" />
 
         </LinearLayout>
 

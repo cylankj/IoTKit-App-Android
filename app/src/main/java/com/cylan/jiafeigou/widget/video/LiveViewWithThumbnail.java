@@ -22,6 +22,11 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.ByteArrayOutputStream;
+import java.lang.ref.WeakReference;
+
+import rx.Observable;
+import rx.Subscription;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by cylan-hunt on 17-3-13.
@@ -33,6 +38,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     private FrameLayout standByLayout;//待机
     private ImageView imgThumbnail;//缩略图
     private TextView tvLiveFlow;//流量
+    private Subscription subscription;
 
     public LiveViewWithThumbnail(Context context) {
         this(context, null);
@@ -90,27 +96,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                 .asBitmap()
                 .signature(new StringSignature(token))
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        super.onLoadFailed(e, errorDrawable);
-                        AppLogger.d("err: " + (e == null ? "e is null" : e.getLocalizedMessage()));
-                    }
-
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        if (resource != null && !resource.isRecycled()) {
-                            if (isNormalView()) {
-                                imgThumbnail.setVisibility(VISIBLE);
-                                imgThumbnail.setImageBitmap(resource);
-                            } else {
-                                videoView.loadBitmap(resource);
-                            }
-                        } else {
-                            Log.d(TAG, "bitmap is null? " + (resource == null));
-                        }
-                    }
-                });
+                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
     }
 
 
@@ -120,50 +106,25 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             AppLogger.e("preview bitmap is null");
             return;
         } else Log.d(TAG, "setThumbnail: good");
-        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
         imgThumbnail.setVisibility(isNormalView() ? VISIBLE : GONE);
-        Glide.with(context)
-                .load(stream.toByteArray())
-                .asBitmap()
-                .signature(new StringSignature(token))
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new SimpleTarget<Bitmap>() {
-                    @Override
-                    public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                        if (resource != null && !resource.isRecycled()) {
-                            if (isNormalView()) {
-                                imgThumbnail.setVisibility(VISIBLE);
-                                imgThumbnail.setImageBitmap(resource);
-                            } else {
-                                videoView.loadBitmap(resource);
-                            }
-                        } else {
-                            Log.d(TAG, "bitmap is null? " + (resource == null));
-                        }
-                    }
+        if (subscription != null && !subscription.isUnsubscribed())
+            subscription.unsubscribe();
+        subscription = Observable.just(bitmap)
+                .subscribeOn(Schedulers.io())
+                .map(bMap -> {
+                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                    bMap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                    return stream.toByteArray();
+                })
+                .subscribe(bytes -> {
+                    Glide.with(context)
+                            .load(bytes)
+                            .asBitmap()
+                            .signature(new StringSignature(token))
+                            .diskCacheStrategy(DiskCacheStrategy.ALL)
+                            .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
+                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
 
-                    @Override
-                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
-                        AppLogger.e("set up thumbnail failed: " + e.getLocalizedMessage());
-                    }
-
-                    @Override
-                    public void onDestroy() {
-                        Log.d(TAG, "bitmap is onDestroy");
-                    }
-
-                    @Override
-                    public void onStop() {
-                        super.onStop();
-                        Log.d(TAG, "bitmap is onStop");
-                    }
-
-                    @Override
-                    public void onLoadCleared(Drawable placeholder) {
-                        Log.d(TAG, "bitmap is onLoadCleared");
-                    }
-                });
     }
 
     @Override
@@ -214,4 +175,63 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         tvLiveFlow.setLayoutParams(lp);
     }
 
+    @Override
+    public void onDestroy() {
+
+    }
+
+    private static class SimpleLoader extends SimpleTarget<Bitmap> {
+
+        private WeakReference<ImageView> imageViewRef;
+        private WeakReference<VideoViewFactory.IVideoView> videoViewWeakReference;
+        private boolean isNormalView;
+
+        public SimpleLoader(ImageView imageView, VideoViewFactory.IVideoView videoView, boolean isNormalView) {
+            imageViewRef = new WeakReference<>(imageView);
+            videoViewWeakReference = new WeakReference<>(videoView);
+            this.isNormalView = isNormalView;
+
+        }
+
+        @Override
+        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            if (resource != null && !resource.isRecycled()) {
+                if (videoViewWeakReference == null || videoViewWeakReference.get() == null) {
+                    return;
+                }
+                if (imageViewRef == null || imageViewRef.get() == null) {
+                    return;
+                }
+                if (isNormalView) {
+                    imageViewRef.get().setVisibility(VISIBLE);
+                    imageViewRef.get().setImageBitmap(resource);
+                } else {
+                    videoViewWeakReference.get().loadBitmap(resource);
+                }
+            } else {
+                Log.d(TAG, "bitmap is null? " + (resource == null));
+            }
+        }
+
+        @Override
+        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+            AppLogger.e("set up thumbnail failed: " + e.getLocalizedMessage());
+        }
+
+        @Override
+        public void onDestroy() {
+            Log.d(TAG, "bitmap is onDestroy");
+        }
+
+        @Override
+        public void onStop() {
+            super.onStop();
+            Log.d(TAG, "bitmap is onStop");
+        }
+
+        @Override
+        public void onLoadCleared(Drawable placeholder) {
+            Log.d(TAG, "bitmap is onLoadCleared");
+        }
+    }
 }

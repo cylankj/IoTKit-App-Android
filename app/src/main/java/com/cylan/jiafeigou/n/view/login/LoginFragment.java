@@ -175,6 +175,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     /**
      * 用来点击空白处隐藏键盘
+     *
      * @param view
      */
     public void addOnTouchListener(View view) {
@@ -625,7 +626,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             }
             resetView();
             PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
-            AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername),1,"")
+            AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "")
                     .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                     .subscribe();
         }
@@ -891,7 +892,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             etRegisterInputBox.setHint(getString(R.string.EMAIL_1));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
             //设置长度
-            ViewUtils.setChineseExclude(etRegisterInputBox,65);
+            ViewUtils.setChineseExclude(etRegisterInputBox, 65);
             registerWay = JConstant.REGISTER_BY_EMAIL;
             tvRegisterSubmit.setText(getString(R.string.CARRY_ON));
             handleVerificationCodeBox(false);
@@ -901,8 +902,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             etRegisterInputBox.setHint(getString(R.string.PHONE_NUMBER_1));
             etRegisterInputBox.setInputType(EditorInfo.TYPE_CLASS_PHONE);
             ViewUtils.setTextViewMaxFilter(etRegisterInputBox, 11);
-            ViewUtils.setChineseExclude(etRegisterInputBox,11);
-            ViewUtils.setChineseExclude(etVerificationInput,6);
+            ViewUtils.setChineseExclude(etRegisterInputBox, 11);
+            ViewUtils.setChineseExclude(etVerificationInput, 6);
             registerWay = JConstant.REGISTER_BY_PHONE;
             tvRegisterSubmit.setText(getString(R.string.GET_CODE));
         }
@@ -1086,7 +1087,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
-
 
 
 }

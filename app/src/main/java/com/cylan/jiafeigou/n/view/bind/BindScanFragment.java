@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
@@ -217,14 +218,8 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
             if (JFGRules.isCamera(iPid)) {
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this)
                         .commitAllowingStateLoss();
-                BindCameraFragment fragment = BindCameraFragment.newInstance(null);
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .replace(android.R.id.content, fragment)
-                        .addToBackStack("BindCameraFragment")
-                        .commit();
+                if (getActivity() != null)
+                    startActivity(new Intent(getActivity(), BindCamActivity.class));
             } else if (JFGRules.isBell(iPid)) {
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this)
                         .commitAllowingStateLoss();

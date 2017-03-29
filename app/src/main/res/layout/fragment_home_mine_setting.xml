@@ -52,8 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:paddingRight="@dimen/x26"
-                    android:checked="false"
-                    />
+                    android:checked="false" />
 
                 <View
                     android:layout_alignParentBottom="true"
@@ -87,8 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:paddingRight="@dimen/x26"
-                    android:checked="true"
-                    />
+                    android:checked="true" />
 
                 <View
                     android:layout_alignParentBottom="true"
@@ -122,8 +120,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:paddingRight="@dimen/x26"
-                    android:checked="true"
-                    />
+                    android:checked="true" />
 
                 <View
                     android:layout_alignParentBottom="true"
@@ -145,37 +142,38 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
-                <TextView
-                    android:layout_centerVertical="true"
-                    android:layout_marginLeft="@dimen/x20"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/CLEAR_DATA"
-                    android:textSize="@dimen/sp16"
-                    android:textColor="@color/color_black" />
-
-                <FrameLayout
-                    android:layout_centerVertical="true"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ProgressBar
-                        android:visibility="gone"
-                        android:layout_marginLeft="@dimen/x20"
-                        android:id="@+id/progressbar_load_cache_size"
-                        android:layout_width="@dimen/x20"
-                        android:layout_height="@dimen/y20" />
 
                     <TextView
-                        android:id="@+id/tv_cache_size"
+                        android:layout_centerVertical="true"
                         android:layout_marginLeft="@dimen/x20"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="2.3M"
-                        android:textSize="@dimen/sp13"
-                        android:textColor="@color/color_8c8c8c" />
+                        android:text="@string/CLEAR_DATA"
+                        android:textSize="@dimen/sp16"
+                        android:textColor="@color/color_black" />
 
-                </FrameLayout>
+                    <FrameLayout
+                        android:layout_centerVertical="true"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ProgressBar
+                            android:visibility="gone"
+                            android:layout_marginLeft="@dimen/x20"
+                            android:id="@+id/progressbar_load_cache_size"
+                            android:layout_width="@dimen/x20"
+                            android:layout_height="@dimen/y20" />
+
+                        <TextView
+                            android:id="@+id/tv_cache_size"
+                            android:layout_marginLeft="@dimen/x20"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="2.3M"
+                            android:textSize="@dimen/sp13"
+                            android:textColor="@color/color_8c8c8c" />
+
+                    </FrameLayout>
 
                 </LinearLayout>
 

@@ -113,7 +113,7 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
             });
 
             clientImage = holder.getView(R.id.iv_mine_suggestion_client);
-            MyImageViewTarget myImageViewTarget = new MyImageViewTarget(clientImage,getContext().getResources());
+            MyImageViewTarget myImageViewTarget = new MyImageViewTarget(clientImage, getContext().getResources());
             Glide.with(getContext()).load(item.getIcon())
                     .asBitmap()
                     .error(R.drawable.icon_mine_head_normal)
@@ -183,12 +183,12 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
         return nowDate;
     }
 
-    private static class MyImageViewTarget extends BitmapImageViewTarget{
+    private static class MyImageViewTarget extends BitmapImageViewTarget {
 
         private final WeakReference<Resources> resourcesWeakReference;
         private final WeakReference<ImageView> imageViewWeakReference;
 
-        public MyImageViewTarget(ImageView view,Resources resources) {
+        public MyImageViewTarget(ImageView view, Resources resources) {
             super(view);
             resourcesWeakReference = new WeakReference<Resources>(resources);
             imageViewWeakReference = new WeakReference<ImageView>(view);

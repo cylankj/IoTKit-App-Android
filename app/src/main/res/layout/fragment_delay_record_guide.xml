@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="match_parent"
-              android:background="@color/color_white"
-              android:clickable="true"
-              android:gravity="center_horizontal"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:gravity="center_horizontal"
+    android:orientation="vertical">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -23,7 +23,7 @@
                 android:id="@+id/header_delay_record_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/nav_tab_back_selector"/>
+                android:src="@drawable/nav_tab_back_selector" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -32,7 +32,7 @@
                 android:fontFamily="SourceHanSansCN"
                 android:text="@string/Tap2_Timelapse_title"
                 android:textColor="#FFFFFF"
-                android:textSize="@dimen/sp18"/>
+                android:textSize="@dimen/sp18" />
         </RelativeLayout>
     </FrameLayout>
 
@@ -40,7 +40,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/y94"
-        android:src="@drawable/pic_none"/>
+        android:src="@drawable/pic_none" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -49,7 +49,7 @@
         android:gravity="center"
         android:text="@string/Tap1_Camera_Greetings"
         android:textColor="#AAAAAA"
-        android:textSize="@dimen/sp15"/>
+        android:textSize="@dimen/sp15" />
 
     <Button
         android:id="@+id/fragment_delay_record_start_now"
@@ -59,5 +59,5 @@
         android:background="@drawable/btn_setting_photography_again_normal"
         android:text="立即开启"
         android:textColor="@color/delay_record_start_now_color"
-        android:textSize="@dimen/sp17"/>
+        android:textSize="@dimen/sp17" />
 </LinearLayout>

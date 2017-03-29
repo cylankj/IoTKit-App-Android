@@ -1,7 +1,7 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/fLayoutHomeWonderfulHeaderContainer"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content">
+    android:id="@+id/fLayoutHomeWonderfulHeaderContainer"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
         android:id="@+id/rl_top_head_wonder"
@@ -12,7 +12,7 @@
             android:id="@+id/imgWonderfulTopBg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/bg_wonderful_daytime"/>
+            android:background="@drawable/bg_wonderful_daytime" />
 
         <TextView
             android:id="@+id/tv_title_head_wonder"
@@ -22,7 +22,7 @@
             android:layout_marginTop="18dp"
             android:text="每日精彩"
             android:textColor="@color/color_white"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
 
         <TextView
             android:id="@+id/tv_sec_title_head_wonder"
@@ -33,7 +33,7 @@
             android:layout_marginTop="8dp"
             android:text="每一天的生活，都值得被记录"
             android:textColor="@color/color_white"
-            android:textSize="15sp"/>
+            android:textSize="15sp" />
     </RelativeLayout>
 
     <ImageView
@@ -41,7 +41,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:alpha="0"
-        android:background="@color/color_0ba8cf"/>
+        android:background="@color/color_0ba8cf" />
 
     <FrameLayout
         android:id="@+id/fLayout_date_head_wonder"
@@ -57,7 +57,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:alpha="1"
-            android:background="@drawable/btn_pressed_date_head_wonderful"/>
+            android:background="@drawable/btn_pressed_date_head_wonderful" />
 
         <com.cylan.jiafeigou.widget.textview.WonderfulTitleHead
             android:id="@+id/tv_date_item_head_wonder"
@@ -68,6 +68,6 @@
             android:drawableRight="@drawable/wonderful_arrow_down"
             android:gravity="center"
             android:textColor="@color/color_788291"
-            android:textSize="14sp"/>
+            android:textSize="14sp" />
     </FrameLayout>
 </FrameLayout>

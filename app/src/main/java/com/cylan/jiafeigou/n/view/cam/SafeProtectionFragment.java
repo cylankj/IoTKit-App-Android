@@ -189,6 +189,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
 
         //提示音
         DpMsgDefine.DPNotificationInfo notificationInfo = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION);
+        if (notificationInfo == null) notificationInfo = new DpMsgDefine.DPNotificationInfo();
         fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
                 ? R.string.MUTE : (notificationInfo.notification == 1
                 ? R.string.BARKING : R.string.ALARM)));

@@ -3,8 +3,10 @@ package com.cylan.jiafeigou.widget;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.support.annotation.LayoutRes;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,10 +24,12 @@ import static com.cylan.jiafeigou.utils.ViewUtils.getCompatStatusBarHeight;
 
 public class CustomToolbar extends LinearLayout {
 
-    TextView tvToolbarIcon;
-    TextView tvToolbarTitle;
-    TextView tvToolbarRight;
-    ViewGroup viewGroup;
+    private TextView tvToolbarIcon;
+    private TextView tvToolbarTitle;
+    private TextView tvToolbarRight;
+    private ViewGroup viewGroup;
+    @LayoutRes
+    private int customContentLayoutId = -1;
     private boolean fitSystemWindow;
 
     public CustomToolbar(Context context) {
@@ -40,6 +44,15 @@ public class CustomToolbar extends LinearLayout {
         super(context, attrs, defStyleAttr);
         setOrientation(VERTICAL);
         TypedArray at = context.obtainStyledAttributes(attrs, R.styleable.CustomToolbar);
+//        customContentLayoutId = at.getInteger(R.styleable.CustomToolbar_ct_content_layout, -1);
+        final String value = attrs.getAttributeValue(null, "layout");
+        if (value == null || value.length() <= 0) {
+            throw new InflateException("You must specify a layout in the"
+                    + " include tag:  layout=\"@layout/layoutID\" />");
+        }
+        // Attempt to resolve the "?attr/name" string to an identifier.
+        customContentLayoutId = context.getResources().getIdentifier(value.substring(8), "layout",
+                context.getPackageName());
         int bgColor = at.getColor(R.styleable.CustomToolbar_ct_background_color, Color.TRANSPARENT);
         int titleColor = at.getColor(R.styleable.CustomToolbar_ct_title_color, Color.TRANSPARENT);
         int leftTitleColor = at.getColor(R.styleable.CustomToolbar_ct_left_title_color, Color.TRANSPARENT);
@@ -52,34 +65,41 @@ public class CustomToolbar extends LinearLayout {
         boolean showShadow = at.getBoolean(R.styleable.CustomToolbar_ct_enable_shadow, false);
         fitSystemWindow = at.getBoolean(R.styleable.CustomToolbar_ct_fit_system_window, true);
         at.recycle();
+        //
         View view = LayoutInflater.from(context).inflate(R.layout.layout_custom_tool_bar, this, true);
-        viewGroup = (ViewGroup) findViewById(R.id.fLayout_toolbar_content);
-        if (bgColor != 0)
-            viewGroup.setBackgroundColor(bgColor);
-        tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
-        tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
-        tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
-        if (rightTitleColor != 0) tvToolbarRight.setTextColor(rightTitleColor);
-        tvToolbarTitle.setVisibility(VISIBLE);
-        tvToolbarTitle.setText(title);
-        if (titleColor != 0)
-            tvToolbarTitle.setTextColor(titleColor);
-        if (iconResIdLeft != -1) {
-            ViewUtils.setDrawablePadding(tvToolbarIcon, iconResIdLeft, 0);
-        }
-        if (!TextUtils.isEmpty(rightTitle)) {
-            tvToolbarRight.setVisibility(VISIBLE);
-            tvToolbarRight.setText(rightTitle);
-        }
-        if (iconResIdRight != -1) {
-            tvToolbarRight.setVisibility(VISIBLE);
-            ViewUtils.setDrawablePadding(tvToolbarRight, iconResIdRight, 0);
-        }
-        tvToolbarIcon.setText(leftTitle);
-        if (leftTitleColor != 0)
-            tvToolbarIcon.setTextColor(leftTitleColor);
         if (showShadow) {
             findViewById(R.id.v_shadow).setVisibility(VISIBLE);
+        }
+        View viewChild = LayoutInflater.from(context).inflate(customContentLayoutId, this, false);
+        ((ViewGroup) findViewById(R.id.fLayout_toolbar_content))
+                .addView(viewChild);
+        //处理默认布局
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            viewGroup = (ViewGroup) findViewById(R.id.fLayout_toolbar_content);
+            if (bgColor != 0)
+                viewGroup.setBackgroundColor(bgColor);
+            tvToolbarIcon = (TextView) view.findViewById(R.id.tv_toolbar_icon);
+            tvToolbarTitle = (TextView) view.findViewById(R.id.tv_toolbar_title);
+            tvToolbarRight = (TextView) view.findViewById(R.id.tv_toolbar_right);
+            if (rightTitleColor != 0) tvToolbarRight.setTextColor(rightTitleColor);
+            tvToolbarTitle.setVisibility(VISIBLE);
+            tvToolbarTitle.setText(title);
+            if (titleColor != 0)
+                tvToolbarTitle.setTextColor(titleColor);
+            if (iconResIdLeft != -1) {
+                ViewUtils.setDrawablePadding(tvToolbarIcon, iconResIdLeft, 0);
+            }
+            if (!TextUtils.isEmpty(rightTitle)) {
+                tvToolbarRight.setVisibility(VISIBLE);
+                tvToolbarRight.setText(rightTitle);
+            }
+            if (iconResIdRight != -1) {
+                tvToolbarRight.setVisibility(VISIBLE);
+                ViewUtils.setDrawablePadding(tvToolbarRight, iconResIdRight, 0);
+            }
+            tvToolbarIcon.setText(leftTitle);
+            if (leftTitleColor != 0)
+                tvToolbarIcon.setTextColor(leftTitleColor);
         }
     }
 
@@ -89,12 +109,15 @@ public class CustomToolbar extends LinearLayout {
      * @param viewFactory
      */
     public void setViewFactory(ToolbarFactory viewFactory) {
+        this.toolbarFactory = viewFactory;
         if (viewFactory != null) {
             viewGroup.removeAllViews();
             viewGroup.addView(viewFactory.createView());
             viewGroup.setBackgroundColor(viewFactory.getToolbarColor());
         }
     }
+
+    private ToolbarFactory toolbarFactory;
 
     /**
      * toolbar自定义view
@@ -135,67 +158,94 @@ public class CustomToolbar extends LinearLayout {
     }
 
     public void setBackAction(OnClickListener clickListener) {
-        if (clickListener != null) {
+        if (clickListener != null && customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
             tvToolbarIcon.setOnClickListener(clickListener);
         }
     }
 
     public void setTvToolbarIcon(int resId) {
-        ViewUtils.setDrawablePadding(tvToolbarIcon, resId, 2);
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar)
+            ViewUtils.setDrawablePadding(tvToolbarIcon, resId, 2);
     }
 
     public void setTvToolbarRightIcon(int resId) {
-        ViewUtils.setDrawablePadding(tvToolbarRight, resId, 2);
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar)
+            ViewUtils.setDrawablePadding(tvToolbarRight, resId, 2);
     }
 
     public void setToolbarTitle(int resId) {
-        if (!tvToolbarTitle.isShown()) tvToolbarTitle.setVisibility(View.VISIBLE);
-        tvToolbarTitle.setText(resId);
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            if (!tvToolbarTitle.isShown()) tvToolbarTitle.setVisibility(View.VISIBLE);
+            tvToolbarTitle.setText(resId);
+        }
     }
 
     public void setToolbarTitle(String resContent) {
-        if (!tvToolbarTitle.isShown()) tvToolbarTitle.setVisibility(View.VISIBLE);
-        tvToolbarTitle.setText(resContent);
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            if (!tvToolbarTitle.isShown()) tvToolbarTitle.setVisibility(View.VISIBLE);
+            tvToolbarTitle.setText(resContent);
+        }
     }
 
     public void setToolbarLeftTitle(int resId) {
-        if (!tvToolbarIcon.isShown()) tvToolbarIcon.setVisibility(View.VISIBLE);
-        tvToolbarIcon.setText(resId);
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            if (!tvToolbarIcon.isShown()) tvToolbarIcon.setVisibility(View.VISIBLE);
+            tvToolbarIcon.setText(resId);
+        }
     }
 
     public void setToolbarLeftTitle(String resId) {
-        if (!tvToolbarIcon.isShown()) tvToolbarIcon.setVisibility(View.VISIBLE);
-        tvToolbarIcon.setText(resId);
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            if (!tvToolbarIcon.isShown()) tvToolbarIcon.setVisibility(View.VISIBLE);
+            tvToolbarIcon.setText(resId);
+        }
     }
 
     public void setToolbarRightTitle(int resId) {
-        if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
-        tvToolbarRight.setText(resId);
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
+            tvToolbarRight.setText(resId);
+        }
     }
 
     public void setToolbarRightTitle(String resId) {
-        if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
-        tvToolbarRight.setText(resId);
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
+            tvToolbarRight.setText(resId);
+        }
     }
 
-    public void setTvToolbarRightColor(String color){
-        if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
+    public void setTvToolbarRightColor(String color) {
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            if (!tvToolbarRight.isShown()) tvToolbarRight.setVisibility(View.VISIBLE);
             tvToolbarRight.setTextColor(Color.parseColor(color));
+        }
     }
 
-    public void setTvToolbarRightEnable(boolean isEnable){
-        tvToolbarRight.setEnabled(isEnable);
+    public void setTvToolbarRightEnable(boolean isEnable) {
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            tvToolbarRight.setEnabled(isEnable);
+        }
     }
 
     public CharSequence getTitle() {
-        return tvToolbarTitle.getText();
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            return tvToolbarTitle.getText();
+        }
+        return null;
     }
 
     public CharSequence getSubTitle() {
-        return tvToolbarRight.getText();
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            return tvToolbarRight.getText();
+        }
+        return null;
     }
 
     public TextView getTvToolbarRight() {
-        return tvToolbarRight;
+        if (customContentLayoutId == R.layout.layout_default_custom_tool_bar) {
+            return tvToolbarRight;
+        }
+        return null;
     }
 }

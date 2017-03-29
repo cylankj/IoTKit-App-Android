@@ -48,7 +48,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private static final String TAG = "BaseApplication";
     private HttpProxyCacheServer proxy;
 
-        private DaemonClient mDaemonClient;
+    private DaemonClient mDaemonClient;
     private HuaweiApiClient client;
 
     @Override
@@ -137,7 +137,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
             Log.d("try2init", "try2init failed");
         }
     }
-
 
 
     private void initHuaweiPushSDK() {

@@ -7,6 +7,7 @@
     android:layout_height="match_parent">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
+        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,6 +22,7 @@
         android:layout_below="@id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
@@ -74,7 +76,7 @@
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_f2f2f2"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y1"/>
+                    android:layout_height="@dimen/y1" />
 
             </RelativeLayout>
 
@@ -98,7 +100,7 @@
                     android:layout_alignParentBottom="true"
                     android:background="@color/color_f2f2f2"
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/y1"/>
+                    android:layout_height="@dimen/y1" />
 
             </RelativeLayout>
 
@@ -110,6 +112,7 @@
             android:background="@drawable/little_shape" />
 
     </FrameLayout>
+
     <TextView
         android:id="@+id/tv_share_device"
         android:layout_marginBottom="@dimen/y28"

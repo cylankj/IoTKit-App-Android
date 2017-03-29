@@ -9,6 +9,7 @@
     android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
+        layout="@layout/layout_default_custom_tool_bar"
         hunt:ct_left_title="@string/Tap3_Friends_UserInfo"
         hunt:ct_left_title_color="@color/color_white"
         android:textSize="@dimen/sp18"
@@ -16,7 +17,7 @@
         hunt:ct_background_color="@color/color_0ba8cf"
         hunt:ct_icon="@drawable/nav_icon_back_white"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -26,6 +27,7 @@
             android:scrollbars="none"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

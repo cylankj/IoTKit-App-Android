@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:id="@+id/item_device_container"
-                style="@style/ripple_background"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/y77"
-                android:clickable="true">
+    android:id="@+id/item_device_container"
+    style="@style/ripple_background"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/y77"
+    android:clickable="true">
 
 
     <ImageView
@@ -13,13 +13,13 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/x19"
-        android:src="@drawable/icon_home_camera_online"/>
+        android:src="@drawable/icon_home_camera_online" />
 
     <View
         android:id="@+id/v_icon_base_line_bottom"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y1"
-        android:layout_centerInParent="true"/>
+        android:layout_centerInParent="true" />
 
     <TextView
         android:id="@+id/item_device_alias"
@@ -34,7 +34,7 @@
         android:maxLines="1"
         android:text="wohegohe"
         android:textColor="@color/color_333333"
-        android:textSize="@dimen/sp16"/>
+        android:textSize="@dimen/sp16" />
 
     <TextView
         android:id="@+id/item_device_open_state"
@@ -50,7 +50,7 @@
         android:maxLines="1"
         android:text="hgeogh"
         android:textColor="@color/color_777777"
-        android:textSize="@dimen/sp14"/>
+        android:textSize="@dimen/sp14" />
 
     <ImageView
         android:id="@+id/tv_device_msg_time"
@@ -59,12 +59,12 @@
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
         android:layout_marginEnd="@dimen/x19"
-        android:src="@drawable/icon_mine_arrow_next"/>
+        android:src="@drawable/icon_mine_arrow_next" />
 
     <View
         android:layout_width="match_parent"
         android:layout_height="@dimen/y1"
         android:layout_alignLeft="@+id/item_device_open_state"
         android:layout_alignParentBottom="true"
-        android:background="@color/color_e8e8e8"/>
+        android:background="@color/color_e8e8e8" />
 </RelativeLayout>

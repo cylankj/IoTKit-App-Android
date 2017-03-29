@@ -171,8 +171,8 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
                 }
                 for (MineMessageBean bean : hasCheckData) {
                     messageAdapter.remove(bean);
-                    if (bean.type == 601){
-                        presenter.deleteServiceMsg(bean.type,Long.parseLong(bean.getTime()));
+                    if (bean.type == 601) {
+                        presenter.deleteServiceMsg(bean.type, Long.parseLong(bean.getTime()));
                     }
                     presenter.deleteOneItem(bean);
                 }
@@ -233,7 +233,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
 
     @Override
     public void deleteMesgReuslt(RxEvent.DeleteDataRsp rsp) {
-        if (serviceDelRsp == null){
+        if (serviceDelRsp == null) {
             serviceDelRsp = new ArrayList<>();
         }
         serviceDelRsp.add(rsp.resultCode);

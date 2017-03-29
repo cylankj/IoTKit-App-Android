@@ -131,7 +131,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         tvRelativeAndFriendLikeName.setText(getString(R.string.ALIAS) + ": " + frienditembean.alias);
 
         //头像显示
-        MyImageTarget myImageTarget = new MyImageTarget(ivDetailUserHead,getContext().getResources());
+        MyImageTarget myImageTarget = new MyImageTarget(ivDetailUserHead, getContext().getResources());
         Glide.with(getContext()).load(frienditembean.iconUrl)
                 .asBitmap()
                 .placeholder(R.drawable.icon_mine_head_normal)
@@ -141,12 +141,12 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 .into(myImageTarget);
     }
 
-    private static class MyImageTarget extends BitmapImageViewTarget{
+    private static class MyImageTarget extends BitmapImageViewTarget {
 
         public final WeakReference<Resources> resourcesWeakReference;
         public final WeakReference<RoundedImageView> roundedImageViewWeakReference;
 
-        public MyImageTarget(RoundedImageView view,Resources resources) {
+        public MyImageTarget(RoundedImageView view, Resources resources) {
             super(view);
             resourcesWeakReference = new WeakReference<Resources>(resources);
             roundedImageViewWeakReference = new WeakReference<RoundedImageView>(view);
@@ -225,7 +225,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
     public void showDelFriendDialog(RelAndFriendBean bean) {
         Bundle bundle = new Bundle();
         bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap3_Friends_DeleteFriends));
-        bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT,getString(R.string.CANCEL));
+        bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
             if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {

@@ -195,7 +195,7 @@ public class OpenLoginHelper {
 
         @Override
         public void onError(UiError e) {
-            AppLogger.e("qqauthorize:"+e.errorMessage);
+            AppLogger.e("qqauthorize:" + e.errorMessage);
         }
 
         @Override
@@ -218,7 +218,7 @@ public class OpenLoginHelper {
                 if (accessToken != null && accessToken.isSessionValid()) {
                     AccessTokenKeeper.writeAccessToken(ContextUtils.getContext(), accessToken);
                     //post 结果
-                    postAuthorizeResult(accessToken.getToken(),accessToken.getUid(),4);
+                    postAuthorizeResult(accessToken.getToken(), accessToken.getUid(), 4);
                 } else {
                     String code = bundle.getString("code", "");
                     AppLogger.d("sina_code" + code);
@@ -282,7 +282,7 @@ public class OpenLoginHelper {
                         String strToken = token.token;
                         String secret = token.secret;
                         //post授权结果
-                        postAuthorizeResult(strToken,secret,6);
+                        postAuthorizeResult(strToken, secret, 6);
 
                         // 获取用户的的信息
                         TwitterApiClient twitterApiClient = TwitterCore.getInstance().getApiClient();
@@ -337,8 +337,8 @@ public class OpenLoginHelper {
                         AccessToken accessToken = loginResult.getAccessToken();
 
                         //post 结果
-                        postAuthorizeResult(accessToken.getToken(),accessToken.getUserId(),7);
-                        GraphRequest request = GraphRequest.newMeRequest(accessToken,getUserinfo);
+                        postAuthorizeResult(accessToken.getToken(), accessToken.getUserId(), 7);
+                        GraphRequest request = GraphRequest.newMeRequest(accessToken, getUserinfo);
 
                         Bundle parameters = new Bundle();
                         parameters.putString("fields", "msgId,name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
@@ -395,8 +395,8 @@ public class OpenLoginHelper {
         RxBus.getCacheInstance().postSticky(login);
     }
 
-    public static void release(){
-        if (instance != null){
+    public static void release() {
+        if (instance != null) {
             instance.activity = null;
             instance = null;
         }

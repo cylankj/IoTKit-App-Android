@@ -195,7 +195,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         if (presenter != null) {
             presenter.stop();
         }
-        if (mShareDlg != null){
+        if (mShareDlg != null) {
             mShareDlg.dismiss();
             mShareDlg = null;
         }

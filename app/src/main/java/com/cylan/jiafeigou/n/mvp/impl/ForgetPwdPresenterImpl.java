@@ -48,10 +48,10 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         final boolean isPhoneNum = JConstant.PHONE_REG.matcher(account).find();
                         if (isPhoneNum) {
                             JfgCmdInsurance.getCmd()
-                                    .sendCheckCode(account, JFGRules.getLanguageType(ContextUtils.getContext()),JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
+                                    .sendCheckCode(account, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
                         } else {
                             try {
-                                JfgCmdInsurance.getCmd().forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()),account);
+                                JfgCmdInsurance.getCmd().forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()), account);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }

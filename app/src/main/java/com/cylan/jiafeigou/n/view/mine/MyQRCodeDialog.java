@@ -83,7 +83,7 @@ public class MyQRCodeDialog extends BaseDialog {
     }
 
     private void initView() {
-        MyViewTarget myViewTarget= new MyViewTarget(ivUserIcon,getResources());
+        MyViewTarget myViewTarget = new MyViewTarget(ivUserIcon, getResources());
         if (isopenlogin) {
             tvUserAlias.setText(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
             Glide.with(getContext()).load(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON))
@@ -106,11 +106,11 @@ public class MyQRCodeDialog extends BaseDialog {
     }
 
 
-    private static class MyViewTarget extends BitmapImageViewTarget{
+    private static class MyViewTarget extends BitmapImageViewTarget {
         private WeakReference<Resources> resourcesWeakReference;
         private WeakReference<ImageView> imageViewWeakReference;
 
-        public MyViewTarget(ImageView view,Resources resources) {
+        public MyViewTarget(ImageView view, Resources resources) {
             super(view);
             resourcesWeakReference = new WeakReference<Resources>(resources);
             imageViewWeakReference = new WeakReference<ImageView>(view);

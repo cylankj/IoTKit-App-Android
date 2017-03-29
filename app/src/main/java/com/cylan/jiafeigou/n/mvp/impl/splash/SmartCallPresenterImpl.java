@@ -79,14 +79,14 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
         System.exit(0);
     }
 
-    public void serviceIsStart(){
+    public void serviceIsStart() {
         isServiceStartSub = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .flatMap(new Func1<Object, Observable<Boolean>>() {
                     @Override
                     public Observable<Boolean> call(Object o) {
                         boolean isRunning = false;
-                        ActivityManager activityManager = (ActivityManager)getView().getContext()
+                        ActivityManager activityManager = (ActivityManager) getView().getContext()
                                 .getSystemService(Context.ACTIVITY_SERVICE);
                         List<ActivityManager.RunningServiceInfo> serviceList = activityManager
                                 .getRunningServices(50);
@@ -105,21 +105,21 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(b->{
-                    if (b){
+                .subscribe(b -> {
+                    if (b) {
                         selectNext();
-                    }else {
+                    } else {
                         delay1s();
                     }
                 });
     }
 
-    public void delay1s(){
+    public void delay1s() {
         delaySub = Observable.just(null)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o->{
+                .subscribe(o -> {
                     selectNext();
                 });
     }
