@@ -59,7 +59,7 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
         return property != null && property.setValue(value);
     }
 
-    protected DPEntity getProperty(int msgId) {
+    public DPEntity getProperty(int msgId) {
         if (!propertyParser.accept(pid(), msgId)) return null;
         DPEntity value = properties.get(msgId);
         if (value == null) {

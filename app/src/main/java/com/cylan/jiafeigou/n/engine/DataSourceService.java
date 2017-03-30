@@ -393,8 +393,8 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
-        DataSourceManager.getInstance().cacheUnreadCount(l, s, arrayList);
-        AppLogger.d("OnRobotCountDataRsp :");
+//        DataSourceManager.getInstance().cacheUnreadCount(l, s, arrayList);
+//        AppLogger.d("OnRobotCountDataRsp :");
     }
 
     @Override

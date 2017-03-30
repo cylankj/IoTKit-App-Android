@@ -218,7 +218,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     }
                     AppLogger.i("save end: " + id + " " + value);
                 }, (Throwable throwable) -> AppLogger.e(throwable.getLocalizedMessage()));
-        addSubscription(subscription, "updateInfoReq");
+        addSubscription(subscription, "updateInfoReq" + id);
     }
 
     @Override

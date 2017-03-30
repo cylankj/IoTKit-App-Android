@@ -4,16 +4,13 @@ package com.cylan.jiafeigou.base.module;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
-import android.util.SparseLongArray;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.JFGVideo;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -33,7 +30,6 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -45,7 +41,6 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscriber;
@@ -71,10 +66,6 @@ public class DataSourceManager implements JFGSourceManager {
     private static DataSourceManager mDataSourceManager;
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
-    /**
-     * 未读消息数
-     */
-    private HashMap<String, SparseLongArray> unreadMap = new HashMap<>();
     @Deprecated
     private boolean isOnline;
     private JFGAccount jfgAccount;
@@ -96,7 +87,6 @@ public class DataSourceManager implements JFGSourceManager {
         makeCacheSyncDataSub();
         makeCacheAccountSub();
         makeCacheDeviceSub();
-        makeUnreadCountFetcherSub();
     }
 
     public void initFromDB() {//根据需要初始化
@@ -214,37 +204,8 @@ public class DataSourceManager implements JFGSourceManager {
          * 设备分享列表
          */
         JfgCmdInsurance.getCmd().getShareList(uuidList);
-//        syncAllJFGCameraWarnMsg(true);
     }
 
-    /**
-     * 很暴力地获取
-     */
-
-    public void syncDeviceUnreadCount() {
-        for (Map.Entry<String, Device> entry : new HashMap<>(mCachedDeviceMap).entrySet()) {
-            Device device = entry.getValue();
-            if (JFGRules.isCamera(device.pid)) {
-                try {
-                    JfgCmdInsurance.getCmd().robotCountData(device.uuid, new long[]{505, 222, 512, 401}, 0);
-                } catch (Exception e) {
-                    AppLogger.e("uuid is null: " + e.getLocalizedMessage());
-                }
-            }
-        }
-    }
-
-    private void makeUnreadCountFetcherSub() {
-        getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .throttleLast(5, TimeUnit.SECONDS)
-                .subscribe(rsp -> syncDeviceUnreadCount(), e -> {
-                    AppLogger.d(e.getMessage());
-                    e.printStackTrace();
-                    makeUnreadCountFetcherSub();
-                });
-    }
 
     @Override
     public Observable<Account> logout() {
@@ -327,73 +288,15 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public void cacheUnreadCount(long seq, String uuid, ArrayList<JFGDPMsgCount> unreadList) {
-        SparseLongArray array = unreadMap.get(uuid);
-        if (array == null) {
-            array = new SparseLongArray();
-        }
-        if (unreadList != null) {
-            for (JFGDPMsgCount count : unreadList) {
-                array.put(count.id, count.count);
-            }
-            unreadMap.put(uuid, array);
-        }
-        getCacheInstance().post(new RxEvent.UnreadCount(uuid, seq, unreadList));
-    }
-
-    @Override
-    public Pair<Integer, Long> getUnreadCount(String uuid, long... ids) {
-        if (unreadMap != null && ids != null && ids.length > 0) {
-            SparseLongArray array = unreadMap.get(uuid);
-            if (array != null) {
-                int count = 0;
-                long version = 0;
-                for (long id : ids) {
-                    count += array.get((int) id);
-                    try {
-                        long v = MiscUtils.getVersion(getValue(uuid, id), false);
-                        version = version > v ? version : v;
-                    } catch (Exception e) {
-                        AppLogger.e("err: " + e.getLocalizedMessage());
-                    }
-                }
-                return new Pair<>(count, version);
-            }
-        }
-        return null;
-    }
-
-    @Override
     public void clear() {
         getCacheInstance().removeAllStickyEvents();
         isOnline = false;
         account = null;
         jfgAccount = null;
-        if (unreadMap != null) unreadMap.clear();
+//        if (unreadMap != null) unreadMap.clear();
         if (shareList != null) shareList.clear();
         if (rawDeviceOrder != null) rawDeviceOrder.clear();
         if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
-    }
-
-    @Override
-    public void clearUnread(String uuid, long... ids) {
-        try {
-            if (ids == null || ids.length == 0) return;
-            long[] array = new long[ids.length];
-            ArrayList<Long> list = new ArrayList<>();
-            for (int i = 0; i < ids.length; i++) {
-                array[i] = ids[i];
-            }
-            JfgCmdInsurance.getCmd().robotCountDataClear(uuid, array, 0);
-            boolean result = unreadMap.remove(uuid) != null;
-            AppLogger.d("clear unread count：" + result);
-        } catch (Exception e) {
-        }
-    }
-
-    @Override
-    public <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion) {
-        return null;
     }
 
     public void syncJFGDeviceProperty(String uuid) {

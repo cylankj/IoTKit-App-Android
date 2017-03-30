@@ -21,7 +21,7 @@ public class DpMsgDefine {
         @Index(0)
         public boolean standby;
         @Index(1)
-        public boolean warnEnable;
+        public boolean alarmEnable;
         @Index(2)
         public boolean led;
         @Index(3)
@@ -38,7 +38,7 @@ public class DpMsgDefine {
         public String toString() {
             return "DPStandby{" +
                     "standby=" + standby +
-                    ", warnEnable=" + warnEnable +
+                    ", alarmEnable=" + alarmEnable +
                     ", led=" + led +
                     ", autoRecord=" + autoRecord +
                     '}';
@@ -53,7 +53,7 @@ public class DpMsgDefine {
         public void writeToParcel(Parcel dest, int flags) {
             super.writeToParcel(dest, flags);
             dest.writeByte(this.standby ? (byte) 1 : (byte) 0);
-            dest.writeByte(this.warnEnable ? (byte) 1 : (byte) 0);
+            dest.writeByte(this.alarmEnable ? (byte) 1 : (byte) 0);
             dest.writeByte(this.led ? (byte) 1 : (byte) 0);
             dest.writeInt(this.autoRecord);
         }
@@ -61,7 +61,7 @@ public class DpMsgDefine {
         protected DPStandby(Parcel in) {
             super(in);
             this.standby = in.readByte() != 0;
-            this.warnEnable = in.readByte() != 0;
+            this.alarmEnable = in.readByte() != 0;
             this.led = in.readByte() != 0;
             this.autoRecord = in.readInt();
         }

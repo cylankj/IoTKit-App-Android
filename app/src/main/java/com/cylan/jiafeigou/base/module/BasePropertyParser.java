@@ -13,6 +13,11 @@ import java.util.ArrayList;
 
 import static com.cylan.jiafeigou.base.module.DPDevice.CAMERA;
 import static com.cylan.jiafeigou.base.module.DPDevice.DOORBELL;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1001_CAM_505_UNREAD_COUNT;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1002_CAM_512UNREAD_COUNT_V2;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1003_CAM_222_UNREAD_COUNT;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1004_BELL_UNREAD_COUNT;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_1005_BELL_UNREAD_COUNT_V2;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_201_NET;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_202_MAC;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_204_SDCARD_STORAGE;
@@ -71,6 +76,14 @@ public class BasePropertyParser implements IPropertyParser {
      * set类型不需要指定设备类型。
      */
     private void init() {
+
+        properties.put(ID_1005_BELL_UNREAD_COUNT_V2, new DPProperty(int.class, DOORBELL));
+        properties.put(ID_1004_BELL_UNREAD_COUNT, new DPProperty(int.class, DOORBELL));
+
+        properties.put(ID_1003_CAM_222_UNREAD_COUNT, new DPProperty(int.class, CAMERA));
+        properties.put(ID_1002_CAM_512UNREAD_COUNT_V2, new DPProperty(int.class, CAMERA));
+        properties.put(ID_1001_CAM_505_UNREAD_COUNT, new DPProperty(int.class, CAMERA));
+
         properties.put(ID_701_SYS_PUSH_FLAG, new DPProperty(boolean.class));//set
         properties.put(ID_602_ACCOUNT_WONDERFUL_MSG, new DPProperty(DpMsgDefine.DPWonderItem.class));
         properties.put(ID_601_ACCOUNT_STATE, new DPProperty(String.class));

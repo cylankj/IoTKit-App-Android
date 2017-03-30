@@ -58,7 +58,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         }
         subscription = new CompositeSubscription();
         subscription.add(checkIsOpenLoginCallBack());
-        subscription.add(unReadMesgBack());
+//        subscription.add(unReadMesgBack());
         getUnReadMesg();
     }
 
@@ -223,27 +223,26 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 });
     }
 
-    @Override
-    public Subscription unReadMesgBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
-                .onBackpressureBuffer()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.UnreadCount unreadCount) -> {
-                    if (unreadCount != null && unreadCount.seq == requstId) {
-                        unreadNum = 0;
-                        for (JFGDPMsgCount jfgdpMsgCount : unreadCount.msgList) {
-                            unreadNum += jfgdpMsgCount.count;
-                        }
-                        getView().setMesgNumber(unreadNum);
-                        if (unreadNum != 0) {
-                            hasUnRead = true;
-                            //markHasRead();
-                        } else {
-                            hasUnRead = false;
-                        }
-                    }
-                });
-    }
+//    public Subscription unReadMesgBack() {
+//        return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
+//                .onBackpressureBuffer()
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe((RxEvent.UnreadCount unreadCount) -> {
+//                    if (unreadCount != null && unreadCount.seq == requstId) {
+//                        unreadNum = 0;
+//                        for (JFGDPMsgCount jfgdpMsgCount : unreadCount.msgList) {
+//                            unreadNum += jfgdpMsgCount.count;
+//                        }
+//                        getView().setMesgNumber(unreadNum);
+//                        if (unreadNum != 0) {
+//                            hasUnRead = true;
+//                            //markHasRead();
+//                        } else {
+//                            hasUnRead = false;
+//                        }
+//                    }
+//                });
+//    }
 
     @Override
     public boolean hasUnReadMesg() {

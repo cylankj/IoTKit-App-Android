@@ -52,7 +52,6 @@
             hunt:t_border_color="@color/color_white"
             hunt:t_border_width="@dimen/y1"
             hunt:t_enable_border="true"
-            hunt:t_ignore="true"
             hunt:t_point_color="@color/color_red_dot_f43531"
             hunt:t_radius="@dimen/y4"
             hunt:t_round_image="true"

@@ -3,14 +3,12 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
-import android.view.View;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -34,26 +32,14 @@ import static android.view.View.VISIBLE;
 
 public class HomePageListAdapter extends SuperAdapter<Device> {
 
-    private DeviceItemClickListener deviceItemClickListener;
-    private DeviceItemLongClickListener deviceItemLongClickListener;
 
     public HomePageListAdapter(Context context, List<Device> items, IMulItemViewType<Device> mulItemViewType) {
         super(context, items, mulItemViewType);
     }
 
-    public void setDeviceItemClickListener(DeviceItemClickListener deviceItemClickListener) {
-        this.deviceItemClickListener = deviceItemClickListener;
-    }
-
-    public void setDeviceItemLongClickListener(DeviceItemLongClickListener deviceItemLongClickListener) {
-        this.deviceItemLongClickListener = deviceItemLongClickListener;
-    }
-
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, Device item) {
-        holder.setOnClickListener(R.id.rLayout_device_item, deviceItemClickListener);
         holder.setTag(R.id.rLayout_device_item, layoutPosition);
-        holder.setOnLongClickListener(R.id.rLayout_device_item, deviceItemLongClickListener);
         handleState(holder, item);
     }
 
@@ -136,9 +122,9 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             holder.setVisibility(R.id.tv_device_share_tag, VISIBLE);
         else holder.setVisibility(R.id.tv_device_share_tag, GONE);
         //图标
-        holder.setBackgroundResource(R.id.img_device_icon, iconRes);
+        holder.setImageResource(R.id.img_device_icon, iconRes);
         if (TextUtils.isEmpty(shareAccount))//被分享用户,不显示 消息数
-            handleMsgCountTime(holder, uuid, device.pid);
+            handleMsgCountTime(holder, uuid, device);
         //右下角状态
         setItemState(holder, uuid, net, device);
         AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,device.pid:%s", uuid, device.pid));
@@ -151,20 +137,28 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         return MiscUtils.getBeautifulString(TextUtils.isEmpty(alias) ? uuid : alias, 8);
     }
 
-    private void handleMsgCountTime(SuperViewHolder holder, String uuid, int pid) {
-        Pair<Integer, Long> pair = DataSourceManager.getInstance().getUnreadCount(uuid, 505, 512, 222);
-        Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息");
+    private void handleMsgCountTime(SuperViewHolder holder, String uuid, Device device) {
+        DPEntity entity = handleUnreadCount(device);
+        Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + entity);
         //消息数
-        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(pair, pid, uuid));
+        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(entity, device.pid, uuid));
         //时间
-        holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), pair != null && pair.first > 0 ? pair.second : 0));
-        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(pair != null && pair.first > 0);
+        holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), entity != null ? entity.getVersion() : 0));
+        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(entity != null && entity.getValue(0) > 0);
     }
 
+    private DPEntity handleUnreadCount(Device device) {
+        if (JFGRules.isCamera(device.pid)) {
+            return MiscUtils.getMaxVersionEntity(device.getProperty(1001), device.getProperty(1002), device.getProperty(1003));
+        } else if (JFGRules.isBell(device.pid)) {
+            return MiscUtils.getMaxVersionEntity(device.getProperty(1004), device.getProperty(1005));
+        }
+        return null;
+    }
 
-    private String getLastWarnContent(Pair<Integer, Long> msgCountPair, int pid, String uuid) {
-        final int msgCount = msgCountPair == null ? 0 : msgCountPair.first;
-        long msgTime = msgCountPair != null ? msgCountPair.second : 0;
+    private String getLastWarnContent(DPEntity entity, int pid, String uuid) {
+        final int msgCount = entity == null ? 0 : entity.getValue(0);
+        long msgTime = msgCount == 0 ? 0 : (entity != null ? entity.getVersion() : 0);
         if (msgCount == 0)
             return getContext().getString(R.string.Tap1_NoMessages);
         if (JFGRules.isCamera(pid)) {
@@ -198,13 +192,5 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
                 return R.layout.layout_item_home_page_list;
             }
         };
-    }
-
-    public interface DeviceItemClickListener extends View.OnClickListener {
-
-    }
-
-    public interface DeviceItemLongClickListener extends View.OnLongClickListener {
-
     }
 }
