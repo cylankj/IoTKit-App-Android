@@ -52,19 +52,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 devicesUpdate1(),
                 robotDeviceDataSync(),
                 JFGAccountUpdate(),
-                unreadCountUpdate(),
         };
-    }
-
-    private Subscription unreadCountUpdate() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
-                .onBackpressureBuffer()
-                .map(unreadCount -> {
-                    RxBus.getCacheInstance().post(new InternalHelp());
-                    return null;
-                })
-                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                .subscribe();
     }
 
     private Subscription getShareDevicesListRsp() {
@@ -215,7 +203,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         refreshSub = Observable.just(manually)
                 .subscribeOn(Schedulers.newThread())
                 .map((Boolean aBoolean) -> {
-                    DataSourceManager.getInstance().syncDeviceUnreadCount();
                     if (manually)
                         DataSourceManager.getInstance().syncAllJFGDevicePropertyManually();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
