@@ -9,6 +9,7 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -420,5 +421,17 @@ public class MiscUtils {
         return "android:switcher:" + viewId + ":" + id;
     }
 
+
+    public static DPEntity getMaxVersionEntity(DPEntity... entities) {
+        if (entities == null) return null;
+        List<DPEntity> list = new ArrayList<>();
+        for (DPEntity entity : entities) {
+            if (entity != null)
+                list.add(entity);
+        }
+        if (list.size() == 0) return null;
+        Collections.sort(list);
+        return list.get(0);//降序的
+    }
 
 }

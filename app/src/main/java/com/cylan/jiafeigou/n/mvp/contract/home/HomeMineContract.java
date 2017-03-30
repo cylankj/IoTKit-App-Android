@@ -89,12 +89,12 @@ public interface HomeMineContract {
          */
         void getUnReadMesg();
 
-        /**
-         * 未读消息的回调
-         *
-         * @return
-         */
-        Subscription unReadMesgBack();
+//        /**
+//         * 未读消息的回调
+//         *
+//         * @return
+//         */
+//        Subscription unReadMesgBack();
 
         /**
          * 是否有未读消息

@@ -12,7 +12,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.Pair;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -103,7 +102,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         if (imgVCameraTitleTopSetting != null) {
             SettingTip settingTip = MiscUtils.getObjectFromSP(JConstant.KEY_DEVICE_SETTING_SHOW_RED + uuid, SettingTip.class);
             //延时摄影，暂时隐藏。
-            imgVCameraTitleTopSetting.setShowDot(settingTip == null || settingTip.isBeautiful());
+//            imgVCameraTitleTopSetting.setShowDot(settingTip == null || settingTip.isBeautiful());
+            imgVCameraTitleTopSetting.setShowDot(true);
         }
     }
 
@@ -210,10 +210,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         @Override
         public void onPageSelected(int position) {
             if (position == 1) {
-                Pair<Integer, Long> pair = DataSourceManager.getInstance().getUnreadCount(uuid, 222, 505, 512);
-                if (pair != null && pair.first > 0) {
-                    DataSourceManager.getInstance().clearUnread(uuid, 505, 512, 222);
-                }
+                AppLogger.e("为实现");
             }
         }
 

@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="ImageViewTipsTheme">
-        <attr name="t_position" format="integer" />
-        <attr name="t_ignore" format="boolean" />
         <attr name="t_radius" format="dimension" />
         <attr name="t_margin" format="dimension" />
         <attr name="t_show_point" format="boolean" />

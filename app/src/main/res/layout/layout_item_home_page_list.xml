@@ -14,11 +14,10 @@
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/x19"
-        android:background="@drawable/icon_home_camera_online"
+        android:src="@drawable/icon_home_camera_online"
         hunt:t_border_color="@color/color_white"
         hunt:t_border_width="@dimen/x1"
         hunt:t_enable_border="true"
-        hunt:t_ignore="true"
         hunt:t_point_color="@color/color_red_dot_f43531"
         hunt:t_radius="@dimen/x4"
         hunt:t_show_point="false" />

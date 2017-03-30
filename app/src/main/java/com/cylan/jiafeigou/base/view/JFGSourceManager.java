@@ -1,10 +1,7 @@
 package com.cylan.jiafeigou.base.view;
 
 
-import android.util.Pair;
-
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.JFGVideo;
@@ -46,7 +43,7 @@ public interface JFGSourceManager {
      */
     void syncAllJFGDevicePropertyManually();
 
-    <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion);
+//    <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion);
 
     boolean isOnline();
 
@@ -93,13 +90,6 @@ public interface JFGSourceManager {
     boolean deleteByVersions(String uuid, long id, ArrayList<Long> versions);
 
     /**
-     * 获取设备的所有最新的报警消息；1.用于展示最新的报警消息列表，2.根据本地的时间戳游标显示有xx条新消息。
-     *
-     * @param ignoreShareDevice
-     */
-//    void syncAllJFGCameraWarnMsg(boolean ignoreShareDevice);
-
-    /**
      * 查询单个摄像头的报警消息：默认为{505,222}
      *
      * @param uuid
@@ -112,15 +102,7 @@ public interface JFGSourceManager {
 
     ArrayList<JFGVideo> getHistoryList(String uuid);
 
-    void cacheUnreadCount(long seq, String uuid, ArrayList<JFGDPMsgCount> unreadList);
-
-    Pair<Integer, Long> getUnreadCount(String uuid, long... ids);
-
     void clear();
-
-    void clearUnread(String uuid, long... ids);
-
-    void syncDeviceUnreadCount();
 
     Observable<Account> logout();
 

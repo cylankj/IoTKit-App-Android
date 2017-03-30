@@ -25,7 +25,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
@@ -45,15 +44,13 @@ import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.google.gson.Gson;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 
 import butterknife.BindView;
@@ -64,9 +61,7 @@ import butterknife.OnClick;
 public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.Presenter> implements
         AppBarLayout.OnOffsetChangedListener,
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
-        HomePageListAdapter.DeviceItemClickListener,
-        BaseDialog.BaseDialogAction,
-        HomePageListAdapter.DeviceItemLongClickListener {
+        OnItemClickListener {
 
     @BindView(R.id.srLayout_home_page_container)
     SwipeRefreshLayout srLayoutMainContentHolder;
@@ -80,7 +75,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @BindView(R.id.tvHeaderLastTitle)
     TextView tvHeaderLastTitle;
     //不是长时间需要,用软引用.
-    WeakReference<SimpleDialogFragment> simpleDialogFragmentWeakReference;
     @BindView(R.id.lLayout_home_greet)
     LinearLayout lLayoutHomeGreet;
     @BindView(R.id.fLayout_home_page_list_header_container)
@@ -137,8 +131,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onAttach(Context context) {
         super.onAttach(context);
         homePageListAdapter = new HomePageListAdapter(getContext(), null, null);
-        homePageListAdapter.setDeviceItemClickListener(this);
-        homePageListAdapter.setDeviceItemLongClickListener(this);
+        homePageListAdapter.setOnItemClickListener(this);
     }
 
     @Override
@@ -204,17 +197,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             }
         });
         rVDevicesList.setAdapter(homePageListAdapter);
-    }
-
-    private void initDeleteItemDialog() {
-        if (simpleDialogFragmentWeakReference == null || simpleDialogFragmentWeakReference.get() == null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DELETE_CID));
-            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
-            simpleDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(bundle));
-            simpleDialogFragmentWeakReference.get().setAction(this);
-        }
     }
 
     private void initSomeViewMargin() {
@@ -417,82 +399,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             basePresenter.fetchDeviceList(true);
     }
 
-    @Override
-    public void onClick(View v) {
-        int position = ViewUtils.getParentAdapterPosition(rVDevicesList,
-                v,
-                R.id.rLayout_device_item);
-        if (position < 0 || position > homePageListAdapter.getCount() - 1) {
-            homePageListAdapter.notifyDataSetChanged();
-            position = rVDevicesList.getChildAdapterPosition(v);
-        }
-        if (position < 0) {
-            Object o = v.getTag();
-            if (o != null && o instanceof Integer) {
-                position = (int) o;
-            }
-            AppLogger.d("woo,position is invalid final: " + position + " " + o);
-            if (position < 0)
-                return;
-        }
-        Device device = homePageListAdapter.getItem(position);
-        if (!TextUtils.isEmpty(device.uuid)) {
-            Bundle bundle = new Bundle();
-            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
-            if (JFGRules.isCamera(device.pid)) {
-                startActivity(new Intent(getActivity(), CameraLiveActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
-            }
-//            else if (JFGRules.isMag(device.pid)) {
-//                startActivity(new Intent(getActivity(), MagLiveActivity.class)
-//                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
-//            }
-            else if (JFGRules.isBell(device.pid)) {
-                startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid).putExtra("HasNewMsg", true));
-            } else if (JFGRules.isVRCam(device.pid)) {
-                startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
-            }
-
-//            else if (JFGRules.isEFamily(device.pid)) {
-//                startActivity(new Intent(getActivity(), CloudLiveActivity.class)
-//                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
-//            }
-            else {
-                homePageListAdapter.notifyDataSetChanged();
-                AppLogger.e("dis match pid pid: " + device.pid);
-            }
-        }
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        final int position = ViewUtils.getParentAdapterPosition(rVDevicesList, v, R.id.rLayout_device_item);
-        if (position < 0 || position > homePageListAdapter.getCount()) {
-            AppLogger.d("woo,position is invalid: " + position);
-            return false;
-        }
-//        deleteItem(position);
-        return true;
-    }
-
-    //删除一个Item
-    private void deleteItem(final int position) {
-        initDeleteItemDialog();
-        SimpleDialogFragment fragment = simpleDialogFragmentWeakReference.get();
-        fragment.setValue(position);
-        fragment.show(getActivity().getSupportFragmentManager(), "ShareDialogFragment");
-    }
-
-    @Override
-    public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right)
-            return;
-        if (value == null || !(value instanceof Integer)) {
-            Toast.makeText(getContext(), "null: ", Toast.LENGTH_SHORT).show();
-            return;
-        }
-    }
 
     private float preRatio = -1;
 
@@ -526,4 +432,24 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
+    @Override
+    public void onItemClick(View itemView, int viewType, int position) {
+        Device device = homePageListAdapter.getItem(position);
+        if (device != null && !TextUtils.isEmpty(device.uuid)) {
+            Bundle bundle = new Bundle();
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid);
+            if (JFGRules.isCamera(device.pid)) {
+                startActivity(new Intent(getActivity(), CameraLiveActivity.class)
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+            } else if (JFGRules.isBell(device.pid)) {
+                startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid).putExtra("HasNewMsg", true));
+            } else if (JFGRules.isVRCam(device.pid)) {
+                startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
+            }
+        } else {
+            homePageListAdapter.notifyDataSetChanged();
+            AppLogger.e("dis match pid pid: " + position);
+        }
+    }
 }

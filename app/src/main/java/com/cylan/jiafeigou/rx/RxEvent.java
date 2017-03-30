@@ -458,24 +458,24 @@ public class RxEvent {
 //        public String uuid;
 //    }
 
-    /**
-     * 这个消息从{@link DataSourceService#OnRobotCountDataRsp(long, String, ArrayList)}
-     * 传到{@link }
-     */
-    public static final class UnreadCount {
-        public String uuid;
-        public long seq;
-        public ArrayList<JFGDPMsgCount> msgList;
-
-        public UnreadCount() {
-        }
-
-        public UnreadCount(String uuid, long seq, ArrayList<JFGDPMsgCount> counts) {
-            this.uuid = uuid;
-            this.seq = seq;
-            this.msgList = counts;
-        }
-    }
+//    /**
+//     * 这个消息从{@link DataSourceService#OnRobotCountDataRsp(long, String, ArrayList)}
+//     * 传到{@link }
+//     */
+//    public static final class UnreadCount {
+//        public String uuid;
+//        public long seq;
+//        public ArrayList<JFGDPMsgCount> msgList;
+//
+//        public UnreadCount() {
+//        }
+//
+//        public UnreadCount(String uuid, long seq, ArrayList<JFGDPMsgCount> counts) {
+//            this.uuid = uuid;
+//            this.seq = seq;
+//            this.msgList = counts;
+//        }
+//    }
 
 
     /**
