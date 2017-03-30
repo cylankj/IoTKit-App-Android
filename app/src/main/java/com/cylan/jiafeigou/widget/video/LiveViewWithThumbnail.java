@@ -26,6 +26,7 @@ import java.lang.ref.WeakReference;
 
 import rx.Observable;
 import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
 /**
@@ -116,15 +117,14 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                     bMap.compress(Bitmap.CompressFormat.PNG, 100, stream);
                     return stream.toByteArray();
                 })
-                .subscribe(bytes -> {
-                    Glide.with(context)
-                            .load(bytes)
-                            .asBitmap()
-                            .signature(new StringSignature(token))
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .into(new SimpleLoader(imgThumbnail, videoView, isNormalView()));
-                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
-
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(bytes -> Glide.with(context)
+                                .load(bytes)
+                                .asBitmap()
+                                .signature(new StringSignature(token))
+                                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                                .into(new SimpleLoader(imgThumbnail, videoView, isNormalView())),
+                        throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
     }
 
     @Override

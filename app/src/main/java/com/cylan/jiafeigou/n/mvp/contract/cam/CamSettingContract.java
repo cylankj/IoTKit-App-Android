@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by cylan-hunt on 16-6-29.
@@ -51,7 +52,9 @@ public interface CamSettingContract {
          * @param id
          */
 //        void updateInfoReq(Object value, long msgId);
-        public <T extends DataPoint> void updateInfoReq(T value, long id);
+        <T extends DataPoint> void updateInfoReq(T value, long id);
+
+        <T extends DataPoint> void updateInfoReq(List<T> value);
 
         void unbindDevice();
 

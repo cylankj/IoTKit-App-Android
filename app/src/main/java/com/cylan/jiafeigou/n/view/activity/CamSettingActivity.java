@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -48,11 +49,16 @@ import com.cylan.jiafeigou.widget.SettingItemView1;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_209_LED_INDICATOR;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
@@ -346,10 +352,13 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 standby.led = isChecked ? ledPreState() : standby.led;//开启待机,保存之前状态到standby.关闭待机,从standby中恢复.
                 standby.autoRecord = isChecked ? autoRecordPreState() : standby.autoRecord;
                 standby.alarmEnable = isChecked ? alarmPreState() : standby.alarmEnable;
-                basePresenter.updateInfoReq(dpStandby, DpMsgMap.ID_508_CAMERA_STANDBY_FLAG);
-                basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(standby.led), DpMsgMap.ID_209_LED_INDICATOR);
-                basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(standby.autoRecord), DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD);
-                basePresenter.updateInfoReq(new DpMsgDefine.DPPrimary<>(standby.alarmEnable), DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
+                List<DataPoint> list = new ArrayList<>();
+                dpStandby.msgId = 508;
+                list.add(dpStandby);
+                list.add(new DpMsgDefine.DPPrimary<>(standby.led, ID_209_LED_INDICATOR));
+                list.add(new DpMsgDefine.DPPrimary<>(standby.autoRecord, ID_303_DEVICE_AUTO_VIDEO_RECORD));
+                list.add(new DpMsgDefine.DPPrimary<>(standby.alarmEnable, ID_501_CAMERA_ALARM_FLAG));
+                basePresenter.updateInfoReq(list);
             });
             switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
             /////////////////////////////led/////////////////////////////////////
@@ -363,7 +372,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     if (standby != null && standby.standby) return;//开启待机模式引起的
                     DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
                     check.value = isChecked;
-                    basePresenter.updateInfoReq(check, DpMsgMap.ID_209_LED_INDICATOR);
+                    basePresenter.updateInfoReq(check, ID_209_LED_INDICATOR);
                     Log.d("check", "led changed: " + isChecked);
                 });
             } else {
@@ -461,7 +470,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 }
                 break;
             case DpMsgMap.ID_223_MOBILE_NET:
-            case DpMsgMap.ID_209_LED_INDICATOR:
+            case ID_209_LED_INDICATOR:
             case DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE:
                 deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                 //	0 未知, 1 没卡, 2 user's PIN, 3 user's PUK, 4 network PIN, 5 正常
@@ -471,7 +480,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     private boolean ledPreState() {
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        return device.$(DpMsgMap.ID_209_LED_INDICATOR, false);
+        return device.$(ID_209_LED_INDICATOR, false);
     }
 
     /**
@@ -481,12 +490,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      */
     private boolean alarmPreState() {
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        return device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        return device.$(ID_501_CAMERA_ALARM_FLAG, false);
     }
 
     private int autoRecordPreState() {
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        return device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
+        return device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
     }
 
     private void triggerStandby(DpMsgDefine.DPStandby dpStandby) {

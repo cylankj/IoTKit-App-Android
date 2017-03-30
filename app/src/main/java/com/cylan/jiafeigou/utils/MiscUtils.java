@@ -11,6 +11,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
@@ -21,6 +22,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -434,4 +436,18 @@ public class MiscUtils {
         return list.get(0);//降序的
     }
 
+    public static ArrayList<IDPEntity> msgList(String uuid, String account, String server, List<JFGDPMsg> list) {
+        ArrayList<IDPEntity> idpEntities = new ArrayList<>();
+        for (JFGDPMsg jfgdpMsg : list) {
+            DPEntity dpEntity = new DPEntity();
+            dpEntity.setUuid(uuid);
+            dpEntity.setVersion(jfgdpMsg.version);
+            dpEntity.setBytes(jfgdpMsg.packValue);
+            dpEntity.setMsgId((int) jfgdpMsg.id);
+            dpEntity.setAccount(account);
+            dpEntity.setServer(server);
+            idpEntities.add(dpEntity);
+        }
+        return idpEntities;
+    }
 }

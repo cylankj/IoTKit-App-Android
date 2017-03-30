@@ -32,6 +32,7 @@ public class DpMsgDefine {
         }
 
         public DPStandby() {
+            this.msgId = DpMsgMap.ID_508_CAMERA_STANDBY_FLAG;
         }
 
         @Override
@@ -833,6 +834,17 @@ public class DpMsgDefine {
 
         public DPPrimary(T value) {
             this.value = value;
+        }
+
+        public DPPrimary(T value, int msgId) {
+            this.value = value;
+            this.msgId = msgId;
+        }
+
+        public DPPrimary(T value, int msgId, long version) {
+            this.value = value;
+            this.msgId = msgId;
+            this.version = version;
         }
 
         @Override

@@ -41,7 +41,7 @@ public class DownloadContractPresenterImpl extends AbstractPresenter<DownloadCon
 
     @Override
     public void start() {
-
+        super.start();
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -71,6 +71,7 @@ public class DownloadContractPresenterImpl extends AbstractPresenter<DownloadCon
 
     @Override
     public void stop() {
+        super.stop();
         try {
             if (mService != null)
                 mService.unregisterCallback(mCallback);
