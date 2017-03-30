@@ -46,6 +46,10 @@ public interface DBOption {
         }
     }
 
+    final class UpdateOption extends BaseDBOption {
+
+    }
+
     class MultiQueryOption extends BaseDBOption {
         public long timeStart;
         public long timeEnd;

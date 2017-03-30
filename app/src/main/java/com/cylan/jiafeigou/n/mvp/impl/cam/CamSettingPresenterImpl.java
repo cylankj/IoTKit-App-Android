@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -219,6 +220,22 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     AppLogger.i("save end: " + id + " " + value);
                 }, (Throwable throwable) -> AppLogger.e(throwable.getLocalizedMessage()));
         addSubscription(subscription, "updateInfoReq" + id);
+    }
+
+    @Override
+    public <T extends DataPoint> void updateInfoReq(List<T> value) {
+        Subscription subscription = Observable.just(value)
+                .subscribeOn(Schedulers.io())
+                .subscribe((Object o) -> {
+                    AppLogger.i("save start: " + " " + value);
+                    try {
+                        DataSourceManager.getInstance().updateValue(uuid, value);
+                    } catch (IllegalAccessException e) {
+                        AppLogger.e("err:" + e.getLocalizedMessage());
+                    }
+                    AppLogger.i("save end:" + value);
+                }, (Throwable throwable) -> AppLogger.e(throwable.getLocalizedMessage()));
+        addSubscription(subscription, "updateInfoReq_ex");
     }
 
     @Override

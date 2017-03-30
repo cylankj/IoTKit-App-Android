@@ -17,7 +17,10 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
@@ -31,6 +34,9 @@ import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.indicator.PagerSlidingTabStrip;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,8 +108,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         if (imgVCameraTitleTopSetting != null) {
             SettingTip settingTip = MiscUtils.getObjectFromSP(JConstant.KEY_DEVICE_SETTING_SHOW_RED + uuid, SettingTip.class);
             //延时摄影，暂时隐藏。
-//            imgVCameraTitleTopSetting.setShowDot(settingTip == null || settingTip.isBeautiful());
-            imgVCameraTitleTopSetting.setShowDot(true);
+            imgVCameraTitleTopSetting.setShowDot(settingTip == null || settingTip.isBeautiful());
         }
     }
 
@@ -209,8 +214,26 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
         @Override
         public void onPageSelected(int position) {
-            if (position == 1) {
-                AppLogger.e("为实现");
+            try {
+                if (position == 1) {
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    if (device == null) return;
+                    DPEntity entity = MiscUtils.getMaxVersionEntity(device.getProperty(1001), device.getProperty(1002), device.getProperty(1003));
+                    if (entity == null || entity.getValue(0) == 0) return;
+                    List<DataPoint> list = new ArrayList<>(3);
+                    DataPoint dataPoint = new DpMsgDefine.DPPrimary<>(0);
+                    dataPoint.msgId = 1001;
+                    list.add(dataPoint);
+                    dataPoint = new DpMsgDefine.DPPrimary<>(0);
+                    dataPoint.msgId = 1002;
+                    list.add(dataPoint);
+                    dataPoint = new DpMsgDefine.DPPrimary<>(0);
+                    dataPoint.msgId = 1003;
+                    list.add(dataPoint);
+                    DataSourceManager.getInstance().updateValue(uuid, list);
+                }
+            } catch (IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
 

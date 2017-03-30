@@ -12,7 +12,6 @@ import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
-import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
@@ -20,6 +19,7 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.tasks.DPUpdateTask;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.video.History;
@@ -29,7 +29,9 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -423,13 +425,16 @@ public class DataSourceManager implements JFGSourceManager {
         try {
             ArrayList<JFGDPMsg> list = new ArrayList<>();
             for (DataPoint data : value) {
-                boolean update = device.setValue((int) data.msgId, data);
+                device.setValue((int) data.msgId, data);
                 JFGDPMsg jfgdpMsg = new JFGDPMsg(data.msgId, System.currentTimeMillis());
                 jfgdpMsg.packValue = data.toBytes();
                 list.add(jfgdpMsg);
             }
-            long l = JfgAppCmd.getInstance().robotSetData(uuid, list);
-            AppLogger.d("setDataRsp:" + l);
+            new DPUpdateTask().init(MiscUtils.msgList(uuid, getAJFGAccount().getAccount(), OptionsImpl.getServer(), list)).performLocal()
+                    .subscribeOn(Schedulers.io())
+                    .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                    .subscribe(ret -> {
+                    }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
             return true;
         } catch (Exception e) {
             return false;
