@@ -209,7 +209,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         mETMailBox.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                return (event.getKeyCode() == KeyEvent.KEYCODE_ENTER);
+                return (event != null && event.getKeyCode() == KeyEvent.KEYCODE_ENTER);
             }
         });
 
