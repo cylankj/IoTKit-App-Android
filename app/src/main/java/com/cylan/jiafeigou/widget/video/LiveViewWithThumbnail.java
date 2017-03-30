@@ -53,6 +53,8 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         super(context, attrs, defStyleAttr);
         ViewGroup viewGroup = (ViewGroup) LayoutInflater.from(context).inflate(R.layout.layout_live_view_with_thumbnail, this, true);
         imgThumbnail = (ImageView) viewGroup.findViewById(R.id.imgv_live_thumbnail);
+        imgThumbnail.setOnClickListener(v -> {//do nothing
+        });
         standByLayout = (FrameLayout) viewGroup.findViewById(R.id.fLayout_standby_mode);
         tvLiveFlow = (TextView) viewGroup.findViewById(R.id.tv_live_flow);
     }
@@ -153,6 +155,10 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     public void onLiveStop() {
         if (isNormalView())
             imgThumbnail.setVisibility(GONE);
+        else {
+            imgThumbnail.setVisibility(VISIBLE);
+            imgThumbnail.setBackgroundResource(android.R.color.black);
+        }
         Log.d(TAG, "onLiveStop");
     }
 

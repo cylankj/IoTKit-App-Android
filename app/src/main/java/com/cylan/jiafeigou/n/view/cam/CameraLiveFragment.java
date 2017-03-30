@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -250,7 +251,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
             }
         });
-        videoView.config360(CameraParam.getTopPreset());
+        String _509 = device.$(509, "0");
+        videoView.config360(TextUtils.equals(_509, "1") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         videoView.detectOrientationChanged();
         vLive.setLiveView(videoView);
         if (SimpleCache.getInstance().getSimpleBitmapCache(basePresenter.getThumbnailKey()) == null) {
@@ -738,7 +740,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onPreviewResourceReady(Bitmap bitmap) {
         if (isVisible()) {
-            vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), bitmap);
+//            vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), bitmap);
         }
     }
 
