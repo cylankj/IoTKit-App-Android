@@ -137,6 +137,8 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
             case R.id.iv_userinfo_big_image:
                 if (!loadResult) {
                     loadBigImage(iamgeUrl);
+                }else {
+                    getFragmentManager().popBackStack();
                 }
                 break;
         }
