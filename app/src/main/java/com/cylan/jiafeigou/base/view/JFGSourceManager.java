@@ -42,8 +42,9 @@ public interface JFGSourceManager {
 
     /**
      * 刷新设备属性，首页需要
+     * ,手动刷
      */
-    void syncAllJFGDeviceProperty();
+    void syncAllJFGDevicePropertyManually();
 
     <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion);
 

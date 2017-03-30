@@ -2,246 +2,500 @@ package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.SystemClock;
+import android.text.TextUtils;
+import android.util.Log;
+
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
- * PreferencesUtils, easy to get or put data
- * <ul>
- * <strong>Preference Name</strong>
- * <li>you can change preference name by {@link #PREFERENCE_NAME}</li>
- * </ul>
- * <ul>
- * <strong>Put Value</strong>
- * <li>put string {@link #putString(String, String)}</li>
- * <li>put int {@link #putInt(String, int)}</li>
- * <li>put long {@link #putLong(String, long)}</li>
- * <li>put float {@link #putFloat(String, float)}</li>
- * <li>put boolean {@link #putBoolean(String, boolean)}</li>
- * </ul>
- * <ul>
- * <strong>Get Value</strong>
- * <li>get string {@link #getString(String)}, {@link #getString(String, String)}</li>
- * <li>get int {@link #getInt(String)}, {@link #getInt(String, int)}</li>
- * <li>get long {@link #getLong(String)}, {@link #getLong(String, long)}</li>
- * <li>get float {@link #getFloat(String)}, {@link #getFloat(String, float)}</li>
- * <li>get boolean {@link #getBoolean(String)}, {@link #getBoolean(String, boolean)}</li>
- * </ul>
- *
- * @author <activity_cloud_live_mesg_call_out_item href="http://www.trinea.cn" target="_blank">Trinea</activity_cloud_live_mesg_call_out_item> 2013-3-6
+ * An in-memory data store backed by shared preferences. This is a key-value store with a few important properties:
+ * <br><br>
+ * 1) Speed. Everything is stored in-memory so reads can happen on the UI thread. Writes and deletes happen
+ * asynchronously (with callbacks). Every public method is safe to call from the UI thread.
+ * <br><br>
+ * 2) Durability. Writes get persisted to disk, so that this store maintains state even if the app closes or is killed.
+ * <br><br>
+ * 3) Consistency. Doing a write followed by a read should return the value you just put.
+ * <br><br>
+ * 4) Thread-safety. Reads and writes can happen from anywhere without the need for external synchronization.
+ * <br><br>
+ * Note that since writes are asynchronous, an in-flight write may be lost if the app is killed before the data has
+ * been written to disk. If you require true 'commit' semantics then PreferencesUtils is not for you.
+ * <br><br>
+ * Created by mlapadula on 12/23/14.
  */
 public class PreferencesUtils {
 
-    public static final String PREFERENCE_NAME = "CleverDog" + PreferencesUtils.class.getName();
+    private static final PreferencesUtils INSTANCE = new PreferencesUtils();
+
+    private static final String TAG = PreferencesUtils.class.getSimpleName();
 
     /**
-     * put string preferences
-     *
-     * @param key   The name of the preference to perform
-     * @param value The new value for the preference
-     * @return True if the new values were successfully written to persistent storage.
+     * Lock to ensure that only one disk write happens at a time.
      */
-    public static boolean putString(String key, String value) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putString(key, value);
-        return editor.commit();
+    private static final Object SHARED_PREFS_LOCK = new Object();
+
+    /**
+     * Flag that ensures this store is initialized before using.
+     */
+    private volatile boolean mWasInitialized = false;
+
+    /**
+     * The context to use.
+     */
+    private volatile Context mAppContext;
+
+    /**
+     * The name of the shared preferences file to use.
+     */
+    private static String mSharedPrefsName;
+
+    /**
+     * Our data. This is a write-through cache of the data we're storing in SharedPreferences.
+     */
+    private ConcurrentMap<String, Object> mData;
+
+    /**
+     * Constructor.
+     */
+    private PreferencesUtils() {
+        // Nothing to do here.
     }
 
     /**
-     * get string preferences
-     *
-     * @param key The name of the preference to retrieve
-     * @return The preference value if it exists, or null. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with this
-     * name that is not activity_cloud_live_mesg_call_out_item string
-     * @see #getString(String, String)
+     * Initializes this store with the given context.
      */
-    public static String getString(String key) {
-        Context context = ContextUtils.getContext();
-        return getString(key, null);
+    private void initWithContext(Context context, String sharedPrefsName) {
+        // Time ourselves
+        long start = SystemClock.uptimeMillis();
+
+        // Set vars
+        mAppContext = context.getApplicationContext();
+        mSharedPrefsName = sharedPrefsName;
+
+        // Read from shared prefs
+        SharedPreferences prefs = getSharedPreferences();
+        mData = new ConcurrentHashMap<String, Object>();
+        mData.putAll(prefs.getAll());
+        mWasInitialized = true;
+
+        long delta = SystemClock.uptimeMillis() - start;
+        Log.i(TAG, "PreferencesUtils took " + delta + " ms to init");
     }
 
     /**
-     * get string preferences
+     * Initializes the store.
      *
-     * @param key          The name of the preference to retrieve
-     * @param defaultValue Value to return if this preference does not exist
-     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with
-     * this name that is not activity_cloud_live_mesg_call_out_item string
+     * @param context         the context to use. Using the application context is fine here.
+     * @param sharedPrefsName the name of the shared prefs file to use
+     * @return the singleton instance that was initialized.
      */
-    public static String getString(String key, String defaultValue) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        return settings.getString(key, defaultValue);
+    public static synchronized PreferencesUtils init(Context context, String sharedPrefsName) {
+        // Defensive checks
+        if (context == null || TextUtils.isEmpty(sharedPrefsName)) {
+            throw new RuntimeException(
+                    "You must provide a valid context and shared prefs name when initializing PreferencesUtils");
+        }
+
+        // Initialize ourselves
+        if (!INSTANCE.mWasInitialized) {
+            INSTANCE.initWithContext(context, sharedPrefsName);
+        }
+
+        return INSTANCE;
     }
 
     /**
-     * put int preferences
+     * Initializes the store.
      *
-     * @param key   The name of the preference to perform
-     * @param value The new value for the preference
-     * @return True if the new values were successfully written to persistent storage.
+     * @param context the context to use. Using the application context is fine here.
+     * @return the singleton instance that was initialized.
      */
-    public static boolean putInt(String key, int value) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putInt(key, value);
-        return editor.commit();
+    public static synchronized PreferencesUtils init(Context context) {
+        String sharedPrefsName = "CleverDog" + PreferencesUtils.class.getName();
+        // Defensive checks
+        if (context == null || TextUtils.isEmpty(sharedPrefsName)) {
+            throw new RuntimeException(
+                    "You must provide a valid context and shared prefs name when initializing PreferencesUtils");
+        }
+
+        // Initialize ourselves
+        if (!INSTANCE.mWasInitialized) {
+            INSTANCE.initWithContext(context, sharedPrefsName);
+        }
+
+        return INSTANCE;
     }
 
     /**
-     * get int preferences
-     *
-     * @param key The name of the preference to retrieve
-     * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with this
-     * name that is not activity_cloud_live_mesg_call_out_item int
-     * @see #getInt(String, int)
+     * @return the singleton instance to use.
      */
-    public static int getInt(String key) {
-        return getInt(key, -1);
+    private static PreferencesUtils getInstance() {
+        if (!INSTANCE.mWasInitialized) {
+            throw new RuntimeException(
+                    "PreferencesUtils was not initialized! You must call PreferencesUtils.init() before using this.");
+        }
+        return INSTANCE;
     }
 
     /**
-     * get int preferences
-     *
-     * @param key          The name of the preference to retrieve
-     * @param defaultValue Value to return if this preference does not exist
-     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with
-     * this name that is not activity_cloud_live_mesg_call_out_item int
+     * Gets the shared preferences to use
      */
-    public static int getInt(String key, int defaultValue) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        return settings.getInt(key, defaultValue);
+    private SharedPreferences getSharedPreferences() {
+        return mAppContext.getSharedPreferences(mSharedPrefsName, Context.MODE_PRIVATE);
     }
 
     /**
-     * put long preferences
+     * Saves the given (key,value) pair to disk.
      *
-     * @param key   The name of the preference to perform
-     * @param value The new value for the preference
-     * @return True if the new values were successfully written to persistent storage.
+     * @return true if the save-to-disk operation succeeded
      */
-    public static boolean putLong(String key, long value) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putLong(key, value);
-        return editor.commit();
+    private boolean saveToDisk(final String key, final Object value) {
+        boolean success = false;
+        synchronized (SHARED_PREFS_LOCK) {
+            // Save it to disk
+            SharedPreferences.Editor editor = getSharedPreferences().edit();
+            boolean didPut = true;
+            if (value instanceof Float) {
+                editor.putFloat(key, (Float) value);
+
+            } else if (value instanceof Integer) {
+                editor.putInt(key, (Integer) value);
+
+            } else if (value instanceof Long) {
+                editor.putLong(key, (Long) value);
+
+            } else if (value instanceof String) {
+                editor.putString(key, (String) value);
+
+            } else if (value instanceof Boolean) {
+                editor.putBoolean(key, (Boolean) value);
+
+            } else {
+                didPut = false;
+            }
+
+            if (didPut) {
+                success = editor.commit();
+            }
+        }
+
+        return success;
     }
 
     /**
-     * get long preferences
+     * Saves the given (key,value) pair to memory and (asynchronously) to disk.
      *
-     * @param key The name of the preference to retrieve
-     * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with this
-     * name that is not activity_cloud_live_mesg_call_out_item long
-     * @see #getLong(String, long)
+     * @param key      the key
+     * @param value    the value to put. This MUST be a type supported by SharedPreferences. Which is to say: one of (float,
+     *                 int, long, String, boolean).
+     * @param callback the callback to fire. The callback will be fired on the UI thread,
+     *                 and will be passed 'true' if successful, 'false' if not.
+     * @return this instance
      */
-    public static long getLong(String key) {
-        return getLong(key, -1);
+    private <T> PreferencesUtils saveAsync(final String key, final T value, final Callback callback) {
+        // Put it in memory
+        mData.put(key, value);
+
+        // Save it to disk
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                return saveToDisk(key, value);
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                // Fire the callback
+                if (callback != null) {
+                    callback.apply(success);
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        return this;
     }
 
     /**
-     * get long preferences
-     *
-     * @param key          The name of the preference to retrieve
-     * @param defaultValue Value to return if this preference does not exist
-     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with
-     * this name that is not activity_cloud_live_mesg_call_out_item long
+     * Clears all data from this store.
      */
-    public static long getLong(String key, long defaultValue) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        return settings.getLong(key, defaultValue);
+    public static void clear() {
+        clear(null);
     }
 
     /**
-     * put float preferences
+     * Clears all data from this store.
      *
-     * @param key   The name of the preference to perform
-     * @param value The new value for the preference
-     * @return True if the new values were successfully written to persistent storage.
+     * @param callback the callback to fire when done. The callback will be fired on the UI thread,
+     *                 and will be passed 'true' if successful, 'false' if not.
      */
-    public static boolean putFloat(String key, float value) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putFloat(key, value);
-        return editor.commit();
+    public static void clear(final Callback callback) {
+        getInstance().mData.clear();
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                synchronized (SHARED_PREFS_LOCK) {
+                    SharedPreferences.Editor editor = getInstance().getSharedPreferences().edit();
+                    editor.clear();
+                    return editor.commit();
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                if (callback != null) {
+                    callback.apply(success);
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     /**
-     * get float preferences
+     * Removes the mapping indicated by the given key.
+     */
+    public static void remove(String key) {
+        remove(key, null);
+    }
+
+    /**
+     * Removes the mapping indicated by the given key.
      *
-     * @param key The name of the preference to retrieve
-     * @return The preference value if it exists, or -1. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with this
-     * name that is not activity_cloud_live_mesg_call_out_item float
-     * @see #getFloat(String, float)
+     * @param callback the callback to fire when done. The callback will be fired on the UI thread,
+     *                 and will be passed 'true' if successful, 'false' if not.
+     */
+    public static void remove(final String key, final Callback callback) {
+        getInstance().mData.remove(key);
+        new AsyncTask<Void, Void, Boolean>() {
+            @Override
+            protected Boolean doInBackground(Void... params) {
+                synchronized (SHARED_PREFS_LOCK) {
+                    SharedPreferences.Editor editor = getInstance().getSharedPreferences().edit();
+                    editor.remove(key);
+                    return editor.commit();
+                }
+            }
+
+            @Override
+            protected void onPostExecute(Boolean success) {
+                if (callback != null) {
+                    callback.apply(success);
+                }
+            }
+        }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * Put a float. This saves to memory immediately and saves to disk asynchronously.
+     */
+    public static PreferencesUtils putFloat(final String key, final float value) {
+        return getInstance().saveAsync(key, value, null);
+    }
+
+    /**
+     * Put an int. This saves to memory immediately and saves to disk asynchronously.
+     */
+    public static PreferencesUtils putInt(String key, int value) {
+        return getInstance().saveAsync(key, value, null);
+    }
+
+    /**
+     * Put a long. This saves to memory immediately and saves to disk asynchronously.
+     */
+    public static PreferencesUtils putLong(String key, long value) {
+        return getInstance().saveAsync(key, value, null);
+    }
+
+    /**
+     * Put a String. This saves to memory immediately and saves to disk asynchronously.
+     */
+    public static PreferencesUtils putString(String key, String value) {
+        return getInstance().saveAsync(key, value, null);
+    }
+
+    /**
+     * Put a boolean. This saves to memory immediately and saves to disk asynchronously.
+     */
+    public static PreferencesUtils putBoolean(String key, boolean value) {
+        return getInstance().saveAsync(key, value, null);
+    }
+
+    /**
+     * Put a float. This saves to memory immediately and saves to disk asynchronously.
+     *
+     * @param callback the callback to fire when done. The callback will be fired on the UI thread,
+     *                 and will be passed 'true' if successful, 'false' if not.
+     */
+    public static PreferencesUtils putFloat(final String key, final float value, final Callback callback) {
+        return getInstance().saveAsync(key, value, callback);
+    }
+
+    /**
+     * Put an int. This saves to memory immediately and saves to disk asynchronously.
+     *
+     * @param callback the callback to fire when done. The callback will be fired on the UI thread,
+     *                 and will be passed 'true' if successful, 'false' if not.
+     */
+    public static PreferencesUtils putInt(String key, int value, final Callback callback) {
+        return getInstance().saveAsync(key, value, callback);
+    }
+
+    /**
+     * Put a long. This saves to memory immediately and saves to disk asynchronously.
+     *
+     * @param callback the callback to fire when done. The callback will be fired on the UI thread,
+     *                 and will be passed 'true' if successful, 'false' if not.
+     */
+    public static PreferencesUtils putLong(String key, long value, final Callback callback) {
+        return getInstance().saveAsync(key, value, callback);
+    }
+
+    /**
+     * Put a String. This saves to memory immediately and saves to disk asynchronously.
+     *
+     * @param callback the callback to fire when done. The callback will be fired on the UI thread,
+     *                 and will be passed 'true' if successful, 'false' if not.
+     */
+    public static PreferencesUtils putString(String key, String value, final Callback callback) {
+        return getInstance().saveAsync(key, value, callback);
+    }
+
+    /**
+     * Put a boolean. This saves to memory immediately and saves to disk asynchronously.
+     *
+     * @param callback the callback to fire when done. The callback will be fired on the UI thread,
+     *                 and will be passed 'true' if successful, 'false' if not.
+     */
+    public static PreferencesUtils putBoolean(String key, boolean value, final Callback callback) {
+        return getInstance().saveAsync(key, value, callback);
+    }
+
+    /**
+     * Gets a float with the given key. Defers to the fallback value if the mapping didn't exist, wasn't a float,
+     * or was null.
      */
     public static float getFloat(String key) {
-        return getFloat(key, -11111);
+        Float value = getInstance().get(key, Float.class);
+        return value != null ? value : 0.0f;
     }
 
     /**
-     * get float preferences
-     *
-     * @param key          The name of the preference to retrieve
-     * @param defaultValue Value to return if this preference does not exist
-     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with
-     * this name that is not activity_cloud_live_mesg_call_out_item float
+     * Gets a float with the given key. Defers to the fallback value if the mapping didn't exist, wasn't a float,
+     * or was null.
      */
-    public static float getFloat(String key, float defaultValue) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        return settings.getFloat(key, defaultValue);
+    public static float getFloat(String key, float fallback) {
+        Float value = getInstance().get(key, Float.class);
+        return value != null ? value : fallback;
     }
 
     /**
-     * put boolean preferences
-     *
-     * @param key   The name of the preference to perform
-     * @param value The new value for the preference
-     * @return True if the new values were successfully written to persistent storage.
+     * Gets an int with the given key. Defers to the fallback value if the mapping didn't exist, wasn't an int,
+     * or was null.
      */
-    public static boolean putBoolean(String key, boolean value) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = settings.edit();
-        editor.putBoolean(key, value);
-        return editor.commit();
+    public static int getInt(String key) {
+        Integer value = getInstance().get(key, Integer.class);
+        return value != null ? value : 0;
     }
 
     /**
-     * get boolean preferences, default is false
-     *
-     * @param key The name of the preference to retrieve
-     * @return The preference value if it exists, or false. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with this
-     * name that is not activity_cloud_live_mesg_call_out_item boolean
-     * @see #getBoolean(String, boolean)
+     * Gets an int with the given key. Defers to the fallback value if the mapping didn't exist, wasn't an int,
+     * or was null.
+     */
+    public static int getInt(String key, int fallback) {
+        Integer value = getInstance().get(key, Integer.class);
+        return value != null ? value : fallback;
+    }
+
+    /**
+     * Gets a long with the given key. Defers to the fallback value if the mapping didn't exist, wasn't a long,
+     * or was null.
+     */
+    public static long getLong(String key) {
+        Long value = getInstance().get(key, Long.class);
+        return value != null ? value : 0L;
+    }
+
+    /**
+     * Gets a long with the given key. Defers to the fallback value if the mapping didn't exist, wasn't a long,
+     * or was null.
+     */
+    public static long getLong(String key, long fallback) {
+        Long value = getInstance().get(key, Long.class);
+        return value != null ? value : fallback;
+    }
+
+    /**
+     * Gets a String with the given key. Defers to the fallback value if the mapping didn't exist, wasn't a String,
+     * or was null.
+     */
+    public static String getString(String key) {
+        String value = getInstance().get(key, String.class);
+        return value != null ? value : "";
+    }
+
+    /**
+     * Gets a String with the given key. Defers to the fallback value if the mapping didn't exist, wasn't a String,
+     * or was null.
+     */
+    public static String getString(String key, String fallback) {
+        String value = getInstance().get(key, String.class);
+        return value != null ? value : fallback;
+    }
+
+    /**
+     * Gets a boolean with the given key. Defers to the fallback value if the mapping didn't exist, wasn't a boolean,
+     * or was null.
      */
     public static boolean getBoolean(String key) {
-        return getBoolean(key, false);
+        Boolean value = getInstance().get(key, Boolean.class);
+        return value != null ? value : false;
     }
 
     /**
-     * get boolean preferences
-     *
-     * @param key          The name of the preference to retrieve
-     * @param defaultValue Value to return if this preference does not exist
-     * @return The preference value if it exists, or defValue. Throws ClassCastException if there is activity_cloud_live_mesg_call_out_item preference with
-     * this name that is not activity_cloud_live_mesg_call_out_item boolean
+     * Gets a boolean with the given key. Defers to the fallback value if the mapping didn't exist, wasn't a boolean,
+     * or was null.
      */
-    public static boolean getBoolean(String key, boolean defaultValue) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        return settings.getBoolean(key, defaultValue);
+    public static boolean getBoolean(String key, boolean fallback) {
+        Boolean value = getInstance().get(key, Boolean.class);
+        return value != null ? value : fallback;
     }
 
-    public static void remove(String key) {
-        Context context = ContextUtils.getContext();
-        SharedPreferences settings = context.getSharedPreferences(PREFERENCE_NAME, Context.MODE_PRIVATE);
-        settings.edit().remove(key).apply();
+    /**
+     * Determines if we have a mapping for the given key.
+     *
+     * @return true if we have a mapping for the given key
+     */
+    public static boolean containsKey(String key) {
+        return getInstance().mData.containsKey(key);
+    }
+
+    /**
+     * Gets the value mapped by the given key, casted to the given class. If the value doesn't exist or isn't of the
+     * right class, return null instead.
+     */
+    private <T> T get(String key, Class<T> clazz) {
+        Object value = mData.get(key);
+        T castedObject = null;
+        if (clazz.isInstance(value)) {
+            castedObject = clazz.cast(value);
+        }
+        return castedObject;
+    }
+
+    /**
+     * The callback interface for async operations.
+     */
+    public interface Callback {
+
+        /**
+         * Triggered after the async operation is completed.
+         *
+         * @param success true if saved successfully, false otherwise.
+         */
+        void apply(Boolean success);
+
     }
 
 }

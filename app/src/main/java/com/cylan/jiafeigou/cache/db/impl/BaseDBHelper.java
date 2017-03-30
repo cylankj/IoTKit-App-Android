@@ -10,8 +10,6 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.ext.opt.DebugOptionsImpl;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.module.Account;
@@ -27,10 +25,9 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.Security;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
@@ -674,15 +671,7 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     private String getServer() {
-        if (TextUtils.isEmpty(serverAddress)) {
-            serverAddress = DebugOptionsImpl.getServer();
-            String inner = Security.getServerPrefix(JFGRules.getTrimPackageName()) + ".jfgou.com:443";
-            if (BuildConfig.DEBUG) {
-                if (TextUtils.isEmpty(serverAddress))
-                    serverAddress = inner;
-            }
-        }
-        return serverAddress;
+        return OptionsImpl.getServer();
     }
 
     public class GreenDaoContext extends ContextWrapper {

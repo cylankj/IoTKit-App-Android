@@ -217,7 +217,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .map((Boolean aBoolean) -> {
                     DataSourceManager.getInstance().syncDeviceUnreadCount();
                     if (manually)
-                        DataSourceManager.getInstance().syncAllJFGDeviceProperty();
+                        DataSourceManager.getInstance().syncAllJFGDevicePropertyManually();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return aBoolean;
                 })

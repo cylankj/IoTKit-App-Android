@@ -2,12 +2,12 @@ package com.cylan.jiafeigou.utils;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
-import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
 
 import java.net.MalformedURLException;
@@ -37,7 +37,7 @@ public class WonderGlideURL extends GlideUrl {
 
     @Override
     public String getCacheKey() {
-        return DebugOptionsImpl.getServer() + "-" + mBean.cid + "-" + mBean.msgType + "-" + mBean.time + "-" + mBean.fileName;
+        return OptionsImpl.getServer() + "-" + mBean.cid + "-" + mBean.msgType + "-" + mBean.time + "-" + mBean.fileName;
     }
 
     @Override

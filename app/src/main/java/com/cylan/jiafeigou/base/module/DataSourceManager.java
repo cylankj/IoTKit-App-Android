@@ -199,7 +199,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     //主动发起请求,来获取设备所有的属性
     @Override
-    public void syncAllJFGDeviceProperty() {
+    public void syncAllJFGDevicePropertyManually() {
         if (mCachedDeviceMap.size() == 0) return;
         ArrayList<String> uuidList = new ArrayList<>();
         for (Map.Entry<String, Device> entry : mCachedDeviceMap.entrySet()) {
@@ -293,11 +293,9 @@ public class DataSourceManager implements JFGSourceManager {
     public long syncJFGCameraWarn(String uuid, long version, boolean asc, int count) {
         Device device = getJFGDevice(uuid);
         if (device != null) {
-            boolean isV2 = TextUtils.isEmpty(device.vid);
             try {
                 AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,version:%s,asc:%s,count:%s", uuid, version, asc, count));
-                return JfgCmdInsurance.getCmd().robotGetDataEx(uuid, asc, version, MiscUtils.getChaosDpList(isV2), 0);
-
+                return JfgCmdInsurance.getCmd().robotGetDataEx(uuid, asc, version, new long[]{505L, 222L, 512}, 0);
             } catch (Exception e) {
                 AppLogger.e("bad ,uuid may be null");
                 return -1;

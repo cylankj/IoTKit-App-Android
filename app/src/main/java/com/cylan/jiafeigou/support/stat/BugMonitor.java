@@ -13,7 +13,7 @@ public class BugMonitor {
 
     public static void init(Context context) {
         CrashReport.UserStrategy strategy = new CrashReport.UserStrategy(context);
-        strategy.setAppChannel(BuildConfig.DEBUG ? "DEBUG" : "OFFICIAL_RELEASE");
+        strategy.setAppChannel(BuildConfig.DEBUG ? "DEBUG" : "CLEVER_DOG");
         CrashReport.initCrashReport(context, strategy);
         com.tencent.bugly.Bugly.enable = BuildConfig.DEBUG;
     }

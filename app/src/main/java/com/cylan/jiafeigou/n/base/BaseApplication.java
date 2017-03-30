@@ -13,7 +13,6 @@ import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 import android.util.Log;
 
-import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.DaemonReceiver1;
 import com.cylan.jiafeigou.DaemonReceiver2;
 import com.cylan.jiafeigou.DaemonService1;
@@ -22,6 +21,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
 import com.huawei.hms.api.ConnectionResult;
@@ -123,6 +124,11 @@ public class BaseApplication extends MultiDexApplication implements Application.
         initHuaweiPushSDK();
         startService(new Intent(this, DataSourceService.class));
         Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
+        initPreference();
+    }
+
+    private void initPreference() {
+        HandlerThreadUtils.post(() -> PreferencesUtils.init(getApplicationContext()));
     }
 
     /**
@@ -191,9 +197,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     }
 
     private void enableDebugOptions() {
-        DebugOptionsImpl.enableCrashHandler(this, PathGetter.createPath(JConstant.CRASH_PATH));
-
-//        DebugOptionsImpl.enableStrictMode();
+        OptionsImpl.enableCrashHandler(this, PathGetter.createPath(JConstant.CRASH_PATH));
     }
 
     @Override

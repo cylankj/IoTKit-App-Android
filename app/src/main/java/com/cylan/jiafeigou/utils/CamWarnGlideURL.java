@@ -5,8 +5,23 @@ package com.cylan.jiafeigou.utils;
  */
 
 public class CamWarnGlideURL extends JFGGlideURL {
+    private int time, index;
 
     public CamWarnGlideURL(String cid, String fileName) {
         super(cid, fileName);
+    }
+
+    public CamWarnGlideURL(String cid, String fileName, int time, int index) {
+        super(cid, fileName);
+        this.index = index;
+        this.time = time;
+    }
+
+    public int getTime() {
+        return time;
+    }
+
+    public int getIndex() {
+        return index;
     }
 }

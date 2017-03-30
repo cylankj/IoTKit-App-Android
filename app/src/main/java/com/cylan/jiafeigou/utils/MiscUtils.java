@@ -295,9 +295,9 @@ public class MiscUtils {
         }
     }
 
-    public static long[] getChaosDpList(boolean isV2) {
-        return isV2 ? new long[]{222L, 505L} : new long[]{222L, 512L};
-    }
+//    public static long[] getChaosDpList(boolean isV2) {
+//        return isV2 ? new long[]{505L,222L,512} : new long[]{222L, 512L};
+//    }
 
     /**
      * desc:转换文件的大小

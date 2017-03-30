@@ -2,8 +2,8 @@ package com.cylan.jiafeigou.utils;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
-import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.support.OptionsImpl;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -30,6 +30,6 @@ public class Pan720GlideURL extends GlideUrl {
 
     @Override
     public String getCacheKey() {
-        return DebugOptionsImpl.getServer() + "-" + this.uuid + "-" + this.fileName;
+        return OptionsImpl.getServer() + "-" + this.uuid + "-" + this.fileName;
     }
 }

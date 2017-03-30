@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.view.adapter;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +26,10 @@ import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
-import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -223,7 +221,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
         for (int i = 0; i < count; i++) {
             Glide.with(getContext())
-                    .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + "_" + (i + 1) + ".jpg"))
+                    .load(new CamWarnGlideURL(uuid, item.alarmMsg.time + "_" + (i + 1) + ".jpg", item.alarmMsg.time, i + 1))
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .override(pic_container_width / count, pic_container_width / count)
                     .diskCacheStrategy(DiskCacheStrategy.ALL)
@@ -345,59 +343,14 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
 
     private RequestListener<CamWarnGlideURL, GlideDrawable> loadListener = new RequestListener<CamWarnGlideURL, GlideDrawable>() {
         @Override
-        public boolean onException(Exception e,
-                                   CamWarnGlideURL model,
-                                   Target<GlideDrawable> target,
-                                   boolean isFirstResource) {
-            try {
-                String errUri = model.toURL().toString();
-                AppLogger.d("errUri: " + errUri);
-            } catch (MalformedURLException e1) {
-                AppLogger.e("onException:" + e1.getLocalizedMessage());
-            }
+        public boolean onException(Exception e, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFirstResource) {
+            AppLogger.e(String.format(Locale.getDefault(), "uuid:%s,UriErr:%s,index:%s", uuid, model.getTime(), model.getIndex()));
             return false;
         }
 
         @Override
         public boolean onResourceReady(GlideDrawable resource, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-            try {
-//                int position = getPositionByModel(model.toURL().toString());
-//                loadFailedMap.remove(position);
-//                Log.d("onResourceReady", "onResourceReady: " + position);
-                String goodErrUri = model.toURL().toString();
-                AppLogger.d("errUri good: " + goodErrUri);
-            } catch (MalformedURLException e) {
-                AppLogger.e("onException:" + e.getLocalizedMessage());
-            }
             return false;
         }
     };
-    private static final String TAG_BLANK = "";
-    private static final String TAG0 = ".jpg?";
-    private static final String TAG1 = "_1";
-    private static final String TAG2 = "_2";
-    private static final String TAG3 = "_3";
-
-    private int getPositionByModel(String model) {
-        try {
-            int index0 = model.indexOf(TAG0);
-            int index1 = model.indexOf(this.uuid);
-            String time = model.substring(index1, index0)
-                    .replace(uuid + File.separator, "")
-                    .replace(TAG1, TAG_BLANK)
-                    .replace(TAG2, TAG_BLANK)
-                    .replace(TAG3, TAG_BLANK);
-            if (TextUtils.isDigitsOnly(time)) {
-                long finalTime = Long.parseLong(time);
-                CamMessageBean bean = new CamMessageBean();
-                bean.id = DpMsgMap.ID_505_CAMERA_ALARM_MSG;
-                bean.version = finalTime * 1000L;
-                bean.time = finalTime * 1000L;
-                return getList().indexOf(bean);
-            }
-        } catch (Exception e) {
-            return -1;
-        }
-        return -1;
-    }
 }

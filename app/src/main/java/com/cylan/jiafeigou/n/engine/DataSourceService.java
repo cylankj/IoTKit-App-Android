@@ -5,8 +5,6 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.Process;
 import android.support.annotation.Nullable;
-import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -29,9 +27,7 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jfgapp.interfases.AppCallBack;
-import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.LogState;
@@ -45,6 +41,7 @@ import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -110,19 +107,11 @@ public class DataSourceService extends Service implements AppCallBack {
             Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             try {
                 String trimPackageName = JFGRules.getTrimPackageName();
-                //读取JConstant.getRoot()/log/config.txt的内容
-                String extra = DebugOptionsImpl.getServer();
-                String inner = Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
-                Log.d("initNative", "initNative: " + extra + " " + inner);
-                if (BuildConfig.DEBUG) {
-                    if (TextUtils.isEmpty(extra))
-                        extra = inner;
-                } else extra = inner;
                 //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
                 String vid = Security.getVId(trimPackageName);
                 String vKey = Security.getVKey(trimPackageName);
                 JfgCmdInsurance.getCmd().setCallBack(DataSourceService.this);
-                JfgCmdInsurance.getCmd().initNativeParam(vid, vKey, extra);
+                JfgCmdInsurance.getCmd().initNativeParam(vid, vKey, OptionsImpl.getServer());
                 JfgCmdInsurance.getCmd().enableLog(true, JConstant.LOG_PATH);
                 AppLogger.d("sdk version:" + JfgCmdInsurance.getCmd().getSdkVersion());
             } catch (Exception e) {

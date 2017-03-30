@@ -11,9 +11,9 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.ext.opt.DebugOptionsImpl;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -400,14 +400,7 @@ public class NetUtils {
 
     public static final boolean ping() {
         try {
-            String trimPackageName = JFGRules.getTrimPackageName();
-            //读取JConstant.getRoot()/log/config.txt的内容
-            String ip = DebugOptionsImpl.getServer();
-            String inner = Security.getServerPrefix(trimPackageName) + ".jfgou.com:443";
-            if (BuildConfig.DEBUG) {
-                if (TextUtils.isEmpty(ip))
-                    ip = inner;
-            } else ip = inner;
+            String ip = OptionsImpl.getServer();
             Process p = Runtime.getRuntime().exec("ping -c 3 -w 100 " + ip);// ping网址3次
             // ping的状态
             return p.waitFor() == 0;
