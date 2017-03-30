@@ -121,9 +121,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         swMotionDetection.setChecked(f);
         swMotionDetection.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             Device aDevice = DataSourceManager.getInstance().getJFGDevice(uuid);
-            DpMsgDefine.DPSdStatus net = aDevice.$(204, new DpMsgDefine.DPSdStatus());
+            DpMsgDefine.DPSdStatus sdcard = aDevice.$(204, new DpMsgDefine.DPSdStatus());
             if (!isChecked) {
-                if (!JFGRules.hasSdcard(net)) {
+                if (!JFGRules.hasSdcard(sdcard)) {
                     DpMsgDefine.DPPrimary<Boolean> wFlag = new DpMsgDefine.DPPrimary<>();
                     wFlag.value = false;
                     basePresenter.updateInfoReq(wFlag, DpMsgMap.ID_501_CAMERA_ALARM_FLAG);
