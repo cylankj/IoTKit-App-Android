@@ -31,6 +31,6 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/y200"
         android:orientation="vertical"
-        android:visibility="gone"></com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout>
+        android:visibility="gone"/>
 
 </LinearLayout>

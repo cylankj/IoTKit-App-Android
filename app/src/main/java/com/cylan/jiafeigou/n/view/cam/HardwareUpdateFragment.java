@@ -142,7 +142,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                     return;
                 }
 
-                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+//                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getJFGDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
                 boolean show = net != null && JFGRules.isDeviceOnline(net);
                 if (!show) {
                     ToastUtil.showNegativeToast(getString(R.string.NOT_ONLINE));
@@ -174,7 +175,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         }
 
         //设备在线
-        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+//        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getJFGDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         String remoteSSid = net.ssid;
         if (!TextUtils.equals(localSSid, remoteSSid)) {
@@ -257,7 +259,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         tvDownloadSoftFile.setEnabled(true);
         llDownloadPgContainer.setVisibility(View.GONE);
         //设备在线
-        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+//        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getJFGDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         String remoteSSid = net.ssid;
         if (TextUtils.equals(localSSid, remoteSSid)) {

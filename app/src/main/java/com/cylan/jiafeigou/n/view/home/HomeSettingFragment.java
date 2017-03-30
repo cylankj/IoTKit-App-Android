@@ -261,6 +261,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             intent.putExtra(Intent.EXTRA_TEXT, con);
 
             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
+            if (appAdater == null)
             appAdater = new AppAdater(getContext());
             for (ResolveInfo info : list) {
                 appAdater.add(info);
