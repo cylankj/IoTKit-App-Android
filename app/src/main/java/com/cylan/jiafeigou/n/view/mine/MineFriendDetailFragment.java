@@ -228,11 +228,13 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
-            if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
-                ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
-                return;
+            if (id == R.id.tv_dialog_btn_left){
+                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                    ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
+                    return;
+                }
+                presenter.sendDeleteFriendReq(bean.account);
             }
-            presenter.sendDeleteFriendReq(bean.account);
         });
         simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
     }

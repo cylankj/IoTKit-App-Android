@@ -383,9 +383,11 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             public void onDelete(int position) {
                 friendsListAdapter.remove(position);
                 friendsListAdapter.notifyDataSetHasChanged();
-                if (friendsListAdapter.getItemCount() == 0) {
+                if (friendsListAdapter != null && friendsListAdapter.getItemCount() == 0) {
                     hideFriendListTitle();
-                    if (addReqListAdater.getItemCount() == 0) {
+                    if (addReqListAdater == null) {
+                        showNullView();
+                    }else if (addReqListAdater.getItemCount() == 0){
                         showNullView();
                     }
                 }

@@ -597,7 +597,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             ivNewClearPwd.setClickable(true);
         }
         if (tvNewPwdSubmit != null)
-            tvNewPwdSubmit.setEnabled(TextUtils.isEmpty(s) ? false : true);
+            tvNewPwdSubmit.setEnabled(TextUtils.isEmpty(s));
     }
 
     @OnCheckedChanged(R.id.cb_new_pwd_show)

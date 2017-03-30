@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.PermissionChecker;
 
@@ -30,7 +31,6 @@ public class MineFriendsAddFriendPresenterImp extends AbstractPresenter<MineFrie
      */
     @Override
     public boolean checkContractPermission() {
-
         if (ContextCompat.checkSelfPermission(getView().getContext(),
                 Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {

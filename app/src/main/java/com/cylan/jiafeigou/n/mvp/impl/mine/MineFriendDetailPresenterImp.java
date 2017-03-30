@@ -122,7 +122,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
                 .subscribe(new Action1<RxEvent.DelFriendBack>() {
                     @Override
                     public void call(RxEvent.DelFriendBack delFriendBack) {
-                        if (delFriendBack != null && delFriendBack instanceof RxEvent.DelFriendBack) {
+                        if (delFriendBack != null) {
                             getView().handlerDelCallBack(delFriendBack.jfgResult.code);
                         }
                     }
