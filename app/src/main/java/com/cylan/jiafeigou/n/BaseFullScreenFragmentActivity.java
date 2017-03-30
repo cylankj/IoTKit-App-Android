@@ -11,12 +11,14 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.misc.SystemUiHider;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.ViewServer;
 import com.cylan.jiafeigou.widget.SystemBarTintManager;
 
 import java.lang.ref.WeakReference;
@@ -43,6 +45,9 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
             tintManager = new SystemBarTintManager(this);
             setSystemBarTintEnable(true);
         }
+        if (BuildConfig.DEBUG) {
+            ViewServer.get(this).addWindow(this);
+        }
     }
 
     @Override
@@ -53,10 +58,26 @@ public class BaseFullScreenFragmentActivity<T extends BasePresenter> extends App
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (BuildConfig.DEBUG) {
+            ViewServer.get(this).setFocusedWindow(this);
+        }
+    }
+
+    @Override
     protected void onStop() {
         super.onStop();
         if (basePresenter != null)
             basePresenter.stop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (BuildConfig.DEBUG) {
+            ViewServer.get(this).removeWindow(this);
+        }
     }
 
     @Override

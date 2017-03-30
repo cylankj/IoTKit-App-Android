@@ -82,7 +82,7 @@ public class NetMonitor {
     public void unregister() {
         try {
             if (network != null) ContextUtils.getContext().unregisterReceiver(network);
-            --registerCount;
+            registerCount = 0;
             networkCallback = null;
         } catch (Exception e) {
 

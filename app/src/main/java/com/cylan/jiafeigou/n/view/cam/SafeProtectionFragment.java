@@ -187,6 +187,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     }
 
     private void updateDetails() {
+        if (!isResumed() || isDetached()) return;
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         //提示音
         DpMsgDefine.DPNotificationInfo notificationInfo = device.$(504, new DpMsgDefine.DPNotificationInfo());

@@ -99,7 +99,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         rlHomeSettingAbout.setVisibility(getResources().getBoolean(R.bool.show_about) ? View.VISIBLE : View.GONE);
-        customToolbar.setBackAction(click->getFragmentManager().popBackStack());
+        customToolbar.setBackAction(click -> getFragmentManager().popBackStack());
     }
 
     private void initPresenter() {
@@ -115,8 +115,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.rl_home_setting_about:
-                if (getView() != null)
-                    ViewUtils.deBounceClick(getView().findViewById(R.id.rl_home_setting_about));
+                ViewUtils.deBounceClick(view);
                 AppLogger.e("rl_home_setting_about");
                 getFragmentManager().beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -127,7 +126,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                 break;
 
             case R.id.rl_home_setting_clear:
-                if ("0.0M".equals(tvCacheSize.getText()))return;
+                if ("0.0M".equals(tvCacheSize.getText())) return;
                 presenter.clearCache();
                 break;
 
@@ -165,6 +164,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public void clearFinish() {
+        if (isDetached()) return;
         tvCacheSize.setText("0.0M");
         ToastUtil.showToast(getString(R.string.Clear_Sdcard_tips3));
     }

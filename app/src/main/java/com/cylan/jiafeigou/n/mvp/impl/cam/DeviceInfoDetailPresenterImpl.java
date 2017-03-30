@@ -173,6 +173,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     public Subscription onClearSdReqBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearReqRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null)
                 .subscribe((RxEvent.SdcardClearReqRsp sdcardClearRsp) -> {
                     if (sdcardClearRsp != null) {
                         JFGDPMsgRet jfgdpMsgRet = sdcardClearRsp.arrayList.get(0);
