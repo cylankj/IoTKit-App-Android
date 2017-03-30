@@ -151,8 +151,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
             //为删除dialog设置提示信息
             Bundle args = new Bundle();
             args.putString(BaseDialog.KEY_TITLE, "");
-            args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
-            args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
+            args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
+            args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
             args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT,
                     this.getString(R.string.Tips_SureDelete));
             deleteDialogFragmentWeakReference = new WeakReference<>(SimpleDialogFragment.newInstance(args));

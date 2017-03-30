@@ -8,6 +8,7 @@
     android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
+        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/custom_toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

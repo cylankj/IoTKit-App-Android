@@ -321,7 +321,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void lookBigImageHead() {
         Bundle bundle = new Bundle();
-        bundle.putString("imageUrl", argumentData.getPhotoUrl());
+        bundle.putString("imageUrl", presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON):argumentData.getPhotoUrl());
         MineUserInfoLookBigHeadFragment bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

@@ -335,15 +335,16 @@ public class OpenLoginHelper {
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         AccessToken accessToken = loginResult.getAccessToken();
-
                         //post 结果
                         postAuthorizeResult(accessToken.getToken(), accessToken.getUserId(), 7);
-                        GraphRequest request = GraphRequest.newMeRequest(accessToken, getUserinfo);
+                        AppLogger.d("fb_ip_token:" + accessToken.getToken() +":"+ accessToken.getUserId());
+                        getUserInfo();
 
-                        Bundle parameters = new Bundle();
-                        parameters.putString("fields", "name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
-                        request.setParameters(parameters);
-                        request.executeAsync();
+//                        GraphRequest request = GraphRequest.newMeRequest(accessToken, getUserinfo);
+//                        Bundle parameters = new Bundle();
+//                        parameters.putString("fields", "name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
+//                        request.setParameters(parameters);
+//                        request.executeAsync();
                     }
 
                     @Override
@@ -382,6 +383,25 @@ public class OpenLoginHelper {
             }
         }
     };
+
+    private void getUserInfo(){
+        boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
+        Profile profile = Profile.getCurrentProfile();
+        if (enableButtons && profile != null) {
+            String userid = profile.getId();
+            String Token = AccessToken.getCurrentAccessToken().getToken();
+            String sname = profile.getName();
+            String simage = profile.getProfilePictureUri(100, 100).toString();
+            // 保存用户信息
+            PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, simage);
+            PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, sname);
+            AppLogger.d("facebook_getUserinfo:" + sname + simage);
+        }else {
+            AppLogger.d("fb_getUserinfo:obj null");
+        }
+    }
+
+
 
     /**
      * post 授权结果

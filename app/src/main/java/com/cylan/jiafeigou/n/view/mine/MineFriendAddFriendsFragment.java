@@ -117,7 +117,6 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
                                 new String[]{Manifest.permission.READ_CONTACTS},
                                 1);
                     }
-
                 }
                 break;
 
@@ -156,7 +155,6 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
                 .replace(R.id.fragment_container, scanAddFragment, "scanAddFragment")
                 .addToBackStack("mineHelpFragment")
                 .commitAllowingStateLoss();
-
     }
 
     @Override

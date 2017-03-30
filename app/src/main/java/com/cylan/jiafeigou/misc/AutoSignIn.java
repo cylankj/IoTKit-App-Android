@@ -74,7 +74,7 @@ public class AutoSignIn {
                             SignType signType = new Gson().fromJson(decryption, SignType.class);
                             if (signType != null) {
                                 StringBuilder pwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + aesAccount + ".dat", "UTF-8");
-                                AppLogger.d("log pwd: ");
+                                AppLogger.d("log pwd: "+pwd);
                                 if (!TextUtils.isEmpty(pwd)) {
                                     String finalPwd = AESUtil.decrypt(pwd.toString());
                                     if (signType.type == 1) {
@@ -90,7 +90,7 @@ public class AutoSignIn {
                                         } else {
                                             AppLogger.d("isout:no");
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd, signType.type);
+                                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()),finalPwd,signType.account,signType.type);
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         }
                                     }

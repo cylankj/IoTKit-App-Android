@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.Switch;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestListener;
@@ -37,6 +38,8 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
     @BindView(R.id.iv_userinfo_big_image)
     ImageView ivUserinfoBigImage;
+    @BindView(R.id.rl_root_view)
+    RelativeLayout rlRootView;
 
     private static boolean loadResult = false;
     private String iamgeUrl;
@@ -123,20 +126,32 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     }
 
 
-    @OnClick(R.id.iv_userinfo_big_image)
-    public void onClick() {
-        if (loadResult) {
-            getFragmentManager().popBackStack();
-        } else {
-            loadBigImage(iamgeUrl);
+    @OnClick({R.id.rl_root_view,R.id.iv_userinfo_big_image})
+    public void onClick(View view) {
+        switch (view.getId()){
+            case R.id.rl_root_view:
+                if (loadResult) {
+                    getFragmentManager().popBackStack();
+                }
+                break;
+            case R.id.iv_userinfo_big_image:
+                if (!loadResult) {
+                    loadBigImage(iamgeUrl);
+                }
+                break;
         }
+//        if (loadResult) {
+//            getFragmentManager().popBackStack();
+//        } else {
+//            loadBigImage(iamgeUrl);
+//        }
     }
+
 
     @Override
     public void showLoadImageProgress() {
         LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
-
 
     @Override
     public void hideLoadImageProgress() {

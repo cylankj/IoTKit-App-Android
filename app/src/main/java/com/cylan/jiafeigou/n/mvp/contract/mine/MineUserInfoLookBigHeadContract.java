@@ -5,6 +5,8 @@ import android.widget.ImageView;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
+import rx.Subscription;
+
 /**
  * 作者：zsl
  * 创建时间：2016/9/2
@@ -21,6 +23,7 @@ public interface MineUserInfoLookBigHeadContract {
 
     interface Presenter extends BasePresenter {
         void loadImage(ImageView view);
+
     }
 
 }
