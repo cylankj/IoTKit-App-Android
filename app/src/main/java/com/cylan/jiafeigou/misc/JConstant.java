@@ -302,4 +302,9 @@ public class JConstant {
 
     public static final String BINDING_DEVICE = "key_need_bind";//
     public static final String CHECK_HARDWARE_TIME = "check_hardware_time";
+    public static final String PREF_NAME = "config_pref";      //2.x Sp 的key
+    public static final String KEY_PHONE = "PhoneNum";//2.x account key
+    public static final String SESSIONID = "sessid";// 2.x sessid key
+    public static final String KEY_PSW = "PSW";     //2.x pwd key
+    public static final String UPDATAE_AUTO_LOGIN = "update_auto_login";
 }
