@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -46,6 +47,7 @@ import java.util.TreeSet;
 
 import rx.Observable;
 import rx.Subscriber;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
@@ -108,7 +110,20 @@ public class DataSourceManager implements JFGSourceManager {
                     rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
                     return device;
                 })
-                .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid))
+                .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
+                        .flatMap(new Func1<List<DPEntity>, Observable<List<DPEntity>>>() {
+                            @Override
+                            public Observable<List<DPEntity>> call(List<DPEntity> ret) {
+//                                long time = System.currentTimeMillis();
+                                if (ret != null) {
+                                    for (DPEntity dpEntity : ret) {
+                                        DataPoint dataPoint = BasePropertyParser.getInstance().parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
+                                        device.setValue(dpEntity.getMsgId(), dataPoint);
+                                    }
+                                }
+                                return Observable.just(ret);
+                            }
+                        }))
                 .doOnCompleted(() -> {
                     Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
                     getCacheInstance().post(new RxEvent.DevicesArrived(getAllJFGDevice()));

@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 
@@ -63,8 +64,10 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
         if (!propertyParser.accept(pid(), msgId)) return null;
         DPEntity value = properties.get(msgId);
         if (value == null) {
+            long time = System.currentTimeMillis();
             value = dbHelper.getProperty(uuid(), msgId);
             if (value != null) properties.put(msgId, value);
+            AppLogger.d("getProperty from db:" + msgId + "," + value + "," + (System.currentTimeMillis() - time));
         }
         return value;
     }

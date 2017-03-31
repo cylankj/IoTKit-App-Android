@@ -123,12 +123,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
         registerActivityLifecycleCallbacks(this);
         initHuaweiPushSDK();
         startService(new Intent(this, DataSourceService.class));
+        PreferencesUtils.init(getApplicationContext());
         Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
-        initPreference();
-    }
-
-    private void initPreference() {
-        HandlerThreadUtils.post(() -> PreferencesUtils.init(getApplicationContext()));
     }
 
     /**

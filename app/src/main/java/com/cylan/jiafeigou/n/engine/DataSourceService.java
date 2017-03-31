@@ -102,7 +102,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     public void initNative() {
 
-        HandlerThreadUtils.clean();
+//        HandlerThreadUtils.clean();
         HandlerThreadUtils.postAtFrontOfQueue(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             try {
