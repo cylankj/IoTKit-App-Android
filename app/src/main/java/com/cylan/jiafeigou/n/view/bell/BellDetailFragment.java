@@ -8,24 +8,28 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
-import android.widget.Switch;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellDetailSettingPresenterImpl;
 import com.cylan.jiafeigou.n.view.cam.HardwareUpdateFragment;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
+import com.google.gson.Gson;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -122,10 +126,23 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
                         && device != null && !TextUtils.equals(device.alias, content)) {
                     device.alias = content;
                     svSettingDeviceAlias.setTvSubTitle(content);
-                    DataSourceManager.getInstance().updateJFGDevice(device);
+                    HandlerThreadUtils.post(() -> {
+                        updateAlias(device);
+                    });
                 }
             }
         });
+    }
+
+
+    public void updateAlias(Device device) {
+        DataSourceManager.getInstance().updateJFGDevice(device);
+        try {
+            JfgCmdInsurance.getCmd().setAliasByCid(device.uuid, device.alias);
+            AppLogger.d("update alias suc");
+        } catch (JfgException e) {
+            AppLogger.e("err: set up remote alias failed: " + new Gson().toJson(device));
+        }
     }
 
     @Override
@@ -166,9 +183,9 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         return rootView;
     }
 
-    @OnClick({R.id.tv_toolbar_icon,R.id.rl_hardware_update})
+    @OnClick({R.id.tv_toolbar_icon, R.id.rl_hardware_update})
     public void OnClick(View view) {
-        switch(view.getId()){
+        switch (view.getId()) {
             case R.id.tv_toolbar_icon:
                 getFragmentManager().popBackStack();
                 break;

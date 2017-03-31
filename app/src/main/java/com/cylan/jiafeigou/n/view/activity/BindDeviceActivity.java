@@ -26,7 +26,6 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_AUTO_SHOW_BIND;
 
 
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
-
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
@@ -118,6 +117,7 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 break;
             }
             case R.id.v_to_bind_camera: {
+
                 ViewUtils.deBounceClick(view);
                 Intent intent = new Intent(this, BindCamActivity.class);
                 intent.putExtra("fromBindActivity", "fromBindActivity");

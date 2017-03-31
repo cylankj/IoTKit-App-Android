@@ -24,8 +24,10 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ShareUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -34,6 +36,10 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static android.R.attr.id;
+import static android.R.string.ok;
+import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 /**
  * Created by cylan-hunt on 16-7-8.
@@ -253,7 +259,6 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void onLocalFlowFinish() {
-        getView().onSetWifiFinished(aFullBind.getDevicePortrait());
         Subscription subscription = Observable.just(null)
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
@@ -261,6 +266,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
                     List<WifiConfiguration> list =
                             wifiManager.getConfiguredNetworks();
+                    int restoreNetWorkId = -1;
                     if (list != null) {
                         int highPriority = -1;
                         int index = -1;
@@ -268,7 +274,8 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                             String ssid = list.get(i).SSID.replace("\"", "");
                             if (JFGRules.isCylanDevice(ssid)) {
                                 //找到这个狗,清空他的信息
-                                wifiManager.removeNetwork(list.get(i).networkId);
+//                                wifiManager.removeNetwork(list.get(i).networkId);//这个是异步的调用,慎重
+//                                result.add(list.get(i).networkId);
                                 AppLogger.i(TAG + "clean dog like ssid: " + ssid);
                             } else {
                                 //恢复之前连接过的wifi
@@ -279,12 +286,33 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                             }
                         }
                         if (index != -1) {
+                            restoreNetWorkId = list.get(index).networkId;
                             AppLogger.i("re enable ssid: " + list.get(index).SSID);
-                            wifiManager.enableNetwork(list.get(index).networkId, false);
                         }
                     }
-                    return null;
-                }).subscribe();
+                    return restoreNetWorkId;//这里我们要多重试几次,确保一定连接上 WiFi
+                })
+                .flatMap(netId -> Observable.interval(500, TimeUnit.MILLISECONDS)
+                        .observeOn(Schedulers.io())
+                        .map(i -> {
+                            AppLogger.e("正在切换 WiFi 网络,可能成功");
+                            WifiManager manager = NetUtils.getWifiManager(mView.getContext());
+                            WifiInfo info = manager.getConnectionInfo();
+                            if (info != null && info.getNetworkId() == netId) {
+                                AppLogger.e("切换 WiFi 网络成功:" + info.getSSID());
+                                return true;
+                            }
+                            manager.enableNetwork(netId, true);
+                            return false;
+                        })
+                        .takeUntil(ok -> ok).last()
+                )
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(r -> {
+                    getView().onSetWifiFinished(aFullBind.getDevicePortrait());
+                }, e -> {
+                    AppLogger.d(e.getMessage());
+                });
         addSubscription(subscription, "onLocalFlowFinish");
     }
 
