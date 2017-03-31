@@ -5,6 +5,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -13,6 +14,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +46,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     }
 
     private void selectNext() {
-        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class)) {
+        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class) && !PreferencesUtils.getBoolean(JConstant.UPDATAE_AUTO_LOGIN,false)) {
             AppLogger.d("has sticky");
             subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                     .subscribeOn(Schedulers.newThread())

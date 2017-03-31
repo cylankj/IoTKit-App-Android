@@ -174,7 +174,8 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             params.add(msg4);
                             seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("", params, 100, false, 0);
                             AppLogger.d("getMesgDpData:" + seq);
-                        } catch (JfgException e) {
+                        } catch (Exception e) {
+                            AppLogger.e("getMesgDpData:"+e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }
@@ -326,7 +327,15 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((Object o) -> {
                     try {
-                        long req = JfgCmdInsurance.getCmd().robotCountDataClear("", new long[]{601L, 701L}, 0);
+//                        long req = JfgCmdInsurance.getCmd().robotCountDataClear("", new long[]{601L, 701L}, 0);
+                        ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
+                        JFGDPMsg msg1 = new JFGDPMsg(1101L,System.currentTimeMillis());
+                        JFGDPMsg msg2 = new JFGDPMsg(1103L,System.currentTimeMillis());
+                        JFGDPMsg msg3 = new JFGDPMsg(1104L,System.currentTimeMillis());
+                        list.add(msg1);
+                        list.add(msg2);
+                        list.add(msg3);
+                        long req = JfgCmdInsurance.getCmd().robotSetData(uuid,list);
                         AppLogger.d("mine_markHasRead:" + req);
                     } catch (JfgException e) {
                         AppLogger.e("mine_markHasRead:" + e.getLocalizedMessage());

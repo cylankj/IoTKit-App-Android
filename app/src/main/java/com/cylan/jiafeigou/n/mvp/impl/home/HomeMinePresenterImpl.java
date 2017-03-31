@@ -6,9 +6,13 @@ import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
@@ -20,6 +24,8 @@ import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
+import java.util.ArrayList;
+import java.util.Map;
 import java.util.Random;
 
 import rx.Observable;
@@ -58,7 +64,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         }
         subscription = new CompositeSubscription();
         subscription.add(checkIsOpenLoginCallBack());
-//        subscription.add(unReadMesgBack());
+        subscription.add(unReadMesgBack());
         getUnReadMesg();
     }
 
@@ -148,7 +154,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 判断是否是三方的登录
-     *
      * @return
      */
     @Override
@@ -158,7 +163,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 是否三方登录的回调
-     *
      * @return
      */
     @Override
@@ -216,56 +220,64 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        requstId = JfgCmdInsurance.getCmd().robotCountData("", new long[]{601L, 701L}, 0);
+//                        requstId = JfgCmdInsurance.getCmd().robotCountData("", new long[]{601L, 701L}, 0);
+                        ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
+                        JFGDPMsg msg1 = new JFGDPMsg(1101L,System.currentTimeMillis());
+                        JFGDPMsg msg2 = new JFGDPMsg(1103L,System.currentTimeMillis());
+                        JFGDPMsg msg3 = new JFGDPMsg(1104L,System.currentTimeMillis());
+                        list.add(msg1);
+                        list.add(msg2);
+                        list.add(msg3);
+                        requstId = JfgCmdInsurance.getCmd().robotGetData("",list,10,false,0);
+                        AppLogger.d("getUnReadMesg:"+requstId);
                     } catch (JfgException e) {
                         AppLogger.e("" + e.getLocalizedMessage());
                     }
                 });
     }
 
-//    public Subscription unReadMesgBack() {
-//        return RxBus.getCacheInstance().toObservable(RxEvent.UnreadCount.class)
-//                .onBackpressureBuffer()
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .subscribe((RxEvent.UnreadCount unreadCount) -> {
-//                    if (unreadCount != null && unreadCount.seq == requstId) {
-//                        unreadNum = 0;
-//                        for (JFGDPMsgCount jfgdpMsgCount : unreadCount.msgList) {
-//                            unreadNum += jfgdpMsgCount.count;
-//                        }
-//                        getView().setMesgNumber(unreadNum);
-//                        if (unreadNum != 0) {
-//                            hasUnRead = true;
-//                            //markHasRead();
-//                        } else {
-//                            hasUnRead = false;
-//                        }
-//                    }
-//                });
-//    }
+    public Subscription unReadMesgBack() {
+        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+                .onBackpressureBuffer()
+                .flatMap(new Func1<RobotoGetDataRsp, Observable<Integer>>() {
+                    @Override
+                    public Observable<Integer> call(RobotoGetDataRsp rsp) {
+                        int count = 0;
+                        if (rsp != null && requstId == rsp.seq && rsp.map.size() != 0){
+                            for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
+                                try {
+                                    if (entry.getKey() == 1101 || entry.getKey() == 1103 || entry.getKey() == 1104) {
+                                        ArrayList<JFGDPMsg> value = entry.getValue();
+                                        if (value.size() != 0){
+                                            JFGDPMsg jfgdpMsg = value.get(0);
+                                            DpMsgDefine.DPUnreadCount unReadCount = DpUtils.unpackData(jfgdpMsg.packValue, DpMsgDefine.DPUnreadCount.class);
+                                            if (unReadCount != null)
+                                                count += unReadCount.count;
+                                        }
+                                    }
+                                } catch (Exception e) {
+                                    AppLogger.e("getUnreadBack:" + e.getLocalizedMessage());
+                                    return Observable.just(count);
+                                }
+                            }
+                        }
+                        return Observable.just(count);
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(integer -> {
+                    AppLogger.d("unrecount:"+integer);
+                    if (getView() != null)getView().setMesgNumber(integer);
+                    hasUnRead = integer != 0;
+                });
+
+    }
 
     @Override
     public boolean hasUnReadMesg() {
         return hasUnRead;
     }
 
-    /**
-     * 清空未读消息数
-     */
-    @Override
-    public void markHasRead() {
-        rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe((Object o) -> {
-                    try {
-                        long req = JfgCmdInsurance.getCmd().robotCountDataClear("", new long[]{601L, 701L}, 0);
-                        AppLogger.d("mine_markHasRead:" + req);
-                    } catch (JfgException e) {
-                        AppLogger.e("mine_markHasRead:" + e.getLocalizedMessage());
-                        e.printStackTrace();
-                    }
-                });
-    }
 
     public Subscription loginInMe() {
         return RxBus.getCacheInstance().toObservable(RxEvent.LoginMeTab.class)
