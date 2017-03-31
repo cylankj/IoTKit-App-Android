@@ -38,6 +38,7 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static android.R.attr.id;
+import static android.R.id.list;
 import static android.R.string.ok;
 import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
@@ -264,6 +265,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribeOn(Schedulers.io())
                 .map((Object o) -> {
                     WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+
                     List<WifiConfiguration> list =
                             wifiManager.getConfiguredNetworks();
                     int restoreNetWorkId = -1;
