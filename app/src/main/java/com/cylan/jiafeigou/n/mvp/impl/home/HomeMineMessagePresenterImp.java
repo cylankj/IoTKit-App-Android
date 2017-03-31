@@ -335,7 +335,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                         list.add(msg1);
                         list.add(msg2);
                         list.add(msg3);
-                        long req = JfgCmdInsurance.getCmd().robotSetData(uuid,list);
+                        long req = JfgCmdInsurance.getCmd().robotSetData(" ",list);
                         AppLogger.d("mine_markHasRead:" + req);
                     } catch (JfgException e) {
                         AppLogger.e("mine_markHasRead:" + e.getLocalizedMessage());
