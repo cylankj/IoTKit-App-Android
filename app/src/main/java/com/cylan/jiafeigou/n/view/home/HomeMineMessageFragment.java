@@ -89,6 +89,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        if (presenter != null) presenter.start();
     }
 
     private void initPresenter() {
@@ -98,7 +99,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     @Override
     public void onStart() {
         super.onStart();
-        if (presenter != null) presenter.start();
+//        if (presenter != null) presenter.start();
     }
 
     @Override

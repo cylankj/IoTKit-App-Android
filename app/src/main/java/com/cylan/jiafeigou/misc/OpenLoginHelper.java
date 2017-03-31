@@ -338,13 +338,13 @@ public class OpenLoginHelper {
                         //post 结果
                         postAuthorizeResult(accessToken.getToken(), accessToken.getUserId(), 7);
                         AppLogger.d("fb_ip_token:" + accessToken.getToken() +":"+ accessToken.getUserId());
-                        getUserInfo();
+//                        getUserInfo();
 
-//                        GraphRequest request = GraphRequest.newMeRequest(accessToken, getUserinfo);
-//                        Bundle parameters = new Bundle();
-//                        parameters.putString("fields", "name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
-//                        request.setParameters(parameters);
-//                        request.executeAsync();
+                        GraphRequest request = GraphRequest.newMeRequest(accessToken, getUserinfo);
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "name,picture,locale,updated_time,timezone,age_range,first_name,last_name");
+                        request.setParameters(parameters);
+                        request.executeAsync();
                     }
 
                     @Override
@@ -411,8 +411,8 @@ public class OpenLoginHelper {
      */
     private void postAuthorizeResult(String token, String openId, int type) {
         LoginAccountBean login = new LoginAccountBean();
-        login.userName = token;
-        login.pwd = openId;
+        login.userName = openId;
+        login.pwd = token;
         login.openLoginType = type;
         login.loginType = true;
         RxBus.getCacheInstance().postSticky(login);
