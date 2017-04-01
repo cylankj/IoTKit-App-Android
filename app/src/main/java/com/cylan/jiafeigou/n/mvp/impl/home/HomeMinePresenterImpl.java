@@ -7,7 +7,6 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -154,6 +153,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 判断是否是三方的登录
+     *
      * @return
      */
     @Override
@@ -163,6 +163,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     /**
      * 是否三方登录的回调
+     *
      * @return
      */
     @Override
@@ -220,16 +221,15 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-//                        requstId = JfgCmdInsurance.getCmd().robotCountData("", new long[]{601L, 701L}, 0);
                         ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
-                        JFGDPMsg msg1 = new JFGDPMsg(1101L,System.currentTimeMillis());
-                        JFGDPMsg msg2 = new JFGDPMsg(1103L,System.currentTimeMillis());
-                        JFGDPMsg msg3 = new JFGDPMsg(1104L,System.currentTimeMillis());
+                        JFGDPMsg msg1 = new JFGDPMsg(1101L, System.currentTimeMillis());
+                        JFGDPMsg msg2 = new JFGDPMsg(1103L, System.currentTimeMillis());
+                        JFGDPMsg msg3 = new JFGDPMsg(1104L, System.currentTimeMillis());
                         list.add(msg1);
                         list.add(msg2);
                         list.add(msg3);
-                        requstId = JfgCmdInsurance.getCmd().robotGetData("",list,10,false,0);
-                        AppLogger.d("getUnReadMesg:"+requstId);
+                        requstId = JfgCmdInsurance.getCmd().robotGetData("", list, 10, false, 0);
+                        AppLogger.d("getUnReadMesg:" + requstId);
                     } catch (JfgException e) {
                         AppLogger.e("" + e.getLocalizedMessage());
                     }
@@ -243,12 +243,12 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public Observable<Integer> call(RobotoGetDataRsp rsp) {
                         int count = 0;
-                        if (rsp != null && requstId == rsp.seq && rsp.map.size() != 0){
+                        if (rsp != null && requstId == rsp.seq && rsp.map.size() != 0) {
                             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
                                 try {
                                     if (entry.getKey() == 1101 || entry.getKey() == 1103 || entry.getKey() == 1104) {
                                         ArrayList<JFGDPMsg> value = entry.getValue();
-                                        if (value.size() != 0){
+                                        if (value.size() != 0) {
                                             JFGDPMsg jfgdpMsg = value.get(0);
                                             DpMsgDefine.DPUnreadCount unReadCount = DpUtils.unpackData(jfgdpMsg.packValue, DpMsgDefine.DPUnreadCount.class);
                                             if (unReadCount != null)
@@ -266,8 +266,8 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(integer -> {
-                    AppLogger.d("unrecount:"+integer);
-                    if (getView() != null)getView().setMesgNumber(integer);
+                    AppLogger.d("unrecount:" + integer);
+                    if (getView() != null) getView().setMesgNumber(integer);
                     hasUnRead = integer != 0;
                 });
 

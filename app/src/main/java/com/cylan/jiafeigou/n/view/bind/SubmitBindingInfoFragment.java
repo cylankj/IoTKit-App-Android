@@ -6,11 +6,11 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
@@ -19,14 +19,14 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
+import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
 import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
+import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
@@ -34,8 +34,6 @@ import com.cylan.jiafeigou.widget.SimpleProgressBar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-
-import static com.cylan.jiafeigou.misc.JError.ErrorCIDNotExist;
 
 /**
  * Created by cylan-hunt on 16-11-12.
@@ -92,7 +90,6 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     @Override
     public void onDetach() {
         super.onDetach();
-        JConstant.ConfigApStep = 0;
         if (basePresenter != null) {
             basePresenter.clean();
         } else {
@@ -169,8 +166,16 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
     @OnClick(R.id.btn_bind_failed_repeat)
     public void onClick() {
         getActivity().finish();
-        Intent intent = new Intent(getActivity(), BindCamActivity.class);
-        intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
+        String device = getArguments().getString(JConstant.KEY_BIND_DEVICE);
+        Class<?> nextActivity;
+        if (TextUtils.equals(device, getString(R.string.DOG_CAMERA_NAME))) {
+            nextActivity = BindCamActivity.class;
+        } else if (TextUtils.equals(device, getString(R.string.CALL_CAMERA_NAME))) {
+            nextActivity = BindBellActivity.class;
+        } else {
+            nextActivity = BindPanoramaCamActivity.class;
+        }
+        Intent intent = new Intent(getActivity(), nextActivity);
         startActivity(intent);
     }
 }

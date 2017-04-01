@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ScanContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ScanPresenterImpl;
+import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
 import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -223,14 +224,8 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
             } else if (JFGRules.isBell(iPid)) {
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this)
                         .commitAllowingStateLoss();
-                BindDoorBellFragment fragment = BindDoorBellFragment.newInstance(new Bundle());
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out,
-                                R.anim.slide_in_left, R.anim.slide_out_right)
-                        .replace(android.R.id.content, fragment)
-                        .addToBackStack("BindDoorBellFragment")
-                        .commit();
+                if (getActivity() != null)
+                    startActivity(new Intent(getActivity(), BindBellActivity.class));
             }
             zxVScan.stop();
         } catch (Exception e) {
@@ -252,23 +247,6 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         }
         getActivity().getSupportFragmentManager().popBackStack();
         //默认强绑
-//        else if (state == 8) {
-//            //需要重复绑定
-//            if (rebindDialog != null && rebindDialog.isResumed())
-//                return;
-//            Bundle bundle = new Bundle();
-//            bundle.putString(BaseDialog.KEY_TITLE, "");
-//            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
-//            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-//            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT,
-//                    this.getString(R.string.RET_EISBIND_BYOTHER));
-//            rebindDialog = SimpleDialogFragment.newInstance(bundle);
-//            rebindDialog.setAction((int msgId, Object value) -> {
-//                bindBundle.putInt("bindWay", 1);
-//                basePresenter.submit(bindBundle);
-//            });
-//            rebindDialog.show(getActivity().getSupportFragmentManager(), "rebindDialog");
-//        }
     }
 
     @Override

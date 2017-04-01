@@ -1,0 +1,74 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:clickable="true"
+    tools:context="com.cylan.jiafeigou.n.view.bind.BindGuideFragment">
+
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_gary" />
+
+    <LinearLayout
+        android:id="@+id/lLayout_guide_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/custom_toolbar"
+        android:layout_centerHorizontal="true"
+        android:layout_marginEnd="@dimen/x50"
+        android:layout_marginStart="@dimen/x50"
+        android:layout_marginTop="@dimen/y20"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_guide_main_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/WIFI_SET_3"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp14" />
+
+        <TextView
+            android:id="@+id/tv_guide_sub_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y20"
+            android:text="@string/WIFI_SET_4"
+            android:textColor="@color/color_333333"
+            android:textSize="@dimen/sp14" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/imv_bind_guide"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/tv_bind_guide_next"
+        android:layout_below="@+id/lLayout_guide_content"
+        android:layout_marginBottom="@dimen/y49"
+        android:layout_marginTop="@dimen/y42" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y1"
+        android:layout_alignTop="@+id/tv_bind_guide_next"
+        android:background="@color/color_d8d8d8" />
+
+    <TextView
+        android:id="@+id/tv_bind_guide_next"
+        style="@style/ripple_background"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y50"
+        android:layout_alignParentBottom="true"
+        android:gravity="center"
+        android:text="@string/Tap2_Index_OpenTimelapse"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="@dimen/sp16" />
+</RelativeLayout>

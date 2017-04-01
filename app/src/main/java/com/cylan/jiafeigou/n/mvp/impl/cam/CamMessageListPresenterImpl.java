@@ -304,12 +304,12 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     long timeHit = 0;
                     for (WonderIndicatorWheelView.WheelItem item : wheelItems) {
                         if (item.wonderful) {
-                            timeHit = item.time;
+                            timeHit = TimeUtils.getSpecificDayEndTime(item.time);
                             break;
                         }
                     }
                     if (timeHit != 0) {
-                        //需要保证这个timeHit是当天的最大的一个
+                        //需要保证这个timeHit是当天的最大的一个,干脆用一天的最后一秒
                         fetchMessageList(timeHit, false);
                         AppLogger.d("Max dateList timeHit:" + timeHit);
                     }

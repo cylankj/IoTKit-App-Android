@@ -114,6 +114,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void onCreate() {
         super.onCreate();
         long time = System.currentTimeMillis();
+        PreferencesUtils.init(getApplicationContext());
         enableDebugOptions();
         //每一个新的进程启动时，都会调用onCreate方法。
         try2init();
@@ -123,7 +124,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         registerActivityLifecycleCallbacks(this);
         initHuaweiPushSDK();
         startService(new Intent(this, DataSourceService.class));
-        PreferencesUtils.init(getApplicationContext());
+
         Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
     }
 

@@ -134,7 +134,7 @@ public class SimpleBindFlow extends AFullBind {
         try {
             AppLogger.i(BIND_TAG + udpDevicePortrait);
             //
-            String serverAddress = OptionsImpl.getServer();
+            String serverAddress = OptionsImpl.getServer().replace(":443", "");
             if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG)
                 throw new IllegalArgumentException("server address is empty");
             int port = Security.getServerPort(JFGRules.getTrimPackageName());
@@ -147,7 +147,7 @@ public class SimpleBindFlow extends AFullBind {
             JfgUdpMsg.SetServer setServer =
                     new JfgUdpMsg.SetServer(udpDevicePortrait.uuid,
                             udpDevicePortrait.mac,
-                            serverAddress,
+                            serverAddress.replace(":443", ""),
                             port,
                             80);
             AppLogger.i(BIND_TAG + "setServer: " + new Gson().toJson(setServer));

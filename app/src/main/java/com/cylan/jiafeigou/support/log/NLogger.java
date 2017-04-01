@@ -87,6 +87,11 @@ public class NLogger implements IWriter {
                     if (BuildConfig.DEBUG) {
                         Log.e(TAG, "NLogger log failed: " + e.getLocalizedMessage());
                     }
+                    if (e.getLocalizedMessage().contains("EBUSY")) {
+                        final File to = new File(file.getAbsolutePath() + System.currentTimeMillis());
+                        file.renameTo(to);
+                        to.delete();
+                    }
                 } finally {
                     try {
                         createNewFile();

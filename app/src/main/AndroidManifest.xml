@@ -106,6 +106,7 @@
             android:grantUriPermissions="true" />
         <!-- 华为推送 End -->
 
+
         <!-- server address -->
         <!-- <meta-data -->
         <!-- android:name="ServerAddress" -->
@@ -339,7 +340,7 @@
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
 
-        <!--进程保活 Start-->
+        <!-- 进程保活 Start -->
         <service
             android:name=".DaemonService1"
             android:process=":process1" />
@@ -355,7 +356,7 @@
         <receiver
             android:name=".DaemonReceiver2"
             android:process=":process2" />
-        <!--进程保活 End-->
+        <!-- 进程保活 End -->
 
         <receiver android:name=".push.HuaweiPushReceiver">
             <intent-filter>
@@ -396,17 +397,51 @@
         </receiver>
 
         <activity android:name=".n.view.panorama.PanoramaAlbumActivity">
-            <!--<intent-filter>-->
-            <!--<action android:name="android.intent.action.MAIN" />-->
 
-            <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+            <!-- <intent-filter> -->
+            <!-- <action android:name="android.intent.action.MAIN" /> -->
+
+
+            <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+            <!-- </intent-filter> -->
         </activity>
 
         <service android:name=".n.engine.DataSourceService" />
 
         <activity
             android:name=".n.view.activity.BindCamActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:label="@string/title_activity_bind_cam"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".n.view.activity.ConfigWifiActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:label="@string/title_activity_bind_cam"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".n.view.activity.BindBellActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:label="@string/title_activity_bind_cam"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".n.view.activity.BindPanoramaCamActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:label="@string/title_activity_bind_cam"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".n.view.bind.BindGuideActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:label="@string/title_activity_bind_cam"
             android:launchMode="singleTask"

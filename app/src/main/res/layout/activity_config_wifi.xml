@@ -15,8 +15,8 @@
         android:layout_height="@dimen/y33" />
 
     <com.cylan.jiafeigou.widget.CustomToolbar
-        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_icon="@drawable/nav_icon_back_gary" />

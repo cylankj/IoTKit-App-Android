@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.bell;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -37,6 +39,8 @@ import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
+import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -59,8 +63,8 @@ import static com.cylan.jiafeigou.base.module.DPConstant.NET;
 
 public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeContract.Presenter>
         implements DoorBellHomeContract.View,
-        BellCallRecordListAdapter.SimpleLongClickListener,
-        BellCallRecordListAdapter.SimpleClickListener,
+        OnItemLongClickListener,
+        OnItemClickListener,
         BellTopBackgroundView.ActionInterface,
         BellCallRecordListAdapter.LoadImageListener,
         ViewTreeObserver.OnGlobalLayoutListener {
@@ -87,7 +91,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private WeakReference<BellSettingFragment> fragmentWeakReference;
     private WeakReference<LBatteryWarnDialog> lBatteryWarnDialog;
     private BellCallRecordListAdapter bellCallRecordListAdapter;
-    private SimpleDialogFragment mDeleteDialogFragment;
     /**
      * 加载更多
      */
@@ -150,8 +153,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private void initAdapter() {
         bellCallRecordListAdapter = new BellCallRecordListAdapter(getAppContext(),
                 null, R.layout.layout_bell_call_list_item, this);
-        bellCallRecordListAdapter.setSimpleClickListener(this);
-        bellCallRecordListAdapter.setSimpleLongClickListener(this);
+        bellCallRecordListAdapter.setOnItemClickListener(this);
+        bellCallRecordListAdapter.setOnItemLongClickListener(this);
         rvBellList.setAdapter(bellCallRecordListAdapter);
         final LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getAppContext(), LinearLayoutManager.HORIZONTAL, false) {
             @Override
@@ -330,51 +333,10 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
 
-    @Override
-    public boolean onLongClick(View v) {
-        if (mIsShardAccount)//共享账号不可操作
-            return true;
-        final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
-        if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
-            AppLogger.d("position is invalid");
-            return false;
-        }
-        //toggle edit mode
-        if (bellCallRecordListAdapter.getMode() == 0) {
-            AppLogger.d("enter edition mode");
-            bellCallRecordListAdapter.setMode(1);
-            bellCallRecordListAdapter.reverseItemSelectedState(position);
-            tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
-            showEditBar(true);
-        }
-        return true;
-    }
-
     private void showEditBar(boolean show) {
         AnimatorUtils.slide(fLayoutBellHomeListEdition);
     }
 
-    @Override
-    public void onClick(View v) {
-        final int position = ViewUtils.getParentAdapterPosition(rvBellList, v, R.id.cv_bell_call_item);
-        if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
-            AppLogger.d("position is invalid");
-            return;
-        }
-        if (bellCallRecordListAdapter.getMode() == 1) {//编辑模式下的点击事件
-            bellCallRecordListAdapter.reverseItemSelectedState(position);
-            int count = bellCallRecordListAdapter.getSelectedList().size();
-            if (count == 0) {
-                bellCallRecordListAdapter.setMode(0);
-                showEditBar(false);
-            }
-        } else {//普通模式下的点击事件,即查看大图模式
-            Intent intent = new Intent(this, BellRecordDetailActivity.class);
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bellCallRecordListAdapter.getItem(position));
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
-            startActivity(intent);
-        }
-    }
 
     @OnClick({R.id.tv_bell_home_list_cancel, R.id.tv_bell_home_list_select_all, R.id.tv_bell_home_list_delete})
     public void onEditBarClick(View view) {
@@ -397,22 +359,20 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 break;
             case R.id.tv_bell_home_list_delete:
                 ViewUtils.deBounceClick(view);
-                if (mDeleteDialogFragment == null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.DOOR_COMFIRETOCLEAR));
-                    mDeleteDialogFragment = SimpleDialogFragment.newInstance(bundle);
-                }
-                mDeleteDialogFragment.setAction((id, value) -> {
-                    switch (id) {
-                        case R.id.tv_dialog_btn_left:
-                            List<BellCallRecordBean> list = bellCallRecordListAdapter.getSelectedList();
-                            mPresenter.deleteBellCallRecord(list);
-                            bellCallRecordListAdapter.setMode(0);
-                            showEditBar(false);
-                            LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
-                    }
-                });
-                mDeleteDialogFragment.show(getSupportFragmentManager(), "DoorBellHomeDeleteFragment");
+                new AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.DOOR_COMFIRETOCLEAR))
+                        .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                List<BellCallRecordBean> list = bellCallRecordListAdapter.getSelectedList();
+                                mPresenter.deleteBellCallRecord(list);
+                                bellCallRecordListAdapter.setMode(0);
+                                showEditBar(false);
+                                LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
+                            }
+                        })
+                        .setNegativeButton(getString(R.string.CANCEL), null)
+                        .create().show();
                 break;
         }
     }
@@ -478,6 +438,45 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     private ConnectionChangeReceiver myReceiver;
+
+    @Override
+    public void onItemClick(View itemView, int viewType, int position) {
+        if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
+            AppLogger.d("position is invalid");
+            return;
+        }
+        if (bellCallRecordListAdapter.getMode() == 1) {//编辑模式下的点击事件
+            bellCallRecordListAdapter.reverseItemSelectedState(position);
+            int count = bellCallRecordListAdapter.getSelectedList().size();
+            if (count == 0) {
+                bellCallRecordListAdapter.setMode(0);
+                showEditBar(false);
+            }
+        } else {//普通模式下的点击事件,即查看大图模式
+            Intent intent = new Intent(this, BellRecordDetailActivity.class);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bellCallRecordListAdapter.getItem(position));
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+            startActivity(intent);
+        }
+    }
+
+    @Override
+    public void onItemLongClick(View itemView, int viewType, int position) {
+        if (mIsShardAccount)//共享账号不可操作
+            return;
+        if (position < 0 || position >= bellCallRecordListAdapter.getCount()) {
+            AppLogger.d("position is invalid");
+            return;
+        }
+        //toggle edit mode
+        if (bellCallRecordListAdapter.getMode() == 0) {
+            AppLogger.d("enter edition mode");
+            bellCallRecordListAdapter.setMode(1);
+            bellCallRecordListAdapter.reverseItemSelectedState(position);
+            tvBellHomeListSelectAll.setText(getString(R.string.SELECT_ALL));
+            showEditBar(true);
+        }
+    }
 
     public class ConnectionChangeReceiver extends BroadcastReceiver {
         @Override
