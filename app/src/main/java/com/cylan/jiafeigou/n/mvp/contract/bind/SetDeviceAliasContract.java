@@ -13,7 +13,7 @@ public interface SetDeviceAliasContract {
         /**
          * 设置设备昵称,成功
          */
-        void setupAliasDone();
+        void setupAliasDone(int state);
     }
 
     interface Presenter extends BasePresenter {

@@ -93,6 +93,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                 basePresenter.stop();
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_BIND_DEVICE_ALIAS, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
             SetDeviceAliasFragment fragment = SetDeviceAliasFragment.newInstance(bundle);
             ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
                     fragment, android.R.id.content);

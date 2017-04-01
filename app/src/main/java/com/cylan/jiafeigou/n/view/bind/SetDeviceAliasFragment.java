@@ -15,12 +15,9 @@ import android.widget.ImageView;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SetDeviceAliasPresenterImpl;
-import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
-import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoginButton;
 
@@ -123,10 +120,14 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
     }
 
     @Override
-    public void setupAliasDone() {
-        ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
-        Intent intent = new Intent(getActivity(), NewHomeActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        startActivity(intent);
+    public void setupAliasDone(int state) {
+        if (state == 0) {
+            ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
+            Intent intent = new Intent(getActivity(), NewHomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+        } else {
+            ToastUtil.showNegativeToast(getString(R.string.Clear_Sdcard_tips5));
+        }
     }
 }
