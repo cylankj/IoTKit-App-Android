@@ -14,6 +14,14 @@
         hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_gary" />
 
+    <ImageView
+        android:id="@+id/iv_explain_gray"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:padding="@dimen/y15"
+        android:src="@drawable/icon_explain_gray" />
+
     <TextView
         android:id="@+id/tv_main_content"
         android:layout_width="match_parent"
@@ -27,7 +35,6 @@
         android:textSize="@dimen/sp26" />
 
     <TextView
-        android:id="@+id/tv_sub_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_main_content"
@@ -38,28 +45,42 @@
         android:textColor="@color/color_333333"
         android:textSize="@dimen/sp16" />
 
+    <android.support.v4.widget.Space
+        android:id="@+id/s_place_holder"
+        android:layout_width="@dimen/x1"
+        android:layout_height="@dimen/y1"
+        android:layout_centerInParent="true" />
+
     <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/tv_sub_title"
+        android:layout_width="@dimen/y141"
+        android:layout_height="@dimen/y234"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/y57"
-        android:background="@drawable/image_camera">
+        android:background="@drawable/add_image_panoramic_camera">
 
-
-        <ImageView
-            android:id="@+id/imgV_camera_wifi_light_flash"
+        <FrameLayout
+            android:id="@+id/imgv_camera_wifi_light_flash_bg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@drawable/add_image_wifilight" />
+            android:layout_marginStart="@dimen/y72"
+            android:layout_marginTop="@dimen/y70"
+            android:background="@drawable/add_image_pop"
+            android:visibility="invisible">
+
+            <ImageView
+                android:id="@+id/imgV_camera_wifi_light_flash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:src="@drawable/add_image_bulelight" />
+
+        </FrameLayout>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="bottom|center_horizontal"
-            android:layout_marginBottom="@dimen/y20"
-            android:layout_marginTop="@dimen/y20"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y88"
             android:orientation="vertical">
 
             <ImageView
@@ -68,7 +89,8 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
                 android:layout_marginBottom="-20dp"
-                android:src="@drawable/add_image_red_dot" />
+                android:src="@drawable/add_image_red_dot"
+                android:visibility="invisible" />
 
             <ImageView
                 android:id="@+id/imgV_camera_hand"
@@ -101,5 +123,7 @@
     <FrameLayout
         android:id="@+id/fLayout_bind_device_list_fragment_container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true" />
 </RelativeLayout>

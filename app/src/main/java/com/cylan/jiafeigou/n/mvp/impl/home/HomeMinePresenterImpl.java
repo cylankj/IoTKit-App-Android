@@ -217,7 +217,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe((Object o) -> {
                     try {
                         requstId = JfgCmdInsurance.getCmd().robotCountData("", new long[]{601L, 701L}, 0);
-                    } catch (JfgException e) {
+                    } catch (Exception e) {
                         AppLogger.e("" + e.getLocalizedMessage());
                     }
                 });

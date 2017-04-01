@@ -1,12 +1,13 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -18,10 +19,12 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
-import com.cylan.jiafeigou.n.view.bind.BindDoorBellFragment;
-import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
+import com.cylan.jiafeigou.n.view.activity.ConfigWifiActivity;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -33,6 +36,7 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
 public class BellSettingFragment extends BaseFragment<BellSettingContract.Presenter>
@@ -54,16 +58,10 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     private SimpleDialogFragment mClearRecordFragment;
 
 
-    public static BellSettingFragment newInstance(Bundle bundle) {
-        BellSettingFragment fragment = new BellSettingFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
     public static BellSettingFragment newInstance(String uuid) {
         BellSettingFragment fragment = new BellSettingFragment();
         Bundle bundle = new Bundle();
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -99,7 +97,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
             case R.id.sv_setting_device_detail: {
                 BellDetailFragment fragment = BellDetailFragment.newInstance(null);
                 Bundle bundle = new Bundle();
-                bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+                bundle.putString(KEY_DEVICE_ITEM_UUID, mUUID);
 
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getActivity().getSupportFragmentManager(), fragment);
@@ -109,16 +107,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 getActivity().getSupportFragmentManager().popBackStack();
                 break;
             case R.id.sv_setting_device_wifi:
-                Bundle setWiFi = new Bundle();
-                setWiFi.putBoolean("ReSetBell", true);
-                BindDoorBellFragment fragment = BindDoorBellFragment.newInstance(setWiFi);
-                getActivity().getSupportFragmentManager()
-                        .beginTransaction()
-                        .setCustomAnimations(R.anim.slide_up_in, R.anim.slide_down_out
-                                , R.anim.slide_in_left, R.anim.slide_out_right)
-                        .add(android.R.id.content, fragment)
-                        .addToBackStack("BindDoorBellFragment")
-                        .commit();
+                handleJumpToConfig();
                 break;
             case R.id.tv_setting_clear_:
                 ViewUtils.deBounceClick(view);
@@ -147,16 +136,46 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 String name = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.SURE_DELETE_1, name))
-                        .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialogInterface, int i) {
-                                mPresenter.unbindDevice();
-                                LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
-                            }
+                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
+                            mPresenter.unbindDevice();
+                            LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                         })
                         .setNegativeButton(getString(R.string.CANCEL), null)
                         .create().show();
                 break;
+        }
+    }
+
+    private void handleJumpToConfig() {
+        String uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        if (device == null) {
+            getActivity().finish();
+            return;
+        }
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+        if (!JFGRules.isDeviceOnline(net)) {
+            //设备离线
+            Intent intent = new Intent(getActivity(), BindBellActivity.class);
+            startActivity(intent);
+        } else {
+            //设备在线
+            String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+            String remoteSSid = net.ssid;
+            if (!TextUtils.equals(localSSid, remoteSSid)) {
+                new AlertDialog.Builder(getActivity())
+                        .setMessage(getString(R.string.setwifi_check, remoteSSid))
+                        .setNegativeButton(getString(R.string.CANCEL), null)
+                        .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                        })
+                        .show();
+            } else {
+                //设备离线
+                Intent intent = new Intent(getActivity(), ConfigWifiActivity.class);
+                intent.putExtra(JConstant.JUST_SEND_INFO, JConstant.JUST_SEND_INFO);
+                startActivity(intent);
+            }
         }
     }
 
@@ -195,7 +214,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
 //        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(DpMsgMap.ID_201_NET, null)));
 
         DpMsgDefine.DPNet net = DataSourceManager.getInstance().getJFGDevice(mUUID).$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
-        if (net != null)svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(net));
+        if (net != null) svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(net));
         tvSettingClear.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
         mNetWorkContainer.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
     }

@@ -2,10 +2,13 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGResult;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
@@ -16,6 +19,10 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -110,11 +117,48 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 subscription.add(bindResultSub());
                 subscription.add(bindResultSub1());
                 subscription.add(robotDeviceDataSync());
+                subscription.add(robotDeviceDataGetRsp());
             }
         }
         if (bindResult == BindUtils.BIND_ING) {
             if (simulatePercent != null) simulatePercent.resume();
         }
+    }
+
+    private Subscription robotDeviceDataGetRsp() {
+        return RxBus.getCacheInstance().toObservableSticky(RobotoGetDataRsp.class)
+                .observeOn(Schedulers.newThread())
+                .filter(robotoGetDataRsp -> robotoGetDataRsp != null && TextUtils.equals(uuid, robotoGetDataRsp.identity))
+                .filter(robotoGetDataRsp -> robotoGetDataRsp.map != null)
+                .flatMap(robotoGetDataRsp -> {
+                    HashMap<Integer, ArrayList<JFGDPMsg>> map = robotoGetDataRsp.map;
+                    Iterator<Integer> integerIterator = map.keySet().iterator();
+                    JFGDPMsg jfgdpMsg = null;
+                    while (integerIterator.hasNext()) {
+                        int msgId = integerIterator.next();
+                        if (msgId == 201 && map.get(msgId).size() > 0) {
+                            jfgdpMsg = map.get(msgId).get(0);
+                            break;
+                        }
+                    }
+                    if (jfgdpMsg != null && jfgdpMsg.packValue != null) {
+                        try {
+                            DpMsgDefine.DPNet net = DpUtils.unpackData(jfgdpMsg.packValue, DpMsgDefine.DPNet.class);
+                            AppLogger.d("get bind rsp?" + net);
+                            return Observable.just(net != null && net.net > 0);
+                        } catch (IOException e) {
+                            return Observable.just(false);
+                        }
+                    }
+                    return Observable.just(false);
+                })
+                .filter(ret -> ret)
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                .subscribe(ret -> {
+                }, throwable -> {
+                    AppLogger.e("err:" + throwable.getLocalizedMessage());
+                });
     }
 
     /**

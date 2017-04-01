@@ -36,7 +36,6 @@ import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
 import com.cylan.jiafeigou.n.view.cam.SafeProtectionFragment;
 import com.cylan.jiafeigou.n.view.cam.VideoAutoRecordFragment;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
-import com.cylan.jiafeigou.n.view.setting.WifiListFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -231,50 +230,51 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             }
             break;
             case R.id.sv_setting_device_wifi:
-                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                if (device == null) {
-                    finishExt();
-                    return;
-                }
-                if (JFGRules.isFreeCam(device.pid)) {
-                    Intent intent = new Intent(this, BindDeviceActivity.class);
-                    intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
-                    startActivity(intent);
-                } else {
-                    DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-                    if (!JFGRules.isDeviceOnline(net)) {
-                        //设备离线
-                        Intent intent = new Intent(this, BindCamActivity.class);
-                        intent.putExtra(JConstant.KEY_AUTO_SHOW_BIND, JConstant.KEY_AUTO_SHOW_BIND);
-                        startActivity(intent);
-                    } else {
-                        //设备在线
-                        String localSSid = NetUtils.getNetName(ContextUtils.getContext());
-                        String remoteSSid = net.ssid;
-                        if (!TextUtils.equals(localSSid, remoteSSid)) {
-                            new AlertDialog.Builder(this)
-                                    .setMessage(getString(R.string.setwifi_check, remoteSSid))
-                                    .setNegativeButton(getString(R.string.CANCEL), null)
-                                    .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
-                                        startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                                    })
-                                    .show();
-                        } else {
-                            //显示列表
-//                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                            Bundle bundle = new Bundle();
-                            bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
-                            WifiListFragment fragment = WifiListFragment.getInstance(bundle);
-                            loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
-                        }
-                    }
-                }
+                handleJumpToConfig();
                 break;
             case R.id.sbtn_setting_sight:
                 Intent intent = new Intent(this, SightSettingActivity.class);
                 intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                 startActivity(intent);
                 break;
+        }
+    }
+
+    private void handleJumpToConfig() {
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        if (device == null) {
+            finishExt();
+            return;
+        }
+        if (JFGRules.isFreeCam(device.pid)) {
+            Intent intent = new Intent(this, BindCamActivity.class);
+            startActivity(intent);
+        } else {
+            DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+            if (!JFGRules.isDeviceOnline(net)) {
+                //设备离线
+                Intent intent = new Intent(this, BindCamActivity.class);
+                intent.putExtra(JConstant.JUST_SEND_INFO, JConstant.JUST_SEND_INFO);
+                startActivity(intent);
+            } else {
+                //设备在线
+                String localSSid = NetUtils.getNetName(ContextUtils.getContext());
+                String remoteSSid = net.ssid;
+                if (!TextUtils.equals(localSSid, remoteSSid)) {
+                    new AlertDialog.Builder(this)
+                            .setMessage(getString(R.string.setwifi_check, remoteSSid))
+                            .setNegativeButton(getString(R.string.CANCEL), null)
+                            .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            })
+                            .show();
+                } else {
+                    //设备离线
+                    Intent intent = new Intent(this, ConfigWifiActivity.class);
+                    intent.putExtra(JConstant.JUST_SEND_INFO, JConstant.JUST_SEND_INFO);
+                    startActivity(intent);
+                }
+            }
         }
     }
 

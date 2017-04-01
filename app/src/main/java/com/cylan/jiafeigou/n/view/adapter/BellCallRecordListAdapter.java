@@ -138,12 +138,6 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
         holder.setText(R.id.tv_bell_list_item_date, item.date);
         holder.setText(R.id.tv_bell_list_item_time, item.timeStr);
         setAnswerState(item.answerState, holder.getView(R.id.tv_bell_list_item_answer_state));
-        if (simpleLongClickListener != null) {
-            holder.setOnLongClickListener(R.id.cv_bell_call_item, simpleLongClickListener);
-        }
-        if (simpleLongClickListener != null) {
-            holder.setOnClickListener(R.id.cv_bell_call_item, simpleClickListener);
-        }
         setSelectState(holder, item);
         if (loadImageListener != null)
             loadImageListener.loadMedia(item, holder.getView(R.id.imgv_bell_call_item_thumbnail));
@@ -161,18 +155,6 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
         ViewUtils.setDrawablePadding(textView, state == 0 ? R.drawable.doorbell_icon_not_connected : R.drawable.doorbell_icon_connect, 0);
     }
 
-    private SimpleLongClickListener simpleLongClickListener;
-
-    public void setSimpleLongClickListener(SimpleLongClickListener simpleLongClickListener) {
-        this.simpleLongClickListener = simpleLongClickListener;
-    }
-
-    private SimpleClickListener simpleClickListener;
-
-    public void setSimpleClickListener(SimpleClickListener simpleClickListener) {
-        this.simpleClickListener = simpleClickListener;
-    }
-
     public List<BellCallRecordBean> getSelectedList() {
         mRemovedList.clear();
         for (int i = getCount() - 1; i >= 0; i--) {
@@ -182,12 +164,6 @@ public class BellCallRecordListAdapter extends SuperAdapter<BellCallRecordBean> 
             }
         }
         return mRemovedList;
-    }
-
-    public interface SimpleLongClickListener extends View.OnLongClickListener {
-    }
-
-    public interface SimpleClickListener extends View.OnClickListener {
     }
 
     public interface LoadImageListener {

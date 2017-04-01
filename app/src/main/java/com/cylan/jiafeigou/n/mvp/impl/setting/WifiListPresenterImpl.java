@@ -28,6 +28,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -60,23 +61,22 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
 
     @Override
     public void startScan() {
-        Observable.just("")
+        Subscription subscription = Observable.just("scan")
+                .subscribeOn(Schedulers.newThread())
                 .map(s -> {
                     if (wifiManager != null) wifiManager.startScan();
                     return null;
                 })
-                .timeout(1000, TimeUnit.MILLISECONDS,
-                        Observable.just("timeout")
-                                .filter(s -> getView() != null)
-                                .subscribeOn(AndroidSchedulers.mainThread())
-                                .map(s -> {
-                                    if (wifiManager.getScanResults() == null || wifiManager.getScanResults().size() == 0) {
-                                        getView().onErr(ERR_NO_RAW_LIST);
-                                    }
-                                    return null;
-                                }))
+                .timeout(1, TimeUnit.SECONDS)
+                .filter(o -> mView != null)
+                .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> {
-                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+                }, throwable -> {
+                    if (throwable instanceof TimeoutException) {
+                        mView.onErr(ERR_NO_RAW_LIST);
+                    }
+                });
+        addSubscription(subscription, "startScan");
 
     }
 
@@ -84,7 +84,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
     public void sendWifiInfo(String ssid, String pwd, int security) {
         String mac = getLatestMac();
         if (TextUtils.isEmpty(mac)) {
-            RxBus.getCacheInstance().toObservable(JfgUdpMsg.FPingAck.class)
+            Subscription subscription = RxBus.getCacheInstance().toObservable(JfgUdpMsg.FPingAck.class)
                     .subscribeOn(Schedulers.newThread())
                     .throttleFirst(500, TimeUnit.MILLISECONDS)
                     .subscribe((JfgUdpMsg.FPingAck fPingAck) -> {
@@ -93,6 +93,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
                             AppLogger.i(String.format(Locale.getDefault(), "send info: %s_%s_%s_%s", ssid, pwd, mac, security));
                         }
                     }, (Throwable throwable) -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+            addSubscription(subscription, "sendWifiInfo");
             return;
         }
         sendInfo(ssid, pwd, security, mac);
@@ -153,7 +154,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
      * wifi列表
      */
     private void updateWifiResults(List<ScanResult> scanResults) {
-        Observable.just(scanResults)
+        Subscription subscription = Observable.just(scanResults)
                 //别那么频繁
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
@@ -175,6 +176,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
                     getView().onResults((ArrayList<ScanResult>) s);
                     AppLogger.i("wifiList: " + s.size());
                 }, new RxHelper.EmptyException("resultList call"));
+        addSubscription(subscription, "updateWifiResults");
     }
 
 }

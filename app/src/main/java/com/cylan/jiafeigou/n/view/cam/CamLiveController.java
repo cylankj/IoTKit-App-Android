@@ -686,6 +686,8 @@ public class CamLiveController implements
                     }
                     camLiveControlLayer.setLandSafe(true);
                     if (iSafeStateSetterPort != null) iSafeStateSetterPort.setFlipped(true);
-                }).create();
+                })
+                .setCancelable(false)
+                .create();
     }
 }

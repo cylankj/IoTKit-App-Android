@@ -22,7 +22,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.WifiListPresenterImpl;
@@ -30,6 +34,7 @@ import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -241,8 +246,19 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
         dialog.setAction((int id, Object value) -> {
             if (value != null && value instanceof String) {
                 //pwd
+                String routeName = NetUtils.getNetName(ContextUtils.getContext());
+                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                DpMsgDefine.DPNet net = device == null ? new DpMsgDefine.DPNet() : device.$(201, new DpMsgDefine.DPNet());
+                if (!TextUtils.equals(routeName, net.ssid)) {
+                    ToastUtil.showNegativeToast(getString(R.string.setwifi_check, net.ssid));
+                    return;
+                }
                 if (basePresenter != null)
                     basePresenter.sendWifiInfo(ssid, (String) value, security);
+                ToastUtil.showToast(getString(R.string.DOOR_SET_WIFI_MSG));
+                Intent intent = new Intent(getActivity(), NewHomeActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                getActivity().startActivity(intent);
             }
         });
         dialog.show(getChildFragmentManager(), "dialog");
