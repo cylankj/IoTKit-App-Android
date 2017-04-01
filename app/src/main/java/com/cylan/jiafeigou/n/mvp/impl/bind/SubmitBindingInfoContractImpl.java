@@ -67,17 +67,6 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
     }
 
     @Override
-    public int getBindState() {
-        return bindResult;
-    }
-
-    @Override
-    public void setBindState(int bindState) {
-        AppLogger.d("submitimplSetBindState:" + bindState);
-        this.bindResult = bindState;
-    }
-
-    @Override
     public void clean() {
         RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
     }

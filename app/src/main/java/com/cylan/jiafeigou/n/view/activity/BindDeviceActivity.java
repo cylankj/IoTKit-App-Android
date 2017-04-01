@@ -59,11 +59,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
 
     @Override
     public void onBackPressed() {
-        if (shouldNotifyBackForeword())
-            return;
-        if (checkFinish()) {
-            finishExt();
-        }
         if (popAllFragmentStack())
             return;
         finishExt();
