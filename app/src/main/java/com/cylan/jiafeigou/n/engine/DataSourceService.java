@@ -381,7 +381,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnDoorBellCall(JFGDoorBellCaller jfgDoorBellCaller) {
-        AppLogger.d("OnDoorBellCall :");
+        AppLogger.d("OnDoorBellCall :"+new Gson().toJson(jfgDoorBellCaller));
         RxBus.getCacheInstance().post(new RxEvent.BellCallEvent(jfgDoorBellCaller));
     }
 

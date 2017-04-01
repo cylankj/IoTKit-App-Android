@@ -79,7 +79,8 @@ public class AfterLoginService extends IntentService {
                 try {
                     String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
                     UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
-                    JfgCmdInsurance.getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                    if (portrait != null)
+                        JfgCmdInsurance.getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
                 } catch (Exception e) {
                     AppLogger.d("err: " + e.getLocalizedMessage());
                 }

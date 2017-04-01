@@ -76,6 +76,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                                 mView.onNewCallWhenInLive(mHolderCaller.caller);
                                             } else if (mHolderCaller != null) {
                                                 mView.onListen();
+                                                AppLogger.d(caller.picture);
                                                 if (!TextUtils.isEmpty(caller.picture)) {
                                                     registerSubscription(loadPreview(caller.picture).subscribe());
                                                 }

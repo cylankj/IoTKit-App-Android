@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.misc.bind;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
@@ -135,6 +136,9 @@ public class SimpleBindFlow extends AFullBind {
             AppLogger.i(BIND_TAG + udpDevicePortrait);
             //
             String serverAddress = OptionsImpl.getServer();
+            if (serverAddress != null && serverAddress.contains(":443")) {
+                serverAddress = serverAddress.split(":")[0];
+            }
             if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG)
                 throw new IllegalArgumentException("server address is empty");
             int port = Security.getServerPort(JFGRules.getTrimPackageName());
@@ -231,6 +235,7 @@ public class SimpleBindFlow extends AFullBind {
                 })
                 .map((Integer o) -> {
                     AppLogger.i(BIND_TAG + "sendWifiInfo:" + devicePortrait);
+                    Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
                     JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
                             devicePortrait.mac,
                             ssid, pwd);
