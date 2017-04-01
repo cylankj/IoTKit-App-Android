@@ -517,6 +517,14 @@ public class RxEvent {
         }
     }
 
+    public static final class BellPreviewEvent {
+        public String url;
+
+        public BellPreviewEvent(String url) {
+            this.url = url;
+        }
+    }
+
     public static final class BellCallEvent {
 
         public JFGDoorBellCaller caller;
@@ -799,6 +807,7 @@ public class RxEvent {
     }
 
     public static class NetConnectionEvent {
+        public boolean isOnLine = false;
         public boolean available;
         public NetworkInfo mobile;
         public NetworkInfo wifi;

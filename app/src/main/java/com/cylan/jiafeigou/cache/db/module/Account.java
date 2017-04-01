@@ -37,6 +37,15 @@ public class Account extends BasePropertyHolder<Account> {
     private String action;
     private String state;
     private String option;
+    private transient boolean isOnline;
+
+    public void setOnline(boolean isOnline) {
+        this.isOnline = isOnline;
+    }
+
+    public boolean isOnline() {
+        return this.isOnline;
+    }
 
     @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
     public transient static final int ACCOUNT_STATE = 601;

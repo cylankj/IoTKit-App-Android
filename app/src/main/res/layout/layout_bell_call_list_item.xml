@@ -58,6 +58,7 @@
             hunt:t_show_point="true" />
 
 
+
         <TextView
             android:id="@+id/tv_bell_list_item_answer_state"
             android:layout_width="wrap_content"

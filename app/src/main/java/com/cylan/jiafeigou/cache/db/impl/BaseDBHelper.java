@@ -387,27 +387,32 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Iterable<Device>> updateDevice(JFGDevice[] device) {
-        return getActiveAccount().map(account -> {
-            List<Device> result = new ArrayList<>(device.length);
-            QueryBuilder<Device> queryBuilder = null;
-            Device dpDevice = null;
-            JFGDevice dev;
-            for (int i = 0; i < device.length; i++) {
-                dev = device[i];
-                queryBuilder = deviceDao.queryBuilder().where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(account.getAccount()));
-                dpDevice = queryBuilder.unique();
-                if (dpDevice == null) {
-                    dpDevice = new Device();
-                    dpDevice.setServer(getServer());
-                    dpDevice.setAccount(account.getAccount());
-                }
-                dpDevice.setDevice(dev);
-                dpDevice.setOption(new DBOption.RawDeviceOrderOption(i));
-                result.add(dpDevice);
-            }
-            deviceDao.insertOrReplaceInTx(result);
-            return result;
-        });
+        return getActiveAccount()
+                .flatMap(account -> queryDPMsg(account.getAccount(), getServer(), null, null, null, null, null, null, null, null)
+                        .map(items -> {
+                            if (items != null)
+                                mEntityDao.deleteInTx(items);
+
+                            List<Device> result = new ArrayList<>(device.length);
+                            QueryBuilder<Device> queryBuilder = null;
+                            Device dpDevice = null;
+                            JFGDevice dev;
+                            for (int i = 0; i < device.length; i++) {
+                                dev = device[i];
+                                queryBuilder = deviceDao.queryBuilder().where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(account.getAccount()));
+                                dpDevice = queryBuilder.unique();
+                                if (dpDevice == null) {
+                                    dpDevice = new Device();
+                                    dpDevice.setServer(getServer());
+                                    dpDevice.setAccount(account.getAccount());
+                                }
+                                dpDevice.setDevice(dev);
+                                dpDevice.setOption(new DBOption.RawDeviceOrderOption(i));
+                                result.add(dpDevice);
+                            }
+                            deviceDao.insertOrReplaceInTx(result);
+                            return result;
+                        }));
     }
 
     @Override
@@ -428,7 +433,11 @@ public class BaseDBHelper implements IDBHelper {
         return markDevice(getDpAccount(), getServer(), uuid, DBAction.UNBIND, DBState.SUCCESS, null).map(items -> {
             if (items == null || items.size() == 0) return null;
             return items.get(0);
-        });
+        }).flatMap(device -> queryDPMsg(uuid, null, null, null, null)
+                .map(items -> {
+                    mEntityDao.deleteInTx(items);
+                    return device;
+                }));
     }
 
     @Override

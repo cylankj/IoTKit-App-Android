@@ -90,7 +90,9 @@ public class GlobalUdpDataSource {
                                 JFGDoorBellCaller caller = new JFGDoorBellCaller();
                                 caller.time = System.currentTimeMillis() / 1000L - PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL);
                                 caller.cid = recvHeard.cid;
-                                RxBus.getCacheInstance().post(new RxEvent.BellCallEvent(caller));
+                                RxEvent.BellCallEvent callEvent = new RxEvent.BellCallEvent(caller);
+                                callEvent.isFromLocal = true;
+                                RxBus.getCacheInstance().post(callEvent);
                             }
                             AppLogger.i(new Gson().toJson(recvHeard));
                         }

@@ -416,6 +416,7 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity android:name=".n.bind.BindActivity"></activity>
         <activity
             android:name=".n.view.activity.ConfigWifiActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"

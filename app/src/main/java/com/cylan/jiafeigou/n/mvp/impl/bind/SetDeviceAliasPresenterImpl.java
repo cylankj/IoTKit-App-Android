@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -32,26 +34,28 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
 
     @Override
     public void setupAlias(String alias) {
-        addSubscription(Observable.just(alias)
-                .map(device1 -> {
-                    try {
-                        JfgCmdInsurance.getCmd().setAliasByCid(uuid, alias);
-                        AppLogger.d("update alias suc");
-                    } catch (JfgException e) {
-                        AppLogger.e("");
-                    }
-                    return null;
-                })
-                .timeout(10, TimeUnit.SECONDS)
-                .flatMap(dev -> RxBus.getCacheInstance().toObservable(RxEvent.SetAlias.class))
-                .filter(s -> getView() != null)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(setAlias -> getView().setupAliasDone(0),
-                        throwable -> {
-                            if (throwable instanceof TimeoutException) {
-                                mView.setupAliasDone(-1);
+        Subscription subscription =
+                Observable.interval(0, 2, TimeUnit.SECONDS)
+                        .takeUntil(aLong -> {
+                            Account account = DataSourceManager.getInstance().getAJFGAccount();
+                            return account != null && account.isOnline();
+                        })
+                        .map(s -> alias)
+                        .subscribeOn(Schedulers.newThread())
+                        .map((String s) -> {
+                            try {
+                                JfgCmdInsurance.getCmd().setAliasByCid(uuid, s);
+                                AppLogger.i("setup alias: " + s);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
                             }
-                            AppLogger.e("err: " + throwable.getLocalizedMessage());
-                        }));
+                            return s;
+                        })
+                        .delay(1000, TimeUnit.MILLISECONDS)
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe((String s) -> {
+                            getView().setupAliasDone();
+                        });
+        addSubscription(subscription, "setupAlias");
     }
 }

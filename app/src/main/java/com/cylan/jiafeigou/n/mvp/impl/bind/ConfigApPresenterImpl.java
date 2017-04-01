@@ -8,6 +8,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -24,7 +25,10 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.ShareUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -33,6 +37,11 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static android.R.attr.id;
+import static android.R.id.list;
+import static android.R.string.ok;
+import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 /**
  * Created by cylan-hunt on 16-7-8.
@@ -43,6 +52,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 //    private Network network;
 
     private AFullBind aFullBind;
+    private boolean onLocalFlowFinish = false;
 
     public ConfigApPresenterImpl(ConfigApContract.View view) {
         super(view);
@@ -252,14 +262,50 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void onLocalFlowFinish() {
-        getView().onSetWifiFinished(aFullBind.getDevicePortrait());
         Subscription subscription = Observable.just(null)
-                .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
-                .map(new Func())
+                .observeOn(Schedulers.io())
+                .map((Object o) -> {
+                    onLocalFlowFinish = true;
+                    WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+                    List<WifiConfiguration> list =
+                            wifiManager.getConfiguredNetworks();
+                    WifiInfo info = wifiManager.getConnectionInfo();
+                    AppLogger.d("当前连接的网络:" + info.getSSID() + ":" + info.getNetworkId());
+                    boolean disconnect = wifiManager.disconnect();
+                    AppLogger.d("断开网络是否成功:" + disconnect);
+                    boolean disableNetwork = wifiManager.disableNetwork(info.getNetworkId());
+                    AppLogger.d("禁用网络是否成功:" + disableNetwork);
+                    if (list != null) {
+                        int highPriority = -1;
+                        int index = -1;
+                        for (int i = 0; i < list.size(); i++) {
+                            String ssid = list.get(i).SSID;
+                            if (!JFGRules.isCylanDevice(ssid)) {
+                                //恢复之前连接过的wifi
+                                if (highPriority < list.get(i).priority) {
+                                    highPriority = list.get(i).priority;
+                                    index = i;
+                                }
+                            }
+                        }
+                        if (index != -1) {
+                            boolean enableNetwork = wifiManager.enableNetwork(list.get(index).networkId, false);
+                            AppLogger.d("re enable ssid: " + list.get(index).SSID + "success:" + enableNetwork);
+                            boolean reconnect = wifiManager.reconnect();
+                            AppLogger.d("re connect :" + reconnect);
+                        }
+                    }
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(s -> {
+                    AppLogger.d("onLocalFlowFinish");
+                    getView().onSetWifiFinished(aFullBind.getDevicePortrait());
+                    return s;
+                })
                 .subscribe();
-        //需不要unSub
-//        addSubscription(subscription, "onLocalFlowFinish");
+        addSubscription(subscription, "onLocalFlowFinish");
     }
 
     @Override
@@ -267,50 +313,18 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         String action = intent.getAction();
         if (TextUtils.equals(action, WifiManager.RSSI_CHANGED_ACTION)
                 || TextUtils.equals(action, WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-            updateWifiResults();
+            if (!onLocalFlowFinish)
+                updateWifiResults();
         } else if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
-            ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
-            updateConnectivityStatus(status.state);
+            if (!onLocalFlowFinish) {
+                ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
+                updateConnectivityStatus(status.state);
+            }
         } else if (TextUtils.equals(action, WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
             NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-            updateConnectInfo(info);
+            if (!onLocalFlowFinish)
+                updateConnectInfo(info);
         }
     }
 
-    private static class Func implements Func1<Object, Object> {
-        @Override
-        public Object call(Object o) {
-            WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
-            WifiInfo info = wifiManager.getConnectionInfo();
-            wifiManager.disconnect();
-            if (info != null) {
-                wifiManager.disableNetwork(info.getNetworkId());
-            }
-            List<WifiConfiguration> list =
-                    wifiManager.getConfiguredNetworks();
-            if (list != null) {
-                int highPriority = -1;
-                int index = -1;
-                for (int i = 0; i < list.size(); i++) {
-                    String ssid = list.get(i).SSID.replace("\"", "");
-                    if (JFGRules.isCylanDevice(ssid)) {
-                        //找到这个狗,清空他的信息
-                        wifiManager.removeNetwork(list.get(i).networkId);
-                        AppLogger.i(UdpConstant.BIND_TAG + "clean dog like ssid: " + ssid);
-                    } else {
-                        //恢复之前连接过的wifi
-                        if (highPriority < list.get(i).priority) {
-                            highPriority = list.get(i).priority;
-                            index = i;
-                        }
-                    }
-                }
-                if (index != -1) {
-                    AppLogger.i(UdpConstant.BIND_TAG + "re enable ssid: " + list.get(index).SSID);
-                    wifiManager.enableNetwork(list.get(index).networkId, false);
-                }
-            }
-            return null;
-        }
-    }
 }

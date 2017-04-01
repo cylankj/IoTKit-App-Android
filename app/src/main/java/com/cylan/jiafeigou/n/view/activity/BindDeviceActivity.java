@@ -18,7 +18,6 @@ import butterknife.OnClick;
 
 
 public class BindDeviceActivity extends BaseFullScreenFragmentActivity implements BaseDialog.BaseDialogAction {
-
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
 
@@ -60,6 +59,11 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
 
     @Override
     public void onBackPressed() {
+        if (shouldNotifyBackForeword())
+            return;
+        if (checkFinish()) {
+            finishExt();
+        }
         if (popAllFragmentStack())
             return;
         finishExt();
@@ -83,6 +87,8 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 break;
             }
             case R.id.v_to_bind_camera: {
+
+                ViewUtils.deBounceClick(view);
                 Intent intent = new Intent(this, BindCamActivity.class);
                 startActivity(intent);
                 break;

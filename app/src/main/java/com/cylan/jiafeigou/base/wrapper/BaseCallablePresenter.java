@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.base.wrapper;
 
 import android.support.annotation.CallSuper;
-import android.text.TextUtils;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
@@ -72,13 +71,12 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                 .flatMap(who -> {
                                     switch (mView.onResolveViewLaunchType()) {
                                         case JConstant.VIEW_CALL_WAY_LISTEN:
+                                            RxBus.getCacheInstance().toObservable(RxEvent.BellPreviewEvent.class)
+                                                    .flatMap(pic -> loadPreview(pic.url)).subscribe();
                                             if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
                                                 mView.onNewCallWhenInLive(mHolderCaller.caller);
                                             } else if (mHolderCaller != null) {
                                                 mView.onListen();
-                                                if (!TextUtils.isEmpty(caller.picture)) {
-                                                    registerSubscription(loadPreview(caller.picture).subscribe());
-                                                }
                                                 AppLogger.d("收到门铃呼叫");
                                             }
                                             break;

@@ -386,7 +386,7 @@ public class DataSourceService extends Service implements AppCallBack {
         if (login) {
             AfterLoginService.startGetAccountAction(ContextUtils.getContext());
             AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
-            AfterLoginService.resumeOfflineRequest();
+//            AfterLoginService.resumeOfflineRequest();
         }
         AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + ",seq:" + jfgResult.seq + "]");
     }
@@ -394,7 +394,9 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnDoorBellCall(JFGDoorBellCaller jfgDoorBellCaller) {
         AppLogger.d("OnDoorBellCall :");
-        RxBus.getCacheInstance().post(new RxEvent.BellCallEvent(jfgDoorBellCaller));
+        RxEvent.BellCallEvent callEvent = new RxEvent.BellCallEvent(jfgDoorBellCaller);
+        callEvent.isFromLocal = false;
+        RxBus.getCacheInstance().post(callEvent);
     }
 
     @Override
