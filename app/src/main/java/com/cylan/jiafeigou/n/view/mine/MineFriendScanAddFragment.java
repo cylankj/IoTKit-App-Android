@@ -12,6 +12,7 @@ import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -108,7 +109,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
 
     @Override
     public void showQrCode(String account) {
-        ivErweima.setImageBitmap(Qrcode.createQRImage(account, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
+        ivErweima.setImageBitmap(Qrcode.createQRImage(JConstant.EFAMILY_URL_PREFIX+"id="+account, ViewUtils.dp2px(78), ViewUtils.dp2px(78), null));
     }
 
     /**
@@ -206,7 +207,9 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
 //            showLoadingPro();
             if (getView() != null) {
                 if (presenter != null) {
-                    presenter.checkScanAccount(rawResult.getText());
+                    String[] split = rawResult.getText().split("=");
+                    if (split.length == 2)
+                    presenter.checkScanAccount(split[1]);
                 }
             }
         }

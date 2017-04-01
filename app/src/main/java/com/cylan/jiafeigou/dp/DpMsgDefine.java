@@ -1000,4 +1000,27 @@ public class DpMsgDefine {
         }
     }
 
+    @Message
+    public static final class DPUnreadCount{
+        @Index(0)
+        public int id;
+        @Index(1)
+        public long time;
+        @Index(2)
+        public int count;
+
+        public DPUnreadCount(){
+
+        }
+
+        public DPUnreadCount(int id, long time, int count) {
+            this.id = id;
+            this.time = time;
+            this.count = count;
+        }
+
+
+
+    }
+
 }

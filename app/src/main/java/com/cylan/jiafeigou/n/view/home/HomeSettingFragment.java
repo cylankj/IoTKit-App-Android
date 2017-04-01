@@ -200,6 +200,9 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             mShareDlg.dismiss();
             mShareDlg = null;
         }
+        if (appAdater != null){
+            appAdater = null;
+        }
     }
 
     @Override

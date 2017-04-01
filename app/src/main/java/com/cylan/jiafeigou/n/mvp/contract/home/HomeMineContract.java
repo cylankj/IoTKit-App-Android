@@ -103,9 +103,6 @@ public interface HomeMineContract {
          */
         boolean hasUnReadMesg();
 
-        /**
-         * 清空未读
-         */
-        void markHasRead();
+
     }
 }

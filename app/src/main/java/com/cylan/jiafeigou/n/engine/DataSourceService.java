@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.os.Process;
 import android.support.annotation.Nullable;
+import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -124,44 +125,66 @@ public class DataSourceService extends Service implements AppCallBack {
             } catch (JfgException e) {
                 e.printStackTrace();
             }
-
         });
     }
 
     private void try2autoLogin() {
-        AutoSignIn.getInstance().autoLogin()
-                .flatMap(integer -> {
-                    AppLogger.d("integer: " + integer);
-                    if (integer == 0) {
-                        PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
-                        PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, true);
-                        RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
-                                .subscribeOn(Schedulers.newThread())
-                                .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
-                                        .observeOn(AndroidSchedulers.mainThread())
-                                        .map(s -> {
-                                            AppLogger.d("net type: " + NetUtils.getNetType(ContextUtils.getContext()));
-                                            if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
-                                                RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.NoNet));
-                                            } else {
-                                                if (!PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false)) {
-                                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+        //获取到2.x中的账号密码
+        PreferencesUtils.init(ContextUtils.getContext(),JConstant.PREF_NAME);
+        String account2x = PreferencesUtils.getString(JConstant.KEY_PHONE,"");
+        String pwd2x = PreferencesUtils.getString(JConstant.SESSIONID,"");
+        PreferencesUtils.putString(JConstant.KEY_PHONE,"");
+        PreferencesUtils.putString(JConstant.SESSIONID,"");
+        AppLogger.d("account2x:"+account2x+":"+pwd2x);
+        HandlerThreadUtils.post(() -> PreferencesUtils.init(getApplicationContext()));
+        if (TextUtils.isEmpty(account2x) || TextUtils.isEmpty(pwd2x)){
+            //正常的流程
+            AutoSignIn.getInstance().autoLogin()
+                    .flatMap(integer -> {
+                        AppLogger.d("integer: " + integer);
+                        if (integer == 0) {
+                            PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
+                            PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, true);
+                            RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
+                                    .subscribeOn(Schedulers.newThread())
+                                    .timeout(5, TimeUnit.SECONDS, Observable.just("autoSign in timeout")
+                                            .observeOn(AndroidSchedulers.mainThread())
+                                            .map(s -> {
+                                                AppLogger.d("net type: " + NetUtils.getNetType(ContextUtils.getContext()));
+                                                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.NoNet));
+                                                } else {
+                                                    if (!PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false)) {
+                                                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+                                                    }
+                                                    PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                                                 }
-                                                PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
-                                            }
-                                            DataSourceManager.getInstance().initFromDB();
-                                            return null;
-                                        }))
-                                .subscribe();
-                    } else if (integer == -1) {
-                        //emit failed event.
-                        PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
-                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
-                    }
-                    return null;
-                })
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .subscribe();
+                                                DataSourceManager.getInstance().initFromDB();
+                                                return null;
+                                            }))
+                                    .subscribe();
+                        } else if (integer == -1) {
+                            //emit failed event.
+                            PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
+                            RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
+                        }
+                        return null;
+                    })
+                    .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                    .subscribe();
+        }else {
+            //直接走引导页
+            PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
+            PreferencesUtils.putBoolean(JConstant.UPDATAE_AUTO_LOGIN,true);
+            //同时自动登录保存3.0的账号密码
+            try {
+                JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account2x, pwd2x);
+                AutoSignIn.getInstance().autoSave(account2x,1,pwd2x);
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @Override
@@ -286,18 +309,6 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d("OnRobotGetDataTimeout :");
     }
 
-//    @Override
-//    public void OnRobotSetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
-//        AppLogger.d("OnRobotSetDataRsp :" + l + new Gson().toJson(arrayList));
-//        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, arrayList));
-//        RxBus.getCacheInstance().post(new RxEvent.SdcardClearReqRsp(l, arrayList));
-//    }
-//
-//    @Override
-//    public void OnRobotGetDataTimeout(long l) {
-//        AppLogger.d("OnRobotGetDataTimeout :");
-//    }
-
     @Override
     public ArrayList<JFGDPMsg> OnQuerySavedDatapoint(String s, ArrayList<JFGDPMsg> arrayList) {
         return null;
@@ -326,6 +337,7 @@ public class DataSourceService extends Service implements AppCallBack {
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
                 RxBus.getCacheInstance().post(new RxEvent.ResultUserLogin(jfgResult.code));
+                RxBus.getCacheInstance().postSticky(new RxEvent.ResultUpdateLogin(jfgResult.code));
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备

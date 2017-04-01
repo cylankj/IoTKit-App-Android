@@ -79,7 +79,7 @@ public class MyQRCodeDialog extends BaseDialog {
     @Override
     public void onResume() {
         super.onResume();
-        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(jfgaccount.getAccount(), ViewUtils.dp2px(137), ViewUtils.dp2px(137), null));
+        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(JConstant.EFAMILY_URL_PREFIX+"id="+jfgaccount.getAccount(), ViewUtils.dp2px(137), ViewUtils.dp2px(137), null));
     }
 
     private void initView() {

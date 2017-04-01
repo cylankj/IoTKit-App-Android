@@ -90,7 +90,7 @@ public class AutoSignIn {
                                         } else {
                                             AppLogger.d("isout:no");
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()),finalPwd,signType.account,signType.type);
+                                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()),signType.account,finalPwd,signType.type);
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         }
                                     }
