@@ -135,8 +135,9 @@ public class PreferencesUtils {
      */
     private static PreferencesUtils getInstance() {
         if (!INSTANCE.mWasInitialized) {
-            throw new RuntimeException(
-                    "PreferencesUtils was not initialized! You must call PreferencesUtils.init() before using this.");
+            init(ContextUtils.getContext());
+            //throw new RuntimeException(
+            //       "PreferencesUtils was not initialized! You must call PreferencesUtils.init() before using this.");
         }
         return INSTANCE;
     }

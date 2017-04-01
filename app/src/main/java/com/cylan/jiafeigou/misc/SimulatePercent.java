@@ -16,6 +16,8 @@ public class SimulatePercent implements Handler.Callback {
     private static final int MSG_STEP_1 = 1;
     private int index;
     private final int percent;
+    private int animateStep;//动画执行的步骤,共有:发送bind 请求,收到服务器响应,收到设备上线;
+
 
     public SimulatePercent() {
         percent = new Random().nextInt(30) + 60;
@@ -41,6 +43,12 @@ public class SimulatePercent implements Handler.Callback {
 
     public void setOnAction(OnAction onAction) {
         this.onAction = onAction;
+    }
+
+    public void setStep(int step) {
+        if (step == 0) {//正在发送 bind 请求,完成度:0到30;
+
+        }
     }
 
     public interface OnAction {

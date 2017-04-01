@@ -95,7 +95,11 @@ public class DataSourceManager implements JFGSourceManager {
         dbHelper.getActiveAccount()
                 .observeOn(Schedulers.io())
                 .filter(account -> account != null)
-                .map(dpAccount -> account = dpAccount)
+                .map(dpAccount -> {
+                    account = dpAccount;
+                    account.setOnline(false);
+                    return account;
+                })
                 .map(dpAccount -> {
                     getCacheInstance().postSticky(new RxEvent.AccountArrived(dpAccount));
                     return dpAccount;
@@ -135,6 +139,9 @@ public class DataSourceManager implements JFGSourceManager {
     @Deprecated
     public void setOnline(boolean online) {
         isOnline = online;
+        if (account != null) {
+            account.setOnline(online);
+        }
     }
 
     @Override
@@ -143,9 +150,8 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public <T extends Device> T getJFGDevice(String uuid) {
-        Object o = mCachedDeviceMap.get(uuid);
-        return (T) o;
+    public Device getJFGDevice(String uuid) {
+        return mCachedDeviceMap.get(uuid);
     }
 
     @Override
@@ -463,6 +469,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(event -> dbHelper.updateAccount(event.account)
                         .map(dpAccount -> {
                             this.account = dpAccount;
+                            this.account.setOnline(true);
                             setJfgAccount(event.account);
                             if (jfgAccount != null)
                                 setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));

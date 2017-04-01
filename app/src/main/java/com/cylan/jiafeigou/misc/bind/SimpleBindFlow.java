@@ -42,7 +42,7 @@ public class SimpleBindFlow extends AFullBind {
     @Override
     public void startPingFPing(final String shortUUID) {
         //空
-        setDevicePortrait(null);
+//        setDevicePortrait(null);
         sendPingFPing();
     }
 
@@ -234,7 +234,7 @@ public class SimpleBindFlow extends AFullBind {
                     return devicePortrait != null;
                 })
                 .map((Integer o) -> {
-                    AppLogger.i(BIND_TAG + "sendWifiInfo:" + devicePortrait);
+                    AppLogger.d(BIND_TAG + "sendWifiInfo:" + devicePortrait);
                     Log.e(TAG, "sendWifiInfo: " + new Gson().toJson(devicePortrait));
                     JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(devicePortrait.uuid,
                             devicePortrait.mac,
@@ -245,14 +245,16 @@ public class SimpleBindFlow extends AFullBind {
                         JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
                                 UdpConstant.PORT,
                                 setWifi.toBytes());
-                        AppLogger.i(TAG + new Gson().toJson(setWifi));
+                        AppLogger.d(TAG + new Gson().toJson(setWifi));
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                     return devicePortrait;
                 })
+                .last()
                 .subscribe((UdpConstant.UdpDevicePortrait portrait) -> {
                     //此时,设备还没恢复连接,需要加入队列
+                    AppLogger.d("设备画像为:" + portrait);
                     portrait.bindCode = bindCode;
                     PreferencesUtils.putString(JConstant.BINDING_DEVICE, new Gson().toJson(portrait));
                     AppLogger.i(BIND_TAG + "onLocalFlowFinish: " + portrait);
@@ -277,7 +279,7 @@ public class SimpleBindFlow extends AFullBind {
                     return d;
                 })
                 //1s内
-                .timeout(1000, TimeUnit.MILLISECONDS, timeoutException(check3GCase))
+                .timeout(3000, TimeUnit.MILLISECONDS, timeoutException(check3GCase))
                 .subscribeOn(Schedulers.newThread())
                 //是否需要升级
                 .filter((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
@@ -286,7 +288,7 @@ public class SimpleBindFlow extends AFullBind {
                     //是否需要升级
                     if (needUpdate)
                         iBindResult.needToUpgrade();
-                    AppLogger.i(BIND_TAG + "need to upgrade: " + needUpdate);
+                    AppLogger.d(BIND_TAG + "need to upgrade: " + needUpdate);
                     return !needUpdate;
                 }).first();
     }

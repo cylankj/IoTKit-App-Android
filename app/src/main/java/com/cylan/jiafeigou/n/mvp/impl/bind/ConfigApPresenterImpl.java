@@ -8,6 +8,7 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
+import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -51,6 +52,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 //    private Network network;
 
     private AFullBind aFullBind;
+    private boolean onLocalFlowFinish = false;
 
     public ConfigApPresenterImpl(ConfigApContract.View view) {
         super(view);
@@ -261,25 +263,25 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     @Override
     public void onLocalFlowFinish() {
         Subscription subscription = Observable.just(null)
-                .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
+                .observeOn(Schedulers.io())
                 .map((Object o) -> {
+                    onLocalFlowFinish = true;
                     WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
-
                     List<WifiConfiguration> list =
                             wifiManager.getConfiguredNetworks();
-                    int restoreNetWorkId = -1;
+                    WifiInfo info = wifiManager.getConnectionInfo();
+                    AppLogger.d("当前连接的网络:" + info.getSSID() + ":" + info.getNetworkId());
+                    boolean disconnect = wifiManager.disconnect();
+                    AppLogger.d("断开网络是否成功:" + disconnect);
+                    boolean disableNetwork = wifiManager.disableNetwork(info.getNetworkId());
+                    AppLogger.d("禁用网络是否成功:" + disableNetwork);
                     if (list != null) {
                         int highPriority = -1;
                         int index = -1;
                         for (int i = 0; i < list.size(); i++) {
-                            String ssid = list.get(i).SSID.replace("\"", "");
-                            if (JFGRules.isCylanDevice(ssid)) {
-                                //找到这个狗,清空他的信息
-//                                wifiManager.removeNetwork(list.get(i).networkId);//这个是异步的调用,慎重
-//                                result.add(list.get(i).networkId);
-                                AppLogger.i(TAG + "clean dog like ssid: " + ssid);
-                            } else {
+                            String ssid = list.get(i).SSID;
+                            if (!JFGRules.isCylanDevice(ssid)) {
                                 //恢复之前连接过的wifi
                                 if (highPriority < list.get(i).priority) {
                                     highPriority = list.get(i).priority;
@@ -288,33 +290,21 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                             }
                         }
                         if (index != -1) {
-                            restoreNetWorkId = list.get(index).networkId;
-                            AppLogger.i("re enable ssid: " + list.get(index).SSID);
+                            boolean enableNetwork = wifiManager.enableNetwork(list.get(index).networkId, false);
+                            AppLogger.d("re enable ssid: " + list.get(index).SSID + "success:" + enableNetwork);
+                            boolean reconnect = wifiManager.reconnect();
+                            AppLogger.d("re connect :" + reconnect);
                         }
                     }
-                    return restoreNetWorkId;//这里我们要多重试几次,确保一定连接上 WiFi
+                    return null;
                 })
-                .flatMap(netId -> Observable.interval(500, TimeUnit.MILLISECONDS)
-                        .observeOn(Schedulers.io())
-                        .map(i -> {
-                            AppLogger.e("正在切换 WiFi 网络,可能成功");
-                            WifiManager manager = NetUtils.getWifiManager(mView.getContext());
-                            WifiInfo info = manager.getConnectionInfo();
-                            if (info != null && info.getNetworkId() == netId) {
-                                AppLogger.e("切换 WiFi 网络成功:" + info.getSSID());
-                                return true;
-                            }
-                            manager.enableNetwork(netId, true);
-                            return false;
-                        })
-                        .takeUntil(ok -> ok).last()
-                )
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(r -> {
+                .map(s -> {
+                    AppLogger.d("onLocalFlowFinish");
                     getView().onSetWifiFinished(aFullBind.getDevicePortrait());
-                }, e -> {
-                    AppLogger.d(e.getMessage());
-                });
+                    return s;
+                })
+                .subscribe();
         addSubscription(subscription, "onLocalFlowFinish");
     }
 
@@ -323,13 +313,17 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         String action = intent.getAction();
         if (TextUtils.equals(action, WifiManager.RSSI_CHANGED_ACTION)
                 || TextUtils.equals(action, WifiManager.SCAN_RESULTS_AVAILABLE_ACTION)) {
-            updateWifiResults();
+            if (!onLocalFlowFinish)
+                updateWifiResults();
         } else if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
-            ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
-            updateConnectivityStatus(status.state);
+            if (!onLocalFlowFinish) {
+                ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
+                updateConnectivityStatus(status.state);
+            }
         } else if (TextUtils.equals(action, WifiManager.NETWORK_STATE_CHANGED_ACTION)) {
             NetworkInfo info = intent.getParcelableExtra(WifiManager.EXTRA_NETWORK_INFO);
-            updateConnectInfo(info);
+            if (!onLocalFlowFinish)
+                updateConnectInfo(info);
         }
     }
 
