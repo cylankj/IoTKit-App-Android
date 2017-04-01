@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -115,8 +114,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
             if ((subscription == null || subscription.isUnsubscribed())) {
                 subscription = new CompositeSubscription();
                 AppLogger.d("add sub result");
-                subscription.add(bindResultSub1());
-                subscription.add(robotDeviceDataSync());
+//                subscription.add(bindResultSub1());
 //                subscription.add(fetchDeviceNetSub());
                 subscription.add(sendBindDeviceSub());
             }
@@ -165,65 +163,6 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                         AppLogger.d("绑定设备超时");
                     }
                 });
-    }
-
-    /**
-     * robot同步数据
-     *
-     * @return
-     */
-    private Subscription robotDeviceDataSync() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
-                .subscribeOn(Schedulers.newThread())
-                .filter(jfgRobotSyncData -> (ListUtils.getSize(jfgRobotSyncData.dpList) > 0))
-                .filter(ret -> uuid != null && TextUtils.equals(uuid, ret.uuid) && mView != null)
-                .flatMap(ret -> Observable.from(ret.dpList))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(msg -> {
-                    try {
-                        if (msg.id == 201)//网络
-                        {
-                            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                            if (device != null) {
-                                DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-                                if (net.net > 0 && bindResult != BIND_SUC) {
-                                    mView.bindState(this.bindResult = BIND_SUC);
-                                    simulatePercent.boost();
-                                }
-                            }
-                        }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }, throwable -> {
-                    if (throwable instanceof TimeoutException) {
-                    } else {
-                        addSubscription(robotDeviceDataSync());
-                    }
-                    AppLogger.e("err: " + throwable.getLocalizedMessage());
-                });
-    }
-
-    private Subscription bindResultSub1() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class)
-                .observeOn(Schedulers.newThread())
-                .flatMap(ret -> Observable.from(ret.devices))
-                .filter(device -> getView() != null && TextUtils.equals(device.uuid, uuid))
-                .filter(viceEvent -> getView() != null && viceEvent != null)
-                .observeOn(AndroidSchedulers.mainThread())
-                .map((Device result) -> {
-                    DpMsgDefine.DPNet net = result.$(201, new DpMsgDefine.DPNet());
-                    if (net.net > 0 && bindResult != BIND_SUC) {
-                        getView().bindState(bindResult = BIND_SUC);
-                        if (simulatePercent != null && bindResult == BIND_SUC) {
-                            simulatePercent.boost();
-                        }
-                        AppLogger.d("bind success: " + result);
-                    }
-                    return null;
-                })
-                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                .subscribe();
     }
 
     @Override
