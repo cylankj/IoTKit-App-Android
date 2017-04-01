@@ -93,5 +93,6 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
         Intent intent = new Intent(this, ConfigWifiActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
         startActivity(intent);
+        finish();
     }
 }

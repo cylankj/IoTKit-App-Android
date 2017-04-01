@@ -24,7 +24,6 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.ShareUtils;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -257,35 +256,10 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         Subscription subscription = Observable.just(null)
                 .throttleFirst(200, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
-                .map((Object o) -> {
-                    WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
-                    List<WifiConfiguration> list =
-                            wifiManager.getConfiguredNetworks();
-                    if (list != null) {
-                        int highPriority = -1;
-                        int index = -1;
-                        for (int i = 0; i < list.size(); i++) {
-                            String ssid = list.get(i).SSID.replace("\"", "");
-                            if (JFGRules.isCylanDevice(ssid)) {
-                                //找到这个狗,清空他的信息
-                                wifiManager.removeNetwork(list.get(i).networkId);
-                                AppLogger.i(TAG + "clean dog like ssid: " + ssid);
-                            } else {
-                                //恢复之前连接过的wifi
-                                if (highPriority < list.get(i).priority) {
-                                    highPriority = list.get(i).priority;
-                                    index = i;
-                                }
-                            }
-                        }
-                        if (index != -1) {
-                            AppLogger.i("re enable ssid: " + list.get(index).SSID);
-                            wifiManager.enableNetwork(list.get(index).networkId, false);
-                        }
-                    }
-                    return null;
-                }).subscribe();
-        addSubscription(subscription, "onLocalFlowFinish");
+                .map(new Func())
+                .subscribe();
+        //需不要unSub
+//        addSubscription(subscription, "onLocalFlowFinish");
     }
 
     @Override
@@ -303,4 +277,40 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         }
     }
 
+    private static class Func implements Func1<Object, Object> {
+        @Override
+        public Object call(Object o) {
+            WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+            WifiInfo info = wifiManager.getConnectionInfo();
+            wifiManager.disconnect();
+            if (info != null) {
+                wifiManager.disableNetwork(info.getNetworkId());
+            }
+            List<WifiConfiguration> list =
+                    wifiManager.getConfiguredNetworks();
+            if (list != null) {
+                int highPriority = -1;
+                int index = -1;
+                for (int i = 0; i < list.size(); i++) {
+                    String ssid = list.get(i).SSID.replace("\"", "");
+                    if (JFGRules.isCylanDevice(ssid)) {
+                        //找到这个狗,清空他的信息
+                        wifiManager.removeNetwork(list.get(i).networkId);
+                        AppLogger.i(UdpConstant.BIND_TAG + "clean dog like ssid: " + ssid);
+                    } else {
+                        //恢复之前连接过的wifi
+                        if (highPriority < list.get(i).priority) {
+                            highPriority = list.get(i).priority;
+                            index = i;
+                        }
+                    }
+                }
+                if (index != -1) {
+                    AppLogger.i(UdpConstant.BIND_TAG + "re enable ssid: " + list.get(index).SSID);
+                    wifiManager.enableNetwork(list.get(index).networkId, false);
+                }
+            }
+            return null;
+        }
+    }
 }

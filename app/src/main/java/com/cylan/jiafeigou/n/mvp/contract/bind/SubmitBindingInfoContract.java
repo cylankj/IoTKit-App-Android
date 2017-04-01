@@ -30,9 +30,6 @@ public interface SubmitBindingInfoContract {
          */
         void endCounting();
 
-        int getBindState();
-
-        void setBindState(int bindState);
 
         void clean();
     }

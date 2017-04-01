@@ -105,7 +105,7 @@
                 android:paddingEnd="@dimen/x7"
                 android:paddingStart="@dimen/x15"
                 android:src="@drawable/icon_clear_text"
-                android:visibility="gone" />
+                android:visibility="invisible" />
 
             <CheckBox
                 android:id="@+id/cb_wifi_pwd"

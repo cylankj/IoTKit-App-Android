@@ -35,6 +35,7 @@ public class JFGGlideURL extends GlideUrl {
         if (device != null) {
             this.V2 = TextUtils.isEmpty(device.vid);
             this.regionType = device.regionType;
+            if (this.regionType > 1 || this.regionType < 0) regionType = 0;
         }
         this.timestamp = fileName;
         this.cid = cid;

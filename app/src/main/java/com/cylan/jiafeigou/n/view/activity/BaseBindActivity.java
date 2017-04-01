@@ -12,6 +12,7 @@ import android.text.TextUtils;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
 import permissions.dispatcher.NeedsPermission;
@@ -26,7 +27,7 @@ import static android.Manifest.permission.ACCESS_FINE_LOCATION;
  * Created by hds on 17-3-31.
  */
 @RuntimePermissions
-public class BaseBindActivity extends BaseFullScreenFragmentActivity {
+public class BaseBindActivity<T extends BasePresenter> extends BaseFullScreenFragmentActivity<T> {
 
     private AlertDialog gpsDialog;
     private AlertDialog locationDialog;

@@ -3,39 +3,32 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGResult;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.SimulatePercent;
-import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SubmitBindingInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.BindUtils;
-import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.CompositeSubscription;
 
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_SUC;
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_TIME_OUT;
 
 /**
+ * 启动自动轮循的方式更为可靠
  * Created by cylan-hunt on 16-11-12.
  */
 
@@ -43,8 +36,6 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         implements SubmitBindingInfoContract.Presenter, SimulatePercent.OnAction {
 
     private SimulatePercent simulatePercent;
-    private CompositeSubscription subscription;
-    private int bindResult;
     private long startTick;
 
     public SubmitBindingInfoContractImpl(SubmitBindingInfoContract.View view, String uuid) {
@@ -52,7 +43,6 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         view.setPresenter(this);
         simulatePercent = new SimulatePercent();
         simulatePercent.setOnAction(this);
-        bindResult = BindUtils.BIND_PREPARED;
     }
 
     @Override
@@ -68,25 +58,19 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
     }
 
     @Override
-    public int getBindState() {
-        return bindResult;
-    }
-
-    @Override
-    public void setBindState(int bindState) {
-        this.bindResult = bindState;
-    }
-
-    @Override
     public void clean() {
-        RxBus.getCacheInstance().removeStickyEvent(RxEvent.BindDeviceEvent.class);
     }
 
     @Override
     public void start() {
         super.start();
+        walkDeviceBindState();
+    }
+
+    private void walkDeviceBindState() {
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        if (startTick == 0) {//可能是覆盖绑定.
+        if (startTick == 0) {
+            //可能是覆盖绑定.
             startTick = System.currentTimeMillis();
             //1.可能是覆盖绑定,或者设备列表中已经有了该设备,并且在线状态.
             if (device != null) {
@@ -94,168 +78,61 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 device.setValue(201, new DpMsgDefine.DPNet());//先清空
             }
         }
-        if (System.currentTimeMillis() - startTick > 90 * 1000) {
-            //timeout
-            mView.bindState(BIND_TIME_OUT);
-            return;
-        }
-        //3.重新获取,
-        DpMsgDefine.DPNet net = device == null ? null : device.$(201, new DpMsgDefine.DPNet());
-        if (device != null && !TextUtils.isEmpty(uuid) && net != null && net.net > 0) {
-            //4.net数据可能已经被更新了(重新进入该页面时候使用.)
-            mView.bindState(BIND_SUC);
-            endCounting();
-            AppLogger.d("finish? ;" + net);
-            return;
-        }
-        //超时
-        if (bindResult == BindUtils.BIND_PREPARED) {
-            bindResult = BindUtils.BIND_ING;
-            if ((subscription == null || subscription.isUnsubscribed())) {
-                subscription = new CompositeSubscription();
-                AppLogger.d("add sub result");
-                subscription.add(bindResultSub());
-                subscription.add(bindResultSub1());
-                subscription.add(robotDeviceDataSync());
-                subscription.add(robotDeviceDataGetRsp());
+        if (System.currentTimeMillis() - startTick >= 90 * 1000) {
+            DpMsgDefine.DPNet net = device == null ? new DpMsgDefine.DPNet() : device.$(201, new DpMsgDefine.DPNet());
+            if (net.net < 1) {
+                //timeout
+                mView.bindState(BIND_TIME_OUT);
+            } else {
+                mView.bindState(BIND_SUC);
             }
+            return;
         }
-        if (bindResult == BindUtils.BIND_ING) {
-            if (simulatePercent != null) simulatePercent.resume();
-        }
-    }
+        //3.开启轮循,2s请求一次.
 
-    private Subscription robotDeviceDataGetRsp() {
-        return RxBus.getCacheInstance().toObservableSticky(RobotoGetDataRsp.class)
-                .observeOn(Schedulers.newThread())
-                .filter(robotoGetDataRsp -> robotoGetDataRsp != null && TextUtils.equals(uuid, robotoGetDataRsp.identity))
-                .filter(robotoGetDataRsp -> robotoGetDataRsp.map != null)
-                .flatMap(robotoGetDataRsp -> {
-                    HashMap<Integer, ArrayList<JFGDPMsg>> map = robotoGetDataRsp.map;
-                    Iterator<Integer> integerIterator = map.keySet().iterator();
-                    JFGDPMsg jfgdpMsg = null;
-                    while (integerIterator.hasNext()) {
-                        int msgId = integerIterator.next();
-                        if (msgId == 201 && map.get(msgId).size() > 0) {
-                            jfgdpMsg = map.get(msgId).get(0);
-                            break;
-                        }
-                    }
-                    if (jfgdpMsg != null && jfgdpMsg.packValue != null) {
-                        try {
-                            DpMsgDefine.DPNet net = DpUtils.unpackData(jfgdpMsg.packValue, DpMsgDefine.DPNet.class);
-                            AppLogger.d("get bind rsp?" + net);
-                            return Observable.just(net != null && net.net > 0);
-                        } catch (IOException e) {
-                            return Observable.just(false);
-                        }
-                    }
-                    return Observable.just(false);
-                })
-                .filter(ret -> ret)
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                .subscribe(ret -> {
-                }, throwable -> {
-                    AppLogger.e("err:" + throwable.getLocalizedMessage());
-                });
-    }
-
-    /**
-     * 绑定结果:通过{@link DataSourceService#OnResult(JFGResult)}
-     * {@link com.cylan.jiafeigou.misc.JResultEvent#JFG_RESULT_BINDDEV}
-     *
-     * @return
-     */
-    private Subscription bindResultSub() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.BindDeviceEvent.class)
-                .observeOn(Schedulers.newThread())
-                .filter((RxEvent.BindDeviceEvent bindDeviceEvent) -> getView() != null/** && TextUtils.equals(bindDeviceEvent.uuid, uuid)**/)
-                .filter(viceEvent -> getView() != null && viceEvent != null)
-                .observeOn(AndroidSchedulers.mainThread())
-                .map((RxEvent.BindDeviceEvent result) -> {
-                    getView().bindState(bindResult = result.bindResult);
-                    AppLogger.i("bind result: " + result);
-                    return null;
-                })
-                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                .subscribe();
-    }
-
-    /**
-     * robot同步数据
-     *
-     * @return
-     */
-    private Subscription robotDeviceDataSync() {
-        long time = System.currentTimeMillis() - startTick;
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
+        int netType = NetUtils.getJfgNetType(ContextUtils.getContext());
+        AppLogger.d("start repeat get: " + 0 + ",uuid:" + uuid + "netType:" + netType);
+        Subscription subscription = Observable.interval(2, TimeUnit.SECONDS)
                 .subscribeOn(Schedulers.newThread())
-                .timeout(90 * 1000L - time, TimeUnit.MILLISECONDS)
-                .filter(jfgRobotSyncData -> (ListUtils.getSize(jfgRobotSyncData.dpList) > 0))
-                .filter(ret -> uuid != null && TextUtils.equals(uuid, ret.uuid) && mView != null)
-                .flatMap(ret -> Observable.from(ret.dpList))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(msg -> {
-                    try {
-                        if (msg.id == 201)//网络
-                        {
-                            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                            if (device != null) {
-                                DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-                                if (net.net > 0) {
-                                    mView.bindState(0);
-                                    endCounting();
-                                }
-                            }
+                .filter(ret -> System.currentTimeMillis() - startTick < 90 * 1000L)
+                .map(s -> {
+                    Device device1 = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    if (device1 != null) {
+                        DpMsgDefine.DPNet n = device1.$(201, new DpMsgDefine.DPNet());
+                        if (n.net < 1) {
+                            robotDeviceDataGetRsp();
+                        } else {
+                            //good?
+                            if (simulatePercent != null) simulatePercent.boost();
+                            AppLogger.d("yes bingo " + n);
+                            unSubscribe("repeat");
                         }
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }, throwable -> {
-                    if (throwable instanceof TimeoutException) {
-                        mView.bindState(BIND_TIME_OUT);
-                    } else {
-                        addSubscription(robotDeviceDataSync());
-                    }
-                    AppLogger.e("err: " + throwable.getLocalizedMessage());
-                });
-    }
-
-    private Subscription bindResultSub1() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class)
-                .observeOn(Schedulers.newThread())
-                .flatMap(ret -> Observable.from(ret.devices))
-                .filter(device -> getView() != null && TextUtils.equals(device.uuid, uuid))
-                .filter(viceEvent -> getView() != null && viceEvent != null)
-                .observeOn(AndroidSchedulers.mainThread())
-                .map((Device result) -> {
-                    DpMsgDefine.DPNet net = result.$(201, new DpMsgDefine.DPNet());
-                    if (net.net > 0) {
-                        getView().bindState(bindResult = BIND_SUC);
-                        if (simulatePercent != null && bindResult == BIND_SUC) {
-                            simulatePercent.boost();
-                        }
-                        AppLogger.i("bind success: " + result);
                     }
                     return null;
                 })
-                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                .doOnCompleted(() -> {
+                    if (System.currentTimeMillis() - startTick >= 90 * 1000L) {
+                        AppLogger.d("currentTimeMillis: err?");
+                        return;
+                    }
+                    AppLogger.d("currentTimeMillis: no?");
+                })
                 .subscribe();
+        addSubscription(subscription, "repeat");
     }
 
-    @Override
-    public void stop() {
-        super.stop();
-        if (bindResult == BindUtils.BIND_ING) {
-            if (simulatePercent != null) simulatePercent.resume();
-        } else {
-            if (simulatePercent != null)
-                simulatePercent.stop();
-        }
-        bindResult = BindUtils.BIND_PREPARED;
-        unSubscribe(subscription);
+    private void robotDeviceDataGetRsp() {
+        Observable.just("get_201_")
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> !TextUtils.isEmpty(uuid))
+                .filter(ret -> NetUtils.getJfgNetType(ContextUtils.getContext()) > 0)//有网络,是否还要过滤局域网?
+                .map(new SendFunc(uuid))
+                .subscribe(robotoGetDataRsp -> {
+                    //不在乎那几秒钟.发出去就行了.毕竟这是一个轮训,下一次直接读device
+                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
     }
+
 
     @Override
     public void actionDone() {
@@ -279,4 +156,25 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         addSubscription(subscription, "actionPercent");
     }
 
+    private static final class SendFunc implements Func1<Object, Object> {
+        private String uuid;
+
+        public SendFunc(String uuid) {
+            this.uuid = uuid;
+        }
+
+        @Override
+        public Object call(Object o) {
+            //需要获取
+            ArrayList<JFGDPMsg> list = new ArrayList<>(1);
+            JFGDPMsg dp = new JFGDPMsg(201, 0);
+            list.add(dp);
+            try {
+                AppLogger.d("get again");
+                return JfgCmdInsurance.getCmd().robotGetData(uuid, list, 1, false, 0);
+            } catch (JfgException e) {
+                return -1L;
+            }
+        }
+    }
 }

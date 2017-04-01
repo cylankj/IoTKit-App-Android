@@ -16,8 +16,6 @@ import com.cylan.jiafeigou.support.network.NetMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
-import java.util.Map;
 
 import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
@@ -65,12 +63,10 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     @CallSuper
     @Override
     public void start() {
-        if (compositeSubscription == null)
-            compositeSubscription = new CompositeSubscription();
-        if (compositeSubscription.isUnsubscribed()) {
-            compositeSubscription.unsubscribe();
-            compositeSubscription = new CompositeSubscription();
-        }
+        if (compositeSubscription != null) compositeSubscription.unsubscribe();
+        compositeSubscription = new CompositeSubscription();
+        if (refCacheMap != null) refCacheMap.unsubscribe();
+        refCacheMap = new MapSubscription();
         Subscription[] subs = register();
         if (subs != null) {
             for (Subscription s : subs)
@@ -104,7 +100,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     }
 
     protected boolean unSubscribe(String tag) {
-        refCacheMap.unsubscribe();
+        refCacheMap.remove(tag);
         return true;
     }
 

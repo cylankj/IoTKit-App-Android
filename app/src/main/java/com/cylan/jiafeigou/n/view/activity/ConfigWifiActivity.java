@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.activity;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,7 +8,6 @@ import android.net.ConnectivityManager;
 import android.net.wifi.ScanResult;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.CheckBox;
@@ -22,19 +20,14 @@ import android.widget.ViewSwitcher;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
-import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
-import com.cylan.jiafeigou.n.view.bind.SubmitBindingInfoFragment;
+import com.cylan.jiafeigou.n.view.bind.SubmitBindingInfoActivity;
 import com.cylan.jiafeigou.n.view.bind.WiFiListDialogFragment;
-import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -47,17 +40,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import permissions.dispatcher.NeedsPermission;
-import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.OnShowRationale;
-import permissions.dispatcher.PermissionRequest;
-import permissions.dispatcher.RuntimePermissions;
 
-import static android.Manifest.permission.ACCESS_FINE_LOCATION;
 import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
 
-@RuntimePermissions
-public class ConfigWifiActivity extends BaseFullScreenFragmentActivity<ConfigApContract.Presenter>
+public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presenter>
         implements ConfigApContract.View, WiFiListDialogFragment.ClickCallBack {
     @BindView(R.id.iv_wifi_clear_pwd)
     ImageView ivWifiClearPwd;
@@ -92,16 +78,13 @@ public class ConfigWifiActivity extends BaseFullScreenFragmentActivity<ConfigApC
     @Override
     public void onStart() {
         super.onStart();
-        ConfigWifiActivityPermissionsDispatcher.onGrantedLocationPermissionWithCheck(this);
         if (cacheList != null && cacheList.size() > 0) {
             tvConfigApName.setText(cacheList.get(0).SSID);
             tvConfigApName.setTag(new BeanWifiList(cacheList.get(0)));
         }
         //默认显示
         ViewUtils.showPwd(etWifiPwd, true);
-        customToolbar.setBackAction(v -> {
-            onBackPressed();
-        });
+        customToolbar.setBackAction(v -> onBackPressed());
         cbWifiPwd.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             ViewUtils.showPwd(etWifiPwd, isChecked);
             etWifiPwd.setSelection(etWifiPwd.length());
@@ -163,17 +146,11 @@ public class ConfigWifiActivity extends BaseFullScreenFragmentActivity<ConfigApC
                     ToastUtil.showNegativeToast(getString(R.string.ENTER_PWD_1));
                     return;
                 }
+                //判断当前
                 if (basePresenter != null)
                     basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
                             ViewUtils.getTextViewContent(etWifiPwd), type);
                 tvWifiPwdSubmit.viewZoomSmall();
-                if (getIntent().hasExtra(JUST_SEND_INFO)) {
-                    ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG));
-                    Intent intent = new Intent(this, NewHomeActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(intent);
-                    return;
-                }
                 break;
             case R.id.tv_config_ap_name:
                 initFragment();
@@ -217,55 +194,6 @@ public class ConfigWifiActivity extends BaseFullScreenFragmentActivity<ConfigApC
         backDialog.show();
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        ConfigWifiActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-        if (permissions.length == 1) {
-            if (TextUtils.equals(permissions[0], ACCESS_FINE_LOCATION) && grantResults[0] > -1) {
-                ConfigWifiActivityPermissionsDispatcher.onGrantedLocationPermissionWithCheck(this);
-            }
-        }
-    }
-
-
-    @NeedsPermission(ACCESS_FINE_LOCATION)
-    public void onGrantedLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            if (!MiscUtils.checkGpsAvailable(getApplicationContext())) {
-                final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage(getString(R.string.GetWifiList_FaiTips))
-                        .setCancelable(false)
-                        .setPositiveButton(getString(R.string.OK), (@SuppressWarnings("unused") final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
-                            startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
-                        })
-                        .setNegativeButton(getString(R.string.CANCEL), (final DialogInterface dialog, @SuppressWarnings("unused") final int id) -> {
-                            dialog.cancel();
-                        });
-                final AlertDialog alert = builder.create();
-                alert.show();
-            }
-    }
-
-    @OnPermissionDenied(ACCESS_FINE_LOCATION)
-    public void onDeniedLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-            new AlertDialog.Builder(this)
-                    .setMessage(String.format(getString(R.string.turn_on_gps), ""))
-                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
-                    })
-                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                        startActivityForResult(new Intent(android.provider.Settings.ACTION_SETTINGS), 0);
-                    })
-                    .create()
-                    .show();
-    }
-
-    @OnShowRationale(Manifest.permission.ACCESS_FINE_LOCATION)
-    public void showRationaleForLocation(PermissionRequest request) {
-        onDeniedLocationPermission();
-    }
-
 
     @Override
     public void setPresenter(ConfigApContract.Presenter presenter) {
@@ -295,7 +223,7 @@ public class ConfigWifiActivity extends BaseFullScreenFragmentActivity<ConfigApC
         final int count = resultList == null ? 0 : resultList.size();
         if (count == 0) {
             if (Build.VERSION.SDK_INT >= 23) {
-                ToastUtil.showNegativeToast(getString(R.string.GetWifiList_FaiTips));
+//                ToastUtil.showNegativeToast(getString(R.string.GetWifiList_FaiTips));
             }
             return;
         }
@@ -311,14 +239,21 @@ public class ConfigWifiActivity extends BaseFullScreenFragmentActivity<ConfigApC
 
     @Override
     public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
-        Bundle bundle = new Bundle();
-        bundle.putString(JConstant.KEY_BIND_DEVICE, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, o.uuid);
-        SubmitBindingInfoFragment fragment = SubmitBindingInfoFragment.newInstance(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(),
-                fragment, android.R.id.content);
-        if (basePresenter != null) {
-            basePresenter.finish();
+        if (getIntent().hasExtra(JUST_SEND_INFO)) {
+            ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG));
+            Intent intent = new Intent(this, NewHomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);
+            return;
+        } else {
+            Intent intent = new Intent(this, SubmitBindingInfoActivity.class);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, o.uuid);
+            intent.putExtra(JConstant.KEY_BIND_DEVICE, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
+            startActivity(intent);
+            if (basePresenter != null) {
+                basePresenter.finish();
+            }
+            finishExt();
         }
     }
 
@@ -336,7 +271,7 @@ public class ConfigWifiActivity extends BaseFullScreenFragmentActivity<ConfigApC
 
     @Override
     public void pingFailed() {
-        ToastUtil.showNegativeToast(getString(R.string.ADD_FAILED));
+//        ToastUtil.showNegativeToast(getString(R.string.ADD_FAILED));
         tvWifiPwdSubmit.viewZoomBig();
     }
 

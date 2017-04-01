@@ -1,13 +1,19 @@
 package com.cylan.jiafeigou.dp;
 
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.utils.RandomUtils;
 
+import org.apache.tools.ant.taskdefs.Sleep;
 import org.junit.Test;
 import org.msgpack.MessagePack;
 import org.robolectric.annotation.Config;
 
 import java.io.IOException;
 import java.util.TimeZone;
+import java.util.concurrent.TimeoutException;
+
+import rx.Observable;
+import rx.functions.Func1;
 
 /**
  * Created by cylan-hunt on 16-11-24.
@@ -47,9 +53,30 @@ public class DpMsgDefineTest {
         return ms.read(data, clazz);
     }
 
+    int count = 0;
+
     @Test
-    public void testDefaultTimeZone() {
-        TimeZone timeZone = TimeZone.getDefault();
-        System.out.println(timeZone.getID());
+    public void testDefaultTimeZone() throws InterruptedException {
+        long startTick = System.currentTimeMillis() - RandomUtils.getRandom(2000);
+        Thread.sleep(RandomUtils.getRandom(10) * 1000);
+        int repeatCount = (int) (90 - (System.currentTimeMillis() - startTick) / 1000);
+        System.out.println(repeatCount);
+
+        Observable.just("go")
+                .repeat(10)
+                .map(new Func1<String, Object>() {
+                    @Override
+                    public Object call(String s) {
+                        count++;
+//                        if (count > 5)
+//                            throw new TimeoutException();
+                        System.out.println("...");
+                        return null;
+                    }
+                })
+                .doOnError(throwable -> System.out.println("err:" + throwable.getLocalizedMessage()))
+                .subscribe();
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.bind;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
@@ -123,7 +125,8 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
     @Override
     public void setupAliasDone() {
         ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
-        if (getActivity() != null && getActivity() instanceof BaseFullScreenFragmentActivity)
-            ((BaseFullScreenFragmentActivity) getActivity()).finishExt();
+        Intent intent = new Intent(getActivity(), NewHomeActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        startActivity(intent);
     }
 }
