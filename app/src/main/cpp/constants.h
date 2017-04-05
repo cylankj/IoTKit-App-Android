@@ -9,7 +9,7 @@
 #define CYLAN_VKEY "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G"
 
 #define DOBY_VID "0002"
-#define DOBY_VKEY "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB"
+#define DOBY_VKEY "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1"
 
 #define CELL_C_VID "0060"
 #define CELL_C_VKEY "doLUb8CEObqCKQpA05ytKKHPu5Q3SvYX"

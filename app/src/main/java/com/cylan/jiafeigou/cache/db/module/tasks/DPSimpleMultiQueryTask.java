@@ -65,6 +65,7 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 String uuid = multiEntity.get(0).getUuid();
+                option = multiEntity.get(0).option(DBOption.SimpleMultiDpQueryOption.class);
                 AppLogger.d("正在发送查询请求,uuid:" + multiEntity.get(0));
                 ArrayList<JFGDPMsg> params = new ArrayList<>();
                 for (int i = 0; i < multiEntity.size(); i++) {
