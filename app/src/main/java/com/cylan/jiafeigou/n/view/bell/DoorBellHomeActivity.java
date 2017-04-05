@@ -402,7 +402,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                         circularBitmapDrawable.setCircular(true);
                         if (imageView instanceof ImageViewTip) {
                             //顺便实现了红点。
-                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, item.answerState == 0 && item.timeInLong > mLastEnterTime);
+//                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, item.answerState == 0 && item.timeInLong > mLastEnterTime);
+                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, true);
 
                         }
                     }

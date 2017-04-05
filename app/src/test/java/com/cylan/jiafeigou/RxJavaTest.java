@@ -108,4 +108,12 @@ public class RxJavaTest {
                 }, throwable -> System.out.println("what"));
         Thread.sleep(20 * 1000L);
     }
+
+    @Test
+    public void testCompute() {
+        int a = 10, b = 2;
+        int c = 1;
+        c -= a - b;
+        System.out.println(c);
+    }
 }

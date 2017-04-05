@@ -2,6 +2,7 @@
 <resources>
     <declare-styleable name="ImageViewTipsTheme">
         <attr name="t_radius" format="dimension" />
+        <attr name="t_round_within" format="boolean|reference" />
         <attr name="t_margin" format="dimension" />
         <attr name="t_show_point" format="boolean" />
         <attr name="t_point_color" format="color" />

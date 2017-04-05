@@ -5,8 +5,8 @@
     android:id="@+id/cv_bell_call_item"
     android:layout_width="@dimen/y148"
     android:layout_height="@dimen/y248"
-    card_view:cardCornerRadius="@dimen/y5"
-    card_view:cardBackgroundColor="@android:color/white">
+    card_view:cardBackgroundColor="@android:color/white"
+    card_view:cardCornerRadius="@dimen/y5">
 
 
     <LinearLayout
@@ -17,10 +17,10 @@
 
         <TextView
             android:id="@+id/tv_bell_list_item_date"
-            android:layout_marginTop="@dimen/y22"
             android:layout_width="wrap_content"
             android:layout_height="@dimen/y18"
             android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/y22"
             android:text="几天"
             android:textColor="@color/color_65CAE4"
             android:textSize="@dimen/sp15" />
@@ -55,8 +55,8 @@
             hunt:t_point_color="@color/color_red_dot_f43531"
             hunt:t_radius="@dimen/y4"
             hunt:t_round_image="true"
+            hunt:t_round_within="true"
             hunt:t_show_point="true" />
-
 
 
         <TextView
