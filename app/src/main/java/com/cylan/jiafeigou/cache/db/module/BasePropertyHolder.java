@@ -33,11 +33,8 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
     public <V> V $(int msgId, V defaultValue) {
         try {
             DPEntity entity = getProperty(msgId);
-            V r = entity == null ? null : entity.getValue(defaultValue);
-            if (r != null && defaultValue != null && defaultValue.getClass().isInstance(r)) {
-                return r;
-            }
-            return defaultValue;
+            V result = entity == null ? null : entity.getValue(defaultValue);
+            return result == null ? defaultValue : result;
         } catch (ClassCastException e) {
             return defaultValue;
         }
@@ -70,6 +67,12 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
             AppLogger.d("getProperty from db:" + msgId + "," + value + "," + (System.currentTimeMillis() - time));
         }
         return value;
+    }
+
+    public void updateProperty(int msgId, DPEntity entity) {
+        if (!propertyParser.accept(pid(), msgId)) return;
+        AppLogger.d("updateProperty");
+        properties.put(msgId, entity);
     }
 
     protected abstract String uuid();

@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -118,11 +117,9 @@ public class DataSourceManager implements JFGSourceManager {
                         .flatMap(new Func1<List<DPEntity>, Observable<List<DPEntity>>>() {
                             @Override
                             public Observable<List<DPEntity>> call(List<DPEntity> ret) {
-//                                long time = System.currentTimeMillis();
                                 if (ret != null) {
                                     for (DPEntity dpEntity : ret) {
-                                        DataPoint dataPoint = BasePropertyParser.getInstance().parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
-                                        device.setValue(dpEntity.getMsgId(), dataPoint);
+                                        device.setValue(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
                                     }
                                 }
                                 return Observable.just(ret);
@@ -352,16 +349,17 @@ public class DataSourceManager implements JFGSourceManager {
 
 
     @Override
-    public <T extends DataPoint> T getValue(String uuid, long msgId) {
+    @Deprecated //无法获取值
+    public <T> T getValue(String uuid, long msgId, T defaultValue) {
         T result = null;
         Device device = mCachedDeviceMap.get(uuid);
         if (device != null) {
             //这里优先从根据UUID从device中获取数据
-            result = device.$((int) msgId, null);
+            result = device.$((int) msgId, defaultValue);
         }
         if (result == null && account != null) {
             //如果无法从device中获取值,则从account中获取
-            result = account.$((int) msgId, null);
+            result = account.$((int) msgId, defaultValue);
         }
         return getValueWithAccountCheck(result);
     }

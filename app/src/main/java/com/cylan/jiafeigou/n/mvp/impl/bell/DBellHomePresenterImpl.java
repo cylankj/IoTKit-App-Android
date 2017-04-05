@@ -50,7 +50,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
             Account account = DataSourceManager.getInstance().getAJFGAccount();
             if (account != null) {
                 long lastTime = PreferencesUtils.getLong(account.getAccount() + ":" + mUUID + ":" + JConstant.LAST_ENTER_TIME, System.currentTimeMillis());
-                DpMsgDefine.DPPrimary<Integer> battery = mSourceManager.getValue(mUUID, DpMsgMap.ID_206_BATTERY);
+                DpMsgDefine.DPPrimary<Integer> battery = mSourceManager.getValue(mUUID, DpMsgMap.ID_206_BATTERY,null);
                 if (lastTime < todayInMidNight) {//新的一天
                     PreferencesUtils.putLong(account.getAccount() + ":" + mUUID + ":" + JConstant.LAST_ENTER_TIME, System.currentTimeMillis());
                     int b = MiscUtils.safeGet(battery, 0);

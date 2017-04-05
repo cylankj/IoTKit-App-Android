@@ -2,13 +2,12 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGResult;
+import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
@@ -21,15 +20,16 @@ import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
+import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
+import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_SUC;
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_TIME_OUT;
 
@@ -42,6 +42,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
 
     private SimulatePercent simulatePercent;
     private CompositeSubscription subscription;
+    private Subscription submitSubscription;
     private int bindResult;
     private long startTick;
 
@@ -103,9 +104,10 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
             if ((subscription == null || subscription.isUnsubscribed())) {
                 subscription = new CompositeSubscription();
                 AppLogger.d("add sub result");
-//                subscription.add(bindResultSub1());
-//                subscription.add(fetchDeviceNetSub());
-                subscription.add(sendBindDeviceSub());
+                if (submitSubscription == null || !submitSubscription.isUnsubscribed()) {
+                    submitSubscription = submitBindDeviceSub();
+                    subscription.add(submitSubscription);
+                }
             }
         }
         if (bindResult == BindUtils.BIND_ING) {
@@ -113,37 +115,50 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         }
     }
 
-    private Subscription sendBindDeviceSub() {
-        return Observable.interval(0, 1, TimeUnit.SECONDS)
+    private Subscription submitBindDeviceSub() {
+        return Observable.interval(0, 2, TimeUnit.SECONDS)
                 .map(s -> DataSourceManager.getInstance().getAJFGAccount())
-                .takeUntil(cond -> cond != null && cond.isOnline())
-                .last()
-                .observeOn(Schedulers.io())
-                .map(account -> {
-                    long ret = -1;
+                .filter(account -> account != null && account.isOnline())
+                .first()
+                .flatMap(s -> Observable.interval(0, 5, TimeUnit.SECONDS))
+                .map(s -> {
                     try {
                         String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
                         UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
                         if (portrait != null) {
-                            ret = JfgCmdInsurance.getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                            getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
                             AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait));
                         }
                     } catch (Exception e) {
                         AppLogger.d("err: " + e.getLocalizedMessage());
                     }
-                    return ret;
+                    return DataSourceManager.getInstance().getJFGDevice(uuid);
                 })
-                .flatMap(seq -> RxBus.getCacheInstance().toObservable(JFGResult.class)
-                        .filter(result -> result.event == JResultEvent.JFG_RESULT_BINDDEV && result.code == JError.ErrorOK))
+                .filter(device -> device != null)
                 .first()
-                .flatMap(ret -> Observable.interval(0, 2, TimeUnit.SECONDS))
-                .map(s -> DataSourceManager.getInstance().getJFGDevice(uuid))
-                .filter(dev -> dev != null && dev.$(201, new DpMsgDefine.DPNet()).net > 0)
+                .flatMap(s -> Observable.interval(0, 3, TimeUnit.SECONDS))
+                .map(s -> {
+                    ArrayList<JFGDPMsg> params = new ArrayList<>(1);
+                    JFGDPMsg msg = new JFGDPMsg(201, 0);
+                    params.add(msg);
+                    try {
+                        JfgCmdInsurance.getCmd().robotGetData(uuid, params, 1, false, 0);
+                    } catch (JfgException e) {
+                        AppLogger.d(e.getMessage());
+                    }
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    DpMsgDefine.DPNet net = null;
+                    if (device != null) {
+                        net = device.$(201, new DpMsgDefine.DPNet());
+                    }
+                    AppLogger.d("正在查询设备网络状态:" + new Gson().toJson(net));
+                    return net;
+                })
+                .filter(net -> net != null && net.net > 0)
                 .first()
-                .timeout(90 * 1000L - (System.currentTimeMillis() - startTick), TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(device -> {
-                    AppLogger.d("当前设备:" + device.getUuid() + ",网络状态为:" + DpMsgDefine.DPNet.getNormalString(device.$(201, new DpMsgDefine.DPNet())));
+                .subscribe(net -> {
+                    AppLogger.d("当前网络状态为:" + DpMsgDefine.DPNet.getNormalString(net));
                     mView.bindState(bindResult = BIND_SUC);
                     endCounting();
                 }, e -> {
@@ -151,6 +166,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                         mView.bindState(this.bindResult = BIND_TIME_OUT);
                         AppLogger.d("绑定设备超时");
                     }
+                    AppLogger.d("擦,出错了:" + e.getMessage());
                 });
     }
 
@@ -163,9 +179,12 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
             if (simulatePercent != null)
                 simulatePercent.stop();
         }
+        if (subscription != null && subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
         bindResult = BindUtils.BIND_PREPARED;
-        unSubscribe(subscription);
     }
+
 
     @Override
     public void actionDone() {

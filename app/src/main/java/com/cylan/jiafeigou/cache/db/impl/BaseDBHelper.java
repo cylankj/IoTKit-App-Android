@@ -4,13 +4,13 @@ import android.content.ContextWrapper;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.BasePropertyParser;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.AccountDao;
@@ -79,14 +79,32 @@ public class BaseDBHelper implements IDBHelper {
         propertyParser = BasePropertyParser.getInstance();
     }
 
-    @Override
-    @Deprecated
-    public Observable<DPEntity> saveDPByte(String uuid, Long version, Integer msgId, byte[] bytes) {
-        return getActiveAccount().flatMap(account -> saveDpMsg(account.getAccount(), getServer(), uuid, version, msgId, bytes, DBAction.SAVED, DBState.SUCCESS, null));
+    private DPEntity unique(QueryBuilder<DPEntity> builder) {
+        DPEntity result = null;
+        try {
+            result = builder.unique();
+        } catch (Exception e) {
+            List<DPEntity> list = builder.list();
+            for (DPEntity entity : list) {
+                if (result == null) {
+                    result = entity;
+                    continue;
+                }
+                if (result.getVersion() < entity.getVersion()) {
+                    result.delete();
+                    result = entity;
+                } else {
+                    entity.delete();
+                }
+            }
+            AppLogger.d(e.getMessage());
+        }
+        return result;
     }
 
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, Iterable<JFGDPMsg> msgs) {
+        AppLogger.d("saveDPByteInTx:uuid:msgs");
         return getActiveAccount().map(account -> {
             Set<DPEntity> result = new HashSet<>();
             QueryBuilder<DPEntity> queryBuilder;
@@ -96,7 +114,7 @@ public class BaseDBHelper implements IDBHelper {
                     dpEntity = getProperty(uuid, (int) msg.id);
                 } else {
                     queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
-                    dpEntity = queryBuilder.unique();
+                    dpEntity = unique(queryBuilder);
                 }
                 if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                     continue;
@@ -109,6 +127,12 @@ public class BaseDBHelper implements IDBHelper {
                 } else {
                     dpEntity.setValue(msg.packValue, msg.version);
                 }
+                if (propertyParser.isProperty((int) msg.id)) {
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    if (device != null) {
+                        device.updateProperty((int) msg.id, dpEntity);
+                    }
+                }
                 result.add(dpEntity);
             }
             mEntityDao.insertOrReplaceInTx(result);
@@ -118,6 +142,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Iterable<DPEntity>> saveDPByteInTx(RobotoGetDataRsp dataRsp) {
+        AppLogger.d("saveDPByteInTx:RobotoGetDataRsp");
         return getActiveAccount().map(account -> {
             if (dataRsp.map == null) return null;
             Set<DPEntity> result = new HashSet<>();
@@ -129,7 +154,7 @@ public class BaseDBHelper implements IDBHelper {
                         dpEntity = getProperty(dataRsp.identity, (int) msg.id);
                     } else {
                         queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
-                        dpEntity = queryBuilder.limit(1).unique();
+                        dpEntity = unique(queryBuilder);
                     }
                     if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                         continue;
@@ -141,6 +166,12 @@ public class BaseDBHelper implements IDBHelper {
                         dpEntity = new DPEntity(null, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                     } else {
                         dpEntity.setValue(msg.packValue, msg.version);
+                    }
+                    if (propertyParser.isProperty((int) msg.id)) {
+                        Device device = DataSourceManager.getInstance().getJFGDevice(dataRsp.identity);
+                        if (device != null) {
+                            device.updateProperty((int) msg.id, dpEntity);
+                        }
                     }
                     result.add(dpEntity);
                 }
@@ -187,7 +218,7 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public DPEntity getProperty(String uuid, int msgId) {
         QueryBuilder<DPEntity> queryBuilder = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, null, null, null);
-        DPEntity unique = queryBuilder.unique();
+        DPEntity unique = unique(queryBuilder);
         return (unique != null && unique.action() != DBAction.DELETED) ? unique : null;
     }
 
@@ -254,29 +285,6 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
-    public Observable<DPEntity> saveDpMsg(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option) {
-        return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
-                .rx()
-                .unique()
-                .doOnError(throwable -> Log.e("throwable: ", "throwable:" + throwable.getLocalizedMessage()))
-                .filter(item -> {
-                    if (item != null && DBAction.DELETED.action().equals(item.getAction())) {
-                        return false;
-                    }
-                    return true;
-                })
-                .map(item -> {
-                    if (item == null) {
-                        item = new DPEntity(null, account, server, uuid, version, msgId, bytes, action == null ? null : action.action(), state == null ? null : state.state(), option == null ? null : option.option());
-                        Log.d("throwable", "throwable: " + item);
-                        Log.d("throwable", "throwable: " + Thread.currentThread());
-                        mEntityDao.insertOrReplace(item);
-                    }
-                    return item;
-                });
-    }
-
-    @Override
     public Observable<DPEntity> saveOrUpdate(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option) {
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().unique()
@@ -316,8 +324,7 @@ public class BaseDBHelper implements IDBHelper {
         return builder.orderDesc(DPEntityDao.Properties.Version).rx().list();
     }
 
-    @Override
-    public Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option) {
+    private Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option) {
         AppLogger.d("正在标记本地数据, dpAccount:" + account + ",server:" + server + ",uuid:" + uuid + ",version:" + version + ",msgId:" + msgId + ",action:" + action + ",state:" + state + ",option:" + option);
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
                 .rx().list()
@@ -517,16 +524,6 @@ public class BaseDBHelper implements IDBHelper {
             }
             return account;
         });
-    }
-
-    @Override
-    public Observable<DPEntity> update(DPEntity entity) {
-        return mEntityDao.rx().update(entity);
-    }
-
-    @Override
-    public Observable<Void> delete(DPEntity entity) {
-        return mEntityDao.rx().delete(entity);
     }
 
     private QueryBuilder<Device> buildDPDeviceQueryBuilder(String account, String server, String uuid, DBAction action, DBState state, DBOption option) {

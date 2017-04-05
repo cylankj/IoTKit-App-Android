@@ -130,14 +130,14 @@ public class DataSourceService extends Service implements AppCallBack {
 
     private void try2autoLogin() {
         //获取到2.x中的账号密码
-        PreferencesUtils.init(ContextUtils.getContext(),JConstant.PREF_NAME);
-        String account2x = PreferencesUtils.getString(JConstant.KEY_PHONE,"");
-        String pwd2x = PreferencesUtils.getString(JConstant.SESSIONID,"");
-        PreferencesUtils.putString(JConstant.KEY_PHONE,"");
-        PreferencesUtils.putString(JConstant.SESSIONID,"");
-        AppLogger.d("account2x:"+account2x+":"+pwd2x);
+        PreferencesUtils.init(ContextUtils.getContext(), JConstant.PREF_NAME);
+        String account2x = PreferencesUtils.getString(JConstant.KEY_PHONE, "");
+        String pwd2x = PreferencesUtils.getString(JConstant.SESSIONID, "");
+        PreferencesUtils.putString(JConstant.KEY_PHONE, "");
+        PreferencesUtils.putString(JConstant.SESSIONID, "");
+        AppLogger.d("account2x:" + account2x + ":" + pwd2x);
         HandlerThreadUtils.post(() -> PreferencesUtils.init(getApplicationContext()));
-        if (TextUtils.isEmpty(account2x) || TextUtils.isEmpty(pwd2x)){
+        if (TextUtils.isEmpty(account2x) || TextUtils.isEmpty(pwd2x)) {
             //正常的流程
             AutoSignIn.getInstance().autoLogin()
                     .flatMap(integer -> {
@@ -172,14 +172,14 @@ public class DataSourceService extends Service implements AppCallBack {
                     })
                     .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                     .subscribe();
-        }else {
+        } else {
             //直接走引导页
             PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
-            PreferencesUtils.putBoolean(JConstant.UPDATAE_AUTO_LOGIN,true);
+            PreferencesUtils.putBoolean(JConstant.UPDATAE_AUTO_LOGIN, true);
             //同时自动登录保存3.0的账号密码
             try {
                 JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account2x, pwd2x);
-                AutoSignIn.getInstance().autoSave(account2x,1,pwd2x);
+                AutoSignIn.getInstance().autoSave(account2x, 1, pwd2x);
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -323,7 +323,6 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnResult(JFGResult jfgResult) {
-        RxBus.getCacheInstance().post(jfgResult);
         boolean login = false;
         switch (jfgResult.event) {
             case 0:
@@ -386,8 +385,9 @@ public class DataSourceService extends Service implements AppCallBack {
         if (login) {
             AfterLoginService.startGetAccountAction(ContextUtils.getContext());
             AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
-//            AfterLoginService.resumeOfflineRequest();
+            AfterLoginService.resumeOfflineRequest();
         }
+        RxBus.getCacheInstance().post(jfgResult);
         AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + ",seq:" + jfgResult.seq + "]");
     }
 
