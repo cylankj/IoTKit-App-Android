@@ -13,6 +13,9 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
+import rx.Observable;
+import rx.schedulers.Schedulers;
+
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
  * a service on a separate handler thread.
@@ -24,8 +27,6 @@ import com.google.gson.Gson;
 public class AfterLoginService extends IntentService {
 
     private static final String TAG = "KEY";
-//    private static final String KEY_ACCOUNT = "key_account";
-//    private static final String KEY_PWD = "key_account";
     /**
      * 保存账号密码，登陆成功后保存。
      */
@@ -65,25 +66,21 @@ public class AfterLoginService extends IntentService {
             final String action = intent.getStringExtra(TAG);
             AppLogger.i("AfterLoginService: " + action);
             if (TextUtils.equals(action, ACTION_SAVE_ACCOUNT)) {
-//                LoginAccountBean l = JCache.tmpAccount;
-//                if (l == null || TextUtils.isEmpty(l.userName) || TextUtils.isEmpty(l.pwd)) {
-//                    AppLogger.i("do nothing");
-//                    return;
-//                }
-//                PreferencesUtils.putString("wth_a", l.userName);
-//                PreferencesUtils.putString("wth_p", l.pwd);
-//                //
             } else if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
                 JfgCmdInsurance.getCmd().getAccount();
             } else if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
-                try {
-                    String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
-                    UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
-                    if (portrait != null)
-                        JfgCmdInsurance.getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
-                } catch (Exception e) {
-                    AppLogger.d("err: " + e.getLocalizedMessage());
-                }
+                Observable.just("go and do something")
+                        .subscribeOn(Schedulers.newThread())
+                        .subscribe(s -> {
+                            try {
+                                String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
+                                UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
+                                if (portrait != null)
+                                    JfgCmdInsurance.getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                            } catch (Exception e) {
+                                AppLogger.d("err: " + e.getLocalizedMessage());
+                            }
+                        }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
             }
         }
     }

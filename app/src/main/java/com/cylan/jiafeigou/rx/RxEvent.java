@@ -5,7 +5,6 @@ import android.net.NetworkInfo;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGDPMsgCount;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
@@ -17,7 +16,6 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.n.engine.DataSourceService;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -757,17 +755,6 @@ public class RxEvent {
 
     }
 
-    public static class SdcardClearFinishRsp {
-        public boolean b;
-        public String s;
-        public ArrayList<JFGDPMsg> arrayList;
-
-        public SdcardClearFinishRsp(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
-            this.b = b;
-            this.s = s;
-            this.arrayList = arrayList;
-        }
-    }
 
     public static class CheckDevVersionRsp implements Serializable {
         public boolean hasNew;
@@ -933,6 +920,25 @@ public class RxEvent {
             this.arrayList = arrayList;
         }
     }
+
+//    /**
+//     * {@link com.cylan.jfgapp.interfases.AppCallBack#OnRobotSyncData(boolean, String, ArrayList)}
+//     * {@link com.cylan.jiafeigou.dp.DpMsgMap#ID_505_CAMERA_ALARM_MSG}
+//     * {@link com.cylan.jiafeigou.dp.DpMsgMap#ID_512_CAMERA_ALARM_MSG_V3}
+//     * {@link com.cylan.jiafeigou.dp.DpMsgMap#ID_401_BELL_CALL_STATE}
+//     */
+//    public static final class ForSystemNotification {
+//
+//        public final boolean b;
+//        public final String s;
+//        public final ArrayList<JFGDPMsg> arrayList;
+//
+//        public ForSystemNotification(boolean b, String s, ArrayList<JFGDPMsg> arrayList) {
+//            this.b = b;
+//            this.s = s;
+//            this.arrayList = arrayList;
+//        }
+//    }
 
     /**
      * 从我的界面登录标记

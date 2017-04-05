@@ -95,7 +95,7 @@ public class NotifyManager implements INotify {
         return count < 0 ? 0 : (count > 99 ? 99 : count);
     }
 
-    private int getNotificationIcon() {
+    private int getNotificationSmallIcon() {
         boolean useWhiteIcon = (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP);
         return useWhiteIcon ? R.mipmap.notify_empty : R.mipmap.ic_launcher;
     }
@@ -103,11 +103,11 @@ public class NotifyManager implements INotify {
     @Override
     public void sendNotify(NotifyBean notifyBean) {
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
-        builder.setSmallIcon(getNotificationIcon());
-        builder.setContentTitle(getContext().getString(R.string.app_name));
-        builder.setContentText(getContext().getString(R.string.EFAMILY_MISSED_CALL));
+        builder.setSmallIcon(getNotificationSmallIcon());
+//        builder.setContentTitle(getContext().getString(R.string.app_name));
+//        builder.setContentText(getContext().getString(R.string.EFAMILY_MISSED_CALL));
         builder.setLargeIcon(BitmapFactory.decodeResource(getContext().getResources(),
-                R.mipmap.ic_launcher));
+                notifyBean.resId == -1 ? R.mipmap.ic_launcher : notifyBean.resId));
         final int count = getCount(notifyBean.count);
         final String title = count == 0 ? getContext().getString(R.string.app_name) :
                 String.format(getContext().getString(R.string.app_name) + "(%s%s)", count, getContext().getString(R.string.DOOR_NOT_CONNECT));

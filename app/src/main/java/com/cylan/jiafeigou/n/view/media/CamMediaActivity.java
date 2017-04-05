@@ -20,8 +20,10 @@ import android.widget.LinearLayout;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
 import com.bumptech.glide.load.model.GlideUrl;
+import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -129,11 +131,23 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     }
                 });
                 //可能出错,不是对应的index
-                GlideUrl url = new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (i + 1) + ".jpg");
-                Glide.with(ContextUtils.getContext())
+                CamWarnGlideURL url = new CamWarnGlideURL(uuid, alarmMsg.time + "_" + (i + 1) + ".jpg");
+                Glide.with(this)
                         .load(url)
                         .asBitmap()
                         .format(DecodeFormat.DEFAULT)
+                        .listener(new RequestListener<CamWarnGlideURL, Bitmap>() {
+                            @Override
+                            public boolean onException(Exception e, CamWarnGlideURL model, Target<Bitmap> target, boolean isFirstResource) {
+                                AppLogger.e("load failed: " + model.getTime() + "," + model.getIndex());
+                                return false;
+                            }
+
+                            @Override
+                            public boolean onResourceReady(Bitmap resource, CamWarnGlideURL model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                                return false;
+                            }
+                        })
                         .into(new SimpleTarget<Bitmap>(150, 150) {
                             @Override
                             public void onResourceReady(Bitmap resource, GlideAnimation glideAnimation) {

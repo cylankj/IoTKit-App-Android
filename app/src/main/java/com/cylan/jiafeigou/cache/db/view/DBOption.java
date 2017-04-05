@@ -46,6 +46,16 @@ public interface DBOption {
         }
     }
 
+    final class SimpleMultiDpQueryOption extends BaseDBOption {
+        public int limit = 1;
+        public boolean asc;
+
+        public SimpleMultiDpQueryOption(int limit, boolean asc) {
+            this.limit = limit;
+            this.asc = asc;
+        }
+    }
+
     final class UpdateOption extends BaseDBOption {
 
     }

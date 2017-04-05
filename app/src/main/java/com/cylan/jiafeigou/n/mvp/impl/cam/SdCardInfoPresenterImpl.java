@@ -7,7 +7,6 @@ import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -133,18 +132,18 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     @Override
     public Subscription onClearSdResult() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearFinishRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<RxEvent.SdcardClearFinishRsp, Observable<Object>>() {
+                .flatMap(new Func1<RxEvent.DeviceSyncRsp, Observable<Object>>() {
                     @Override
-                    public Observable<Object> call(RxEvent.SdcardClearFinishRsp rsp) {
-                        if (rsp != null && rsp.arrayList.size() > 0) {
-                            for (JFGDPMsg dp : rsp.arrayList) {
+                    public Observable<Object> call(RxEvent.DeviceSyncRsp rsp) {
+                        if (rsp != null && rsp.dpList.size() > 0) {
+                            for (JFGDPMsg dp : rsp.dpList) {
                                 try {
-                                    if (dp.id == 203 && TextUtils.equals(uuid, rsp.s)) {
+                                    if (dp.id == 203 && TextUtils.equals(uuid, rsp.uuid)) {
                                         DpMsgDefine.DPSdStatus sdStatus = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdStatus.class);
                                         return Observable.just(sdStatus);
-                                    } else if (dp.id == 222 && TextUtils.equals(uuid, rsp.s)) {
+                                    } else if (dp.id == 222 && TextUtils.equals(uuid, rsp.uuid)) {
                                         DpMsgDefine.DPSdcardSummary isPopSd = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdcardSummary.class);
                                         return Observable.just(isPopSd);
                                     }

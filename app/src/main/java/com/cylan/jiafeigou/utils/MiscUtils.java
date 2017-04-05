@@ -9,8 +9,10 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -22,7 +24,6 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -450,4 +451,37 @@ public class MiscUtils {
         }
         return idpEntities;
     }
+
+    public static List<IDPEntity> buildEntity(String uuid, long msgId, long version, boolean asc) {
+        List<IDPEntity> list = new ArrayList<>();
+        list.add(new DPEntity()
+                .setMsgId((int) msgId)
+                .setUuid(uuid)
+                .setVersion(version)
+                .setOption(new DBOption.SimpleMultiDpQueryOption(1, asc))
+                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+        return list;
+    }
+
+    public static class DPEntityBuilder {
+        private List<IDPEntity> list = new ArrayList<>();
+
+        public DPEntityBuilder() {
+        }
+
+        public DPEntityBuilder add(String uuid, long msgId, long version, boolean asc) {
+            list.add(new DPEntity()
+                    .setMsgId((int) msgId)
+                    .setUuid(uuid)
+                    .setVersion(version)
+                    .setOption(new DBOption.SimpleMultiDpQueryOption(1, asc))
+                    .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+            return this;
+        }
+
+        public List<IDPEntity> build() {
+            return list;
+        }
+    }
+
 }

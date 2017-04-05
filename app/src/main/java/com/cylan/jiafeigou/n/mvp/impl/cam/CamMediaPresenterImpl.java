@@ -160,7 +160,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                     }
                     AppLogger.d("检查是否被收藏...: " + idpTaskResult.getResultCode());
                 });
-        addSubscription(subscription, "checkCollection");
+        addSubscription(subscription, "checkCollection" + index);
     }
 
     @Override

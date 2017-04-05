@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.misc;
 
+import com.cylan.jiafeigou.support.log.AppLogger;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -40,6 +42,7 @@ public class MapSubscription implements Subscription {
      */
     public void add(final Subscription s, String tag) {
         if (s.isUnsubscribed()) {
+            AppLogger.d("isUnsubscribed:" + tag);
             return;
         }
         remove(tag);
@@ -50,6 +53,7 @@ public class MapSubscription implements Subscription {
                         subscriptions = new HashMap<>(4);
                     }
                     subscriptions.put(tag, s);
+                    AppLogger.d("add to sub:" + tag);
                     return;
                 }
             }

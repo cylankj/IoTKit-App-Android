@@ -139,15 +139,15 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
 
     @Override
     public Subscription clearSdcardReqBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearFinishRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<RxEvent.SdcardClearFinishRsp, Observable<DpMsgDefine.DPSdStatus>>() {
+                .flatMap(new Func1<RxEvent.DeviceSyncRsp, Observable<DpMsgDefine.DPSdStatus>>() {
                     @Override
-                    public Observable<DpMsgDefine.DPSdStatus> call(RxEvent.SdcardClearFinishRsp rsp) {
-                        if (rsp != null && rsp.arrayList.size() > 0) {
-                            for (JFGDPMsg dp : rsp.arrayList) {
+                    public Observable<DpMsgDefine.DPSdStatus> call(RxEvent.DeviceSyncRsp rsp) {
+                        if (rsp != null && rsp.dpList.size() > 0) {
+                            for (JFGDPMsg dp : rsp.dpList) {
                                 try {
-                                    if (dp.id == 203 && TextUtils.equals(uuid, rsp.s)) {
+                                    if (dp.id == 203 && TextUtils.equals(uuid, rsp.uuid)) {
                                         DpMsgDefine.DPSdStatus sdStatus = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdStatus.class);
                                         return Observable.just(sdStatus);
                                     }
