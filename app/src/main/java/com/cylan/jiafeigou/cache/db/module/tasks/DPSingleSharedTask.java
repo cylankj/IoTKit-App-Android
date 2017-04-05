@@ -97,7 +97,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                     AppLogger.d("分享操作步骤一执行成功,正在执行步骤二:putFileToCloud");
                     try {
                         String remotePath = "/long/" +
-                                Security.getVId(JFGRules.getTrimPackageName()) +//vid
+                                Security.getVId() +//vid
                                 "/" +
                                 entity.getAccount() +//account
                                 "/wonder/" +

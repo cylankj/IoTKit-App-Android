@@ -6,6 +6,7 @@ import android.os.IBinder;
 import android.os.Process;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
@@ -107,14 +108,16 @@ public class DataSourceService extends Service implements AppCallBack {
         HandlerThreadUtils.postAtFrontOfQueue(() -> {
             Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
             try {
-                String trimPackageName = JFGRules.getTrimPackageName();
                 //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
-                String vid = Security.getVId(trimPackageName);
-                String vKey = Security.getVKey(trimPackageName);
+                String vid = Security.getVId();
+                String vKey = Security.getVKey();
                 JfgCmdInsurance.getCmd().setCallBack(DataSourceService.this);
                 JfgCmdInsurance.getCmd().initNativeParam(vid, vKey, OptionsImpl.getServer());
                 JfgCmdInsurance.getCmd().enableLog(true, JConstant.LOG_PATH);
                 AppLogger.d("sdk version:" + JfgCmdInsurance.getCmd().getSdkVersion());
+                Log.d("DataSourceService", "vid:" + vid);
+                Log.d("DataSourceService", "vKey:" + vKey);
+                Log.d("DataSourceService", "server:" + OptionsImpl.getServer());
             } catch (Exception e) {
                 AppLogger.d("let's go err:" + e.getLocalizedMessage());
             }

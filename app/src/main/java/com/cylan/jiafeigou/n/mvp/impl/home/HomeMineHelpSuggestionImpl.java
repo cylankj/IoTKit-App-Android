@@ -349,7 +349,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         String fileName = (Long.parseLong(bean.getDate())) / 1000 + ".zip";
         String remoteUrl = null;
         try {
-            remoteUrl = "/log/" + Security.getVId(JFGRules.getTrimPackageName()) + "/" + userInfomation.getAccount() + "/" + fileName;
+            remoteUrl = "/log/" + Security.getVId() + "/" + userInfomation.getAccount() + "/" + fileName;
             JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
             AppLogger.d("upload log:" + remoteUrl);
         } catch (JfgException e) {

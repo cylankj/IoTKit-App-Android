@@ -11,7 +11,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.OptionsImpl;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -136,12 +135,10 @@ public class SimpleBindFlow extends AFullBind {
             AppLogger.i(BIND_TAG + udpDevicePortrait);
             //
             String serverAddress = OptionsImpl.getServer();
-            if (serverAddress != null && serverAddress.contains(":443")) {
-                serverAddress = serverAddress.split(":")[0];
-            }
+            int port = Integer.parseInt(serverAddress.substring(serverAddress.indexOf(":")));
+            serverAddress = serverAddress.split(":")[0];
             if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG)
                 throw new IllegalArgumentException("server address is empty");
-            int port = Security.getServerPort(JFGRules.getTrimPackageName());
             //设置语言
             JfgUdpMsg.SetLanguage setLanguage = new JfgUdpMsg.SetLanguage(
                     udpDevicePortrait.uuid,

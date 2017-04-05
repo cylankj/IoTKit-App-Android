@@ -10,6 +10,7 @@ import android.util.Log;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.tencent.mm.sdk.modelmsg.SendMessageToWX;
 import com.tencent.mm.sdk.modelmsg.WXImageObject;
 import com.tencent.mm.sdk.modelmsg.WXMediaMessage;
@@ -42,7 +43,7 @@ public class WechatShare {
      */
     public WechatShare(Activity activity) {
         WeakReference<Activity> weakReference = new WeakReference<>(activity);
-        String appId = Security.getWeChatKey(JFGRules.getTrimPackageName());
+        String appId = PackageUtils.getMetaString(activity, "weChatAppKey");
         if (TextUtils.isEmpty(appId)) {
             AppLogger.e("wechat app msgId is null");
         }

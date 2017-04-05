@@ -7,13 +7,16 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 
 /**
  * Created by hds on 17-3-30.
@@ -21,8 +24,15 @@ import java.io.InputStreamReader;
 
 public class OptionsImpl {
     private static final String TAG = "iDebugOptions";
-    private static String server;
     private static final String filePath = JConstant.LOG_PATH + File.separator + "config.txt";
+    private static JsonObject configContent;
+
+    static {
+        try {
+            load();
+        } catch (Exception e) {
+        }
+    }
 
     private OptionsImpl() {
     }
@@ -37,31 +47,57 @@ public class OptionsImpl {
         StrictMode.setThreadPolicy((new StrictMode.ThreadPolicy.Builder()).detectDiskReads().detectDiskWrites().detectNetwork().detectAll().penaltyLog().penaltyDialog().build());
     }
 
+
     public static String getServer() {
-        if (!TextUtils.isEmpty(server)) return server;
         try {
-            server = Security.getServerPrefix(JFGRules.getTrimPackageName()) + ".jfgou.com:443";
+            if (configContent != null && configContent.has("server")) {
+                String configServer = configContent.get("server").getAsString();
+                if (!TextUtils.isEmpty(configServer)) return configServer;
+            }
+            String server = PackageUtils.getMetaString(ContextUtils.getContext(), "server");
             if (!BuildConfig.DEBUG) {
                 return server;
             }
             if (!new File(filePath).exists()) return server;
-            FileInputStream fStream = new FileInputStream(filePath);
-            BufferedReader br = new BufferedReader(new InputStreamReader(fStream));
-            String strLine = "";
-            String content = "";
-            //Read File Line By Line
-            while ((strLine = br.readLine()) != null) {
-                // Print the content on the console
-                content = strLine;
-                Log.d("getServer", "getServer:" + strLine);
+            load();
+            if (configContent != null && configContent.has("server")) {
+                String configServer = configContent.get("server").getAsString();
+                if (!TextUtils.isEmpty(configServer)) return configServer;
             }
-            //Close the input stream
-            br.close();
-            fStream.close();
-            return content;
+            return server;
         } catch (IOException e) {
             Log.d("IOException", ":" + e.getLocalizedMessage());
             return "";
         }
     }
+
+    private static void load() throws FileNotFoundException {
+        if (!new File(filePath).exists()) return;
+        BufferedReader br = new BufferedReader(new FileReader(filePath));
+        JsonParser parser = new JsonParser();
+        configContent = parser.parse(br).getAsJsonObject();
+    }
+
+    public static String getVKey() {
+        String vkey = PackageUtils.getMetaString(ContextUtils.getContext(), "vKey");
+        if (!BuildConfig.DEBUG) {
+            return vkey;
+        }
+        if (configContent != null && configContent.has("vkey")) {
+            return configContent.get("vkey").getAsString();
+        }
+        return vkey;
+    }
+
+    public static String getVid() {
+        String vid = PackageUtils.getMetaString(ContextUtils.getContext(), "vId");
+        if (!BuildConfig.DEBUG) {
+            return vid;
+        }
+        if (configContent != null && configContent.has("vid")) {
+            return configContent.get("vid").getAsString();
+        }
+        return vid;
+    }
+
 }

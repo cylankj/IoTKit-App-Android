@@ -5,51 +5,17 @@ package com.cylan.jiafeigou.support;
  */
 
 public class Security {
-    static {
-        System.loadLibrary("native-lib");
+    /**
+     * @return vKey
+     */
+    public static String getVKey() {
+        return OptionsImpl.getVKey();
     }
 
     /**
-     * @param packageNameSuffix
-     * @return: qq-sdk app key
-     */
-    public native static String getQQKey(String packageNameSuffix);
-
-    /**
-     * @param packageNameSuffix
-     * @return :mta统计appKey
-     */
-    public native static String getMtaKey(String packageNameSuffix);
-
-    /**
-     * @param packageNameSuffix
-     * @return 微信分享 appKey
-     */
-    public native static String getWeChatKey(String packageNameSuffix);
-
-    /**
-     * @param packageNameSuffix
-     * @return :注意:服务器域名前缀  yf  test1 yun
-     */
-    public native static String getServerPrefix(String packageNameSuffix);
-
-    /**
-     * @param packageNameSuffix
-     * @return :服务器appKey
-     */
-    public native static int getServerPort(String packageNameSuffix);
-
-    /**
-     * @param packageNameSuffix
-     * @return vKey
-     */
-    public native static String getVKey(String packageNameSuffix);
-
-    /**
-     * @param packageNameSuffix
      * @return vId
      */
-    public native static String getVId(String packageNameSuffix);
-
-    public native static String getSinaAppKey(String packageNameSuffix);
+    public static String getVId() {
+        return OptionsImpl.getVid();
+    }
 }

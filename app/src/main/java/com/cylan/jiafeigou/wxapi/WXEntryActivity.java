@@ -10,6 +10,7 @@ import android.util.Log;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.google.gson.Gson;
 import com.tencent.mm.sdk.constants.ConstantsAPI;
 import com.tencent.mm.sdk.modelbase.BaseReq;
@@ -27,7 +28,7 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         super.onCreate(savedInstanceState);
         //如果分享的时候，该界面没有开启，那么微信开始这个activity时，
         // 会调用onCreate，所以这里要处理微信的返回结果
-        String appId = Security.getWeChatKey(JFGRules.getTrimPackageName());
+        String appId = PackageUtils.getMetaString(this, "weChatAppKey");
         if (TextUtils.isEmpty(appId)) {
             AppLogger.i("wechat app msgId is null");
         }

@@ -98,6 +98,27 @@
         <meta-data
             android:name="BUGLY_APPID"
             android:value="900026046" />
+        <meta-data
+            android:name="vId"
+            android:value="${VID}" />
+        <meta-data
+            android:name="vKey"
+            android:value="${VKEY}" />
+        <meta-data
+            android:name="qqAppKey"
+            android:value="${qqAppKey}" />
+        <meta-data
+            android:name="mtaAppKey"
+            android:value="${mtaAppKey}" />
+        <meta-data
+            android:name="weChatAppKey"
+            android:value="${weChatAppKey}" />
+        <meta-data
+            android:name="sinaAppKey"
+            android:value="${sinaAppKey}" />
+        <meta-data
+            android:name="server"
+            android:value="${SERVER}" />
 
         <provider
             android:name="com.huawei.hms.update.provider.UpdateProvider"

@@ -50,11 +50,6 @@ android {
         }
 
     }
-    externalNativeBuild {
-        cmake {
-            path 'CMakeLists.txt'
-        }
-    }
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs' //set .so files location to libs instead of jniLibs
         jni.srcDirs = [] //disable automatic ndk-build call
@@ -130,31 +125,66 @@ android {
             //官方运营
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider"]
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
+                                    "VID"                : "\\ 0001",
+                                    "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
+                                    "qqAppKey"           : "\\ 1103156296",
+                                    "mtaAppKey"          : "Aqc1103156296",
+                                    "weChatAppKey"       : "wx3081bcdae8a842cf",
+                                    "sinaAppKey"         : "\\ 1315129656",
+                                    "SERVER"             : "yun.jfgou.com:443"]
         }
         _test1 {
             applicationIdSuffix ".test1"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.test1.hms.update.provider"]
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.test1.hms.update.provider",
+                                    "VID"                : "\\ 0001",
+                                    "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
+                                    "qqAppKey"           : "\\ 1106028314",
+                                    "mtaAppKey"          : "Aqc1103156296",
+                                    "weChatAppKey"       : "wx7b9d35f344db8841",
+                                    "sinaAppKey"         : "\\ 1315129656",
+                                    "SERVER"             : "test1.jfgou.com:443"]
         }
         _doby {
             applicationIdSuffix ".zhongxing"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.zhongxing.hms.update.provider"]
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.zhongxing.hms.update.provider",
+                                    "VID"                : "\\ 0002",
+                                    "VKEY"               : "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1",
+                                    "qqAppKey"           : "",
+                                    "mtaAppKey"          : "ATQ1JV694AKT",
+                                    "weChatAppKey"       : "",
+                                    "sinaAppKey"         : "\\ 1315129656",
+                                    "SERVER"             : "yun.jfgou.com:443"]
         }
         _cell_c {
             applicationIdSuffix ".cell_c"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.cell_c.hms.update.provider"]
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.cell_c.hms.update.provider",
+                                    "VID"                : "\\  0060",
+                                    "VKEY"               : "doLUb8CEObqCKQpA05ytKKHPu5Q3SvYX",
+                                    "qqAppKey"           : "",
+                                    "mtaAppKey"          : "Aqc1103156296",
+                                    "weChatAppKey"       : "",
+                                    "sinaAppKey"         : "",
+                                    "SERVER"             : "yun.jfgou.com:443"]
         }
         _yf {
             applicationIdSuffix ".yf"
             versionName vName
             versionCode vCode
-            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.yf.hms.update.provider"]
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.yf.hms.update.provider",
+                                    "VID"                : "\\ 0001",
+                                    "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
+                                    "qqAppKey"           : "\\ 1106028314",
+                                    "mtaAppKey"          : "Aqc1103156296",
+                                    "weChatAppKey"       : "wx82878b30fc6c0a6d",
+                                    "sinaAppKey"         : "\\ 1315129656",
+                                    "SERVER"             : "yf.jfgou.com:443"]
         }
     }
 }

@@ -4,14 +4,12 @@ import android.app.Activity;
 import android.content.Context;
 
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.Tencent;
 import com.tencent.tauth.UiError;
-
 
 import org.json.JSONObject;
 
@@ -41,7 +39,7 @@ public class TencentInstance {
 
     public TencentInstance(Activity activity) {
 //        APP_KEY = "1106028314";
-        APP_KEY = Security.getQQKey(JFGRules.getTrimPackageName());
+        APP_KEY = PackageUtils.getMetaString(activity, "qqAppKey");
         AppLogger.d("qqKey:" + APP_KEY);
         context = activity;
         mTencent = Tencent.createInstance(APP_KEY, activity);

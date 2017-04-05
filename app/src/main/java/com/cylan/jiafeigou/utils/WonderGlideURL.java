@@ -27,7 +27,7 @@ public class WonderGlideURL extends GlideUrl {
     public WonderGlideURL(DpMsgDefine.DPWonderItem bean) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
         mBean = bean;
-        this.vid = Security.getVId(JFGRules.getTrimPackageName());
+        this.vid = Security.getVId();
         if (DataSourceManager.getInstance().getAJFGAccount() != null)
             this.account = DataSourceManager.getInstance().getAJFGAccount().getAccount();
         Device device = DataSourceManager.getInstance().getJFGDevice(bean.cid);
