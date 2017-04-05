@@ -1,11 +1,17 @@
 package com.cylan.jiafeigou;
 
+import android.util.Log;
+
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
+import rx.Subscription;
+import rx.functions.Action0;
+import rx.functions.Action1;
 import rx.functions.Func1;
 
 /**
@@ -69,5 +75,37 @@ public class RxJavaTest {
 //            }
 //        }).subscribe(new TestSubscriber<String>());
 //        Assert.assertEquals(atomicInteger.intValue(), 0);
+    }
+
+    private long timeTick;
+    private Subscription subscription;
+
+    @Test
+    public void testInterval() throws InterruptedException {
+        timeTick = System.currentTimeMillis();
+        subscription = Observable.interval(1, TimeUnit.SECONDS)
+                .filter(new Func1<Long, Boolean>() {
+                    @Override
+                    public Boolean call(Long aLong) {
+                        System.out.println("filter");
+                        boolean r = System.currentTimeMillis() - timeTick > 5 * 1000L;
+//                        if (r) throw new IllegalArgumentException("time out");
+                        if (r) subscription.unsubscribe();
+                        return true;
+                    }
+                })
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        System.out.println("complete?");
+                    }
+                })
+                .subscribe(new Action1<Long>() {
+                    @Override
+                    public void call(Long aLong) {
+                        System.out.println("finish");
+                    }
+                }, throwable -> System.out.println("what"));
+        Thread.sleep(20 * 1000L);
     }
 }

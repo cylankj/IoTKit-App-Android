@@ -166,7 +166,10 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public Device getJFGDevice(String uuid) {
         Device device = mCachedDeviceMap.get(uuid);
-        if (device == null) return new Device();
+        if (device == null) {
+            AppLogger.e("err: device is null," + uuid);
+            return new Device();
+        }
         return device;
     }
 
