@@ -449,7 +449,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         if (activity != null && activity instanceof CameraLiveActivity) {
                             Bundle bundle = new Bundle();
                             bundle.putInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE, TYPE_HISTORY);
-                            bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, bean.alarmMsg.time);
+                            bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, bean.alarmMsg.version);
                             ((CameraLiveActivity) activity).setCurrentBundle(bundle);
                         }
                         AppLogger.d("alarm: " + bean);

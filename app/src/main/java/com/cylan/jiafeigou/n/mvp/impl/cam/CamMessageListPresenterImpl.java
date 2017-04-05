@@ -296,6 +296,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .map(result -> {
                     if (result.getResultCode() == 0) {
 //                        mView.onDateMapRsp(dateItemList = result.getResultResponse());
+                        dateItemList = result.getResultResponse();
                     }
                     return dateItemList;
                 })

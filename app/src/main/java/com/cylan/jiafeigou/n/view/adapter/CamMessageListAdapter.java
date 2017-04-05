@@ -60,6 +60,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         pic_container_width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
+        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        this.hasSdcard = status.hasSdcard;
     }
 
     private boolean hasSdcard() {

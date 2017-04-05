@@ -176,7 +176,7 @@ public class AppLogger {
         if (DEBUG)
             android.util.Log.e(TAG, content);
         if (permissionGranted)
-            logFile(null, msg);
+            logFile(null, content);
     }
 
 //    /**
