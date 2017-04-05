@@ -73,7 +73,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
                 if (s != null)
                     compositeSubscription.add(s);
         }
-        AppLogger.d(TAG + ": register: " + compositeSubscription.isUnsubscribed());
+        AppLogger.d(TAG + ": register: " + compositeSubscription.isUnsubscribed() + ",:" + refCacheMap.isUnsubscribed());
         String[] action = registerNetworkAction();
         if (action != null && action.length > 0) {
             NetMonitor.getNetMonitor().registerNet(this, action);
@@ -109,6 +109,8 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     public void stop() {
         unSubscribe(refCacheMap);
         unSubscribe(compositeSubscription);
+        if (compositeSubscription != null) compositeSubscription.clear();
+        if (refCacheMap != null) refCacheMap.clear();
         NetMonitor.getNetMonitor().unregister();
         if (registerTimeTick()) {
             if (timeTick != null)

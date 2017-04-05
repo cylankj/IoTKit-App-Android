@@ -21,7 +21,7 @@ import rx.Observable;
 
 public interface JFGSourceManager {
 
-    <T extends Device> T getJFGDevice(String uuid);
+    Device getJFGDevice(String uuid);
 
     List<Device> getAllJFGDevice();
 

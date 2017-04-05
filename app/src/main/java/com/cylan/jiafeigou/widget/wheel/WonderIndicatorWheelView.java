@@ -122,8 +122,8 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
         public String toString() {
             return "WheelItem{" +
                     "wonderful=" + wonderful +
-                    ", time=" + time +
-                    ", init=" + init +
+                    ", time=" + time + "(" + TimeUtils.getDayString(time) +
+                    "), init=" + init +
                     ", selected=" + selected +
                     '}';
         }

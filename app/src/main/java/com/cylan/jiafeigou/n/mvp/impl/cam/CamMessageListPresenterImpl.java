@@ -295,23 +295,46 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .filter(ret -> mView != null && ret != null && ret.getResultResponse() != null)
                 .map(result -> {
                     if (result.getResultCode() == 0) {
-                        mView.onDateMapRsp(dateItemList = result.getResultResponse());
+//                        mView.onDateMapRsp(dateItemList = result.getResultResponse());
                     }
                     return dateItemList;
                 })
                 .subscribeOn(Schedulers.computation())
-                .subscribe(wheelItems -> {
+                .map(wheelItems -> {
                     long timeHit = 0;
+                    WonderIndicatorWheelView.WheelItem theItem = null;
                     for (WonderIndicatorWheelView.WheelItem item : wheelItems) {
-                        if (item.wonderful) {
-                            timeHit = TimeUtils.getSpecificDayEndTime(item.time);
-                            break;
+                        if (item.wonderful) {//找出最近的一天.就可以了.
+                            if (item.time > timeHit) {
+                                timeHit = item.time;
+                                theItem = item;
+                            }
                         }
                     }
                     if (timeHit != 0) {
                         //需要保证这个timeHit是当天的最大的一个,干脆用一天的最后一秒
-                        fetchMessageList(timeHit, false);
+                        AppLogger.d("Max dateList timeHit before:" + timeHit);
+                        timeHit = TimeUtils.getSpecificDayEndTime(timeHit);
                         AppLogger.d("Max dateList timeHit:" + timeHit);
+                        fetchMessageList(timeHit, false);
+                    }
+                    if (theItem != null) {
+                        int index = dateItemList.indexOf(theItem);
+                        theItem.selected = true;
+                        if (index >= 0) {
+                            dateItemList.get(index).selected = true;
+                        }
+                        Log.d("selected", "selected?" + dateItemList);
+                    }
+                    return new Pair<>(timeHit, theItem);
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null)
+                .subscribe(pair -> {
+                    if (pair.first == 0) {
+                        mView.onErr();//no date list
+                    } else {
+                        mView.onDateMapRsp(dateItemList);
                     }
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
         addSubscription(subscription, "DPCamDateQueryTask");
