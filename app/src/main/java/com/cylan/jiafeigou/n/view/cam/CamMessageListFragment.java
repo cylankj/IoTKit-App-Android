@@ -140,29 +140,29 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
 //        camMessageListAdapter.setOnItemClickListener(this);
         rvCamMessageList.setAdapter(camMessageListAdapter);
-        rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            int pastVisibleItems, visibleItemCount, totalItemCount;
-
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                final int fPos = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
-                setCurrentPosition(fPos);
-                if (dy > 0) { //check for scroll down
-                    visibleItemCount = camMessageListAdapter.getLayoutManager().getChildCount();
-                    totalItemCount = camMessageListAdapter.getLayoutManager().getItemCount();
-                    pastVisibleItems = ((LinearLayoutManager) camMessageListAdapter.getLayoutManager()).findFirstVisibleItemPosition();
-                    if (!endlessLoading && mIsLastLoadFinish) {
-                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-                            endlessLoading = true;
-                            mIsLastLoadFinish = false;
-                            Log.d("tag", "tag.....load more");
-                            startRequest(false);
-                        }
-                    }
-                }
-            }
-        });
+//        rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+//            int pastVisibleItems, visibleItemCount, totalItemCount;
+//
+//            @Override
+//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+//                super.onScrolled(recyclerView, dx, dy);
+//                final int fPos = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+//                setCurrentPosition(fPos);
+//                if (dy > 0) { //check for scroll down
+//                    visibleItemCount = camMessageListAdapter.getLayoutManager().getChildCount();
+//                    totalItemCount = camMessageListAdapter.getLayoutManager().getItemCount();
+//                    pastVisibleItems = ((LinearLayoutManager) camMessageListAdapter.getLayoutManager()).findFirstVisibleItemPosition();
+//                    if (!endlessLoading && mIsLastLoadFinish) {
+//                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+//                            endlessLoading = true;
+//                            mIsLastLoadFinish = false;
+//                            Log.d("tag", "tag.....load more");
+//                            startRequest(false);
+//                        }
+//                    }
+//                }
+//            }
+//        });
         camMessageListAdapter.setOnclickListener(this);
     }
 
@@ -229,10 +229,13 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onDateMapRsp(List<WonderIndicatorWheelView.WheelItem> dateMap) {
         fLayoutCamMessageListTimeline.init(dateMap);
-        if (!fLayoutCamMessageListTimeline.hasInit())
-            fLayoutCamMessageListTimeline.setListener(time -> {
-                AppLogger.d("scroll date： " + TimeUtils.getDayInMonth(time));
-            });
+        fLayoutCamMessageListTimeline.setListener(time -> {
+            AppLogger.d("scroll date： " + TimeUtils.getDayInMonth(time));
+            if (basePresenter != null)
+                basePresenter.fetchMessageList(TimeUtils.getSpecificDayEndTime(time), false);
+            camMessageListAdapter.clear();
+            LoadingDialog.showLoading(getFragmentManager());
+        });
         LoadingDialog.dismissLoading(getFragmentManager());
     }
 
@@ -241,6 +244,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         endlessLoading = false;
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
+        LoadingDialog.dismissLoading(getFragmentManager());
         final int count = beanArrayList == null ? 0 : beanArrayList.size();
         if (count == 0) {
             AppLogger.i("没有数据");

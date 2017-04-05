@@ -15,7 +15,7 @@ import rx.exceptions.Exceptions;
 
 public class MapSubscription implements Subscription {
 
-    private HashMap<String, Subscription> subscriptions;
+    private HashMap<String, Subscription> subscriptions = new HashMap<>(4);
     private volatile boolean unsubscribed;
 
     public MapSubscription() {
@@ -42,11 +42,7 @@ public class MapSubscription implements Subscription {
         if (s.isUnsubscribed()) {
             return;
         }
-        if (subscriptions != null) {
-            if (subscriptions.get(tag) != null && !subscriptions.get(tag).isUnsubscribed()) {
-                subscriptions.get(tag).unsubscribe();
-            }
-        }
+        remove(tag);
         if (!unsubscribed) {
             synchronized (this) {
                 if (!unsubscribed) {

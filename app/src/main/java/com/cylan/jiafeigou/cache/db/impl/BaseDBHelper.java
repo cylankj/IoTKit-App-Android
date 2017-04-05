@@ -96,7 +96,9 @@ public class BaseDBHelper implements IDBHelper {
                     dpEntity = getProperty(uuid, (int) msg.id);
                 } else {
                     queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
-                    dpEntity = queryBuilder.unique();
+                    dpEntity = queryBuilder
+                            .orderDesc(DPEntityDao.Properties.Version).limit(1)
+                            .unique();
                 }
                 if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                     continue;
@@ -129,7 +131,9 @@ public class BaseDBHelper implements IDBHelper {
                         dpEntity = getProperty(dataRsp.identity, (int) msg.id);
                     } else {
                         queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
-                        dpEntity = queryBuilder.limit(1).unique();
+                        dpEntity = queryBuilder
+                                .orderDesc(DPEntityDao.Properties.Version).limit(1)
+                                .unique();
                     }
                     if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                         continue;
@@ -171,7 +175,9 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<DPEntity> queryDpMsg(QueryBuilder<DPEntity> builder) {
-        return builder.rx().unique();
+        return builder
+                .orderDesc(DPEntityDao.Properties.Version).limit(1)
+                .rx().unique();
     }
 
     @Override
@@ -187,14 +193,14 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public DPEntity getProperty(String uuid, int msgId) {
         QueryBuilder<DPEntity> queryBuilder = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, null, null, null);
-        DPEntity unique = queryBuilder.unique();
+        DPEntity unique = queryBuilder.orderDesc(DPEntityDao.Properties.Version).limit(1).unique();
         return (unique != null && unique.action() != DBAction.DELETED) ? unique : null;
     }
 
     @Override
     public Device getJFGDevice(String uuid) {
         QueryBuilder<Device> queryBuilder = buildDPDeviceQueryBuilder(dpAccount.getAccount(), getServer(), uuid, DBAction.SAVED, DBState.SUCCESS, null);
-        return queryBuilder.unique();
+        return queryBuilder.orderDesc(DeviceDao.Properties.Account).limit(1).unique();
     }
 
     @Override
@@ -256,6 +262,7 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<DPEntity> saveDpMsg(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option) {
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
+                .orderDesc(DPEntityDao.Properties.Version).limit(1)
                 .rx()
                 .unique()
                 .doOnError(throwable -> Log.e("throwable: ", "throwable:" + throwable.getLocalizedMessage()))
@@ -279,6 +286,7 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<DPEntity> saveOrUpdate(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option) {
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
+                .orderDesc(DPEntityDao.Properties.Version).limit(1)
                 .rx().unique()
                 .map(item -> {
                     if (item == null) {
@@ -340,6 +348,7 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<DPEntity> deleteDPMsgForce(String account, String server, String uuid, Long version, Integer msgId) {
         return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
+                .orderDesc(DPEntityDao.Properties.Version).limit(1)
                 .rx().unique().map(result -> {
                     mEntityDao.delete(result);
                     return result;
@@ -503,7 +512,9 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<DPEntity> findDPMsg(String uuid, Long version, Integer msgId) {
-        return getActiveAccount().flatMap(account -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, version, msgId, null, null, null).rx().unique());
+        return getActiveAccount().flatMap(account -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, version, msgId, null, null, null)
+                .orderDesc(DPEntityDao.Properties.Version).limit(1)
+                .rx().unique());
     }
 
     @Override

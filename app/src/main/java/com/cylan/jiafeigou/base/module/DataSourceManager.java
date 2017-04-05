@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -166,7 +165,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Device getJFGDevice(String uuid) {
-        return mCachedDeviceMap.get(uuid);
+        Device device = mCachedDeviceMap.get(uuid);
+        if (device == null) return new Device();
+        return device;
     }
 
     @Override

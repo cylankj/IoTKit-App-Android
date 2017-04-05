@@ -116,7 +116,9 @@ public class TimeUtilsTest {
 
     @Test
     public void startOfDay() throws Exception {
-
+        System.out.println(TimeUtils.getSpecificDayEndTime(1491007607000L));
+        System.out.println(TimeUtils.getSpecificDayEndTime(1490947860000L));
+        System.out.println(TimeUtils.getSpecificDayStartTime(1490975999000L));
     }
 
     @Test
