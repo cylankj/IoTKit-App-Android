@@ -93,8 +93,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         DpMsgDefine.DPNet net = device == null ? null : device.$(201, new DpMsgDefine.DPNet());
         if (device != null && !TextUtils.isEmpty(uuid) && net != null && net.net > 0) {
             //4.net数据可能已经被更新了(重新进入该页面时候使用.)
-            mView.bindState(this.bindResult = BIND_SUC);
-            simulatePercent.boost();
+            endCounting();
             AppLogger.d("finish? ;" + net);
             return;
         }
@@ -156,10 +155,10 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 })
                 .filter(net -> net != null && net.net > 0)
                 .first()
+                .timeout(120 * 1000L - (System.currentTimeMillis() - startTick), TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(net -> {
                     AppLogger.d("当前网络状态为:" + DpMsgDefine.DPNet.getNormalString(net));
-                    mView.bindState(bindResult = BIND_SUC);
                     endCounting();
                 }, e -> {
                     if (e instanceof TimeoutException) {
