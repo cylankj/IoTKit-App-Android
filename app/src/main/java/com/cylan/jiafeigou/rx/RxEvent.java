@@ -240,6 +240,12 @@ public class RxEvent {
     }
 
     public static final class PageScrolled {
+        public PageScrolled(int index) {
+            this.index = index;
+        }
+
+        public int index;
+
     }
 
     /**
@@ -964,6 +970,13 @@ public class RxEvent {
 
     public static final class PanoramaConnection {
 
+    }
+
+    public static final class ClientUpgrade {
+        public String apkPath;
+        public ClientUpgrade(String apkPath) {
+            this.apkPath = apkPath;
+        }
     }
 
 }

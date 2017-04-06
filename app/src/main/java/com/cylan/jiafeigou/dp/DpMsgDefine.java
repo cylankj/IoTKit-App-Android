@@ -1019,8 +1019,6 @@ public class DpMsgDefine {
             this.count = count;
         }
 
-
-
     }
 
 }

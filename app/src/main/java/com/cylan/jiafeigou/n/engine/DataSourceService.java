@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AutoSignIn;
+import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -50,6 +51,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
@@ -490,7 +492,6 @@ public class DataSourceService extends Service implements AppCallBack {
         PreferencesUtils.putInt(JConstant.KEY_NTP_INTERVAL, (int) (System.currentTimeMillis() / 1000 - l));
     }
 
-
     @Override
     public void OnForgetPassByEmailRsp(int i, String s) {
         AppLogger.d("OnForgetPassByEmailRsp :" + s);
@@ -562,5 +563,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnCheckClientVersion(int i, String s, int i1) {
         AppLogger.d(String.format(Locale.getDefault(), "check version:%d,%s,%d", i, s, i1));
+        // 客户端升级测试
+        ClientUpdateManager.getInstance().startDownload(getApplicationContext(),s,"3.1.0",1);
     }
 }

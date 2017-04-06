@@ -214,7 +214,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     private void jump2SetpassFragment(String account) {
         Bundle bundle = new Bundle();
         bundle.putString("useraccount", account);
-        bundle.putString("token", getInputCheckCode());
+        bundle.putString("token", PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
         MineInfoSetNewPwdFragment fragment = MineInfoSetNewPwdFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

@@ -205,11 +205,16 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
                 return;
             }
 //            showLoadingPro();
+
             if (getView() != null) {
                 if (presenter != null) {
                     String[] split = rawResult.getText().split("=");
                     if (split.length == 2)
-                    presenter.checkScanAccount(split[1]);
+                        if (JConstant.PHONE_REG.matcher(split[1]).find() || JConstant.EMAIL_REG.matcher(split[1]).find()){
+                            presenter.checkScanAccount(split[1]);
+                        }else {
+                            scanNoResult();
+                        }
                 }
             }
         }

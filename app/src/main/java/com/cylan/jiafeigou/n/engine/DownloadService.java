@@ -13,11 +13,13 @@ import android.util.Log;
 import com.cylan.jiafeigou.IRemoteService;
 import com.cylan.jiafeigou.IRemoteServiceCallback;
 import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
+import com.cylan.jiafeigou.n.view.misc.UpdateActivity;
 import com.cylan.jiafeigou.support.download.core.DownloadManagerPro;
 import com.cylan.jiafeigou.support.download.net.NetConfig;
 import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListener;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 
 /**
  * 这个Service跑在一个独立的进程。 ：download
@@ -217,6 +219,7 @@ public class DownloadService extends Service implements DownloadManagerListener 
                 }
             iRemoteServiceCallBackList.finishBroadcast();
             Log.d(this.getClass().getSimpleName(), "onDownloadCompleted: " + taskId);
+
         }
     }
 

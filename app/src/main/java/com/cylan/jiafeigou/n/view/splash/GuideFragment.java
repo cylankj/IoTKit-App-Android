@@ -101,6 +101,7 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
     }
 
     private void enterLoginPage() {
+        if (getActivity() != null)
         getActivity().getSupportFragmentManager()
                 .beginTransaction()
                 .replace(android.R.id.content, BeforeLoginFragment.newInstance(null))

@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.IRemoteService;
 import com.cylan.jiafeigou.IRemoteServiceCallback;
 import com.cylan.jiafeigou.n.engine.DownloadService;
 import com.cylan.jiafeigou.n.mvp.contract.DownloadContract;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 /**
  * Created by cylan-hunt on 16-9-29.
@@ -116,11 +117,13 @@ public class DownloadContractPresenterImpl extends AbstractPresenter<DownloadCon
         @Override
         public void onDownloadRebuildFinished(long taskId) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onDownloadRebuildFinished:" + taskId);
+            AppLogger.d("test_downF:下载完成了");
         }
 
         @Override
         public void onDownloadCompleted(long taskId) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onDownloadCompleted:" + taskId);
+
         }
 
         @Override
