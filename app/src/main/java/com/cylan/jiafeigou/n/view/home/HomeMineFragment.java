@@ -97,6 +97,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         ViewUtils.setViewMarginStatusBar(tvHomeMineMsgCount);
     }
 
+
     @Override
     public void onStart() {
 //        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
@@ -235,7 +236,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isResumed() && isVisibleToUser && getActivity() != null) {
+        if (isVisibleToUser && getActivity() != null) {
         }
     }
 

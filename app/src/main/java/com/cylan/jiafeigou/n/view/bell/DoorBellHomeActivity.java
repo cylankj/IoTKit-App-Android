@@ -10,6 +10,7 @@ import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
@@ -49,8 +50,6 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.BellTopBackgroundView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -106,6 +105,16 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
         cvBellHomeBackground.setActionInterface(this);
         initAdapter();
+    }
+
+    @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {//清空未读消息数目
+            DataSourceManager.getInstance().clearValue(mUUID, 1004, 1005);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

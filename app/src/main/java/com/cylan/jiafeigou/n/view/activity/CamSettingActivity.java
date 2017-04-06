@@ -272,6 +272,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     //设备离线
                     Intent intent = new Intent(this, ConfigWifiActivity.class);
                     intent.putExtra(JConstant.JUST_SEND_INFO, JConstant.JUST_SEND_INFO);
+                    intent.putExtra(JConstant.KEY_BIND_DEVICE, uuid);
                     startActivity(intent);
                 }
             }

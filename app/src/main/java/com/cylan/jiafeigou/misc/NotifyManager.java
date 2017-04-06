@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.util.Log;
@@ -18,6 +19,7 @@ import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.RandomUtils;
+import com.cylan.jiafeigou.widget.SystemBarTintManager;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
@@ -103,9 +105,9 @@ public class NotifyManager implements INotify {
     @Override
     public void sendNotify(NotifyBean notifyBean) {
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
-        builder.setSmallIcon(getNotificationSmallIcon());
-//        builder.setContentTitle(getContext().getString(R.string.app_name));
-//        builder.setContentText(getContext().getString(R.string.EFAMILY_MISSED_CALL));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            builder.setSmallIcon(getNotificationSmallIcon());
+        }
         builder.setLargeIcon(BitmapFactory.decodeResource(getContext().getResources(),
                 notifyBean.resId == -1 ? R.mipmap.ic_launcher : notifyBean.resId));
         final int count = getCount(notifyBean.count);

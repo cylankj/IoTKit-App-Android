@@ -8,7 +8,6 @@ import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -25,10 +24,7 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.ShareUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -37,11 +33,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-
-import static android.R.attr.id;
-import static android.R.id.list;
-import static android.R.string.ok;
-import static com.tencent.bugly.crashreport.inner.InnerAPI.context;
 
 /**
  * Created by cylan-hunt on 16-7-8.
@@ -103,8 +94,13 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
 
     @Override
     public void refreshWifiList() {
-        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
-        wifiManager.startScan();
+        Observable.just("scan")
+                .subscribeOn(Schedulers.newThread())
+                .delay(500, TimeUnit.MILLISECONDS)
+                .subscribe(ret -> {
+                    WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+                    wifiManager.startScan();
+                });
     }
 
     @Override

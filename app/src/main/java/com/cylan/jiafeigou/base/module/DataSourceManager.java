@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.INotify;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -448,28 +449,61 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public <T extends DataPoint> boolean updateValue(String uuid, List<T> value) throws IllegalAccessException {
-        Device device = getJFGDevice(uuid);
-        if (device == null) {
-            AppLogger.e("device is null:" + uuid);
-            return false;
-        }
-        try {
-            ArrayList<JFGDPMsg> list = new ArrayList<>();
-            for (DataPoint data : value) {
-                device.setValue((int) data.msgId, data);
-                JFGDPMsg jfgdpMsg = new JFGDPMsg(data.msgId, System.currentTimeMillis());
-                jfgdpMsg.packValue = data.toBytes();
-                list.add(jfgdpMsg);
-            }
-            new DPUpdateTask().init(MiscUtils.msgList(uuid, getAJFGAccount().getAccount(), OptionsImpl.getServer(), list)).performLocal()
-                    .subscribeOn(Schedulers.io())
-                    .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                    .subscribe(ret -> {
-                    }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        Observable.just("update")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(s -> {
+                    Device device = getJFGDevice(uuid);
+                    if (device == null) {
+                        AppLogger.e("device is null:" + uuid);
+                        return;
+                    }
+                    try {
+                        ArrayList<JFGDPMsg> list = new ArrayList<>();
+                        for (DataPoint data : value) {
+                            device.setValue((int) data.msgId, data);
+                            JFGDPMsg jfgdpMsg = new JFGDPMsg(data.msgId, System.currentTimeMillis());
+                            jfgdpMsg.packValue = data.toBytes();
+                            list.add(jfgdpMsg);
+                        }
+                        new DPUpdateTask().init(MiscUtils.msgList(uuid, getAJFGAccount().getAccount(), OptionsImpl.getServer(), list)).performLocal()
+                                .subscribeOn(Schedulers.io())
+                                .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                                .subscribe(ret -> {
+                                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+                    } catch (Exception e) {
+                    }
+                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+        return true;
+    }
+
+    @Override
+    public <T extends DataPoint> boolean clearValue(String uuid, int... msgIdList) throws IllegalAccessException {
+        Observable.just("update")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(s -> {
+                    if (msgIdList == null || msgIdList.length == 0) return;
+                    Device device = getJFGDevice(uuid);
+                    if (device != null) {
+                        ArrayList<JFGDPMsg> list = new ArrayList<>();
+                        for (int msgId : msgIdList) {
+                            device.setValue(msgId, new byte[]{0}, 0);
+                            JFGDPMsg jfgdpMsg = new JFGDPMsg(msgId, 0);
+                            jfgdpMsg.packValue = DpUtils.pack(0);
+                            list.add(jfgdpMsg);
+                        }
+                        try {
+                            new DPUpdateTask().init(MiscUtils.msgList(uuid, getAJFGAccount().getAccount(), OptionsImpl.getServer(), list))
+                                    .performLocal()
+                                    .subscribeOn(Schedulers.io())
+                                    .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
+                                    .subscribe(ret -> {
+                                    }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+        return false;
     }
 
     @Override
@@ -691,22 +725,28 @@ public class DataSourceManager implements JFGSourceManager {
                     INotify.NotifyBean bean = new INotify.NotifyBean();
                     bean.resId = R.drawable.icon_home_doorbell_online;
                     try {
-                        DPSimpleMultiQueryTask task = new DPSimpleMultiQueryTask()
-                                .init(new MiscUtils.DPEntityBuilder()
-                                        .add(uuid, 505, 0, true)
-                                        .add(uuid, 512, 0, true)
-                                        .add(uuid, 222, 0, true)
-                                        .build());
-                        task.run().subscribeOn(Schedulers.newThread())
-                                .subscribe(baseDPTaskResult -> {
-                                    Device dd = DataSourceManager.getInstance().getJFGDevice(uuid);
-                                    DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
-                                    AppLogger.d("通知栏..." + entity);
-                                    bean.time = entity.getVersion();
-                                    bean.content = ContextUtils.getContext().getResources().getString(R.string.SETTINGS_1);
-                                    bean.resId = R.drawable.icon_home_camera_online;
-                                    NotifyManager.getNotifyManager().sendNotify(bean);
-                                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+                        AppLogger.d("通知栏..." + list.get(i));
+                        bean.time = list.get(i).version;
+                        bean.resId = R.mipmap.ic_launcher;
+                        NotifyManager.getNotifyManager().sendNotify(bean);
+                        AppLogger.e("报警消息来了,但是未读数,跟不上.");
+//                        DPSimpleMultiQueryTask task = new DPSimpleMultiQueryTask()
+//                                .init(new MiscUtils.DPEntityBuilder()
+//                                        .add(uuid, 505, 0, true)
+//                                        .add(uuid, 512, 0, true)
+//                                        .add(uuid, 222, 0, true)
+//                                        .build());
+//                        task.run().subscribeOn(Schedulers.newThread())
+//                                .subscribe(baseDPTaskResult -> {
+//                                    Device dd = DataSourceManager.getInstance().getJFGDevice(uuid);
+//                                    DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
+//                                    AppLogger.d("通知栏..." + entity);
+//                                    bean.time = entity.getVersion();
+//                                    bean.content = ContextUtils.getContext().getResources().getString(R.string.SETTINGS_1);
+//                                    bean.resId = R.drawable.icon_home_camera_online;
+//                                    NotifyManager.getNotifyManager().sendNotify(bean);
+////                                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+//                                });
                     } catch (Exception e) {
 
                     }

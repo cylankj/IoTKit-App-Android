@@ -91,6 +91,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
         l.height = l.width = (int) (screenWidth * 0.6f);
         progressLoading.setLayoutParams(l);
     }
+
     @Override
     public void onDetach() {
         super.onDetach();
@@ -162,17 +163,7 @@ public class SubmitBindingInfoFragment extends IBaseFragment<SubmitBindingInfoCo
 
     @OnClick(R.id.btn_bind_failed_repeat)
     public void onClick() {
-        getActivity().finish();
-        String device = getArguments().getString(JConstant.KEY_BIND_DEVICE);
-        Class<?> nextActivity;
-        if (TextUtils.equals(device, getString(R.string.DOG_CAMERA_NAME))) {
-            nextActivity = BindCamActivity.class;
-        } else if (TextUtils.equals(device, getString(R.string.CALL_CAMERA_NAME))) {
-            nextActivity = BindBellActivity.class;
-        } else {
-            nextActivity = BindPanoramaCamActivity.class;
-        }
-        Intent intent = new Intent(getActivity(), nextActivity);
+        Intent intent = new Intent(getActivity(), BindDeviceActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
     }

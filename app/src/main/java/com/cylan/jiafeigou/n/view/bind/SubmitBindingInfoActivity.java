@@ -75,6 +75,22 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
 
     }
 
+    private android.app.AlertDialog backDialog;
+
+    @Override
+    public void onBackPressed() {
+        if (backDialog != null && backDialog.isShowing()) return;
+        if (backDialog == null) backDialog = new android.app.AlertDialog.Builder(this)
+                .setMessage(getString(R.string.Tap1_AddDevice_tips))
+                .setNegativeButton(getString(R.string.CANCEL), null)
+                .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                    onClick();
+                })
+                .setCancelable(false)
+                .create();
+        backDialog.show();
+    }
+
     @Override
     public Context getContext() {
         return getApplicationContext();
@@ -85,6 +101,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         if (state == BindUtils.BIND_FAILED) {//失败
             //绑定失败
             vsLayoutSwitch.showNext();
+            customToolbar.setVisibility(View.INVISIBLE);
         } else if (state == BindUtils.BIND_NEED_REBIND) {//强绑
             basePresenter.endCounting();
         } else if (state == BindUtils.BIND_SUC) {//成功
@@ -112,6 +129,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
                 basePresenter.stop();
         } else {
             vsLayoutSwitch.showNext();
+            customToolbar.setVisibility(View.INVISIBLE);
         }
     }
 
