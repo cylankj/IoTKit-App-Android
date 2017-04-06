@@ -115,5 +115,7 @@ public class RxJavaTest {
         int c = 1;
         c -= a - b;
         System.out.println(c);
+        String content = "ddd:aa";
+        System.out.println(content.substring(content.indexOf(":") + 1));
     }
 }

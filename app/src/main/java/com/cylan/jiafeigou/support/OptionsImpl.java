@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.utils.CloseUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.google.gson.JsonObject;
@@ -76,6 +77,7 @@ public class OptionsImpl {
         BufferedReader br = new BufferedReader(new FileReader(filePath));
         JsonParser parser = new JsonParser();
         configContent = parser.parse(br).getAsJsonObject();
+        CloseUtils.close(br);
     }
 
     public static String getVKey() {

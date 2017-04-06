@@ -135,7 +135,7 @@ public class SimpleBindFlow extends AFullBind {
             AppLogger.i(BIND_TAG + udpDevicePortrait);
             //
             String serverAddress = OptionsImpl.getServer();
-            int port = Integer.parseInt(serverAddress.substring(serverAddress.indexOf(":")));
+            int port = Integer.parseInt(serverAddress.substring(serverAddress.indexOf(":") + 1));
             serverAddress = serverAddress.split(":")[0];
             if (TextUtils.isEmpty(serverAddress) && BuildConfig.DEBUG)
                 throw new IllegalArgumentException("server address is empty");
