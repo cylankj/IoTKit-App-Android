@@ -119,7 +119,7 @@ public class DataSourceManager implements JFGSourceManager {
                             public Observable<List<DPEntity>> call(List<DPEntity> ret) {
                                 if (ret != null) {
                                     for (DPEntity dpEntity : ret) {
-                                        device.setValue(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
+                                        device.updateProperty(dpEntity.getMsgId(), dpEntity);
                                     }
                                 }
                                 return Observable.just(ret);

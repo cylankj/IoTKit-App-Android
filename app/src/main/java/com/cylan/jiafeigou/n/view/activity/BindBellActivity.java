@@ -24,6 +24,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
+
 
 public class BindBellActivity extends BaseBindActivity {
 
@@ -157,6 +159,9 @@ public class BindBellActivity extends BaseBindActivity {
     public void onClick() {
         Intent intent = new Intent(this, BindGuideActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.CALL_CAMERA_NAME));
+        if (getIntent().hasExtra(JUST_SEND_INFO)) {
+            intent.putExtra(JUST_SEND_INFO, true);
+        }
         startActivity(intent);
         cancelAnimation();
     }

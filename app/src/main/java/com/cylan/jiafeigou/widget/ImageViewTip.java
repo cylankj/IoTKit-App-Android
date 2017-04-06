@@ -11,7 +11,6 @@ import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.cylan.jiafeigou.R;
 
@@ -115,26 +114,14 @@ public class ImageViewTip extends AppCompatImageView {
     private void computeRedPointRectF() {
         Drawable drawable = getDrawable();
         if (drawable != null) {
-            Log.d("onSizeChanged", "onSizeChanged: " + drawable.getIntrinsicHeight());
-            float tmp = (float) (drawable.getIntrinsicWidth() / 2 - drawable.getIntrinsicWidth() / 2 * Math.cos(Math.PI / 4));
-            redPointRectF.left = getWidth() / 2 + drawable.getIntrinsicWidth() / 2;
-            redPointRectF.top = getHeight() / 2 - drawable.getIntrinsicHeight() / 2 - mDotRadius * 2 - borderWidth * 2;
+            double width = Math.cos(Math.PI / 4) * getWidth() / 2;
+            redPointRectF.left = (float) (getWidth() / 2 + width);//中心点
+            redPointRectF.top = (float) (getHeight() / 2 - width);//中心点
+            //减去 size
+            redPointRectF.left = redPointRectF.left - mDotRadius - borderWidth;
+            redPointRectF.top = redPointRectF.top - mDotRadius - borderWidth;
             redPointRectF.right = redPointRectF.left + mDotRadius * 2 + borderWidth * 2;
             redPointRectF.bottom = redPointRectF.top + mDotRadius * 2 + borderWidth * 2;
-            if (redPointRectF.top <= 0) {
-                redPointRectF.top = 0;
-                redPointRectF.bottom = redPointRectF.top + mDotRadius * 2 + borderWidth * 2;
-            }
-            if (redPointRectF.right >= getWidth()) {
-                redPointRectF.right = getWidth();
-                redPointRectF.left = redPointRectF.right - mDotRadius * 2 - borderWidth * 2;
-            }
-            if (isRoundImage) {//圆形的图片,不会出现上面的 top<=0的情况
-                redPointRectF.left -= tmp;
-                redPointRectF.top += tmp;
-                redPointRectF.right -= tmp;
-                redPointRectF.bottom += tmp;
-            }
         }
     }
 
