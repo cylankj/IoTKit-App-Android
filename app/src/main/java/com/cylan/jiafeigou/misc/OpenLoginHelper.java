@@ -135,6 +135,7 @@ public class OpenLoginHelper {
                 getuserInfo();
             }
         } catch (JSONException e) {
+            AppLogger.d("qq_login"+e.getLocalizedMessage());
             e.printStackTrace();
         }
     }
@@ -228,7 +229,7 @@ public class OpenLoginHelper {
 
             @Override
             public void onWeiboException(WeiboException e) {
-                LoginAccountBean login = null;
+                LoginAccountBean login = new LoginAccountBean();
                 RxBus.getCacheInstance().postSticky(login);
                 AppLogger.e("sinaAuthorize:" + e.getLocalizedMessage());
             }
@@ -293,7 +294,7 @@ public class OpenLoginHelper {
 
                     @Override
                     public void failure(TwitterException e) {
-                        LoginAccountBean login = null;
+                        LoginAccountBean login = new LoginAccountBean();
                         RxBus.getCacheInstance().postSticky(login);
                         AppLogger.e("twitterAuthorize:" + e.getLocalizedMessage());
                     }
@@ -354,7 +355,7 @@ public class OpenLoginHelper {
 
                     @Override
                     public void onError(FacebookException e) {
-                        LoginAccountBean login = null;
+                        LoginAccountBean login = new LoginAccountBean();
                         RxBus.getCacheInstance().postSticky(login);
                         AppLogger.e("facebookAuthorize:" + e.getLocalizedMessage());
                     }

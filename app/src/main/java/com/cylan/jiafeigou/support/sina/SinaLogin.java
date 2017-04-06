@@ -189,6 +189,7 @@ public class SinaLogin {
         if (instance != null) {
             instance.context = null;
             instance.mSsoHandler = null;
+            instance.mWeibo = null;
             instance = null;
         }
     }

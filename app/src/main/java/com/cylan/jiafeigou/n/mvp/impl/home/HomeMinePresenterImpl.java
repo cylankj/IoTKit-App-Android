@@ -48,7 +48,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     private boolean isOpenLogin = false;
     private boolean hasUnRead;
     private long requstId;
-    private int unreadNum;
 
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
@@ -243,7 +242,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public Observable<Integer> call(RobotoGetDataRsp rsp) {
                         int count = 0;
-                        if (rsp != null && requstId == rsp.seq && rsp.map.size() != 0){
+                        if (rsp != null && requstId == rsp.seq && rsp.map != null && rsp.map.size() != 0){
                             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
                                 try {
                                     if (entry.getKey() == 1101 || entry.getKey() == 1103 || entry.getKey() == 1104) {
@@ -270,7 +269,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     if (getView() != null)getView().setMesgNumber(integer);
                     hasUnRead = integer != 0;
                 });
-
     }
 
     @Override

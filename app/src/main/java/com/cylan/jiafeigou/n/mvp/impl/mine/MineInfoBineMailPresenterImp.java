@@ -209,13 +209,10 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
      */
     @Override
     public Subscription isOpenLoginBack() {
-        return RxBus.getCacheInstance().toObservableSticky(Boolean.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        isOpenLogin = aBoolean;
-                    }
+                .subscribe(thirdLoginTab -> {
+                    isOpenLogin = thirdLoginTab.isThird;
                 });
     }
 

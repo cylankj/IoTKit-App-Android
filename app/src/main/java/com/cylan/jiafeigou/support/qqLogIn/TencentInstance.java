@@ -95,9 +95,9 @@ public class TencentInstance {
      */
     public void logIn(IUiListener iUiListener) {
         listener = iUiListener;
-        if (!mTencent.isSessionValid()) {
+//        if (!mTencent.isSessionValid()) {
             mTencent.login((Activity) context, SCOPE, iUiListener);
-        }
+//        }
     }
 
     /**
@@ -144,6 +144,7 @@ public class TencentInstance {
         if (instance != null) {
             instance.mTencent = null;
             instance.context = null;
+            instance.listener = null;
             instance = null;
         }
     }

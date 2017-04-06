@@ -385,8 +385,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
         if (mailView == null) {
             return;
         }
-        final String content = String.format(getString(R.string.EMAIL_RESET_PWD),
-                ViewUtils.getTextViewContent(etForgetUsername));
+//        final String content = String.format(getString(R.string.EMAIL_RESET_PWD),ViewUtils.getTextViewContent(etForgetUsername));
+        final String content = ViewUtils.getTextViewContent(etForgetUsername);
         ((TextView) mailView.findViewById(R.id.tv_send_email_content)).setText(content);
         View btn = mailView.findViewById(R.id.tv_email_confirm);
         btn.setEnabled(true);
@@ -448,7 +448,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             public void afterTextChanged(Editable s) {
                 iv_Clear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
                 iv_Clear.setClickable(true);
-                sureBtn.setEnabled(TextUtils.isEmpty(s) ? false : true);
+                sureBtn.setEnabled(TextUtils.isEmpty(s));
             }
         });
 

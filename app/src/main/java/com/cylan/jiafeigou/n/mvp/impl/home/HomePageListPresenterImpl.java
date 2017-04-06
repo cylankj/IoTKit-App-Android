@@ -9,9 +9,12 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -21,6 +24,10 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
+
+import org.msgpack.annotation.Index;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,7 +43,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         implements HomePageListContract.Presenter {
 
     private TimeTickBroadcast timeTickBroadcast;
-
     public HomePageListPresenterImpl(HomePageListContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -52,6 +58,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 devicesUpdate1(),
                 robotDeviceDataSync(),
                 JFGAccountUpdate(),
+                clientUpdateBack()
         };
     }
 
@@ -304,6 +311,38 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private static final class InternalHelp {
+    }
+
+    //升级只在首页提示
+    private Subscription clientUpdateBack(){
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ClientUpgrade.class)
+                .subscribeOn(Schedulers.newThread())
+                .delay(200,TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(clientUpgrade -> {
+                    if (!TextUtils.isEmpty(clientUpgrade.apkPath) && PreferencesUtils.getBoolean(JConstant.IS_FIRST_PAGE_VIS,false))
+                        if (!PreferencesUtils.getBoolean(JConstant.CLIENT_UPDATAE_TAB,false)){
+                            getView().clientUpdateDialog(clientUpgrade.apkPath);
+                        }else {
+                            if (!TimeUtils.isToday(PreferencesUtils.getLong(JConstant.CLIENT_UPDATAE_TIME_TAB)))
+                                getView().clientUpdateDialog(clientUpgrade.apkPath);
+                        }
+                });
+    }
+
+    @Override
+    public void checkClientUpdate(){
+        Observable.just(null)
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(o -> {
+                    try {
+                        int req = JfgCmdInsurance.getCmd().checkClientVersion("0001");
+                        AppLogger.d("client_update:"+req);
+                    } catch (JfgException e) {
+                        AppLogger.e("client_update:"+e.getLocalizedMessage());
+                        e.printStackTrace();
+                    }
+                });
     }
 
 }

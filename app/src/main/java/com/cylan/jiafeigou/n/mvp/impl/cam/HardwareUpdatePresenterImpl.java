@@ -179,8 +179,14 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                             AppLogger.d("local_url:" + file.getAbsolutePath());
                             AppLogger.d("file_length:" + getFileSize(file));
                             AppLogger.d("file_exit:" + file.exists());
-                            if (file.exists() && getFileSize(file) == length) {
-                                return Observable.just("");
+                            if (file.exists()) {
+                                //包是否完整
+                                if (getFileSize(file) == length){
+                                    return Observable.just("");
+                                }else {
+                                    boolean delete = file.delete();
+                                    AppLogger.d("update_file_del:"+delete);
+                                }
                             }
                             return Observable.just(MiscUtils.FormetSDcardSize(length));
                         } catch (Exception e) {

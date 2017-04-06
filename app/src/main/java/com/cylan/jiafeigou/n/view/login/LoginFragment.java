@@ -57,6 +57,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.LoginButton;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -658,6 +659,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
         AnimatorUtils.viewTranslationY(LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN ? rLayoutLoginThirdParty : rLayoutLoginThirdPartyAbroad, true, 100, 800, 0, 200);
         enableOtherBtn(true);
         enableEditTextCursor(true);
+        hideLoading();
     }
 
     @Override
@@ -849,8 +851,13 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     //回显
     @Override
     public void reShowAccount(String account) {
-        etLoginUsername.setText(account);
+        if (JConstant.EMAIL_REG.matcher(account).find() || JConstant.PHONE_REG.matcher(account).find()){
+            etLoginUsername.setText(account);
+        }else {
+            etLoginUsername.setText("");
+        }
     }
+
 
     /**
      * 验证码输入框
@@ -1089,4 +1096,15 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     }
 
 
+    @Override
+    public void showLoading() {
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+    }
+
+    @Override
+    public void hideLoading() {
+        if (LoadingDialog.isShowing(getFragmentManager())){
+            LoadingDialog.dismissLoading(getFragmentManager());
+        }
+    }
 }

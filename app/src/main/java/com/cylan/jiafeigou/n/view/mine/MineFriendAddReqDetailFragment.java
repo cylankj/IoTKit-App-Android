@@ -61,11 +61,8 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     @BindView(R.id.rl_add_request_mesg)
     RelativeLayout rlAddRequestMesg;
 
-
-    private MineLookBigImageFragment lookBigImageFragment;
     private MineFriendAddReqDetailContract.Presenter presenter;
     private MineAddReqBean addRequestItems;
-    private MineAddFromContactFragment addReqFragment;
 
     private OnAcceptAddListener addListener;
     private boolean isFrom;
@@ -195,7 +192,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     private void jump2LookBigImage() {
         Bundle bundle = new Bundle();
         bundle.putString("imageUrl", addRequestItems.iconUrl);
-        lookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
+        MineLookBigImageFragment lookBigImageFragment = MineLookBigImageFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -240,8 +237,6 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         if (flag) {
             ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
             getFragmentManager().popBackStack();
-        } else {
-            ToastUtil.showNegativeToast("请求发送失败");
         }
     }
 
@@ -265,7 +260,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
     public void jump2AddReqFragment() {
         Bundle addReqBundle = new Bundle();
         addReqBundle.putString("account", addRequestItems.account);
-        addReqFragment = MineAddFromContactFragment.newInstance(addReqBundle);
+        MineAddFromContactFragment addReqFragment = MineAddFromContactFragment.newInstance(addReqBundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
@@ -276,7 +271,6 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
 
     /**
      * 是否存在该账号的结果
-     *
      * @param getAddReqList
      */
     @Override
