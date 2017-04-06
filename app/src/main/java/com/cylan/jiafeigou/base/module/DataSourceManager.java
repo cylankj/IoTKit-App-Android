@@ -12,7 +12,6 @@ import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
@@ -20,23 +19,18 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.module.tasks.DPSimpleMultiQueryTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPUpdateTask;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.misc.INotify;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -123,11 +117,9 @@ public class DataSourceManager implements JFGSourceManager {
                         .flatMap(new Func1<List<DPEntity>, Observable<List<DPEntity>>>() {
                             @Override
                             public Observable<List<DPEntity>> call(List<DPEntity> ret) {
-//                                long time = System.currentTimeMillis();
                                 if (ret != null) {
                                     for (DPEntity dpEntity : ret) {
-                                        DataPoint dataPoint = BasePropertyParser.getInstance().parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
-                                        device.setValue(dpEntity.getMsgId(), dataPoint);
+                                        device.updateProperty(dpEntity.getMsgId(), dpEntity);
                                     }
                                 }
                                 return Observable.just(ret);
@@ -171,12 +163,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Device getJFGDevice(String uuid) {
-        Device device = mCachedDeviceMap.get(uuid);
-        if (device == null) {
-            AppLogger.e("err: device is null," + uuid);
-            return new Device();
-        }
-        return device;
+        return mCachedDeviceMap.get(uuid);
     }
 
     @Override
@@ -362,16 +349,17 @@ public class DataSourceManager implements JFGSourceManager {
 
 
     @Override
-    public <T extends DataPoint> T getValue(String uuid, long msgId) {
+    @Deprecated //无法获取值
+    public <T> T getValue(String uuid, long msgId, T defaultValue) {
         T result = null;
         Device device = mCachedDeviceMap.get(uuid);
         if (device != null) {
             //这里优先从根据UUID从device中获取数据
-            result = device.$((int) msgId, null);
+            result = device.$((int) msgId, defaultValue);
         }
         if (result == null && account != null) {
             //如果无法从device中获取值,则从account中获取
-            result = account.$((int) msgId, null);
+            result = account.$((int) msgId, defaultValue);
         }
         return getValueWithAccountCheck(result);
     }
@@ -642,9 +630,7 @@ public class DataSourceManager implements JFGSourceManager {
                             for (DPEntity entity : dpEntities) {
                                 updateIdList.add((long) entity.getMsgId());
                             }
-
                             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
-                            handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))
                 .subscribe(new Subscriber<String>() {
@@ -670,69 +656,6 @@ public class DataSourceManager implements JFGSourceManager {
                         request(1);
                     }
                 });
-    }
-
-    /**
-     * 简单发起一个通知
-     *
-     * @param arrayList
-     */
-    private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        //需要考虑,app进入后台.
-        if (device != null && !TextUtils.isEmpty(device.account)) {
-            ArrayList<JFGDPMsg> list = new ArrayList<>(arrayList);
-            for (int i = 0; i < ListUtils.getSize(list); i++) {
-                long msgId = list.get(i).id;
-                if (msgId == 505 || msgId == 512 || msgId == 222) {
-                    AppLogger.d("may fire a notification: " + msgId);
-                    //cam 1001 1002  1003
-//                    NotifyManager.getNotifyManager().sendNotify();
-                    INotify.NotifyBean bean = new INotify.NotifyBean();
-                    bean.resId = R.drawable.icon_home_doorbell_online;
-                    try {
-                        DPSimpleMultiQueryTask task = new DPSimpleMultiQueryTask()
-                                .init(new MiscUtils.DPEntityBuilder()
-                                        .add(uuid, 505, 0, true)
-                                        .add(uuid, 512, 0, true)
-                                        .add(uuid, 222, 0, true)
-                                        .build());
-                        task.run().subscribeOn(Schedulers.newThread())
-                                .subscribe(baseDPTaskResult -> {
-                                    Device dd = DataSourceManager.getInstance().getJFGDevice(uuid);
-                                    DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
-                                    AppLogger.d("通知栏..." + entity);
-                                    bean.time = entity.getVersion();
-                                    bean.content = ContextUtils.getContext().getResources().getString(R.string.SETTINGS_1);
-                                    bean.resId = R.drawable.icon_home_camera_online;
-                                    NotifyManager.getNotifyManager().sendNotify(bean);
-                                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
-                    } catch (Exception e) {
-
-                    }
-                } else if (msgId == 401) {
-                    AppLogger.d("may fire a notification: " + msgId);
-                    //for bell 1004 1005
-                    INotify.NotifyBean bean = new INotify.NotifyBean();
-                    bean.resId = R.drawable.icon_home_doorbell_online;
-                    try {
-                        DPSimpleMultiQueryTask task = new DPSimpleMultiQueryTask()
-                                .init(new MiscUtils.DPEntityBuilder()
-                                        .add(uuid, 1004, 0, true)
-                                        .add(uuid, 1005, 0, true)
-                                        .build());
-                        task.run().subscribeOn(Schedulers.newThread())
-                                .subscribe(baseDPTaskResult -> {
-                                    Device dd = DataSourceManager.getInstance().getJFGDevice(uuid);
-                                    DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
-                                    AppLogger.d("通知栏..." + entity);
-                                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
     }
 
     public void initAccount() {

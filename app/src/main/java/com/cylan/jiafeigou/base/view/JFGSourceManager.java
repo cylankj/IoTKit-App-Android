@@ -29,7 +29,7 @@ public interface JFGSourceManager {
 
     JFGAccount getJFGAccount();
 
-    <T extends DataPoint> T getValue(String uuid, long msgId);
+    <T> T getValue(String uuid, long msgId, T defaultValue);
 
     List<Device> getJFGDeviceByPid(int... pids);
 

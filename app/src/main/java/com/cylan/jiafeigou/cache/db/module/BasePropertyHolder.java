@@ -5,8 +5,6 @@ import android.util.SparseArray;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
-import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
-import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -20,7 +18,6 @@ import java.util.ArrayList;
 public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<T> {
     protected transient IPropertyParser propertyParser = BasePropertyParser.getInstance();
     protected transient SparseArray<DPEntity> properties = new SparseArray<>();
-    protected transient static IDBHelper dbHelper = BaseDBHelper.getInstance();
 
     protected abstract int pid();
 
@@ -33,11 +30,8 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
     public <V> V $(int msgId, V defaultValue) {
         try {
             DPEntity entity = getProperty(msgId);
-            V r = entity == null ? null : entity.getValue(defaultValue);
-            if (r != null && defaultValue != null && defaultValue.getClass().isInstance(r)) {
-                return r;
-            }
-            return defaultValue;
+            V result = entity == null ? null : entity.getValue(defaultValue);
+            return result == null ? defaultValue : result;
         } catch (ClassCastException e) {
             return defaultValue;
         }
@@ -62,14 +56,14 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
 
     public DPEntity getProperty(int msgId) {
         if (!propertyParser.accept(pid(), msgId)) return null;
-        DPEntity value = properties.get(msgId);
-        if (value == null) {
-            long time = System.currentTimeMillis();
-            value = dbHelper.getProperty(uuid(), msgId);
-            if (value != null) properties.put(msgId, value);
-            AppLogger.d("getProperty from db:" + msgId + "," + value + "," + (System.currentTimeMillis() - time));
-        }
-        return value;
+        return properties.get(msgId);
+    }
+
+    @Override
+    public void updateProperty(int msgId, DPEntity entity) {
+        if (!propertyParser.accept(pid(), msgId)) return;
+        AppLogger.d("updateProperty:" + msgId);
+        properties.put(msgId, entity);
     }
 
     protected abstract String uuid();

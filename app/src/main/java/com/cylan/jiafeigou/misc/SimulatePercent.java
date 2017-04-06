@@ -96,8 +96,10 @@ public class SimulatePercent implements Handler.Callback {
                 index++;
                 if (index >= 100) {
                     index = 100;
-                    if (onAction != null)
+                    if (onAction != null) {
+                        onAction.actionPercent(index);
                         onAction.actionDone();
+                    }
                     handler.removeMessages(MSG_STEP_1);
                     return true;
                 }

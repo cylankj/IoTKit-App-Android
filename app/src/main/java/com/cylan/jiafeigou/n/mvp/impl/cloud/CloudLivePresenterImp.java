@@ -468,7 +468,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
      */
     @Override
     public boolean isDeviceOnline() {
-        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET);
+        DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET,null);
         return net != null && JFGRules.isDeviceOnline(net)
                 && NetUtils.getJfgNetType(getView().getContext()) != 0;
     }

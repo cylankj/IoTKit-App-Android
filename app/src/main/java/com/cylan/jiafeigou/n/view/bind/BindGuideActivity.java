@@ -26,6 +26,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
 
 public class BindGuideActivity extends BaseFullScreenFragmentActivity {
@@ -92,6 +93,9 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
         }
         Intent intent = new Intent(this, ConfigWifiActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
+        if (getIntent().hasExtra(JUST_SEND_INFO)) {
+            intent.putExtra(JUST_SEND_INFO, true);
+        }
         startActivity(intent);
         finish();
     }

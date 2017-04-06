@@ -5,13 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
-import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -25,7 +22,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -49,8 +45,6 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.BellTopBackgroundView;
 import com.cylan.jiafeigou.widget.ImageViewTip;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
@@ -67,7 +61,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         OnItemClickListener,
         BellTopBackgroundView.ActionInterface,
         BellCallRecordListAdapter.LoadImageListener,
-        ViewTreeObserver.OnGlobalLayoutListener {
+        ViewTreeObserver.OnGlobalLayoutListener, FragmentManager.OnBackStackChangedListener {
     @BindView(R.id.tv_top_bar_left)
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
@@ -105,6 +99,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     protected void initViewAndListener() {
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
         cvBellHomeBackground.setActionInterface(this);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
         initAdapter();
     }
 
@@ -112,7 +107,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     protected void onStart() {
         super.onStart();
         registerNetWorkObserver();
-        mLastEnterTime = PreferencesUtils.getLong("BELL_HOME_LAST_ENTER_TIME");
+        mLastEnterTime = PreferencesUtils.getLong(JConstant.BELL_HOME_LAST_ENTER_TIME);
         if (!mHasLoadInitFinished) {
             startLoadData(false, 0);
         }
@@ -203,7 +198,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 ViewUtils.deBounceClick(v);
                 initSettingFragment();
                 BellSettingFragment fragment = fragmentWeakReference.get();
-
                 getSupportFragmentManager().beginTransaction()
                         //如果需要动画，可以把动画添加进来
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -390,24 +384,10 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         ((ImageViewTip) imageView).setShowDot(item.answerState == 0 && item.timeInLong > mLastEnterTime);
         Glide.with(this)
                 .load(new JFGGlideURL(mUUID, item.timeInLong / 1000 + ".jpg"))
-                .asBitmap()
                 .placeholder(R.drawable.pic_head_normal240px)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(new BitmapImageViewTarget(imageView) {
-                    @Override
-                    protected void setResource(Bitmap resource) {
-                        RoundedBitmapDrawable circularBitmapDrawable =
-                                RoundedBitmapDrawableFactory.create(getAppContext().getResources(), resource);
-                        circularBitmapDrawable.setCircular(true);
-                        if (imageView instanceof ImageViewTip) {
-                            //顺便实现了红点。
-//                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, item.answerState == 0 && item.timeInLong > mLastEnterTime);
-                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, true);
-
-                        }
-                    }
-                });
+                .into(imageView);
     }
 
     @Override
@@ -460,7 +440,9 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
             startActivity(intent);
         }
+
     }
+
 
     @Override
     public void onItemLongClick(View itemView, int viewType, int position) {
@@ -480,6 +462,16 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         }
     }
 
+    @Override
+    public void onBackStackChanged() {
+        final int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (count == 0) {
+            mPresenter.onStart();
+        } else {
+            getSupportFragmentManager().getFragments().get(0).onStart();
+        }
+    }
+
     public class ConnectionChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -491,7 +483,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 //改变背景或者 处理网络的全局变量
             } else {
                 //改变背景或者 处理网络的全局变量
-                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_201_NET);
+                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
                 if (net != null) {
                     cvBellHomeBackground.setState(net.net);
                 } else {

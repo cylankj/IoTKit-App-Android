@@ -141,7 +141,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     public void onDestroyView() {
         super.onDestroyView();
         if (mPresenter != null) {
-            mPresenter.onViewDetached();
+//            mPresenter.onViewDetached();
         }
     }
 

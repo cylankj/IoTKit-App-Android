@@ -244,6 +244,9 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             Intent intent = new Intent(this, NewHomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
+            if (basePresenter != null) {
+                basePresenter.finish();
+            }
             return;
         } else {
             Intent intent = new Intent(this, SubmitBindingInfoActivity.class);

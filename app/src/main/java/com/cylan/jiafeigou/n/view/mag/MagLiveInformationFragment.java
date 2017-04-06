@@ -121,9 +121,9 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
     }
 
     private void updateDetails() {
-        DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
+        DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC,null);
         tvDeviceMac.setText(MiscUtils.safeGet(mac, ""));
-        DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY);
+        DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY,null);
         int b = MiscUtils.safeGet(battery, 0);
         tvDeviceBatteryLevel.setText(b + "");
 

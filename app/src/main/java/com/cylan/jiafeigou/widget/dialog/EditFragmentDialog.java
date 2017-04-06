@@ -135,6 +135,7 @@ public class EditFragmentDialog extends BaseDialog {
         }
         if (!TextUtils.isEmpty(text)) {
             etInputBox.setText(text);
+            etInputBox.setSelection(etInputBox.getText().length());
         }
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
 

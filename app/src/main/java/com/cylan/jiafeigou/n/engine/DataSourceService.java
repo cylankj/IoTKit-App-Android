@@ -326,7 +326,6 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnResult(JFGResult jfgResult) {
-        RxBus.getCacheInstance().post(jfgResult);
         boolean login = false;
         switch (jfgResult.event) {
             case 0:
@@ -390,8 +389,9 @@ public class DataSourceService extends Service implements AppCallBack {
         if (login) {
             AfterLoginService.startGetAccountAction(ContextUtils.getContext());
             AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
-//            AfterLoginService.resumeOfflineRequest();
+            AfterLoginService.resumeOfflineRequest();
         }
+        RxBus.getCacheInstance().post(jfgResult);
         AppLogger.i("jfgResult:[event:" + jfgResult.event + ",code:" + jfgResult.code + ",seq:" + jfgResult.seq + "]");
     }
 

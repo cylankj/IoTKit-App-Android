@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 
 import rx.Observable;
 import rx.Subscription;
@@ -69,13 +68,13 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
                     Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                    DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
+                    DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, null);
                     try {
                         long req = JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, device.$(ID_207_DEVICE_VERSION, ""));
-                        AppLogger.d("Bell_checkNewVersion:"+req);
+                        AppLogger.d("Bell_checkNewVersion:" + req);
                     } catch (JfgException e) {
                         e.printStackTrace();
-                        AppLogger.e("Bell_checkNewVersion:"+e.getLocalizedMessage());
+                        AppLogger.e("Bell_checkNewVersion:" + e.getLocalizedMessage());
                     }
                 });
     }

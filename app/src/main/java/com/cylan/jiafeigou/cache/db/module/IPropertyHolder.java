@@ -17,4 +17,6 @@ public interface IPropertyHolder {
     boolean setValue(int msgId, byte[] bytes, long version);
 
     boolean setValue(int msgId, DataPoint value);
+
+    void updateProperty(int msgId, DPEntity entity);
 }
