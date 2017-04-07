@@ -116,7 +116,7 @@
                 android:layout_marginStart="@dimen/x7"
                 android:background="@drawable/icon_common_show_pwd_selector"
                 android:button="@null"
-                android:checked="true" />
+                android:checked="false" />
         </LinearLayout>
 
 

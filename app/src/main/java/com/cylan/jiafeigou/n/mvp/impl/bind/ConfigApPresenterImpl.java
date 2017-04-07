@@ -10,6 +10,8 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.misc.bind.AFullBind;
@@ -89,6 +91,20 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     }
 
     @Override
+    public void sendWifiInfo(String uuid, String ssid, String pwd, int type) {
+        Observable.just("just send wifi info")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(s -> {
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    String mac = device.$(202, "");
+                    aFullBind.sendWifiInfo(uuid, mac, ssid, pwd, type)
+                            .subscribe(ret -> {
+                                AppLogger.d("already send info");
+                            }, throwable -> AppLogger.e("err" + throwable.getLocalizedMessage()));
+                }, throwable -> AppLogger.d("err:" + throwable.getLocalizedMessage()));
+    }
+
+    @Override
     public void checkDeviceState() {
     }
 
@@ -96,7 +112,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     public void refreshWifiList() {
         Observable.just("scan")
                 .subscribeOn(Schedulers.newThread())
-                .delay(500, TimeUnit.MILLISECONDS)
+//                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribe(ret -> {
                     WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
                     wifiManager.startScan();

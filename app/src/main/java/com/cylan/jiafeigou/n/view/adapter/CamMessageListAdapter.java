@@ -61,7 +61,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
         DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        this.hasSdcard = status.hasSdcard;
+        this.hasSdcard = status.hasSdcard && status.err != 0;
     }
 
     private boolean hasSdcard() {
@@ -180,7 +180,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * 来自一个全局的通知消息
      */
     public void notifySdcardStatus(boolean status, int position) {
-        this.hasSdcard = status;
+        DpMsgDefine.DPSdStatus nowStatus = DataSourceManager.getInstance().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        this.hasSdcard = nowStatus.hasSdcard && nowStatus.err != 0;
         updateItemFrom(position);
     }
 

@@ -31,6 +31,8 @@ import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 import com.google.gson.Gson;
 
+import java.util.Locale;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -160,7 +162,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         svSettingDeviceSysVersion.setTvSubTitle(device.$(ID_208_DEVICE_SYS_VERSION, ""));
         svSettingDeviceVersion.setTvSubTitle(device.$(ID_207_DEVICE_VERSION, ""));
         int battery = device.$(ID_206_BATTERY, 0);
-        svSettingDeviceBattery.setTvSubTitle(battery + "");
+        svSettingDeviceBattery.setTvSubTitle(battery + "%");
         DpMsgDefine.DPNet net = device.$(ID_201_NET, new DpMsgDefine.DPNet());
         String ssid = TextUtils.isEmpty(net.ssid) ? getString(R.string.OFF_LINE) : net.ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);

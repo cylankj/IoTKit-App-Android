@@ -198,13 +198,6 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                     }
                     return null;
                 })
-                .timeout(1, TimeUnit.SECONDS, Observable.just("setAliasTimeout")
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .map(s -> {
-                            getView().setAliasRsp(-1);
-                            AppLogger.e("timeout: " + s);
-                            return null;
-                        }))
                 .flatMap(dev -> RxBus.getCacheInstance().toObservable(RxEvent.SetAlias.class)
                         .filter(setAlias -> setAlias.result.event == JResultEvent.JFG_RESULT_SET_DEVICE_ALIAS
                                 && setAlias.result.code == 0))

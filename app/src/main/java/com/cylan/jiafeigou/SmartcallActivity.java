@@ -20,7 +20,9 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -220,7 +222,9 @@ public class SmartcallActivity extends NeedLoginActivity
 //          密码错误且是自动登录才走此
             splashOver();
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
-            AutoSignIn.getInstance().autoSave(DataSourceManager.getInstance().getJFGAccount().getAccount(), 1, "");
+            Account account = DataSourceManager.getInstance().getAJFGAccount();
+            if (account != null && !TextUtils.isEmpty(account.getAccount()))
+                AutoSignIn.getInstance().autoSave(DataSourceManager.getInstance().getJFGAccount().getAccount(), 1, "");
             PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
             PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
         }

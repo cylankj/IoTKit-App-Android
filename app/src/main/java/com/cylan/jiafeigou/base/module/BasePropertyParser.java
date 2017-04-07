@@ -95,7 +95,7 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_506_CAMERA_TIME_LAPSE_PHOTOGRAPHY, new DPProperty(DpMsgDefine.DPTimeLapse.class));
         properties.put(ID_505_CAMERA_ALARM_MSG, new DPProperty(DpMsgDefine.DPAlarm.class));//set
         properties.put(ID_504_CAMERA_ALARM_NOTIFICATION, new DPProperty(DpMsgDefine.DPNotificationInfo.class, CAMERA));
-        properties.put(ID_503_CAMERA_ALARM_SENSITIVITY, new DPProperty(int.class));
+        properties.put(ID_503_CAMERA_ALARM_SENSITIVITY, new DPProperty(int.class, CAMERA));
         properties.put(ID_502_CAMERA_ALARM_INFO, new DPProperty(DpMsgDefine.DPAlarmInfo.class, CAMERA));
         properties.put(ID_501_CAMERA_ALARM_FLAG, new DPProperty(boolean.class, CAMERA));
         properties.put(ID_402_BELL_VOICE_MSG, new DPProperty(int.class, DOORBELL));

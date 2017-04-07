@@ -81,11 +81,11 @@ public class SetSensitivityDialogFragment extends BaseDialog {
         getDialog().setCanceledOnTouchOutside(false);
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         final int count = rgSensitivity.getChildCount();
+        int defaultLevel = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 1);
         for (int i = 0; i < count; i++) {
             final int index = i;
             RadioButton box = (RadioButton) rgSensitivity.getChildAt(i);
-            int l = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 0);
-            box.setChecked(l == (1 - i));
+            box.setChecked(defaultLevel == 2 - i);
             box.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 if (isChecked) {
                     if (action != null) action.onDialogAction(0, 2 - index);

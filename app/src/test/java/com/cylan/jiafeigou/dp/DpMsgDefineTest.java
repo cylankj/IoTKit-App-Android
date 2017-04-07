@@ -25,10 +25,13 @@ public class DpMsgDefineTest {
 
     @Test
     public void testObject() throws IOException {
+        System.out.println(unpackData(new byte[]{-62}, boolean.class));
         DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
         byte[] data = new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50};
         System.out.println(unpackData(data, DpMsgDefine.DPNet.class));
-        System.out.println(unpackData(new byte[]{5}, int.class));
+        System.out.println(unpackData(new byte[]{-108, 0, 0, 0, -62}, DpMsgDefine.DPSdStatus.class));
+        System.out.println(unpackData(new byte[]{-108, -49, 0, 0, 0, 1, -51, -64, 0, 0, 0, -22, -61}, DpMsgDefine.DPSdStatus.class));
+        System.out.println(unpackData(new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50}, DpMsgDefine.DPNet.class));
 
         data = new byte[]{-107, -50, 88, -44, -46, 55, 0, 0, 1, -95, 48};
         System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));

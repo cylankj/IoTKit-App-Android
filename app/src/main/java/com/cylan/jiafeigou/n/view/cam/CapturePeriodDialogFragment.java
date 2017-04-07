@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 
@@ -19,6 +18,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.widget.SafeCheckBox;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 
 import butterknife.BindView;
@@ -78,20 +78,29 @@ public class CapturePeriodDialogFragment extends BaseDialog {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         DpMsgDefine.DPAlarmInfo alarmInfo = device.$(502, new DpMsgDefine.DPAlarmInfo());
-        if (alarmInfo == null) {
-            AppLogger.e("should not happen");
-            return;
-        }
         checkedSerial = alarmInfo.day;
         final int checkBoxCount = lLayoutWeek.getChildCount();//应该是7
         for (int i = 0; i < checkBoxCount; i++) {
             final int index = i;
-            CheckBox view = (CheckBox) lLayoutWeek.getChildAt(i);
+            final SafeCheckBox view = (SafeCheckBox) lLayoutWeek.getChildAt(i);
+            //这个setCheck是 安全的.不会回调listener
             view.setChecked((checkedSerial >> (checkBoxCount - 1 - i) & 1) == 1);
             view.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                if (!isChecked && getCount() == 1) {
+                    view.setChecked(true);
+                    return;
+                }
                 checkedSerial ^= (1 << (6 - index));//按位取反
             });
         }
+    }
+
+    private int getCount() {
+        int n = checkedSerial;
+        int c = 0; // 计数器
+        for (c = 0; n > 0; n >>= 1) // 循环移位
+            c += n & 1; // 如果当前位是1，则计数器加1
+        return c;
     }
 
     @Override

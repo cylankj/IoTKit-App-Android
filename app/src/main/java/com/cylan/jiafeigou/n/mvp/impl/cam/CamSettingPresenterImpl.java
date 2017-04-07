@@ -40,6 +40,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
+
 /**
  * Created by cylan-hunt on 16-7-27.
  */
@@ -203,6 +205,9 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
         }
+        int auto = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
+        if (auto < 0)
+            return "";
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
     }
 

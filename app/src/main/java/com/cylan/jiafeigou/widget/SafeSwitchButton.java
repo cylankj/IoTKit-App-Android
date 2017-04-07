@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.widget;
 
 import android.content.Context;
-import android.support.v7.widget.AppCompatCheckBox;
 import android.util.AttributeSet;
 
 /**
@@ -9,19 +8,19 @@ import android.util.AttributeSet;
  * setCheck的时候也会触发callback.就会产生无线循环地回调
  */
 
-public class SafeCheckBox extends AppCompatCheckBox {
+public class SafeSwitchButton extends com.kyleduo.switchbutton.SwitchButton {
 
     private OnCheckedChangeListener mListener;
 
-    public SafeCheckBox(Context context) {
+    public SafeSwitchButton(Context context) {
         super(context);
     }
 
-    public SafeCheckBox(Context context, AttributeSet attrs) {
+    public SafeSwitchButton(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public SafeCheckBox(Context context, AttributeSet attrs, int defStyleAttr) {
+    public SafeSwitchButton(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

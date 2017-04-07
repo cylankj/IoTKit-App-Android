@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.RadioButton;
 
@@ -42,8 +43,9 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         //平视
         String dpPrimary = device.$(509, "0");
         try {
-            rbtnSightHorizontal.setChecked(Integer.parseInt(dpPrimary) == 0);
-            rbtnSightVertical.setChecked(Integer.parseInt(dpPrimary) == 1);
+            //0:俯视
+            rbtnSightHorizontal.setChecked(TextUtils.equals("1", dpPrimary));
+            rbtnSightVertical.setChecked(TextUtils.equals("0", dpPrimary));
         } catch (Exception e) {
         }
     }
@@ -61,7 +63,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
                         .subscribeOn(Schedulers.newThread())
                         .map(s -> {
                             try {
-                                DpMsgDefine.DPPrimary<String> dpPrimary = new DpMsgDefine.DPPrimary<String>("0");
+                                DpMsgDefine.DPPrimary<String> dpPrimary = new DpMsgDefine.DPPrimary<String>("1");
                                 DataSourceManager.getInstance().updateValue(uuid, dpPrimary, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
                             } catch (IllegalAccessException e) {
                                 AppLogger.e("err: ");
@@ -75,7 +77,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
                 Observable.just("save")
                         .subscribeOn(Schedulers.newThread())
                         .map(s -> {
-                            DpMsgDefine.DPPrimary<String> dpPrimary = new DpMsgDefine.DPPrimary<String>("1");
+                            DpMsgDefine.DPPrimary<String> dpPrimary = new DpMsgDefine.DPPrimary<String>("0");
                             try {
                                 DataSourceManager.getInstance().updateValue(uuid, dpPrimary, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
                             } catch (IllegalAccessException e) {
