@@ -5,10 +5,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.FragmentManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
@@ -26,7 +26,6 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -66,7 +65,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         OnItemClickListener,
         BellTopBackgroundView.ActionInterface,
         BellCallRecordListAdapter.LoadImageListener,
-        ViewTreeObserver.OnGlobalLayoutListener {
+        ViewTreeObserver.OnGlobalLayoutListener, FragmentManager.OnBackStackChangedListener {
     @BindView(R.id.tv_top_bar_left)
     TextView imgVTopBarCenter;
     @BindView(R.id.fLayout_top_bar_container)
@@ -104,6 +103,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     protected void initViewAndListener() {
         ViewUtils.setViewMarginStatusBar(fLayoutTopBarContainer);
         cvBellHomeBackground.setActionInterface(this);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
         initAdapter();
     }
 
@@ -212,7 +212,6 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 ViewUtils.deBounceClick(v);
                 initSettingFragment();
                 BellSettingFragment fragment = fragmentWeakReference.get();
-
                 getSupportFragmentManager().beginTransaction()
                         //如果需要动画，可以把动画添加进来
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -489,6 +488,16 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         }
     }
 
+    @Override
+    public void onBackStackChanged() {
+        final int count = getSupportFragmentManager().getBackStackEntryCount();
+        if (count == 0) {
+            mPresenter.onStart();
+        } else {
+            getSupportFragmentManager().getFragments().get(0).onStart();
+        }
+    }
+
     public class ConnectionChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -500,7 +509,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 //改变背景或者 处理网络的全局变量
             } else {
                 //改变背景或者 处理网络的全局变量
-                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_201_NET);
+                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
                 if (net != null) {
                     cvBellHomeBackground.setState(net.net);
                 } else {

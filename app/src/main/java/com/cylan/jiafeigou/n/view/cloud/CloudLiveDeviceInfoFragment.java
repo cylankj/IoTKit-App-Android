@@ -107,13 +107,13 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     }
 
     private void updateDetails() {
-        DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC);
+        DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC,null);
         String m = MiscUtils.safeGet(mac, "");
         tvDeviceMac.setText(m);
-        DpMsgDefine.DPPrimary<String> version = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
+        DpMsgDefine.DPPrimary<String> version = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION,null);
         String v = MiscUtils.safeGet(version, "");
         tvSoftVersion.setText(v);
-        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION);
+        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION,null);
         String sv = MiscUtils.safeGet(sVersion, "");
         tvSystemVersion.setText(sv);
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
@@ -121,7 +121,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
             tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
         }
-        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE);
+        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE,null);
         if (status == null || !status.hasSdcard) {
             tvDeviceStorage.setText(getString(R.string.SD_NO));
         } else {

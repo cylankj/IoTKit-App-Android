@@ -119,7 +119,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         //每一个新的进程启动时，都会调用onCreate方法。
         try2init();
         initBugMonitor();
-        initLeakCanary();
+//        initLeakCanary();
         registerBootComplete();
         registerActivityLifecycleCallbacks(this);
         initHuaweiPushSDK();

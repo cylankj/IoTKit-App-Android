@@ -12,7 +12,6 @@ import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
@@ -20,7 +19,6 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.module.tasks.DPSimpleMultiQueryTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPUpdateTask;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
@@ -31,13 +29,10 @@ import com.cylan.jiafeigou.misc.INotify;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -124,11 +119,9 @@ public class DataSourceManager implements JFGSourceManager {
                         .flatMap(new Func1<List<DPEntity>, Observable<List<DPEntity>>>() {
                             @Override
                             public Observable<List<DPEntity>> call(List<DPEntity> ret) {
-//                                long time = System.currentTimeMillis();
                                 if (ret != null) {
                                     for (DPEntity dpEntity : ret) {
-                                        DataPoint dataPoint = BasePropertyParser.getInstance().parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
-                                        device.setValue(dpEntity.getMsgId(), dataPoint);
+                                        device.updateProperty(dpEntity.getMsgId(), dpEntity);
                                     }
                                 }
                                 return Observable.just(ret);
@@ -172,12 +165,7 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Device getJFGDevice(String uuid) {
-        Device device = mCachedDeviceMap.get(uuid);
-        if (device == null) {
-            AppLogger.e("err: device is null," + uuid);
-            return new Device();
-        }
-        return device;
+        return mCachedDeviceMap.get(uuid);
     }
 
     @Override
@@ -363,16 +351,17 @@ public class DataSourceManager implements JFGSourceManager {
 
 
     @Override
-    public <T extends DataPoint> T getValue(String uuid, long msgId) {
+    @Deprecated //无法获取值
+    public <T> T getValue(String uuid, long msgId, T defaultValue) {
         T result = null;
         Device device = mCachedDeviceMap.get(uuid);
         if (device != null) {
             //这里优先从根据UUID从device中获取数据
-            result = device.$((int) msgId, null);
+            result = device.$((int) msgId, defaultValue);
         }
         if (result == null && account != null) {
             //如果无法从device中获取值,则从account中获取
-            result = account.$((int) msgId, null);
+            result = account.$((int) msgId, defaultValue);
         }
         return getValueWithAccountCheck(result);
     }
@@ -676,9 +665,7 @@ public class DataSourceManager implements JFGSourceManager {
                             for (DPEntity entity : dpEntities) {
                                 updateIdList.add((long) entity.getMsgId());
                             }
-
                             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
-                            handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))
                 .subscribe(new Subscriber<String>() {

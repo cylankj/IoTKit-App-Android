@@ -62,7 +62,7 @@ public class BellTopBackgroundView extends FrameLayout {
 
     public void setState(int state) {
         this.state = state;
-        if (state == 0 || state == 1) {
+        if (state == 0 || state == 1 || state == -1) {
             if (vsBellHomeTop.getCurrentView() != fLayoutBellTopPre) {
                 vsBellHomeTop.showPrevious();
             }

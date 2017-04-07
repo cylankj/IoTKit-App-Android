@@ -125,6 +125,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(s -> {
+                            AppLogger.d("正在加载截图:" + url);
                             preload(url);
                             return s;
                         }
@@ -143,7 +144,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
     private void preload(String url) {
         if (mView != null && mView.getAppContext() != null && url != null)
-            Glide.with(mView.getAppContext()).load(url)
+            Glide.with(mView.getActivityContext()).load(url)
                     .listener(new RequestListener<String, GlideDrawable>() {
                         @Override
                         public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {

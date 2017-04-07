@@ -81,6 +81,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @Override
     @CallSuper
     public void onStart() {
+        mSourceManager = DataSourceManager.getInstance();
         onRegisterSubscription();
         if (registerTimeTick()) {
             if (timeTick == null) timeTick = new TimeTick(this);

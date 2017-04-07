@@ -20,7 +20,6 @@ import rx.Observable;
 
 public interface IDBHelper {
 
-    Observable<DPEntity> saveDPByte(String uuid, Long version, Integer msgId, byte[] bytes);
 
     //junk code
     Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option);
@@ -44,16 +43,11 @@ public interface IDBHelper {
 
     Observable<List<DPEntity>> queryDPMsgByUuid(String uuid);
 
-
-    Observable<DPEntity> saveDpMsg(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option);
-
     Observable<DPEntity> saveOrUpdate(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option);
 
     Observable<DPEntity> saveOrUpdate(String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option);
 
     Observable<List<DPEntity>> queryDPMsg(String account, String server, String uuid, Long version, Integer msgId, Boolean asc, Integer limit, DBAction action, DBState state, DBOption option);
-
-    Observable<List<DPEntity>> markDPMsg(String account, String server, String uuid, Long version, Integer msgId, DBAction action, DBState state, DBOption option);
 
     Observable<DPEntity> deleteDPMsgForce(String account, String server, String uuid, Long version, Integer msgId);
 
@@ -84,10 +78,6 @@ public interface IDBHelper {
     Observable<DPEntity> findDPMsg(String uuid, Long version, Integer msgId);
 
     Observable<Account> logout();
-
-    Observable<DPEntity> update(DPEntity entity);
-
-    Observable<Void> delete(DPEntity entity);
 
     Observable<Iterable<DPEntity>> saveDPByteInTx(String uuid, Iterable<JFGDPMsg> msgs);
 

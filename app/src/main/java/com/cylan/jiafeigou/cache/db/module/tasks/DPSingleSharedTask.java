@@ -5,6 +5,7 @@ import com.bumptech.glide.request.FutureTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -86,8 +87,8 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .doOnError(e -> {
-                    mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(item -> mDPHelper.delete(item));
-                    mDPHelper.findDPMsg(entity.getUuid(), (long) wonderItem.time, 511).subscribe(item -> mDPHelper.delete(item));
+                    mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(DPEntity::delete);
+                    mDPHelper.findDPMsg(entity.getUuid(), (long) wonderItem.time, 511).subscribe(DPEntity::delete);
                 })
                 .flatMap(this::makeSetDataRspResponse)
                 .map(rsp -> {
@@ -125,7 +126,8 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                     return mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId())
                             .flatMap(dpEntity -> {
                                 dpEntity.setState(DBState.SUCCESS);
-                                return mDPHelper.update(dpEntity);
+                                dpEntity.update();
+                                return null;
 
                             });
                 })
