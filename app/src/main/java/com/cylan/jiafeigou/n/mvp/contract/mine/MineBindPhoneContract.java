@@ -49,7 +49,7 @@ public interface MineBindPhoneContract {
         /**
          * 处理修改结果
          */
-        void handlerResetPhoneResult(RxEvent.GetUserInfo getUserInfo);
+        void handlerResetPhoneResult(int code);
 
         /**
          * 显示loading
@@ -154,6 +154,7 @@ public interface MineBindPhoneContract {
          */
         boolean isOpenLogin();
 
+        Subscription changeAccountBack();
     }
 
 }

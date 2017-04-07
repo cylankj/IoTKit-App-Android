@@ -125,9 +125,11 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Clear_Sdcard_tips));
             SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
             simpleDialogFragment.setAction((int id, Object value) -> {
-                basePresenter.updateInfoReq();
-                basePresenter.clearCountTime();
-                showLoading();
+                if (id == R.id.tv_dialog_btn_left ){
+                    basePresenter.updateInfoReq();
+                    basePresenter.clearCountTime();
+                    showLoading();
+                }
             });
             simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
         }
@@ -227,6 +229,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
         Bundle bundle = new Bundle();
         bundle.putBoolean("ishow_cancle_btn", true);
         bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.MSG_SD_OFF));
+        bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.I_KNOW));
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
             getFragmentManager().popBackStack();

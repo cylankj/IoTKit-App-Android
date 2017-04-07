@@ -38,7 +38,7 @@ public class ScanPresenterImpl extends AbstractPresenter<ScanContract.View> impl
 //        subscription = Observable.just("bind")
 //                .subscribeOn(Schedulers.newThread())
 //                .map(s -> {
-//                    String code = DataSourceManager.getInstance().getJFGAccount().getAccount() + System.currentTimeMillis();
+//                    String code = DataSourceManager.getInstance().getJFGAccount().getAccountBack() + System.currentTimeMillis();
 //                    try {
 //                        return JfgCmdInsurance.getCmd().bindDevice(bundle.getString("sn"), code);
 //                    } catch (JfgException e) {

@@ -265,7 +265,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .into(mySimpleTarget);
     }
 
-
     public static class MySimpleTarget extends SimpleTarget<Bitmap> {
         private final WeakReference<ImageView> image;
         private final WeakReference<HomeMineContract.Presenter> basePresenter;

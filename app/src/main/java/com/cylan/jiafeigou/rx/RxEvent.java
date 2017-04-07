@@ -819,10 +819,10 @@ public class RxEvent {
         }
     }
 
-    public static final class RessetPhoneBack {
+    public static final class RessetAccountBack {
         public JFGResult jfgResult;
 
-        public RessetPhoneBack(JFGResult jfgResult) {
+        public RessetAccountBack(JFGResult jfgResult) {
             this.jfgResult = jfgResult;
         }
     }

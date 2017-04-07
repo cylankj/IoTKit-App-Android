@@ -200,12 +200,8 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getView() != null && getUserInfo != null) {
+                        if (getUserInfo != null) {
                             jfgAccount = getUserInfo.jfgAccount;
-                            if (sendReq) {
-                                getView().handlerResetPhoneResult(getUserInfo);
-                                sendReq = false;
-                            }
                         }
                     }
                 });
@@ -269,6 +265,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
             compositeSubscription.add(getCheckPhoneCallback());
             compositeSubscription.add(getCheckCodeCallback());
             compositeSubscription.add(checkVerifyCodeCallBack());
+            compositeSubscription.add(changeAccountBack());
         }
         registerNetworkMonitor();
     }
@@ -326,6 +323,20 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     @Override
     public boolean isOpenLogin() {
         return isOpenLogin;
+    }
+
+    @Override
+    public Subscription changeAccountBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.RessetAccountBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(rsp->{
+                    if (rsp != null){
+                        if (sendReq) {
+                            getView().handlerResetPhoneResult(rsp.jfgResult.code);
+                            sendReq = false;
+                        }
+                    }
+                });
     }
 
     /**

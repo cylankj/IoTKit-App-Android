@@ -51,7 +51,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
@@ -215,7 +214,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-        AppLogger.d("OnUpdateAccount :" + jfgAccount.getPhotoUrl());
+        AppLogger.d("OnUpdateAccount :" + jfgAccount.getEmail());
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheAccountEvent(jfgAccount));
     }
 
@@ -385,7 +384,7 @@ public class DataSourceService extends Service implements AppCallBack {
                 RxBus.getCacheInstance().post(new RxEvent.SetFriendMarkNameBack(jfgResult));
                 break;
             case JResultEvent.JFG_RESULT_UPDATE_ACCOUNT:
-                RxBus.getCacheInstance().post(new RxEvent.RessetPhoneBack(jfgResult));
+                RxBus.getCacheInstance().post(new RxEvent.RessetAccountBack(jfgResult));
                 break;
         }
         if (login) {
@@ -564,6 +563,8 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnCheckClientVersion(int i, String s, int i1) {
         AppLogger.d(String.format(Locale.getDefault(), "check version:%d,%s,%d", i, s, i1));
         // 客户端升级测试
-        ClientUpdateManager.getInstance().startDownload(getApplicationContext(),s,"3.1.0",1);
+        if (!TextUtils.isEmpty(s)){
+            ClientUpdateManager.getInstance().startDownload(getApplicationContext(),s,"3.1.0",1);
+        }
     }
 }

@@ -144,6 +144,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             public void onTick(long millisUntilFinished) {
                 final String content = millisUntilFinished / 1000 + "s";
                 tvMeterGetCode.setText(content);
+                tvMeterGetCode.setEnabled(false);
             }
 
             @Override
@@ -197,7 +198,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
                 if (rLayoutForgetPwdToolbar.getTitle().equals(getString(R.string.FORGOT_PWD))) {
                     getFragmentManager().popBackStack();
                 } else {
-                    showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_Yes), getString(R.string.Button_No), false);
+                    showSimpleDialog(getString(R.string.Tap3_logout_tips), getString(R.string.Button_No), getString(R.string.Button_Yes), false);
                 }
             }
         });
@@ -398,6 +399,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             }
         });
         vsSetAccountPwd.addView(mailView);
+        vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_right_overshoot);
+        vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_left);
         vsSetAccountPwd.showNext();
     }
 
@@ -448,7 +451,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             public void afterTextChanged(Editable s) {
                 iv_Clear.setVisibility(TextUtils.isEmpty(s) ? View.GONE : View.VISIBLE);
                 iv_Clear.setClickable(true);
-                sureBtn.setEnabled(TextUtils.isEmpty(s));
+                sureBtn.setEnabled(!TextUtils.isEmpty(s));
             }
         });
 
@@ -597,7 +600,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             ivNewClearPwd.setClickable(true);
         }
         if (tvNewPwdSubmit != null)
-            tvNewPwdSubmit.setEnabled(TextUtils.isEmpty(s));
+            tvNewPwdSubmit.setEnabled(!TextUtils.isEmpty(s));
     }
 
     @OnCheckedChanged(R.id.cb_new_pwd_show)
@@ -653,9 +656,11 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void onDialogAction(int id, Object value) {
-        rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
-        vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
-        vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);
-        vsSetAccountPwd.showPrevious();
+        if (id == R.id.tv_dialog_btn_right){
+            rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
+            vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
+            vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);
+            vsSetAccountPwd.showPrevious();
+        }
     }
 }

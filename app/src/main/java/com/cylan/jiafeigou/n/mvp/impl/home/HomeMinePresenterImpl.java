@@ -41,7 +41,7 @@ import rx.subscriptions.CompositeSubscription;
 public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
 
     private Subscription onBlurSubscribtion;
-//    private CompositeSubscription subscription;
+    private CompositeSubscription subscription;
     private JFGAccount userInfo;                          //用户信息bean
 
     private boolean isOpenLogin = false;
@@ -56,15 +56,23 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     @Override
     public void start() {
         super.start();
-        addSubscription(checkIsOpenLoginCallBack());
-        addSubscription(unReadMesgBack());
-        addSubscription(loginInMe());
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
+        subscription = new CompositeSubscription();
+        subscription.add(checkIsOpenLoginCallBack());
+        subscription.add(getAccountBack());
+        subscription.add(unReadMesgBack());
+        subscription.add(loginInMe());
         getUnReadMesg();
     }
 
     @Override
     public void stop() {
         super.stop();
+        if (subscription != null && !subscription.isUnsubscribed()) {
+            subscription.unsubscribe();
+        }
     }
 
     @Override
@@ -179,7 +187,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public void call(JFGAccount account) {
                         AppLogger.d("mine_account:" + account);
-                        userInfo = account;
                         if (account != null && getView() != null) {
                             if (TextUtils.isEmpty(account.getAccount()) && account.isEnablePush()) {
                                 isOpenLogin = true;
@@ -270,6 +277,16 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     @Override
     public boolean hasUnReadMesg() {
         return hasUnRead;
+    }
+
+    @Override
+    public Subscription getAccountBack() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getUserInfo -> {
+                    if (getUserInfo != null)
+                        userInfo = getUserInfo.jfgAccount;
+                });
     }
 
 

@@ -886,8 +886,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             if (f == null) {
                 Bundle bundle = new Bundle();
                 bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap1_Device_UpgradeTips));
-                bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
-                bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+                bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
+                bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.OK));
                 bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
                 SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
                 dialogFragment.setValue(rsp);
@@ -899,11 +899,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onDialogAction(int id, Object value) {
-        Bundle bundle = new Bundle();
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp) value);
-        HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                hardwareUpdateFragment, android.R.id.content);
+        if (id == R.id.tv_dialog_btn_right){
+            Bundle bundle = new Bundle();
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp) value);
+            HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
+            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                    hardwareUpdateFragment, android.R.id.content);
+        }
     }
 }
