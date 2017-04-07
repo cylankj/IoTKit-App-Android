@@ -613,7 +613,7 @@ public class CamLiveController implements
         AppLogger.i("land: " + land + " " + (!view.isFlipped()));
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         boolean aFlag = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        int aVideo = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
+        int aVideo = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         if (aFlag && aVideo != 2) {//已开启自动录像和移动侦测
             getAlertDialogFrag().show();
             AppLogger.d("关闭移动侦测将关闭自动录像功能");

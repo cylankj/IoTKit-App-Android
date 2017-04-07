@@ -140,29 +140,29 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
 //        camMessageListAdapter.setOnItemClickListener(this);
         rvCamMessageList.setAdapter(camMessageListAdapter);
-//        rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
-//            int pastVisibleItems, visibleItemCount, totalItemCount;
-//
-//            @Override
-//            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-//                super.onScrolled(recyclerView, dx, dy);
-//                final int fPos = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
-//                setCurrentPosition(fPos);
-//                if (dy > 0) { //check for scroll down
-//                    visibleItemCount = camMessageListAdapter.getLayoutManager().getChildCount();
-//                    totalItemCount = camMessageListAdapter.getLayoutManager().getItemCount();
-//                    pastVisibleItems = ((LinearLayoutManager) camMessageListAdapter.getLayoutManager()).findFirstVisibleItemPosition();
-//                    if (!endlessLoading && mIsLastLoadFinish) {
-//                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
-//                            endlessLoading = true;
-//                            mIsLastLoadFinish = false;
-//                            Log.d("tag", "tag.....load more");
-//                            startRequest(false);
-//                        }
-//                    }
-//                }
-//            }
-//        });
+        rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            int pastVisibleItems, visibleItemCount, totalItemCount;
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                final int fPos = ((LinearLayoutManager) recyclerView.getLayoutManager()).findFirstVisibleItemPosition();
+                setCurrentPosition(fPos);
+                if (dy > 0) { //check for scroll down
+                    visibleItemCount = camMessageListAdapter.getLayoutManager().getChildCount();
+                    totalItemCount = camMessageListAdapter.getLayoutManager().getItemCount();
+                    pastVisibleItems = ((LinearLayoutManager) camMessageListAdapter.getLayoutManager()).findFirstVisibleItemPosition();
+                    if (!endlessLoading && mIsLastLoadFinish) {
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            endlessLoading = true;
+                            mIsLastLoadFinish = false;
+                            Log.d("tag", "tag.....load more");
+                            startRequest(false);
+                        }
+                    }
+                }
+            }
+        });
         camMessageListAdapter.setOnclickListener(this);
     }
 
@@ -248,6 +248,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         final int count = beanArrayList == null ? 0 : beanArrayList.size();
         if (count == 0) {
             AppLogger.i("没有数据");
+            ToastUtil.showToast(getString(R.string.NO_MORE));
             return;
         }
         camMessageListAdapter.addAll(beanArrayList);
@@ -336,7 +337,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     public void onRefresh() {
         if (NetUtils.getJfgNetType(getContext()) == 0) {
             srLayoutCamListRefresh.setRefreshing(false);
-            ToastUtil.showToast(getString(R.string.NoNetworkTips));
+            ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
 //        srLayoutCamListRefresh.setRefreshing(true);

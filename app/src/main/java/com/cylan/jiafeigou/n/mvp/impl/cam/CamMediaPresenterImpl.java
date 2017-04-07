@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -70,6 +71,11 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                     public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
                         Log.d(TAG, "onResourceReady:" + (resource == null));
                         save(resource);
+                    }
+
+                    @Override
+                    public void onLoadFailed(Exception e, Drawable errorDrawable) {
+                        AppLogger.d("err:" + (e == null ? null : e.getLocalizedMessage()));
                     }
                 });
     }

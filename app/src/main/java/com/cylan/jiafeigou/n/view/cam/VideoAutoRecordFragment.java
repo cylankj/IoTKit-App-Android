@@ -95,7 +95,9 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         }
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
+        oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
+        DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
+        if (!status.hasSdcard) oldOption = -1;
         rbMotion.setChecked(oldOption == 0);
         rb24Hours.setChecked(oldOption == 1);
         rbNever.setChecked(oldOption == 2);
@@ -105,7 +107,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     public void onDetach() {
         super.onDetach();
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        int a = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
+        int a = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         if (oldOption != a) {
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
         }
