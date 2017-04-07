@@ -23,15 +23,13 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
-import com.cylan.jiafeigou.n.view.activity.ConfigWifiActivity;
+import com.cylan.jiafeigou.n.view.activity.ConfigWifiActivity_2;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -55,8 +53,8 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     @BindView(R.id.ll_bell_net_work_container)
     LinearLayout mNetWorkContainer;
 
-    private SimpleDialogFragment mClearRecordFragment;
-
+    //    private SimpleDialogFragment mClearRecordFragment;
+    private AlertDialog mClearRecordDialog;
 
     public static BellSettingFragment newInstance(String uuid) {
         BellSettingFragment fragment = new BellSettingFragment();
@@ -111,19 +109,21 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
             case R.id.tv_setting_clear_:
                 ViewUtils.deBounceClick(view);
-                if (mClearRecordFragment == null) {
-                    Bundle bundle = new Bundle();
-                    bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap1_Tipsforclearrecents));
-                    mClearRecordFragment = SimpleDialogFragment.newInstance(bundle);
+                if (mClearRecordDialog != null && mClearRecordDialog.isShowing()) return;
+                if (mClearRecordDialog == null) {
+                    mClearRecordDialog = new AlertDialog.Builder(getActivity())
+                            .setMessage(getString(R.string.Tap1_Tipsforclearrecents))
+                            .setNegativeButton(getString(R.string.CANCEL), null)
+                            .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    mPresenter.clearBellRecord(mUUID);
+                                    LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
+                                }
+                            })
+                            .create();
                 }
-                mClearRecordFragment.setAction((id, value) -> {
-                    switch (id) {
-                        case R.id.tv_dialog_btn_left:
-                            mPresenter.clearBellRecord(mUUID);
-                            LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
-                    }
-                });
-                mClearRecordFragment.show(getActivity().getSupportFragmentManager(), "ClearBellRecordFragment");
+                mClearRecordDialog.show();
                 break;
             case R.id.tv_setting_unbind:
                 ViewUtils.deBounceClick(view);
@@ -172,7 +172,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                         .show();
             } else {
                 //设备离线
-                Intent intent = new Intent(getActivity(), ConfigWifiActivity.class);
+                Intent intent = new Intent(getActivity(), ConfigWifiActivity_2.class);
                 intent.putExtra(JConstant.JUST_SEND_INFO, JConstant.JUST_SEND_INFO);
                 startActivity(intent);
             }

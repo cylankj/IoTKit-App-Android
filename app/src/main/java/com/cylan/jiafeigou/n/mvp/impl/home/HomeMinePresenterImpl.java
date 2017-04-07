@@ -41,7 +41,7 @@ import rx.subscriptions.CompositeSubscription;
 public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.View> implements HomeMineContract.Presenter {
 
     private Subscription onBlurSubscribtion;
-    private CompositeSubscription subscription;
+//    private CompositeSubscription subscription;
     private JFGAccount userInfo;                          //用户信息bean
 
     private boolean isOpenLogin = false;
@@ -51,26 +51,20 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
         view.setPresenter(this);
-        loginInMe();
     }
 
     @Override
     public void start() {
         super.start();
-        if (subscription != null && !subscription.isUnsubscribed()) {
-            subscription.unsubscribe();
-        }
-        subscription = new CompositeSubscription();
-        subscription.add(checkIsOpenLoginCallBack());
-        subscription.add(unReadMesgBack());
+        addSubscription(checkIsOpenLoginCallBack());
+        addSubscription(unReadMesgBack());
+        addSubscription(loginInMe());
         getUnReadMesg();
     }
 
     @Override
     public void stop() {
         super.stop();
-        unSubscribe(subscription);
-        unSubscribe(loginInMe());
     }
 
     @Override

@@ -26,7 +26,7 @@
             android:layout_marginBottom="@dimen/y16"
             android:orientation="horizontal">
 
-            <CheckBox
+            <com.cylan.jiafeigou.widget.SafeCheckBox
                 android:id="@+id/cb_capture_mon"
                 android:layout_width="@dimen/x25"
                 android:layout_height="@dimen/y25"
@@ -35,11 +35,11 @@
                 android:button="@null"
                 android:checked="false"
                 android:gravity="center"
-                android:text="一"
+                android:text="@string/MON_2"
                 android:textColor="@color/week_pick_button_color_state"
                 android:textSize="@dimen/sp15" />
 
-            <CheckBox
+            <com.cylan.jiafeigou.widget.SafeCheckBox
                 android:id="@+id/cb_capture_tue"
                 android:layout_width="@dimen/x25"
                 android:layout_height="@dimen/y25"
@@ -48,11 +48,11 @@
                 android:button="@null"
                 android:checked="false"
                 android:gravity="center"
-                android:text="二"
+                android:text="@string/TUE_2"
                 android:textColor="@color/week_pick_button_color_state"
                 android:textSize="@dimen/sp15" />
 
-            <CheckBox
+            <com.cylan.jiafeigou.widget.SafeCheckBox
                 android:id="@+id/cb_capture_wed"
                 android:layout_width="@dimen/x25"
                 android:layout_height="@dimen/y25"
@@ -61,11 +61,11 @@
                 android:button="@null"
                 android:checked="false"
                 android:gravity="center"
-                android:text="三"
+                android:text="@string/WED_2"
                 android:textColor="@color/week_pick_button_color_state"
                 android:textSize="@dimen/sp15" />
 
-            <CheckBox
+            <com.cylan.jiafeigou.widget.SafeCheckBox
                 android:id="@+id/cb_capture_thur"
                 android:layout_width="@dimen/x25"
                 android:layout_height="@dimen/y25"
@@ -74,11 +74,11 @@
                 android:button="@null"
                 android:checked="false"
                 android:gravity="center"
-                android:text="四"
+                android:text="@string/THU_2"
                 android:textColor="@color/week_pick_button_color_state"
                 android:textSize="@dimen/sp15" />
 
-            <CheckBox
+            <com.cylan.jiafeigou.widget.SafeCheckBox
                 android:id="@+id/cb_capture_fri"
                 android:layout_width="@dimen/x25"
                 android:layout_height="@dimen/y25"
@@ -87,11 +87,11 @@
                 android:button="@null"
                 android:checked="false"
                 android:gravity="center"
-                android:text="五"
+                android:text="@string/FRI_2"
                 android:textColor="@color/week_pick_button_color_state"
                 android:textSize="@dimen/sp15" />
 
-            <CheckBox
+            <com.cylan.jiafeigou.widget.SafeCheckBox
                 android:id="@+id/cb_capture_sat"
                 android:layout_width="@dimen/x25"
                 android:layout_height="@dimen/y25"
@@ -100,11 +100,11 @@
                 android:button="@null"
                 android:checked="false"
                 android:gravity="center"
-                android:text="六"
+                android:text="@string/SAT_2"
                 android:textColor="@color/week_pick_button_color_state"
                 android:textSize="@dimen/sp15" />
 
-            <CheckBox
+            <com.cylan.jiafeigou.widget.SafeCheckBox
                 android:id="@+id/cb_capture_sun"
                 android:layout_width="@dimen/x25"
                 android:layout_height="@dimen/y25"
@@ -113,7 +113,7 @@
                 android:button="@null"
                 android:checked="false"
                 android:gravity="center"
-                android:text="日"
+                android:text="@string/SUN_2"
                 android:textColor="@color/week_pick_button_color_state"
                 android:textSize="@dimen/sp15" />
         </LinearLayout>

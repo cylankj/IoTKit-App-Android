@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -116,5 +117,7 @@ public class RxJavaTest {
             good |= i % 2 == 0;
         }
         System.out.println(good);
+
+        System.out.println((10+"%"));
     }
 }

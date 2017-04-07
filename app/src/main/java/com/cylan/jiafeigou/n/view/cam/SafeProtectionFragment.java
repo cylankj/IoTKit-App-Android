@@ -42,6 +42,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 
@@ -132,6 +133,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     return;//不插卡 不需要提示
                 }
+                //自动录像选择 侦测到异常时 需要弹框
+                int oldOption = aDevice.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
+                if (oldOption != 0) return;
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
                         .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {

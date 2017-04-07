@@ -150,6 +150,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             rlHardwareUpdate.setVisibility(View.GONE);
             getView().findViewById(R.id.tv_storage).setVisibility(View.GONE);
         }
+        //是否显示固件升级
+
+
         //是否显示移动网络
         boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
         tvDeviceMobileNet.setVisibility(hasSimCard && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
@@ -181,7 +184,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         String m = device.$(ID_202_MAC, "");
         tvDeviceMac.setTvSubTitle(m);
         int b = device.$(206, 0);
-        tvDeviceBatteryLevel.setTvSubTitle(String.format(Locale.getDefault(), "%s", b));
+        tvDeviceBatteryLevel.setTvSubTitle(b + "%");
         String v = device.$(ID_208_DEVICE_SYS_VERSION, "");
         tvDeviceSystemVersion.setTvSubTitle(v);
         int u = device.$(ID_210_UP_TIME, 0);
@@ -337,6 +340,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                     device.alias = content;
                     tvDeviceAlias.setTvSubTitle((CharSequence) value);
                     if (basePresenter != null) basePresenter.updateAlias(device);
+                    ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                 }
             }
         });

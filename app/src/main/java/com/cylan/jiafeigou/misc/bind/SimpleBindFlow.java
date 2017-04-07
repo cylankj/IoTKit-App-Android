@@ -289,4 +289,30 @@ public class SimpleBindFlow extends AFullBind {
                     return !needUpdate;
                 }).first();
     }
+
+    @Override
+    public Observable<Boolean> sendWifiInfo(String uuid, String mac, String ssid, String pwd, int type) {
+        return Observable.just("send")
+                .flatMap(s -> {
+                    JfgUdpMsg.DoSetWifi setWifi = new JfgUdpMsg.DoSetWifi(
+                            uuid,
+                            mac,
+                            ssid,
+                            pwd);
+                    setWifi.security = type;
+                    //发送wifi配置
+                    try {
+                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                                UdpConstant.PORT,
+                                setWifi.toBytes());
+                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                                UdpConstant.PORT,
+                                setWifi.toBytes());
+                        AppLogger.d(TAG + new Gson().toJson(setWifi));
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                    return Observable.just(true);
+                });
+    }
 }

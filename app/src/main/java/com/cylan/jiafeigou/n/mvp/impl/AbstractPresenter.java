@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.CallSuper;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
@@ -108,6 +109,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     @CallSuper
     @Override
     public void stop() {
+        Log.d("stop", "stop: " + this.getClass().getSimpleName());
         unSubscribe(refCacheMap);
         unSubscribe(compositeSubscription);
         if (compositeSubscription != null) compositeSubscription.clear();

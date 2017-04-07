@@ -33,7 +33,7 @@ public class SettingItemView0 extends RelativeLayout {
     ImageView imgvIcon;
     ImageView imgvRedHint;
 
-    SafeCheckBox switchButton;
+    SafeSwitchButton switchButton;
     View v_divider;
 
     public SettingItemView0(Context context) {
@@ -54,7 +54,7 @@ public class SettingItemView0 extends RelativeLayout {
         imgvRedHint = (ImageView) view.findViewById(R.id.imv_item_red_hint);
         imgvIcon.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_v_image_show, true)
                 ? VISIBLE : GONE);
-        switchButton = (SafeCheckBox) view.findViewById(R.id.btn_item_switch);
+        switchButton = (SafeSwitchButton) view.findViewById(R.id.btn_item_switch);
         final String title = ta.getString(R.styleable.SettingItemViewStyle_sv_title);
         final String subTitle = ta.getString(R.styleable.SettingItemViewStyle_sv_sub_title);
         final Drawable srcId = ta.getDrawable(R.styleable.SettingItemViewStyle_sv_image_src);

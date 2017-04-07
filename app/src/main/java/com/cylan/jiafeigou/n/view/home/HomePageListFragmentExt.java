@@ -336,6 +336,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                     : getString(R.string.Tap1_Index_NightGreetings));
             tvHeaderNickName.requestLayout();
         }, 100);
+        onNetworkChanged(NetUtils.getJfgNetType(ContextUtils.getContext()) != 0);
     }
 
     /**

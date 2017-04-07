@@ -57,6 +57,8 @@ public interface ConfigApContract {
          */
         void sendWifiInfo(String ssid, String pwd, int type);
 
+        void sendWifiInfo(String uuid, String ssid, String pwd, int type);
+
         /**
          * 会发送ping,fping消息,确认设备是否在通信范围内.
          */

@@ -1,0 +1,46 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:hunt="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white"
+    android:orientation="vertical"
+    tools:context="com.cylan.jiafeigou.n.view.setting.WifiListFragment">
+
+    <com.cylan.jiafeigou.widget.CustomToolbar
+        android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        hunt:ct_background_color="@color/color_0ba8cf"
+        hunt:ct_enable_shadow="true"
+        hunt:ct_enable_theme="true"
+        hunt:ct_fit_system_window="true"
+        hunt:ct_icon="@drawable/nav_icon_back_white"
+        hunt:ct_left_title="@string/SELECT_NETWORK"
+        hunt:ct_left_title_color="@color/color_white"
+        hunt:ct_title_color="@color/color_black" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/x12"
+        android:layout_marginTop="@dimen/y20"
+        android:text="@string/NETWORK"
+        android:textColor="@color/color_4b9fd5"
+        android:textSize="@dimen/sp14" />
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sw_refresh_wifi"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginEnd="@dimen/x12"
+        android:layout_marginStart="@dimen/x12">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/rv_wifi_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</LinearLayout>
