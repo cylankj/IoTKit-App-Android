@@ -53,6 +53,8 @@ public interface HomePageListContract {
 //        void unBindDeviceRsp(int state);
 
         void autoLoginTip(int code);
+
+        void clientUpdateDialog(String apkPath);
     }
 
     interface Presenter extends BasePresenter {
@@ -65,5 +67,6 @@ public interface HomePageListContract {
 
         void unRegisterWorker();
 
+        void checkClientUpdate();
     }
 }

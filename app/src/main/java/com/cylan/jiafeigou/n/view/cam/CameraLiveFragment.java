@@ -5,7 +5,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -587,13 +586,18 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             } else return;//要是resolution为空,就没必要设置了.
         }
         //全屏：高度全屏，横屏：普通view根据分辨率；全景高度=宽度
-        int height = getResources().getConfiguration().orientation == ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        int height = getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE
                 ? ViewGroup.LayoutParams.MATCH_PARENT :
                 (isNormalView ? (int) (Resources.getSystem().getDisplayMetrics().widthPixels * resolution.height / (float) resolution.width)
                         : Resources.getSystem().getDisplayMetrics().widthPixels);
-        height = isNormalView ? height : Resources.getSystem().getDisplayMetrics().widthPixels;
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT, height);
+        height = isNormalView ? height : (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE ?
+                Resources.getSystem().getDisplayMetrics().heightPixels
+                : Resources.getSystem().getDisplayMetrics().widthPixels);
+        ViewGroup.LayoutParams lp = fLayoutCamLiveView.getLayoutParams();
+        if (lp == null)
+            lp = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, height);
+        lp.width = ViewGroup.LayoutParams.MATCH_PARENT;
+        lp.height = height;
         fLayoutCamLiveView.setLayoutParams(lp);
         vLive.updateLayoutParameters(height, ViewGroup.LayoutParams.MATCH_PARENT);
         vLive.getVideoView().detectOrientationChanged();

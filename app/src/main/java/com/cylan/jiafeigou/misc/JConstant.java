@@ -48,6 +48,7 @@ public class JConstant {
     public static final Pattern JFG_DOG_DEVICE_REG = Pattern.compile("DOG-[a-zA-Z0-9]{6}");
     public static final Pattern JFG_BELL_DEVICE_REG = Pattern.compile("DOG-ML-[a-zA-Z0-9]{6}");
     public static final Pattern JFG_PAN_DEVICE_REG = Pattern.compile("DOG-5W-[a-zA-Z0-9]{6}");
+    public static final Pattern JFG_GENERAL_DEVICE = Pattern.compile("DOG-[a-zA-Z0-9]{2}-[a-zA-Z0-9]{6}");
     public static final int VALID_VERIFICATION_CODE_LEN = 6;
     public static final int PWD_LEN_MIN = 6;
     public static final int PWD_LEN_MAX = 12;
@@ -84,6 +85,7 @@ public class JConstant {
     public static final String FROM_LOG_OUT = "from_log_out";
     public static final String IS_lOGINED = "is_logined";   //是否登录过
     public static final String AUTO_lOGIN_PWD_ERR = "auto_login_pwd_err";
+    public static final String REG_SWITCH_BOX = "reg_switch_box";
     /**
      * verification code
      */
@@ -306,4 +308,7 @@ public class JConstant {
     public static final String SESSIONID = "sessid";// 2.x sessid key
     public static final String KEY_PSW = "PSW";     //2.x pwd key
     public static final String UPDATAE_AUTO_LOGIN = "update_auto_login";
+    public static final String CLIENT_UPDATAE_TAB = "client_update_tab";
+    public static final String CLIENT_UPDATAE_TIME_TAB = "client_update_time_tab";
+    public static final String IS_FIRST_PAGE_VIS= "is_first_page_vis";
 }

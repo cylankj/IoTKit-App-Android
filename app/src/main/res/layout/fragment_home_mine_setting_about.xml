@@ -43,12 +43,22 @@
             android:textColor="@color/color_33333"
             android:textSize="@dimen/sp16" />
 
+        <!--升级test-->
+        <com.cylan.jiafeigou.widget.SettingItemView0
+            android:id="@+id/sv_official_update"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/y72"
+            android:layout_marginStart="@dimen/x15"
+            android:layout_marginTop="@dimen/y74"
+            hunt:sv_sub_title="3.2.0"
+            hunt:sv_title="检查更新（模拟测试）"
+            hunt:sv_v_divider="true" />
+
         <com.cylan.jiafeigou.widget.SettingItemView0
             android:id="@+id/sv_official_website"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y72"
             android:layout_marginStart="@dimen/x15"
-            android:layout_marginTop="@dimen/y74"
             hunt:sv_sub_title="www.jfgou.com"
             hunt:sv_title="@string/WEB"
             hunt:sv_v_divider="true" />

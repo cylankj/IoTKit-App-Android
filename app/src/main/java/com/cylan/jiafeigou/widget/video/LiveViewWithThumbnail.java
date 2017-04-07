@@ -143,6 +143,9 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         lp.width = width;
         lp.height = height;
         ((View) videoView).setLayoutParams(lp);
+        post(() -> {
+            Log.d("1280", "1280?w:" + ((View) videoView).getWidth() + ",h:" + ((View) videoView).getHeight());
+        });
     }
 
     @Override
@@ -179,6 +182,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             lp.topMargin = (int) getResources().getDimension(R.dimen.x54);
         }
         tvLiveFlow.setLayoutParams(lp);
+        videoView.detectOrientationChanged();
     }
 
     @Override
@@ -221,7 +225,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
         @Override
         public void onLoadFailed(Exception e, Drawable errorDrawable) {
-            AppLogger.e("set up thumbnail failed: " + e.getLocalizedMessage());
+            AppLogger.e("set up thumbnail failed: " + e);
         }
 
         @Override

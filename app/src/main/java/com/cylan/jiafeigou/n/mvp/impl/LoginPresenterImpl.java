@@ -43,9 +43,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
     private boolean isRegSms;
     private boolean isReg;
 
-    private boolean hasSwitchBox = true;
-
-
     public LoginPresenterImpl(LoginContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -181,12 +178,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .delay(100, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(switchBox -> {
-                    if (hasSwitchBox) {
+                    if (PreferencesUtils.getBoolean(JConstant.REG_SWITCH_BOX,true)) {
                         getView().switchBox("");
-                        hasSwitchBox = false;
+                        PreferencesUtils.putBoolean(JConstant.REG_SWITCH_BOX,false);
                     }
                 }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
-
     }
 
     private Subscription loginPopBackSub() {
@@ -229,7 +225,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     @Override
     public void checkAccountIsReg(String account) {
-        rx.Observable.just(account)
+        Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<String>() {
                     @Override
@@ -329,8 +325,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         return RxBus.getCacheInstance().toObservableSticky(LoginAccountBean.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(loginAccountBean -> {
-                    if (loginAccountBean != null) {
+                    if (loginAccountBean != null && !TextUtils.isEmpty(loginAccountBean.userName)) {
                         executeLogin(loginAccountBean);
+                        if (getView() != null)getView().showLoading();
                     } else {
                         getView().authorizeResult();
                     }

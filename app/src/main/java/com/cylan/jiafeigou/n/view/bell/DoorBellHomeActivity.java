@@ -9,6 +9,10 @@ import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.FragmentManager;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
+import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -104,10 +108,20 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        try {//清空未读消息数目
+            DataSourceManager.getInstance().clearValue(mUUID, 1004, 1005);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
     protected void onStart() {
         super.onStart();
         registerNetWorkObserver();
-        mLastEnterTime = PreferencesUtils.getLong(JConstant.BELL_HOME_LAST_ENTER_TIME);
+        mLastEnterTime = PreferencesUtils.getLong("BELL_HOME_LAST_ENTER_TIME");
         if (!mHasLoadInitFinished) {
             startLoadData(false, 0);
         }
@@ -384,10 +398,24 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         ((ImageViewTip) imageView).setShowDot(item.answerState == 0 && item.timeInLong > mLastEnterTime);
         Glide.with(this)
                 .load(new JFGGlideURL(mUUID, item.timeInLong / 1000 + ".jpg"))
+                .asBitmap()
                 .placeholder(R.drawable.pic_head_normal240px)
                 .centerCrop()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imageView);
+                .into(new BitmapImageViewTarget(imageView) {
+                    @Override
+                    protected void setResource(Bitmap resource) {
+                        RoundedBitmapDrawable circularBitmapDrawable =
+                                RoundedBitmapDrawableFactory.create(getAppContext().getResources(), resource);
+                        circularBitmapDrawable.setCircular(true);
+                        if (imageView instanceof ImageViewTip) {
+                            //顺便实现了红点。
+//                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, item.answerState == 0 && item.timeInLong > mLastEnterTime);
+                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, true);
+
+                        }
+                    }
+                });
     }
 
     @Override
@@ -440,9 +468,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
             startActivity(intent);
         }
-
     }
-
 
     @Override
     public void onItemLongClick(View itemView, int viewType, int position) {

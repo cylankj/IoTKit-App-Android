@@ -4,9 +4,11 @@ package com.cylan.jiafeigou.n.mvp.impl.splash;
 import android.app.ActivityManager;
 import android.content.Context;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -22,6 +24,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -46,7 +49,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     }
 
     private void selectNext() {
-        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class) && !PreferencesUtils.getBoolean(JConstant.UPDATAE_AUTO_LOGIN,false)) {
+        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class) && !PreferencesUtils.getBoolean(JConstant.UPDATAE_AUTO_LOGIN, false)) {
             AppLogger.d("has sticky");
             subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                     .subscribeOn(Schedulers.newThread())
@@ -54,7 +57,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                     .map(resultLogin -> {
-                        if (resultLogin != null)
+                        if (resultLogin != null && getView() != null)
                             getView().loginResult(resultLogin.code);
                         AppLogger.d("login result: " + resultLogin);
                         return null;
@@ -125,6 +128,8 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                     selectNext();
                 });
     }
+
+
 
 }
 

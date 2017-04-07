@@ -187,7 +187,13 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                 .setMessage(getString(R.string.Tap1_AddDevice_tips))
                 .setNegativeButton(getString(R.string.CANCEL), null)
                 .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                    finishExt();
+                    if (getIntent() != null && getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
+                        finishExt();
+                    } else {
+                        Intent intent = new Intent(ConfigWifiActivity.this, BindDeviceActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                        startActivity(intent);
+                    }
                 })
                 .setCancelable(false)
                 .create();

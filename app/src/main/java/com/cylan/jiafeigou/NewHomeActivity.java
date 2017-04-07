@@ -140,7 +140,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
                     final int index = vpHomeContent.getCurrentItem();
                     if (index == 0 || index == 2) {
                         if (RxBus.getCacheInstance().hasObservers())
-                            RxBus.getCacheInstance().post(new RxEvent.PageScrolled());
+                            RxBus.getCacheInstance().post(new RxEvent.PageScrolled(index));
                     }
                 }
             }

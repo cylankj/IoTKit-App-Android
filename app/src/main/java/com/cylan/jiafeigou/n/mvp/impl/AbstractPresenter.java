@@ -77,6 +77,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         String[] action = registerNetworkAction();
         if (action != null && action.length > 0) {
             NetMonitor.getNetMonitor().registerNet(this, action);
+            AppLogger.d("register network true");
         }
         if (registerTimeTick()) {
             if (timeTick == null) timeTick = new TimeTick(this);

@@ -42,7 +42,8 @@ public class JFGRules {
         if (!TextUtils.isEmpty(ssid)) {
             return JConstant.JFG_DOG_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
                     || JConstant.JFG_BELL_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
-                    || JConstant.JFG_PAN_DEVICE_REG.matcher(ssid.replace("\"", "")).find();
+                    || JConstant.JFG_PAN_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
+                    || JConstant.JFG_GENERAL_DEVICE.matcher(ssid.replace("\"", "")).find();
         }
         return false;
     }

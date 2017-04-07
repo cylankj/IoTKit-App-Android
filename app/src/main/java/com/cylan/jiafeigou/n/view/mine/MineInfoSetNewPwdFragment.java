@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNewPwdContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNewPwdPresenterImp;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -74,6 +75,18 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
         ViewUtils.setChineseExclude(etMineSetNewpwd, 65);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (presenter != null)presenter.start();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.stop();
+    }
+
     private void initPresenter() {
         presenter = new MineInfoSetNewPwdPresenterImp(this);
     }
@@ -88,7 +101,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
         boolean isEmpty = TextUtils.isEmpty(s);
         ivMineNewPwdClear.setVisibility(isEmpty ? View.GONE : View.VISIBLE);
         customToolbar.setTvToolbarRightIcon(isEmpty ? R.drawable.icon_finish_disable : R.drawable.me_icon_finish_normal);
-        customToolbar.setTvToolbarRightEnable(isEmpty);
+        customToolbar.setTvToolbarRightEnable(!isEmpty);
     }
 
     @OnCheckedChanged(R.id.cb_new_pwd_show)
@@ -108,7 +121,6 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
                     ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
                     return;
                 }
-                // TODO 调用SDK 注册?????
                 presenter.openLoginRegister(useraccount, getNewPwd(), token);
                 break;
             case R.id.iv_mine_new_pwd_clear:
@@ -131,10 +143,18 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
      */
     @Override
     public void registerResult(int code) {
+        AppLogger.d("open_bind:"+code);
         if (code == JError.ErrorOK) {
-            //增加邮箱验证界面
-            jump2MailConnectFragment();
-        } else {
+            if (TextUtils.isEmpty(token)){
+                //增加邮箱验证界面
+                jump2MailConnectFragment();
+            }else {
+                //绑定手机
+                ToastUtil.showPositiveToast(getString(R.string.Added_successfully));
+            }
+        } else if (code == JError.ErrorSetPassTimeout){
+            ToastUtil.showToast(getString(R.string.SUBMIT_FAIL));
+        }else {
             ToastUtil.showToast(getString(R.string.Tips_Device_TimeoutRetry));
         }
     }

@@ -79,6 +79,10 @@ public interface LoginContract {
         void authorizeResult();
 
         void reShowAccount(String account);
+
+        void showLoading();
+
+        void hideLoading();
     }
 
     interface Presenter extends BasePresenter {

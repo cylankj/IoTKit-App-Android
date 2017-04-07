@@ -111,11 +111,10 @@ public class RxJavaTest {
 
     @Test
     public void testCompute() {
-        int a = 10, b = 2;
-        int c = 1;
-        c -= a - b;
-        System.out.println(c);
-        String content = "ddd:aa";
-        System.out.println(content.substring(content.indexOf(":") + 1));
+        boolean good = false;
+        for (int i = 0; i < 10; i++) {
+            good |= i % 2 == 0;
+        }
+        System.out.println(good);
     }
 }

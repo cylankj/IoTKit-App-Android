@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
@@ -18,8 +19,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.ClientUpdateManager;
+import com.cylan.jiafeigou.n.engine.DownloadService;
+import com.cylan.jiafeigou.n.mvp.model.BeanResultList;
+import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
 import com.cylan.jiafeigou.n.view.login.AgreementFragment;
 import com.cylan.jiafeigou.n.view.mine.WebsiteFragement;
+import com.cylan.jiafeigou.n.view.misc.UpdateActivity;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
@@ -28,6 +34,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.SettingItemView0;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -53,6 +60,8 @@ public class AboutFragment extends Fragment {
     SettingItemView0 svHotLine;
     @BindView(R.id.tv_copy_right)
     TextView tvCopyRight;
+    @BindView(R.id.sv_official_update)
+    SettingItemView0 svOfficialUpdate;
 
     private Intent intent;
     private static final String COPY_RIGHT = "Copyright @ 2005-%s Cylan.All Rights Reserved";
@@ -153,6 +162,7 @@ public class AboutFragment extends Fragment {
     }
 
     private void openSetting() {
+        //打开设置界面
         Intent localIntent = new Intent();
         localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         if (Build.VERSION.SDK_INT >= 9) {
@@ -164,5 +174,13 @@ public class AboutFragment extends Fragment {
             localIntent.putExtra("com.android.settings.ApplicationPkgName", getContext().getPackageName());
         }
         startActivity(localIntent);
+    }
+
+    @OnClick(R.id.sv_official_update)
+    public void onClick() {
+        // 客户端升级测试
+        ToastUtil.showPositiveToast("开始下载");
+        String url = "http://119.147.33.13/imtt.dd.qq.com/16891/AE6502757AE91F88EE91D985D5AAE5AD.apk?mkey=58e58becd16f4a84&f=5107&c=0&fsname=com.cylan.jiafeigou_2.4.9.5296_20170228.apk&csr=1bbd&p=.apk";
+        ClientUpdateManager.getInstance().startDownload(getContext().getApplicationContext(),url,"3.1.0",1);
     }
 }

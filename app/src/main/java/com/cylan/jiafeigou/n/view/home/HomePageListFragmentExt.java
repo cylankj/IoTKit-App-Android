@@ -3,14 +3,16 @@ package com.cylan.jiafeigou.n.view.home;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.UiThread;
 import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,6 +34,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -48,11 +51,16 @@ import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.DisableAppBarLayoutBehavior;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.google.gson.Gson;
 
+import java.io.File;
 import java.util.List;
 
 import butterknife.BindView;
@@ -63,7 +71,7 @@ import butterknife.OnClick;
 public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.Presenter> implements
         AppBarLayout.OnOffsetChangedListener,
         HomePageListContract.View, SwipeRefreshLayout.OnRefreshListener,
-        OnItemClickListener {
+        OnItemClickListener, BaseDialog.BaseDialogAction {
 
     @BindView(R.id.srLayout_home_page_container)
     SwipeRefreshLayout srLayoutMainContentHolder;
@@ -95,6 +103,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     LinearLayout emptyViewState;
     @BindView(R.id.fLayout_header_bg)
     FrameLayout fLayoutHeaderBg;
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbar;
     private HomePageListAdapter homePageListAdapter;
 
     public static HomePageListFragmentExt newInstance(Bundle bundle) {
@@ -119,6 +129,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onStart();
         if (basePresenter != null) {
             basePresenter.fetchDeviceList(false);
+            basePresenter.checkClientUpdate();
         } else AppLogger.e("presenter is null");
     }
 
@@ -148,32 +159,14 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        initAppbarDrag();
         //添加Handler
         homePageListAdapter.clear();
         appbar.addOnOffsetChangedListener(this);
         srLayoutMainContentHolder.setOnRefreshListener(this);
-        srLayoutMainContentHolder.setNestedScrollingEnabled(false);
+        enableNestedScroll();
         initProgressBarColor();
         initListAdapter();
         initSomeViewMargin();
-    }
-
-    /**
-     * 初始化是否可拖动
-     */
-    private void initAppbarDrag() {
-        if (appbar.getLayoutParams() != null) {
-            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
-            AppBarLayout.Behavior appBarLayoutBehaviour = new AppBarLayout.Behavior();
-            appBarLayoutBehaviour.setDragCallback(new AppBarLayout.Behavior.DragCallback() {
-                @Override
-                public boolean canDrag(@NonNull AppBarLayout appBarLayout) {
-                    return homePageListAdapter.getCount() > 4;
-                }
-            });
-            layoutParams.setBehavior(appBarLayoutBehaviour);
-        }
     }
 
     @Override
@@ -286,7 +279,29 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         emptyViewState.setVisibility(homePageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
         onRefreshFinish();
         Log.d("onItemsInsert", "onItemsInsert:" + resultList);
-        srLayoutMainContentHolder.setNestedScrollingEnabled(resultList.size() > JFGRules.NETSTE_SCROLL_COUNT);
+        enableNestedScroll();
+    }
+
+    private void enableNestedScroll() {
+        boolean enable = homePageListAdapter.getCount() > 4;
+        if (appbar.getLayoutParams() != null) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) appbar.getLayoutParams();
+            if (enable) {
+                if (!(layoutParams.getBehavior() instanceof AppBarLayout.Behavior))
+                    layoutParams.setBehavior(new AppBarLayout.Behavior());
+            } else {
+                if (!(layoutParams.getBehavior() instanceof DisableAppBarLayoutBehavior))
+                    layoutParams.setBehavior(new DisableAppBarLayoutBehavior());
+            }
+        }
+        if (srLayoutMainContentHolder.getLayoutParams() != null) {
+            CoordinatorLayout.LayoutParams layoutParams = (CoordinatorLayout.LayoutParams) srLayoutMainContentHolder.getLayoutParams();
+            CoordinatorLayout.Behavior behavior = layoutParams.getBehavior();
+            if (behavior != null && behavior instanceof DisableAppBarLayoutBehavior) {
+                ((DisableAppBarLayoutBehavior) behavior).setEnabled(enable);
+                Log.d("what", "what 1" + layoutParams.getBehavior() + " ,enable:" + enable);
+            }
+        }
     }
 
     @Override
@@ -305,6 +320,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
+        PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS,isVisibleToUser);
         if (isVisibleToUser && isResumed() && getActivity() != null) {
             srLayoutMainContentHolder.setRefreshing(false);
         }
@@ -382,11 +398,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         if (!connected) srLayoutMainContentHolder.setRefreshing(false);
     }
 
-//    @Override
-//    public void unBindDeviceRsp(int state) {
-//        ToastUtil.showToast(getString(state == JError.ErrorOK ? R.string.DELETED_SUC : R.string.Tips_DeleteFail));
-//    }
-
     @Override
     public void autoLoginTip(int code) {
         if (code == JError.LoginTimeOut) {
@@ -397,10 +408,23 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     }
 
     @Override
+    public void clientUpdateDialog(String apkPath) {
+        Bundle bundle = new Bundle();
+        bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.UPGRADE));
+        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
+        bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.UPGRADE_NOW));
+        bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
+        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+        dialogFragment.setValue(apkPath);
+        dialogFragment.setAction(this);
+        dialogFragment.show(this.getFragmentManager(),"update");
+    }
+
+    @Override
     public void onRefresh() {
         //不使用post,因为会泄露
         srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
-        srLayoutMainContentHolder.setNestedScrollingEnabled(homePageListAdapter.getCount() > JFGRules.NETSTE_SCROLL_COUNT);
+//        enableNestedScroll();
         Log.d("refresh", "refresh:start ");
         if (basePresenter != null)
             basePresenter.fetchDeviceList(true);
@@ -411,7 +435,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
-//        srLayoutMainContentHolder.setEnabled(verticalOffset == 0);
         final float ratio = (appbar.getTotalScrollRange() + verticalOffset) * 1.0f
                 / appbar.getTotalScrollRange();
         if (preRatio == ratio) return;
@@ -458,5 +481,22 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             homePageListAdapter.notifyDataSetChanged();
             AppLogger.e("dis match pid pid: " + position);
         }
+    }
+
+    @Override
+    public void onDialogAction(int id, Object value) {
+        if (id == R.id.tv_dialog_btn_right){
+            if (value != null){
+                String apkPath = (String) value;
+                File apkFile = new File(apkPath);
+                Uri uri = Uri.fromFile(apkFile);
+                Intent intent = new Intent(Intent.ACTION_VIEW);
+                intent.setDataAndType(uri, "application/vnd.android.package-archive");
+                startActivity(intent);
+            }
+        }
+
+        PreferencesUtils.putBoolean(JConstant.CLIENT_UPDATAE_TAB,true);
+        PreferencesUtils.putLong(JConstant.CLIENT_UPDATAE_TIME_TAB,System.currentTimeMillis());
     }
 }

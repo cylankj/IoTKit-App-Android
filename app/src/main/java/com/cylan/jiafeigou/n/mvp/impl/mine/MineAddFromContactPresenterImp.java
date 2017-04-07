@@ -19,6 +19,8 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.util.concurrent.TimeUnit;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -82,7 +84,6 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                         AppLogger.e("sendRequest" + throwable.getLocalizedMessage());
                     }
                 });
-
     }
 
     /**
@@ -97,7 +98,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
+                        if (getUserInfo != null) {
                             if (getView() != null)
                                 getView().initEditText(getUserInfo.jfgAccount.getAlias());
                             userAlids = getUserInfo.jfgAccount.getAlias();
@@ -154,7 +155,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
                     public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback) {
+                        if (checkAccountCallback != null) {
                             if (getView() != null) {
                                 getView().showResultDialog(checkAccountCallback);
                             }
@@ -194,11 +195,13 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     @Override
     public Subscription sendAddFriendRep() {
         return RxBus.getCacheInstance().toObservable(RxEvent.AddFriendBack.class)
+                .subscribeOn(Schedulers.newThread())
+                .delay(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.AddFriendBack>() {
                     @Override
                     public void call(RxEvent.AddFriendBack addFriendBack) {
-                        if (addFriendBack != null && addFriendBack instanceof RxEvent.AddFriendBack) {
+                        if (addFriendBack != null) {
                             getView().sendReqBack(addFriendBack.jfgResult.code);
                         }
                     }

@@ -230,10 +230,10 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     @Override
     public void stop() {
-        if (compositeSubscription != null && compositeSubscription.isUnsubscribed()) {
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         }
-        if (clearSub != null && clearSub.isUnsubscribed()) {
+        if (clearSub != null && !clearSub.isUnsubscribed()) {
             clearSub.unsubscribe();
         }
     }

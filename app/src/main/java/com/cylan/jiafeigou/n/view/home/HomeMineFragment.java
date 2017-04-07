@@ -21,6 +21,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
@@ -42,6 +43,8 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
@@ -53,7 +56,7 @@ import butterknife.OnClick;
 
 
 public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
-        implements HomeMineContract.View {
+        implements HomeMineContract.View, BaseDialog.BaseDialogAction {
     @BindView(R.id.iv_home_mine_portrait)
     RoundedImageView ivHomeMinePortrait;
     @BindView(R.id.tv_home_mine_nick)
@@ -97,6 +100,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         ViewUtils.setViewMarginStatusBar(tvHomeMineMsgCount);
     }
 
+
     @Override
     public void onStart() {
 //        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
@@ -113,8 +117,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 点击个人头像
      */
     public void portrait() {
-//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -127,8 +131,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     public void friendItem(View view) {
-//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -136,7 +140,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         if (basePresenter.checkOpenLogIn()) {
             if (TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
                     TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())) {
-                showBindPhoneOrEmailDialog();
+                showBindPhoneOrEmailDialog(getString(R.string.Tap3_Friends_NoBindTips));
                 return;
             }
         }
@@ -153,27 +157,23 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     /**
      * 弹出绑定手机或者邮箱的提示框
      */
-    private void showBindPhoneOrEmailDialog() {
-        AlertDialog.Builder b = new AlertDialog.Builder(getContext());
-        b.setTitle(getString(R.string.Tap3_Friends_NoBindTips));
-        b.setPositiveButton(getString(R.string.Tap2_Index_Open_NoDeviceOption), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                jump2SetPhoneFragment();
-            }
-        });
-        b.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).show();
+    private void showBindPhoneOrEmailDialog(String title) {
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("bindphone");
+        if (f == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(BaseDialog.KEY_TITLE, title);
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.Tap2_Index_Open_NoDeviceOption));
+            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
+            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+            dialogFragment.setAction(this);
+            dialogFragment.show(getActivity().getSupportFragmentManager(), "bindphone");
+        }
     }
 
     public void settingsItem(View view) {
-//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -184,15 +184,24 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .add(android.R.id.content, homeSettingFragment,
                         "homeSettingFragment")
                 .addToBackStack("HomeMineFragment")
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     public void shareItem(View view) {
-//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
+
+        if (basePresenter.checkOpenLogIn()) {
+            if (TextUtils.isEmpty(basePresenter.getUserInfoBean().getEmail()) &&
+                    TextUtils.isEmpty(basePresenter.getUserInfoBean().getPhone())) {
+                showBindPhoneOrEmailDialog(getString(R.string.Tap3_Friends_NoBindTips));
+                return;
+            }
+        }
+
         MineShareDeviceFragment mineShareDeviceFragment = MineShareDeviceFragment.newInstance();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -235,7 +244,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isResumed() && isVisibleToUser && getActivity() != null) {
+        if (isVisibleToUser && getActivity() != null) {
         }
     }
 
@@ -260,6 +269,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .diskCacheStrategy(DiskCacheStrategy.SOURCE)
                 .into(mySimpleTarget);
     }
+
+
 
     public static class MySimpleTarget extends SimpleTarget<Bitmap> {
         private final WeakReference<ImageView> image;
@@ -380,8 +391,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     private void helpItem(View view) {
-//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -398,8 +409,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转到消息界面
      */
     private void jump2MesgFragment() {
-//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -424,8 +435,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 点击个人昵称
      */
     private void jump2UserInfo() {
-//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
         }
@@ -450,10 +461,21 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
-        bundle.putString("show_login_fragment", "show_login_fragment");
-        bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
-        bundle.putBoolean(JConstant.OPEN_LOGIN_TO_BIND_PHONE, true);
-        ((NeedLoginActivity) getActivity()).signInFirst(bundle);
+        bundle.putSerializable("userinfo", DataSourceManager.getInstance().getJFGAccount());
+        MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
+    }
+
+    @Override
+    public void onDialogAction(int id, Object value) {
+        if (id == R.id.tv_dialog_btn_right){
+            jump2SetPhoneFragment();
+        }
     }
 
     @Override

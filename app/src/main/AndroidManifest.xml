@@ -257,12 +257,11 @@
             android:name=".n.engine.DownloadService"
             android:enabled="true"
             android:exported="true"
-            android:process=":download" />
+            />
 
         <activity
             android:name=".n.view.misc.UpdateActivity"
-            android:process=":download"
-            android:theme="@style/dialog_activity_style" />
+            android:theme="@style/dialog_activity_style"/>
 
         <service
             android:name=".n.engine.CloudLiveService"
