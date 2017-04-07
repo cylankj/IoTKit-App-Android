@@ -12,7 +12,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -34,7 +33,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -50,7 +48,9 @@ import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -138,6 +138,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onResume();
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
+        onNetworkChanged(NetUtils.getJfgNetType(ContextUtils.getContext()) != 0);
     }
 
     @Override
@@ -320,7 +321,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS,isVisibleToUser);
+        PreferencesUtils.putBoolean(JConstant.IS_FIRST_PAGE_VIS, isVisibleToUser);
         if (isVisibleToUser && isResumed() && getActivity() != null) {
             srLayoutMainContentHolder.setRefreshing(false);
         }
@@ -417,7 +418,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
         dialogFragment.setValue(apkPath);
         dialogFragment.setAction(this);
-        dialogFragment.show(this.getFragmentManager(),"update");
+        dialogFragment.show(this.getFragmentManager(), "update");
     }
 
     @Override
@@ -485,8 +486,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right){
-            if (value != null){
+        if (id == R.id.tv_dialog_btn_right) {
+            if (value != null) {
                 String apkPath = (String) value;
                 File apkFile = new File(apkPath);
                 Uri uri = Uri.fromFile(apkFile);
@@ -496,7 +497,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             }
         }
 
-        PreferencesUtils.putBoolean(JConstant.CLIENT_UPDATAE_TAB,true);
-        PreferencesUtils.putLong(JConstant.CLIENT_UPDATAE_TIME_TAB,System.currentTimeMillis());
+        PreferencesUtils.putBoolean(JConstant.CLIENT_UPDATAE_TAB, true);
+        PreferencesUtils.putLong(JConstant.CLIENT_UPDATAE_TIME_TAB, System.currentTimeMillis());
     }
 }

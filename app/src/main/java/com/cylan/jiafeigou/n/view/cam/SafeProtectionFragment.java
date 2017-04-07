@@ -195,7 +195,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 ? R.string.MUTE : (notificationInfo.notification == 1
                 ? R.string.BARKING : R.string.ALARM)));
         //灵敏度
-        int s = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 0);
+        int s = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 1);
         fLayoutProtectionSensitivity.setTvSubTitle(s == 0 ? getString(R.string.SENSITIVI_LOW)
                 : (s == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
         //报警周期

@@ -417,7 +417,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnCompleted(() -> {
                     AppLogger.d("live stop: " + stopReason);
-                    getView().onLiveStop(playType, stopReason);
+                    if (getView() != null)
+                        getView().onLiveStop(playType, stopReason);
                 })
                 .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()))
                 .subscribe();

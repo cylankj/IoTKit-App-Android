@@ -137,7 +137,7 @@
                 android:id="@+id/sv_setting_device_indicator"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y54"
-                hunt:sv_image_src="@drawable/setting_icon_3g"
+                hunt:sv_image_src="@drawable/setting_icon_light"
                 hunt:sv_title="@string/LED"
                 hunt:sv_v_divider="true" />
 

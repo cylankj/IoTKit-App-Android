@@ -496,7 +496,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     private int autoRecordPreState() {
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        return device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
+        return device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
     }
 
     private void triggerStandby(DpMsgDefine.DPStandby dpStandby) {

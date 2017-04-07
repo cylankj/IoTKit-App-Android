@@ -112,7 +112,7 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         unSubscribe(compositeSubscription);
         if (compositeSubscription != null) compositeSubscription.clear();
         if (refCacheMap != null) refCacheMap.clear();
-        NetMonitor.getNetMonitor().unregister();
+        NetMonitor.getNetMonitor().unregister(this);
         if (registerTimeTick()) {
             if (timeTick != null)
                 LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);

@@ -238,6 +238,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     public Subscription unReadMesgBack() {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .onBackpressureBuffer()
+                .filter(rsp -> rsp.map != null)
                 .flatMap(new Func1<RobotoGetDataRsp, Observable<Integer>>() {
                     @Override
                     public Observable<Integer> call(RobotoGetDataRsp rsp) {

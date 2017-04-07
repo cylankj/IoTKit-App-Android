@@ -116,7 +116,7 @@ public class DataSourceService extends Service implements AppCallBack {
                 JfgCmdInsurance.getCmd().setCallBack(DataSourceService.this);
                 JfgCmdInsurance.getCmd().initNativeParam(vid, vKey, OptionsImpl.getServer());
                 JfgCmdInsurance.getCmd().enableLog(true, JConstant.LOG_PATH);
-                AppLogger.d("sdk version:" + JfgCmdInsurance.getCmd().getSdkVersion());
+//                AppLogger.d("sdk version:" + JfgCmdInsurance.getCmd().getSdkVersion());
                 Log.d("DataSourceService", "vid:" + vid);
                 Log.d("DataSourceService", "vKey:" + vKey);
                 Log.d("DataSourceService", "server:" + OptionsImpl.getServer());
