@@ -584,7 +584,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         int startingPosition = mTmpReenterState.getInt(JConstant.EXTRA_STARTING_ALBUM_POSITION);
         int currentPosition = mTmpReenterState.getInt(JConstant.EXTRA_CURRENT_ALBUM_POSITION);
 //        if (startingPosition != currentPosition) {
-        ((LinearLayoutManager) rVDevicesList.getLayoutManager()).scrollToPosition(currentPosition);
+        rVDevicesList.getLayoutManager().scrollToPosition(currentPosition);
 //        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getActivity().postponeEnterTransition();

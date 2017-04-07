@@ -142,7 +142,7 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
 
     @Override
     public Integer getMsgId() {
-        return this.msgId;
+        return this.msgId == null ? 0 : this.msgId;
     }
 
     @Override
@@ -153,7 +153,7 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
 
     @Override
     public long getVersion() {
-        return this.version;
+        return this.version == null ? 0 : this.version;
     }
 
     @Override
@@ -241,7 +241,7 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
 
     @Override
     public int hashCode() {
-        int result = (int) (msgId ^ (msgId >>> 32));
+        int result = (int) (msgId ^ (msgId >>> 0));
         result = 31 * result + (int) (version ^ (version >>> 32));
         return result;
     }

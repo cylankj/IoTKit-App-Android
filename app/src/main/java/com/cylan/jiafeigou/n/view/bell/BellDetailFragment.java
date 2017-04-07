@@ -164,7 +164,11 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         DpMsgDefine.DPNet net = device.$(ID_201_NET, new DpMsgDefine.DPNet());
         String ssid = TextUtils.isEmpty(net.ssid) ? getString(R.string.OFF_LINE) : net.ssid;
         svSettingDeviceWifi.setTvSubTitle(ssid);
-        svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(device.$(ID_210_UP_TIME, 0)));
+        if (net.net > 0) {
+            svSettingDeviceUptime.setTvSubTitle(TimeUtils.getUptime(device.$(ID_210_UP_TIME, 0)));
+        } else {
+            svSettingDeviceUptime.setVisibility(View.GONE);
+        }
         hardwareUpdatePoint.setVisibility(View.GONE);
         if (!TextUtils.isEmpty(device.shareAccount)) {
             rlHardwareUpdate.setVisibility(View.GONE);

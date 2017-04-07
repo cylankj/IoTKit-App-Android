@@ -402,7 +402,7 @@ public class BaseDBHelper implements IDBHelper {
                     JFGDevice dev;
                     for (int i = 0; i < device.length; i++) {
                         dev = device[i];
-                        List<DPEntity> entities = buildDPMsgQueryBuilder(getDpAccount(), getServer(), dev.uuid , null, null, null, null, null).list();
+                        List<DPEntity> entities = buildDPMsgQueryBuilder(getDpAccount(), getServer(), dev.uuid, null, null, null, null, null).list();
                         mEntityDao.deleteInTx(entities);
                         queryBuilder = deviceDao.queryBuilder().where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(account.getAccount()));
                         dpDevice = queryBuilder.unique();
@@ -599,15 +599,15 @@ public class BaseDBHelper implements IDBHelper {
         return builder;
     }
 
-    private QueryBuilder<DPEntity> buildDPMsgQueryBuilder(String account,
-                                                          String server,
-                                                          String uuid,
-                                                          Long version,
-                                                          Long versionMax,
-                                                          List<Integer> msgIdList,
-                                                          DBAction action,
-                                                          DBState state,
-                                                          DBOption option) {
+    public QueryBuilder<DPEntity> buildDPMsgQueryBuilder(String account,
+                                                         String server,
+                                                         String uuid,
+                                                         Long version,
+                                                         Long versionMax,
+                                                         List<Integer> msgIdList,
+                                                         DBAction action,
+                                                         DBState state,
+                                                         DBOption option) {
         QueryBuilder<DPEntity> builder = mEntityDao.queryBuilder();
 
         if (!TextUtils.isEmpty(account)) {

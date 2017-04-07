@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.FutureTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
@@ -13,15 +11,11 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.google.gson.Gson;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -68,14 +62,14 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public Observable<BaseDPTaskResult> performServer() {
-        return Observable.create((Observable.OnSubscribe<Integer>) subscriber -> {
-            int result = -1;
+        return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
+            long result = -1;
             try {
                 ArrayList<JFGDPMsg> req = new ArrayList<>(1);
                 JFGDPMsg msg602 = new JFGDPMsg(602, entity.getVersion());
                 msg602.packValue = entity.getBytes();
                 req.add(msg602);
-                result = (int) JfgCmdInsurance.getCmd().robotSetDataByTime("", req);
+                result = JfgCmdInsurance.getCmd().robotSetDataByTime("", req);
                 AppLogger.d("正在执行分享操作步骤一:设置602 DP消息" + result);
             } catch (Exception e) {
                 AppLogger.d("分享操作步骤一操作失败!!!" + e.getMessage());
@@ -105,10 +99,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                                 wonderItem.cid + //cid
                                 "/" +
                                 wonderItem.fileName;
-                        FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                                .load(new JFGGlideURL(entity.getUuid(), wonderItem.fileName))
-                                .downloadOnly(100, 100);
-                        result = getCmd().putFileToCloud(remotePath, future.get().getAbsolutePath());
+                        result = getCmd().putFileToCloud(remotePath, option.filePath);
 
                     } catch (Exception e) {
                         AppLogger.d("分享操作步骤二操作失败,错误信息为:" + e.getMessage());
@@ -124,11 +115,11 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                     if (rsp.ret != 200) throw new BaseDPTaskException(rsp.ret, "分享步骤二失败");
                     AppLogger.d("分享操作步骤二执行成功,正在更新本地数据Version" + new Gson().toJson(entity));
                     return mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId())
-                            .flatMap(dpEntity -> {
+                            .map(dpEntity -> {
+                                AppLogger.d("更新本地数据成功");
                                 dpEntity.setState(DBState.SUCCESS);
                                 dpEntity.update();
                                 return null;
-
                             });
                 })
                 .map(ent -> {

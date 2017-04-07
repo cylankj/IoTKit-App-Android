@@ -83,10 +83,12 @@ public interface DBOption {
     class SingleSharedOption extends BaseDBOption {
         public int type;
         public int flag;
+        public String filePath;
 
-        public SingleSharedOption(int type, int flag) {
+        public SingleSharedOption(int type, int flag, String filePath) {
             this.type = type;
             this.flag = flag;
+            this.filePath = filePath;
         }
     }
 
