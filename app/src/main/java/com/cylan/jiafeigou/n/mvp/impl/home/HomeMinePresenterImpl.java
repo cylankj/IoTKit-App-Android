@@ -62,6 +62,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         }
         subscription = new CompositeSubscription();
         subscription.add(checkIsOpenLoginCallBack());
+        subscription.add(getAccountBack());
         subscription.add(unReadMesgBack());
         getUnReadMesg();
     }
@@ -185,7 +186,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public void call(JFGAccount account) {
                         AppLogger.d("mine_account:" + account);
-                        userInfo = account;
                         if (account != null && getView() != null) {
                             if (TextUtils.isEmpty(account.getAccount()) && account.isEnablePush()) {
                                 isOpenLogin = true;
@@ -275,6 +275,16 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     @Override
     public boolean hasUnReadMesg() {
         return hasUnRead;
+    }
+
+    @Override
+    public Subscription getAccountBack() {
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(getUserInfo -> {
+                    if (getUserInfo != null)
+                        userInfo = getUserInfo.jfgAccount;
+                });
     }
 
 

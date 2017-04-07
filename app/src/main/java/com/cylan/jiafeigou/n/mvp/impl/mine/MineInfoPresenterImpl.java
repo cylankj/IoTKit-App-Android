@@ -46,11 +46,6 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
         view.setPresenter(this);
     }
 
-    @Override
-    public void bindPersonEmail() {
-        getView().jump2SetEmailFragment();
-    }
-
     /**
      * 退出登录
      */
@@ -212,7 +207,6 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     /**
      * 三方登录的回调
-     *
      * @return
      */
     @Override
@@ -221,6 +215,8 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(thirdLoginTab -> {
                     isOpenLogin = thirdLoginTab.isThird;
+                    if (getView() != null)
+                    getView().showSetPwd(thirdLoginTab.isThird);
                 });
     }
 

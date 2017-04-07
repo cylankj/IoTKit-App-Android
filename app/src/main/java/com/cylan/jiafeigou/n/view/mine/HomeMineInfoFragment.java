@@ -179,9 +179,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             mRlayout_setPersonPhone.setVisibility(View.VISIBLE);
         }
 
-        if (presenter.checkOpenLogin()) {
-            rlChangePassword.setVisibility(View.GONE);
-        }
+
     }
 
     @Override
@@ -221,7 +219,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 break;
             //点击邮箱跳转到相应的页面
             case R.id.lLayout_home_mine_personal_mailbox:
-                presenter.bindPersonEmail();
+                jump2SetEmailFragment();
                 break;
 
             case R.id.rLayout_home_mine_personal_pic:           //更换头像
@@ -416,6 +414,13 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                     mTvMailBox.setText(content);
                 }
             });
+        }
+    }
+
+    @Override
+    public void showSetPwd(boolean isVisiable) {
+        if (isVisiable) {
+            rlChangePassword.setVisibility(View.GONE);
         }
     }
 

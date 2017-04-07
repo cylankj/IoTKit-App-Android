@@ -205,7 +205,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
         } else if (jfgResult.code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.PWD_OK_1));
-//            AutoSignIn.getInstance().autoSave(DataSourceManager.getInstance().getJFGAccount().getAccount(),1,getNewPassword());
+//            AutoSignIn.getInstance().autoSave(DataSourceManager.getInstance().getJFGAccount().getAccountBack(),1,getNewPassword());
             getFragmentManager().popBackStack();
         }
     }

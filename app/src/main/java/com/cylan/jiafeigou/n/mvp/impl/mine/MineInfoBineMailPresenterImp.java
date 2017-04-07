@@ -22,8 +22,6 @@ import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.util.concurrent.TimeUnit;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import rx.Observable;
 import rx.Subscription;
@@ -44,6 +42,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
     private JFGAccount jfgAccount;
     private Network network;
     private boolean isOpenLogin;
+    private boolean isSetAcc;
 
     public MineInfoBineMailPresenterImp(MineInfoBindMailContract.View view) {
         super(view);
@@ -73,48 +72,35 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                 });
     }
 
-    @Override
-    public boolean checkAccoutIsPhone(String account) {
-        String telRegex = "[1][358]\\d{9}";
-        if (account.matches(telRegex)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * 发送修改用户属性请求
      */
     @Override
     public void sendSetAccountReq(String newEmail) {
         rx.Observable.just(newEmail)
-                .delay(2000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String newEmail) {
-                        jfgAccount.resetFlag();
-                        jfgAccount.setEmail(newEmail);
                         try {
-                            JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                            jfgAccount.resetFlag();
+                            jfgAccount.setEmail(newEmail);
+                            int req = JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                            isSetAcc = true;
+                            AppLogger.d("send_setAcc:"+req);
                         } catch (JfgException e) {
+                            AppLogger.e("send_setAcc:"+e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("sendSetAccountReq" + throwable.getLocalizedMessage());
-                    }
+                },throwable -> {
+                    AppLogger.e("sendSetAccountReq" + throwable.getLocalizedMessage());
                 });
 
-        getView().jump2MailConnectFragment();
     }
 
     /**
      * 检验邮箱是否已经注册过
-     *
      * @return
      */
     @Override
@@ -135,20 +121,19 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
      * 修改属性后的回调
      */
     @Override
-    public Subscription getChangeAccountCallBack() {
+    public Subscription getAccountCallBack() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetUserInfo>() {
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null && getUserInfo instanceof RxEvent.GetUserInfo) {
-                            jfgAccount = getUserInfo.jfgAccount;
+                        if (getUserInfo != null) {
+                            AppLogger.d("changacc:"+getUserInfo.jfgAccount.getEmail());
                             getView().getUserAccountData(getUserInfo.jfgAccount);
-//                            getView().showSendReqResult(getUserInfo);
+                            jfgAccount = getUserInfo.jfgAccount;
                         }
                     }
                 });
-
     }
 
     /**
@@ -161,7 +146,6 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
         return jfgAccount;
     }
 
-
     /**
      * 处理检测邮箱是否绑定后结果
      */
@@ -172,7 +156,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                 getView().showMailHasBindDialog();
             }
         } else {
-            // 没有注册过 查不到账号回调为空
+            // 没有注册过
             if (getView() != null) {
                 getView().showAccountUnReg();
             }
@@ -203,7 +187,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
     }
 
     /**
-     * 是否上方登录
+     * 是否三方登录
      *
      * @return
      */
@@ -219,6 +203,20 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
     @Override
     public boolean isOpenLogin() {
         return isOpenLogin;
+    }
+
+    @Override
+    public Subscription changeAccountBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.RessetAccountBack.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ressetAccountBack -> {
+                    if (ressetAccountBack != null){
+                        if (isSetAcc){
+                            getView().showSendReqResult(ressetAccountBack.jfgResult.code);
+                            isSetAcc = false;
+                        }
+                    }
+                });
     }
 
     /**
@@ -263,8 +261,9 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
         } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(isOpenLoginBack());
-            compositeSubscription.add(getChangeAccountCallBack());
+            compositeSubscription.add(getAccountCallBack());
             compositeSubscription.add(getCheckAccountCallBack());
+            compositeSubscription.add(changeAccountBack());
         }
         registerNetworkMonitor();
     }

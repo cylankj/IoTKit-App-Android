@@ -2,6 +2,8 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +22,8 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,7 +36,7 @@ import butterknife.OnTextChanged;
  * 创建时间：2016/12/28
  * 描述：
  */
-public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfoSetNewPwdContract.View {
+public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfoSetNewPwdContract.View, BaseDialog.BaseDialogAction {
 
     @BindView(R.id.et_mine_set_newpwd)
     EditText etMineSetNewpwd;
@@ -114,7 +118,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.tv_toolbar_icon:
-                getFragmentManager().popBackStack();
+                backDialog();
                 break;
             case R.id.tv_toolbar_right:
                 if (getNewPwd().length() < 6) {
@@ -138,7 +142,6 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
 
     /**
      * 注册结果
-     *
      * @param code
      */
     @Override
@@ -151,12 +154,20 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
             }else {
                 //绑定手机
                 ToastUtil.showPositiveToast(getString(R.string.Added_successfully));
+                getFragmentManager().popBackStack();
             }
         } else if (code == JError.ErrorSetPassTimeout){
             ToastUtil.showToast(getString(R.string.SUBMIT_FAIL));
         }else {
             ToastUtil.showToast(getString(R.string.Tips_Device_TimeoutRetry));
         }
+    }
+
+    /**
+     * 跳转到个人信息
+     */
+    private void jump2MineInfoFragment() {
+
     }
 
     @Override
@@ -170,5 +181,27 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
                 .add(android.R.id.content, fragment, "mineInfoSetNewPwdFragment")
                 .addToBackStack("personalInformationFragment")
                 .commit();
+
+    }
+
+    public void backDialog(){
+        Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag("backPress");
+        if (f == null) {
+            Bundle bundle = new Bundle();
+            bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap3_logout_tips));
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.Button_No));
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.Button_Yes));
+            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
+            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+            dialogFragment.setAction(this);
+            dialogFragment.show(getActivity().getSupportFragmentManager(), "backPress");
+        }
+    }
+
+    @Override
+    public void onDialogAction(int id, Object value) {
+        if (id == R.id.tv_dialog_btn_right){
+            getFragmentManager().popBackStackImmediate(HomeMineInfoFragment.class.getName(),FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
     }
 }

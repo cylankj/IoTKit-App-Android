@@ -16,9 +16,12 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoBineMailPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -72,18 +75,29 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      * 显示请求发送结果
      */
     @Override
-    public void showSendReqResult(RxEvent.GetUserInfo getUserInfo) {
+    public void showSendReqResult(int code) {
         if (!TextUtils.isEmpty(getEditText())) {
             hideSendReqHint();
-            if (getEditText().equals(getUserInfo.jfgAccount.getEmail())) {
-                //绑定成功
-                jump2MailConnectFragment();
+            if (code == JError.ErrorOK) {
+                //区分第三方登录
+                if (presenter.isOpenLogin()){
+                    JFGAccount userAccount = DataSourceManager.getInstance().getJFGAccount();
+                    AppLogger.d("bindmail2:"+userAccount.getPhone());
+                    if (TextUtils.isEmpty(userAccount.getPhone())) {
+                        jump2SetPasswordFragment(getEditText());
+                    }else {
+                        //绑定成功
+                        jump2MailConnectFragment();
+                    }
+                }else {
+                    //绑定成功
+                    jump2MailConnectFragment();
+                }
             } else {
                 //绑定失败
                 ToastUtil.showPositiveToast(getString(R.string.SUBMIT_FAIL));
             }
         }
-
     }
 
     /**
@@ -187,7 +201,6 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         });
     }
 
-
     private void initPresenter() {
         presenter = new MineInfoBineMailPresenterImp(this);
     }
@@ -252,15 +265,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
      */
     @Override
     public void showAccountUnReg() {
-        if (!presenter.isOpenLogin()) {
-            presenter.sendSetAccountReq(getEditText());
-        } else {
-            if (TextUtils.isEmpty(presenter.getUserAccount().getEmail()) && TextUtils.isEmpty(presenter.getUserAccount().getPhone())) {
-                jump2SetPasswordFragment(getEditText());
-            } else {
-                presenter.sendSetAccountReq(getEditText());
-            }
-        }
+        presenter.sendSetAccountReq(getEditText());
     }
 
     @Override

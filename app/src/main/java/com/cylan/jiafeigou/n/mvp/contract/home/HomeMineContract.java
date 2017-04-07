@@ -103,6 +103,7 @@ public interface HomeMineContract {
          */
         boolean hasUnReadMesg();
 
+        Subscription getAccountBack();
 
     }
 }

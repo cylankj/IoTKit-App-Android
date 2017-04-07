@@ -23,7 +23,7 @@ public interface MineInfoBindMailContract {
         /**
          * 显示请求发送之后的对话框
          */
-        void showSendReqResult(RxEvent.GetUserInfo getUserInfo);
+        void showSendReqResult(int code);
 
         /**
          * 显示账号未注册过
@@ -72,14 +72,6 @@ public interface MineInfoBindMailContract {
         void checkEmailIsBinded(String email);       //检验邮箱是否已经绑定过
 
         /**
-         * 检验账号是否手机号
-         *
-         * @param account
-         * @return
-         */
-        boolean checkAccoutIsPhone(String account);
-
-        /**
          * 发送修改用户属性请求
          */
         void sendSetAccountReq(String newEmail);
@@ -94,7 +86,7 @@ public interface MineInfoBindMailContract {
         /**
          * 修改属性后的回调
          */
-        Subscription getChangeAccountCallBack();
+        Subscription getAccountCallBack();
 
         /**
          * 拿到用户的账号
@@ -126,5 +118,7 @@ public interface MineInfoBindMailContract {
          * @return
          */
         boolean isOpenLogin();
+
+        Subscription changeAccountBack();
     }
 }

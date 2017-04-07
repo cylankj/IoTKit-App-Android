@@ -222,6 +222,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 .add(android.R.id.content, fragment, "mailBoxFragment")
                 .addToBackStack("personalInformationFragment")
                 .commit();
+
     }
 
     /**
@@ -303,13 +304,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     @Override
     public void handlerCheckCodeResult(RxEvent.ResultVerifyCode resultVerifyCode) {
         if (resultVerifyCode.code == JError.ErrorOK) {
-            if (isBindOrChange) {
-                if (presenter.isOpenLogin() && TextUtils.isEmpty(userinfo.getPhone()) && TextUtils.isEmpty(userinfo.getEmail())) {
-                    //是三方登录
-                    jump2SetpassFragment(userinfo.getAccount());
-                    return;
-                }
-            }
             showLoadingDialog();
             presenter.sendChangePhoneReq(getInputPhone(), PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
         } else if (resultVerifyCode.code == JError.ErrorSMSCodeTimeout) {
@@ -323,13 +317,20 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     /**
      * 处理修改结果
      *
-     * @param getUserInfo
+     * @param code
      */
     @Override
-    public void handlerResetPhoneResult(RxEvent.GetUserInfo getUserInfo) {
+    public void handlerResetPhoneResult(int code) {
         hideLoadingDialog();
         if (!TextUtils.isEmpty(getInputPhone())) {
-            if (getInputPhone().equals(getUserInfo.jfgAccount.getPhone())) {
+            if (code == JError.ErrorOK) {
+                if (isBindOrChange) {
+                    if (presenter.isOpenLogin() && TextUtils.isEmpty(userinfo.getEmail())) {
+                        //是三方登录
+                        jump2SetpassFragment(userinfo.getAccount());
+                        return;
+                    }
+                }
                 ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
                 if (getView() != null) {
                     getFragmentManager().popBackStack();

@@ -226,11 +226,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-        try {
-            JfgCmdInsurance.getCmd().checkClientVersion("0001");
-        } catch (JfgException e) {
-            e.printStackTrace();
-        }
         if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
             ((NeedLoginActivity) getActivity()).signInFirst(null);
             return;
