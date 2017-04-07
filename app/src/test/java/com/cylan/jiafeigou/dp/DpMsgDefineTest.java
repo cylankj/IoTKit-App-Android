@@ -25,6 +25,7 @@ public class DpMsgDefineTest {
 
     @Test
     public void testObject() throws IOException {
+        System.out.println(unpackData(new byte[]{-62}, boolean.class));
         DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
         byte[] data = new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50};
         System.out.println(unpackData(data, DpMsgDefine.DPNet.class));

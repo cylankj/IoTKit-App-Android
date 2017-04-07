@@ -218,7 +218,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 e.printStackTrace();
             }
             return null;
-        }).zipWith(getInterestingOne().timeout(10, TimeUnit.SECONDS, Observable.just("timeout")
+        }).zipWith(getInterestingOne().timeout(30, TimeUnit.SECONDS, Observable.just("timeout")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map(s -> {
                     AppLogger.e("play video :" + s);
@@ -254,7 +254,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
                 .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
                 .onBackpressureBuffer()//防止MissingBackpressureException
-                .timeout(10, TimeUnit.SECONDS, Observable.just("no rtcp call back")
+                .timeout(30, TimeUnit.SECONDS, Observable.just("no rtcp call back")
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .map(s -> {
                             //暂停播放
@@ -360,7 +360,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
             return null;
-        }).zipWith(getInterestingOne().timeout(10, TimeUnit.SECONDS, Observable.just("timeout")
+        }).zipWith(getInterestingOne().timeout(30, TimeUnit.SECONDS, Observable.just("timeout")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map(s -> {
                     AppLogger.e("play history video :" + s);

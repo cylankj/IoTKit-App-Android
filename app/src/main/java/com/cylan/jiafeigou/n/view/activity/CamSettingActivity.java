@@ -355,9 +355,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 List<DataPoint> list = new ArrayList<>();
                 dpStandby.msgId = 508;
                 list.add(dpStandby);
-                list.add(new DpMsgDefine.DPPrimary<>(standby.led, ID_209_LED_INDICATOR));
-                list.add(new DpMsgDefine.DPPrimary<>(standby.autoRecord, ID_303_DEVICE_AUTO_VIDEO_RECORD));
-                list.add(new DpMsgDefine.DPPrimary<>(standby.alarmEnable, ID_501_CAMERA_ALARM_FLAG));
+                list.add(new DpMsgDefine.DPPrimary<>(!isChecked && standby.led, ID_209_LED_INDICATOR));
+                list.add(new DpMsgDefine.DPPrimary<>(isChecked ? 0 : standby.autoRecord, ID_303_DEVICE_AUTO_VIDEO_RECORD));
+                list.add(new DpMsgDefine.DPPrimary<>(!isChecked && standby.alarmEnable, ID_501_CAMERA_ALARM_FLAG));
                 basePresenter.updateInfoReq(list);
                 ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             });
