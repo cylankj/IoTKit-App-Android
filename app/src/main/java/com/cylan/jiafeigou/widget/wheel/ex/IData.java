@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.widget.wheel.ex;
 
-import com.cylan.entity.jniCall.JFGVideo;
+
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
 import java.util.ArrayList;
 
@@ -9,7 +10,7 @@ import java.util.ArrayList;
  */
 
 public interface IData {
-    void flattenData(ArrayList<JFGVideo> list);
+    void flattenData(ArrayList<HistoryFile> list);
 
     long[] getTimeArray(int leftIndex, int maxCount);
 
@@ -44,7 +45,7 @@ public interface IData {
 
     String getDateInFormat(long time);
 
-    ArrayList<JFGVideo> getMaskList(long start, long end);
+    ArrayList<HistoryFile> getMaskList(long start, long end);
 
     /**
      * 快速滑动,或者滑动停止后,有一个自动定位的需求,---a--A----b---B---c----C--d--

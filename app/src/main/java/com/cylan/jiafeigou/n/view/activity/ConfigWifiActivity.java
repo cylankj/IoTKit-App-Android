@@ -159,6 +159,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                     basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
                             ViewUtils.getTextViewContent(etWifiPwd), type);
                 tvWifiPwdSubmit.viewZoomSmall();
+                IMEUtils.hide(this);
                 break;
             case R.id.tv_config_ap_name:
                 initFragment();

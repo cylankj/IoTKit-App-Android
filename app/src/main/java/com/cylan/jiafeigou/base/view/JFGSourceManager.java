@@ -4,7 +4,6 @@ package com.cylan.jiafeigou.base.view;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -98,16 +97,16 @@ public interface JFGSourceManager {
      */
     long syncJFGCameraWarn(String uuid, long version, boolean asc, int count);
 
-    int queryHistory(String uuid);
+    Observable<Boolean> queryHistory(String uuid);
 
     void cacheHistoryDataList(JFGHistoryVideo historyVideo);
-
-    ArrayList<JFGVideo> getHistoryList(String uuid);
 
     void clear();
 
     Observable<Account> logout();
 
     Observable<Device> unBindDevice(String uuid);
+
+    ArrayList<Long> getHisDateList(String uuid);
 
 }

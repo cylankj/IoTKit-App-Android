@@ -2,8 +2,8 @@ package com.cylan.jiafeigou.widget.wheel.ex;
 
 import android.util.Log;
 
-import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -24,25 +24,25 @@ public class DataExt implements IData {
      * s为单位
      */
     private ArrayList<Long> flattenDataList = new ArrayList<>();
-    private ArrayList<JFGVideo> rawList = new ArrayList<>();
+    private ArrayList<HistoryFile> rawList = new ArrayList<>();
     private Map<Long, Integer> timeWithType = new HashMap<>();
 
     private Map<Long, String> dateFormatMap = new HashMap<>();
 
 
     @Override
-    public void flattenData(ArrayList<JFGVideo> list) {
+    public void flattenData(ArrayList<HistoryFile> list) {
         this.rawList = list;
         int size = list.size();
         if (size > 0) {
-            long timeMax = getTenMinuteByTimeRight((list.get(0).beginTime + list.get(0).duration) * 1000L);
-            long timeMin = getTenMinuteByTimeLeft((list.get(size - 1).beginTime) * 1000L);
+            long timeMax = getTenMinuteByTimeRight((list.get(0).time + list.get(0).duration) * 1000L);
+            long timeMin = getTenMinuteByTimeLeft((list.get(size - 1).time) * 1000L);
             size = 0;
             for (long i = timeMax; i >= timeMin; ) {
                 flattenDataList.add(i);
                 fillMap(i);
                 if (DEBUG)
-                    Log.d(TAG, "i:" + size + " " + TimeUtils.simpleDateFormat2.format(new Date(i)));
+                    Log.d(TAG, "i:" + size + " " + TimeUtils.simpleDateFormat0.format(new Date(i)));
                 size++;
                 i -= 10 * 60 * 1000L;
             }
@@ -136,11 +136,11 @@ public class DataExt implements IData {
     }
 
     @Override
-    public ArrayList<JFGVideo> getMaskList(long start, long end) {
+    public ArrayList<HistoryFile> getMaskList(long start, long end) {
         if (rawList == null || rawList.size() == 0)
             return null;
-        JFGVideo vStart = getVideo(start);
-        JFGVideo vEnd = getVideo(end);
+        HistoryFile vStart = getVideo(start);
+        HistoryFile vEnd = getVideo(end);
         int startIndex = Collections.binarySearch(rawList, vStart);
         if (startIndex < 0) {
             startIndex = -(startIndex + 1);
@@ -155,7 +155,7 @@ public class DataExt implements IData {
                 endIndex += 2;
             }
         }
-        ArrayList<JFGVideo> finalList = new ArrayList<>(endIndex - startIndex);
+        ArrayList<HistoryFile> finalList = new ArrayList<>(endIndex - startIndex);
         for (int i = startIndex; i < endIndex; i++) {
             finalList.add(rawList.get(i));
         }
@@ -166,19 +166,19 @@ public class DataExt implements IData {
     private long getNextFocusTime(long time) {
         if (rawList.size() == 0)
             return 0;
-        JFGVideo v = getVideo(time);
+        HistoryFile v = getVideo(time);
         index = Collections.binarySearch(rawList, v);
         index = -(index + 1);
 //        Log.d("getNextFocusTime", "getNextFocusTime: " + index);
         if (index < 0 && rawList.size() > 0) {
             index = 0;
-            return rawList.get(0).beginTime * 1000L;
+            return rawList.get(0).time * 1000L;
         }
         if (index > rawList.size() - 1 && rawList.size() > 0) {
             index = rawList.size() - 1;
-            return rawList.get(index).beginTime * 1000L;
+            return rawList.get(index).time * 1000L;
         }
-        return rawList.get(index).beginTime * 1000L;
+        return rawList.get(index).time * 1000L;
     }
 
     @Override
@@ -196,14 +196,14 @@ public class DataExt implements IData {
         if (index < 0 && rawList.size() > 0) {
             index = 0;
         }
-        return rawList.get(index).beginTime * 1000L;
+        return rawList.get(index).time * 1000L;
     }
 
     @Override
     public boolean isHotRect(long time) {
         if (rawList == null || rawList.size() == 0)
             return false;
-        JFGVideo v = getVideo(time);
+        HistoryFile v = getVideo(time);
         int i = Collections.binarySearch(rawList, v);
         i = -(i + 1);
         if (i < 0 || i > rawList.size() - 1) {
@@ -212,12 +212,12 @@ public class DataExt implements IData {
         if (DEBUG)
             Log.d(TAG, "index: " + i + " " + TimeUtils.simpleDateFormat2.format(new Date(time)));
         v = rawList.get(i);
-        return v.beginTime * 1000L <= time && (v.beginTime + v.duration) * 1000L >= time;
+        return v.time * 1000L <= time && (v.time + v.duration) * 1000L >= time;
     }
 
-    private JFGVideo getVideo(long time) {
-        JFGVideo video = new JFGVideo("", 0, 0);
-        video.beginTime = time / 1000L;
+    private HistoryFile getVideo(long time) {
+        HistoryFile video = new HistoryFile(0L, time, 0, "", "");
+        video.time = time / 1000L;
         return video;
     }
 

@@ -10,7 +10,6 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -250,6 +249,11 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(devices -> Observable.just(devices.iterator().next()));
     }
 
+    @Override
+    public ArrayList<Long> getHisDateList(String uuid) {
+        return History.getHistory().getDateList(uuid);
+    }
+
     private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
         return dbHelper.unBindDeviceWithConfirm(uuids)
                 .map(devices -> {
@@ -294,23 +298,13 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public int queryHistory(String uuid) {
-        try {
-            JfgCmdInsurance.getCmd().getVideoList(uuid);
-        } catch (JfgException e) {
-            AppLogger.e("uuid is null: " + e.getLocalizedMessage());
-        }
-        return 0;
+    public Observable<Boolean> queryHistory(String uuid) {
+        return Observable.just(History.getHistory().queryHistory(getJFGDevice(uuid)));
     }
 
     @Override
     public void cacheHistoryDataList(JFGHistoryVideo historyVideo) {
         History.getHistory().cacheHistoryDataList(historyVideo);
-    }
-
-    @Override
-    public ArrayList<JFGVideo> getHistoryList(String uuid) {
-        return History.getHistory().getHistoryList(uuid);
     }
 
     @Override

@@ -13,8 +13,10 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
+import rx.Observable;
 import rx.Subscription;
 
 /**
@@ -85,6 +87,13 @@ public interface CamLiveContract {
         void countdownFinish();
 
         void hardwareResult(RxEvent.CheckDevVersionRsp rsp);
+
+        /**
+         * 保存了每一份数据的第一条的时间戳
+         *
+         * @param dateList
+         */
+        void onHistoryDateListUpdate(ArrayList<Long> dateList);
     }
 
     interface Presenter extends BasePresenter {
@@ -173,7 +182,7 @@ public interface CamLiveContract {
         /**
          * @return <Integer:天数,Long:时间戳>
          */
-        Map<Long, Long> getFlattenDateMap();
+        ArrayList<Long> getFlattenDateList();
 
         IData getHistoryDataProvider();
 
@@ -200,6 +209,14 @@ public interface CamLiveContract {
         void checkNewHardWare();
 
         Subscription checkNewHardWareBack();
+
+        /**
+         * 某一天的凌晨时间戳
+         *
+         * @param timeStart
+         * @return
+         */
+        Observable<IData> assembleTheDay(long timeStart);
     }
 }
 

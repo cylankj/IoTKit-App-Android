@@ -4,13 +4,16 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.DrawableRes;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.AppCompatImageView;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import com.cylan.jiafeigou.R;
 
@@ -29,6 +32,7 @@ public class ImageViewTip extends AppCompatImageView {
     private int borderColor = Color.WHITE;
     private int pointColor = Color.BLACK;
     private int borderWidth = 0;
+    private boolean roundWithin = false;
     /**
      * 圆形image,bitmap
      */
@@ -47,6 +51,7 @@ public class ImageViewTip extends AppCompatImageView {
         TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ImageViewTipsTheme, defStyle, 0);
         this.mDotRadius = a.getDimensionPixelSize(R.styleable.ImageViewTipsTheme_t_radius, 5);
         this.showDot = a.getBoolean(R.styleable.ImageViewTipsTheme_t_show_point, false);
+        this.roundWithin = a.getBoolean(R.styleable.ImageViewTipsTheme_t_round_within, false);
         this.borderColor = a.getColor(R.styleable.ImageViewTipsTheme_t_border_color, Color.WHITE);
         borderPaint.setColor(borderColor);
         this.pointColor = a.getColor(R.styleable.ImageViewTipsTheme_t_point_color, Color.WHITE);
@@ -114,14 +119,25 @@ public class ImageViewTip extends AppCompatImageView {
     private void computeRedPointRectF() {
         Drawable drawable = getDrawable();
         if (drawable != null) {
-            double width = Math.cos(Math.PI / 4) * getWidth() / 2;
-            redPointRectF.left = (float) (getWidth() / 2 + width);//中心点
-            redPointRectF.top = (float) (getHeight() / 2 - width);//中心点
-            //减去 size
-            redPointRectF.left = redPointRectF.left - mDotRadius - borderWidth;
-            redPointRectF.top = redPointRectF.top - mDotRadius - borderWidth;
+            float tmp = (float) (drawable.getIntrinsicWidth() / 2 - drawable.getIntrinsicWidth() / 2 * Math.cos(Math.PI / 4));
+            redPointRectF.left = getWidth() / 2 + drawable.getIntrinsicWidth() / 2;
+            redPointRectF.bottom = getHeight() / 2 - drawable.getIntrinsicHeight() / 2;
+            redPointRectF.top = redPointRectF.bottom - mDotRadius * 2 - borderWidth * 2;
             redPointRectF.right = redPointRectF.left + mDotRadius * 2 + borderWidth * 2;
-            redPointRectF.bottom = redPointRectF.top + mDotRadius * 2 + borderWidth * 2;
+            if (isRoundImage) {//圆形的图片,不会出现上面的 top<=0的情况
+                redPointRectF.left -= tmp + (roundWithin ? (mDotRadius + borderWidth) : 0);
+                redPointRectF.top += tmp + (roundWithin ? (mDotRadius + borderWidth) : 0);
+                redPointRectF.right -= tmp + (roundWithin ? (mDotRadius + borderWidth) : 0);
+                redPointRectF.bottom += tmp + (roundWithin ? (mDotRadius + borderWidth) : 0);
+            }
+            if (redPointRectF.top <= 0) {
+                redPointRectF.top = 0;
+                redPointRectF.bottom = redPointRectF.top + mDotRadius * 2 + borderWidth * 2;
+            }
+            if (redPointRectF.right >= getWidth()) {
+                redPointRectF.right = getWidth();
+                redPointRectF.left = redPointRectF.right - mDotRadius * 2 - borderWidth * 2;
+            }
         }
     }
 
@@ -130,6 +146,7 @@ public class ImageViewTip extends AppCompatImageView {
         super.onDraw(canvas);
         if (!isShowDot())
             return;
+        computeRedPointRectF();
         if (enableBorder) {
             canvas.drawCircle(redPointRectF.centerX(), redPointRectF.centerY(), getDotRadius() + borderWidth, borderPaint);
         }

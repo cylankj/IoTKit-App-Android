@@ -484,4 +484,8 @@ public class MiscUtils {
         }
     }
 
+    public static String getErr(Throwable throwable) {
+        if (throwable == null) return null;
+        return throwable.getLocalizedMessage();
+    }
 }

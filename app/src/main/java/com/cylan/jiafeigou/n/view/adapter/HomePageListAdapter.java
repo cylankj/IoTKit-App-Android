@@ -84,10 +84,10 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             holder.setVisibility(R.id.img_device_state_3, GONE);
         }
         //5 安全待机
+        holder.setVisibility(R.id.img_device_state_4, isStandBY.standby ? VISIBLE : GONE);
         if (isStandBY.standby) {
-            holder.setVisibility(R.id.img_device_state_4, VISIBLE);
             holder.setImageResource(R.id.img_device_state_4, R.drawable.home_icon_net_standby);
-        } else holder.setVisibility(R.id.img_device_state_4, GONE);
+        }
 
     }
 
@@ -125,8 +125,8 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         else holder.setVisibility(R.id.tv_device_share_tag, GONE);
         //图标
         holder.setImageResource(R.id.img_device_icon, iconRes);
-        if (TextUtils.isEmpty(shareAccount) || JFGRules.isBell(device.pid))//被分享用户,不显示 消息数
-            handleMsgCountTime(holder, uuid, device);
+//        if (TextUtils.isEmpty(shareAccount) || JFGRules.isBell(device.pid))
+        handleMsgCountTime(holder, uuid, device);
         //右下角状态
         setItemState(holder, uuid, net, device);
         AppLogger.d(String.format(Locale.getDefault(), "uuid:%s,device.pid:%s", uuid, device.pid));
@@ -140,6 +140,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
     }
 
     private void handleMsgCountTime(SuperViewHolder holder, String uuid, Device device) {
+        //被分享用户,不显示 消息数
         DPEntity entity = handleUnreadCount(device);
         Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + entity);
         //消息数

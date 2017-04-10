@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.mockito.Mockito;
 import org.robolectric.util.Pair;
 
+import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -403,15 +404,36 @@ public class RxBusTest {
 
     @Test
     public void testThread() throws InterruptedException {
-        RxBus.getCacheInstance().toObservable(String.class)
-                .map(new Func1<String, Object>() {
+        Observable.just("run")
+                .flatMap(new Func1<String, Observable<?>>() {
                     @Override
-                    public Object call(String s) {
-                        System.out.println("what: "+Thread.currentThread());
-                        return null;
+                    public Observable<?> call(String s) {
+                        return RxBus.getCacheInstance().toObservable(String.class)
+                                .map(new Func1<String, Object>() {
+                                    @Override
+                                    public Object call(String s) {
+                                        System.out.println("what: " + Thread.currentThread());
+                                        return null;
+                                    }
+                                });
                     }
                 })
                 .subscribe();
+        ArrayList<String> list = new ArrayList<>();
+        Observable.from(list)
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        System.out.println(s);
+                        return s;
+                    }
+                })
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        System.out.println("");
+                    }
+                });
         RxBus.getCacheInstance().post("googd");
         RxBus.getCacheInstance().post("googd");
         Thread.sleep(200);

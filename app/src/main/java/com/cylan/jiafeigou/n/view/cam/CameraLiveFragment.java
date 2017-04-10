@@ -79,6 +79,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -898,8 +899,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     @Override
+    public void onHistoryDateListUpdate(ArrayList<Long> dateList) {
+
+    }
+
+    @Override
     public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right){
+        if (id == R.id.tv_dialog_btn_right) {
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
             bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp) value);

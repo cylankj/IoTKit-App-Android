@@ -253,6 +253,10 @@ public class TimeUtils {
         return getSimpleDateFormatYYYYHHMM.get().format(new Date(time));
     }
 
+    public static String getDay(long time) {
+        return getSimpleDateFormatYYYYHHMM.get().format(new Date(time));
+    }
+
     public static String getMonthInYear(long time) {
         SimpleDateFormat format = (SimpleDateFormat) SimpleDateFormat.getDateTimeInstance(SimpleDateFormat.FULL, SimpleDateFormat.FULL);
         format.applyPattern("MMMM");

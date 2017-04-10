@@ -567,7 +567,7 @@ public class CamLiveController implements
             });
         }
         datePickerRef.get().setTimeFocus(getWheelCurrentFocusTime());
-        datePickerRef.get().setDateMap(presenterRef.get().getFlattenDateMap());
+        datePickerRef.get().setDateList(presenterRef.get().getFlattenDateList());
         datePickerRef.get().show(activityWeakReference.get().getSupportFragmentManager(),
                 "DatePickerDialogFragment");
     }
@@ -592,13 +592,12 @@ public class CamLiveController implements
         if (visibility == View.GONE) {
             camLiveControlLayer.getLandDateContainer().setVisibility(View.INVISIBLE);
         }
-        if (presenterRef == null || presenterRef.get() == null || presenterRef.get().getFlattenDateMap() == null ||
-                presenterRef.get().getFlattenDateMap().isEmpty()) return;
+        if (presenterRef == null || presenterRef.get() == null || presenterRef.get().getFlattenDateList() == null ||
+                presenterRef.get().getFlattenDateList().isEmpty()) return;
         if (adapter == null)
             adapter = new CamLandHistoryDateAdapter(context, null, R.layout.layout_cam_history_land_list);
         adapter.clear();
-        Set<Long> set = presenterRef.get().getFlattenDateMap().keySet();
-        ArrayList<Long> dateStartList = new ArrayList<>(new HashSet<>(set));
+        ArrayList<Long> dateStartList = presenterRef.get().getFlattenDateList();
         Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
         Log.d(TAG, "sort: " + dateStartList);
         adapter.addAll(dateStartList);
