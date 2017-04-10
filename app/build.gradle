@@ -28,6 +28,12 @@ def boolean hasSignKey() {
     return false
 }
 
+task findBugs(type: Exec, dependsOn: preBuild) {
+    println 'FindBugs 正在执行代码分析'
+    commandLine 'java', '-jar', './libs/findbugs.jar'
+    println execResult
+}
+
 android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8

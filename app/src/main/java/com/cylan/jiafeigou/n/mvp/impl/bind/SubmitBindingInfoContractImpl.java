@@ -84,7 +84,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 device.setValue(201, new DpMsgDefine.DPNet());//先清空
             }
         }
-        if (System.currentTimeMillis() - startTick > 120 * 1000) {
+        if (System.currentTimeMillis() - startTick > 60 * 1000) {
             //timeout
             mView.bindState(this.bindResult = BIND_TIME_OUT);
             return;
@@ -155,7 +155,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 })
                 .filter(net -> net != null && net.net > 0)
                 .first()
-                .timeout(120 * 1000L - (System.currentTimeMillis() - startTick), TimeUnit.MILLISECONDS)
+                .timeout(Math.min(60 * 1000L - (System.currentTimeMillis() - startTick), 60 * 1000L), TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(net -> {
                     AppLogger.d("当前网络状态为:" + DpMsgDefine.DPNet.getNormalString(net));

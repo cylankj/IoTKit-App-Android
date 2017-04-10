@@ -9,8 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Rect;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.os.Bundle;
-import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
@@ -110,20 +109,10 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        try {//清空未读消息数目
-            DataSourceManager.getInstance().clearValue(mUUID, 1004, 1005);
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     protected void onStart() {
         super.onStart();
         registerNetWorkObserver();
-        mLastEnterTime = PreferencesUtils.getLong("BELL_HOME_LAST_ENTER_TIME");
+        mLastEnterTime = PreferencesUtils.getLong(JConstant.BELL_HOME_LAST_ENTER_TIME);
         if (!mHasLoadInitFinished) {
             startLoadData(false, 0);
         }
@@ -412,9 +401,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                         circularBitmapDrawable.setCircular(true);
                         if (imageView instanceof ImageViewTip) {
                             //顺便实现了红点。
-//                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, item.answerState == 0 && item.timeInLong > mLastEnterTime);
-                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, true);
-
+                            ((ImageViewTip) imageView).setImageDrawable(circularBitmapDrawable, item.answerState == 0 && item.timeInLong > mLastEnterTime);
                         }
                     }
                 });
@@ -470,7 +457,9 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
             startActivity(intent);
         }
+
     }
+
 
     @Override
     public void onItemLongClick(View itemView, int viewType, int position) {
@@ -496,7 +485,11 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         if (count == 0) {
             mPresenter.onStart();
         } else {
-            getSupportFragmentManager().getFragments().get(0).onStart();
+            for (Fragment fragment : getSupportFragmentManager().getFragments()) {
+                if (fragment instanceof BellSettingFragment) {
+                    fragment.onStart();
+                }
+            }
         }
     }
 

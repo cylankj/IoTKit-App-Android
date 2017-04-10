@@ -14,6 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -43,6 +44,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -50,6 +52,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -90,7 +93,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     private boolean isCollect = false;
     private long collectVersion = -1;
-
+    private boolean canCollect = true;
     private CompositeSubscription compositeSubscription;
 
 
@@ -132,6 +135,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     @Override
                     public boolean onException(Exception e, JFGGlideURL model, Target<GlideDrawable> target, boolean isFirstResource) {
                         ToastUtil.showNegativeToast("图片加载失败");
+                        canCollect = false;
                         return false;
                     }
 
@@ -203,17 +207,23 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_collection)
     public void collection() {
+        if (!canCollect) return;
         mCollect.setEnabled(false);
-        if (isCollect) {
-            mCollect.setImageResource(R.drawable.icon_collection);
-        } else {
-            mCollect.setImageResource(R.drawable.icon_collected);
-        }
-        if (!isCollect) {//未收藏
-            collect();
-        } else if (collectVersion != -1) {
-            unCollect(collectVersion);
-        }
+        check()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    if (isCollect) {
+                        mCollect.setImageResource(R.drawable.icon_collection);
+                    } else {
+                        mCollect.setImageResource(R.drawable.icon_collected);
+                    }
+                    if (!isCollect) {//未收藏
+                        collect();
+                    } else if (collectVersion != -1) {
+                        unCollect(collectVersion);
+                    }
+                });
+
     }
 
     private void collect() {
@@ -225,12 +235,24 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             item.fileName = mCallRecord.timeInLong / 1000 + ".jpg";
             item.time = (int) (mCallRecord.timeInLong / 1000);
+            FutureTarget<File> future = Glide.with(ContextUtils.getContext())
+                    .load(new JFGGlideURL(mUUID, item.fileName))
+                    .downloadOnly(100, 100);
+            String path = null;
+            try {
+                path = future.get().getAbsolutePath();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
             IDPEntity entity = new DPEntity()
                     .setUuid(mUUID)
                     .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                     .setVersion(System.currentTimeMillis())
                     .setAccount(DataSourceManager.getInstance().getAJFGAccount().getAccount())
                     .setAction(DBAction.SHARED)
+                    .setOption(new DBOption.SingleSharedOption(1, 1, path))
                     .setBytes(item.toBytes());
             subscriber.onNext(entity);
             subscriber.onCompleted();
@@ -242,6 +264,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     if (result.getResultCode() == 0) {
                         ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
                         mCollect.setImageResource(R.drawable.icon_collected);
+                        isCollect = true;
                     }
                     mCollect.setEnabled(true);
                 }, e -> {
@@ -249,6 +272,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     if (e instanceof BaseDPTaskException) {
                         int code = ((BaseDPTaskException) e).getErrorCode();
                         if (code == 1050) {
+
                             alertOver50();
                         }
                     }
@@ -277,6 +301,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     if (result.getResultCode() == 0) {//成功了
                         AppLogger.d("取消收藏成功");
                         mCollect.setImageResource(R.drawable.icon_collection);
+                        isCollect = false;
                     }
                     mCollect.setEnabled(true);
                 }, e -> {

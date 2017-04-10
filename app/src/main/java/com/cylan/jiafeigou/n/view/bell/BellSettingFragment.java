@@ -108,14 +108,21 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
             case R.id.tv_setting_clear_:
                 ViewUtils.deBounceClick(view);
+                int cnet = NetUtils.getJfgNetType(getActivity());
+                if (cnet == 0) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
                 if (mClearRecordFragment == null) {
                     Bundle bundle = new Bundle();
                     bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap1_Tipsforclearrecents));
+                    bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
+                    bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.DELETE));
                     mClearRecordFragment = SimpleDialogFragment.newInstance(bundle);
                 }
                 mClearRecordFragment.setAction((id, value) -> {
                     switch (id) {
-                        case R.id.tv_dialog_btn_left:
+                        case R.id.tv_dialog_btn_right:
                             mPresenter.clearBellRecord(mUUID);
                             LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                     }

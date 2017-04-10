@@ -23,7 +23,7 @@ import com.cylan.jiafeigou.R;
 public class FlipImageView extends ImageView implements View.OnClickListener,
         Animation.AnimationListener {
 
-    private static final int FLAG_ROTATION_X = 1 << 0;
+    private static final int FLAG_ROTATION_X = 1;
 
     private static final int FLAG_ROTATION_Y = 1 << 1;
 

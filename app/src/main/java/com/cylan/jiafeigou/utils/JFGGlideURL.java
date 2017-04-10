@@ -6,7 +6,6 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
@@ -50,16 +49,12 @@ public class JFGGlideURL extends GlideUrl {
     @Override
     public URL toURL() throws MalformedURLException {
         try {
-            String url;
-            if (V2) {
-                url = String.format(Locale.getDefault(), "/%s/%s", cid, timestamp);
-            } else {
-                url = String.format(Locale.getDefault(), "/cid/%s/%s/%s", vid, cid, timestamp);
-            }
-            String furl = JfgCmdInsurance.getCmd().getSignedCloudUrl(this.regionType, url);
-            if (TextUtils.isEmpty(furl))
-                AppLogger.d("empty: " + url + " regionType:" + regionType);
-            return new URL(furl);
+            String urlV2 = String.format(Locale.getDefault(), "/%s/%s", cid, timestamp);
+            String urlV3 = String.format(Locale.getDefault(), "/cid/%s/%s/%s", vid, cid, timestamp);
+            urlV2 = JfgCmdInsurance.getCmd().getSignedCloudUrl(this.regionType, urlV2);
+            urlV3 = JfgCmdInsurance.getCmd().getSignedCloudUrl(this.regionType, urlV3);
+            AppLogger.d("图片 URLV2:" + urlV2 + ",图片 URLV3:" + urlV3);
+            return new URL(V2 ? urlV2 : urlV3);
         } catch (Exception e) {
             AppLogger.e(String.format("err:%s", e.getLocalizedMessage()));
             return new URL("");

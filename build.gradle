@@ -35,6 +35,10 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+
+
+
+
 ext {
     //update by hunt 2016-07-27 ordered by lzp
     minSdkVersion = 19

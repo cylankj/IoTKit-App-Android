@@ -82,7 +82,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
                 break;
             }
             case R.id.v_to_bind_camera: {
-
                 ViewUtils.deBounceClick(view);
                 Intent intent = new Intent(this, BindCamActivity.class);
                 startActivity(intent);

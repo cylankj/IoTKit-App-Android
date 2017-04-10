@@ -522,9 +522,11 @@ public class RxEvent {
     }
 
     public static final class BellPreviewEvent {
+        public long time;
+        public String cid;
         public String url;
 
-        public BellPreviewEvent(String url) {
+        public BellPreviewEvent(String url, long time, String cid) {
             this.url = url;
         }
     }

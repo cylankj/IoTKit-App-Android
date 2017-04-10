@@ -27,11 +27,21 @@ public class GlobalBellCallSource {
     private static GlobalBellCallSource sInstance;
     private CompositeSubscription mSubscription;
 
+    private RxEvent.BellPreviewEvent previewEvent;
+
     public static GlobalBellCallSource getInstance() {
         if (sInstance == null) {
             sInstance = new GlobalBellCallSource();
         }
         return sInstance;
+    }
+
+    public RxEvent.BellPreviewEvent getPreviewEvent() {
+        return previewEvent;
+    }
+
+    public void clearPreviewEvent() {
+        previewEvent = null;
     }
 
     public void register() {
@@ -55,20 +65,20 @@ public class GlobalBellCallSource {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, bellCallEvent.caller.cid);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
+        intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, bellCallEvent.caller.time);
+        ContextUtils.getContext().startActivity(intent);
         if (!bellCallEvent.isFromLocal) {
             String url = null;
             try {
                 AppLogger.d("门铃呼叫 CID:" + bellCallEvent.caller.cid + ",门铃呼叫时间:" + bellCallEvent.caller.time);
                 url = new JFGGlideURL(bellCallEvent.caller.cid, bellCallEvent.caller.time + ".jpg").toURL().toString();
                 AppLogger.d("门铃截图地址:" + url);
-                RxBus.getCacheInstance().post(new RxEvent.BellPreviewEvent(url));
+                previewEvent = new RxEvent.BellPreviewEvent(url, bellCallEvent.caller.time, bellCallEvent.caller.cid);
             } catch (MalformedURLException e) {
                 e.printStackTrace();
                 AppLogger.d("获取门铃截图地址失败");
             }
         }
-        intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, bellCallEvent.caller.time);
-        ContextUtils.getContext().startActivity(intent);
     }
 
     public void unRegister() {
