@@ -11,6 +11,8 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.Locale;
@@ -61,10 +63,7 @@ public class WebsiteFragement extends Fragment {
     private void enterWeb() {
         wvWebsite.setVisibility(View.VISIBLE);
         String agreementUrl;
-        Locale locale = getContext().getResources().getConfiguration().locale;
-        final String c = locale.toString();
-
-        if (c.contains("zh")) {
+        if (LocaleUtils.getLanguageType(getActivity()) == JConstant.LOCALE_SIMPLE_CN) {
             agreementUrl = "http://www.jfgou.com/";
         } else {
             agreementUrl = "http://www.cleverdog.com.cn/";

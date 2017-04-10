@@ -13,6 +13,9 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.util.concurrent.TimeUnit;
+
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
@@ -27,6 +30,7 @@ import rx.subscriptions.CompositeSubscription;
 public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSetNewPwdContract.View> implements MineInfoSetNewPwdContract.Presenter {
 
     private CompositeSubscription subscription;
+    private boolean isOverTime;
 
     public MineInfoSetNewPwdPresenterImp(MineInfoSetNewPwdContract.View view) {
         super(view);
@@ -78,6 +82,24 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
     }
 
     @Override
+    public Subscription timeOverCount() {
+        return Observable.just(null)
+                .delay(5, TimeUnit.MINUTES)
+                .subscribeOn(Schedulers.newThread())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(o->{
+                    isOverTime = true;
+                },throwable -> {
+                    AppLogger.e("timeOverCount_erro"+throwable.getLocalizedMessage());
+                });
+    }
+
+    @Override
+    public boolean checkIsOverTime() {
+        return isOverTime;
+    }
+
+    @Override
     public void start() {
         super.start();
         if (subscription != null && !subscription.isUnsubscribed()){
@@ -85,6 +107,7 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
         }else {
             subscription = new CompositeSubscription();
             subscription.add(registerBack());
+            subscription.add(timeOverCount());
         }
     }
 

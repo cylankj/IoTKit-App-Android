@@ -144,7 +144,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")
                 .addToBackStack("mineHelpFragment")
-                .commit();
+                .commitAllowingStateLoss();
     }
 
     private void jump2ScanAddFragment() {

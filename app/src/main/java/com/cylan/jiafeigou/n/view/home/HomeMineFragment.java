@@ -98,8 +98,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void onStart() {
-//        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
-        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+//        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             //访客状态
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
             basePresenter.portraitBlur(bm);

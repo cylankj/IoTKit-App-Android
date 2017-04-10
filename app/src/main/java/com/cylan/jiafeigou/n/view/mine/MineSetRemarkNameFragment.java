@@ -181,7 +181,6 @@ public class MineSetRemarkNameFragment extends Fragment implements MineSetRemark
 
     /**
      * 网络状态变化
-     *
      * @param state
      */
     @Override

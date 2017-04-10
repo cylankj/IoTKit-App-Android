@@ -599,7 +599,7 @@ public class BaseDBHelper implements IDBHelper {
         return builder;
     }
 
-    private QueryBuilder<DPEntity> buildDPMsgQueryBuilder(String account,
+    public QueryBuilder<DPEntity> buildDPMsgQueryBuilder(String account,
                                                           String server,
                                                           String uuid,
                                                           Long version,

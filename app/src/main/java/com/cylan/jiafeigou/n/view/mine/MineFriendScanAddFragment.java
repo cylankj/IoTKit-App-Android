@@ -197,24 +197,28 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
     @Override
     public void handleResult(final Result rawResult) {
         String account = DataSourceManager.getInstance().getJFGAccount().getAccount();
-        if (rawResult.getText().equals(account)) {
-            ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
-        } else {
-            if (NetUtils.getNetType(getContext()) == 0) {
-                ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
-                return;
-            }
+
+        if (NetUtils.getNetType(getContext()) == 0) {
+            ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+            return;
+        }
 //            showLoadingPro();
 
-            if (getView() != null) {
-                if (presenter != null) {
-                    String[] split = rawResult.getText().split("=");
-                    if (split.length == 2)
-                        if (JConstant.PHONE_REG.matcher(split[1]).find() || JConstant.EMAIL_REG.matcher(split[1]).find()){
-                            presenter.checkScanAccount(split[1]);
+        if (getView() != null) {
+            if (presenter != null) {
+                String[] split = rawResult.getText().split("=");
+                if (split.length == 2){
+                    if (JConstant.PHONE_REG.matcher(split[1]).find() || JConstant.EMAIL_REG.matcher(split[1]).find()){
+                        if (split[1].equals(account)){
+                            ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
                         }else {
-                            scanNoResult();
+                            presenter.checkScanAccount(split[1]);
                         }
+                    }else {
+                        scanNoResult();
+                    }
+                }else {
+                    scanNoResult();
                 }
             }
         }

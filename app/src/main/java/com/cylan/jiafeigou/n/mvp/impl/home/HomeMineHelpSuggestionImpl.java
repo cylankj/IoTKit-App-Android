@@ -242,7 +242,8 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-//                    JfgCmdInsurance.getCmd().getFeedbackList();
+                        int req = JfgCmdInsurance.getCmd().getFeedbackList();
+                        AppLogger.d("getSystemAutoReply:"+req);
                     }
                 }, throwable -> {
                     AppLogger.e("getSystemAutoReply" + throwable.getLocalizedMessage());
@@ -264,6 +265,8 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                         if (getFeedBackRsp != null) {
                             if (getView() != null && getFeedBackRsp.arrayList.size() != 0) {
                                 JFGFeedbackInfo jfgFeedbackInfo = getFeedBackRsp.arrayList.get(0);
+                                AppLogger.d("getSystemAuto:"+jfgFeedbackInfo.time);
+                                AppLogger.d("getSystemAuto2:"+System.currentTimeMillis());
                                 getView().addSystemAutoReply(jfgFeedbackInfo.time, jfgFeedbackInfo.msg);
                             }
                         }
@@ -380,7 +383,14 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     public class SortComparator implements Comparator<MineHelpSuggestionBean> {
         @Override
         public int compare(MineHelpSuggestionBean lhs, MineHelpSuggestionBean rhs) {
-            return (int) (Long.parseLong(lhs.getDate()) - Long.parseLong(rhs.getDate()));
+            long oldTime = Long.parseLong(rhs.getDate());
+            long newTime = Long.parseLong(lhs.getDate());
+            if (oldTime == newTime)
+                return 0;
+            if (oldTime > newTime)
+                return -1;
+            return 1;
+
         }
     }
 

@@ -163,7 +163,9 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                             //清空SD卡提示
                             if (isClearFin) {
                                 getView().clearSdResult(0);
-                                getView().initSdUseDetail((DpMsgDefine.DPSdStatus) o);
+                                DpMsgDefine.DPSdStatus sdStatus = (DpMsgDefine.DPSdStatus) o;
+                                sdStatus.used = 0L;
+                                getView().initSdUseDetail(sdStatus);
                                 isClearFin = false;
                             }
 
