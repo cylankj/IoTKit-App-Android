@@ -69,13 +69,15 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else holder.setVisibility(R.id.img_device_state_2, GONE);
+        } else {
+            holder.setVisibility(R.id.img_device_state_2, GONE);
         }
         //3 延时摄影
 
         //4 安全防护
         DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
         boolean safe = device.$(501, false);
-        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid)&&!TextUtils.isEmpty(device.shareAccount)) {
+        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid) && !TextUtils.isEmpty(device.shareAccount)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {
@@ -123,7 +125,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         else holder.setVisibility(R.id.tv_device_share_tag, GONE);
         //图标
         holder.setImageResource(R.id.img_device_icon, iconRes);
-        if (TextUtils.isEmpty(shareAccount))//被分享用户,不显示 消息数
+        if (TextUtils.isEmpty(shareAccount) || JFGRules.isBell(device.pid))//被分享用户,不显示 消息数
             handleMsgCountTime(holder, uuid, device);
         //右下角状态
         setItemState(holder, uuid, net, device);

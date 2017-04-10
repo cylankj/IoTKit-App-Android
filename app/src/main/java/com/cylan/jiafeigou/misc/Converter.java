@@ -19,7 +19,6 @@ public class Converter {
             return beanArrayList;
         for (DataPoint base : baseValueList) {
             CamMessageBean bean = new CamMessageBean();
-            bean.time = base.version;
             bean.id = base.msgId;
             bean.version = base.version;
             if (base.msgId == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {

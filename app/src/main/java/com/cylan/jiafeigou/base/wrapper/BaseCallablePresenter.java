@@ -134,6 +134,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 )
                 .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class).first()
                         .observeOn(AndroidSchedulers.mainThread())
+                        .filter(ret -> ret != null)
                         .map(notify -> {
                             if (notify.success) {
                                 AppLogger.d("正在显示门铃截图");

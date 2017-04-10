@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Environment;
 import android.text.TextUtils;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.support.download.core.chunkWorker.Moderator;
 import com.cylan.jiafeigou.support.download.core.enums.QueueSort;
 import com.cylan.jiafeigou.support.download.core.enums.TaskStates;
@@ -72,16 +73,16 @@ public class DownloadManagerPro {
         initDataBase();
     }
 
-    public int initTask(TaskBuilder taskBuilder) {
+    public int initTask(TaskBuilder taskBuilder) throws JfgException {
         this.taskBuilder = taskBuilder;
         if (config == null)
-            throw new IllegalStateException("config is null,you may be forget to initialize");
+            throw new JfgException("config is null,you may be forget to initialize");
         if (taskBuilder == null || config.context == null)
-            throw new NullPointerException("taskBuilder==null or context==null");
+            throw new JfgException("taskBuilder==null or context==null");
         if (TextUtils.isEmpty(taskBuilder.url))
-            throw new NullPointerException("url==null");
+            throw new JfgException("url==null");
         if (TextUtils.isEmpty(taskBuilder.saveName))
-            throw new NullPointerException("saveName==null");
+            throw new JfgException("saveName==null");
         setMaxChunk(taskBuilder.maxChunks);
         initFolder();
         return initTask();
@@ -180,6 +181,19 @@ public class DownloadManagerPro {
         public TaskBuilder setUrl(String url) {
             this.url = url;
             return this;
+        }
+
+        @Override
+        public String toString() {
+            return "TaskBuilder{" +
+                    "maxChunks=" + maxChunks +
+                    ", overwrite=" + overwrite +
+                    ", priority=" + priority +
+                    ", allowNetType=" + allowNetType +
+                    ", url='" + url + '\'' +
+                    ", saveName='" + saveName + '\'' +
+                    ", sdCardFolderAddress='" + sdCardFolderAddress + '\'' +
+                    '}';
         }
     }
 

@@ -31,10 +31,13 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.SettingItemView0;
+import com.cylan.jiafeigou.widget.dialog.BaseDialog;
+import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 
+import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 import static com.cylan.jiafeigou.utils.ActivityUtils.loadFragment;
 
@@ -54,8 +57,8 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     @BindView(R.id.ll_bell_net_work_container)
     LinearLayout mNetWorkContainer;
 
-    //    private SimpleDialogFragment mClearRecordFragment;
-    private AlertDialog mClearRecordDialog;
+    private SimpleDialogFragment mClearRecordFragment;
+//    private AlertDialog mClearRecordDialog;
 
     public static BellSettingFragment newInstance(String uuid) {
         BellSettingFragment fragment = new BellSettingFragment();

@@ -61,7 +61,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         CamMediaContract.View {
 
     public static final String KEY_BUNDLE = "key_bundle";
-    public static final String KEY_TIME = "key_time";
     public static final String KEY_INDEX = "key_index";
 
     @BindView(R.id.vp_container)

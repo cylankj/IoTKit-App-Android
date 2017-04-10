@@ -8,13 +8,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.net.Uri;
-import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
-import android.os.Parcelable;
 import android.os.RemoteException;
-import android.support.v4.app.Fragment;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -24,15 +20,12 @@ import com.cylan.jiafeigou.IRemoteServiceCallback;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.engine.DownloadService;
 import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
-import com.cylan.jiafeigou.n.view.misc.UpdateActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.io.File;
 
@@ -54,9 +47,10 @@ public class ClientUpdateManager {
     private UpdateFileBean updateFileBean;
     private String apkPath;
 
-    private ClientUpdateManager(){}
+    private ClientUpdateManager() {
+    }
 
-    public static ClientUpdateManager getInstance(){
+    public static ClientUpdateManager getInstance() {
         if (instance == null)
             synchronized (ClientUpdateManager.class) {
                 if (instance == null)
@@ -65,7 +59,7 @@ public class ClientUpdateManager {
         return instance;
     }
 
-    public void startDownload(Context context,String url,String newVersion,int upgrade){
+    public void startDownload(Context context, String url, String newVersion, int upgrade) {
         //启动下载服务 test
         updateFileBean = new UpdateFileBean();
         updateFileBean.url = url;
@@ -78,8 +72,8 @@ public class ClientUpdateManager {
             updateFileBean.savePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
         }
 
-        apkPath = "/mnt/sdcard/"+ updateFileBean.savePath+"/"+ updateFileBean.fileName+".apk";
-        if (checkLocal(apkPath)){
+        apkPath = "/mnt/sdcard/" + updateFileBean.savePath + "/" + updateFileBean.fileName + ".apk";
+        if (checkLocal(apkPath)) {
             //直接传送APK地址
             ToastUtil.showPositiveToast("已下载");
             RxBus.getCacheInstance().postSticky(new RxEvent.ClientUpgrade(apkPath));
@@ -87,7 +81,7 @@ public class ClientUpdateManager {
         }
 
         //仅wifi环境下升级
-        if (NetUtils.getNetType(ContextUtils.getContext()) == 1){
+        if (NetUtils.getNetType(ContextUtils.getContext()) == 1) {
             Intent intent = new Intent(context, DownloadService.class);
             intent.putExtra(DownloadService.KEY_PARCELABLE, updateFileBean);
             context.bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
@@ -166,13 +160,14 @@ public class ClientUpdateManager {
 
     /**
      * 检测本地是否已经下载了apk
+     *
      * @return
      */
-    public boolean checkLocal(String url){
+    public boolean checkLocal(String url) {
         File file = new File(url);
-        if (file.exists()){
+        if (file.exists()) {
             return true;
-        }else {
+        } else {
             return false;
         }
     }
@@ -213,9 +208,9 @@ public class ClientUpdateManager {
     }
 
 
-    public void realse(Context context){
+    public void realse(Context context) {
         try {
-            if (mService != null){
+            if (mService != null) {
                 mService.unregisterCallback(mCallback);
                 mService = null;
             }
