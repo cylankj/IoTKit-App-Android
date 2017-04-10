@@ -42,6 +42,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
+import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
 
 public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presenter>
         implements ConfigApContract.View, WiFiListDialogFragment.ClickCallBack {
@@ -169,9 +170,19 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         if (reBingDialog == null) {
             reBingDialog = new AlertDialog.Builder(this)
                     .setMessage(getString(R.string.Tap1_AddDevice_disconnected))
-                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                    .setPositiveButton(getString(R.string.OK), (dialog, which) -> {
+                        basePresenter.finish();
+                        if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
+                                getString(R.string.DOG_CAMERA_NAME))) {
+                            //is cam
+                            Intent intent = new Intent(this, BindCamActivity.class);
+                            startActivity(intent);
+                        } else {
+                            //default bell
+                            Intent intent = new Intent(this, BindBellActivity.class);
+                            startActivity(intent);
+                        }
                     })
-                    .setPositiveButton(getString(R.string.OK), null)
                     .create();
         }
         if (reBingDialog.isShowing()) return;
@@ -251,7 +262,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         } else {
             Intent intent = new Intent(this, SubmitBindingInfoActivity.class);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, o.uuid);
-            intent.putExtra(JConstant.KEY_BIND_DEVICE, getIntent().getStringExtra(JConstant.KEY_BIND_DEVICE));
+            intent.putExtra(KEY_BIND_DEVICE, getIntent().getStringExtra(KEY_BIND_DEVICE));
             startActivity(intent);
             if (basePresenter != null) {
                 basePresenter.finish();

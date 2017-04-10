@@ -108,6 +108,11 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
             case R.id.tv_setting_clear_:
                 ViewUtils.deBounceClick(view);
+                int cnet = NetUtils.getJfgNetType(getActivity());
+                if (cnet == 0) {
+                    ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
                 if (mClearRecordFragment == null) {
                     Bundle bundle = new Bundle();
                     bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap1_Tipsforclearrecents));

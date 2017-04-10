@@ -9,6 +9,7 @@ import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.engine.GlobalBellCallSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -71,8 +72,8 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                 .flatMap(who -> {
                                     switch (mView.onResolveViewLaunchType()) {
                                         case JConstant.VIEW_CALL_WAY_LISTEN:
-                                            RxBus.getCacheInstance().toObservable(RxEvent.BellPreviewEvent.class)
-                                                    .flatMap(pic -> loadPreview(pic.url)).subscribe();
+                                            Subscription subscription = loadPreview().subscribe();
+                                            registerSubscription(subscription);
                                             if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
                                                 mView.onNewCallWhenInLive(mHolderCaller.caller);
                                             } else if (mHolderCaller != null) {
@@ -120,13 +121,14 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         mIsInViewerMode = false;
     }
 
-    protected Observable loadPreview(String url) {
+    protected Observable loadPreview() {
         return Observable.interval(2, TimeUnit.SECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(s -> {
-                            AppLogger.d("正在加载截图:" + url);
-                            preload(url);
+                            RxEvent.BellPreviewEvent event = GlobalBellCallSource.getInstance().getPreviewEvent();
+                            AppLogger.d("正在加载截图:" + event);
+                            preload(GlobalBellCallSource.getInstance().getPreviewEvent().url);
                             return s;
                         }
                 )
@@ -134,8 +136,10 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(notify -> {
                             if (notify.success) {
-                                mView.onPreviewPicture(url);
+                                AppLogger.d("正在显示门铃截图");
+                                mView.onPreviewPicture(GlobalBellCallSource.getInstance().getPreviewEvent().url);
                             }
+                            GlobalBellCallSource.getInstance().clearPreviewEvent();
                             return notify;
                         })
 
@@ -143,7 +147,10 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     private void preload(String url) {
-        if (mView == null) return;
+        if (mView == null) {
+            AppLogger.d("View is Null");
+            return;
+        }
         Glide.with(mView.getActivityContext()).load(url)
                 .listener(new RequestListener<String, GlideDrawable>() {
                     @Override
@@ -153,6 +160,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
 
                     @Override
                     public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                        AppLogger.d("门铃截图加载成功");
                         RxBus.getCacheInstance().post(new Notify(true));
                         return false;
                     }
