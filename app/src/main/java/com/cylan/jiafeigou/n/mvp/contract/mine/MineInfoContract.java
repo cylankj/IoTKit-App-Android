@@ -19,13 +19,12 @@ public interface MineInfoContract {
 
         void jump2SetEmailFragment();                           //更改邮箱
 
+        void showSetPwd(boolean isVisiable);
+
     }
 
 
     interface Presenter extends BasePresenter {
-
-        void bindPersonEmail();                 //绑定邮箱
-
         /**
          * 退出登录
          */

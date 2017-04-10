@@ -256,12 +256,11 @@
         <service
             android:name=".n.engine.DownloadService"
             android:enabled="true"
-            android:exported="true"
-            />
+            android:exported="true" />
 
         <activity
             android:name=".n.view.misc.UpdateActivity"
-            android:theme="@style/dialog_activity_style"/>
+            android:theme="@style/dialog_activity_style" />
 
         <service
             android:name=".n.engine.CloudLiveService"
@@ -436,7 +435,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
-        <activity android:name=".n.bind.BindActivity"></activity>
         <activity
             android:name=".n.view.activity.ConfigWifiActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
@@ -444,7 +442,7 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".n.view.activity.BindBellActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
@@ -471,6 +469,14 @@
             android:windowSoftInputMode="adjustPan|stateHidden" />
         <activity
             android:name=".n.view.bind.SubmitBindingInfoActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:label="@string/title_activity_bind_cam"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".n.view.activity.ConfigWifiActivity_2"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:label="@string/title_activity_bind_cam"
             android:launchMode="singleTask"

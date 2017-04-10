@@ -251,7 +251,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             }
         });
         String _509 = device.$(509, "0");
-        videoView.config360(TextUtils.equals(_509, "1") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+        videoView.config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+        videoView.setMode(TextUtils.equals("0", _509) ? 0 : 1);
         videoView.detectOrientationChanged();
         vLive.setLiveView(videoView);
         if (SimpleCache.getInstance().getSimpleBitmapCache(basePresenter.getThumbnailKey()) == null) {
@@ -274,15 +275,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onStart() {
         super.onStart();
-        if (basePresenter != null) {
-            basePresenter.fetchHistoryDataList();
-            //非待机模式
-            onDeviceInfoChanged(-1);
 
-            //每天检测一次新固件
-            basePresenter.checkNewHardWare();
-        }
-        camLiveController.setPortSafeSetter(portFlipLayout);
     }
 
     @Override
@@ -311,17 +304,23 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onResume() {
         super.onResume();
+        if (basePresenter != null) {
+            basePresenter.fetchHistoryDataList();
+            //非待机模式
+            onDeviceInfoChanged(-1);
+
+            //每天检测一次新固件
+            basePresenter.checkNewHardWare();
+        }
+        camLiveController.setPortSafeSetter(portFlipLayout);
         //更新
         camLiveController.notifyOrientationChange(getResources().getConfiguration().orientation);
         if (vLive != null && vLive.getVideoView() != null) {
             vLive.getVideoView().onResume();
             Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-            String dpPrimary = device.$(509, "0");
-            try {
-                vLive.getVideoView().setMode(Integer.parseInt(dpPrimary));
-            } catch (Exception e) {
-
-            }
+            String dpPrimary = device.$(509, "0");//0:俯视
+            vLive.getVideoView().setMode(TextUtils.equals(dpPrimary, "0") ? 0 : 1);
+            vLive.getVideoView().config360(TextUtils.equals(dpPrimary, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         }
     }
 
@@ -497,6 +496,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             }
 //            if(formatRsp)
             initSdcardFormatDialog();
+        }
+        if (msgId == 509) {
+            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+            String _509 = device.$(509, "0");
+            vLive.getVideoView().config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+            vLive.getVideoView().setMode(TextUtils.equals("0", _509) ? 0 : 1);
+            vLive.getVideoView().detectOrientationChanged();
         }
     }
 
@@ -690,6 +696,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (getView() != null)
             getView().setKeepScreenOn(false);
 //        vLive.onLiveStop();
+        if (vLive.isShowStandby()) {
+            AppLogger.d("stand by is reEnabled");
+            return;
+        }
         showFloatFlowView(false, null);
         initBottomBtn(false);
         camLiveController.setLiveTime(0);
@@ -709,11 +719,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
             case JError.ErrorVideoPeerNotExist:
-                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
+                camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR), getString(R.string.USER_HELP));
                 break;
             case JError.ErrorVideoPeerInConnect:
                 //正在直播...
-                ToastUtil.showToast(getString(R.string.CONNECTING));
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
                 break;
             case STOP_MAUNALLY:
@@ -877,8 +886,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             if (f == null) {
                 Bundle bundle = new Bundle();
                 bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap1_Device_UpgradeTips));
-                bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
-                bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+                bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
+                bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.OK));
                 bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
                 SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
                 dialogFragment.setValue(rsp);
@@ -890,11 +899,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onDialogAction(int id, Object value) {
-        Bundle bundle = new Bundle();
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp) value);
-        HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                hardwareUpdateFragment, android.R.id.content);
+        if (id == R.id.tv_dialog_btn_right){
+            Bundle bundle = new Bundle();
+            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+            bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp) value);
+            HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
+            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                    hardwareUpdateFragment, android.R.id.content);
+        }
     }
 }

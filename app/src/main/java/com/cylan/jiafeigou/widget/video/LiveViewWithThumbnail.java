@@ -88,6 +88,10 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
             tv.setOnClickListener(onClickListener);
     }
 
+    public boolean isShowStandby() {
+        return standByLayout.isShown();
+    }
+
     private boolean isNormalView() {
         return videoView != null && !(videoView instanceof PanoramicView360_Ext);
     }

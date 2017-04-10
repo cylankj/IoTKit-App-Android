@@ -22,7 +22,7 @@ public final class ContextUtils {
      *
      * @return Context
      */
-    public static Application getContext() {
+    public static Context getContext() {
         if (CONTEXT_INSTANCE == null) {
             synchronized (ContextUtils.class) {
                 if (CONTEXT_INSTANCE == null) {
@@ -41,6 +41,6 @@ public final class ContextUtils {
                 }
             }
         }
-        return CONTEXT_INSTANCE;
+        return CONTEXT_INSTANCE.getApplicationContext();
     }
 }

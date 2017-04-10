@@ -40,6 +40,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
+
 /**
  * Created by cylan-hunt on 16-7-27.
  */
@@ -196,12 +198,15 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     @Override
     public String getAutoRecordTitle(Context context) {
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        int deviceAutoVideoRecord = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
+        int deviceAutoVideoRecord = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
+        DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
+        if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0)
+            return "";
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
         }
-        DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
-        if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0)
+        int auto = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
+        if (auto < 0)
             return "";
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
     }

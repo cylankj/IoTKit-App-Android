@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.n.mvp.model.BeanWifiList;
 import com.cylan.jiafeigou.n.view.bind.SubmitBindingInfoActivity;
 import com.cylan.jiafeigou.n.view.bind.WiFiListDialogFragment;
 import com.cylan.jiafeigou.utils.BindUtils;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -40,6 +41,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_BIND_DEVICE;
@@ -74,6 +76,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         setContentView(R.layout.activity_config_wifi);
         ButterKnife.bind(this);
         basePresenter = new ConfigApPresenterImpl(this);
+        //默认隐藏
+        ViewUtils.showPwd(etWifiPwd, false);
     }
 
     @Override
@@ -83,8 +87,6 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             tvConfigApName.setText(cacheList.get(0).SSID);
             tvConfigApName.setTag(new BeanWifiList(cacheList.get(0)));
         }
-        //默认显示
-        ViewUtils.showPwd(etWifiPwd, true);
         customToolbar.setBackAction(v -> onBackPressed());
         cbWifiPwd.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
             ViewUtils.showPwd(etWifiPwd, isChecked);
@@ -117,6 +119,11 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                 && fragmentWeakReference.get().isResumed()) {
             fragmentWeakReference.get().dismiss();
         }
+    }
+
+    @OnTextChanged(R.id.et_wifi_pwd)
+    public void onPwdUpdate(CharSequence s, int start, int before, int count) {
+        ivWifiClearPwd.setVisibility(TextUtils.isEmpty(s) ? View.INVISIBLE : View.VISIBLE);
     }
 
     @OnClick({R.id.iv_wifi_clear_pwd, R.id.tv_wifi_pwd_submit, R.id.tv_config_ap_name})
@@ -193,6 +200,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
 
     @Override
     public void onBackPressed() {
+        IMEUtils.hide(this);
         if (backDialog != null && backDialog.isShowing()) return;
         if (backDialog == null) backDialog = new AlertDialog.Builder(this)
                 .setMessage(getString(R.string.Tap1_AddDevice_tips))
@@ -302,5 +310,10 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         tvConfigApName.setText(scanResult.SSID);
         rLayoutWifiPwdInputBox.setVisibility(BindUtils.getSecurity(scanResult) != 0
                 ? View.VISIBLE : View.GONE);
+    }
+
+    @OnClick(R.id.lLayout_config_ap)
+    public void onClick() {
+        IMEUtils.hide(this);
     }
 }

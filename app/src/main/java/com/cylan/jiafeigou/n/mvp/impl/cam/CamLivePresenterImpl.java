@@ -96,16 +96,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
      * @return
      */
     private Subscription videoDisconnectSub() {
-        return Observable.create(subscriber -> {
-            subscriber.onNext(null);
-            subscriber.onCompleted();
-            //只要JFGMsgVideoDisconn返回一次 满足条件的对象,videoDisconnectSub()这个链条就会被unsubscribe,
-            //即使后面,再有JFGMsgVideoDisconn对象,下面这个zipWith也不会被执行,所以不会有内存泄露
-        }).zipWith(RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
+        return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
                 .subscribeOn(Schedulers.newThread())
                 .filter((JFGMsgVideoDisconn jfgMsgVideoDisconn) -> {
-                    boolean notNull = getView() != null
-                            && TextUtils.equals(uuid, jfgMsgVideoDisconn.remote);
+                    boolean notNull = getView() != null;
                     if (!notNull) {
                         AppLogger.e("err: " + uuid + " remote:" + jfgMsgVideoDisconn.remote);
                     } else {
@@ -120,11 +114,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     reset();
                     AppLogger.d("reset subscription");
                     return true;
-                }), (Object o, JFGMsgVideoDisconn disconn) -> {
-            AppLogger.i("jfgMsgVideoDisconn finish:");
-            return null;
-        }).subscribe(o -> AppLogger.i("jfgMsgVideoDisconn finish:"),
-                (Throwable throwable) -> AppLogger.e("videoDisconnectSub:" + throwable.getLocalizedMessage()));
+                }).subscribe(ret -> {
+                }, throwable -> AppLogger.e("err: " + throwable));
     }
 
     @Override
@@ -227,7 +218,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 e.printStackTrace();
             }
             return null;
-        }).zipWith(getInterestingOne().timeout(10, TimeUnit.SECONDS, Observable.just("timeout")
+        }).zipWith(getInterestingOne().timeout(30, TimeUnit.SECONDS, Observable.just("timeout")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map(s -> {
                     AppLogger.e("play video :" + s);
@@ -263,7 +254,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoRtcp.class)
                 .filter((JFGMsgVideoRtcp rtcp) -> (getView() != null))
                 .onBackpressureBuffer()//防止MissingBackpressureException
-                .timeout(10, TimeUnit.SECONDS, Observable.just("no rtcp call back")
+                .timeout(30, TimeUnit.SECONDS, Observable.just("no rtcp call back")
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .map(s -> {
                             //暂停播放
@@ -369,7 +360,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 AppLogger.e("err:" + e.getLocalizedMessage());
             }
             return null;
-        }).zipWith(getInterestingOne().timeout(10, TimeUnit.SECONDS, Observable.just("timeout")
+        }).zipWith(getInterestingOne().timeout(30, TimeUnit.SECONDS, Observable.just("timeout")
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .map(s -> {
                     AppLogger.e("play history video :" + s);
@@ -417,7 +408,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnCompleted(() -> {
                     AppLogger.d("live stop: " + stopReason);
-                    getView().onLiveStop(playType, stopReason);
+                    if (getView() != null)
+                        getView().onLiveStop(playType, stopReason);
                 })
                 .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()))
                 .subscribe();
@@ -491,6 +483,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public void takeSnapShot(boolean forPreview) {
+        AppLogger.d("take shot start");
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map(o -> {
@@ -499,7 +492,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     JfgCmdInsurance.getCmd().screenshot(false, new CallBack<Bitmap>() {
                         @Override
                         public void onSucceed(Bitmap resource) {
-                            Log.d(TAG, "onSucceed take shot performance: " + (System.currentTimeMillis() - time) + " " + (resource == null));
+                            AppLogger.d("take shot step assemble by sdk");
                             SimpleCache.getInstance().addCache(getThumbnailKey(), resource);
                             _2saveBitmap(forPreview, resource);
                         }
@@ -527,13 +520,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     if (forPreview) {
                         filePath = getThumbnailKey();
                         BitmapUtils.saveBitmap2file(bitmap, filePath);
+                        AppLogger.d("take shot step save into disk for preview");
                         //因为同一个url,在glide上，不会更新bitmap，等待解决，用一个token来维持
                         PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
                         showPreviewThumbnail(bitmap);
                     } else {
                         snapshotResult(bitmap);
                         filePath = getThumbnailKey() + ".png";
-                        BitmapUtils.saveBitmap2file(bitmap, filePath);
+//                        BitmapUtils.saveBitmap2file(bitmap, filePath);
                     }
                     AppLogger.i("save take shot performance: " + (System.currentTimeMillis() - time));
                 }, throwable -> AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage()));
@@ -552,7 +546,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         Observable.just(bitmap)
                 .filter((Bitmap bit) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Bitmap b) -> getView().onTakeSnapShot(b),
+                .subscribe((Bitmap b) -> {
+                            AppLogger.d("take shot step show pop window");
+                            getView().onTakeSnapShot(b);
+                        },
                         throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
     }
 

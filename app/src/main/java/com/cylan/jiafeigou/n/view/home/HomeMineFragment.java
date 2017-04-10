@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.home;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -8,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +19,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
@@ -37,8 +34,6 @@ import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.photoselect.models.Image;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
@@ -270,8 +265,6 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .into(mySimpleTarget);
     }
 
-
-
     public static class MySimpleTarget extends SimpleTarget<Bitmap> {
         private final WeakReference<ImageView> image;
         private final WeakReference<HomeMineContract.Presenter> basePresenter;
@@ -473,7 +466,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right){
+        if (id == R.id.tv_dialog_btn_right) {
             jump2SetPhoneFragment();
         }
     }
@@ -494,10 +487,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
             childFragmentManager.setAccessible(true);
             childFragmentManager.set(this, null);
         } catch (NoSuchFieldException e) {
-            AppLogger.e("onDetach:"+e.getLocalizedMessage());
+            AppLogger.e("onDetach:" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         } catch (IllegalAccessException e) {
-            AppLogger.e("onDetach:"+e.getLocalizedMessage());
+            AppLogger.e("onDetach:" + e.getLocalizedMessage());
             throw new RuntimeException(e);
         }
     }

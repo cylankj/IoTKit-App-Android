@@ -269,10 +269,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                             })
                             .show();
                 } else {
-                    //设备离线
-                    Intent intent = new Intent(this, ConfigWifiActivity.class);
-                    intent.putExtra(JConstant.JUST_SEND_INFO, JConstant.JUST_SEND_INFO);
-                    intent.putExtra(JConstant.KEY_BIND_DEVICE, uuid);
+                    //相同ssid,判断为同一个网络环境.太水了.
+                    Intent intent = new Intent(this, ConfigWifiActivity_2.class);
+                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                     startActivity(intent);
                 }
             }
@@ -356,10 +355,11 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 List<DataPoint> list = new ArrayList<>();
                 dpStandby.msgId = 508;
                 list.add(dpStandby);
-                list.add(new DpMsgDefine.DPPrimary<>(standby.led, ID_209_LED_INDICATOR));
-                list.add(new DpMsgDefine.DPPrimary<>(standby.autoRecord, ID_303_DEVICE_AUTO_VIDEO_RECORD));
-                list.add(new DpMsgDefine.DPPrimary<>(standby.alarmEnable, ID_501_CAMERA_ALARM_FLAG));
+                list.add(new DpMsgDefine.DPPrimary<>(!isChecked && standby.led, ID_209_LED_INDICATOR));
+                list.add(new DpMsgDefine.DPPrimary<>(isChecked ? 0 : standby.autoRecord, ID_303_DEVICE_AUTO_VIDEO_RECORD));
+                list.add(new DpMsgDefine.DPPrimary<>(!isChecked && standby.alarmEnable, ID_501_CAMERA_ALARM_FLAG));
                 basePresenter.updateInfoReq(list);
+                ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             });
             switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
             /////////////////////////////led/////////////////////////////////////
@@ -375,6 +375,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     check.value = isChecked;
                     basePresenter.updateInfoReq(check, ID_209_LED_INDICATOR);
                     Log.d("check", "led changed: " + isChecked);
+                    ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                 });
             } else {
                 svSettingDeviceLedIndicator.setVisibility(View.GONE);
@@ -402,6 +403,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
                 check.value = isChecked;
                 basePresenter.updateInfoReq(check, DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY);
+                ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             });
         }
         /////////////////////////////////110v//////////////////////////////////
@@ -412,6 +414,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
                 check.value = isChecked;
                 basePresenter.updateInfoReq(check, DpMsgMap.ID_216_DEVICE_VOLTAGE);
+                ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             });
         } else sbtnSetting110v.setVisibility(View.GONE);
 
@@ -425,6 +428,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 DpMsgDefine.DPPrimary<Integer> check = new DpMsgDefine.DPPrimary<>();
                 check.value = isChecked ? 1 : 0;
                 basePresenter.updateInfoReq(check, DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE);
+                ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             });
         }
         /////////////////////////////////////////////////////////////////////
@@ -448,10 +452,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             sbtnSettingSight.setVisibility(View.VISIBLE);
             try {
                 String dpPrimary = device.$(509, "0");
-                sbtnSettingSight.setTvSubTitle(getString(Integer.parseInt(dpPrimary) == 0 ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+                sbtnSettingSight.setTvSubTitle(getString(TextUtils.equals(dpPrimary, "0") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
             } catch (Exception e) {
             }
-        }
+        } else sbtnSettingSight.setVisibility(View.GONE);
     }
 
     @Override
@@ -496,7 +500,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     private int autoRecordPreState() {
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        return device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, 0);
+        return device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
     }
 
     private void triggerStandby(DpMsgDefine.DPStandby dpStandby) {

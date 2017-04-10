@@ -117,7 +117,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
      */
     @Override
     public void jump2FriendDetailFragment(boolean isFrom, MineAddReqBean bean, boolean isFriend) {
-        if (isFriend) {
+        if (!isFriend) {
             Bundle bundle = new Bundle();
             bundle.putBoolean("isFrom", isFrom);
             bundle.putSerializable("addRequestItems", bean);

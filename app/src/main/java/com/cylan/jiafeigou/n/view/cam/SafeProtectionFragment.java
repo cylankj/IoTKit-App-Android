@@ -37,11 +37,17 @@ import com.cylan.jiafeigou.widget.dialog.TimePickDialogFragment;
 import com.kyleduo.switchbutton.SwitchButton;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Observable;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_503_CAMERA_ALARM_SENSITIVITY;
 import static com.cylan.jiafeigou.widget.dialog.BaseDialog.KEY_TITLE;
 
@@ -132,6 +138,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                     ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     return;//不插卡 不需要提示
                 }
+                //自动录像选择 侦测到异常时 需要弹框
+                int oldOption = aDevice.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
+                if (oldOption != 0) return;
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
                         .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
@@ -184,27 +193,36 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         super.onDetach();
         if (callBack != null)
             callBack.callBack(null);
+        if (subscription != null) subscription.unsubscribe();
     }
 
+    private Subscription subscription;
+
     private void updateDetails() {
-        if (isDetached()) return;
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-        //提示音
-        DpMsgDefine.DPNotificationInfo notificationInfo = device.$(504, new DpMsgDefine.DPNotificationInfo());
-        fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
-                ? R.string.MUTE : (notificationInfo.notification == 1
-                ? R.string.BARKING : R.string.ALARM)));
-        //灵敏度
-        int s = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 0);
-        fLayoutProtectionSensitivity.setTvSubTitle(s == 0 ? getString(R.string.SENSITIVI_LOW)
-                : (s == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
-        //报警周期
-        DpMsgDefine.DPAlarmInfo info = device.$(502, new DpMsgDefine.DPAlarmInfo());
-        fLayoutProtectionRepeatPeriod.setTvSubTitle(basePresenter.getRepeatMode(getContext()));
-        if (info != null) {
-            fLayoutProtectionStartTime.setTvSubTitle(MiscUtils.parse2Time(info.timeStart));
-            fLayoutProtectionEndTime.setTvSubTitle(MiscUtils.parse2Time(info.timeEnd));
-        }
+        subscription = Observable.just("update: ")
+                .subscribeOn(Schedulers.newThread())
+                .delay(500, TimeUnit.MILLISECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> !isDetached())
+                .subscribe(what -> {
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    //提示音
+                    DpMsgDefine.DPNotificationInfo notificationInfo = device.$(504, new DpMsgDefine.DPNotificationInfo());
+                    fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
+                            ? R.string.MUTE : (notificationInfo.notification == 1
+                            ? R.string.BARKING : R.string.ALARM)));
+                    //灵敏度
+                    int s = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 1);
+                    fLayoutProtectionSensitivity.setTvSubTitle(s == 0 ? getString(R.string.SENSITIVI_LOW)
+                            : (s == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
+                    //报警周期
+                    DpMsgDefine.DPAlarmInfo info = device.$(502, new DpMsgDefine.DPAlarmInfo());
+                    fLayoutProtectionRepeatPeriod.setTvSubTitle(basePresenter.getRepeatMode(getContext()));
+                    if (info != null) {
+                        fLayoutProtectionStartTime.setTvSubTitle(MiscUtils.parse2Time(info.timeStart));
+                        fLayoutProtectionEndTime.setTvSubTitle(MiscUtils.parse2Time(info.timeEnd));
+                    }
+                }, throwable -> AppLogger.d("err:" + throwable.getLocalizedMessage()));
     }
 
     @OnClick({
@@ -223,7 +241,8 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         DpMsgDefine.DPPrimary<Integer> wFlag = new DpMsgDefine.DPPrimary<>();
                         wFlag.value = level;
                         basePresenter.updateInfoReq(wFlag, ID_503_CAMERA_ALARM_SENSITIVITY);
-                        updateDetails();
+                        fLayoutProtectionSensitivity.setTvSubTitle(level == 0 ? getString(R.string.SENSITIVI_LOW)
+                                : (level == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
                     }
                 });
                 fragment.setArguments(getArguments());

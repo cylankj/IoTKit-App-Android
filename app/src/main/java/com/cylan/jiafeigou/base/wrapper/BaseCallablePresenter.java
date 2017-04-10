@@ -147,25 +147,21 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
     }
 
     private void preload(String url) {
-        if (mView == null) {
-            AppLogger.d("View is Null");
-            return;
-        }
-        Glide.with(mView.getActivityContext()).load(url)
-                .listener(new RequestListener<String, GlideDrawable>() {
-                    @Override
-                    public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                        return false;
-                    }
+        if (mView != null && mView.getAppContext() != null && url != null)
+            Glide.with(mView.getActivityContext()).load(url)
+                    .listener(new RequestListener<String, GlideDrawable>() {
+                        @Override
+                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                            return false;
+                        }
 
-                    @Override
-                    public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                        AppLogger.d("门铃截图加载成功");
-                        RxBus.getCacheInstance().post(new Notify(true));
-                        return false;
-                    }
-                })
-                .preload();
+                        @Override
+                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
+                            RxBus.getCacheInstance().post(new Notify(true));
+                            return false;
+                        }
+                    })
+                    .preload();
     }
 
     public static class Notify {

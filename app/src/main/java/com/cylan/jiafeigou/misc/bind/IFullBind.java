@@ -26,5 +26,6 @@ public interface IFullBind extends IBindUdpFlow {
 
     void clean();
 
+    Observable<Boolean> sendWifiInfo(String uuid, String mac, String ssid, String pwd, int type);
 
 }

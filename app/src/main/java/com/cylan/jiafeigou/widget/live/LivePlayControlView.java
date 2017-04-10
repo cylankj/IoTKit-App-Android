@@ -174,7 +174,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 if (action != null) action.clickText();
                 break;
             case R.id.tv_control_help:
-                if (action != null) action.clickText();
+                if (action != null) action.clickHelp();
                 break;
         }
     }

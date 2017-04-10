@@ -22,7 +22,7 @@ public class SettingItemView1 extends FrameLayout {
      * 主标题
      */
     TextView tvTitle;
-    SafeCheckBox switchButton;
+    SafeSwitchButton switchButton;
 
     public SettingItemView1(Context context) {
         this(context, null);
@@ -37,7 +37,7 @@ public class SettingItemView1 extends FrameLayout {
         TypedArray ta = context.obtainStyledAttributes(attrs, R.styleable.SettingItemViewStyle);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.layout_settings_item1, this, true);
         tvTitle = (TextView) view.findViewById(R.id.tv_settings_item_title);
-        switchButton = (SafeCheckBox) view.findViewById(R.id.btn_item_switch);
+        switchButton = (SafeSwitchButton) view.findViewById(R.id.btn_item_switch);
         switchButton.setVisibility(ta.getBoolean(R.styleable.SettingItemViewStyle_sv_switch_visibility, true)
                 ? VISIBLE : GONE);
         final String title = ta.getString(R.styleable.SettingItemViewStyle_sv_title);

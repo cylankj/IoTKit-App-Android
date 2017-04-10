@@ -239,6 +239,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
 
     @Override
     public void removeItems(ArrayList<CamMessageBean> beanList) {
+        if (ListUtils.isEmpty(beanList)) return;
         List<DPEntity> list = buildMultiEntities(beanList);
         Subscription subscription = BaseDPTaskDispatcher.getInstance().perform(list)
                 .subscribeOn(Schedulers.io())

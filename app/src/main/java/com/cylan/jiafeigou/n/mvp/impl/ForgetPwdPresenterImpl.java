@@ -116,12 +116,16 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     @Override
     public void start() {
-        compositeSubscription = new CompositeSubscription();
-        compositeSubscription.add(checkIsRegBack());
-        compositeSubscription.add(getForgetPwdByMailSub());
-        compositeSubscription.add(getSmsCodeResultSub());
-        compositeSubscription.add(checkSmsCodeBack());
-        compositeSubscription.add(resetPwdBack());
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+            compositeSubscription.unsubscribe();
+        }else {
+            compositeSubscription = new CompositeSubscription();
+            compositeSubscription.add(checkIsRegBack());
+            compositeSubscription.add(getForgetPwdByMailSub());
+            compositeSubscription.add(getSmsCodeResultSub());
+            compositeSubscription.add(checkSmsCodeBack());
+            compositeSubscription.add(resetPwdBack());
+        }
     }
 
     private Subscription getForgetPwdByMailSub() {
@@ -166,7 +170,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                 .subscribe(new Action1<RxEvent.ResultVerifyCode>() {
                     @Override
                     public void call(RxEvent.ResultVerifyCode resultVerifyCode) {
-                        if (resultVerifyCode != null && resultVerifyCode instanceof RxEvent.ResultVerifyCode) {
+                        if (resultVerifyCode != null) {
                             getView().checkSmsCodeResult(resultVerifyCode.code);
                         }
                     }
@@ -259,6 +263,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     @Override
     public void stop() {
-        unSubscribe(subscription, compositeSubscription);
+        unSubscribe(compositeSubscription);
+        unSubscribe(subscription);
     }
 }

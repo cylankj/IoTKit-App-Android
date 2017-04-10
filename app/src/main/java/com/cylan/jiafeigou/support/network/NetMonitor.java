@@ -4,10 +4,14 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 /**
  * Created by cylan-hunt on 17-2-23.
@@ -41,20 +45,22 @@ public class NetMonitor {
 
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (networkCallback != null) networkCallback.onNetworkChanged(context, intent);
+            AppLogger.d("networkCallbackList:" + networkCallbackList);
+            if (networkCallbackList != null) {
+                Iterator<String> iterator = networkCallbackList.keySet().iterator();
+                while (iterator.hasNext()) {
+                    networkCallbackList.get(iterator.next()).onNetworkChanged(context, intent);
+                }
+            }
         }
     }
 
-    private NetworkCallback networkCallback;
+    private Map<String, NetworkCallback> networkCallbackList = new HashMap<>();
 
     public interface NetworkCallback {
         void onNetworkChanged(Context context, Intent intent);
     }
 
-    /**
-     * 用来计数,以防忘记反注册
-     */
-    private int registerCount;
 
     public void registerNet(NetworkCallback callbacks, String[] actions) {
         if (actions != null && actions.length > 0) {
@@ -65,12 +71,8 @@ public class NetMonitor {
                 for (String action : actions)
                     intentFilter.addAction(action);
                 ContextUtils.getContext().registerReceiver(network, intentFilter);
-                networkCallback = callbacks;
-                registerCount++;
-                if (registerCount > 1) {
-                    if (BuildConfig.DEBUG)
-                        Log.e("NetMonitor", "you should be unregister the pre wifi broadcastReceiver");
-                }
+                networkCallbackList.remove(callbacks.getClass().getSimpleName());
+                networkCallbackList.put(callbacks.getClass().getSimpleName(), callbacks);
             } catch (Exception e) {
                 if (BuildConfig.DEBUG) {
                     throw new IllegalArgumentException("register wifi failed: " + e.getLocalizedMessage());
@@ -79,11 +81,12 @@ public class NetMonitor {
         }
     }
 
-    public void unregister() {
+    public void unregister(NetworkCallback callback) {
         try {
-            if (network != null) ContextUtils.getContext().unregisterReceiver(network);
-            registerCount = 0;
-            networkCallback = null;
+//            if (network != null) ContextUtils.getContext().unregisterReceiver(network);
+            if (networkCallbackList != null)
+                networkCallbackList.remove(callback.getClass().getSimpleName());
+            AppLogger.d("networkCallback remove:" + callback);
         } catch (Exception e) {
 
         }
