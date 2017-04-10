@@ -19,7 +19,6 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -46,7 +45,7 @@ import butterknife.OnTextChanged;
  */
 public class MineFriendAddFromContactFragment extends Fragment implements MineFriendAddFromContactContract.View, FriendAddFromContactAdapter.onContactItemClickListener {
 
-    @BindView(R.id.iv_home_mine_relativesandfriends_add_from_contact_back)
+    @BindView(R.id.iv_home_mine_friends_add_from_contact_back)
     ImageView ivHomeMineRelativesandfriendsAddFromContactBack;
     @BindView(R.id.et_add_phone_number)
     EditText etAddPhoneNumber;
@@ -108,10 +107,10 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
 
     }
 
-    @OnClick(R.id.iv_home_mine_relativesandfriends_add_from_contact_back)
+    @OnClick(R.id.iv_home_mine_friends_add_from_contact_back)
     public void onClick(View view) {
         switch (view.getId()) {
-            case R.id.iv_home_mine_relativesandfriends_add_from_contact_back:
+            case R.id.iv_home_mine_friends_add_from_contact_back:
                 getFragmentManager().popBackStack();
                 break;
         }

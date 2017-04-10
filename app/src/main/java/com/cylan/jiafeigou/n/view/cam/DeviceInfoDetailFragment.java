@@ -36,7 +36,6 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import java.io.IOException;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -85,12 +84,11 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @BindView(R.id.rl_hardware_update)
     SettingItemView0 rlHardwareUpdate;
 
-    //    @BindView(R.msgId.hardware_update_point)
-//    View hardwareUpdatePoint;
-//    @BindView(R.msgId.tv_new_software)
-//    TextView tvNewSoftware;
     @BindView(R.id.tv_device_cid)
     SettingItemView0 tvDeviceCid;
+    @BindView(R.id.tv_device_software_version)
+    SettingItemView0 tvDeviceSoftwareVersion;
+
     private String uuid;
     private EditFragmentDialog editDialogFragment;
     private RxEvent.CheckDevVersionRsp checkDevVersion;
@@ -130,6 +128,11 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         boolean showBattery = JFGRules.showBatteryItem(device != null ? device.pid : 0);
         //仅3G摄像头、FreeCam显示此栏
         tvDeviceBatteryLevel.setVisibility(showBattery ? View.VISIBLE : View.GONE);
+
+        //全景不显示固件升级 显示软件版本
+        boolean showSoftWare = JFGRules.isNeedPanoramicView(device != null ? device.pid : 0);
+        tvDeviceSoftwareVersion.setVisibility(showSoftWare ? View.VISIBLE : View.GONE);
+        rlHardwareUpdate.setVisibility(showSoftWare ? View.GONE : View.VISIBLE);
     }
 
     @Override
@@ -190,6 +193,8 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         int u = device.$(ID_210_UP_TIME, 0);
         tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(u));
         tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
+        String softWare = device.$(207,"");
+        tvDeviceSoftwareVersion.setTvSubTitle(softWare);
     }
 
     private String getMobileNet(boolean hasSimcard, DpMsgDefine.DPNet net) {

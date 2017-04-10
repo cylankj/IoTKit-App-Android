@@ -125,6 +125,13 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
                     ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
                     return;
                 }
+
+                if (presenter.checkIsOverTime()){
+                    ToastUtil.showNegativeToast(getString(R.string.Tips_Device_TimeoutRetry));
+                    // TODO 跳转到个人信息页
+                    return;
+                }
+
                 presenter.openLoginRegister(useraccount, getNewPwd(), token);
                 break;
             case R.id.iv_mine_new_pwd_clear:
@@ -201,7 +208,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     @Override
     public void onDialogAction(int id, Object value) {
         if (id == R.id.tv_dialog_btn_right){
-            getFragmentManager().popBackStackImmediate(HomeMineInfoFragment.class.getName(),FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getFragmentManager().popBackStack();
         }
     }
 }

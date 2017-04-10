@@ -45,7 +45,7 @@ public interface HomeMineMessageContract {
         /**
          * 加载消息数据
          */
-        void initMesgData();
+        void initMesgData(String account);
 
         /**
          * 获取到用户的信息拿到数据库操作对象
@@ -74,7 +74,7 @@ public interface HomeMineMessageContract {
         /**
          * Dp获取消息记录数据
          */
-        void getMesgDpData();
+        void getMesgDpData(String account);
 
         /**
          * Dp获取消息记录数据回调

@@ -608,6 +608,7 @@ public class BaseDBHelper implements IDBHelper {
                                                          DBAction action,
                                                          DBState state,
                                                          DBOption option) {
+
         QueryBuilder<DPEntity> builder = mEntityDao.queryBuilder();
 
         if (!TextUtils.isEmpty(account)) {

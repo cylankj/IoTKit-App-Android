@@ -36,6 +36,9 @@ public interface MineInfoSetNewPwdContract {
          */
         Subscription registerBack();
 
+        Subscription timeOverCount();
+
+        boolean checkIsOverTime();
 
     }
 }

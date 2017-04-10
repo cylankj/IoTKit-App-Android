@@ -130,8 +130,10 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
         if (code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
             getFragmentManager().popBackStack();
-        } else {
-            ToastUtil.showNegativeToast("请求发送失败");
+        } else if (code == JError.ErrorFriendToSelf){
+            ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
+        }else {
+            ToastUtil.showNegativeToast(getString(R.string.SUBMIT_FAIL));
         }
     }
 

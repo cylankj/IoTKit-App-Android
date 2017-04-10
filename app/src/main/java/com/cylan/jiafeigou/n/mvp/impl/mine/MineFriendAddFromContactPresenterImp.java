@@ -51,6 +51,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
     private CompositeSubscription compositeSubscription;
     private ArrayList<RelAndFriendBean> allContactBean = new ArrayList<RelAndFriendBean>();
     private Network network;
+    private boolean isCheckAcc;
 
     public MineFriendAddFromContactPresenterImp(MineFriendAddFromContactContract.View view) {
         super(view);
@@ -244,6 +245,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                     public void call(String s) {
                         try {
                             JfgCmdInsurance.getCmd().checkFriendAccount(account);
+                            isCheckAcc = true;
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -268,9 +270,10 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
                     @Override
                     public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null && checkAccountCallback instanceof RxEvent.CheckAccountCallback) {
+                        if (checkAccountCallback != null && isCheckAcc) {
                             getView().hideLoadingPro();
                             handlerCheckAccountResult(checkAccountCallback);
+                            isCheckAcc = false;
                         }
                     }
                 });

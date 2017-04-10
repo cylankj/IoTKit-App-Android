@@ -37,9 +37,9 @@ import rx.subscriptions.CompositeSubscription;
 public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFromContactContract.View> implements MineAddFromContactContract.Presenter {
 
     private String userAlids = "";
-
     private CompositeSubscription compositeSubscription;
     private Network network;
+    private boolean isSendReq;
 
     public MineAddFromContactPresenterImp(MineAddFromContactContract.View view) {
         super(view);
@@ -74,6 +74,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                     public void call(String s) {
                         try {
                             JfgCmdInsurance.getCmd().addFriend(account, mesg);
+                            isSendReq = true;
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -196,13 +197,13 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     public Subscription sendAddFriendRep() {
         return RxBus.getCacheInstance().toObservable(RxEvent.AddFriendBack.class)
                 .subscribeOn(Schedulers.newThread())
-                .delay(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.AddFriendBack>() {
                     @Override
                     public void call(RxEvent.AddFriendBack addFriendBack) {
-                        if (addFriendBack != null) {
+                        if (addFriendBack != null && isSendReq) {
                             getView().sendReqBack(addFriendBack.jfgResult.code);
+                            isSendReq = false;
                         }
                     }
                 });

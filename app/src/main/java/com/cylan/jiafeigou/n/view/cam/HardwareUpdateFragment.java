@@ -302,6 +302,10 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void initFileSize(String size) {
+        if (NetUtils.getNetType(getContext()) == -1){
+            tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), fileSize));
+            return;
+        }
         if (TextUtils.isEmpty(size)) return;
         fileSize = size;
         tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), size));

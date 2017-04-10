@@ -326,7 +326,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     public void onAccountUpdate(JFGAccount greetBean) {
         Log.d("JFGAccount", "JFGAccount: " + new Gson().toJson(greetBean));
         tvHeaderNickName.postDelayed(() -> {
-            tvHeaderNickName.setText(String.format("Hi,%s", getBeautifulAlias(greetBean)));
+            tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
                     : getString(R.string.Tap1_Index_NightGreetings));
             tvHeaderNickName.requestLayout();
@@ -341,9 +341,10 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
      * @return
      */
     private String getBeautifulAlias(JFGAccount account) {
+        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) return "";
         if (account == null) return "";
         String temp = TextUtils.isEmpty(account.getAlias()) ? account.getAccount() : account.getAlias();
-        return MiscUtils.getBeautifulString(temp, 8);
+        return ","+MiscUtils.getBeautifulString(temp, 8);
     }
 
     @SuppressWarnings("deprecation")
