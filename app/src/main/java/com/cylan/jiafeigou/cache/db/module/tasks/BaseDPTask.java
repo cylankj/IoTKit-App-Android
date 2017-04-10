@@ -33,7 +33,7 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     protected JFGSourceManager sourceManager;
     protected IPropertyParser propertyParser;
     protected static Gson parser = new Gson();
-    public static final long GLOBAL_NET_OPERATION_TIME_OUT = 10;
+    public static final long GLOBAL_NET_OPERATION_TIME_OUT = 30;
 
     @Override
     public <R extends IDPMultiTask<T>> R init(List<IDPEntity> cache) throws Exception {
