@@ -63,6 +63,7 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
+import permissions.dispatcher.PermissionUtils;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
@@ -246,6 +247,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         } else if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)) {
             isLanchFromBellCall = true;
         }
+
         onSpeaker(isLanchFromBellCall);
     }
 
@@ -404,7 +406,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         imgvBellLiveSpeaker.setEnabled(true);
         imgvBellLiveSwitchToLand.setEnabled(true);
         imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
-        if (!mPresenter.checkAudio(1)) {
+        if (!mPresenter.checkAudio(1) ) {
             mPresenter.switchMicrophone();
         }
         if (isLanchFromBellCall) {
@@ -505,13 +507,14 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
     void hasNoAudioPermission() {
-        //为删除dialog设置提示信息
         Bundle args = new Bundle();
         args.putString(BaseDialog.KEY_TITLE, "");
-        args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
-        args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.OK));
+        args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
         args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.permission_auth, "", getString(R.string.PERMISSION_AUDIO)));
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(args);
+        dialogFragment.setAction((id, value) -> {
+
+        });
         dialogFragment.show(getSupportFragmentManager(), "audio_permission");
     }
 
@@ -525,8 +528,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         //为删除dialog设置提示信息
         Bundle args = new Bundle();
         args.putString(BaseDialog.KEY_TITLE, "");
-        args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, "");
-        args.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.OK));
+        args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
         args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.permission_auth, "", getString(R.string.PERMISSION_STORAGE)));
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(args);
         dialogFragment.show(getSupportFragmentManager(), "storage_permission");
@@ -535,7 +537,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        BellLiveActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        try {
+            BellLiveActivityPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -620,9 +626,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onSpeaker(boolean on) {
-        if (mLandBellLiveSpeaker != null)
-            mLandBellLiveSpeaker.setImageResource(on ? R.drawable.doorbell_icon_landscape_talk : R.drawable.doorbell_icon_landscape_no_talk);
-        imgvBellLiveSpeaker.setImageResource(on ? R.drawable.icon_port_voice_on_selector : R.drawable.icon_port_voice_off_selector);
+        boolean hasSelfPermissions = PermissionUtils.hasSelfPermissions(this, Manifest.permission.RECORD_AUDIO);
+        if (mLandBellLiveSpeaker != null) {
+            mLandBellLiveSpeaker.setImageResource(on && hasSelfPermissions ? R.drawable.doorbell_icon_landscape_talk : R.drawable.doorbell_icon_landscape_no_talk);
+        }
+        imgvBellLiveSpeaker.setImageResource(on && hasSelfPermissions ? R.drawable.icon_port_voice_on_selector : R.drawable.icon_port_voice_off_selector);
     }
 
     @Override

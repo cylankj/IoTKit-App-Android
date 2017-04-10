@@ -41,6 +41,7 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                 .map(s -> alias)
                 .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
+                    if (s != null && s.trim().length() == 0) return s;//如果是空格则跳过,显示默认名称
                     try {
                         JfgCmdInsurance.getCmd().setAliasByCid(uuid, s);
                         AppLogger.i("setup alias: " + s);

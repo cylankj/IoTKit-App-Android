@@ -16,6 +16,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -26,6 +28,7 @@ import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
+import com.cylan.jiafeigou.utils.HandlerThreadUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -124,6 +127,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
 
     @NeedsPermission(Manifest.permission.CAMERA)
     public void onCameraPermission() {
+        customToolbar.setVisibility(View.VISIBLE);
         zxVScan.startCamera();
         zxVScan.setResultHandler(BindScanFragment.this);
     }
@@ -155,6 +159,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         ViewUtils.setViewMarginStatusBar(customToolbar);
+        customToolbar.setVisibility(View.GONE);
         customToolbar.setBackAction(v -> {
             if (getActivity() != null)
                 getActivity().getSupportFragmentManager().popBackStack();
@@ -215,19 +220,28 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         }
         zxVScan.stopCamera();
         try {
-            int iPid = Integer.parseInt(pid);
-            if (JFGRules.isCamera(iPid)) {
-                getActivity().getSupportFragmentManager().beginTransaction().remove(this)
-                        .commitAllowingStateLoss();
-                if (getActivity() != null)
-                    startActivity(new Intent(getActivity(), BindCamActivity.class));
-            } else if (JFGRules.isBell(iPid)) {
-                getActivity().getSupportFragmentManager().beginTransaction().remove(this)
-                        .commitAllowingStateLoss();
-                if (getActivity() != null)
-                    startActivity(new Intent(getActivity(), BindBellActivity.class));
+            Device device = DataSourceManager.getInstance().getJFGDevice(sn);
+            if (device != null) {
+                ToastUtil.showNegativeToast(getString(R.string.Tap1_AddedDeviceTips));
+                HandlerThreadUtils.postDelay(() -> {
+                    zxVScan.stop();
+                    getActivity().finish();
+                }, 2000);
+            } else {
+                int iPid = Integer.parseInt(pid);
+                if (JFGRules.isCamera(iPid)) {
+                    getActivity().getSupportFragmentManager().beginTransaction().remove(this)
+                            .commitAllowingStateLoss();
+                    if (getActivity() != null)
+                        startActivity(new Intent(getActivity(), BindCamActivity.class));
+                } else if (JFGRules.isBell(iPid)) {
+                    getActivity().getSupportFragmentManager().beginTransaction().remove(this)
+                            .commitAllowingStateLoss();
+                    if (getActivity() != null)
+                        startActivity(new Intent(getActivity(), BindBellActivity.class));
+                }
+                zxVScan.stop();
             }
-            zxVScan.stop();
         } catch (Exception e) {
 
         }

@@ -121,17 +121,18 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 .first()
                 .flatMap(s -> Observable.interval(0, 5, TimeUnit.SECONDS))
                 .map(s -> {
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
                     try {
                         String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
                         UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
-                        if (portrait != null) {
+                        if (portrait != null && device == null) {
                             getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
                             AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait));
                         }
                     } catch (Exception e) {
                         AppLogger.d("err: " + e.getLocalizedMessage());
                     }
-                    return DataSourceManager.getInstance().getJFGDevice(uuid);
+                    return device;
                 })
                 .filter(device -> device != null)
                 .first()

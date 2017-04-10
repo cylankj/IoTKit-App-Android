@@ -329,8 +329,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     protected void switchSpeakAndMicroPhone(boolean speaker, boolean microphone) {
-        getCmd().setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
         getCmd().setAudio(false, microphone, speaker);//开启设备的扬声器和麦克风
+        getCmd().setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
     }
 
 

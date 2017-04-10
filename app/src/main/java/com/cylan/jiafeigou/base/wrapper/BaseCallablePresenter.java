@@ -128,7 +128,9 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 .map(s -> {
                             RxEvent.BellPreviewEvent event = GlobalBellCallSource.getInstance().getPreviewEvent();
                             AppLogger.d("正在加载截图:" + event);
-                            preload(GlobalBellCallSource.getInstance().getPreviewEvent().url);
+                            if (event != null) {
+                                preload(event.url);
+                            }
                             return s;
                         }
                 )
@@ -137,7 +139,8 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         .map(notify -> {
                             if (notify.success) {
                                 AppLogger.d("正在显示门铃截图");
-                                mView.onPreviewPicture(GlobalBellCallSource.getInstance().getPreviewEvent().url);
+                                if (mView != null && GlobalBellCallSource.getInstance().getPreviewEvent() != null)
+                                    mView.onPreviewPicture(GlobalBellCallSource.getInstance().getPreviewEvent().url);
                             }
                             GlobalBellCallSource.getInstance().clearPreviewEvent();
                             return notify;

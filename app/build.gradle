@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
 
@@ -203,6 +204,7 @@ repositories {
     flatDir {
         dirs 'libs'
     }
+    mavenCentral()
 }
 
 greendao {
@@ -297,5 +299,6 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-gson:2.0.0'
     compile 'org.greenrobot:greendao:3.2.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 }
 

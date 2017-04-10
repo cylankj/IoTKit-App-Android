@@ -14,6 +14,7 @@ import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.misc.bind.AFullBind;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.view.activity.ConfigWifiActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -40,6 +41,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
     CustomToolbar customToolbar;
     @BindView(R.id.tv_guide_main_content)
     TextView tvGuideMainContent;
+    private AFullBind aFullBind;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

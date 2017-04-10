@@ -47,6 +47,7 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -207,7 +208,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
     @OnClick(R.id.act_bell_picture_opt_collection)
     public void collection() {
-        if (!canCollect) return;
+        if (!canCollect()) return;
         mCollect.setEnabled(false);
         check()
                 .observeOn(AndroidSchedulers.mainThread())
@@ -394,5 +395,9 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     } else isCollect = false;
                     return ret;
                 });
+    }
+
+    private boolean canCollect() {
+        return canCollect && NetUtils.isNetworkAvailable(this);
     }
 }

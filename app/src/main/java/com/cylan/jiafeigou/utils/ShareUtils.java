@@ -74,8 +74,7 @@ public class ShareUtils {
                         File file = new File(JConstant.MEDIA_DETAIL_PICTURE_DOWNLOAD_DIR, "Tweet.temp");
                         FileUtils.copyFile(resource, file);
                         TweetComposer.Builder builder = new TweetComposer.Builder(activity)
-                                .image(Uri.fromFile(file))
-                                .text("这是我通过 Tweet 分享的图片");
+                                .image(Uri.fromFile(file));
                         builder.show();
                     }
                 });
@@ -154,7 +153,6 @@ public class ShareUtils {
         shareContent.shareScene = WXSceneSession;
         shareContent.shareContent = WechatShare.WEIXIN_SHARE_CONTENT_VIDEO;
         shareContent.url = VideoURL;
-        shareContent.title = "This Is My Video To Share";
         Glide.with(activity)
                 .load(videoThumbURL)
                 .asBitmap()
@@ -195,8 +193,7 @@ public class ShareUtils {
                         }
                         TweetComposer.Builder builder = new TweetComposer.Builder(activity)
                                 .image(Uri.fromFile(file))
-                                .url(url)
-                                .text("这是我通过 Tweet 分享的图片");
+                                .url(url);
                         builder.show();
                     }
                 });
@@ -214,7 +211,6 @@ public class ShareUtils {
         ShareLinkContent content = new ShareLinkContent.Builder()
                 .setImageUrl(Uri.parse(videoThumbURL.toStringUrl()))
                 .setContentUrl(Uri.parse(videoURL))
-                .setContentTitle("这是我分享的视频")
                 .build();
         ShareDialog dialog = new ShareDialog(activity);
         if (dialog.canShow(content)) {
