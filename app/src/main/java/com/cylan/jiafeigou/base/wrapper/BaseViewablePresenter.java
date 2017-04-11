@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.base.wrapper;
 
+import android.media.MediaRecorder;
 import android.text.TextUtils;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
@@ -19,6 +21,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -40,7 +43,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected boolean mIsMicrophoneOn = false;
     protected boolean hasLiveStream = false;
     protected boolean mIsSpeakerOn = false;
-    protected boolean isLowFrameRate = false;
     protected String mViewLaunchType;
     IFeedRtcp feedRtcp = new LiveFrameRateMonitor();
 
@@ -160,6 +162,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         try {
                             hasLiveStream = false;
                             getCmd().stopPlay(handler);
+                            switchSpeakAndMicroPhone(false, false);
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.remote = getViewHandler();
                             disconn.code = STOP_VIERER_BY_SYSTEM;
@@ -242,10 +245,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     @Override
     public void onStop() {
         super.onStop();
+        AppLogger.d("stop" + getViewHandler());
         if (getViewHandler() != null) {
-            setViewHandler(null);
             if (hasLiveStream) {
-                stopViewer().subscribe();
+                stopViewer().subscribe(s -> setViewHandler(null));
             }
         }
     }
@@ -322,15 +325,31 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(Schedulers.io())
                 .map(s -> {
                     AppLogger.d("正在切换 Speaker :" + on);
-                    mIsSpeakerOn = on;
-                    switchSpeakAndMicroPhone(mIsSpeakerOn, mIsMicrophoneOn);
-                    return s;
+                    boolean success = switchSpeakAndMicroPhone(mIsSpeakerOn, mIsMicrophoneOn);
+                    mIsSpeakerOn = success && on;
+                    return mIsSpeakerOn;
                 }).subscribeOn(Schedulers.io());
     }
 
-    protected void switchSpeakAndMicroPhone(boolean speaker, boolean microphone) {
-        getCmd().setAudio(false, microphone, speaker);//开启设备的扬声器和麦克风
-        getCmd().setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
+    protected boolean switchSpeakAndMicroPhone(boolean speaker, boolean microphone) {
+        try {
+            MediaRecorder mRecorder = new MediaRecorder();
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
+            mRecorder.setOutputFile(JConstant.MEDIA_PATH + File.separator + "audio.mp3");
+            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
+            mRecorder.prepare();
+            mRecorder.start();
+            mRecorder.stop();
+            mRecorder.release();
+            getCmd().setAudio(false, microphone, speaker);//开启设备的扬声器和麦克风
+            getCmd().setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
+            return true;
+        } catch (Exception e) {
+            AppLogger.d(e.getMessage());
+            mView.hasNoAudioPermission();
+        }
+        return false;
     }
 
 

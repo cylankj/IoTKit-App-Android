@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -35,6 +36,8 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.misc.bind.UdpConstant.BIND_TAG;
 
 /**
  * Created by cylan-hunt on 16-7-8.
@@ -78,7 +81,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribeOn(Schedulers.newThread())
                 .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net != 3)
                 .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
-                    AppLogger.d(UdpConstant.BIND_TAG + "last state");
+                    AppLogger.d(BIND_TAG + "last state");
                     if (aFullBind != null) {
                         aFullBind.setServerLanguage(udpDevicePortrait);
                         aFullBind.sendWifiInfo(ssid, pwd, type);
@@ -129,9 +132,12 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         Subscription subscription = aFullBind.getBindObservable(false, shortCid)
                 .subscribeOn(Schedulers.newThread())
                 //网络为3
-                .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net == 3)
+                .filter(udpDevicePortrait -> {
+                    AppLogger.d(BIND_TAG + new Gson().toJson(udpDevicePortrait));
+                    return udpDevicePortrait != null && udpDevicePortrait.net == 3;
+                })
                 .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
-                    AppLogger.d(UdpConstant.BIND_TAG + "start bind 3g last state");
+                    AppLogger.d(BIND_TAG + "start bind 3g last state");
                     if (aFullBind != null) {
                         aFullBind.setServerLanguage(udpDevicePortrait);
                         aFullBind.sendWifiInfo("", "", 0);
@@ -299,6 +305,11 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                                     highPriority = list.get(i).priority;
                                     index = i;
                                 }
+                            } else {
+                                WifiConfiguration configuration = list.get(i);
+                                boolean s = wifiManager.disableNetwork(configuration.networkId);
+                                boolean b = wifiManager.removeNetwork(configuration.networkId);
+                                AppLogger.d("禁用加菲狗 Dog:" + s + "移除加菲狗 dog:" + b);
                             }
                         }
                         if (index != -1) {

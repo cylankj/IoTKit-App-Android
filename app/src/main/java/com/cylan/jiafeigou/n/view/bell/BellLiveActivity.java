@@ -406,7 +406,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         imgvBellLiveSpeaker.setEnabled(true);
         imgvBellLiveSwitchToLand.setEnabled(true);
         imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
-        if (!mPresenter.checkAudio(1) ) {
+        if (!mPresenter.checkAudio(1)) {
             mPresenter.switchMicrophone();
         }
         if (isLanchFromBellCall) {
@@ -506,7 +506,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
-    void hasNoAudioPermission() {
+    public void hasNoAudioPermission() {
         Bundle args = new Bundle();
         args.putString(BaseDialog.KEY_TITLE, "");
         args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
@@ -562,9 +562,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onVideoDisconnect(int code) {
-        imgvBellLiveCapture.setEnabled(false);
-        imgvBellLiveSpeaker.setEnabled(false);
-        imgvBellLiveSwitchToLand.setEnabled(false);
+//        imgvBellLiveCapture.setEnabled(false);
+//        imgvBellLiveSpeaker.setEnabled(false);
+//        imgvBellLiveSwitchToLand.setEnabled(false);
         switch (code) {
             case JError.ErrorVideoPeerInConnect://其他端在查看
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));

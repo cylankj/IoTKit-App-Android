@@ -333,6 +333,11 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     }
 
     @Override
+    public void hasNoAudioPermission() {
+
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         refreshLayout();

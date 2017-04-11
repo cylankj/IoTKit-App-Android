@@ -41,7 +41,7 @@ public class SimpleBindFlow extends AFullBind {
     @Override
     public void startPingFPing(final String shortUUID) {
         //空
-//        setDevicePortrait(null);
+        setDevicePortrait(null);
         sendPingFPing();
     }
 

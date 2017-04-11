@@ -35,4 +35,6 @@ public interface ViewableView extends JFGView {
     int BAD_NET_WORK = CUSTOM_ERROR_CODE_START - 1;
     int BAD_FRAME_RATE = CUSTOM_ERROR_CODE_START - 2;//帧率过低
     int STOP_VIERER_BY_SYSTEM = CUSTOM_ERROR_CODE_START - 3;//
+
+    void hasNoAudioPermission();
 }

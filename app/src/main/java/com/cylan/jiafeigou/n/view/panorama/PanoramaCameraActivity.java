@@ -289,6 +289,11 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     }
 
+    @Override
+    public void hasNoAudioPermission() {
+
+    }
+
 
     @Override
     protected PanoramaCameraContact.Presenter onCreatePresenter() {

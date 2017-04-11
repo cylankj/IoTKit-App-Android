@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -131,8 +130,8 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
             case R.id.tv_setting_unbind:
                 ViewUtils.deBounceClick(view);
-                int net = NetUtils.getJfgNetType(getActivity());
-                if (net == 0) {
+                boolean available = NetUtils.isNetworkAvailable(getActivity());
+                if (!available) {
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
@@ -153,13 +152,12 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     @Override
     public void onResume() {
         super.onResume();
-        AppLogger.d("SSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS");
+
     }
 
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        AppLogger.d("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG:" + isVisibleToUser);
     }
 
     private void handleJumpToConfig() {

@@ -17,6 +17,7 @@ public interface BellLiveContract {
         void onLiveStop(int errId);
 
 
+
         void onTakeSnapShotSuccess(Bitmap bitmap);
 
         void onTakeSnapShotFailed();
