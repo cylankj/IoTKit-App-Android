@@ -113,7 +113,7 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     }
 
     @Override
-    public void lossDogConnection() {
+    public void check3gFinish() {
 
     }
 

@@ -7,6 +7,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -94,4 +95,12 @@ public interface IDBHelper {
     DPEntity getProperty(String uuid, int msgId);
 
     Device getJFGDevice(String uuid);
+
+    Observable<List<HistoryFile>> loadHistoryFile(String uuid, long timeStart, long timeEnd);
+
+    Observable<HistoryFile> saveHistoryFile(HistoryFile historyFile);
+
+    Observable<Boolean> deleteHistoryFile(String uuid, long timeStart, long timeEnd);
+
+    Observable<Void> deleteAllHistoryFile(String uuid);
 }

@@ -263,7 +263,6 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 ViewUtils.deBounceClick(view);
                 initTimePickDialogFragment();
                 timePickDialogFragment.setArguments(getBundle(getString(R.string.FROME)));
-                timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentStart");
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
@@ -275,12 +274,14 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         updateDetails();
                     }
                 });
+                if (getActivity().getSupportFragmentManager().findFragmentByTag("timePickDialogFragmentStart") != null)
+                    return;
+                timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentStart");
             }
             break;
             case R.id.fLayout_protection_end_time: {
                 initTimePickDialogFragment();
                 timePickDialogFragment.setArguments(getBundle(getString(R.string.TO)));
-                timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentEnd");
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
@@ -292,6 +293,9 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         updateDetails();
                     }
                 });
+                if (getActivity().getSupportFragmentManager().findFragmentByTag("timePickDialogFragmentEnd") != null)
+                    return;
+                timePickDialogFragment.show(getActivity().getSupportFragmentManager(), "timePickDialogFragmentEnd");
             }
             break;
             case R.id.fLayout_protection_repeat_period: {

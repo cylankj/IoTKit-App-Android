@@ -19,7 +19,6 @@ import android.widget.LinearLayout;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.DecodeFormat;
-import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
@@ -39,7 +38,6 @@ import com.cylan.jiafeigou.n.view.home.ShareDialogFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -61,7 +59,6 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         CamMediaContract.View {
 
     public static final String KEY_BUNDLE = "key_bundle";
-    public static final String KEY_TIME = "key_time";
     public static final String KEY_INDEX = "key_index";
 
     @BindView(R.id.vp_container)
@@ -108,7 +105,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                     basePresenter.checkCollection(alarmMsg.version, currentIndex);
             }
         });
-        decideWhichView();
+
         customToolbar.setBackAction(v -> onBackPressed());
     }
 
@@ -199,7 +196,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @Override
     protected void onStart() {
         super.onStart();
-
+        decideWhichView();
     }
 
     @Override
@@ -299,8 +296,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     @Override
     public void onItemCollectionCheckRsp(boolean state) {
-        imgVBigPicCollect.setImageResource(state ? R.drawable.icon_collected : R.drawable.icon_collection);
-        imgVBigPicCollect.setTag(state);
+        imgVBigPicCollect.post(() -> {
+            imgVBigPicCollect.setImageResource(state ? R.drawable.icon_collected : R.drawable.icon_collection);
+            imgVBigPicCollect.setTag(state);
+        });
     }
 
     private class CustomAdapter extends FragmentPagerAdapter {

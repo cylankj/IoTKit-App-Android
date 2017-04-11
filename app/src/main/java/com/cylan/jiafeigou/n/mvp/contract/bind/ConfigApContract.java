@@ -34,9 +34,9 @@ public interface ConfigApContract {
         void onSetWifiFinished(UdpConstant.UdpDevicePortrait udpDevicePortrait);
 
         /**
-         * 丢失与狗的连接
+         *
          */
-        void lossDogConnection();
+        void check3gFinish();
 
         /**
          * {@link IBindUdpFlow#startUpgrade()}

@@ -10,16 +10,15 @@ import android.os.RemoteCallbackList;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.IRemoteService;
 import com.cylan.jiafeigou.IRemoteServiceCallback;
 import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
-import com.cylan.jiafeigou.n.view.misc.UpdateActivity;
 import com.cylan.jiafeigou.support.download.core.DownloadManagerPro;
 import com.cylan.jiafeigou.support.download.net.NetConfig;
 import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListener;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
 
 /**
  * 这个Service跑在一个独立的进程。 ：download
@@ -111,8 +110,12 @@ public class DownloadService extends Service implements DownloadManagerListener 
                         .setSdCardFolderAddress(bean.savePath)
                         .setDownloadManagerListener(DownloadService.this)
                         .setAllowNetType(NetConfig.TYPE_ALL);
-                int token = DownloadManagerPro.getInstance().initTask(taskBuilder);
-                handler.sendMessageDelayed(handler.obtainMessage(MSG_START_DOWNLOAD, token, 0), 1000);
+                try {
+                    int token = DownloadManagerPro.getInstance().initTask(taskBuilder);
+                    handler.sendMessageDelayed(handler.obtainMessage(MSG_START_DOWNLOAD, token, 0), 1000);
+                } catch (JfgException e) {
+                    AppLogger.d("err: " + e.getLocalizedMessage());
+                }
             }
         }).start();
     }

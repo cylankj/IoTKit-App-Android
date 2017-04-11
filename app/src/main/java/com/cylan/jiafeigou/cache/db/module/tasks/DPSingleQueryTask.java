@@ -87,7 +87,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 subscriber.onError(e);
             }
         })
-                .subscribeOn(Schedulers.io())
+//                .subscribeOn(Schedulers.io())
                 .filter(seq -> seq > 0)
                 .flatMap(this::makeGetDataRspResponse)
                 .flatMap(rsp -> {

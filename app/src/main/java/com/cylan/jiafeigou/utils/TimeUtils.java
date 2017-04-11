@@ -64,6 +64,29 @@ public class TimeUtils {
             return new SimpleDateFormat("yy/MM/dd", Locale.getDefault());
         }
     };
+    /**
+     * 历史录像,使用0时区
+     */
+    private static final ThreadLocal<SimpleDateFormat> historyDateFormat = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("HH:mm", Locale.UK);
+        }
+    };
+    private static final ThreadLocal<SimpleDateFormat> historyDateFormat0 = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
+        }
+    };
+
+    public static String getHistoryTime(long timeInLong) {
+        return historyDateFormat.get().format(new Date(timeInLong));
+    }
+
+    public static String getHistoryTime1(long timeInLong) {
+        return historyDateFormat0.get().format(new Date(timeInLong));
+    }
 
     /**
      * 摄像头消息顶部时间显示格式
@@ -212,7 +235,6 @@ public class TimeUtils {
     }
 
 
-    public static final SimpleDateFormat simpleDateFormat0;
     public static final SimpleDateFormat simpleDateFormat1;
     public static final SimpleDateFormat simpleDateFormat2;
 
@@ -220,13 +242,10 @@ public class TimeUtils {
      * 如果改变系统时区,app没有重启,就不能同步更新了.
      */
     static {
-        simpleDateFormat0 = new SimpleDateFormat("MM/dd HH:mm",
-                Locale.getDefault());
         simpleDateFormat1 = new SimpleDateFormat("yyyyMMdd",
                 Locale.getDefault());
         simpleDateFormat2 = new SimpleDateFormat("HH:mm",
                 Locale.getDefault());
-        simpleDateFormat0.setTimeZone(TimeZone.getTimeZone("GMT"));
         simpleDateFormat1.setTimeZone(TimeZone.getTimeZone("GMT"));
         simpleDateFormat2.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
@@ -250,6 +269,10 @@ public class TimeUtils {
             return context.getString(R.string.JUST_NOW);
         if (startOfDay(System.currentTimeMillis()) < time)//今天的早些时候
             return getSimpleDateFormatHHMM.get().format(new Date(time));
+        return getSimpleDateFormatYYYYHHMM.get().format(new Date(time));
+    }
+
+    public static String getDay(long time) {
         return getSimpleDateFormatYYYYHHMM.get().format(new Date(time));
     }
 

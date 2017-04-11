@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -27,6 +28,7 @@ import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -43,8 +45,9 @@ import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
+
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
@@ -262,10 +265,11 @@ public class CamLiveController implements
      *
      * @param liveType
      */
-    public void setLiveType(int liveType) {
+    public void setLiveType(int liveType, int orientation) {
         camLiveControlLayer.getTvCamLivePortLive().setEnabled(liveType != TYPE_LIVE);
         camLiveControlLayer.getTvCamLivePortLive().setAlpha(liveType != TYPE_LIVE ? 1.f : 0.6f);
-        camLiveControlLayer.getImgVCamLiveLandPlay().setVisibility(liveType == TYPE_HISTORY ? View.VISIBLE : View.GONE);
+        boolean showPlayBtn = Configuration.ORIENTATION_LANDSCAPE == orientation && liveType == TYPE_HISTORY;
+        camLiveControlLayer.getImgVCamLiveLandPlay().setVisibility(showPlayBtn ? View.VISIBLE : View.GONE);
     }
 
     /**
@@ -561,15 +565,41 @@ public class CamLiveController implements
             datePickerRef.get().setAction((int id, Object value) -> {
                 if (value != null && value instanceof Long) {
                     AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate((Long) value));
-                    setNav2Time((Long) value);
-                    presenterRef.get().startPlayHistory((Long) value);
+                    loadSelectedDay(TimeUtils.getSpecificDayStartTime((Long) value));
                 }
             });
         }
         datePickerRef.get().setTimeFocus(getWheelCurrentFocusTime());
-        datePickerRef.get().setDateMap(presenterRef.get().getFlattenDateMap());
+        datePickerRef.get().setDateList(presenterRef.get().getFlattenDateList());
         datePickerRef.get().show(activityWeakReference.get().getSupportFragmentManager(),
                 "DatePickerDialogFragment");
+    }
+
+    /**
+     * datePicker 选中某一选项后,重新加载这一天的数据,此处以后可以拓展为从服务器请求数据
+     *
+     * @param timeStart
+     */
+    private void loadSelectedDay(long timeStart) {
+        if (presenterRef != null && presenterRef.get() != null) {
+            presenterRef.get().assembleTheDay(timeStart / 1000L)
+                    .subscribeOn(Schedulers.io())
+                    .filter(iData -> iData != null)
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnCompleted(() -> {
+                        AppLogger.d("reLoad hisData: good");
+                    })
+                    .subscribe(iData -> {
+                        setupHistoryData(iData);
+                        HistoryFile historyFile = iData.getMaxHistoryFile();
+                        if (historyFile != null) {
+                            setNav2Time(historyFile.time * 1000L);
+                            presenterRef.get().startPlayHistory(historyFile.time);
+                            AppLogger.d("找到历史录像?" + historyFile);
+                        }
+                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+        }
+
     }
 
     private CamLandHistoryDateAdapter adapter;
@@ -592,13 +622,12 @@ public class CamLiveController implements
         if (visibility == View.GONE) {
             camLiveControlLayer.getLandDateContainer().setVisibility(View.INVISIBLE);
         }
-        if (presenterRef == null || presenterRef.get() == null || presenterRef.get().getFlattenDateMap() == null ||
-                presenterRef.get().getFlattenDateMap().isEmpty()) return;
+        if (presenterRef == null || presenterRef.get() == null || presenterRef.get().getFlattenDateList() == null ||
+                presenterRef.get().getFlattenDateList().isEmpty()) return;
         if (adapter == null)
             adapter = new CamLandHistoryDateAdapter(context, null, R.layout.layout_cam_history_land_list);
         adapter.clear();
-        Set<Long> set = presenterRef.get().getFlattenDateMap().keySet();
-        ArrayList<Long> dateStartList = new ArrayList<>(new HashSet<>(set));
+        ArrayList<Long> dateStartList = presenterRef.get().getFlattenDateList();
         Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
         Log.d(TAG, "sort: " + dateStartList);
         adapter.addAll(dateStartList);

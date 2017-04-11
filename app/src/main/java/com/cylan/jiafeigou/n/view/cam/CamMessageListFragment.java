@@ -58,7 +58,6 @@ import butterknife.OnClick;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_BUNDLE;
 import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_INDEX;
-import static com.cylan.jiafeigou.n.view.media.CamMediaActivity.KEY_TIME;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
 
@@ -171,7 +170,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         CamMessageBean bean = new CamMessageBean();
         bean.viewType = 2;
         if (camMessageListAdapter.getCount() > 0)
-            bean.time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).time;
+            bean.version = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).version + 1;
         camMessageListAdapter.add(bean);
     }
 
@@ -199,12 +198,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (asc) {
             srLayoutCamListRefresh.setRefreshing(true);
             if (camMessageListAdapter.getCount() > 0)
-                time = camMessageListAdapter.getItem(0).time;
+                time = camMessageListAdapter.getItem(0).version;
         } else {
             if (!camMessageListAdapter.hasFooter())
                 setupFootView();
             if (camMessageListAdapter.getCount() > 0)
-                time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).time;
+                time = camMessageListAdapter.getItem(camMessageListAdapter.getCount() - 1).version;
         }
         if (basePresenter != null) basePresenter.fetchMessageList(time, asc);
     }
@@ -219,7 +218,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             return;
         currentPosition = position;
         if (getView() != null) getView().post(() -> {
-            long time = camMessageListAdapter.getList().get(currentPosition).time;
+            long time = camMessageListAdapter.getList().get(currentPosition).version;
             boolean isToday = TimeUtils.isToday(time);
             String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
             tvCamMessageListDate.setText(content);
@@ -297,7 +296,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 CamMessageBean bean = new CamMessageBean();
                 bean.sdcardSummary = summary;
                 bean.id = DpMsgMap.ID_222_SDCARD_SUMMARY;
-                bean.version = bean.time = o.version;
+                bean.version = o.version;
                 camMessageListAdapter.add(0, bean);
                 rvCamMessageList.scrollToPosition(0);
                 lLayoutNoMessage.setVisibility(View.GONE);
@@ -477,7 +476,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         Intent intent = new Intent(getActivity(), CamMediaActivity.class);
         intent.putExtra(KEY_INDEX, index);
         intent.putExtra(KEY_BUNDLE, camMessageListAdapter.getItem(position).alarmMsg);
-        intent.putExtra(KEY_TIME, camMessageListAdapter.getItem(position).time);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         Log.d("imgV_cam_message_pic_0", "imgV_cam_:" + position + " " + camMessageListAdapter.getItem(position).alarmMsg);
         return intent;

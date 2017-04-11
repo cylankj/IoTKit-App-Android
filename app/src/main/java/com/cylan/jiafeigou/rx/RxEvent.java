@@ -16,6 +16,7 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -502,9 +503,19 @@ public class RxEvent {
      */
     public static final class JFGHistoryVideoParseRsp {
         public String uuid;
+        public ArrayList<HistoryFile> historyFiles;//可能是当天的数据
 
         public JFGHistoryVideoParseRsp(String uuid) {
             this.uuid = uuid;
+        }
+
+        public JFGHistoryVideoParseRsp setTimeList(ArrayList<Long> dateList) {
+            return this;
+        }
+
+        public JFGHistoryVideoParseRsp setFileList(ArrayList<HistoryFile> historyFiles) {
+            this.historyFiles = historyFiles;
+            return this;
         }
     }
 
@@ -976,6 +987,7 @@ public class RxEvent {
 
     public static final class ClientUpgrade {
         public String apkPath;
+
         public ClientUpgrade(String apkPath) {
             this.apkPath = apkPath;
         }

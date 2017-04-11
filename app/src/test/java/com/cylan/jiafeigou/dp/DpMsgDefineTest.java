@@ -9,6 +9,10 @@ import org.msgpack.MessagePack;
 import org.robolectric.annotation.Config;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeoutException;
 
@@ -79,6 +83,20 @@ public class DpMsgDefineTest {
                 })
                 .doOnError(throwable -> System.out.println("err:" + throwable.getLocalizedMessage()))
                 .subscribe();
+
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 5; i++) {
+            list.add(RandomUtils.getRandom(10));
+        }
+        Collections.sort(list, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer lhs, Integer rhs) {
+                return lhs - rhs;
+            }
+        });
+        System.out.println(list);
+
+        System.out.println("HistoryFile".hashCode());
     }
 
 
