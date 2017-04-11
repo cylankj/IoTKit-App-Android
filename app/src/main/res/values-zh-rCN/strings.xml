@@ -569,7 +569,7 @@
     <string name="Tap1_AddDevice_tips">确定退出配置设备？</string>
     <string name="Tap1_Add_Tips">点击这里添加设备</string>
     <string name="Tap1_AddedDeviceTips">设备已绑定当前账号</string>
-    <string name="Tap1_BigPic_FavoriteTips">收藏图片将展现在「每日精彩」</string>
+        <string name="Tap1_BigPic_FavoriteTips">收藏图片将展现在「每日精彩」</string>
     <string name="Tap1_CameraFun_Standby">待机</string>
     <string name="Tap1_CameraFun_Standby_Description">开启待机，设备将进入休眠状态，查看直播、历史视频、安全防护及报警、自动录像、延时摄影等功能将无法使用</string>
     <string name="Tap1_CameraFun_Standby_OnTips">延时摄影拍摄中，无法进入待机。</string>

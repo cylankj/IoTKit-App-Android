@@ -183,17 +183,17 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     public Observable<Pair<ArrayList<CamMessageBean>, Boolean>> call(ArrayList<CamMessageBean> camList) {
                         //需要和列表里面的items 融合
                         ArrayList<CamMessageBean> list = new ArrayList<>(mView.getList());
-                        camList.removeAll(list);
+                        camList.removeAll(list);//camList是降序
                         AppLogger.d("uiList: " + ListUtils.getSize(list) + ",newList: " + ListUtils.getSize(camList));
                         if (camList.size() > 0) {
                             //检查是否 append 或者insert
-                            if (ListUtils.getSize(list) == 0) {
+                            if (ListUtils.getSize(list) == 0) {//已有的列表为空,直接append
                                 return Observable.just(new Pair<>(camList, true));
                             }
                             if (camList.get(camList.size() - 1).version >= list.get(0).version) {
-                                return Observable.just(new Pair<>(camList, false));
+                                return Observable.just(new Pair<>(camList, false));//insert(0)
                             }
-                            return Observable.just(new Pair<>(camList, true));
+                            return Observable.just(new Pair<>(camList, true));//append
                         }
                         return Observable.just(new Pair<>(camList, true));
                     }
