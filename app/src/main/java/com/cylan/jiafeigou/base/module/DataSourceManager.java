@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.base.module;
 
 
+import android.app.PendingIntent;
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -31,10 +33,12 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.NotifyManager;
+import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -672,6 +676,8 @@ public class DataSourceManager implements JFGSourceManager {
                                 updateIdList.add((long) entity.getMsgId());
                             }
                             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
+                            AppLogger.d("正在同步数据");
+                            handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))
                 .subscribe(new Subscriber<String>() {
@@ -759,6 +765,16 @@ public class DataSourceManager implements JFGSourceManager {
                                     Device dd = DataSourceManager.getInstance().getJFGDevice(uuid);
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
                                     AppLogger.d("通知栏..." + entity);
+                                    Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
+                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                    intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
+                                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                                    bean.time = entity.getVersion();
+                                    bean.content = ContextUtils.getContext().getResources().getString(R.string.SETTINGS_1);
+                                    bean.resId = R.drawable.icon_home_doorbell_online;
+                                    bean.count = entity.getValue(0);
+                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    NotifyManager.getNotifyManager().sendNotify(bean);
                                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
                     } catch (Exception e) {
                         e.printStackTrace();

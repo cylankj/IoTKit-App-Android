@@ -563,21 +563,21 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onNewCallTimeOut() {
 //        dismissAlert();
         mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
-        INotify.NotifyBean notify = new INotify.NotifyBean();
-        Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
-        int count = 0;
-        if (device != null) {
-            DPEntity entity = MiscUtils.getMaxVersionEntity(device.getProperty(1004), device.getProperty(1005));
-            if (entity != null) {
-                count = entity.getValue(0);
-            }
-        }
-        notify.count = count;
-        Intent intent = new Intent(this, BellLiveActivity.class);
-        intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
-        notify.pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotifyManager.getNotifyManager().sendNotify(notify);
+//        INotify.NotifyBean notify = new INotify.NotifyBean();
+//        Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+//        int count = 0;
+//        if (device != null) {
+//            DPEntity entity = MiscUtils.getMaxVersionEntity(device.getProperty(1004), device.getProperty(1005));
+//            if (entity != null) {
+//                count = entity.getValue(0);
+//            }
+//        }
+//        notify.count = count == 0 ? 1 : count;
+//        Intent intent = new Intent(this, BellLiveActivity.class);
+//        intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
+//        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+//        notify.pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        NotifyManager.getNotifyManager().sendNotify(notify);
         onDismiss();
     }
 
