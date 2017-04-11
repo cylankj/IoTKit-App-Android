@@ -186,14 +186,15 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceCid.setTvSubTitle(uuid);
         String m = device.$(ID_202_MAC, "");
         tvDeviceMac.setTvSubTitle(m);
-        int b = device.$(206, 0);
-        tvDeviceBatteryLevel.setTvSubTitle(b + "%");
+        boolean charging = device.$(DpMsgMap.ID_205_CHARGING, false);
+        int b = device.$(DpMsgMap.ID_206_BATTERY, 0);
+        tvDeviceBatteryLevel.setTvSubTitle(charging ? getString(R.string.CHARGING) : (b + "%"));
         String v = device.$(ID_208_DEVICE_SYS_VERSION, "");
         tvDeviceSystemVersion.setTvSubTitle(v);
         int u = device.$(ID_210_UP_TIME, 0);
         tvDeviceUptime.setTvSubTitle(TimeUtils.getUptime(u));
         tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
-        String softWare = device.$(207,"");
+        String softWare = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "");
         tvDeviceSoftwareVersion.setTvSubTitle(softWare);
     }
 

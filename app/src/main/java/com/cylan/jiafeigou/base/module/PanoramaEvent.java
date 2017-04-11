@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.base.module;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
 import org.msgpack.annotation.Index;
@@ -41,29 +40,7 @@ public interface PanoramaEvent {
 
 
     @Message
-    class RawMsgHeader {
-        @Index(0)
-        public int mId;
-        @Index(1)
-        public String mCaller;
-        @Index(2)
-        public String mCallee;
-        @Index(3)
-        public long mSeq;
-
-        @Override
-        public String toString() {
-            return "RawMsgHeader{" +
-                    "mId=" + mId +
-                    ", mCaller='" + mCaller + '\'' +
-                    ", mCallee='" + mCallee + '\'' +
-                    ", mSeq=" + mSeq +
-                    '}';
-        }
-    }
-
-    @Message
-    class RawReqMsg extends RawMsgHeader {
+    class RawReqMsg extends Base.ForewordMsgHeader {
         @Index(4)
         public List<String> dst;
         @Index(5)
@@ -250,7 +227,7 @@ public interface PanoramaEvent {
 //        TYPE_DPID_RSP = 52;//	专用于响应DP类消息，APP与设备直连时使用	array(RSP)	DOG_5W
 //        REQ RSP DPIDBaseSDStatus = 204;// DPIDBaseBattery = 206 DPIDVideoMic = 301 DPIDVideoSpeaker = 302
     @Message
-    class RawRspMsg extends RawMsgHeader {
+    class RawRspMsg extends Base.ForewordMsgHeader {
         @Index(4)
         public int type;// 功能定义
         @Index(5)

@@ -136,7 +136,7 @@ public class RelativePopupWindow extends PopupWindow {
                 x -= measuredW;
                 break;
             case HorizontalPosition.ALIGN_RIGHT:
-                x -= measuredW - anchor.getWidth();
+                x -= measuredW + anchor.getWidth();
                 break;
             case HorizontalPosition.CENTER:
                 x += anchor.getWidth() / 2 - measuredW / 2;

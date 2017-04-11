@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.R;
 import com.nineoldandroids.animation.Animator;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
+import com.nineoldandroids.animation.ValueAnimator;
 
 /**
  * Created by lxh on 16-6-16.
@@ -338,7 +339,7 @@ public class AnimatorUtils {
         return null;
     }
 
-    public static Animator slideRight(View target) {
+    public static ObjectAnimator slideRight(View target) {
 
         int right = 200;
         ObjectAnimator animator = ObjectAnimator.ofFloat(target, "translationX", right, 0);
@@ -370,9 +371,10 @@ public class AnimatorUtils {
 
     public static Animator onHandMoveAndFlash(final View hand, final View redot,
                                               final ImageView flash) {
-        Animator slideIn = slideRight(hand);
+        ObjectAnimator slideIn = slideRight(hand);
         slideIn.setStartDelay(1000);
         slideIn.setDuration(500);
+        slideIn.setRepeatCount(ValueAnimator.INFINITE);
         slideIn.addListener(new SimpleAnimationListener() {
             @Override
             public void onAnimationStart(Animator animator) {

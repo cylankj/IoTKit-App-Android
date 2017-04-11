@@ -14,6 +14,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
+import com.cylan.jiafeigou.base.module.Base;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
@@ -22,6 +23,7 @@ import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -54,6 +56,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -167,36 +170,68 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         }
     }
 
+    private void test() {
+        Observable.just("go")
+                .subscribeOn(Schedulers.newThread())
+                .subscribe(new Action1<String>() {
+                    @Override
+                    public void call(String s) {
+                        DpMsgDefine.V3DateListReq req = new DpMsgDefine.V3DateListReq();
+                        req.beginTime = (int) (TimeUtils.getTodayStartTime() / 1000);
+                        req.limit = 30;
+                        req.asc = false;//向后
+                        byte[] data = DpUtils.pack(req);
+                        Base.ForewordSedHeader header = new Base.ForewordSedHeader();
+                        header.mSeq = System.currentTimeMillis();
+                        header.mCaller = uuid;
+//                        header.mCaller = uuid;
+                        header.mId = 20006;
+                        header.cidArray = new String[]{uuid};
+                        header.isAck = 1;//需要相应
+                        header.msgId = 2000;
+                        header.msgByte = data;
+                        int ret = JfgCmdInsurance.getCmd().SendForwardData(DpUtils.pack(header));
+                        AppLogger.d("send foreword: " + ret);
+                    }
+                }, new Action1<Throwable>() {
+                    @Override
+                    public void call(Throwable throwable) {
+                        AppLogger.e("err:" + MiscUtils.getErr(throwable));
+                    }
+                });
+    }
+
     @Override
     public void fetchHistoryDataList() {
-        Subscription subscription = DataSourceManager.getInstance().queryHistory(uuid)
-                .subscribeOn(Schedulers.newThread())
-                .filter(ret -> {
-                    AppLogger.d("get history?" + ret);
-                    return ret;
-                })
-                .timeout(10, TimeUnit.SECONDS)
-                .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
-                        .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
-                        .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
-                        .subscribeOn(Schedulers.computation())
-                        .map(rsp -> {
-                            //只需要初始化一天的就可以啦.
-                            assembleTheDay(rsp.historyFiles);
-                            return null;
-                        })
-                        .filter(result -> mView != null)
-                        .subscribeOn(AndroidSchedulers.mainThread())
-                        .map(longs -> {
-                            //更新日历
-                            ArrayList<Long> dateList = DataSourceManager.getInstance().getHisDateList(uuid);
-                            mView.onHistoryDateListUpdate(dateList);
-                            AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
-                            return null;
-                        }))
-                .subscribe(ret -> {
-                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
-        addSubscription(subscription, "getHistoryList");
+        test();
+//        Subscription subscription = DataSourceManager.getInstance().queryHistory(uuid)
+//                .subscribeOn(Schedulers.newThread())
+//                .filter(ret -> {
+//                    AppLogger.d("get history?" + ret);
+//                    return ret;
+//                })
+//                .timeout(10, TimeUnit.SECONDS)
+//                .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
+//                        .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
+//                        .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
+//                        .subscribeOn(Schedulers.computation())
+//                        .map(rsp -> {
+//                            //只需要初始化一天的就可以啦.
+//                            assembleTheDay(rsp.historyFiles);
+//                            return null;
+//                        })
+//                        .filter(result -> mView != null)
+//                        .subscribeOn(AndroidSchedulers.mainThread())
+//                        .map(longs -> {
+//                            //更新日历
+//                            ArrayList<Long> dateList = DataSourceManager.getInstance().getHisDateList(uuid);
+//                            mView.onHistoryDateListUpdate(dateList);
+//                            AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
+//                            return null;
+//                        }))
+//                .subscribe(ret -> {
+//                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+//        addSubscription(subscription, "getHistoryList");
     }
 
     @Override

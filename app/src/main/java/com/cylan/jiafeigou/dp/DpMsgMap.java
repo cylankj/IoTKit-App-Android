@@ -86,4 +86,10 @@ public final class DpMsgMap {
     public static final int ID_1004_BELL_UNREAD_COUNT = 1004;
     public static final int ID_1005_BELL_UNREAD_COUNT_V2 = 1005;
 
+
+    public static final int ID_2000_V3_DATE_LIST_REQ = 2000;
+    public static final int ID_2001_V3_DATE_LIST_RSP = 2001;
+    public static final int ID_2002_V3_HIS_LIST_REQ = 2002;
+    public static final int ID_2003_V3_HIS_LIST_RSP = 2003;//v3版本的历史录像响应
+
 }

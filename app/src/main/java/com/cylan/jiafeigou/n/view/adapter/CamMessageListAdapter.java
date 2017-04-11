@@ -347,7 +347,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     private RequestListener<CamWarnGlideURL, GlideDrawable> loadListener = new RequestListener<CamWarnGlideURL, GlideDrawable>() {
         @Override
         public boolean onException(Exception e, CamWarnGlideURL model, Target<GlideDrawable> target, boolean isFirstResource) {
-            AppLogger.e(String.format(Locale.getDefault(), "uuid:%s,UriErr:%s,index:%s", uuid, model.getTime(), model.getIndex()));
+            AppLogger.e(String.format(Locale.getDefault(), "uuid:%s,UriErr:%s,index:%s,e:%s", uuid, model.getTime(), model.getIndex(), MiscUtils.getErr(e)));
             return false;
         }
 

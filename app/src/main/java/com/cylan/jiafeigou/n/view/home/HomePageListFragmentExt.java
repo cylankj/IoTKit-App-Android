@@ -55,6 +55,8 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.DisableAppBarLayoutBehavior;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
+import com.cylan.jiafeigou.widget.pop.SimplePopupWindow;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.google.gson.Gson;
 
@@ -129,6 +131,19 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             basePresenter.fetchDeviceList(false);
             basePresenter.checkClientUpdate();
         } else AppLogger.e("presenter is null");
+        need2ShowUseCase();
+    }
+
+    private void need2ShowUseCase() {
+        boolean show = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, true);
+        if (true) {
+            PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, false);
+            imgBtnAddDevices.post(() -> {
+                SimplePopupWindow popupWindow = new SimplePopupWindow(getActivity(), R.drawable.add_device_bg_tips, R.string.Tap1_Add_Tips);
+                popupWindow.showOnAnchor(imgBtnAddDevices, RelativePopupWindow.VerticalPosition.BELOW,
+                        RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, (int) getResources().getDimension(R.dimen.x10), 0);
+            });
+        }
     }
 
     @Override
