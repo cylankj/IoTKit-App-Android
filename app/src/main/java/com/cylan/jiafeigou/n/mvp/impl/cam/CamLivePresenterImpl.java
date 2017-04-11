@@ -11,17 +11,17 @@ import android.view.View;
 import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
-import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.HistoryDateFlatten;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -37,6 +37,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MD5Util;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -47,9 +48,7 @@ import com.google.gson.Gson;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -72,7 +71,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private int playType = CamLiveContract.TYPE_LIVE;
     private int[] videoResolution = {0, 0};
     private int playState = PLAY_STATE_IDLE;
-    private HistoryDateFlatten historyDateFlatten = new HistoryDateFlatten();
     private IData historyDataProvider;
     private int stopReason = STOP_MAUNALLY;//手动断开
     private MapSubscription liveSubscription = new MapSubscription();
@@ -133,56 +131,72 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         return playType;
     }
 
+
+    /**
+     * 一天一天地查询
+     *
+     * @param timeStart:可以用来查询数据库
+     */
+
+    @Override
+    public Observable<IData> assembleTheDay(long timeStart) {
+        long timeEnd = timeStart + 24 * 3600 - 1;
+        AppLogger.d("historyFile:timeEnd?" + timeStart);
+        return BaseDBHelper.getInstance().loadHistoryFile(uuid, timeStart, timeEnd)
+                .subscribeOn(Schedulers.io())
+                .flatMap(historyFiles -> {
+                    AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
+                    historyDataProvider.flattenData(new ArrayList<>(historyFiles));
+                    return Observable.just(historyDataProvider);
+                });
+    }
+
+    public void assembleTheDay(ArrayList<HistoryFile> files) {
+        if (historyDataProvider == null) {
+            historyDataProvider = new DataExt();
+        }
+        if (historyDataProvider.getDataCount() == 0) {
+            Subscription subscription = assembleTheDay(TimeUtils.getSpecificDayStartTime(files.get(0).getTime() * 1000L) / 1000L)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(ret -> {
+                        mView.onHistoryDataRsp(historyDataProvider);
+                        AppLogger.d("历史录像wheel准备好");
+                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+            addSubscription(subscription, "hisFlat");
+        }
+    }
+
     @Override
     public void fetchHistoryDataList() {
-        liveSubscription.add(Observable.just(null)
-                .filter(o -> !JFGRules.isShareDevice(uuid))//过滤分享设备
-                .observeOn(Schedulers.newThread())
-                .map(o -> {
-                    //获取设备历史录像
-                    //不直接使用这个接口,因为在videoList的数据结构中没有uuid标签,只能使用请求的seq来判断.
-                    //所有把它统一放到History类中管理.
-                    DataSourceManager.getInstance().queryHistory(uuid);
-                    AppLogger.i("getVideoList");
-                    return null;
+        Subscription subscription = DataSourceManager.getInstance().queryHistory(uuid)
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> {
+                    AppLogger.d("get history?" + ret);
+                    return ret;
                 })
-                .timeout(3, TimeUnit.SECONDS, Observable.just("get history list timeout: " + uuid)
-                        .map(s -> {
-                            AppLogger.d("" + s);
+                .timeout(10, TimeUnit.SECONDS)
+                .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
+                        .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
+                        .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
+                        .subscribeOn(Schedulers.computation())
+                        .map(rsp -> {
+                            //只需要初始化一天的就可以啦.
+                            assembleTheDay(rsp.historyFiles);
+                            return null;
+                        })
+                        .filter(result -> mView != null)
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .map(longs -> {
+                            //更新日历
+                            ArrayList<Long> dateList = DataSourceManager.getInstance().getHisDateList(uuid);
+                            mView.onHistoryDateListUpdate(dateList);
+                            AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
                             return null;
                         }))
-                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
-                                .filter(jfgHistoryVideoParseRsp -> TextUtils.equals(jfgHistoryVideoParseRsp.uuid, uuid)),
-                        (Object o, RxEvent.JFGHistoryVideoParseRsp jfgHistoryVideoParseRsp) -> {
-                            return Observable.just(jfgHistoryVideoParseRsp)
-                                    .filter(historyList -> TextUtils.equals(uuid, historyList.uuid))//过滤uuid
-                                    .subscribeOn(Schedulers.computation())
-                                    .map((RxEvent.JFGHistoryVideoParseRsp jfgHistoryVideo) -> {
-                                        long time = System.currentTimeMillis();
-                                        ArrayList<JFGVideo> finalList = DataSourceManager.getInstance().getHistoryList(uuid);
-                                        if (finalList == null || finalList.size() == 0)
-                                            return null;
-                                        Collections.sort(finalList);
-                                        AppLogger.d(String.format("performance:%s", (System.currentTimeMillis() - time)));
-                                        AppLogger.i("performance:" + new Gson().toJson(jfgHistoryVideo));
-                                        IData data = new DataExt();
-                                        data.flattenData(finalList);
-                                        historyDateFlatten.flat(finalList);
-                                        return historyDataProvider = data;
-                                    })
-                                    .filter((IData dataStack) -> (getView() != null && dataStack != null))
-                                    .observeOn(AndroidSchedulers.mainThread())
-                                    .map((IData dataStack) -> {
-                                        getView().onHistoryDataRsp(dataStack);
-                                        return null;
-                                    })
-                                    .retry(new RxHelper.ExceptionFun<>("historyDataListSub"))
-                                    .subscribe();
-                        })
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .subscribe((Object dataStack) -> {
-                    AppLogger.d("get historyList finish");
-                }), "fetchHistoryDataList");
+                .subscribe(ret -> {
+                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
+        addSubscription(subscription, "getHistoryList");
     }
 
     @Override
@@ -195,7 +209,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         this.stopReason = stopReason;
     }
 
-    //    private Subscription playFlowSub;
     private void reset() {
         feedRtcp.stop();
         unSubscribe(liveSubscription);
@@ -560,8 +573,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public Map<Long, Long> getFlattenDateMap() {
-        return historyDateFlatten.getFlattenMap();
+    public ArrayList<Long> getFlattenDateList() {
+        return DataSourceManager.getInstance().getHisDateList(uuid);
     }
 
     @Override

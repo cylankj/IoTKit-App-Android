@@ -27,8 +27,6 @@ import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
-import org.msgpack.annotation.Index;
-
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -43,6 +41,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         implements HomePageListContract.Presenter {
 
     private TimeTickBroadcast timeTickBroadcast;
+
     public HomePageListPresenterImpl(HomePageListContract.View view) {
         super(view);
         view.setPresenter(this);
@@ -254,38 +253,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .filter(v -> getView() != null)
                 .subscribe((NetworkInfo info) -> getView().onNetworkChanged(info != null && info.isConnected()));
     }
-    //    @Override
-//    public void unBindDevReq(String uuid) {
-//        addSubscription(Observable.just(null)
-//                .subscribeOn(Schedulers.newThread())
-//                .map((Object o) -> {
-//                    boolean result = DataSourceManager.getInstance().delRemoteJFGDevice(uuid);
-//                    AppLogger.i("unbind uuid: " + uuid + " " + result);
-//                    return null;
-//                })
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .zipWith(RxBus.getCacheInstance().toObservable(RxEvent.UnBindDeviceEvent.class)
-//                                .subscribeOn(Schedulers.newThread())
-//                                .timeout(3000, TimeUnit.MILLISECONDS, Observable.just("unbind timeout")
-//                                        .subscribeOn(AndroidSchedulers.mainThread())
-//                                        .map(s -> {
-////                                            getView().unBindDeviceRsp(-1);
-//                                            return null;
-//                                        }))
-//                                .filter(s -> getView() != null)
-//                                .observeOn(AndroidSchedulers.mainThread())
-//                                .filter(unbindEvent -> {
-//                                    if (unbindEvent.jfgResult.code != 0)
-//                                        getView().unBindDeviceRsp(unbindEvent.jfgResult.code);//失败
-//                                    return unbindEvent.jfgResult.code == 0;
-//                                }),
-//                        (Object o, RxEvent.UnBindDeviceEvent unbindEvent) -> {
-//                            getView().unBindDeviceRsp(0);//成功
-//                            DataSourceManager.getInstance().delLocalJFGDevice(uuid);
-//                            return null;
-//                        })
-//                .subscribe());
-//    }
 
     @Override
     public void registerWorker() {
@@ -314,16 +281,16 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     //升级只在首页提示
-    private Subscription clientUpdateBack(){
+    private Subscription clientUpdateBack() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.ClientUpgrade.class)
                 .subscribeOn(Schedulers.newThread())
-                .delay(200,TimeUnit.MILLISECONDS)
+                .delay(200, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(clientUpgrade -> {
-                    if (!TextUtils.isEmpty(clientUpgrade.apkPath) && PreferencesUtils.getBoolean(JConstant.IS_FIRST_PAGE_VIS,false))
-                        if (!PreferencesUtils.getBoolean(JConstant.CLIENT_UPDATAE_TAB,false)){
+                    if (!TextUtils.isEmpty(clientUpgrade.apkPath) && PreferencesUtils.getBoolean(JConstant.IS_FIRST_PAGE_VIS, false))
+                        if (!PreferencesUtils.getBoolean(JConstant.CLIENT_UPDATAE_TAB, false)) {
                             getView().clientUpdateDialog(clientUpgrade.apkPath);
-                        }else {
+                        } else {
                             if (!TimeUtils.isToday(PreferencesUtils.getLong(JConstant.CLIENT_UPDATAE_TIME_TAB)))
                                 getView().clientUpdateDialog(clientUpgrade.apkPath);
                         }
@@ -331,15 +298,15 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     @Override
-    public void checkClientUpdate(){
+    public void checkClientUpdate() {
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
                     try {
                         int req = JfgCmdInsurance.getCmd().checkClientVersion("0001");
-                        AppLogger.d("client_update:"+req);
+                        AppLogger.d("client_update:" + req);
                     } catch (JfgException e) {
-                        AppLogger.e("client_update:"+e.getLocalizedMessage());
+                        AppLogger.e("client_update:" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
                 });

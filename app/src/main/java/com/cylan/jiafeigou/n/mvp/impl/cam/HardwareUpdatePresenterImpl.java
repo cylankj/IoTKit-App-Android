@@ -31,7 +31,6 @@ import org.msgpack.annotation.Index;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URL;
 import java.net.URLConnection;
@@ -117,8 +116,13 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         .setSdCardFolderAddress(bean.savePath)
                         .setDownloadManagerListener(listener)
                         .setAllowNetType(NetConfig.TYPE_ALL);
-                int token = DownloadManagerPro.getInstance().initTask(taskBuilder);
-                handler.sendMessageDelayed(handler.obtainMessage(MSG_START_DOWNLOAD, token, 0), 1000);
+
+                try {
+                    int token = DownloadManagerPro.getInstance().initTask(taskBuilder);
+                    handler.sendMessageDelayed(handler.obtainMessage(MSG_START_DOWNLOAD, token, 0), 1000);
+                } catch (JfgException e) {
+                    AppLogger.d("err: " + e.getLocalizedMessage());
+                }
             }
         }).start();
     }
@@ -183,11 +187,11 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                             AppLogger.d("file_exit:" + file.exists());
                             if (file.exists()) {
                                 //包是否完整
-                                if (getFileSize(file) == length){
+                                if (getFileSize(file) == length) {
                                     return Observable.just("");
-                                }else {
+                                } else {
                                     boolean delete = file.delete();
-                                    AppLogger.d("update_file_del:"+delete);
+                                    AppLogger.d("update_file_del:" + delete);
                                 }
                             }
                             return Observable.just(MiscUtils.FormetSDcardSize(length));

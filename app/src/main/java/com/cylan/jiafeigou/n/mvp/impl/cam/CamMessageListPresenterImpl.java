@@ -165,7 +165,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         for (DataPoint dataPoint : result) {
                             CamMessageBean bean = new CamMessageBean();
                             bean.id = dataPoint.msgId;
-                            bean.time = dataPoint.version;
+                            bean.version = dataPoint.version;
                             if (bean.id == 222) {
                                 bean.sdcardSummary = (DpMsgDefine.DPSdcardSummary) dataPoint;
                             }
@@ -190,7 +190,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                             if (ListUtils.getSize(list) == 0) {
                                 return Observable.just(new Pair<>(camList, true));
                             }
-                            if (camList.get(camList.size() - 1).time >= list.get(0).time) {
+                            if (camList.get(camList.size() - 1).version >= list.get(0).version) {
                                 return Observable.just(new Pair<>(camList, false));
                             }
                             return Observable.just(new Pair<>(camList, true));
@@ -226,7 +226,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
             dpEntity.setUuid(uuid);
             dpEntity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());
             dpEntity.setMsgId((int) bean.id);
-            dpEntity.setVersion(bean.time);
+            dpEntity.setVersion(bean.version);
             dpEntity.setAction(DBAction.DELETED);
             entities.add(dpEntity);
         }

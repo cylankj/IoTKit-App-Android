@@ -23,7 +23,6 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -40,9 +39,6 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_207_DEVICE_VERSION;
 public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoContract.View>
         implements CamInfoContract.Presenter {
 
-    //    private BeanCamInfo beanCamInfo;
-    private long requst;
-
     public DeviceInfoDetailPresenterImpl(CamInfoContract.View view, String uuid) {
         super(view, uuid);
         view.setPresenter(this);
@@ -58,6 +54,15 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
         };
     }
 
+    private void loadParameters() {
+        AppLogger.e("未实现");
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        loadParameters();
+    }
 
     /**
      * robot同步数据
@@ -130,7 +135,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
                         mesg.packValue = DpUtils.pack(0);
                         ipList.add(mesg);
-                        requst = JfgCmdInsurance.getCmd().robotSetData(uuid, ipList);
+                        JfgCmdInsurance.getCmd().robotSetData(uuid, ipList);
                     } catch (Exception e) {
                         AppLogger.e("format sd： " + e.getLocalizedMessage());
                     }

@@ -199,7 +199,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                                          CamMessageBean item) {
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
         holder.setText(R.id.tv_cam_message_list_content, getFinalSdcardContent(item));
-        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
+        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.version) ? View.VISIBLE : View.INVISIBLE);
         if (hasSdcard && onClickListener != null)
             holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
     }
@@ -234,8 +234,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         }
 //        }
         holder.setText(R.id.tv_cam_message_item_date, getFinalTimeContent(item));
-        Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.time));
-        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.time) ? View.VISIBLE : View.INVISIBLE);
+        Log.d(TAG, "handlePicsLayout: " + (System.currentTimeMillis() - item.version));
+        holder.setVisibility(R.id.tv_jump_next, showLiveBtn(item.version) ? View.VISIBLE : View.INVISIBLE);
         holder.setOnClickListener(R.id.tv_jump_next, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_0, onClickListener);
         holder.setOnClickListener(R.id.imgV_cam_message_pic_1, onClickListener);
@@ -281,7 +281,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private String getFinalTimeContent(CamMessageBean bean) {
         long id = bean.id;
-        String tContent = TimeUtils.getHH_MM(bean.time);
+        String tContent = TimeUtils.getHH_MM(bean.version);
         if (id == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
             return tContent + getContext().getString(R.string.MSG_WARNING);
         }

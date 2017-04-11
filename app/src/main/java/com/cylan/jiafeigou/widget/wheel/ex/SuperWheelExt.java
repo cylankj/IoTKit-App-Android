@@ -15,6 +15,7 @@ import android.view.View;
 
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
 import java.util.ArrayList;
 
@@ -25,7 +26,7 @@ public class SuperWheelExt extends View {
     public static final int STATE_DRAGGING = 0;
     public static final int STATE_ADSORB = 1;//吸附
     public static final int STATE_FINISH = 2;
-    public static boolean DEBUG = false;
+    public static boolean DEBUG = true;
 
     public static final String TAG = "SuperWheelExt";
 
@@ -74,7 +75,12 @@ public class SuperWheelExt extends View {
         this.iDataProvider = iDataProvider;
         if (DEBUG)
             Log.d(TAG, "setDataProvider: " + iDataProvider.getDataCount());
-        invalidate();
+        setScrollX(0);
+        post(() -> {
+            if (DEBUG)
+                Log.d(TAG, "getScrollX: " + getScrollX());
+            invalidate();
+        });
     }
 
 
@@ -244,12 +250,12 @@ public class SuperWheelExt extends View {
     private void drawDataMask(Canvas canvas, long[] timeList) {
         int count = timeList == null ? 0 : timeList.length;
         if (count > 0) {
-            ArrayList<JFGVideo> list = iDataProvider.getMaskList(timeList[0], timeList[count - 1]);
+            ArrayList<HistoryFile> list = iDataProvider.getMaskList(timeList[0], timeList[count - 1]);
             final int size = list == null ? 0 : list.size();
             for (int i = 0; i < size; i++) {
-                JFGVideo v = list.get(i);
-                float rectStart = getPosition(v.beginTime * 1000L);
-                float rectEnd = getPosition((v.beginTime + v.duration) * 1000L);
+                HistoryFile v = list.get(i);
+                float rectStart = getPosition(v.time * 1000L);
+                float rectEnd = getPosition((v.time + v.duration) * 1000L);
                 rect.left = rectStart;
                 rect.right = rectEnd;
                 rect.top = 0;

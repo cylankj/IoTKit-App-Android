@@ -158,7 +158,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
         //是否显示移动网络
         boolean hasSimCard = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
-        tvDeviceMobileNet.setVisibility(hasSimCard && JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
+        tvDeviceMobileNet.setVisibility(JFGRules.showMobileLayout(device.pid) ? View.VISIBLE : View.GONE);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         tvDeviceMobileNet.setTvSubTitle(getMobileNet(hasSimCard, net));
         DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
@@ -198,7 +198,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private String getMobileNet(boolean hasSimcard, DpMsgDefine.DPNet net) {
-        if (!hasSimcard) return "";
+        if (!hasSimcard) return getString(R.string.OFF);
         return net.ssid;
     }
 

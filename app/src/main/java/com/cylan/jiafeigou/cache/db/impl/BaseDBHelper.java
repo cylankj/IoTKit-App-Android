@@ -20,6 +20,8 @@ import com.cylan.jiafeigou.cache.db.module.DaoMaster;
 import com.cylan.jiafeigou.cache.db.module.DaoSession;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.DeviceDao;
+import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.cache.db.module.HistoryFileDao;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -53,6 +55,7 @@ public class BaseDBHelper implements IDBHelper {
     private DPEntityDao mEntityDao;
     private AccountDao accountDao;
     private DeviceDao deviceDao;
+    private HistoryFileDao historyFileDao;
     private static BaseDBHelper instance;
     private IPropertyParser propertyParser;
     private Account dpAccount;
@@ -76,6 +79,7 @@ public class BaseDBHelper implements IDBHelper {
         mEntityDao = daoSession.getDPEntityDao();
         accountDao = daoSession.getAccountDao();
         deviceDao = daoSession.getDeviceDao();
+        historyFileDao = daoSession.getHistoryFileDao();
         propertyParser = BasePropertyParser.getInstance();
     }
 
@@ -226,6 +230,39 @@ public class BaseDBHelper implements IDBHelper {
     public Device getJFGDevice(String uuid) {
         QueryBuilder<Device> queryBuilder = buildDPDeviceQueryBuilder(dpAccount.getAccount(), getServer(), uuid, DBAction.SAVED, DBState.SUCCESS, null);
         return queryBuilder.unique();
+    }
+
+    @Override
+    public Observable<List<HistoryFile>> loadHistoryFile(String uuid, long timeStart, long timeEnd) {
+        return historyFileDao.queryBuilder()
+                .where(HistoryFileDao.Properties.Uuid.eq(uuid))
+                .where(HistoryFileDao.Properties.Time.ge(timeStart))//>=
+                .where(HistoryFileDao.Properties.Time.le(timeEnd))//<=
+                .rx()
+                .list().subscribeOn(Schedulers.io());
+    }
+
+    @Override
+    public Observable<HistoryFile> saveHistoryFile(HistoryFile historyFile) {
+        return historyFileDao.rx().insertOrReplace(historyFile);
+    }
+
+    @Override
+    public Observable<Boolean> deleteHistoryFile(String uuid, long timeStart, long timeEnd) {
+        return loadHistoryFile(uuid, timeStart, timeEnd)
+                .flatMap(historyFiles -> {
+                    if (historyFiles != null) {
+                        for (HistoryFile file : historyFiles) {
+                            historyFileDao.deleteByKey(file.getId());
+                        }
+                    }
+                    return Observable.just(true);
+                });
+    }
+
+    @Override
+    public Observable<Void> deleteAllHistoryFile(String uuid) {
+        return historyFileDao.rx().deleteAll();
     }
 
     @Override

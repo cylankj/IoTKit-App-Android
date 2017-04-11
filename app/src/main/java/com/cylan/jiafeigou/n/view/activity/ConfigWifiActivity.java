@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.LoginButton;
 
 import java.lang.ref.WeakReference;
@@ -99,6 +100,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
         super.onResume();
         initFragment();
         if (basePresenter != null) {
+            LoadingDialog.showLoading(getSupportFragmentManager(),
+                    getString(R.string.LOADING), false);
             basePresenter.refreshWifiList();
             basePresenter.check3GDogCase();
         }
@@ -159,6 +162,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                     basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
                             ViewUtils.getTextViewContent(etWifiPwd), type);
                 tvWifiPwdSubmit.viewZoomSmall();
+                IMEUtils.hide(this);
                 break;
             case R.id.tv_config_ap_name:
                 initFragment();
@@ -264,6 +268,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
 
     @Override
     public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
         if (getIntent().hasExtra(JUST_SEND_INFO)) {
             ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG));
             Intent intent = new Intent(this, NewHomeActivity.class);
@@ -286,7 +291,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     }
 
     @Override
-    public void lossDogConnection() {
+    public void check3gFinish() {
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
 
 

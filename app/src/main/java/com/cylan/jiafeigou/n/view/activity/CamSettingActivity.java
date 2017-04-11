@@ -362,24 +362,24 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 ToastUtil.showToast(getString(R.string.SCENE_SAVED));
             });
             switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
-            /////////////////////////////led/////////////////////////////////////
-            if (JFGRules.showLedIndicator(device.pid)) {
-                if (!dpStandby.standby) {
-                    boolean ledTrigger = device.$(209, false);
-                    svSettingDeviceLedIndicator.setChecked(ledTrigger);
-                }
-                svSettingDeviceLedIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                    DpMsgDefine.DPStandby standby = DataSourceManager.getInstance().getJFGDevice(uuid).$(508, new DpMsgDefine.DPStandby());
-                    if (standby != null && standby.standby) return;//开启待机模式引起的
-                    DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
-                    check.value = isChecked;
-                    basePresenter.updateInfoReq(check, ID_209_LED_INDICATOR);
-                    Log.d("check", "led changed: " + isChecked);
-                    ToastUtil.showToast(getString(R.string.SCENE_SAVED));
-                });
-            } else {
-                svSettingDeviceLedIndicator.setVisibility(View.GONE);
+        }
+        /////////////////////////////led/////////////////////////////////////
+        if (JFGRules.showLedIndicator(device.pid)) {
+            if (!dpStandby.standby) {
+                boolean ledTrigger = device.$(209, false);
+                svSettingDeviceLedIndicator.setChecked(ledTrigger);
             }
+            svSettingDeviceLedIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                DpMsgDefine.DPStandby standby = DataSourceManager.getInstance().getJFGDevice(uuid).$(508, new DpMsgDefine.DPStandby());
+                if (standby != null && standby.standby) return;//开启待机模式引起的
+                DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
+                check.value = isChecked;
+                basePresenter.updateInfoReq(check, ID_209_LED_INDICATOR);
+                Log.d("check", "led changed: " + isChecked);
+                ToastUtil.showToast(getString(R.string.SCENE_SAVED));
+            });
+        } else {
+            svSettingDeviceLedIndicator.setVisibility(View.GONE);
         }
         ////////////////////////////alarm////////////////////////////////////////
         svSettingSafeProtection.setEnabled(!dpStandby.standby);

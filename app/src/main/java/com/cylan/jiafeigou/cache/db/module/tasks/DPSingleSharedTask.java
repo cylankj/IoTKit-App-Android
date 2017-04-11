@@ -119,7 +119,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                                 AppLogger.d("更新本地数据成功");
                                 dpEntity.setState(DBState.SUCCESS);
                                 dpEntity.update();
-                                return null;
+                                return Observable.just(dpEntity);//不能返回null
                             });
                 })
                 .map(ent -> {
