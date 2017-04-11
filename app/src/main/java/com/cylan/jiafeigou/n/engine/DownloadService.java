@@ -104,7 +104,7 @@ public class DownloadService extends Service implements DownloadManagerListener 
                 DownloadManagerPro.getInstance().init(config);
                 taskBuilder = new DownloadManagerPro.TaskBuilder();
                 taskBuilder.setUrl(bean.url)
-                        .setMaxChunks(4)
+                        .setMaxChunks(1)
                         .setSaveName(bean.fileName)
                         .setOverwrite(true)
                         .setSdCardFolderAddress(bean.savePath)

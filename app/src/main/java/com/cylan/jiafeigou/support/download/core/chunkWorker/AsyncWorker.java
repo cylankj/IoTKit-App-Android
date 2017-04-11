@@ -4,6 +4,7 @@ package com.cylan.jiafeigou.support.download.core.chunkWorker;
 import com.cylan.jiafeigou.support.download.database.elements.Chunk;
 import com.cylan.jiafeigou.support.download.database.elements.Task;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.FileUtils;
 
 import java.io.File;
@@ -59,7 +60,7 @@ public class AsyncWorker extends Thread {
             File cf = new File(FileUtils.address(task.save_address, String.valueOf(chunk.id)));
             InputStream remoteFileIn = connection.getInputStream();
             FileOutputStream chunkFile = new FileOutputStream(cf, true);
-
+            long total = 0L;
             int len = 0;
             // set watchDoger to stop thread after 1sec if no connection lost
             watchDog = new ConnectionWatchDog(60 * 1000, this);
@@ -69,6 +70,11 @@ public class AsyncWorker extends Thread {
                 watchDog.reset();
                 chunkFile.write(buffer, 0, len);
                 process(len);
+                total += len;
+                AppLogger.d("AsyDownloading:"+len);
+                AppLogger.d("AsyDownloadlen:"+total);
+                AppLogger.d("AsyDownloadId:"+chunk.id);
+                AppLogger.d("AsyDownloadInter:"+interrupt);
             }
 
             chunkFile.flush();

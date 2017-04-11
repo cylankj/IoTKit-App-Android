@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.io.File;
@@ -83,7 +84,7 @@ public class ClientUpdateManager {
             updateFileBean.savePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
         }
 
-        apkPath = "/mnt/sdcard/"+ updateFileBean.savePath+"/"+ updateFileBean.fileName+".apk";
+        apkPath = "/mnt/sdcard"+updateFileBean.savePath+ updateFileBean.fileName+".apk";
 
         checkLocal(apkPath,url,context);
     }
@@ -148,6 +149,7 @@ public class ClientUpdateManager {
 //            cBuilder.setContentText("下载完成").setProgress(0, 0, false);
 //            sent();
             //下载完成通知
+            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING,false);
             RxBus.getCacheInstance().postSticky(new RxEvent.ClientUpgrade(apkPath));
             realse(ContextUtils.getContext());
         }
@@ -155,6 +157,7 @@ public class ClientUpdateManager {
         @Override
         public void onFailedReason(long taskId, int reason) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onFailedReason:" + taskId);
+            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING,false);
         }
     };
 
@@ -210,6 +213,7 @@ public class ClientUpdateManager {
                             Intent intent = new Intent(context, DownloadService.class);
                             intent.putExtra(DownloadService.KEY_PARCELABLE, updateFileBean);
                             context.bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
+                            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING,true);
                         }
                     }
                 });

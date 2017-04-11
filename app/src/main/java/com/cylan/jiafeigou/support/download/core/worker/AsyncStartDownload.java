@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.support.download.database.elements.Task;
 import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListenerModerator;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
 import com.cylan.jiafeigou.support.download.utils.L;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.FileUtils;
 
 import java.io.IOException;
@@ -137,7 +138,7 @@ public class AsyncStartDownload extends Thread {
         if (urlConnection != null) {
             task.size = urlConnection.getContentLength();
             task.extension = MimeTypeMap.getFileExtensionFromUrl(task.url);
-
+            AppLogger.d("AsyTaskooo:"+task.size);
         } else {
 //			MyExtension.AS3_CONTEXT.dispatchStatusEventAsync(
 //					DispatchEcode.EXCEPTION, DispatchElevel.CONNECTION_ERROR);

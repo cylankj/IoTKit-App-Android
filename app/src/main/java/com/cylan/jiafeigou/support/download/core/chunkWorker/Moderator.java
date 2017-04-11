@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.support.download.database.elements.Task;
 import com.cylan.jiafeigou.support.download.report.ReportStructure;
 import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListenerModerator;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.FileUtils;
 
 import java.util.HashMap;
@@ -165,7 +166,7 @@ public class Moderator {
             if (report.isResumable()) {
                 percent = ((float) downloadLength / report.getTotalSize() * 100);
             }
-
+            AppLogger.d("AsyFileTotal:"+report.getTotalSize());
             // notify to developer------------------------------------------------------------
 
             if (downloadManagerListener != null)

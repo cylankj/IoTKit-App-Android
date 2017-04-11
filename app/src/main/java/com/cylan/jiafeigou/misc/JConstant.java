@@ -310,8 +310,9 @@ public class JConstant {
     public static final String UPDATAE_AUTO_LOGIN = "update_auto_login";
     public static final String CLIENT_UPDATAE_TAB = "client_update_tab";
     public static final String CLIENT_UPDATAE_TIME_TAB = "client_update_time_tab";
-    public static final String IS_FIRST_PAGE_VIS = "is_first_page_vis";
 
     public static final String NEED_SHOW_COLLECT_USE_CASE = "show_collect_use_case";
     public static final String NEED_SHOW_BIND_USE_CASE = "show_bind_use_case";
+    public static final String IS_FIRST_PAGE_VIS= "is_first_page_vis";
+    public static final String IS_UPDATE_DOWNLOADING= "is_update_downloading";
 }
