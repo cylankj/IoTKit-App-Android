@@ -115,8 +115,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
 
     private void showCollectCase() {
         boolean needShow = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, true);
-        PreferencesUtils.putBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, true);
         if (needShow) {
+            PreferencesUtils.putBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, false);
             imgVBigPicCollect.post(() -> {
                 SimplePopupWindow popupWindow = new SimplePopupWindow(this, R.drawable.collect_tips, R.string.Tap1_BigPic_FavoriteTips);
                 popupWindow.showOnAnchor(imgVBigPicCollect, RelativePopupWindow.VerticalPosition.ABOVE,

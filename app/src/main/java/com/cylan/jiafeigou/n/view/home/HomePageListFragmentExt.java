@@ -136,7 +136,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     private void need2ShowUseCase() {
         boolean show = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, true);
-        if (true) {
+        if (show) {
             PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, false);
             imgBtnAddDevices.post(() -> {
                 SimplePopupWindow popupWindow = new SimplePopupWindow(getActivity(), R.drawable.add_device_bg_tips, R.string.Tap1_Add_Tips);
