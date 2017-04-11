@@ -12,6 +12,7 @@ import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -407,15 +408,18 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void clientUpdateDialog(String apkPath) {
-        Bundle bundle = new Bundle();
-        bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.UPGRADE));
-        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
-        bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.UPGRADE_NOW));
-        bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
-        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
-        dialogFragment.setValue(apkPath);
-        dialogFragment.setAction(this);
-        dialogFragment.show(this.getFragmentManager(), "update");
+        Fragment f = getFragmentManager().findFragmentByTag("update");
+        if (f == null){
+            Bundle bundle = new Bundle();
+            bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.UPGRADE));
+            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
+            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.UPGRADE_NOW));
+            bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
+            SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
+            dialogFragment.setValue(apkPath);
+            dialogFragment.setAction(this);
+            dialogFragment.show(this.getFragmentManager(), "update");
+        }
     }
 
     @Override
