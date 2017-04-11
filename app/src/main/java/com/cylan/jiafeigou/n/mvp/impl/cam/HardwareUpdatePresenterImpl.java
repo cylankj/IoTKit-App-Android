@@ -21,7 +21,9 @@ import com.cylan.jiafeigou.support.download.net.NetConfig;
 import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListener;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import org.msgpack.MessagePack;

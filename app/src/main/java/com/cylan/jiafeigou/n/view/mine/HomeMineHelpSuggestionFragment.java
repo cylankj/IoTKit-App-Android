@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
 import com.cylan.jiafeigou.support.softkeyboard.widget.KPSwitchFSPanelLinearLayout;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -117,6 +118,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.tv_toolbar_icon:
+                IMEUtils.hide(getActivity());
                 getFragmentManager().popBackStack();
                 break;
 
@@ -248,9 +250,10 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
         autoReplyBean.setType(0);
         autoReplyBean.setText(content);
-        autoReplyBean.setDate(time + "");
+        autoReplyBean.setDate(time*1000 + "");
         suggestionAdapter.add(autoReplyBean);
         suggestionAdapter.notifyDataSetHasChanged();
+        mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
         presenter.saveIntoDb(autoReplyBean);
     }
 
@@ -289,6 +292,9 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             }
             autoReply();
             mRvMineSuggestion.setAdapter(suggestionAdapter);
+
+            //系统后台回复
+            presenter.getSystemAutoReply();
         }
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
     }

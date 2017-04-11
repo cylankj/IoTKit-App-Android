@@ -161,6 +161,15 @@
                 hunt:sv_title="@string/SYSTME_VERSION"
                 hunt:sv_v_divider="true" />
 
+            <!-- 软件版本 -->
+            <com.cylan.jiafeigou.widget.SettingItemView0
+                android:id="@+id/tv_device_software_version"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/y72"
+                android:layout_marginStart="@dimen/x6"
+                hunt:sv_sub_title=" "
+                hunt:sv_title="@string/SOFTWARE_VERSION"
+                hunt:sv_v_divider="true" />
 
             <!-- 电池电量 -->
             <com.cylan.jiafeigou.widget.SettingItemView0

@@ -88,6 +88,8 @@ public class HomeMineHelpFragment extends Fragment {
         settings.setBlockNetworkImage(false);
         settings.setSavePassword(false);
         settings.setDomStorageEnabled(true);
+        settings.setCacheMode(WebSettings.LOAD_CACHE_ELSE_NETWORK);
+        settings.setAppCacheEnabled(true);
         mWvHelp.removeJavascriptInterface("searchBoxJavaBridge_");
         mWvHelp.removeJavascriptInterface("accessibilityTraversal");
         mWvHelp.removeJavascriptInterface("accessibility");

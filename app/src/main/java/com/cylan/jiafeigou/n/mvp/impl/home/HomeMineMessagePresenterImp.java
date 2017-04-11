@@ -46,8 +46,8 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     public HomeMineMessagePresenterImp(HomeMineMessageContract.View view, boolean hasNewMesg) {
         super(view);
         view.setPresenter(this);
-        this.hasNewMesg = hasNewMesg;
-//        this.hasNewMesg = true;
+//        this.hasNewMesg = hasNewMesg;
+        this.hasNewMesg = true;
     }
 
     @Override
@@ -62,9 +62,9 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      * 加载消息数据
      */
     @Override
-    public void initMesgData() {
+    public void initMesgData(String account) {
         if (hasNewMesg) {
-            getMesgDpData();
+            getMesgDpData(account);
         } else {
             handlerDataResult(findAllFromDb());
         }
@@ -102,7 +102,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                         if (account != null) {
                             // 加载数据库数据
                             dbManager = DataBaseUtil.getInstance(account.jfgAccount.getAccount()).dbManager;
-                            initMesgData();
+                            initMesgData(account.jfgAccount.getAccount());
                         }
                     }
                 });
@@ -160,7 +160,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      * Dp获取到消息记录
      */
     @Override
-    public void getMesgDpData() {
+    public void getMesgDpData(String account) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(new Action1<Object>() {
@@ -172,7 +172,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             ArrayList<JFGDPMsg> params = new ArrayList<>();
                             params.add(msg1);
                             params.add(msg4);
-                            seq = JfgCmdInsurance.getCmd().getInstance().robotGetData("", params, 100, false, 0);
+                            seq = JfgCmdInsurance.getCmd().robotGetData("", params, 100, false, 0);
                             AppLogger.d("getMesgDpData:" + seq);
                         } catch (Exception e) {
                             AppLogger.e("getMesgDpData:"+e.getLocalizedMessage());
@@ -200,7 +200,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             results.clear();
                         if (robotoGetDataRsp != null && robotoGetDataRsp.seq == seq) {
                             results.addAll(convertData(robotoGetDataRsp));
-                            markMesgHasRead();
+//                            markMesgHasRead();
                         }
                         return results;
                     }
@@ -335,7 +335,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                         list.add(msg1);
                         list.add(msg2);
                         list.add(msg3);
-                        long req = JfgCmdInsurance.getCmd().robotSetData(" ",list);
+                        long req = JfgCmdInsurance.getCmd().robotSetData("",list);
                         AppLogger.d("mine_markHasRead:" + req);
                     } catch (JfgException e) {
                         AppLogger.e("mine_markHasRead:" + e.getLocalizedMessage());

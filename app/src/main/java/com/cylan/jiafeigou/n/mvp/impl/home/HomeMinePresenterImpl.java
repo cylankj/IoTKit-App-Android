@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
@@ -230,8 +231,15 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         list.add(msg3);
                         requstId = JfgCmdInsurance.getCmd().robotGetData("", list, 10, false, 0);
                         AppLogger.d("getUnReadMesg:" + requstId);
+
+                        //新接口
+//                        HashMap<String,long[]> map = new HashMap<>();
+//                        long[] ip = new long[]{1101L,1103L,1104L};
+//                        map.put("",ip);
+//                        long reqNew = JfgCmdInsurance.getCmd().robotCountMultiData(map, false, 0);
+//                        AppLogger.d("newCount:"+reqNew);
                     } catch (JfgException e) {
-                        AppLogger.e("" + e.getLocalizedMessage());
+                        AppLogger.e("getUnReadMesg" + e.getLocalizedMessage());
                     }
                 });
     }
@@ -244,7 +252,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public Observable<Integer> call(RobotoGetDataRsp rsp) {
                         int count = 0;
-
                         if (rsp != null && requstId == rsp.seq && rsp.map != null && rsp.map.size() != 0){
                             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
                                 try {

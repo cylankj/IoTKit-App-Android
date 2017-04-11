@@ -139,7 +139,7 @@ public class DataSourceService extends Service implements AppCallBack {
         String pwd2x = PreferencesUtils.getString(JConstant.SESSIONID, "");
         PreferencesUtils.putString(JConstant.KEY_PHONE, "");
         PreferencesUtils.putString(JConstant.SESSIONID, "");
-        AppLogger.d("account2x:" + account2x + ":" + pwd2x);
+        AppLogger.d("account2x:" + account2x);
         HandlerThreadUtils.post(() -> PreferencesUtils.init(getApplicationContext()));
         if (TextUtils.isEmpty(account2x) || TextUtils.isEmpty(pwd2x)) {
             //正常的流程
@@ -564,7 +564,18 @@ public class DataSourceService extends Service implements AppCallBack {
         AppLogger.d(String.format(Locale.getDefault(), "check version:%d,%s,%d", i, s, i1));
         // 客户端升级测试
         if (!TextUtils.isEmpty(s)){
-            ClientUpdateManager.getInstance().startDownload(getApplicationContext(),s,"3.1.0",1);
+            String url = "http://121.15.220.150/imtt.dd.qq.com/16891/AE6502757AE91F88EE91D985D5AAE5AD.apk?mkey=58eb4c2e30b4058c&f=2409&c=0&fsname=com.cylan.jiafeigou_2.4.9.5296_20170228.apk&csr=1bbd&p=.apk";
+            ClientUpdateManager.getInstance().startDownload(getApplicationContext(),url,"3.1.0",1);
         }
+    }
+
+    @Override
+    public void OnRobotCountMultiDataRsp(long l, Object o) {
+        AppLogger.d("OnRobotCountMultiDataRsp:"+o.toString());
+    }
+
+    @Override
+    public void OnRobotGetMultiDataRsp(long l, Object o) {
+
     }
 }
