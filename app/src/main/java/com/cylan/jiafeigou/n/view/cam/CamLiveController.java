@@ -303,7 +303,7 @@ public class CamLiveController implements
      * @param time :定位到某个时间
      */
     public void setNav2Time(long time) {
-        camLiveControlLayer.getSwCamLiveWheel().setPositionByTime(time);
+        camLiveControlLayer.post(() -> camLiveControlLayer.getSwCamLiveWheel().setPositionByTime(time));
     }
 
     private long getWheelCurrentFocusTime() {
@@ -594,7 +594,7 @@ public class CamLiveController implements
                         HistoryFile historyFile = iData.getMaxHistoryFile();
                         if (historyFile != null) {
                             setNav2Time(historyFile.time * 1000L);
-                            presenterRef.get().startPlayHistory(historyFile.time);
+                            presenterRef.get().startPlayHistory(historyFile.time * 1000L);
                             AppLogger.d("找到历史录像?" + historyFile);
                         }
                     }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
