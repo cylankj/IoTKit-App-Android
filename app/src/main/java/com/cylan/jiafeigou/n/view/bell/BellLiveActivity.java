@@ -110,7 +110,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     private String mLiveTitle = "宝宝的房间";
 
     private boolean isLandMode = false;
-    private boolean isLanchFromBellCall = false;
+//    private boolean isLanchFromBellCall = false;
     private MediaPlayer mediaPlayer;
     private RoundCardPopup roundCardPopup;
 
@@ -242,13 +242,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         caller.picture = extra;
         caller.callTime = time;
         mPresenter.newCall(caller);
-        if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_VIEWER)) {
-            isLanchFromBellCall = false;
-        } else if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)) {
-            isLanchFromBellCall = true;
-        }
+//        if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_VIEWER)) {
+//            isLanchFromBellCall = false;
+//        } else if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)) {
+//            isLanchFromBellCall = true;
+//        }
 
-        onSpeaker(isLanchFromBellCall);
+        onSpeaker(false);
     }
 
     @Override
@@ -409,9 +409,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (!mPresenter.checkAudio(1)) {
             mPresenter.switchMicrophone();
         }
-        if (isLanchFromBellCall) {
-            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
-        }
+//        if (isLanchFromBellCall) {
+//            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
+//        }
     }
 
     @Override
