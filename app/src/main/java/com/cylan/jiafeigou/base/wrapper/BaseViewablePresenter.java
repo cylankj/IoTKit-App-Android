@@ -162,7 +162,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         try {
                             hasLiveStream = false;
                             getCmd().stopPlay(handler);
-                            switchSpeakAndMicroPhone(false, false);
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.remote = getViewHandler();
                             disconn.code = STOP_VIERER_BY_SYSTEM;
