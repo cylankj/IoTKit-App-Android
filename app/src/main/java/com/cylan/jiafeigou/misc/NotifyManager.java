@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.RandomUtils;
-import com.cylan.jiafeigou.widget.SystemBarTintManager;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.TimeUnit;
@@ -127,6 +126,7 @@ public class NotifyManager implements INotify {
         notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
         notification.flags |= Notification.FLAG_NO_CLEAR;
         notification.flags |= Notification.FLAG_ONGOING_EVENT;
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
         notificationManagerCompat.notify(NOTIFY_ID, notification);
     }
 

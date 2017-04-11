@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 import org.greenrobot.greendao.query.WhereCondition;
+import org.greenrobot.greendao.rx.RxQuery;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -206,7 +207,27 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<DPEntity> queryDpMsg(QueryBuilder<DPEntity> builder) {
-        return builder.rx().unique();
+        return applyUnique(builder.rx());
+    }
+
+    private Observable<DPEntity> applyUnique(RxQuery<DPEntity> query) {
+        return query.list().map(dpEntities -> {
+            if (dpEntities == null) return null;
+            DPEntity result = null;
+            for (DPEntity entity : dpEntities) {
+                if (result == null) {
+                    result = entity;
+                    continue;
+                }
+                if (result.getVersion() < entity.getVersion()) {
+                    result.delete();
+                    result = entity;
+                } else {
+                    entity.delete();
+                }
+            }
+            return result;
+        });
     }
 
     @Override
@@ -323,8 +344,8 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<DPEntity> saveOrUpdate(String account, String server, String uuid, Long version, Integer msgId, byte[] bytes, DBAction action, DBState state, DBOption option) {
-        return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
-                .rx().unique()
+        return applyUnique(buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
+                .rx())
                 .map(item -> {
                     if (item == null) {
                         item = new DPEntity(null, account, server, uuid, version, msgId, bytes, action == null ? null : action.action(), state == null ? null : state.state(), option == null ? null : option.option());
@@ -383,11 +404,11 @@ public class BaseDBHelper implements IDBHelper {
      */
     @Override
     public Observable<DPEntity> deleteDPMsgForce(String account, String server, String uuid, Long version, Integer msgId) {
-        return buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
-                .rx().unique().map(result -> {
-                    mEntityDao.delete(result);
-                    return result;
-                });
+        return applyUnique(buildDPMsgQueryBuilder(account, server, uuid, version, msgId, null, null, null)
+                .rx()).map(result -> {
+            mEntityDao.delete(result);
+            return result;
+        });
     }
 
     @Override
@@ -545,7 +566,7 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<DPEntity> findDPMsg(String uuid, Long version, Integer msgId) {
-        return getActiveAccount().flatMap(account -> buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, version, msgId, null, null, null).rx().unique());
+        return getActiveAccount().flatMap(account -> applyUnique(buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, version, msgId, null, null, null).rx()));
     }
 
     @Override
