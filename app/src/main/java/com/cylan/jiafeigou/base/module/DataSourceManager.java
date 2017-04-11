@@ -672,6 +672,7 @@ public class DataSourceManager implements JFGSourceManager {
                                 updateIdList.add((long) entity.getMsgId());
                             }
                             RxBus.getCacheInstance().postSticky(new RxEvent.DeviceSyncRsp().setUuid(event.s, updateIdList, event.arrayList));
+                            handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))
                 .subscribe(new Subscriber<String>() {
