@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class DataExt implements IData {
     @Override
     public void flattenData(ArrayList<HistoryFile> list) {
         this.rawList = list;
+        flattenDataList.clear();
         int size = list.size();
         if (size > 0) {
             long timeMax = getTenMinuteByTimeRight((list.get(0).time + list.get(0).duration) * 1000L);
@@ -42,7 +44,7 @@ public class DataExt implements IData {
                 flattenDataList.add(i);
                 fillMap(i);
                 if (DEBUG)
-                    Log.d(TAG, "i:" + size + " " + TimeUtils.simpleDateFormat0.format(new Date(i)));
+                    Log.d(TAG, "i:" + size + " " + TimeUtils.getHistoryTime(i));
                 size++;
                 i -= 10 * 60 * 1000L;
             }
@@ -57,7 +59,7 @@ public class DataExt implements IData {
     private void fillMap(long time) {
         if (time / 1000L % 3600 == 0) {
             timeWithType.put(time, 1);
-            dateFormatMap.put(time, TimeUtils.simpleDateFormat2.format(new Date(time)));
+            dateFormatMap.put(time, TimeUtils.getHistoryTime(time));
         }
     }
 
@@ -121,7 +123,7 @@ public class DataExt implements IData {
 
     @Override
     public int getDataCount() {
-        return flattenDataList.size();
+        return ListUtils.getSize(flattenDataList);
     }
 
     @Override
@@ -213,6 +215,12 @@ public class DataExt implements IData {
             Log.d(TAG, "index: " + i + " " + TimeUtils.simpleDateFormat2.format(new Date(time)));
         v = rawList.get(i);
         return v.time * 1000L <= time && (v.time + v.duration) * 1000L >= time;
+    }
+
+    @Override
+    public HistoryFile getMaxHistoryFile() {
+        //rawList 是一个降序
+        return ListUtils.getSize(rawList) > 0 ? rawList.get(0) : null;
     }
 
     private HistoryFile getVideo(long time) {

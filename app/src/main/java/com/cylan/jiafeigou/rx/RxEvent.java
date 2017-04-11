@@ -503,7 +503,6 @@ public class RxEvent {
      */
     public static final class JFGHistoryVideoParseRsp {
         public String uuid;
-        public ArrayList<Long> dateList;
         public ArrayList<HistoryFile> historyFiles;//可能是当天的数据
 
         public JFGHistoryVideoParseRsp(String uuid) {
@@ -511,7 +510,6 @@ public class RxEvent {
         }
 
         public JFGHistoryVideoParseRsp setTimeList(ArrayList<Long> dateList) {
-            this.dateList = dateList;
             return this;
         }
 

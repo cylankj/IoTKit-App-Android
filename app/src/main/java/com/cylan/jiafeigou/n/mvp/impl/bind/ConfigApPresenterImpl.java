@@ -71,7 +71,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         //4.发送sendWifi
         String shortCid = getCurrentBindCidInShort();
         if (TextUtils.isEmpty(shortCid)) {
-            getView().lossDogConnection();
+            getView().check3gFinish();
             return;
         }
         Subscription subscription = aFullBind.getBindObservable(false, shortCid)
@@ -123,19 +123,29 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     public void check3GDogCase() {
         String shortCid = getCurrentBindCidInShort();
         if (TextUtils.isEmpty(shortCid)) {
-            getView().lossDogConnection();
+            getView().check3gFinish();
             return;
         }
         Subscription subscription = aFullBind.getBindObservable(false, shortCid)
                 .subscribeOn(Schedulers.newThread())
+                .delay(1, TimeUnit.SECONDS)
                 //网络为3
                 .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net == 3)
-                .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
+                .map(udpDevicePortrait -> {
                     AppLogger.d(UdpConstant.BIND_TAG + "start bind 3g last state");
                     if (aFullBind != null) {
                         aFullBind.setServerLanguage(udpDevicePortrait);
                         aFullBind.sendWifiInfo("", "", 0);
                     }
+                    return null;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null)
+                .doOnCompleted(() -> {
+                    AppLogger.d("取消loading");
+                    mView.check3gFinish();
+                })
+                .subscribe(result -> {
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
         aFullBind.startPingFPing(shortCid);
         addSubscription(subscription, "getBindObservable");
@@ -216,7 +226,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((NetworkInfo info) -> {
-                    getView().lossDogConnection();
+                    getView().check3gFinish();
                 });
         addSubscription(subscription, "updateConnectInfo");
     }

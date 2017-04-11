@@ -10,10 +10,6 @@ import android.widget.TextView;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-
 /**
  * Created by cylan-hunt on 16-12-23.
  */
@@ -40,8 +36,8 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
     public void setContent(int state, long time) {
         String content = String.format(getContext().getString(
                 state == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                + "|%s", state == 1 ? dateFormat.format(new Date(time)) :
-                TimeUtils.simpleDateFormat0.format(new Date(time)));
+                + "|%s", state == 1 ? TimeUtils.getHistoryTime(time) :
+                TimeUtils.getHistoryTime1(time));
         if (!textView.isShown()) textView.setVisibility(View.VISIBLE);
         textView.setText(content);
     }
@@ -51,7 +47,5 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
         setVisibility(show ? VISIBLE : GONE);
     }
 
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm",
-            Locale.getDefault());
 }
 

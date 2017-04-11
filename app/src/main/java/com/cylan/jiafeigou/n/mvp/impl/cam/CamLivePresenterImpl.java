@@ -16,6 +16,7 @@ import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
+import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -36,6 +37,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MD5Util;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -131,14 +133,22 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
 
     /**
+     * 一天一天地查询
+     *
      * @param timeStart:可以用来查询数据库
      */
 
     @Override
     public Observable<IData> assembleTheDay(long timeStart) {
-
-
-        return null;
+        long timeEnd = timeStart + 24 * 3600 - 1;
+        AppLogger.d("historyFile:timeEnd?" + timeStart);
+        return BaseDBHelper.getInstance().loadHistoryFile(uuid, timeStart, timeEnd)
+                .subscribeOn(Schedulers.io())
+                .flatMap(historyFiles -> {
+                    AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
+                    historyDataProvider.flattenData(new ArrayList<>(historyFiles));
+                    return Observable.just(historyDataProvider);
+                });
     }
 
     public void assembleTheDay(ArrayList<HistoryFile> files) {
@@ -146,14 +156,13 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             historyDataProvider = new DataExt();
         }
         if (historyDataProvider.getDataCount() == 0) {
-            AppLogger.d("historyFile:time?" + files.get(0));
-            historyDataProvider.flattenData(files);
-            Subscription subscription = Observable.just("run")
+            Subscription subscription = assembleTheDay(TimeUtils.getSpecificDayStartTime(files.get(0).getTime() * 1000L) / 1000L)
+                    .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .filter(ret -> mView != null)
                     .subscribe(ret -> {
                         mView.onHistoryDataRsp(historyDataProvider);
-                    });
+                        AppLogger.d("历史录像wheel准备好");
+                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
             addSubscription(subscription, "hisFlat");
         }
     }
@@ -169,19 +178,20 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .timeout(10, TimeUnit.SECONDS)
                 .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
                         .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
-                        .filter(rsp -> ListUtils.getSize(rsp.dateList) > 0)//>0
+                        .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
                         .subscribeOn(Schedulers.computation())
                         .map(rsp -> {
                             //只需要初始化一天的就可以啦.
                             assembleTheDay(rsp.historyFiles);
-                            return rsp.dateList;
+                            return null;
                         })
                         .filter(result -> mView != null)
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .map(longs -> {
                             //更新日历
-                            mView.onHistoryDateListUpdate(longs);
-                            AppLogger.d("历史录像日历更新");
+                            ArrayList<Long> dateList = DataSourceManager.getInstance().getHisDateList(uuid);
+                            mView.onHistoryDateListUpdate(dateList);
+                            AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
                             return null;
                         }))
                 .subscribe(ret -> {

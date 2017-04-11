@@ -238,7 +238,8 @@ public class BaseDBHelper implements IDBHelper {
                 .where(HistoryFileDao.Properties.Uuid.eq(uuid))
                 .where(HistoryFileDao.Properties.Time.ge(timeStart))//>=
                 .where(HistoryFileDao.Properties.Time.le(timeEnd))//<=
-                .rx().list();
+                .rx()
+                .list().subscribeOn(Schedulers.io());
     }
 
     @Override

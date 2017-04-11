@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.pick.AbstractWheel;
 import com.cylan.jiafeigou.widget.pick.OnWheelChangedListener;
@@ -47,8 +48,6 @@ public class DatePickerDialogFragment extends BaseDialog {
     /**
      * <凌晨时间戳,当天最早视频时间></>
      */
-//    private Map<Long, Long> dateMap = new HashMap<>();
-    private ArrayList<Long> dateList = new ArrayList<>();
     private List<Long> dateStartList = new ArrayList<>();
     private long timeFocus;
     private int finalIndex;
@@ -87,14 +86,13 @@ public class DatePickerDialogFragment extends BaseDialog {
     private int getIndexByTime() {
         //得到凌晨时间戳
         long time = SystemClock.currentThreadTimeMillis();
-        long timeStart = TimeUtils.startOfDay(timeFocus);
+        long timeStart = TimeUtils.getSpecificDayStartTime(timeFocus);
         Log.d("getIndexByTime", "getIndexByTime: " + dateStartList);
         //由于dateStartList是降序,所以需要Collections.reverseOrder()
-        int index = Collections.binarySearch(dateStartList, timeStart, Collections.reverseOrder());
-        if (index < 0) {
-            index = -(index + 1);
-            if (index < 0 || index > dateList.size() - 1) {
-                index = dateList.size() - 1;
+        int index = 0;
+        for (index = 0; index < ListUtils.getSize(dateStartList); index++) {
+            if (timeStart == TimeUtils.getSpecificDayStartTime(dateStartList.get(index))) {
+                break;
             }
         }
         Log.d("getIndexByTime", "getIndexByTime: performance: " + (SystemClock.currentThreadTimeMillis() - time));
@@ -107,10 +105,8 @@ public class DatePickerDialogFragment extends BaseDialog {
 
     public void setDateList(ArrayList<Long> dateList) {
         if (dateList == null || dateList.size() == 0) return;
-        this.dateList = dateList;
         AppLogger.i("count:" + (dateList.size()));
         long time = System.currentTimeMillis();
-//        Set<Long> set = dateMap.keySet();
         dateStartList = new ArrayList<>(dateList);
         Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
         Log.d("setDateList", "setDateList performance: " + (System.currentTimeMillis() - time));
@@ -120,12 +116,12 @@ public class DatePickerDialogFragment extends BaseDialog {
         AbstractWheelTextAdapter adapter = new AbstractWheelTextAdapter(getContext()) {
             @Override
             public int getItemsCount() {
-                return dateList.size();
+                return ListUtils.getSize(dateStartList);
             }
 
             @Override
             protected CharSequence getItemText(int index) {
-                return TimeUtils.getSpecifiedDate(dateList.get(index));
+                return TimeUtils.getSpecifiedDate(dateStartList.get(index));
             }
         };
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
@@ -151,8 +147,8 @@ public class DatePickerDialogFragment extends BaseDialog {
                 break;
             case R.id.tv_dialog_btn_left:
                 dismiss();
-                if (action != null && finalIndex > 0 && finalIndex < dateStartList.size()) {
-                    action.onDialogAction(1, dateList.get(finalIndex));
+                if (action != null && finalIndex > 0 && finalIndex < ListUtils.getSize(dateStartList)) {
+                    action.onDialogAction(1, dateStartList.get(finalIndex));
                 }
                 break;
         }

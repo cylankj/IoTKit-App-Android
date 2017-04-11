@@ -539,7 +539,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (getView() != null)
             getView().setKeepScreenOn(true);
         initBottomBtn(true);
-        camLiveController.setLiveType(basePresenter.getPlayType());
+        camLiveController.setLiveType(basePresenter.getPlayType(), getResources().getConfiguration().orientation);
         if (liveListener != null) liveListener.liveStateChange();
         imgVCamSwitchSpeaker.setImageResource(R.drawable.icon_port_speaker_off_selector);
         imgVCamSwitchSpeaker.setTag(R.drawable.icon_port_speaker_off_selector);

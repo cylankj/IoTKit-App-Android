@@ -213,10 +213,10 @@ public interface CamLiveContract {
         /**
          * 某一天的凌晨时间戳
          *
-         * @param timeStart
+         * @param timeStartInSecond
          * @return
          */
-        Observable<IData> assembleTheDay(long timeStart);
+        Observable<IData> assembleTheDay(long timeStartInSecond);
     }
 }
 

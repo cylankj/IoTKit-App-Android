@@ -10,6 +10,7 @@ import java.util.ArrayList;
  */
 
 public interface IData {
+
     void flattenData(ArrayList<HistoryFile> list);
 
     long[] getTimeArray(int leftIndex, int maxCount);
@@ -56,4 +57,6 @@ public interface IData {
     long getNextFocusTime(long time, int considerDirection);
 
     boolean isHotRect(long time);
+
+    HistoryFile getMaxHistoryFile();
 }
