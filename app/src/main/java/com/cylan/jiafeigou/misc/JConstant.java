@@ -311,4 +311,5 @@ public class JConstant {
     public static final String CLIENT_UPDATAE_TAB = "client_update_tab";
     public static final String CLIENT_UPDATAE_TIME_TAB = "client_update_time_tab";
     public static final String IS_FIRST_PAGE_VIS= "is_first_page_vis";
+    public static final String IS_UPDATE_DOWNLOADING= "is_update_downloading";
 }

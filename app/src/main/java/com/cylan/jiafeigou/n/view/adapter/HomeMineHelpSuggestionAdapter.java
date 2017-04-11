@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -92,6 +93,8 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
                 iv_send_pro.setVisibility(View.VISIBLE);
                 iv_send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
                 Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.loading_progress_rotate);
+                LinearInterpolator lir = new LinearInterpolator();
+                animation.setInterpolator(lir);
                 iv_send_pro.startAnimation(animation);
 
             } else if (item.pro_falag == 1) {
