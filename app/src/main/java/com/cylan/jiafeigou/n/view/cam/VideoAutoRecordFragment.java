@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
@@ -98,6 +99,8 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard) oldOption = -1;
+        boolean alarm = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+
         rbMotion.setChecked(oldOption == 0);
         rb24Hours.setChecked(oldOption == 1);
         rbNever.setChecked(oldOption == 2);
@@ -155,6 +158,10 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
             }
             break;
             case R.id.lLayout_mode_never: {
+                if (!hasSdcard()) {
+                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
+                    return;
+                }
                 rbNever.setChecked(true);
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 2;
