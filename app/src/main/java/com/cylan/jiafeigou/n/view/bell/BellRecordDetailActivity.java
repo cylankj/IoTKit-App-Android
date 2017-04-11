@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.bell;
 import android.Manifest;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
@@ -53,6 +54,7 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.concurrent.ExecutionException;
 
 import butterknife.BindView;
@@ -349,6 +351,12 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
                         ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
                         FileUtils.copyFile(resource, mDownloadFile);
+                        try {
+                            MediaStore.Images.Media.insertImage(BellRecordDetailActivity.this.getContentResolver(),
+                                    resource.getAbsolutePath(), resource.getName(), null);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                         mDownloadFile = null;
                     }
 

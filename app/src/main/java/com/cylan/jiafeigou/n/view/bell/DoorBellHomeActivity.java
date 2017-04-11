@@ -113,6 +113,11 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         super.onStart();
         registerNetWorkObserver();
         mLastEnterTime = PreferencesUtils.getLong(JConstant.BELL_HOME_LAST_ENTER_TIME);
+        try {
+            DataSourceManager.getInstance().clearValue(mUUID,1004,1005);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         if (!mHasLoadInitFinished) {
             startLoadData(false, 0);
         }

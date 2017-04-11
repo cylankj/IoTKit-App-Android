@@ -1,37 +1,38 @@
 package com.cylan.jiafeigou.n.view.mine;
 
+
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
+
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+
 import android.support.v4.app.FragmentManager;
 import android.support.v7.view.menu.MenuView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.SslErrorHandler;
+
 import android.webkit.WebChromeClient;
 import android.webkit.WebResourceError;
 import android.webkit.WebResourceRequest;
+
 import android.webkit.WebSettings;
 import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.LoadingDialog;
-
-import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -102,6 +103,8 @@ public class HomeMineHelpFragment extends Fragment {
         mWvHelp.removeJavascriptInterface("searchBoxJavaBridge_");
         mWvHelp.removeJavascriptInterface("accessibilityTraversal");
         mWvHelp.removeJavascriptInterface("accessibility");
+        WebSettings webseting = mWvHelp.getSettings();
+        webseting.setJavaScriptEnabled(true);
         mWvHelp.setWebViewClient(new WebViewClient() {
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -110,9 +113,8 @@ public class HomeMineHelpFragment extends Fragment {
             }
 
             @Override
-            public void onReceivedSslError(WebView view,
-                                           SslErrorHandler handler, SslError error) {
-                handler.proceed();  //接受所有证书
+            public void onReceivedSslError(WebView view, SslErrorHandler handler, SslError error) {
+                handler.proceed();
             }
         });
         AppLogger.d("url:" + agreementUrl);

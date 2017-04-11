@@ -107,7 +107,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                 }, e -> {
                     if (e instanceof TimeoutException) {
                         mHolderCaller = null;
-                        mView.onDismiss();
+                        mView.onNewCallTimeOut();
                     }
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();

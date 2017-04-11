@@ -34,8 +34,7 @@ public class CamMessageBean {
         CamMessageBean that = (CamMessageBean) o;
 
         if (id != that.id) return false;
-        if (version != that.version) return false;
-        return viewType == that.viewType;
+        return version == that.version;
 
     }
 
@@ -43,7 +42,6 @@ public class CamMessageBean {
     public int hashCode() {
         int result = (int) (id ^ (id >>> 32));
         result = 31 * result + (int) (version ^ (version >>> 32));
-        result = 31 * result + viewType;
         return result;
     }
 }

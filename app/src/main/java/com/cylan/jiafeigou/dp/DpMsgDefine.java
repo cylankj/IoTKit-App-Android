@@ -1001,7 +1001,7 @@ public class DpMsgDefine {
     }
 
     @Message
-    public static final class DPUnreadCount{
+    public static final class DPUnreadCount {
         @Index(0)
         public int id;
         @Index(1)
@@ -1009,7 +1009,7 @@ public class DpMsgDefine {
         @Index(2)
         public int count;
 
-        public DPUnreadCount(){
+        public DPUnreadCount() {
 
         }
 
@@ -1021,4 +1021,33 @@ public class DpMsgDefine {
 
     }
 
+
+    public static class V3Header {
+
+    }
+
+    /**
+     * 历史录像日历列表请求
+     */
+    @Message
+    public static final class V3DateListReq {
+        @Index(0)
+        public int beginTime;
+        @Index(1)
+        public int limit;
+        @Index(2)
+        public boolean asc;
+
+        public V3DateListReq() {
+        }
+
+        @Override
+        public String toString() {
+            return "V3DateListReq{" +
+                    "beginTime=" + beginTime +
+                    ", limit=" + limit +
+                    ", asc=" + asc +
+                    '}';
+        }
+    }
 }

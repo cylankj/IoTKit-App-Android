@@ -29,7 +29,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
@@ -37,7 +36,6 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
@@ -58,6 +56,8 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.DisableAppBarLayoutBehavior;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
+import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
+import com.cylan.jiafeigou.widget.pop.SimplePopupWindow;
 import com.cylan.jiafeigou.widget.wave.SuperWaveView;
 import com.google.gson.Gson;
 
@@ -132,6 +132,19 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             basePresenter.fetchDeviceList(false);
             basePresenter.checkClientUpdate();
         } else AppLogger.e("presenter is null");
+        need2ShowUseCase();
+    }
+
+    private void need2ShowUseCase() {
+        boolean show = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, true);
+        if (show) {
+            PreferencesUtils.putBoolean(JConstant.NEED_SHOW_BIND_USE_CASE, false);
+            imgBtnAddDevices.post(() -> {
+                SimplePopupWindow popupWindow = new SimplePopupWindow(getActivity(), R.drawable.add_device_bg_tips, R.string.Tap1_Add_Tips);
+                popupWindow.showOnAnchor(imgBtnAddDevices, RelativePopupWindow.VerticalPosition.BELOW,
+                        RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, (int) getResources().getDimension(R.dimen.x10), 0);
+            });
+        }
     }
 
     @Override
@@ -325,7 +338,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onAccountUpdate(JFGAccount greetBean) {
-        Log.d("JFGAccount", "JFGAccount: " + new Gson().toJson(greetBean));
         tvHeaderNickName.postDelayed(() -> {
             tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
             tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
@@ -333,6 +345,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             tvHeaderNickName.requestLayout();
         }, 100);
         onNetworkChanged(NetUtils.getJfgNetType(ContextUtils.getContext()) != 0);
+        AppLogger.d("JFGAccount: " + new Gson().toJson(greetBean));
     }
 
     /**
@@ -345,7 +358,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) return "";
         if (account == null) return "";
         String temp = TextUtils.isEmpty(account.getAlias()) ? account.getAccount() : account.getAlias();
-        return ","+MiscUtils.getBeautifulString(temp, 8);
+        return "," + MiscUtils.getBeautifulString(temp, 8);
     }
 
     @SuppressWarnings("deprecation")

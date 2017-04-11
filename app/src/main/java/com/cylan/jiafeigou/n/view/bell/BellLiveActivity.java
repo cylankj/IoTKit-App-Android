@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.Manifest;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -35,10 +36,13 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.misc.INotify;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
@@ -58,6 +62,7 @@ import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
+import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -110,7 +115,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     private String mLiveTitle = "宝宝的房间";
 
     private boolean isLandMode = false;
-    private boolean isLanchFromBellCall = false;
+    //    private boolean isLanchFromBellCall = false;
     private MediaPlayer mediaPlayer;
     private RoundCardPopup roundCardPopup;
 
@@ -242,13 +247,13 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         caller.picture = extra;
         caller.callTime = time;
         mPresenter.newCall(caller);
-        if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_VIEWER)) {
-            isLanchFromBellCall = false;
-        } else if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)) {
-            isLanchFromBellCall = true;
-        }
+//        if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_VIEWER)) {
+//            isLanchFromBellCall = false;
+//        } else if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)) {
+//            isLanchFromBellCall = true;
+//        }
 
-        onSpeaker(isLanchFromBellCall);
+        onSpeaker(false);
     }
 
     @Override
@@ -409,9 +414,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (!mPresenter.checkAudio(1)) {
             mPresenter.switchMicrophone();
         }
-        if (isLanchFromBellCall) {
-            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
-        }
+//        if (isLanchFromBellCall) {
+//            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
+//        }
     }
 
     @Override
@@ -558,6 +563,22 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onNewCallTimeOut() {
 //        dismissAlert();
         mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
+//        INotify.NotifyBean notify = new INotify.NotifyBean();
+//        Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+//        int count = 0;
+//        if (device != null) {
+//            DPEntity entity = MiscUtils.getMaxVersionEntity(device.getProperty(1004), device.getProperty(1005));
+//            if (entity != null) {
+//                count = entity.getValue(0);
+//            }
+//        }
+//        notify.count = count == 0 ? 1 : count;
+//        Intent intent = new Intent(this, BellLiveActivity.class);
+//        intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
+//        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+//        notify.pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        NotifyManager.getNotifyManager().sendNotify(notify);
+        onDismiss();
     }
 
     @Override

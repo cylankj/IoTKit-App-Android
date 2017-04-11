@@ -10,6 +10,7 @@ import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
@@ -52,6 +53,7 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -636,6 +638,12 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
                         ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
                         FileUtils.copyFile(resource, mDownloadFile);
+                        try {
+                            MediaStore.Images.Media.insertImage(MediaActivity.this.getContentResolver(),
+                                    resource.getAbsolutePath(), resource.getName(), null);
+                        } catch (FileNotFoundException e) {
+                            e.printStackTrace();
+                        }
                         mDownloadFile = null;
                     }
 

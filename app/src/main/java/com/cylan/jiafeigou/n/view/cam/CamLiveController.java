@@ -303,7 +303,7 @@ public class CamLiveController implements
      * @param time :定位到某个时间
      */
     public void setNav2Time(long time) {
-        camLiveControlLayer.getSwCamLiveWheel().setPositionByTime(time);
+        camLiveControlLayer.post(() -> camLiveControlLayer.getSwCamLiveWheel().setPositionByTime(time));
     }
 
     private long getWheelCurrentFocusTime() {
@@ -594,7 +594,7 @@ public class CamLiveController implements
                         HistoryFile historyFile = iData.getMaxHistoryFile();
                         if (historyFile != null) {
                             setNav2Time(historyFile.time * 1000L);
-                            presenterRef.get().startPlayHistory(historyFile.time);
+                            presenterRef.get().startPlayHistory(historyFile.time * 1000L);
                             AppLogger.d("找到历史录像?" + historyFile);
                         }
                     }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
@@ -642,8 +642,8 @@ public class CamLiveController implements
         AppLogger.i("land: " + land + " " + (!view.isFlipped()));
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         boolean aFlag = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
-        int aVideo = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
-        if (aFlag && aVideo != 2) {//已开启自动录像和移动侦测
+//        int aVideo = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
+        if (aFlag) {//已开启自动录像和移动侦测
             getAlertDialogFrag().show();
             AppLogger.d("关闭移动侦测将关闭自动录像功能");
         } else if (presenterRef != null && presenterRef.get() != null) {

@@ -452,7 +452,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             sbtnSettingSight.setVisibility(View.VISIBLE);
             try {
                 String dpPrimary = device.$(509, "0");
-                sbtnSettingSight.setTvSubTitle(getString(TextUtils.equals(dpPrimary, "0") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
+                sbtnSettingSight.setTvSubTitle(getString(TextUtils.equals(dpPrimary, "1") ? R.string.Tap1_Camera_Front : R.string.Tap1_Camera_Overlook));
             } catch (Exception e) {
             }
         } else sbtnSettingSight.setVisibility(View.GONE);

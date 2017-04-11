@@ -40,11 +40,14 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
+import com.cylan.jiafeigou.widget.pop.SimplePopupWindow;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
@@ -107,6 +110,20 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         });
 
         customToolbar.setBackAction(v -> onBackPressed());
+
+    }
+
+    private void showCollectCase() {
+        boolean needShow = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, true);
+        if (needShow) {
+            PreferencesUtils.putBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, false);
+            imgVBigPicCollect.post(() -> {
+                SimplePopupWindow popupWindow = new SimplePopupWindow(this, R.drawable.collect_tips, R.string.Tap1_BigPic_FavoriteTips);
+                popupWindow.showOnAnchor(imgVBigPicCollect, RelativePopupWindow.VerticalPosition.ABOVE,
+                        RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, (int) getResources().getDimension(R.dimen.x25), 0);
+            });
+
+        }
     }
 
     private void decideWhichView() {
@@ -197,6 +214,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     protected void onStart() {
         super.onStart();
         decideWhichView();
+        showCollectCase();
     }
 
     @Override

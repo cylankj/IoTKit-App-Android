@@ -261,10 +261,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
 
     @Override
     public void onListInsert(ArrayList<CamMessageBean> beanArrayList, int position) {
-        if (beanArrayList != null && beanArrayList.size() > 0) {
-            for (CamMessageBean bean : beanArrayList)
-                camMessageListAdapter.add(0, bean);
-        }
+        int size = ListUtils.getSize(beanArrayList);
+        for (int i = size - 1; i >= 0; i--)
+            camMessageListAdapter.add(0, beanArrayList.get(i));//beanArrayList是一个降序
         endlessLoading = false;
         mIsLastLoadFinish = true;
         srLayoutCamListRefresh.setRefreshing(false);
