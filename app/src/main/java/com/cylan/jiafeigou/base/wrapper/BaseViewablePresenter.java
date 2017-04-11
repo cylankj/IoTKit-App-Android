@@ -11,7 +11,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
@@ -21,7 +20,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
-import java.io.File;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
@@ -70,6 +68,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(hasNet -> {
                     if (hasNet) {
+                        mIsSpeakerOn = false;
+                        mIsMicrophoneOn = false;
                         if (mView != null) {
                             mView.onViewer();
                         }
@@ -313,8 +313,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(Schedulers.io())
                 .map(s -> {
                     AppLogger.d("正在切换 setMicrophone :" + on);
+                    switchSpeakAndMicroPhone(mIsSpeakerOn, on);
                     mIsMicrophoneOn = on;
-                    switchSpeakAndMicroPhone(mIsSpeakerOn, mIsMicrophoneOn);
                     return s;
                 }).subscribeOn(Schedulers.io());
     }
@@ -324,31 +324,31 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(Schedulers.io())
                 .map(s -> {
                     AppLogger.d("正在切换 Speaker :" + on);
-                    boolean success = switchSpeakAndMicroPhone(mIsSpeakerOn, mIsMicrophoneOn);
+                    boolean success = switchSpeakAndMicroPhone(on, mIsMicrophoneOn);
                     mIsSpeakerOn = success && on;
                     return mIsSpeakerOn;
                 }).subscribeOn(Schedulers.io());
     }
 
     protected boolean switchSpeakAndMicroPhone(boolean speaker, boolean microphone) {
-        try {
-            MediaRecorder mRecorder = new MediaRecorder();
-            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            mRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            mRecorder.setOutputFile(JConstant.MEDIA_PATH + File.separator + "audio.mp3");
-            mRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
-            mRecorder.prepare();
-            mRecorder.start();
-            mRecorder.stop();
-            mRecorder.release();
-            getCmd().setAudio(false, microphone, speaker);//开启设备的扬声器和麦克风
-            getCmd().setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
-            return true;
-        } catch (Exception e) {
-            AppLogger.d(e.getMessage());
-            mView.hasNoAudioPermission();
+        MediaRecorder mRecorder = null;
+        if (speaker) {//这是为了兼容魅族4.4的权限
+            try {
+                mRecorder = new MediaRecorder();
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mRecorder.release();
+            } catch (Exception e) {
+                AppLogger.d(e.getMessage());
+                if (mRecorder != null) {
+                    mRecorder.release();
+                }
+                mView.hasNoAudioPermission();
+                return false;
+            }
         }
-        return false;
+        getCmd().setAudio(false, microphone, speaker);//开启设备的扬声器和麦克风
+        getCmd().setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
+        return true;
     }
 
 

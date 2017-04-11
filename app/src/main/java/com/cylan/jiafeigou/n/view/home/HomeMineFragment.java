@@ -22,7 +22,6 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
@@ -34,7 +33,8 @@ import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
 import com.cylan.jiafeigou.widget.MsgBoxView;
@@ -387,6 +387,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
+            return;
+        }
+        if (!NetUtils.isNetworkAvailable(getContext())){
+            ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
         HomeMineHelpFragment mineHelpFragment = HomeMineHelpFragment.newInstance(new Bundle());

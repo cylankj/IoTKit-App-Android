@@ -24,9 +24,9 @@ import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -179,7 +179,9 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             account.setEnablePush(true);
                             return Observable.just(account);
                         } else {
-                            return Observable.just(DataSourceManager.getInstance().getJFGAccount());
+                            return Observable.interval(0, 2, TimeUnit.SECONDS)
+                                    .map(s -> DataSourceManager.getInstance().getJFGAccount())
+                                    .filter(account -> account != null);
                         }
                     }
                 })
@@ -252,7 +254,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public Observable<Integer> call(RobotoGetDataRsp rsp) {
                         int count = 0;
-                        if (rsp != null && requstId == rsp.seq && rsp.map != null && rsp.map.size() != 0){
+                        if (rsp != null && requstId == rsp.seq && rsp.map != null && rsp.map.size() != 0) {
                             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
                                 try {
                                     if (entry.getKey() == 1101 || entry.getKey() == 1103 || entry.getKey() == 1104) {
