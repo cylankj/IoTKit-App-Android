@@ -105,7 +105,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                             userAlids = getUserInfo.jfgAccount.getAlias();
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -162,7 +162,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -206,7 +206,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                             isSendReq = false;
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -240,7 +240,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                }, AppLogger::e);
     }
 
 }

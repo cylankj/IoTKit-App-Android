@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
@@ -109,9 +108,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                     return null;
                 })
-                .retry(new RxHelper.RxException<>("robotDataSync"))
                 .subscribe(ret -> {
-                }, e -> AppLogger.d(e.getMessage()));
+                }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
     }
 
     /**
@@ -134,7 +132,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                }, e -> AppLogger.d(e.getMessage()));
+                }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
     }
 
     @Override
@@ -257,8 +255,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     if (e instanceof TimeoutException) {
                         mView.unbindDeviceRsp(-1);
                     }
-                    AppLogger.d(e.getMessage());
-                    e.printStackTrace();
+                    AppLogger.e("err: " + MiscUtils.getErr(e));
                 }, () -> {
                 });
         addSubscription(subscribe, "unbindDevice");

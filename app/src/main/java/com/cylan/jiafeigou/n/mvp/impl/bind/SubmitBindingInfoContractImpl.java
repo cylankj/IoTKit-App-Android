@@ -193,7 +193,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 .subscribe((Object integer) -> {
                     AppLogger.i("actionDone: " + integer);
                     getView().bindState(this.bindResult = BIND_SUC);
-                });
+                }, AppLogger::e);
         addSubscription(subscription, "actionDone");
     }
 
@@ -204,7 +204,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Integer integer) -> {
                     getView().onCounting(integer);
-                });
+                }, AppLogger::e);
         addSubscription(subscription, "actionPercent");
     }
 

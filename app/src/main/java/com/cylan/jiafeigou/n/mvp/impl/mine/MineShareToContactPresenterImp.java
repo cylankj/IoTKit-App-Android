@@ -175,7 +175,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                         allCoverData.addAll(list);
                         handlerContactDataResult(list);
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -197,7 +197,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**

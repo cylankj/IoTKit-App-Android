@@ -107,7 +107,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
 }

@@ -78,7 +78,7 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                     if (openLogInSetPwdBack != null) {
                         if (getView() != null) getView().registerResult(openLogInSetPwdBack.jfgResult.code);
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override

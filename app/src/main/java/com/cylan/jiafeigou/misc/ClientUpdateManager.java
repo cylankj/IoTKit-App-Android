@@ -216,7 +216,7 @@ public class ClientUpdateManager {
                             PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING,true);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
 

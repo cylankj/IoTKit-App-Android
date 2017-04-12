@@ -770,9 +770,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     @Override
-    public void onTakeSnapShot(Bitmap bitmap) {
-        if (bitmap != null) {
-            showPopupWindow(bitmap);
+    public void onTakeSnapShot(String filePath) {
+        if (!TextUtils.isEmpty(filePath)) {
+            showPopupWindow(filePath);
         } else {
             ToastUtil.showPositiveToast(getString(R.string.set_failed));
         }
@@ -785,28 +785,22 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         }
     }
 
-    private void showPopupWindow(Bitmap bitmap) {
+    private void showPopupWindow(String filePath) {
         try {
             roundCardPopup = new RoundCardPopup(getContext(), view -> {
-                if (bitmap != null) {
-                    ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                if (!TextUtils.isEmpty(filePath)) {
                     Glide.with(getContext())
-                            .load(stream.toByteArray())
+                            .load(filePath)
                             .placeholder(R.drawable.wonderful_pic_place_holder)
-                            .override((int) getResources().getDimension(R.dimen.x44),
-                                    (int) getResources().getDimension(R.dimen.x30))
+                            .override((int) getResources().getDimension(R.dimen.x44), (int) getResources().getDimension(R.dimen.x30))
                             .diskCacheStrategy(DiskCacheStrategy.ALL)
                             .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 2))
                             .into(view);
                 }
             }, v -> {
                 roundCardPopup.dismiss();
-                ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                byte[] byteArray = stream.toByteArray();
                 Bundle bundle = new Bundle();
-                bundle.putByteArray(JConstant.KEY_SHARE_ELEMENT_BYTE, byteArray);
+                bundle.putString(JConstant.KEY_SHARE_ELEMENT_BYTE, filePath);
                 NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
                 ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment,
                         android.R.id.content);

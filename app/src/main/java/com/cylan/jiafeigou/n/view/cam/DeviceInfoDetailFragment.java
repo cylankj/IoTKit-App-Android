@@ -174,7 +174,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                                 tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
                             }
                         }
-                    });
+                    }, AppLogger::e);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         String statusContent = getSdcardState(status.hasSdcard, status.err);
         if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
@@ -317,7 +317,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                                     tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
                                 }
                             }
-                        });
+                        }, AppLogger::e);
         });
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 timeZoneFragment, android.R.id.content);

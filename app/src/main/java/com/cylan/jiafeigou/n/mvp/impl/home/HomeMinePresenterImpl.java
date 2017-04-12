@@ -108,7 +108,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             return;
                         getView().onBlur(drawable);
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, AppLogger::e);
     }
 
     @Override
@@ -212,7 +212,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             }
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, AppLogger::e);
     }
 
     /**
@@ -243,7 +243,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     } catch (JfgException e) {
                         AppLogger.e("getUnReadMesg" + e.getLocalizedMessage());
                     }
-                });
+                }, AppLogger::e);
     }
 
     public Subscription unReadMesgBack() {
@@ -280,7 +280,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     AppLogger.d("unrecount:" + integer);
                     if (getView() != null) getView().setMesgNumber(integer);
                     hasUnRead = integer != 0;
-                },e->AppLogger.d(e.getMessage()));
+                }, AppLogger::e);
     }
 
     @Override
@@ -295,7 +295,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(getUserInfo -> {
                     if (getUserInfo != null)
                         userInfo = getUserInfo.jfgAccount;
-                },e->AppLogger.d(e.getMessage()));
+                }, AppLogger::e);
     }
 
 
@@ -305,7 +305,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(loginMeTab -> {
                     if (loginMeTab.b)
                         start();
-                },e->AppLogger.d(e.getMessage()));
+                }, AppLogger::e);
     }
 
 }

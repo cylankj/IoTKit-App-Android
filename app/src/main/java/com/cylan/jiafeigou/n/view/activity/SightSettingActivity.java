@@ -31,6 +31,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
     @BindView(R.id.rbtn_sight_vertical)
     RadioButton rbtnSightVertical;
     private String uuid;
+    private String initValue;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,6 +43,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         //平视
         String dpPrimary = device.$(509, "0");
+        initValue = dpPrimary;
         try {
             //0:俯视
             rbtnSightHorizontal.setChecked(TextUtils.equals("1", dpPrimary));
@@ -70,7 +72,8 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
                             }
                             return null;
                         })
-                        .subscribe();
+                        .subscribe(ret -> {
+                        }, AppLogger::e);
                 rbtnSightHorizontal.setChecked(true);
                 break;
             case R.id.sv_sight_vertical:
@@ -85,7 +88,8 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
                             }
                             return null;
                         })
-                        .subscribe();
+                        .subscribe(ret -> {
+                        }, AppLogger::e);
                 rbtnSightVertical.setChecked(true);
                 break;
         }
@@ -94,6 +98,10 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        ToastUtil.showToast(getString(R.string.SCENE_SAVED));
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        //平视
+        String dpPrimary = device.$(509, "0");
+        if (!TextUtils.equals(dpPrimary, initValue))
+            ToastUtil.showToast(getString(R.string.SCENE_SAVED));
     }
 }

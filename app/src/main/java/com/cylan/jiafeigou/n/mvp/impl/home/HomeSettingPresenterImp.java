@@ -83,7 +83,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                             getView().clearFinish();
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -135,7 +135,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                         getView().hideLoadCacheSizeProgress();
                         getView().setCacheSize(size);
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -224,7 +224,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                             userInfo = getUserInfo.jfgAccount;
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
 

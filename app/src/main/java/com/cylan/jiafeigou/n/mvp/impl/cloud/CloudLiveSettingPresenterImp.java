@@ -14,6 +14,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.db.sqlite.WhereBuilder;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.util.concurrent.TimeUnit;
@@ -115,7 +116,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
                     public void call(Object o) {
                         getView().hideClearRecordProgress();
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -132,7 +133,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
                             dbManager = DataBaseUtil.getInstance(getUserInfo.jfgAccount.getAccount()).dbManager;
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**

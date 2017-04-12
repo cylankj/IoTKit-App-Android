@@ -15,6 +15,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
@@ -62,7 +63,8 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                         AppLogger.d("login result: " + resultLogin);
                         return null;
                     })
-                    .subscribe();
+                    .subscribe(ret -> {
+                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         } else {
             AppLogger.d("has no sticky");
             getView().splashOver();
@@ -116,7 +118,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                     } else {
                         delay1s();
                     }
-                });
+                }, AppLogger::e);
     }
 
     public void delay1s() {
@@ -126,9 +128,8 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(o -> {
                     selectNext();
-                });
+                }, AppLogger::e);
     }
-
 
 
 }

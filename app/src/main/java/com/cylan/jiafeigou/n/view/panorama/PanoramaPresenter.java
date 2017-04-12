@@ -184,7 +184,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                         //wifi 网络,关闭流量提醒
                         mView.onNetWorkChangedToWiFi();
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override

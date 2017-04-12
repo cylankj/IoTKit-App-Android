@@ -72,8 +72,8 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                 .flatMap(who -> {
                                     switch (mView.onResolveViewLaunchType()) {
                                         case JConstant.VIEW_CALL_WAY_LISTEN:
-                                            Subscription subscription = loadPreview().subscribe(o -> {
-                                            }, throwable -> AppLogger.d(throwable.getMessage()));
+                                            Subscription subscription = loadPreview().subscribe(ret -> {
+                                            }, AppLogger::e);
                                             registerSubscription(subscription);
                                             if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
                                                 mView.onNewCallWhenInLive(mHolderCaller.caller);

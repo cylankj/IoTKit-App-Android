@@ -108,7 +108,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
                     if (getView() != null && !isClearSucc) getView().clearSdResult(2);
-                }));
+                }, AppLogger::e));
     }
 
     @Override
@@ -127,7 +127,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -201,7 +201,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                             e.printStackTrace();
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, AppLogger::e);
     }
 
     @Override
@@ -236,7 +236,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(sdStatus -> {
                     if (sdStatus != null && getView() != null) getView().initSdUseDetail(sdStatus);
-                },e->AppLogger.d(e.getMessage()));
+                }, AppLogger::e);
     }
 
 }

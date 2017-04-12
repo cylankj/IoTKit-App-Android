@@ -67,7 +67,7 @@ public interface CamLiveContract {
          */
         void onLiveStop(int type, int errId);
 
-        void onTakeSnapShot(Bitmap bitmap);
+        void onTakeSnapShot(String filePath);
 
         void onPreviewResourceReady(Bitmap bitmap);
 

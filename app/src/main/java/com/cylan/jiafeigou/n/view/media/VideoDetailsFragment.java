@@ -129,7 +129,7 @@ public class VideoDetailsFragment extends PicDetailsFragment implements SeekBar.
             detailsAlbumImage.setVisibility(View.VISIBLE);
             vvPlayVideo.setVisibility(View.INVISIBLE);
             vvLoading.setVisibility(View.INVISIBLE);
-        });
+        }, AppLogger::e);
         if (mStartPosition == mPosition) {
             mAnimateEnd = false;
             getActivity().getWindow().getSharedElementEnterTransition().addListener(new TransitionListenerAdapter() {

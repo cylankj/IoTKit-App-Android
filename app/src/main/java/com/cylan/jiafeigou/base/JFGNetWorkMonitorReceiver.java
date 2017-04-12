@@ -22,8 +22,8 @@ public class JFGNetWorkMonitorReceiver extends BroadcastReceiver {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-
-        if ((mobNetInfo == null || !mobNetInfo.isConnected()) && (wifiNetInfo == null || !wifiNetInfo.isConnected()) && !DataSourceManager.getInstance().isOnline()) {
+        if (mobNetInfo != null && !mobNetInfo.isConnected() && wifiNetInfo != null && !wifiNetInfo.isConnected() && !DataSourceManager.getInstance().isOnline()) {
+//                BSToast.showLong(context, "网络不可以用");
             AppLogger.d("当前网络不可用");
             RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(false);
             connectionEvent.mobile = mobNetInfo;

@@ -8,6 +8,7 @@ import android.provider.MediaStore;
 
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineLookBigImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -69,7 +70,7 @@ public class MineLookBigImagePresenterImp extends AbstractPresenter<MineLookBigI
                 .subscribe(o1 -> {
                     // 最后通知图库更新
                     getView().getContext().sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
-                });
+                }, AppLogger::e);
 
     }
 

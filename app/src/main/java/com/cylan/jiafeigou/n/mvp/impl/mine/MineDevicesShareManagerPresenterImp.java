@@ -122,7 +122,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                             getView().showNoHasShareFriendNullView();
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -197,7 +197,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                             handlerUnShareCallback(unshareDeviceCallBack);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -266,7 +266,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                }, AppLogger::e);
     }
 
 }

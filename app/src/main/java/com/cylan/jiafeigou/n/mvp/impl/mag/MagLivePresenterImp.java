@@ -8,6 +8,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -111,7 +112,7 @@ public class MagLivePresenterImp extends AbstractPresenter<MagLiveContract.View>
                             initMagData();
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**

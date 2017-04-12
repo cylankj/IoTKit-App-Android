@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ZipUtils;
@@ -118,7 +119,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                             getView().initRecycleView(list);
                         }
                     }
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     /**
@@ -149,7 +150,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                             initData();
                         }
                     }
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     /**
@@ -243,7 +244,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     @Override
                     public void call(Object o) {
                         int req = JfgCmdInsurance.getCmd().getFeedbackList();
-                        AppLogger.d("getSystemAutoReply:"+req);
+                        AppLogger.d("getSystemAutoReply:" + req);
                     }
                 }, throwable -> {
                     AppLogger.e("getSystemAutoReply" + throwable.getLocalizedMessage());
@@ -265,13 +266,13 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                         if (getFeedBackRsp != null) {
                             if (getView() != null && getFeedBackRsp.arrayList.size() != 0) {
                                 JFGFeedbackInfo jfgFeedbackInfo = getFeedBackRsp.arrayList.get(0);
-                                AppLogger.d("getSystemAuto:"+jfgFeedbackInfo.time);
-                                AppLogger.d("getSystemAuto2:"+System.currentTimeMillis());
+                                AppLogger.d("getSystemAuto:" + jfgFeedbackInfo.time);
+                                AppLogger.d("getSystemAuto2:" + System.currentTimeMillis());
                                 getView().addSystemAutoReply(jfgFeedbackInfo.time, jfgFeedbackInfo.msg);
                             }
                         }
                     }
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     /**
@@ -290,7 +291,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                             getView().refrshRecycleView(sendFeekBack.jfgResult.code);
                         }
                     }
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     @Override
@@ -316,7 +317,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     public void call(Boolean aBoolean) {
                         isOpenLogin = aBoolean;
                     }
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     @Override
@@ -374,7 +375,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                         getView().refrshRecycleView(0);
                         deleteLocalLogFile();
                     }
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     /**
@@ -407,7 +408,8 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     }
                     return 0;
                 })
-                .subscribe();
+                .subscribe(ret -> {
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
 }

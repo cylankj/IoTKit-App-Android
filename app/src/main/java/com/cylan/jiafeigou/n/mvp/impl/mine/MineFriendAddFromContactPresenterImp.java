@@ -228,7 +228,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                         allContactBean.addAll(list);
                         handlerDataResult(list);
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -276,7 +276,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                             isCheckAcc = false;
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -387,6 +387,6 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                }, AppLogger::e);
     }
 }

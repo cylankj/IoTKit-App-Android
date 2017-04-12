@@ -105,7 +105,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             initMesgData(account.jfgAccount.getAccount());
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -175,7 +175,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             seq = JfgCmdInsurance.getCmd().robotGetData("", params, 100, false, 0);
                             AppLogger.d("getMesgDpData:" + seq);
                         } catch (Exception e) {
-                            AppLogger.e("getMesgDpData:"+e.getLocalizedMessage());
+                            AppLogger.e("getMesgDpData:" + e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }
@@ -215,12 +215,13 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             getView().showNoMesgView();
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
 
     /**
      * 解析转换数据
+     *
      * @param robotoGetDataRsp
      */
     private ArrayList<MineMessageBean> convertData(RobotoGetDataRsp robotoGetDataRsp) {
@@ -305,7 +306,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleteDataRspClass -> {
                     if (getView() != null) getView().deleteMesgReuslt(deleteDataRspClass);
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -318,7 +319,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     } catch (DbException e) {
                         e.printStackTrace();
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -329,19 +330,19 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     try {
 //                        long req = JfgCmdInsurance.getCmd().robotCountDataClear("", new long[]{601L, 701L}, 0);
                         ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
-                        JFGDPMsg msg1 = new JFGDPMsg(1101L,System.currentTimeMillis());
-                        JFGDPMsg msg2 = new JFGDPMsg(1103L,System.currentTimeMillis());
-                        JFGDPMsg msg3 = new JFGDPMsg(1104L,System.currentTimeMillis());
+                        JFGDPMsg msg1 = new JFGDPMsg(1101L, System.currentTimeMillis());
+                        JFGDPMsg msg2 = new JFGDPMsg(1103L, System.currentTimeMillis());
+                        JFGDPMsg msg3 = new JFGDPMsg(1104L, System.currentTimeMillis());
                         list.add(msg1);
                         list.add(msg2);
                         list.add(msg3);
-                        long req = JfgCmdInsurance.getCmd().robotSetData("",list);
+                        long req = JfgCmdInsurance.getCmd().robotSetData("", list);
                         AppLogger.d("mine_markHasRead:" + req);
                     } catch (JfgException e) {
                         AppLogger.e("mine_markHasRead:" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
-                });
+                }, AppLogger::e);
     }
 
 }

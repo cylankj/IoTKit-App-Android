@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.support.zscan.ZXingScannerView;
 import com.cylan.jiafeigou.utils.NetUtils;
@@ -258,7 +259,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
                     public void call(Object o) {
                         zxVScanAddRelativesandfriend.stopCamera();
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override

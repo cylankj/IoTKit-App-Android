@@ -225,7 +225,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     } else if (collectVersion != -1) {
                         unCollect(collectVersion);
                     }
-                });
+                }, AppLogger::e);
 
     }
 

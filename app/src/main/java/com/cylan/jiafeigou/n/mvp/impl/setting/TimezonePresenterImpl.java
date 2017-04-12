@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.setting;
 import com.cylan.jiafeigou.n.mvp.contract.setting.TimezoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.ArrayList;
@@ -41,7 +42,7 @@ public class TimezonePresenterImpl extends AbstractPresenter<TimezoneContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((List<TimeZoneBean> list) -> {
                     getView().timezoneList(list);
-                });
+                }, AppLogger::e);
     }
 
 

@@ -115,7 +115,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                             handlerCheckResult(checkAccountCallback);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -136,7 +136,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -153,7 +153,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                     public void call(Object o) {
                         getView().onStartScan();
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -239,7 +239,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                }, AppLogger::e);
     }
 
 }

@@ -629,7 +629,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
             AutoSignIn.getInstance().autoSave(ViewUtils.getTextViewContent(etLoginUsername), 1, "")
                     .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                    .subscribe();
+                    .subscribe(ret -> {
+                    }, AppLogger::e);
         }
     }
 
@@ -851,9 +852,9 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
     //回显
     @Override
     public void reShowAccount(String account) {
-        if (JConstant.EMAIL_REG.matcher(account).find() || JConstant.PHONE_REG.matcher(account).find()){
+        if (JConstant.EMAIL_REG.matcher(account).find() || JConstant.PHONE_REG.matcher(account).find()) {
             etLoginUsername.setText(account);
-        }else {
+        } else {
             etLoginUsername.setText("");
         }
     }
@@ -1098,12 +1099,12 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
 
     @Override
     public void showLoading() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override
     public void hideLoading() {
-        if (LoadingDialog.isShowing(getFragmentManager())){
+        if (LoadingDialog.isShowing(getFragmentManager())) {
             LoadingDialog.dismissLoading(getFragmentManager());
         }
     }

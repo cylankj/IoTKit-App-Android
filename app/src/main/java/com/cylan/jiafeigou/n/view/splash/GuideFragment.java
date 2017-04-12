@@ -92,7 +92,7 @@ public class GuideFragment extends Fragment implements GreatDragView.ViewDisappe
                         }
                         PreferencesUtils.putBoolean(JConstant.UPDATAE_AUTO_LOGIN,false);
                         AppLogger.d("updata_login:"+rsp.code);
-                    });
+                    }, AppLogger::e);
         }else {
             //进入登陆页 login page//这里要用replace
             if (index == 3)

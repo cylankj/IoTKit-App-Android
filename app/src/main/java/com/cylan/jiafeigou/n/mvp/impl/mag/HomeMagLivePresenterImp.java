@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -95,7 +96,7 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
                     public void call(Object o) {
                         getView().hideClearProgress();
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -129,7 +130,7 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
                                 dbManager = DataBaseUtil.getInstance(getUserInfo.jfgAccount.getAccount()).dbManager;
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
 

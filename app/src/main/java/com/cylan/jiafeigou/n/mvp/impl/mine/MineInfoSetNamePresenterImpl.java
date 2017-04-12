@@ -101,7 +101,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetA
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -158,7 +158,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetA
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                }, AppLogger::e);
     }
 
 

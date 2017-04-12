@@ -145,7 +145,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     public void cancelViewer() {
-        stopViewer().subscribe(ret->{},e->AppLogger.d(e.getMessage()));
+        stopViewer().subscribe(ret -> {
+        }, AppLogger::e);
     }
 
     /**
@@ -247,7 +248,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         AppLogger.d("stop" + getViewHandler());
         if (getViewHandler() != null) {
             if (hasLiveStream) {
-                stopViewer().subscribe(s -> setViewHandler(null),throwable -> AppLogger.d(throwable.getMessage()));
+                stopViewer().subscribe(s -> setViewHandler(null), AppLogger::e);
             }
         }
     }

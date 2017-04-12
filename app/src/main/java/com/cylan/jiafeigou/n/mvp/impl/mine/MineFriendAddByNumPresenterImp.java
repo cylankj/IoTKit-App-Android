@@ -116,7 +116,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                             handlerCheckCallBackResult(checkAccountCallback);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -203,7 +203,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                }, AppLogger::e);
     }
 
 }

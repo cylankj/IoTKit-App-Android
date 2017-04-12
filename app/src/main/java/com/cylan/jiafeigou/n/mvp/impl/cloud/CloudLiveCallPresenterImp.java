@@ -156,7 +156,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                             loadNum = 0;
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -200,7 +200,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -219,7 +219,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                             getView().handlerCallingReuslt(eFamilyMsgpack.msgId);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -240,7 +240,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -267,7 +267,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**

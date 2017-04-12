@@ -196,7 +196,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             getView().initFriendRecyList(new ArrayList<RelAndFriendBean>());
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -213,7 +213,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             handleInitAddReqListDataResult(o);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -422,7 +422,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                             getView().longClickDeleteItem(deleteAddReqBack.jfgResult.code);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
 
@@ -457,7 +457,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                }, AppLogger::e);
     }
 
     public void saveInDb(RelAndFriendBean bean) {

@@ -111,7 +111,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                             e.printStackTrace();
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -139,7 +139,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         bean.content = forgetPwdByMail.account;
                         getView().submitResult(bean);
                     }
-                });
+                }, AppLogger::e);
     }
 
     private Subscription getSmsCodeResultSub() {
@@ -155,7 +155,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                             AppLogger.d("code:" + smsCodeResult.token);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -174,7 +174,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                             getView().checkSmsCodeResult(resultVerifyCode.code);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -221,7 +221,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                             getView().resetPwdResult(resetPwdBack.jfgResult.code);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -258,7 +258,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         if (checkRegsiterBack != null && getView() != null)
                             getView().checkIsRegReuslt(checkRegsiterBack.jfgResult.code);
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override

@@ -17,9 +17,7 @@ import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
@@ -89,11 +87,11 @@ public class NormalMediaFragment extends IBaseFragment {
         if (dpAlarm != null) {
             loadBitmap(dpAlarm, index, uuid);
         } else {
-            byte[] bitmapByte = getArguments().getByteArray(KEY_SHARE_ELEMENT_BYTE);
-            if (bitmapByte == null) {
+            String filePath = getArguments().getString(KEY_SHARE_ELEMENT_BYTE);
+            if (!TextUtils.isEmpty(filePath)) {
                 AppLogger.e("byte is null");
             } else {
-                loadBitmap(bitmapByte);
+                loadBitmap(filePath);
             }
         }
         imgVShowPic.setOnViewTapListener((View v, float x, float y) -> {
@@ -110,9 +108,9 @@ public class NormalMediaFragment extends IBaseFragment {
                 .into(imgVShowPic);
     }
 
-    private void loadBitmap(byte[] bitmapByte) {
+    private void loadBitmap(String filePath) {
         Glide.with(this)
-                .load(bitmapByte)
+                .load(filePath)
                 .asBitmap()
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

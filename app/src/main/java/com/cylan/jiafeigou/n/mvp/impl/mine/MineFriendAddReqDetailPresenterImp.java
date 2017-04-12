@@ -145,7 +145,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
 
@@ -185,7 +185,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                             getView().showSendAddReqResult(addFriendBack.jfgResult.code == 0 ? true : false);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -204,6 +204,6 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                             getView().showAddedReult(consentAddFriendBack.jfgResult.code == 0 ? true : false);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 }

@@ -49,6 +49,7 @@ import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
@@ -166,7 +167,8 @@ public class DataSourceService extends Service implements AppCallBack {
                                                 DataSourceManager.getInstance().initFromDB();
                                                 return null;
                                             }))
-                                    .subscribe();
+                                    .subscribe(ret -> {
+                                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
                         } else if (integer == -1) {
                             //emit failed event.
                             PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
@@ -175,7 +177,8 @@ public class DataSourceService extends Service implements AppCallBack {
                         return null;
                     })
                     .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                    .subscribe();
+                    .subscribe(ret -> {
+                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         } else {
             //直接走引导页
             PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
@@ -563,16 +566,16 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnCheckClientVersion(int i, String s, int i1) {
         AppLogger.d(String.format(Locale.getDefault(), "check version:%d,%s,%d", i, s, i1));
         // 客户端升级测试
-        if (!TextUtils.isEmpty(s)){
+        if (!TextUtils.isEmpty(s)) {
 //            String url = "http://121.15.220.150/imtt.dd.qq.com/16891/AE6502757AE91F88EE91D985D5AAE5AD.apk?mkey=58eb4c2e30b4058c&f=2409&c=0&fsname=com.cylan.jiafeigou_2.4.9.5296_20170228.apk&csr=1bbd&p=.apk";
             String url = "http://d.app8h.com/d1/969/5689/Clever%20Dog.apk";
-            ClientUpdateManager.getInstance().startDownload(getApplicationContext(),url,"3.2.0",1);
+            ClientUpdateManager.getInstance().startDownload(getApplicationContext(), url, "3.2.0", 1);
         }
     }
 
     @Override
     public void OnRobotCountMultiDataRsp(long l, Object o) {
-        AppLogger.d("OnRobotCountMultiDataRsp:"+o.toString());
+        AppLogger.d("OnRobotCountMultiDataRsp:" + o.toString());
     }
 
     @Override

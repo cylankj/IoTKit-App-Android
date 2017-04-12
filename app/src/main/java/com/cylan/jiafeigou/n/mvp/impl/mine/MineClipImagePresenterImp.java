@@ -97,7 +97,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                         handlerUploadImage(getHttpDoneResult);
                         getView().upLoadResultView(getHttpDoneResult.ret);
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -153,7 +153,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                             jfgAccount = getUserInfo.jfgAccount;
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -210,7 +210,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override

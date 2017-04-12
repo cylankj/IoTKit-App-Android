@@ -184,7 +184,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                         mView.onItemCollectionCheckRsp(false);
                     }
                     AppLogger.d("检查是否被收藏...: " + idpTaskResult.getResultCode());
-                });
+                }, AppLogger::e);
         addSubscription(subscription, "checkCollection" + index);
     }
 

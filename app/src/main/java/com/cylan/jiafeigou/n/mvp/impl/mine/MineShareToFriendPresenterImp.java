@@ -178,7 +178,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                             getView().showNoFriendNullView();
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -203,7 +203,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**

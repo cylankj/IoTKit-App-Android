@@ -111,7 +111,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                             getView().showFinishResult(rsp);
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -168,7 +168,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                }, AppLogger::e);
     }
 
 

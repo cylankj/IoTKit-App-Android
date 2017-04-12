@@ -111,7 +111,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                             getView().showNoDeviceView();
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -243,7 +243,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                     public void call(ArrayList<DeviceBean> deviceBeen) {
                         handlerShareDeviceListData(deviceBeen);
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**

@@ -587,7 +587,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
                             finish();
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     @OnClick({R.id.act_media_header_opt_delete, R.id.act_media_picture_opt_delete})

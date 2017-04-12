@@ -104,7 +104,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                             getView().showNoDeviceView();
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -200,7 +200,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -282,7 +282,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                     public void call(ArrayList<DeviceBean> deviceBeen) {
                         handlerShareDeviceListData(deviceBeen);
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -339,7 +339,7 @@ public class MineFriendListShareDevicesPresenterImp extends AbstractPresenter<Mi
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                }, AppLogger::e);
     }
 
 
