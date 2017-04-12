@@ -178,7 +178,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     private Subscription internalUpdateUuidList() {
         return RxBus.getCacheInstance().toObservable(InternalHelp.class)
                 .observeOn(Schedulers.newThread())
-                .throttleLast(100, TimeUnit.MILLISECONDS)
+                .sample(100, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(o -> {
                     subUuidList();
@@ -186,7 +186,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     return null;
                 })
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .doOnCompleted(this::subUuidList)
+//                .doOnCompleted(this::subUuidList)
                 .subscribe();
     }
 
@@ -208,6 +208,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
             return;
         refreshSub = Observable.just(manually)
                 .subscribeOn(Schedulers.newThread())
+                .delay(1, TimeUnit.SECONDS)
                 .map((Boolean aBoolean) -> {
                     if (manually)
                         DataSourceManager.getInstance().syncAllJFGDevicePropertyManually();
