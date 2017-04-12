@@ -111,6 +111,7 @@ public interface MineFriendAddFromContactContract {
          * 移除网络监听
          */
         void unregisterNetworkMonitor();
+
     }
 
 }

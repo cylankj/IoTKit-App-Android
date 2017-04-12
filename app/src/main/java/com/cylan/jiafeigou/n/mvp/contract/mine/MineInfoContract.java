@@ -21,6 +21,8 @@ public interface MineInfoContract {
 
         void showSetPwd(boolean isVisiable);
 
+        void setAccount(String account,int type);
+
     }
 
 
@@ -85,6 +87,7 @@ public interface MineInfoContract {
          */
         Subscription isOpenLoginBack();
 
+        Subscription loginType(String account);
     }
 
 }

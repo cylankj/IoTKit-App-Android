@@ -1,5 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import android.content.Context;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -8,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
@@ -55,6 +59,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     private SimulatePercent simulatePercent;
     private DownloadManagerPro.Config config;
     private String uuid;
+    private int updateTime;
 
     public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view, String uuid, RxEvent.CheckDevVersionRsp checkDevVersion) {
         super(view);
@@ -88,7 +93,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             downLoadBean.savePath = getView().getContext().getFilesDir().getAbsolutePath();
         } else {
-            downLoadBean.savePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
+            downLoadBean.savePath = JConstant.MISC_PATH;
         }
         return downLoadBean;
     }
@@ -116,7 +121,6 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         .setSdCardFolderAddress(bean.savePath)
                         .setDownloadManagerListener(listener)
                         .setAllowNetType(NetConfig.TYPE_ALL);
-
                 try {
                     int token = DownloadManagerPro.getInstance().initTask(taskBuilder);
                     handler.sendMessageDelayed(handler.obtainMessage(MSG_START_DOWNLOAD, token, 0), 1000);
@@ -180,7 +184,8 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                             AppLogger.d("file name:" + headerField);
                             AppLogger.d("file_length:" + length);
                             //先从本地获取看看是否已下载
-                            String localUrl = "/mnt/sdcard/" + Environment.getExternalStorageDirectory().getAbsolutePath() + "/" + bean.fileName + ".bin";
+//                            String localUrl = "/mnt/sdcard" + Environment.getExternalStorageDirectory().getAbsolutePath() +"/"+ bean.fileName + ".bin";
+                            String localUrl = "/mnt/sdcard"+JConstant.MISC_PATH+"/"+ bean.fileName + ".bin";
                             File file = new File(localUrl);
                             AppLogger.d("local_url:" + file.getAbsolutePath());
                             AppLogger.d("file_length:" + getFileSize(file));
@@ -305,14 +310,29 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        String localUrl = "/mnt/sdcard" + downLoadBean.savePath + "/" + downLoadBean.fileName + ".bin";
-                        AppLogger.d("localUrl:" + localUrl);
-                        int req = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(localUrl, uuid).toBytes());
-                        AppLogger.d("beginUpdate:" + req);
+//                        String localUrl = "/mnt/sdcard" + downLoadBean.savePath + downLoadBean.fileName + ".bin";
+                        int ipAddress = 0;
+                        WifiManager mWifi = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+                        if (mWifi.isWifiEnabled()) {
+                            WifiInfo wifiInfo = mWifi.getConnectionInfo();
+                            ipAddress = wifiInfo.getIpAddress();
+                        }
+                        String ip = intToIp(ipAddress);
+                        String localUrl = "http://"+ip+":8765"+"/mnt/sdcard"+JConstant.MISC_PATH+"/"+ downLoadBean.fileName + ".bin";
+                        AppLogger.d("localUrl2:" + localUrl);
+                        updateTime = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(localUrl,uuid).toBytes());
+                        AppLogger.d("beginUpdate:" + updateTime);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
                 });
+    }
+
+    private String intToIp(int i) {
+        return (i & 0xFF ) + "." +
+                ((i >> 8 ) & 0xFF) + "." +
+                ((i >> 16 ) & 0xFF) + "." +
+                ( i >> 24 & 0xFF) ;
     }
 
     @Override
@@ -320,16 +340,19 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         return RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((RxEvent.LocalUdpMsg localUdpMsg) -> {
-                    //TODO 回调结果
+                    //回调结果
+                    AppLogger.d("endUpdate:" + localUdpMsg.time);
                     MessagePack msgPack = new MessagePack();
                     try {
                         JfgUdpMsg.UdpHeader header = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
                         final String headTag = header.cmd;
                         AppLogger.d("udp_cmd:" + headTag);
-                        if (TextUtils.equals(headTag, "f_upgrade")) {
-                            getView().handlerResult(2);
-                        } else {
-                            getView().handlerResult(3);
+                        if (updateTime == localUdpMsg.time){
+                            if (TextUtils.equals(headTag, "f_upgrade")) {
+                                getView().handlerResult(2);
+                            } else {
+                                getView().handlerResult(3);
+                            }
                         }
                     } catch (IOException e) {
                         AppLogger.i("unpack msgpack failed:" + e.getLocalizedMessage());
@@ -388,4 +411,6 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         }
         return size;
     }
+
+    //http:192.1
 }

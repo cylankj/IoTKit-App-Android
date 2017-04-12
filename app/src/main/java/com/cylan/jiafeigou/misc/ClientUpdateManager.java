@@ -81,11 +81,11 @@ public class ClientUpdateManager {
             //没有sd卡
             updateFileBean.savePath = context.getFilesDir().getAbsolutePath();
         } else {
-            updateFileBean.savePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
+//            updateFileBean.savePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
+            updateFileBean.savePath = JConstant.MISC_PATH;
         }
-
-        apkPath = "/mnt/sdcard"+updateFileBean.savePath+ updateFileBean.fileName+".apk";
-
+//        apkPath = "/mnt/sdcard"+updateFileBean.savePath+ updateFileBean.fileName+".apk";
+        apkPath =  JConstant.MISC_PATH+"/"+updateFileBean.fileName+".apk";
         checkLocal(apkPath,url,context);
     }
 
@@ -216,6 +216,8 @@ public class ClientUpdateManager {
                             PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING,true);
                         }
                     }
+                },throwable -> {
+                    AppLogger.e("checkLocal"+throwable.getLocalizedMessage());
                 });
     }
 

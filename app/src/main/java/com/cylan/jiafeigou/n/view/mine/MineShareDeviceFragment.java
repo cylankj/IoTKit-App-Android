@@ -176,7 +176,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
                 if (num == 0) return;
                 adapter.getItem(position).hasShareCount += num;
                 adapter.notifyDataSetChanged();
-                presenter.shareSucceedAdd(list);
+                presenter.shareSucceedAdd(position,list);
             }
         });
     }
