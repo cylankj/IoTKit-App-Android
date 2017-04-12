@@ -21,7 +21,11 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscription;
@@ -202,7 +206,6 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     /**
      * 检测发送短信权限
-     *
      * @return
      */
     @Override
@@ -266,6 +269,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
      */
     private void handlerContactDataResult(ArrayList<RelAndFriendBean> list) {
         if (getView() != null && list != null && list.size() != 0) {
+            Collections.sort(list,new Comparent());
             getView().hideNoContactNullView();
             getView().initContactReclyView(list);
         } else {
@@ -328,8 +332,25 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
             emails.close();
         }
         cursor.close();
-
         return list;
     }
 
+    public class Comparent implements Comparator<RelAndFriendBean> {
+        @SuppressWarnings("unchecked")
+        @Override
+        public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
+            Collator ca = Collator.getInstance(Locale.CHINA);
+            int flags = 0;
+            if (ca.compare(lhs.alias,rhs.alias) < 0) {
+                flags = -1;
+            }
+            else if(ca.compare(lhs.alias,rhs.alias) > 0) {
+                flags = 1;
+            }
+            else {
+                flags = 0;
+            }
+            return flags;
+        }
+    }
 }

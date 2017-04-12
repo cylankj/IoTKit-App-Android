@@ -190,6 +190,9 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         if (!TextUtils.equals(localSSid, remoteSSid)) {
             new AlertDialog.Builder(getContext())
                     .setMessage(getString(R.string.setwifi_check, remoteSSid))
+                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                        dialog.dismiss();
+                    })
                     .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
                         startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     })
@@ -214,7 +217,6 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
      * 处理下载
      */
     private void handlerDownLoad() {
-
         //wifi 网络
         int netType = NetUtils.getNetType(getContext());
         if (netType == 1) {
@@ -228,6 +230,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
             SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
             simpleDialogFragment.setAction((int id, Object value) -> {
                 //开始下载
+                if (id == R.id.tv_dialog_btn_left)
                 basePresenter.startDownload(basePresenter.creatDownLoadBean());
             });
             simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");

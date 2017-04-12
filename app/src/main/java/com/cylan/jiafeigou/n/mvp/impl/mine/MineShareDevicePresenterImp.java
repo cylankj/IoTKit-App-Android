@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
@@ -20,6 +21,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -43,7 +45,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     private CompositeSubscription subscription;
     private ArrayList<DeviceBean> allDevice = new ArrayList<>();
     private ArrayList<RelAndFriendBean> hasShareFriendData = new ArrayList<>();
-    private ArrayList<RelAndFriendBean> shareSucceedData = new ArrayList<>();
+    private HashMap<Integer,ArrayList<RelAndFriendBean>> map = new HashMap<>();
 
     public MineShareDevicePresenterImp(MineShareDeviceContract.View view) {
         super(view);
@@ -68,6 +70,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
+        clearData();
     }
 
     @Override
@@ -117,7 +120,10 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     @Override
     public ArrayList<RelAndFriendBean> getJFGInfo(int position) {
         hasShareFriendData.clear();
-        hasShareFriendData.addAll(shareSucceedData);
+        ArrayList<RelAndFriendBean> shareSuccList = map.get(position);
+        if (shareSuccList != null && shareSuccList.size() > 0){
+            hasShareFriendData.addAll(shareSuccList);
+        }
         if (this.hasShareFriendList != null && this.hasShareFriendList.size() != 0) {
             for (JFGFriendAccount info : this.hasShareFriendList.get(position).friends) {
                 RelAndFriendBean relAndFriendBean = new RelAndFriendBean();
@@ -263,7 +269,6 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     @Override
     public void unShareSucceedDel(int position, ArrayList<String> arrayList) {
         Iterator iterator = hasShareFriendList.get(position).friends.iterator();
-        Iterator iterator2 = shareSucceedData.iterator();
         while (iterator.hasNext()) {
             JFGFriendAccount friend = (JFGFriendAccount) iterator.next();
             for (String str : arrayList) {
@@ -272,25 +277,34 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 }
             }
         }
-        while (iterator2.hasNext()) {
-            RelAndFriendBean friend = (RelAndFriendBean) iterator2.next();
-            for (String str : arrayList) {
-                if (friend.account.equals(str)) {
-                    iterator2.remove();
+        ArrayList<RelAndFriendBean> shareSuccList = map.get(position);
+        if (shareSuccList != null && shareSuccList.size()>0){
+            Iterator iterator2 = shareSuccList.iterator();
+            while (iterator2.hasNext()) {
+                RelAndFriendBean friend = (RelAndFriendBean) iterator2.next();
+                for (String str : arrayList) {
+                    if (friend.account.equals(str)) {
+                        iterator2.remove();
+                    }
                 }
             }
         }
     }
 
     @Override
-    public void shareSucceedAdd(ArrayList<RelAndFriendBean> list) {
-//        shareSucceedData.clear();
-        shareSucceedData.addAll(list);
+    public void shareSucceedAdd(int key,ArrayList<RelAndFriendBean> list) {
+        ArrayList<RelAndFriendBean> shareSuccList = map.get(key);
+        if (shareSuccList == null){
+            shareSuccList = new ArrayList<>();
+        }
+        shareSuccList.addAll(list);
+        map.put(key,shareSuccList);
     }
 
     @Override
     public void clearData() {
-        shareSucceedData.clear();
+        if (map != null)
+        map.clear();
     }
 
 }

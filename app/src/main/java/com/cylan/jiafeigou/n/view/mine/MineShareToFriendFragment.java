@@ -183,7 +183,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void showShareSomeFail(int some) {
         //TODO 完善
-        showShareResultDialog(some + getString(R.string.Tap3_ShareDevice_Friends_FailTips));
+        showShareResultDialog(String.format(getString(R.string.Tap3_ShareDevice_Friends_FailTips),some));
     }
 
     @Override
@@ -211,7 +211,6 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     /**
      * 处理分享后的结果
-     *
      * @param callbackList
      */
     @Override

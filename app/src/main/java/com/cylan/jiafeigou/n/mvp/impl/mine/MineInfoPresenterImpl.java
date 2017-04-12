@@ -19,13 +19,16 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.io.File;
 
+import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
+import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -219,6 +222,34 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     isOpenLogin = thirdLoginTab.isThird;
                     getView().showSetPwd(thirdLoginTab.isThird);
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+    }
+
+    @Override
+    public Subscription loginType(String account) {
+        return Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<Object, Observable<Integer>>() {
+                    @Override
+                    public Observable<Integer> call(Object o) {
+                        try {
+                            String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
+                            if (TextUtils.isEmpty(aesAccount)) {
+                                AppLogger.d("reShowAccount:aes account is null");
+                                return Observable.just(null);
+                            }
+                            String decryption = AESUtil.decrypt(aesAccount);
+                            AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
+                            return Observable.just(signType.type);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return Observable.just(1);
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(i -> {
+                    if (getView() != null)getView().setAccount(account,i);
+                });
     }
 
     @Override

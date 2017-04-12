@@ -352,8 +352,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                         .into(myViewTarget);
             }
 
-            tvUserAccount.setText(bean.getAccount());
-
             if (presenter.checkOpenLogin()) {
                 String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
                 tvUserName.setText(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias);
@@ -372,6 +370,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             } else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
+            presenter.loginType(bean.getAccount());
         }
     }
 
@@ -421,6 +420,21 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void showSetPwd(boolean isVisiable) {
         if (isVisiable) {
             rlChangePassword.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    public void setAccount(String account,int type) {
+        if (type == 3){
+            tvUserAccount.setText(getString(R.string.LOGIN_QQ));
+        }else if (type == 4){
+            tvUserAccount.setText(getString(R.string.LOGIN_WEIBO));
+        }else if (type == 6){
+            tvUserAccount.setText("FaceBook LOGIN");
+        }else if (type == 7){
+            tvUserAccount.setText("Twitter_LOGIN");
+        }else {
+            tvUserAccount.setText(account);
         }
     }
 

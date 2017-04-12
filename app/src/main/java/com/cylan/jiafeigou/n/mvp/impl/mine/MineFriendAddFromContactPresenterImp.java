@@ -8,12 +8,14 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.media.session.MediaSession;
 import android.net.ConnectivityManager;
 import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
@@ -30,7 +32,11 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Locale;
 
 import rx.Observable;
 import rx.Subscription;
@@ -108,7 +114,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         //得到ContentResolver对象
         ContentResolver cr = getView().getContext().getContentResolver();
         //取得电话本中开始一项的光标
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null,null);
         if (cursor == null) return list;
         //向下移动光标
         while (cursor.moveToNext()) {
@@ -330,7 +336,27 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
             }
             list.add(contract);
         }
+        Collections.sort(list, new Comparent());
         return list;
+    }
+
+    public class Comparent implements Comparator<RelAndFriendBean> {
+        @SuppressWarnings("unchecked")
+        @Override
+        public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
+            Collator ca = Collator.getInstance(Locale.CHINA);
+            int flags = 0;
+            if (ca.compare(lhs.alias,rhs.alias) < 0) {
+                flags = -1;
+            }
+            else if(ca.compare(lhs.alias,rhs.alias) > 0) {
+                flags = 1;
+            }
+            else {
+                flags = 0;
+            }
+            return flags;
+        }
     }
 
     @Override
