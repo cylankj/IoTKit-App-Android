@@ -18,12 +18,15 @@ import android.content.Context;
 import android.util.Log;
 
 import com.cylan.jiafeigou.support.block.BlockCanaryCore;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 
@@ -35,6 +38,30 @@ public class PerformanceUtils {
 
     private PerformanceUtils() {
         throw new InstantiationError("Must not instantiate this class");
+    }
+
+    private static HashMap<String, Long> timeCostMap = new HashMap<>();
+
+    /**
+     * add by hunt
+     *
+     * @param tag
+     */
+    public static void startTrace(String tag) {
+        timeCostMap.put(tag, System.currentTimeMillis());
+    }
+
+    /**
+     * add by hunt
+     *
+     * @param tag
+     */
+    public static void stopTrace(String tag) {
+        Long time = timeCostMap.get(tag);
+        if (time != null) {
+            AppLogger.d(String.format(Locale.getDefault(), "%s cost:%sms", tag, (System.currentTimeMillis() - time)));
+            timeCostMap.remove(tag);
+        }
     }
 
     /**

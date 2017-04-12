@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -113,7 +114,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onCreate() {
         super.onCreate();
-        long time = System.currentTimeMillis();
+        PerformanceUtils.startTrace("appStart");
+        PerformanceUtils.startTrace("appStart0");
         PreferencesUtils.init(getApplicationContext());
         enableDebugOptions();
         //每一个新的进程启动时，都会调用onCreate方法。
@@ -124,8 +126,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         registerActivityLifecycleCallbacks(this);
         initHuaweiPushSDK();
         startService(new Intent(this, DataSourceService.class));
-
-        Log.d("launch", "launch time: " + (System.currentTimeMillis() - time));
+        PerformanceUtils.stopTrace("appStart");
     }
 
     /**

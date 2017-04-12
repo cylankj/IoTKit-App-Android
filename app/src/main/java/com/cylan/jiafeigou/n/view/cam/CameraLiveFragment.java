@@ -55,6 +55,7 @@ import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.activity.SightSettingActivity;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -690,6 +691,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             }
             break;
             case R.id.imgV_cam_trigger_capture:
+                PerformanceUtils.startTrace("takeSnapShot");
                 if (basePresenter != null) basePresenter.takeSnapShot(false);
                 break;
             case R.id.fLayout_cam_live_view:
@@ -776,6 +778,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         } else {
             ToastUtil.showPositiveToast(getString(R.string.set_failed));
         }
+        PerformanceUtils.stopTrace("takeSnapShot");
     }
 
     @Override

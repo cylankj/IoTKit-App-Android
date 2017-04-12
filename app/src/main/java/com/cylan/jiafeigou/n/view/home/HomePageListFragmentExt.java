@@ -45,6 +45,7 @@ import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomePageListAdapter;
 import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.n.view.panorama.PanoramaCameraActivity;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -153,6 +154,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initWaveAnimation();
         onTimeTick(JFGRules.getTimeRule());
         onNetworkChanged(NetUtils.getJfgNetType(ContextUtils.getContext()) != 0);
+        PerformanceUtils.stopTrace("appStart0");
     }
 
     @Override

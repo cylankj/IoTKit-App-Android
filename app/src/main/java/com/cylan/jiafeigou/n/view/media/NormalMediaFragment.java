@@ -88,8 +88,8 @@ public class NormalMediaFragment extends IBaseFragment {
             loadBitmap(dpAlarm, index, uuid);
         } else {
             String filePath = getArguments().getString(KEY_SHARE_ELEMENT_BYTE);
-            if (!TextUtils.isEmpty(filePath)) {
-                AppLogger.e("byte is null");
+            if (TextUtils.isEmpty(filePath)) {
+                AppLogger.e("filePath is null");
             } else {
                 loadBitmap(filePath);
             }
