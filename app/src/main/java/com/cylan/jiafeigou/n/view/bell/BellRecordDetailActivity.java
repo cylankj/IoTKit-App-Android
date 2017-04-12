@@ -275,7 +275,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     if (e instanceof BaseDPTaskException) {
                         int code = ((BaseDPTaskException) e).getErrorCode();
                         if (code == 1050) {
-
+                            mCollect.setImageResource(R.drawable.icon_collection);
                             alertOver50();
                         }
                     }

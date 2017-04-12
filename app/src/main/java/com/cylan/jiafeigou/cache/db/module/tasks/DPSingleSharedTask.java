@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -79,11 +80,6 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
             subscriber.onCompleted();
         })
                 .subscribeOn(Schedulers.io())
-                .observeOn(Schedulers.io())
-                .doOnError(e -> {
-                    mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(DPEntity::delete,err->AppLogger.d(err.getMessage()));
-                    mDPHelper.findDPMsg(entity.getUuid(), (long) wonderItem.time, 511).subscribe(DPEntity::delete,erro->AppLogger.d(erro.getMessage()));
-                })
                 .flatMap(this::makeSetDataRspResponse)
                 .map(rsp -> {
                     long result = -1;
@@ -140,6 +136,27 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                     return result;
                 })
                 .flatMap(this::makeSetDataRspResponse)
-                .map(rsp -> new BaseDPTaskResult().setResultCode(rsp.rets.get(0).ret).setResultResponse(rsp));
+                .map(rsp -> {
+                    BaseDPTaskResult result = new BaseDPTaskResult();
+                    result.setResultCode(rsp.rets.get(0).ret);
+                    result.setResultResponse(rsp);
+                    return result;
+                })
+                .doOnError(e -> {
+                    try {
+                        AppLogger.d("分享任务出错了,正在清理本地数据" + e.getMessage());
+                        ArrayList<JFGDPMsg> p511 = new ArrayList<>(1);
+                        ArrayList<JFGDPMsg> p602 = new ArrayList<>(1);
+                        p511.add(new JFGDPMsg(511, (long) wonderItem.time));
+                        p602.add(new JFGDPMsg(602, entity.getVersion()));
+                        JfgCmdInsurance.getCmd().robotDelData(entity.getUuid(), p511, 0);
+                        JfgCmdInsurance.getCmd().robotDelData("", p602, 0);
+                        mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(DPEntity::delete, error -> AppLogger.d(error.getMessage()));
+                        mDPHelper.findDPMsg(entity.getUuid(), (long) wonderItem.time, 511).subscribe(DPEntity::delete, error -> AppLogger.d(error.getMessage()));
+                    } catch (JfgException e1) {
+                        AppLogger.d(e1.getMessage());
+                    }
+
+                });
     }
 }
