@@ -23,17 +23,15 @@ public class JFGNetWorkMonitorReceiver extends BroadcastReceiver {
         NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
         NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 
-        if (!mobNetInfo.isConnected() && !wifiNetInfo.isConnected() && !DataSourceManager.getInstance().isOnline()) {
-//                BSToast.showLong(context, "网络不可以用");
+        if ((mobNetInfo == null || !mobNetInfo.isConnected()) && (wifiNetInfo == null || !wifiNetInfo.isConnected()) && !DataSourceManager.getInstance().isOnline()) {
             AppLogger.d("当前网络不可用");
             RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(false);
             connectionEvent.mobile = mobNetInfo;
             connectionEvent.wifi = wifiNetInfo;
             connectionEvent.isOnLine = false;
             RxBus.getCacheInstance().post(connectionEvent);
-//            BaseDPTaskDispatcher.getInstance().markSyncNeeded();
             //改变背景或者 处理网络的全局变量
-        } else if (DataSourceManager.getInstance().isOnline() && (mobNetInfo.isConnected() || wifiNetInfo.isConnected())) {
+        } else if (DataSourceManager.getInstance().isOnline() && ((mobNetInfo != null && mobNetInfo.isConnected()) || (wifiNetInfo != null && wifiNetInfo.isConnected()))) {
             //改变背景或者 处理网络的全局变量
             AppLogger.d("当前网络可用");
             RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(true);
