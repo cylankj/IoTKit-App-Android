@@ -109,8 +109,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
                     return null;
                 })
-                .retry(new RxHelper.RxException<>("robotDataSync"))
-                .subscribe();
+                .subscribe(ret -> {
+                }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
     }
 
     /**
@@ -133,7 +133,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                });
+                }, throwable -> AppLogger.e("err: " + MiscUtils.getErr(throwable)));
     }
 
     @Override
@@ -256,8 +256,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     if (e instanceof TimeoutException) {
                         mView.unbindDeviceRsp(-1);
                     }
-                    AppLogger.d(e.getMessage());
-                    e.printStackTrace();
+                    AppLogger.e("err: " + MiscUtils.getErr(e));
                 }, () -> {
                 });
         addSubscription(subscribe, "unbindDevice");

@@ -49,12 +49,13 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                         e.printStackTrace();
                     }
                     return s;
+
                 })
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((String s) -> {
                     getView().setupAliasDone(0);
-                });
+                }, AppLogger::e);
         addSubscription(subscribe, "setupAlias");
     }
 }

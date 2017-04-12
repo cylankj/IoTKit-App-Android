@@ -206,7 +206,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     if (!TextUtils.isEmpty(s) && getView() != null) {
                         getView().initFileSize(s);
                     }
-                }));
+                }, AppLogger::e));
     }
 
     @Override
@@ -216,7 +216,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .subscribe((Object integer) -> {
                     AppLogger.i("actionDone: " + integer);
                     getView().beginUpdate();
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -227,7 +227,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .subscribe((Integer integer) -> {
                     AppLogger.d("updataing:" + integer);
                     getView().onUpdateing(integer);
-                });
+                }, AppLogger::e);
     }
 
 
@@ -312,7 +312,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -334,7 +334,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     } catch (IOException e) {
                         AppLogger.i("unpack msgpack failed:" + e.getLocalizedMessage());
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override

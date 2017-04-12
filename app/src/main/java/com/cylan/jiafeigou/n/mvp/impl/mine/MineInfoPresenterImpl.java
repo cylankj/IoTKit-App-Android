@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -58,7 +59,8 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     RxBus.getCacheInstance().removeAllStickyEvents();
                     AutoSignIn.getInstance().autoSave(account, 1, "")
                             .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                            .subscribe();
+                            .subscribe(ret -> {
+                            }, throwable -> AppLogger.e("err:" + throwable));
                     //emit failed event.
                     PreferencesUtils.putString(KEY_ACCOUNT, "");
                     PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
@@ -179,7 +181,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                                 getView().initPersonalInformation(getUserInfo.jfgAccount);
                         }
                     }
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
 
@@ -207,6 +209,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
 
     /**
      * 三方登录的回调
+     *
      * @return
      */
     @Override
@@ -216,8 +219,8 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 .subscribe(thirdLoginTab -> {
                     isOpenLogin = thirdLoginTab.isThird;
                     if (getView() != null)
-                    getView().showSetPwd(thirdLoginTab.isThird);
-                });
+                        getView().showSetPwd(thirdLoginTab.isThird);
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     @Override

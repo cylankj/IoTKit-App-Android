@@ -432,7 +432,8 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public boolean updateJFGDevice(Device device) {
-        dbHelper.updateDevice(device).subscribe();
+        dbHelper.updateDevice(device).subscribe(ret -> {
+        }, AppLogger::e);
         return true;
     }
 

@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import rx.Observable;
 import rx.Subscription;
@@ -50,7 +51,7 @@ public class GlobalResetPwdSource {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pwdHasResetEvent -> {
                     pwdResetedDialog(pwdHasResetEvent.code);
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         mSubscription.add(subscribe);
     }
 
@@ -108,6 +109,6 @@ public class GlobalResetPwdSource {
                     AutoSignIn.getInstance().autoSave(DataSourceManager.getInstance().getJFGAccount().getAccount(), 1, "")
                             .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                             .subscribe();
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 }

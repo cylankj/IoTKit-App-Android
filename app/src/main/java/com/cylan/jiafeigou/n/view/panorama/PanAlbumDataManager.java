@@ -103,7 +103,8 @@ public class PanAlbumDataManager {
             boolean finished = file.offset >= file.fileSize;
             if (finished) downloadingFileMap.remove(fileName);
             file.state = finished ? DownloadState.SUC : DownloadState.DOWNLOADING;
-            PanFileDownloader.getDownloader().updateOrSaveFile(file).subscribeOn(Schedulers.io()).subscribe();
+            PanFileDownloader.getDownloader().updateOrSaveFile(file).subscribeOn(Schedulers.io()).subscribe(ret -> {
+            }, AppLogger::e);
             return finished ? 0 : 1;
         } else {
             AppLogger.e("this file is not ready for download or new File not cached in db");

@@ -68,8 +68,12 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             if (battery < 20 && (net != null && net.net >= 1)) {//在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
-            } else holder.setVisibility(R.id.img_device_state_2, GONE);
+            } else {
+                holder.setVisibility(R.id.img_device_state_2, GONE);
+                holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
+            }
         } else {
+            holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
             holder.setVisibility(R.id.img_device_state_2, GONE);
         }
         //3 延时摄影

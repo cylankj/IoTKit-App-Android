@@ -18,8 +18,13 @@ import com.cylan.jiafeigou.base.module.Base;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
+import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -116,7 +121,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.d("reset subscription");
                     return true;
                 }).subscribe(ret -> {
-                }, throwable -> AppLogger.e("err: " + throwable));
+                }, AppLogger::e);
     }
 
     @Override
@@ -165,7 +170,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     .subscribe(ret -> {
                         mView.onHistoryDataRsp(historyDataProvider);
                         AppLogger.d("历史录像wheel准备好");
-                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+                    }, AppLogger::e);
             addSubscription(subscription, "hisFlat");
         }
     }
@@ -203,35 +208,35 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public void fetchHistoryDataList() {
-        test();
-//        Subscription subscription = DataSourceManager.getInstance().queryHistory(uuid)
-//                .subscribeOn(Schedulers.newThread())
-//                .filter(ret -> {
-//                    AppLogger.d("get history?" + ret);
-//                    return ret;
-//                })
-//                .timeout(10, TimeUnit.SECONDS)
-//                .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
-//                        .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
-//                        .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
-//                        .subscribeOn(Schedulers.computation())
-//                        .map(rsp -> {
-//                            //只需要初始化一天的就可以啦.
-//                            assembleTheDay(rsp.historyFiles);
-//                            return null;
-//                        })
-//                        .filter(result -> mView != null)
-//                        .subscribeOn(AndroidSchedulers.mainThread())
-//                        .map(longs -> {
-//                            //更新日历
-//                            ArrayList<Long> dateList = DataSourceManager.getInstance().getHisDateList(uuid);
-//                            mView.onHistoryDateListUpdate(dateList);
-//                            AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
-//                            return null;
-//                        }))
-//                .subscribe(ret -> {
-//                }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
-//        addSubscription(subscription, "getHistoryList");
+//        test();
+        Subscription subscription = DataSourceManager.getInstance().queryHistory(uuid)
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> {
+                    AppLogger.d("get history?" + ret);
+                    return ret;
+                })
+                .timeout(10, TimeUnit.SECONDS)
+                .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
+                        .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
+                        .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
+                        .subscribeOn(Schedulers.computation())
+                        .map(rsp -> {
+                            //只需要初始化一天的就可以啦.
+                            assembleTheDay(rsp.historyFiles);
+                            return null;
+                        })
+                        .filter(result -> mView != null)
+                        .subscribeOn(AndroidSchedulers.mainThread())
+                        .map(longs -> {
+                            //更新日历
+                            ArrayList<Long> dateList = DataSourceManager.getInstance().getHisDateList(uuid);
+                            mView.onHistoryDateListUpdate(dateList);
+                            AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
+                            return null;
+                        }))
+                .subscribe(ret -> {
+                }, AppLogger::e);
+        addSubscription(subscription, "getHistoryList");
     }
 
     @Override
@@ -284,7 +289,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub()
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                    .subscribe(), "rtcpNotifySub");
+                    .subscribe(ret -> {
+                    }, AppLogger::e), "rtcpNotifySub");
             return null;
         }).subscribe(objectObservable -> AppLogger.d("播放流程走通 done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
@@ -426,7 +432,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub()
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                    .subscribe(), "rtcpNotifySub");
+                    .subscribe(ret -> {
+                    }, AppLogger::e), "rtcpNotifySub");
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
@@ -460,7 +467,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         getView().onLiveStop(playType, stopReason);
                 })
                 .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()))
-                .subscribe();
+                .subscribe(ret -> {
+                }, AppLogger::e);
     }
 
     @Override
@@ -486,7 +494,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         localMic = false;
                     }
                     setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
-                });
+                }, AppLogger::e);
     }
 
     private void setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
@@ -512,7 +520,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         remoteSpeaker = false;
                     }
                     setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -593,12 +601,45 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         Log.d("takeSnapShot", "takeSnapShot: " + (bitmap));
         Observable.just(bitmap)
                 .filter((Bitmap bit) -> (getView() != null))
+                .subscribeOn(Schedulers.io())
+                .map(result -> {
+                    long time = System.currentTimeMillis();
+                    String filePath = JConstant.MEDIA_PATH + File.separator + time + ".jpg";
+                    BitmapUtils.saveBitmap2file(result, filePath);
+                    return filePath;
+                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Bitmap b) -> {
-                            AppLogger.d("take shot step show pop window");
-                            getView().onTakeSnapShot(b);
-                        },
-                        throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
+                .map(path -> {
+                    getView().onTakeSnapShot(path);
+                    AppLogger.d("take shot step show pop window");
+                    return path;
+                })
+                .filter(ret -> {
+                    AppLogger.d("to collect bitmap is null? " + (TextUtils.isEmpty(ret)));
+                    return ret != null;
+                })
+                .subscribeOn(Schedulers.io())
+                .subscribe(filePath -> {
+                    long time = System.currentTimeMillis();
+                    AppLogger.d("save bitmap to disk performance:" + (System.currentTimeMillis() - time));
+                    DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
+                    item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
+                    item.cid = uuid;
+                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+                    item.fileName = time / 1000 + ".jpg";
+                    item.time = (int) (time / 1000);
+                    IDPEntity entity = new DPEntity()
+                            .setUuid(uuid)
+                            .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
+                            .setVersion(System.currentTimeMillis())
+                            .setAccount(DataSourceManager.getInstance().getAJFGAccount().getAccount())
+                            .setAction(DBAction.SHARED)
+                            .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
+                            .setBytes(item.toBytes());
+                    BaseDPTaskDispatcher.getInstance().perform(entity);
+                    AppLogger.d("take shot step collect ");
+                }, throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
     }
 
 
@@ -690,7 +731,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .subscribe();
+                .subscribe(ret -> {
+                }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
     }
 
     @Override
@@ -749,7 +791,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
-                });
+                }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
     }
 
     @Override
@@ -761,6 +803,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         getView().hardwareResult(checkDevVersionRsp);
                         PreferencesUtils.putLong(JConstant.CHECK_HARDWARE_TIME, System.currentTimeMillis());
                     }
-                });
+                }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
     }
 }

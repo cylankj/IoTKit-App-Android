@@ -79,7 +79,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         socketPointer = JFGSocket.InitSocket(PanoramaAlbumPresenter.this);
                     AppLogger.d("start: " + socketPointer);
                     makeTCPBridge();
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         if (socketPointer != -1) {
             Observable.just("disconnect")
                     .subscribeOn(Schedulers.newThread())
-                    .subscribe(s -> JFGSocket.Disconnect(socketPointer));
+                    .subscribe(s -> JFGSocket.Disconnect(socketPointer), AppLogger::e);
         }
     }
 
@@ -101,7 +101,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(s -> mView != null)
-                .subscribe(s -> mView.onConnected());
+                .subscribe(s -> mView.onConnected(), AppLogger::e);
     }
 
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd-HHmmss", Locale.getDefault());
@@ -128,7 +128,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                             TYPE_FIRST_FILE_REQ, DpUtils.pack(req));
                     boolean send = JFGSocket.SendMsgpackBuff(socketPointer, data);
                     AppLogger.d("send ret:" + send + "请求第一条文件时间");
-                });
+                }, AppLogger::e);
     }
 
     protected byte[] fill(PanoramaEvent.RawReqMsg rawReqMsg, int msgId, int type, byte[] msg) {
@@ -157,7 +157,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(s -> mView != null)
-                .subscribe(s -> mView.onDisconnected());
+                .subscribe(s -> mView.onDisconnected(), AppLogger::e);
     }
 
     private static final String KEY_FIRST_FILE_TIME = "firstFileTime";
@@ -182,7 +182,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
         }
         Observable.just("o")
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(s -> startSyncAlbumList(time, 20));
+                .subscribe(s -> startSyncAlbumList(time, 20), AppLogger::e);
     }
 
     @Override
@@ -370,7 +370,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(s -> mView != null)
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .subscribe(integer -> mView.onUpdate(null, integer));
+                .subscribe(integer -> mView.onUpdate(null, integer), AppLogger::e);
     }
 
     private Subscription fileListRspSubscription() {
@@ -387,7 +387,8 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         PanAlbumDataManager.getInstance().insertFile(mUUID, file.fileName, file.md5, file.fileSize)
                                 .subscribeOn(Schedulers.io())
                                 .observeOn(Schedulers.io())
-                                .subscribe();
+                                .subscribe(ret -> {
+                                }, AppLogger::e);
                         AppLogger.d("insert file?: " + file);
                     }
                     goonDownload();
@@ -520,7 +521,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         //wifi 网络,关闭流量提醒
                         AppLogger.d("wifi network connected");
                     }
-                });
+                }, AppLogger::e);
 
     }
 
@@ -592,7 +593,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                         Observable.just("fileNotFound")
                                 .observeOn(AndroidSchedulers.mainThread())
                                 .filter(s -> mView != null)
-                                .subscribe(s -> mView.onFileState(-1));
+                                .subscribe(s -> mView.onFileState(-1), AppLogger::e);
                     }
                     return null;
                 });

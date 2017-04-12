@@ -26,6 +26,7 @@ import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.google.gson.Gson;
 
 import java.util.List;
@@ -209,7 +210,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Integer integer) -> {
                     getView().onNetStateChanged(integer);
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         addSubscription(subscription, "updateConnectivityStatus");
     }
 
@@ -230,7 +231,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((NetworkInfo info) -> {
                     getView().check3gFinish();
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         addSubscription(subscription, "updateConnectInfo");
     }
 
@@ -244,7 +245,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
                     getView().pingFailed();
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         addSubscription(subscription, "pingFPingFailed");
     }
 
@@ -266,7 +267,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((ConfigApContract.View view) -> {
                     view.upgradeDogState(0);
-                });
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         addSubscription(subscription, "needToUpgrade");
     }
 
@@ -334,7 +335,8 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     getView().onSetWifiFinished(aFullBind.getDevicePortrait());
                     return s;
                 })
-                .subscribe();
+                .subscribe(ret -> {
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         addSubscription(subscription, "onLocalFlowFinish");
     }
 

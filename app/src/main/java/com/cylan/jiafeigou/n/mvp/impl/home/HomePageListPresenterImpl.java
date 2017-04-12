@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -89,8 +90,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     AppLogger.d("data pool update: " + update);
                     return null;
                 })
-                .retry(new RxHelper.RxException<>("devicesUpdate"))
-                .subscribe();
+                .subscribe(ret -> {
+                }, throwable -> {
+                    addSubscription(devicesUpdate());
+                    AppLogger.e("err:" + MiscUtils.getErr(throwable));
+                });
     }
 
     private Subscription devicesUpdate1() {
@@ -102,8 +106,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     AppLogger.d("data pool update: " + update);
                     return null;
                 })
-                .retry(new RxHelper.RxException<>("devicesUpdate"))
-                .subscribe();
+                .subscribe(ret -> {
+                }, throwable -> {
+                    addSubscription(devicesUpdate1());
+                    AppLogger.e("err:" + MiscUtils.getErr(throwable));
+                });
     }
 
     @Override
@@ -135,8 +142,11 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                     RxBus.getCacheInstance().post(new InternalHelp());
                     return null;
                 })
-                .retry(new RxHelper.RxException<>("JFGAccount"))
-                .subscribe();
+                .subscribe(ret -> {
+                }, throwable -> {
+                    addSubscription(JFGAccountUpdate());
+                    AppLogger.e("err:" + MiscUtils.getErr(throwable));
+                });
     }
 
     /**
@@ -187,7 +197,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 })
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
 //                .doOnCompleted(this::subUuidList)
-                .subscribe();
+                .subscribe(ret -> {
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     @Override
@@ -252,7 +263,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         Observable.just(networkInfo)
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(v -> getView() != null)
-                .subscribe((NetworkInfo info) -> getView().onNetworkChanged(info != null && info.isConnected()));
+                .subscribe((NetworkInfo info) -> getView().onNetworkChanged(info != null && info.isConnected()), AppLogger::e);
     }
 
     @Override
@@ -295,7 +306,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                             if (!TimeUtils.isToday(PreferencesUtils.getLong(JConstant.CLIENT_UPDATAE_TIME_TAB)))
                                 getView().clientUpdateDialog(clientUpgrade.apkPath);
                         }
-                });
+                }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
     }
 
     @Override
@@ -310,7 +321,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                         AppLogger.e("client_update:" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
-                });
+                }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
     }
 
 }

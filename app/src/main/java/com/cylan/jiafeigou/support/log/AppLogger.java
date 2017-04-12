@@ -179,6 +179,19 @@ public class AppLogger {
             logFile(null, content);
     }
 
+    /**
+     * Send an ERROR log message.
+     *
+     * @param throwable The message you would like logged.
+     */
+    public static void e(Throwable throwable) {
+        final String content = buildMessage(throwable == null ? null : throwable.getLocalizedMessage());
+        if (DEBUG)
+            android.util.Log.e(TAG, content);
+        if (permissionGranted)
+            logFile(null, content);
+    }
+
 //    /**
 //     * Send an ERROR log message.
 //     *

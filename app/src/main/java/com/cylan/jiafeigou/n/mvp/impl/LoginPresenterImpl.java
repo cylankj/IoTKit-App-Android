@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -63,7 +64,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
                         if (o.loginType) {
-                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd,o.openLoginType);
+                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd, o.openLoginType);
                         } else {
                             JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
                             //账号和密码
@@ -71,7 +72,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                         PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
                         AutoSignIn.getInstance().autoSave(o.userName, o.openLoginType, o.pwd)
                                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                                .subscribe();
+                                .subscribe(ret -> {
+                                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -178,9 +180,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .delay(100, TimeUnit.MILLISECONDS)//set a delay
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(switchBox -> {
-                    if (PreferencesUtils.getBoolean(JConstant.REG_SWITCH_BOX,true)) {
+                    if (PreferencesUtils.getBoolean(JConstant.REG_SWITCH_BOX, true)) {
                         getView().switchBox("");
-                        PreferencesUtils.putBoolean(JConstant.REG_SWITCH_BOX,false);
+                        PreferencesUtils.putBoolean(JConstant.REG_SWITCH_BOX, false);
                     }
                 }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
     }
@@ -256,7 +258,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             isReg = false;
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -271,7 +273,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(o -> {
                     if (getView() != null && !isLoginSucc)
                         getView().loginResult(JError.ErrorConnect);
-                }));
+                }, AppLogger::e));
     }
 
     @Override
@@ -327,11 +329,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribe(loginAccountBean -> {
                     if (loginAccountBean != null && !TextUtils.isEmpty(loginAccountBean.userName)) {
                         executeLogin(loginAccountBean);
-                        if (getView() != null)getView().showLoading();
+                        if (getView() != null) getView().showLoading();
                     } else {
                         getView().authorizeResult();
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -365,7 +367,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     if (s != null && !TextUtils.isEmpty(s)) {
                         getView().reShowAccount(s);
                     }
-                });
+                }, AppLogger::e);
     }
 
 }

@@ -10,6 +10,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -82,7 +83,8 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                         return o;
                     }
                 })
-                .subscribe();
+                .subscribe(ret -> {
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     @Override

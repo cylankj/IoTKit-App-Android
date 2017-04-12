@@ -367,7 +367,7 @@ public class MiscUtils {
     }
 
     private static String getTime(Context context, int timeStart, int timeEnd) {
-        if (timeStart > timeEnd) {
+        if (timeStart >= timeEnd) {
             StringBuilder builder = new StringBuilder(parse2Time(timeStart));
             return builder.append("-")
                     .append(context.getString(R.string.TOW))
@@ -486,6 +486,6 @@ public class MiscUtils {
 
     public static String getErr(Throwable throwable) {
         if (throwable == null) return null;
-        return throwable.getLocalizedMessage();
+        return "err:" + throwable.getLocalizedMessage();
     }
 }

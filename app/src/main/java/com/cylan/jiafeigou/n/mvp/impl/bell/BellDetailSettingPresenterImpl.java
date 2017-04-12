@@ -76,7 +76,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                         e.printStackTrace();
                         AppLogger.e("Bell_checkNewVersion:" + e.getLocalizedMessage());
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
                     if (checkDevVersionRsp != null) {
                         mView.checkResult(checkDevVersionRsp);
                     }
-                });
+                }, AppLogger::e);
     }
 
 }

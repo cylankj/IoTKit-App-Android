@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
@@ -103,7 +104,8 @@ public class GlobalUdpDataSource {
                     return null;
                 })
                 .retry(exceptionFun)
-                .subscribe();
+                .subscribe(ret -> {
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
 
     public void unregister() {

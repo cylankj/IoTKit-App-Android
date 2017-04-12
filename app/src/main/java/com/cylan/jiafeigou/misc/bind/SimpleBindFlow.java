@@ -99,7 +99,7 @@ public class SimpleBindFlow extends AFullBind {
                         e.printStackTrace();
                     }
                     AppLogger.i(BIND_TAG + integer);
-                });
+                }, AppLogger::e);
         AppLogger.i("sendPingFPing");
     }
 

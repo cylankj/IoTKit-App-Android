@@ -108,7 +108,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             return;
                         getView().onBlur(drawable);
                     }
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -210,7 +210,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             }
                         }
                     }
-                });
+                }, AppLogger::e);
     }
 
     /**
@@ -241,7 +241,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     } catch (JfgException e) {
                         AppLogger.e("getUnReadMesg" + e.getLocalizedMessage());
                     }
-                });
+                }, AppLogger::e);
     }
 
     public Subscription unReadMesgBack() {
@@ -252,7 +252,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public Observable<Integer> call(RobotoGetDataRsp rsp) {
                         int count = 0;
-                        if (rsp != null && requstId == rsp.seq && rsp.map != null && rsp.map.size() != 0){
+                        if (rsp != null && requstId == rsp.seq && rsp.map != null && rsp.map.size() != 0) {
                             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
                                 try {
                                     if (entry.getKey() == 1101 || entry.getKey() == 1103 || entry.getKey() == 1104) {
@@ -278,7 +278,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     AppLogger.d("unrecount:" + integer);
                     if (getView() != null) getView().setMesgNumber(integer);
                     hasUnRead = integer != 0;
-                });
+                }, AppLogger::e);
     }
 
     @Override
@@ -293,7 +293,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(getUserInfo -> {
                     if (getUserInfo != null)
                         userInfo = getUserInfo.jfgAccount;
-                });
+                }, AppLogger::e);
     }
 
 
@@ -303,7 +303,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(loginMeTab -> {
                     if (loginMeTab.b)
                         start();
-                });
+                }, AppLogger::e);
     }
 
 }
