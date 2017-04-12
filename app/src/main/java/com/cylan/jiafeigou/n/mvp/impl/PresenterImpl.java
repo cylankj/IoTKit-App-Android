@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl;
 
 import com.cylan.jiafeigou.n.mvp.contract.login.RstPwdContract;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import org.msgpack.annotation.NotNullable;
 
@@ -42,7 +43,7 @@ public class PresenterImpl extends AbstractPresenter<RstPwdContract.View> implem
                     public void call(String s) {
                         doStuff();
                     }
-                });
+                },e-> AppLogger.d(e.getMessage()));
     }
 
     private void doStuff() {

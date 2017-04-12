@@ -126,7 +126,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
                             getView().handlerDelCallBack(delFriendBack.jfgResult.code);
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -160,7 +160,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
 

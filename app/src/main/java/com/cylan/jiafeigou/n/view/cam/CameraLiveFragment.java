@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -625,6 +626,19 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             case R.id.imgV_cam_switch_speaker: {
                 boolean on = isLocalSpeakerOn();
                 if (!on) {
+                    MediaRecorder mRecorder = null;
+                    try {
+                        mRecorder = new MediaRecorder();
+                        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                        mRecorder.release();
+                    } catch (Exception e) {
+                        AppLogger.d(e.getMessage());
+                        audioRecordPermissionDenied();
+                        if (mRecorder != null) {
+                            mRecorder.release();
+                        }
+                        return;
+                    }
                     CameraLiveFragmentPermissionsDispatcher.showAudioRecordPermission_WithCheck(this);
                     return;
                 }
@@ -643,6 +657,19 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 //                CameraLiveFragmentPermissionsDispatcher.s
                 boolean on = isLocalMicOn();
                 if (!on) {
+                    MediaRecorder mRecorder = null;
+                    try {
+                        mRecorder = new MediaRecorder();
+                        mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                        mRecorder.release();
+                    } catch (Exception e) {
+                        AppLogger.d(e.getMessage());
+                        audioRecordPermissionDenied();
+                        if (mRecorder != null) {
+                            mRecorder.release();
+                        }
+                        return;
+                    }
                     CameraLiveFragmentPermissionsDispatcher.showAudioRecordPermissionWithCheck(this);
                     return;
                 }

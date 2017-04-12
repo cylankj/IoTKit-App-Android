@@ -82,7 +82,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -112,7 +112,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -122,7 +122,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .subscribe((RxEvent.CheckDevVersionRsp checkDevVersionRsp) -> {
                     if (checkDevVersionRsp != null)
                         getView().checkDevResult(checkDevVersionRsp);
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -139,7 +139,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                     } catch (Exception e) {
                         AppLogger.e("format sd： " + e.getLocalizedMessage());
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -171,7 +171,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         //清空SD卡提示
                         getView().clearSdResult(0);
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -188,7 +188,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                             getView().clearSdResult(1);
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     public void updateAlias(Device device) {

@@ -81,8 +81,8 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .doOnError(e -> {
-                    mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(DPEntity::delete);
-                    mDPHelper.findDPMsg(entity.getUuid(), (long) wonderItem.time, 511).subscribe(DPEntity::delete);
+                    mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(DPEntity::delete,err->AppLogger.d(err.getMessage()));
+                    mDPHelper.findDPMsg(entity.getUuid(), (long) wonderItem.time, 511).subscribe(DPEntity::delete,erro->AppLogger.d(erro.getMessage()));
                 })
                 .flatMap(this::makeSetDataRspResponse)
                 .map(rsp -> {

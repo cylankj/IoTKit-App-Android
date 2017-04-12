@@ -59,7 +59,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     if (mView != null) {
                         mView.onDeviceUnBind();
                     }
-                }, Throwable::printStackTrace);
+                }, e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -145,7 +145,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     }
 
     public void cancelViewer() {
-        stopViewer().subscribe();
+        stopViewer().subscribe(ret->{},e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -247,7 +247,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         AppLogger.d("stop" + getViewHandler());
         if (getViewHandler() != null) {
             if (hasLiveStream) {
-                stopViewer().subscribe(s -> setViewHandler(null));
+                stopViewer().subscribe(s -> setViewHandler(null),throwable -> AppLogger.d(throwable.getMessage()));
             }
         }
     }

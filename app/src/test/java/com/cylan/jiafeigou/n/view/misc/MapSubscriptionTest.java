@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.view.misc;
 
+import com.cylan.jiafeigou.support.log.AppLogger;
+
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;
@@ -40,7 +42,7 @@ public class MapSubscriptionTest {
                             e.printStackTrace();
                         }
                     }
-                });
+                },e-> AppLogger.d(e.getMessage()));
     }
 
     @Test

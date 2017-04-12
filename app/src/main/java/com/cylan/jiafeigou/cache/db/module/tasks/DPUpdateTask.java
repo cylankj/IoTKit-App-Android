@@ -56,7 +56,7 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                 })
                 .flatMap(baseDPTaskResult -> {
                     if (DataSourceManager.getInstance().isOnline()) {
-                        performServer().doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage())).subscribe();
+                        performServer().doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage())).subscribe(ret->{},e->AppLogger.d(e.getMessage()));
                     }
                     return Observable.just(baseDPTaskResult);
                 })

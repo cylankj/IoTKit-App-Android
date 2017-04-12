@@ -176,7 +176,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                                 getView().showSdPopDialog();
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -201,7 +201,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                             e.printStackTrace();
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -236,7 +236,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(sdStatus -> {
                     if (sdStatus != null && getView() != null) getView().initSdUseDetail(sdStatus);
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
 }

@@ -9,6 +9,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -70,7 +71,7 @@ public class GlideNetVideoUtils {
                                 })
                                 .into(imageView);
                     }
-                });
+                },e-> AppLogger.d(e.getMessage()));
     }
 
 

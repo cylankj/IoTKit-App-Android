@@ -82,7 +82,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                         return o;
                     }
                 })
-                .subscribe();
+                .subscribe(ret->{},e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -97,7 +97,7 @@ public class SetupPwdPresenterImpl extends AbstractPresenter<SetupPwdContract.Vi
                         PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, "");
                         getView().submitResult(register);
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     private Subscription resultLoginSub() {

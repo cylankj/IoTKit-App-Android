@@ -14,7 +14,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
@@ -94,6 +93,8 @@ public interface CamLiveContract {
          * @param dateList
          */
         void onHistoryDateListUpdate(ArrayList<Long> dateList);
+
+        void audioRecordPermissionDenied();
     }
 
     interface Presenter extends BasePresenter {

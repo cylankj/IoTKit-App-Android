@@ -72,7 +72,8 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                 .flatMap(who -> {
                                     switch (mView.onResolveViewLaunchType()) {
                                         case JConstant.VIEW_CALL_WAY_LISTEN:
-                                            Subscription subscription = loadPreview().subscribe();
+                                            Subscription subscription = loadPreview().subscribe(o -> {
+                                            }, throwable -> AppLogger.d(throwable.getMessage()));
                                             registerSubscription(subscription);
                                             if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
                                                 mView.onNewCallWhenInLive(mHolderCaller.caller);
@@ -121,7 +122,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         mIsInViewerMode = false;
     }
 
-    protected Observable loadPreview() {
+    protected Observable<Long> loadPreview() {
         return Observable.interval(2, TimeUnit.SECONDS)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())

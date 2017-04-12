@@ -110,7 +110,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     return null;
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
-                .subscribe();
+                .subscribe(ret -> {
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -133,7 +134,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                });
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override

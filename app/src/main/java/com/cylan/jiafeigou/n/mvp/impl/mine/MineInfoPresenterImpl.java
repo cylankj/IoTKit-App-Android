@@ -19,7 +19,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.google.gson.Gson;
 
 import java.io.File;
 
@@ -58,7 +57,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     RxBus.getCacheInstance().removeAllStickyEvents();
                     AutoSignIn.getInstance().autoSave(account, 1, "")
                             .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                            .subscribe();
+                            .subscribe(ret->{},e->AppLogger.d(e.getMessage()));
                     //emit failed event.
                     PreferencesUtils.putString(KEY_ACCOUNT, "");
                     PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
@@ -179,7 +178,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                                 getView().initPersonalInformation(getUserInfo.jfgAccount);
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
 
@@ -217,7 +216,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     isOpenLogin = thirdLoginTab.isThird;
                     if (getView() != null)
                     getView().showSetPwd(thirdLoginTab.isThird);
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     @Override

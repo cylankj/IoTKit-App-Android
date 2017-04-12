@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.media.MediaRecorder;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -284,7 +285,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub()
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                    .subscribe(), "rtcpNotifySub");
+                    .subscribe(ret -> {
+                    }, e -> AppLogger.d(e.getMessage())),"rtcpNotifySub");
             return null;
         }).subscribe(objectObservable -> AppLogger.d("播放流程走通 done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
@@ -426,7 +428,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub()
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
-                    .subscribe(), "rtcpNotifySub");
+                    .subscribe(ret -> {
+                    }, e -> AppLogger.d(e.getMessage())), "rtcpNotifySub");
             return null;
         }).subscribe(objectObservable -> AppLogger.e("flow done"),
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
@@ -460,7 +463,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         getView().onLiveStop(playType, stopReason);
                 })
                 .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()))
-                .subscribe();
+                .subscribe(ret -> {
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -486,12 +490,26 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         localMic = false;
                     }
                     setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
-                });
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     private void setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
         JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
-        JfgCmdInsurance.getCmd().setAudio(true, localSpeaker, localMic);
+        if (localSpeaker) {
+            MediaRecorder mRecorder = null;
+            try {
+                mRecorder = new MediaRecorder();
+                mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+                mRecorder.release();
+                JfgCmdInsurance.getCmd().setAudio(true, true, localMic);
+            } catch (Exception e) {
+                AppLogger.d(e.getMessage());
+                if (mRecorder != null) {
+                    mRecorder.release();
+                }
+                AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.audioRecordPermissionDenied());
+            }
+        }
         AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
     }
 
@@ -512,7 +530,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         remoteSpeaker = false;
                     }
                     setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
-                });
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -690,7 +708,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 })
                 .retry(new RxHelper.RxException<>("robotDataSync"))
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                .subscribe();
+                .subscribe(ret -> {
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -749,7 +768,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
                         e.printStackTrace();
                     }
-                });
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -761,6 +780,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         getView().hardwareResult(checkDevVersionRsp);
                         PreferencesUtils.putLong(JConstant.CHECK_HARDWARE_TIME, System.currentTimeMillis());
                     }
-                });
+                }, e -> AppLogger.d(e.getMessage()));
     }
 }

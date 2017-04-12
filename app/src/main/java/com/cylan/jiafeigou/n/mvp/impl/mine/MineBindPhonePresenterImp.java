@@ -131,7 +131,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             }
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -185,7 +185,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             }
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -204,7 +204,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             jfgAccount = getUserInfo.jfgAccount;
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -225,7 +225,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             }
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -312,7 +312,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(thirdLoginTab -> {
                     isOpenLogin = thirdLoginTab.isThird;
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -336,7 +336,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             sendReq = false;
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -370,6 +370,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 }

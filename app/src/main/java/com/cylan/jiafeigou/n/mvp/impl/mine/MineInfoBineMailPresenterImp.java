@@ -114,7 +114,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                             handlerCheckAccoutResult(checkAccountCallback);
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -133,7 +133,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                             jfgAccount = getUserInfo.jfgAccount;
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -197,7 +197,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(thirdLoginTab -> {
                     isOpenLogin = thirdLoginTab.isThird;
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -216,7 +216,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                             isSetAcc = false;
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -250,7 +250,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
 

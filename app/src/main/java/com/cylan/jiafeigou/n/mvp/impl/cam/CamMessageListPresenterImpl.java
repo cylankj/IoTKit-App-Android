@@ -83,7 +83,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         e.printStackTrace();
                     }
                     AppLogger.d("收到,属性同步了");
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
 

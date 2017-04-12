@@ -108,7 +108,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             return;
                         getView().onBlur(drawable);
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -181,7 +181,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         } else {
                             return Observable.interval(0, 2, TimeUnit.SECONDS)
                                     .map(s -> DataSourceManager.getInstance().getJFGAccount())
-                                    .filter(account -> account != null);
+                                    .filter(account -> account != null).first();
                         }
                     }
                 })
@@ -212,7 +212,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             }
                         }
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -280,7 +280,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     AppLogger.d("unrecount:" + integer);
                     if (getView() != null) getView().setMesgNumber(integer);
                     hasUnRead = integer != 0;
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -295,7 +295,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(getUserInfo -> {
                     if (getUserInfo != null)
                         userInfo = getUserInfo.jfgAccount;
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
 
@@ -305,7 +305,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(loginMeTab -> {
                     if (loginMeTab.b)
                         start();
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
 }

@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.CloseUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 
@@ -122,7 +123,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                         if (getView() != null)
                             getView().refreshView(val1, val2);
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -372,7 +373,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                     public void call(Boolean aBoolean) {
                         getView().handlerVideoTalkResult(aBoolean);
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -395,7 +396,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                     public void call(Boolean aBoolean) {
                         getView().showVoiceTalkDialog(aBoolean);
                     }
-                });
+                },e->AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -416,7 +417,7 @@ public class CloudLivePresenterImp extends AbstractPresenter<CloudLiveContract.V
                             }
                         }
                     }
-                });
+                },e-> AppLogger.d(e.getMessage()));
     }
 
     /**

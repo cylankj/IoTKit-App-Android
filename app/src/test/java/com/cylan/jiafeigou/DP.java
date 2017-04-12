@@ -4,6 +4,7 @@ import com.cylan.jiafeigou.base.module.DProperty;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
 
 import org.junit.Test;
@@ -55,14 +56,14 @@ public class DP {
     public void sample() {
         Observable.interval(1, TimeUnit.SECONDS).subscribe(s -> {
             RxBus.getCacheInstance().post("SSSSS" + s);
-        });
+        },e->AppLogger.d(e.getMessage()));
 
         RxBus.getCacheInstance().toObservable(String.class)
                 .cache(2)
                 .buffer(2)
                 .subscribe(s -> {
                     System.out.println(s);
-                });
+                },e-> AppLogger.d(e.getMessage()));
         try {
             Thread.sleep(Integer.MAX_VALUE);
         } catch (InterruptedException e) {

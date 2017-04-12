@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.n.view.home.HomePageListFragmentExt;
 import com.cylan.jiafeigou.n.view.home.HomeWonderfulFragmentExt;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
@@ -73,7 +74,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
         subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event -> vpHomeContent.setCurrentItem(1));
+                .subscribe(event -> vpHomeContent.setCurrentItem(1),e->AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -98,7 +99,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
                 .subscribe(event -> {
                     if (event.b)
                         finish();
-                });
+                },e-> AppLogger.d(e.getMessage()));
     }
 
     @Override
