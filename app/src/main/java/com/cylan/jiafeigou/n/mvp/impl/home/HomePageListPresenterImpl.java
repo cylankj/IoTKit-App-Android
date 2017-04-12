@@ -303,8 +303,10 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
                     try {
-                        int req = JfgCmdInsurance.getCmd().checkClientVersion("0001");
-                        AppLogger.d("client_update:" + req);
+                        if (!PreferencesUtils.getBoolean(JConstant.IS_UPDATE_DOWNLOADING,false)){
+                            int req = JfgCmdInsurance.getCmd().checkClientVersion("0001");
+                            AppLogger.d("client_update:" + req);
+                        }
                     } catch (JfgException e) {
                         AppLogger.e("client_update:" + e.getLocalizedMessage());
                         e.printStackTrace();
