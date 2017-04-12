@@ -111,7 +111,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
         super.onDetach();
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         int a = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
-        if (oldOption != a) {
+        if (oldOption != a && oldOption != -1) {
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
         }
         if (callBack != null)

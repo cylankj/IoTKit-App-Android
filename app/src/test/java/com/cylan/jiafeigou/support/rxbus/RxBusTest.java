@@ -15,6 +15,7 @@ import java.util.concurrent.TimeUnit;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
+import rx.functions.Action0;
 import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.functions.Func2;
@@ -439,5 +440,63 @@ public class RxBusTest {
         Thread.sleep(200);
     }
 
+
+    @Test
+    public void complete() throws InterruptedException {
+
+        long time = System.currentTimeMillis();
+
+        System.out.println(time / 1000);
+        System.out.println(time / 1000 + 10 + 1);
+//        ArrayList<Integer> list = new ArrayList<>();
+//        for (int i = 0; i < 100; i++)
+//            list.add(i);
+//
+//        Observable.from(list)
+//                .delay(20, TimeUnit.MILLISECONDS)
+//                .sample(100, TimeUnit.MILLISECONDS)
+//                .subscribe(new Action1<Integer>() {
+//                    @Override
+//                    public void call(Integer aLong) {
+//                        System.out.println("aLong: " + aLong);
+//                    }
+//                });
+
+
+        Subscription subscription = RxBus.getCacheInstance().toObservable(String.class)
+//                .takeLast(1, 100, TimeUnit.MILLISECONDS)
+                .sample(20, TimeUnit.MILLISECONDS)
+                .map(new Func1<String, Object>() {
+                    @Override
+                    public Object call(String s) {
+                        System.out.println("what?" + s);
+                        return null;
+                    }
+                })
+                .doOnCompleted(new Action0() {
+                    @Override
+                    public void call() {
+                        System.out.println("doOnCompleted");
+                    }
+                })
+                .subscribe(ret -> {
+                    System.out.println("ret");
+                });
+        RxBus.getCacheInstance().post("finish0");
+        Thread.sleep(10);
+        RxBus.getCacheInstance().post("finish1");
+        Thread.sleep(10);
+        RxBus.getCacheInstance().post("finish2");
+        Thread.sleep(10);
+        RxBus.getCacheInstance().post("finish3");
+        Thread.sleep(10);
+        RxBus.getCacheInstance().post("finish4");
+        Thread.sleep(10);
+        RxBus.getCacheInstance().post("finish5");
+        Thread.sleep(10);
+        RxBus.getCacheInstance().post("finish6");
+        subscription.unsubscribe();
+        Thread.sleep(3000);
+    }
 
 }

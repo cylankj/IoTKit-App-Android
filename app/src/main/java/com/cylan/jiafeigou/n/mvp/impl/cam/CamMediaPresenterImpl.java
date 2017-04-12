@@ -6,6 +6,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
@@ -25,8 +26,11 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.JFGGlideURL;
 
 import java.io.File;
+import java.util.concurrent.ExecutionException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -81,26 +85,29 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
     }
 
     @Override
-    public void unCollect(int index, long ver) {
-        Observable.just(ver)
+    public void unCollect(int index, long version) {
+        long targetTime = version / 1000 + (index + 1);
+        Observable.just(version)
                 .observeOn(Schedulers.io())
-                .map(version -> new DPEntity()
+                .map(ver -> new DPEntity()
                         .setUuid("")
-                        .setVersion(version)
+                        .setVersion(targetTime)
                         .setAction(DBAction.DELETED)
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
                 .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
                 .map(ret -> new DPEntity()
                         .setUuid(uuid)
-                        .setVersion(ver)
+                        .setVersion(targetTime)
                         .setAction(DBAction.DELETED)
                         .setMsgId(511))
                 .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .observeOn(AndroidSchedulers.mainThread())
+                .filter(ret -> mView != null)
                 .subscribe(result -> {
-                    if (result.getResultCode() == 0) {//成功了
+                    if (result.getResultCode() == 0 && mView.getCurrentIndex() == index) {//成功了
                         AppLogger.d("取消收藏成功");
+                        mView.onItemCollectionCheckRsp(false);
                     }
                 }, e -> {
                     e.printStackTrace();
@@ -118,10 +125,22 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             item.fileName = version / 1000 + "_" + (index + 1) + ".jpg";
             item.time = (int) (version / 1000) + index + 1;//
+            FutureTarget<File> future = Glide.with(ContextUtils.getContext())
+                    .load(new JFGGlideURL(uuid, item.fileName))
+                    .downloadOnly(100, 100);
+            String filePath = null;
+            try {
+                filePath = future.get().getAbsolutePath();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
             IDPEntity entity = new DPEntity()
                     .setUuid(uuid)
                     .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                     .setVersion(System.currentTimeMillis())
+                    .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
                     .setAction(DBAction.SHARED)
                     .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount())
                     .setBytes(item.toBytes());

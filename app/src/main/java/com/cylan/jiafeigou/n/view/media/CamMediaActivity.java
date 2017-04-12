@@ -317,6 +317,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         imgVBigPicCollect.post(() -> {
             imgVBigPicCollect.setImageResource(state ? R.drawable.icon_collected : R.drawable.icon_collection);
             imgVBigPicCollect.setTag(state);
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
         });
     }
 

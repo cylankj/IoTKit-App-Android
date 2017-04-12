@@ -188,7 +188,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceMac.setTvSubTitle(m);
         boolean charging = device.$(DpMsgMap.ID_205_CHARGING, false);
         int b = device.$(DpMsgMap.ID_206_BATTERY, 0);
-        tvDeviceBatteryLevel.setTvSubTitle(charging ? getString(R.string.CHARGING) : (b + "%"));
+        tvDeviceBatteryLevel.setTvSubTitle(JFGRules.isDeviceOnline(net) ? (charging ? getString(R.string.CHARGING) : (b + "%")) : "");
         String v = device.$(ID_208_DEVICE_SYS_VERSION, "");
         tvDeviceSystemVersion.setTvSubTitle(v);
         int u = device.$(ID_210_UP_TIME, 0);
