@@ -7,7 +7,7 @@ import com.cylan.jiafeigou.base.view.JFGView;
  * Created by yanzhendong on 2017/3/16.
  */
 
-public class PanoramaDetailContact {
+public interface PanoramaDetailContact {
 
     interface View extends JFGView {
 

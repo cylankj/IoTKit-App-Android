@@ -3,10 +3,10 @@ package com.cylan.jiafeigou.n.view.record;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
-import com.cylan.jiafeigou.n.mvp.impl.record.DelayRecordPresenterImpl;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 
 import java.util.List;
@@ -22,8 +22,8 @@ public class DelayRecordActivity extends BaseActivity<DelayRecordContract.Presen
     private BaseFragment mRecordDeviceFrag;
 
     @Override
-    protected DelayRecordContract.Presenter onCreatePresenter() {
-        return new DelayRecordPresenterImpl();
+    protected void setActivityComponent(ActivityComponent activityComponent) {
+        activityComponent.inject(this);
     }
 
     @Override

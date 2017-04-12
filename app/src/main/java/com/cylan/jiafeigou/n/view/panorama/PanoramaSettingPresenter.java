@@ -15,8 +15,8 @@ import rx.schedulers.Schedulers;
 /**
  * Created by yanzhendong on 2017/3/11.
  */
-
 public class PanoramaSettingPresenter extends BasePresenter<PanoramaSettingContact.View> implements PanoramaSettingContact.Presenter {
+
     @Override
     public void unBindDevice() {
         Subscription subscribe = Observable.just(new DPEntity()

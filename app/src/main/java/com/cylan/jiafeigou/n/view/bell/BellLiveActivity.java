@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.bell;
 
 import android.Manifest;
-import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -34,15 +33,15 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
+import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
+import com.cylan.jiafeigou.base.injector.component.AppComponent;
+import com.cylan.jiafeigou.base.injector.component.DaggerActivityComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
-import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.misc.INotify;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
@@ -62,13 +61,11 @@ import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
-import java.net.URL;
 
 import butterknife.BindView;
 import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
-import permissions.dispatcher.PermissionUtils;
 import permissions.dispatcher.RuntimePermissions;
 
 @RuntimePermissions
@@ -134,7 +131,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                         | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                         | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         registSreenStatusReceiver();
-        Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         }
@@ -228,11 +225,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
-    protected BellLiveContract.Presenter onCreatePresenter() {
-        return new BellLivePresenterImpl();
-    }
-
-    @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
 //        setIntent(intent);//直接無視新的呼叫
@@ -243,16 +235,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
         long time = getIntent().getLongExtra(JConstant.VIEW_CALL_WAY_TIME, System.currentTimeMillis());
         CallablePresenter.Caller caller = new CallablePresenter.Caller();
-        caller.caller = mUUID;
+        caller.caller = uuid;
         caller.picture = extra;
         caller.callTime = time;
-        mPresenter.newCall(caller);
-//        if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_VIEWER)) {
-//            isLanchFromBellCall = false;
-//        } else if (TextUtils.equals(onResolveViewLaunchType(), JConstant.VIEW_CALL_WAY_LISTEN)) {
-//            isLanchFromBellCall = true;
-//        }
-
+        presenter.newCall(caller);
         onSpeaker(false);
     }
 
@@ -282,6 +268,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         }
         muteAudio(false);
         clearHeadSetEventReceiver();
+
     }
 
     private void clearHeadSetEventReceiver() {
@@ -299,7 +286,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     protected void onPrepareToExit(Action action) {
-        mPresenter.dismiss();
+        presenter.dismiss();
         finishExt();
         action.actionDone();
     }
@@ -359,11 +346,11 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             if (mediaPlayer != null && mediaPlayer.isPlaying()) {
                 mediaPlayer.stop();
             }
-            mPresenter.dismiss();
+            presenter.dismiss();
         } else {
             if (mediaPlayer != null && mediaPlayer.isPlaying())
                 mediaPlayer.stop();
-            mPresenter.pickup();
+            presenter.pickup();
         }
     }
 
@@ -390,7 +377,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 break;
             case R.id.imgv_bell_live_land_hangup:
             case R.id.imgv_bell_live_hang_up:
-                mPresenter.dismiss();
+                presenter.dismiss();
 
                 break;
             case R.id.imgv_bell_live_switch_to_land:
@@ -411,8 +398,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         imgvBellLiveSpeaker.setEnabled(true);
         imgvBellLiveSwitchToLand.setEnabled(true);
         imgvBellLiveSwitchToLand.setVisibility(View.VISIBLE);
-        if (!mPresenter.checkAudio(1)) {
-            mPresenter.switchMicrophone();
+        if (!presenter.checkAudio(1)) {
+            presenter.switchMicrophone();
         }
 //        if (isLanchFromBellCall) {
 //            BellLiveActivityPermissionsDispatcher.switchSpeakerWithPermissionWithCheck(this);
@@ -485,7 +472,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onDeviceUnBind() {
         AppLogger.d("当前设备已解绑");
-        mPresenter.cancelViewer();
+        presenter.cancelViewer();
         new AlertDialog.Builder(this).setCancelable(false)
                 .setPositiveButton(getString(R.string.OK), (dialog, which) -> {
                     finish();
@@ -507,7 +494,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     void switchSpeakerWithPermission() {
-        mPresenter.switchSpeaker();
+        presenter.switchSpeaker();
     }
 
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
@@ -525,7 +512,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
     void captureWithStoragePermission() {
-        mPresenter.capture();
+        presenter.capture();
     }
 
     @OnPermissionDenied(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -564,7 +551,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //        dismissAlert();
         mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
 //        INotify.NotifyBean notify = new INotify.NotifyBean();
-//        Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+//        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
 //        int count = 0;
 //        if (device != null) {
 //            DPEntity entity = MiscUtils.getMaxVersionEntity(device.getProperty(1004), device.getProperty(1005));
@@ -575,7 +562,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //        notify.count = count == 0 ? 1 : count;
 //        Intent intent = new Intent(this, BellLiveActivity.class);
 //        intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
-//        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+//        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
 //        notify.pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 //        NotifyManager.getNotifyManager().sendNotify(notify);
         onDismiss();
@@ -616,7 +603,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onConnectDeviceTimeOut() {
         ToastUtil.showNegativeToast(getString(R.string.NETWORK_TIMEOUT));
-        mPresenter.dismiss();
+        presenter.dismiss();
     }
 
     @Override
@@ -647,11 +634,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onSpeaker(boolean on) {
-        boolean hasSelfPermissions = PermissionUtils.hasSelfPermissions(this, Manifest.permission.RECORD_AUDIO);
         if (mLandBellLiveSpeaker != null) {
-            mLandBellLiveSpeaker.setImageResource(on && hasSelfPermissions ? R.drawable.doorbell_icon_landscape_talk : R.drawable.doorbell_icon_landscape_no_talk);
+            mLandBellLiveSpeaker.setImageResource(on ? R.drawable.doorbell_icon_landscape_talk : R.drawable.doorbell_icon_landscape_no_talk);
         }
-        imgvBellLiveSpeaker.setImageResource(on && hasSelfPermissions ? R.drawable.icon_port_voice_on_selector : R.drawable.icon_port_voice_off_selector);
+        imgvBellLiveSpeaker.setImageResource(on ? R.drawable.icon_port_voice_on_selector : R.drawable.icon_port_voice_off_selector);
     }
 
     @Override
@@ -717,7 +703,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (TextUtils.equals(mNewCallHandle, handler)) {
             switch (action) {
                 case VIEW_ACTION_OK:
-                    mPresenter.startViewer();
+                    presenter.startViewer();
                     break;
                 case VIEW_ACTION_CANCEL:
 
@@ -735,7 +721,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void clickImage(int state) {
         switch (state) {
             case ILiveControl.STATE_LOADING_FAILED:
-                mPresenter.startViewer();
+                presenter.startViewer();
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING, "");
                 break;
         }
@@ -810,5 +796,10 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(mScreenStatusReceiver);
+    }
+
+    @Override
+    protected void setActivityComponent(ActivityComponent activityComponent) {
+        activityComponent.inject(this);
     }
 }

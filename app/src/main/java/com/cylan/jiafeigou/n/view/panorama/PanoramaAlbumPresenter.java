@@ -66,6 +66,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
     private long socketPointer = -1;
     private boolean hasConnected;
 
+
     @Override
     public void onStart() {
         super.onStart();

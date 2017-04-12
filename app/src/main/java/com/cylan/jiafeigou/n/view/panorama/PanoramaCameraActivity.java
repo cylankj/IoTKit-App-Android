@@ -33,6 +33,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -209,7 +210,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
                     if (panoramaRecordMode == MODE_SHORT) {
                         AppLogger.d("录制短视频结束了");
                         bottomPanelPhotoGraphItem.setEnabled(false);
-                        mPresenter.stopMakeShortVideo();
+                        presenter.stopMakeShortVideo();
                     }
                     break;
             }
@@ -272,8 +273,8 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     public void onDeviceUnBind() {
-        AppLogger.d("当前设备已解绑" + mUUID);
-        mPresenter.cancelViewer();
+        AppLogger.d("当前设备已解绑" + uuid);
+        presenter.cancelViewer();
         new AlertDialog.Builder(this).setCancelable(false)
                 .setPositiveButton(getString(R.string.OK), (dialog, which) -> {
                     finish();
@@ -294,12 +295,6 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     }
 
-
-    @Override
-    protected PanoramaCameraContact.Presenter onCreatePresenter() {
-        return new PanoramaPresenter();
-    }
-
     @Override
     protected int getContentViewID() {
         return R.layout.activity_panorama_camera;
@@ -314,10 +309,10 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (netType == ConnectivityManager.TYPE_MOBILE) {
             onNetWorkChangedToMobile();
         } else {
-            mPresenter.startViewer();
+            presenter.startViewer();
         }
         setViewModeAndRecordLayout();
-        mPresenter.checkAndInitRecord();
+        presenter.checkAndInitRecord();
     }
 
     public void setViewModeAndRecordLayout() {
@@ -341,7 +336,12 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     protected void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(panoramaToolBar);
-        mPresenter.dismiss();
+        presenter.dismiss();
+    }
+
+    @Override
+    protected void setActivityComponent(ActivityComponent activityComponent) {
+        activityComponent.inject(this);
     }
 
     public boolean muteAudio(boolean bMute) {
@@ -393,7 +393,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         hideVideoModePop();
         AppLogger.d("longClickedBottomPanelPhotoGraphItem");
         if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_VIDEO) {
-            mPresenter.startMakeShortVideo();
+            presenter.startMakeShortVideo();
         } else {
         }
         return true;
@@ -406,16 +406,16 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
         if (panoramaViewMode == PANORAMA_VIEW_MODE.MODE_PICTURE) {
             AppLogger.d("将进行拍照");
             bottomPanelPhotoGraphItem.setEnabled(false);//防止重复点击
-            mPresenter.makePhotograph();
+            presenter.makePhotograph();
         } else if (panoramaRecordMode == MODE_NONE) {
             AppLogger.d("将进行长录像");
             bottomPanelPhotoGraphItem.setEnabled(false);//防止重复点击
-            mPresenter.startMakeLongVideo();
+            presenter.startMakeLongVideo();
         } else if (panoramaRecordMode == MODE_LONG) {
             AppLogger.d("将结束录制长视频");
             bottomPanelPhotoGraphItem.setEnabled(false);//防止重复点击
             showLoading("视频处理中,请稍后");
-            mPresenter.stopMakeLongVideo();
+            presenter.stopMakeLongVideo();
         }
     }
 
@@ -423,7 +423,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void clickedBottomPanelAlbumItem() {
         AppLogger.d("clickedBottomPanelAlbumItem");
         Intent intent = new Intent(this, PanoramaAlbumActivity.class);
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);
     }
 
@@ -471,7 +471,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
     public void clickedToolBarSettingMenu() {
         AppLogger.d("clickedSettingMenu");
         hideVideoModePop();
-        mPresenter.dismiss();
+        presenter.dismiss();
         startActivity(new Intent(this, PanoramaSettingActivity.class));
     }
 
@@ -486,7 +486,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @Override
     protected void onPrepareToExit(Action action) {
-        mPresenter.dismiss();
+        presenter.dismiss();
         if (surfaceView != null) {
             surfaceView.onPause();
             videoLiveContainer.removeAllViews();
@@ -522,7 +522,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     void switchSpeakerWithPermission() {
-        mPresenter.switchSpeaker();
+        presenter.switchSpeaker();
     }
 
     @OnShowRationale(Manifest.permission.RECORD_AUDIO)
@@ -538,7 +538,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     void switchMicroPhoneWithPermission() {
-        mPresenter.switchMicrophone();
+        presenter.switchMicrophone();
     }
 
     @OnClick(R.id.act_panorama_camera_quick_menu_item2_voice)
@@ -693,7 +693,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 //        ToastUtil.showNegativeToast("正在使用移动网络");
         if (isPlaying) {
 //            isPlaying = false;
-//            mPresenter.cancelViewer();
+//            presenter.cancelViewer();
         }
     }
 
@@ -703,7 +703,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
 //        ToastUtil.showPositiveToast("已切换到WiFi网络");
         if (!isPlaying) {
 //            isPlaying = true;
-//            mPresenter.startViewer();
+//            presenter.startViewer();
         }
     }
 

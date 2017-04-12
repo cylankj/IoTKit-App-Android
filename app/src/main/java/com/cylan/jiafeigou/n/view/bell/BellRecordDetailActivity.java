@@ -23,9 +23,8 @@ import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
+import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.base.view.JFGPresenter;
-import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -101,12 +100,6 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
 
 
     @Override
-    protected JFGPresenter onCreatePresenter() {
-        return new BasePresenter() {
-        };
-    }
-
-    @Override
     protected int getContentViewID() {
         return R.layout.activity_bell_record_detail;
     }
@@ -131,7 +124,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         });
 
         Glide.with(this)
-                .load(new JFGGlideURL(mUUID, mCallRecord.timeInLong / 1000 + ".jpg"))
+                .load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg"))
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .error(R.drawable.broken_image)
                 .listener(new RequestListener<JFGGlideURL, GlideDrawable>() {
@@ -194,6 +187,11 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         }
     }
 
+    @Override
+    protected void setActivityComponent(ActivityComponent activityComponent) {
+        activityComponent.inject(this);
+    }
+
     @OnClick(R.id.act_bell_picture_opt_download)
     public void download() {
         BellRecordDetailActivityPermissionsDispatcher.downloadFileWithCheck(this);
@@ -204,7 +202,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         if (mShareDialog == null) {
             mShareDialog = ShareDialogFragment.newInstance();
         }
-        mShareDialog.setPictureURL(new JFGGlideURL(mUUID, mCallRecord.timeInLong / 1000 + ".jpg"));
+        mShareDialog.setPictureURL(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg"));
         mShareDialog.show(getSupportFragmentManager(), ShareDialogFragment.class.getName());
     }
 
@@ -233,13 +231,13 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
         Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
             DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
             item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
-            item.cid = mUUID;
-            Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+            item.cid = uuid;
+            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             item.fileName = mCallRecord.timeInLong / 1000 + ".jpg";
             item.time = (int) (mCallRecord.timeInLong / 1000);
             FutureTarget<File> future = Glide.with(ContextUtils.getContext())
-                    .load(new JFGGlideURL(mUUID, item.fileName))
+                    .load(new JFGGlideURL(uuid, item.fileName))
                     .downloadOnly(100, 100);
             String path = null;
             try {
@@ -250,7 +248,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 e.printStackTrace();
             }
             IDPEntity entity = new DPEntity()
-                    .setUuid(mUUID)
+                    .setUuid(uuid)
                     .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                     .setVersion(System.currentTimeMillis())
                     .setAccount(DataSourceManager.getInstance().getAJFGAccount().getAccount())
@@ -294,7 +292,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
                 .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
                 .map(ret -> new DPEntity()
-                        .setUuid(mUUID)
+                        .setUuid(uuid)
                         .setVersion(mCallRecord.timeInLong / 1000L)
                         .setAction(DBAction.DELETED)
                         .setMsgId(511))
@@ -345,7 +343,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
             return;
         }
-        Glide.with(this).load(new JFGGlideURL(mUUID, mCallRecord.timeInLong / 1000 + ".jpg")).
+        Glide.with(this).load(new JFGGlideURL(uuid, mCallRecord.timeInLong / 1000 + ".jpg")).
                 downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
@@ -390,7 +388,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     public Observable<IDPTaskResult> check() {
         return Observable.just(new DPEntity()
                 .setMsgId(511)
-                .setUuid(mUUID)
+                .setUuid(uuid)
                 .setAction(DBAction.QUERY)
                 .setVersion(mCallRecord.timeInLong / 1000L)
                 .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))

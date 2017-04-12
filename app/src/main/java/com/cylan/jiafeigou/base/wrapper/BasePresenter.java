@@ -6,11 +6,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.CallSuper;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.util.LongSparseArray;
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -18,10 +15,8 @@ import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
-import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -30,7 +25,6 @@ import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,14 +45,12 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
     protected String mUUID;
 
-    protected JFGSourceManager mSourceManager;
+    protected JFGSourceManager sourceManager;
 
     private CompositeSubscription mSubscriptions;
-    private LongSparseArray<ResponseParser> mResponseParserMap = new LongSparseArray<>(32);
     private Map<String, LocalUDPMessageParser> mLocalMessageParserMap = new HashMap<>(32);
 
     protected V mView;
-    private ArrayList<Long> mRequestSeqs = new ArrayList<>(32);
 
     protected void unSubscribe(Subscription... subscriptions) {
         if (subscriptions != null) {
@@ -75,13 +67,13 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     public void onViewAttached(JFGView view) {
         mView = (V) view;
         onRegisterResponseParser();
-        mSourceManager = DataSourceManager.getInstance();
+        sourceManager = DataSourceManager.getInstance();
     }
 
     @Override
     @CallSuper
     public void onStart() {
-        mSourceManager = DataSourceManager.getInstance();
+        sourceManager = DataSourceManager.getInstance();
         onRegisterSubscription();
         if (registerTimeTick()) {
             if (timeTick == null) timeTick = new TimeTick(this);
@@ -109,7 +101,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
      */
     protected void onUnRegisterSubscription() {
         unSubscribe(mSubscriptions);
-        mRequestSeqs.clear();//清空请求队列
         mSubscriptions = null;
     }
 
@@ -126,7 +117,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     @Override
     public void onViewDetached() {
         mView = null;
-        mSourceManager = null;
+        sourceManager = null;
     }
 
     protected void onLoginStateChanged(RxEvent.OnlineStatusRsp loginState) {
@@ -198,10 +189,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 });
     }
 
-    protected void onParseResponseCompleted(long seq) {
-
-    }
-
     public boolean hasReadyForExit() {
         return true;
     }
@@ -255,12 +242,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         HandlerThreadUtils.post(action);
     }
 
-    public interface ResponseParser {
-        /**
-         * @param response 可能为BaseValue或者HashSet<BaseValue> 取决于消息类型,需要自己强转
-         */
-        void onParseResponse(DataPoint... response);
-    }
 
     public interface LocalUDPMessageParser {
         void onParseLocalUDPMsg(RxEvent.LocalUdpMsg msg);
@@ -279,25 +260,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 mSubscriptions.add(subscription);
             }
         }
-    }
-
-    /**
-     * 不在主线程中请求数据,因为可能卡住
-     */
-    protected void robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs, long[] rs) {
-        post(() -> {
-            try {
-                long seq = JfgCmdInsurance.getCmd().robotGetData(peer, queryDps, limit, asc, timeoutMs);
-                mRequestSeqs.add(seq);
-                if (rs != null) rs[0] = seq;
-            } catch (JfgException e) {
-                e.printStackTrace();
-            }
-        });
-    }
-
-    protected void robotGetData(String peer, ArrayList<JFGDPMsg> queryDps, int limit, boolean asc, int timeoutMs) {
-        robotGetData(peer, queryDps, limit, asc, timeoutMs, null);
     }
 
     private TimeTick timeTick;

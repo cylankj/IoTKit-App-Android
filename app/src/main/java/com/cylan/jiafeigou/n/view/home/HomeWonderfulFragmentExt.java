@@ -24,6 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.LogState;
@@ -32,7 +33,6 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeWonderfulContract;
-import com.cylan.jiafeigou.n.mvp.impl.home.HomeWonderfulPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.MediaActivity;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
@@ -137,7 +137,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         lazyLoad();
     }
 
-    private Runnable autoLoading = () -> mPresenter.startRefresh();
+    private Runnable autoLoading = () -> presenter.startRefresh();
 
     private void lazyLoad() {
         if (getUserVisibleHint() && isPrepaper && DataSourceManager.getInstance().getAJFGAccount() != null) {
@@ -175,11 +175,6 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     @Override
-    protected HomeWonderfulContract.Presenter onCreatePresenter() {
-        return new HomeWonderfulPresenterImpl();
-    }
-
-    @Override
     protected int getContentViewID() {
         return R.layout.fragment_home_wonderful_ext;
     }
@@ -188,6 +183,11 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     public void onDetach() {
         super.onDetach();
         dismissShareDialog();
+    }
+
+    @Override
+    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
+        fragmentComponent.inject(this);
     }
 
     private void dismissShareDialog() {
@@ -227,7 +227,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 int totalItemCount = mLinearLayoutManager.getItemCount();
                 if (dy > 0) { //check for scroll down
                     if (pastVisibleItems + visibleItemCount >= totalItemCount && mHasMore && getUserVisibleHint()) {
-                        mPresenter.startLoadMore();
+                        presenter.startLoadMore();
                     }
                 }
             }
@@ -302,7 +302,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         int visibleItemCount = mLinearLayoutManager.getChildCount();
         int totalItemCount = mLinearLayoutManager.getItemCount();
         if (pastVisibleItems + visibleItemCount >= totalItemCount && mHasMore) {
-            mPresenter.startLoadMore();
+            presenter.startLoadMore();
 
         }
     }
@@ -412,7 +412,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     public void onRefresh() {
         if (DataSourceManager.getInstance().getAJFGAccount() != null) {
             srLayoutMainContentHolder.removeCallbacks(autoLoading);
-            mPresenter.startRefresh();
+            presenter.startRefresh();
             srLayoutMainContentHolder.setRefreshing(true);
         } else {
             srLayoutMainContentHolder.setRefreshing(false);
@@ -500,9 +500,9 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         }
         final int position = (int) value;
         if (position >= 0 && position < homeWonderAdapter.getCount()) {
-            mPresenter.deleteTimeline(position);
+            presenter.deleteTimeline(position);
         } else if (position == -1) {
-            mPresenter.removeGuideAnymore();
+            presenter.removeGuideAnymore();
         }
     }
 

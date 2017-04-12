@@ -4,6 +4,7 @@ import android.net.wifi.WifiInfo;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.injector.lifecycle.PerActivity;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -28,6 +29,8 @@ import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
+import javax.inject.Inject;
+
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
@@ -44,7 +47,6 @@ import static com.cylan.jiafeigou.dp.DpUtils.pack;
 /**
  * Created by yanzhendong on 2017/3/8.
  */
-
 public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraContact.View> implements PanoramaCameraContact.Presenter, JFGSocket.JFGSocketCallBack {
     private boolean localUDPConnected = false;
     private boolean remoteServerConnected = false;
@@ -53,7 +55,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void onStart() {
         super.onStart();
-        Device device = mSourceManager.getJFGDevice(mUUID);
+        Device device = sourceManager.getJFGDevice(mUUID);
         if (device != null) {
             mView.onShowProperty(device);
         }
@@ -189,7 +191,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void makePhotograph() {
-        Subscription subscribe = checkSDCard(mSourceManager.getJFGDevice(mUUID))
+        Subscription subscribe = checkSDCard(sourceManager.getJFGDevice(mUUID))
                 .observeOn(Schedulers.io())
                 .map(dev -> fillRawMsg(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2, TYPE_TAKE_PICTURE_REQ, pack(new PanoramaEvent.MSG_TYPE_TAKE_PICTURE_REQ())))
                 .flatMap(this::sendAndReceiveRawMsg)
@@ -253,7 +255,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startMakeLongVideo() {
-        Subscription subscribe = checkSDCard(mSourceManager.getJFGDevice(mUUID))
+        Subscription subscribe = checkSDCard(sourceManager.getJFGDevice(mUUID))
                 .observeOn(Schedulers.io())
                 .flatMap(this::checkBattery)
                 .observeOn(Schedulers.io())
@@ -356,7 +358,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startMakeShortVideo() {
-        Subscription subscribe = checkSDCard(mSourceManager.getJFGDevice(mUUID))
+        Subscription subscribe = checkSDCard(sourceManager.getJFGDevice(mUUID))
                 .observeOn(Schedulers.io())
                 .flatMap(ret -> startMakeVideo(1))
                 .observeOn(AndroidSchedulers.mainThread())

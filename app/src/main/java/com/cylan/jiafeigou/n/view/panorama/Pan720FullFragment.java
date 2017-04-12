@@ -18,6 +18,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -77,12 +78,6 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
         super.onCreate(savedInstanceState);
     }
 
-
-    @Override
-    protected Pan720FullContract.Presenter onCreatePresenter() {
-        return new Pan720FullPresenter();
-    }
-
     @Override
     protected int getContentViewID() {
         return R.layout.fragment_pan720_full;
@@ -130,6 +125,11 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
         View rootView = super.onCreateView(inflater, container, savedInstanceState);
         ButterKnife.bind(this, rootView);
         return rootView;
+    }
+
+    @Override
+    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
+        fragmentComponent.inject(this);
     }
 
     @Override

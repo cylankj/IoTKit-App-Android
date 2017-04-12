@@ -29,11 +29,9 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cylan-hunt on 16-8-10.
  */
+
 public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContract.View> implements
         BellLiveContract.Presenter {
-
-    public BellLivePresenterImpl() {
-    }
 
     @Override
     protected void onRegisterSubscription() {
@@ -46,9 +44,9 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
             @Override
             public void onSucceed(Bitmap bitmap) {
                 String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
-                BitmapUtils.saveBitmap2file(bitmap, filePath);
                 mView.onTakeSnapShotSuccess(bitmap);
                 Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
+                    BitmapUtils.saveBitmap2file(bitmap, filePath);
                     DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                     item.cid = mUUID;

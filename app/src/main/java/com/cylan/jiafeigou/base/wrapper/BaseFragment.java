@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,10 +15,16 @@ import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.DaggerFragmentComponent;
+import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -27,13 +34,14 @@ import butterknife.Unbinder;
  */
 
 public abstract class BaseFragment<P extends JFGPresenter> extends Fragment implements JFGView, View.OnKeyListener {
-    protected P mPresenter;
+    @Inject
+    protected P presenter;
 
     protected String mUUID;
 
-    private static Toast sToast;
+    protected static Toast sToast;
 
-    Unbinder unbinder;
+    protected Unbinder unbinder;
 
     @Override
     public Context getAppContext() {
@@ -50,10 +58,9 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mUUID = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);//在基類裏獲取uuid,便於統一管理
-            if (mUUID == null) mUUID = "300000008496";
         }
-        if (mPresenter != null) {
-            mPresenter.onSetViewUUID(mUUID);
+        if (presenter != null) {
+            presenter.onSetViewUUID(mUUID);
         }
     }
 
@@ -68,20 +75,33 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        mPresenter = onCreatePresenter();
-        if (mPresenter != null) {
-            mPresenter.onViewAttached(this);
+        FragmentActivity activity = getActivity();
+        FragmentComponent component;
+        if (activity != null && activity instanceof BaseActivity) {
+            component = ((BaseActivity) activity).getFragmentComponent();
+            AppLogger.d("从宿主 Activity 中获取 FragmentComponent");
+        } else {
+            component = DaggerFragmentComponent.builder().appComponent(BaseApplication.getAppComponent()).build();
+            AppLogger.d("将创建新的 FragmentComponent, 自己创建的 component 无法在 fragment 间共享资源");
+        }
+        if (component != null) {
+            setFragmentComponent(component);
+        }
+        if (presenter != null) {
+            presenter.onViewAttached(this);
         }
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
-        if (mPresenter != null) {
-            mPresenter.onViewDetached();
+        if (presenter != null) {
+            presenter.onViewDetached();
         }
         if (unbinder != null) unbinder.unbind();
     }
+
+    protected abstract void setFragmentComponent(FragmentComponent fragmentComponent);
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -90,16 +110,16 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
         view.requestFocus();
         view.setOnKeyListener(this);
         initViewAndListener();
-        if (mPresenter != null) {
-            mPresenter.onSetContentView();//有些view会根据一定的条件显示不同的view,可以在这个方法中进行条件判断
+        if (presenter != null) {
+            presenter.onSetContentView();//有些view会根据一定的条件显示不同的view,可以在这个方法中进行条件判断
         }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (mPresenter != null) {
-            mPresenter.onStart();
+        if (presenter != null) {
+            presenter.onStart();
         }
     }
 
@@ -132,20 +152,18 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public void onStop() {
         super.onStop();
-        if (mPresenter != null) {
-            mPresenter.onStop();
+        if (presenter != null) {
+            presenter.onStop();
         }
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        if (mPresenter != null) {
-//            mPresenter.onViewDetached();
+        if (presenter != null) {
+//            presenter.onViewDetached();
         }
     }
-
-    protected abstract P onCreatePresenter();
 
     @Override
     public void showLoading() {
@@ -222,8 +240,8 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
      * 一个回调接口,可以向view中传递数据
      */
     public void onViewAction(int action, String handler, Object extra) {
-        if (mPresenter != null) {
-            mPresenter.onViewAction(action, handler, extra);
+        if (presenter != null) {
+            presenter.onViewAction(action, handler, extra);
         }
     }
 

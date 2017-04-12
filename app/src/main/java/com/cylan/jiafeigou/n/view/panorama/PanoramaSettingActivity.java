@@ -6,6 +6,7 @@ import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.view.cam.DeviceInfoDetailFragment;
@@ -28,10 +29,6 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     @BindView(R.id.fLayout_top_bar_container)
     FrameLayout toolbarContainer;
 
-    @Override
-    protected PanoramaSettingContact.Presenter onCreatePresenter() {
-        return new PanoramaSettingPresenter();
-    }
 
     @Override
     public void onStart() {
@@ -43,6 +40,11 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     public void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(toolbarContainer);
+    }
+
+    @Override
+    protected void setActivityComponent(ActivityComponent activityComponent) {
+        activityComponent.inject(this);
     }
 
     @Override
@@ -59,7 +61,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
     public void showDeviceDetail() {
         DeviceInfoDetailFragment fragment = DeviceInfoDetailFragment.newInstance(null);
         Bundle bundle = new Bundle();
-        bundle.putString(KEY_DEVICE_ITEM_UUID, mUUID);
+        bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
         fragment.setArguments(bundle);
         loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
     }
@@ -73,7 +75,7 @@ public class PanoramaSettingActivity extends BaseActivity<PanoramaSettingContact
 
     @OnClick(R.id.tv_setting_unbind)
     public void unBindDevice() {
-        mPresenter.unBindDevice();
+        presenter.unBindDevice();
     }
 
     @Override

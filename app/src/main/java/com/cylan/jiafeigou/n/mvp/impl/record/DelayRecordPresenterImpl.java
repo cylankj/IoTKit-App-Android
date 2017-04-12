@@ -50,7 +50,7 @@ public class DelayRecordPresenterImpl extends BasePresenter<DelayRecordContract.
             break;
             case DelayRecordContract.View.VIEW_LAUNCH_WAY_WONDERFUL: {
                 //通过每日精彩页进入该页面
-                List<String> list = mSourceManager.getJFGDeviceUUIDByPid(JConstant.OS_CAMERA_ANDROID);
+                List<String> list = sourceManager.getJFGDeviceUUIDByPid(JConstant.OS_CAMERA_ANDROID);
                 if (list != null && list.size() == 1) {
                     mView.onShowRecordMainView(list.get(0));
                 } else {

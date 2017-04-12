@@ -13,6 +13,7 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -86,11 +87,6 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     }
 
     @Override
-    protected CamDelayRecordContract.Presenter onCreatePresenter() {
-        return new CamDelayRecordContract.Presenter();
-    }
-
-    @Override
     protected int getContentViewID() {
         return R.layout.fragment_delay_record;
     }
@@ -131,8 +127,8 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
             startRecord();
         } else {
             //结束或者还没开始录制视频
-//            mPresenter.startViewer();
-            mPresenter.restoreRecord();
+//            presenter.startViewer();
+            presenter.restoreRecord();
         }
     }
 
@@ -272,7 +268,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         mController.setMaxTime(mRecordTimeDuration);
         mController.setRecordTime(System.currentTimeMillis() / 1000 - mRecordBeginTime);
         mController.startRecord();
-        mPresenter.startRecord(mRecordTimeCycle, (int) (System.currentTimeMillis() / 1000), mRecordTimeDuration);
+        presenter.startRecord(mRecordTimeCycle, (int) (System.currentTimeMillis() / 1000), mRecordTimeDuration);
         refreshLayout();
     }
 
@@ -300,7 +296,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
 
-        SurfaceView surfaceView = mPresenter.getViewerInstance();
+        SurfaceView surfaceView = presenter.getViewerInstance();
         mVideoViewContainer.removeAllViews();
         mVideoViewContainer.addView(surfaceView);
         JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, surfaceView);
@@ -349,6 +345,11 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
     }
 
     @Override
+    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
+        fragmentComponent.inject(this);
+    }
+
+    @Override
     public void onStop() {
         super.onStop();
         ViewUtils.clearViewMarginStatusBar(mHeaderContainer);
@@ -366,7 +367,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
 
         refreshLayout();
         if (!isStandBy && mRecordStatus < 1) {
-            mPresenter.startViewer();
+            presenter.startViewer();
         }
     }
 }

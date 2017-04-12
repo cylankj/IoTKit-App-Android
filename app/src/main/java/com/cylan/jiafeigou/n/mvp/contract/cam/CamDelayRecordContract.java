@@ -31,7 +31,6 @@ public interface CamDelayRecordContract {
 
         void onRecordFinished();
     }
-
     class Presenter extends BaseViewablePresenter<View> {
         private Subscription mSubscribe;
 
@@ -40,6 +39,7 @@ public interface CamDelayRecordContract {
         private int mRecordRemainTime;
         private long mRecordStartTime = -1;
         private long mRecordDuration = -1;
+
 
         @Override
         public void onViewAction(int action, String handle, Object extra) {

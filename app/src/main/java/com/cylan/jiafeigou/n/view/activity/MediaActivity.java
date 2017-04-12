@@ -810,7 +810,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
         String url = "http://yf.cylan.com.cn:82/Garfield/1045020208160b9706425470.mp4";
         mCurrentPlayState = PLAY_STATE_RESET;
         mMediaPlayer.reset();
-        String proxyUrl = BaseApplication.getProxy(this).getProxyUrl(url);
+        String proxyUrl = ((BaseApplication) getApplication()).getProxy().getProxyUrl(url);
         mMediaPlayer.setDataSource(proxyUrl);
         mMediaPlayer.setOnInfoListener(this);
         mMediaPlayer.setOnPreparedListener(this);

@@ -14,13 +14,21 @@ import android.text.TextUtils;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
+import com.cylan.jiafeigou.base.injector.component.AppComponent;
+import com.cylan.jiafeigou.base.injector.component.DaggerActivityComponent;
+import com.cylan.jiafeigou.base.injector.component.DaggerFragmentComponent;
+import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.UUID;
+
+import javax.inject.Inject;
 
 import butterknife.ButterKnife;
 
@@ -29,12 +37,14 @@ import butterknife.ButterKnife;
  */
 
 public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActivity implements JFGView {
-    protected P mPresenter;
+    @Inject
+    protected P presenter;
 
-    protected String mUUID;
-    private AlertDialog mAlertDialog;
+    protected String uuid;
+    protected AlertDialog alertDialog;
+    protected Toast mToast;
 
-    private Toast mToast;
+    protected FragmentComponent fragmentComponent;
 
     @Override
     public Context getAppContext() {
@@ -51,47 +61,45 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         super.onCreate(savedInstanceState);
         setContentView(getContentViewID());
         ButterKnife.bind(this);
-        mUUID = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        mPresenter = onCreatePresenter();
-        if (TextUtils.isEmpty(mUUID)) {
-            mUUID = "500000000247";
-        }
-        if (mPresenter != null) {
-            mPresenter.onSetViewUUID(mUUID);
-            mPresenter.onViewAttached(this);
+        AppComponent appComponent = ((BaseApplication) getApplication()).getAppComponent();
+        setActivityComponent(DaggerActivityComponent.builder().appComponent(appComponent).build());
+        uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        if (presenter != null) {
+            presenter.onSetViewUUID(uuid);
+            presenter.onViewAttached(this);
         }
         initViewAndListener();
-        if (mPresenter != null) {
-            mPresenter.onSetContentView();//有些view需要根据一定的条件来显示不同的view,可以在这个方法中来选择
+        if (presenter != null) {
+            presenter.onSetContentView();//有些view需要根据一定的条件来显示不同的view,可以在这个方法中来选择
         }
     }
 
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
-        mUUID = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        if (mPresenter != null) {
-            mPresenter.onSetViewUUID(mUUID);
+        uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        if (presenter != null) {
+            presenter.onSetViewUUID(uuid);
         }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        if (mPresenter != null) {
-            mPresenter.onStart();
+        if (presenter != null) {
+            presenter.onStart();
         }
     }
 
     @Override
     protected void onStop() {
         super.onStop();
-        if (mPresenter != null) {
-            mPresenter.onStop();
+        if (presenter != null) {
+            presenter.onStop();
         }
-        if (mAlertDialog != null && mAlertDialog.isShowing()) {
-            mAlertDialog.dismiss();
-            mAlertDialog = null;
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
+            alertDialog = null;
         }
         mToast = null;
     }
@@ -99,12 +107,12 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mPresenter != null) {
-            mPresenter.onViewDetached();
+        if (presenter != null) {
+            presenter.onViewDetached();
+            fragmentComponent = null;
+            presenter = null;
         }
     }
-
-    protected abstract P onCreatePresenter();
 
     @Override
     public void showLoading() {
@@ -115,25 +123,41 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
 
+    protected abstract void setActivityComponent(ActivityComponent activityComponent);
+
+    public FragmentComponent getFragmentComponent() {
+        if (fragmentComponent == null) {
+            synchronized (this) {
+                if (fragmentComponent == null) {
+                    fragmentComponent = DaggerFragmentComponent
+                            .builder()
+                            .appComponent(((BaseApplication) getApplication()).getAppComponent())
+                            .build();
+                }
+            }
+        }
+        return fragmentComponent;
+    }
+
     @Override
     public String showAlert(String title, String msg, String ok, String cancel) {
-        if (mAlertDialog == null) {
-            mAlertDialog = new AlertDialog.Builder(this).create();
+        if (alertDialog == null) {
+            alertDialog = new AlertDialog.Builder(this).create();
         }
         String handle = UUID.randomUUID().toString();
-        if (!TextUtils.isEmpty(title)) mAlertDialog.setTitle(title);
-        if (!TextUtils.isEmpty(msg)) mAlertDialog.setMessage(msg);
+        if (!TextUtils.isEmpty(title)) alertDialog.setTitle(title);
+        if (!TextUtils.isEmpty(msg)) alertDialog.setMessage(msg);
         if (!TextUtils.isEmpty(ok)) {
-            mAlertDialog.setButton(DialogInterface.BUTTON_POSITIVE, ok, (dialog, which) -> {
-                mPresenter.onViewAction(JFGView.VIEW_ACTION_OK, handle, null);
+            alertDialog.setButton(DialogInterface.BUTTON_POSITIVE, ok, (dialog, which) -> {
+                presenter.onViewAction(JFGView.VIEW_ACTION_OK, handle, null);
             });
         }
         if (!TextUtils.isEmpty(cancel)) {
-            mAlertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, cancel, (dialog, which) -> {
-                mPresenter.onViewAction(JFGView.VIEW_ACTION_CANCEL, handle, null);
+            alertDialog.setButton(DialogInterface.BUTTON_NEGATIVE, cancel, (dialog, which) -> {
+                presenter.onViewAction(JFGView.VIEW_ACTION_CANCEL, handle, null);
             });
         }
-        mAlertDialog.show();
+        alertDialog.show();
         return handle;
     }
 
@@ -145,7 +169,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
      * 默认是将viewAction转发到presenter中进行处理,子类也可以复写此方法自己处理
      */
     public void onViewAction(int action, String handler, Object extra) {
-        mPresenter.onViewAction(action, handler, extra);
+        presenter.onViewAction(action, handler, extra);
     }
 
 
@@ -161,11 +185,11 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         switch (orientation) {
             case Configuration.ORIENTATION_LANDSCAPE:// 加入横屏要处理的代码
                 onScreenRotationChanged(true);
-                mPresenter.onScreenRotationChanged(true);
+                presenter.onScreenRotationChanged(true);
                 break;
             case Configuration.ORIENTATION_PORTRAIT:// 加入竖屏要处理的代码
                 onScreenRotationChanged(false);
-                mPresenter.onScreenRotationChanged(false);
+                presenter.onScreenRotationChanged(false);
                 break;
         }
     }
@@ -182,8 +206,8 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
             return;
         }
-        if (mPresenter != null) {
-            boolean exit = ((BasePresenter) mPresenter).hasReadyForExit();
+        if (presenter != null) {
+            boolean exit = ((BasePresenter) presenter).hasReadyForExit();
             if (exit) {
                 if (shouldExit()) onPrepareToExit(super::onBackPressed);
             } else {
@@ -225,13 +249,13 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     @Override
     public void startActivity(Intent intent) {
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         super.startActivity(intent);
     }
 
     protected void dismissAlert() {
-        if (mAlertDialog != null && mAlertDialog.isShowing()) {
-            mAlertDialog.dismiss();
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
         }
     }
 }

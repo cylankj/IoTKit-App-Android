@@ -11,6 +11,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -18,7 +19,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
-import com.cylan.jiafeigou.n.mvp.impl.bell.BellSettingPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -63,13 +63,13 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     }
 
     @Override
-    protected BellSettingContract.Presenter onCreatePresenter() {
-        return new BellSettingPresenterImpl();
+    protected int getContentViewID() {
+        return R.layout.layout_fragment_bell_setting;
     }
 
     @Override
-    protected int getContentViewID() {
-        return R.layout.layout_fragment_bell_setting;
+    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
+        fragmentComponent.inject(this);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 mClearRecordFragment.setAction((id, value) -> {
                     switch (id) {
                         case R.id.tv_dialog_btn_right:
-                            mPresenter.clearBellRecord(mUUID);
+                            presenter.clearBellRecord(mUUID);
                             LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                     }
                 });
@@ -140,7 +140,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.SURE_DELETE_1, name))
                         .setPositiveButton(getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
-                            mPresenter.unbindDevice();
+                            presenter.unbindDevice();
                             LoadingDialog.showLoading(getActivity().getSupportFragmentManager(), getString(R.string.DELETEING));
                         })
                         .setNegativeButton(getString(R.string.CANCEL), null)

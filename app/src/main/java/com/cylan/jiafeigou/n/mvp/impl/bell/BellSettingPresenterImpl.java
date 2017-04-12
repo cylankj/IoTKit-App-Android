@@ -20,8 +20,10 @@ import rx.schedulers.Schedulers;
 /**
  * Created by cylan-hunt on 16-8-3.
  */
+
 public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.View>
         implements BellSettingContract.Presenter {
+
 
     @Override
     protected void onRegisterSubscription() {
@@ -31,7 +33,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     @Override
     public void onStart() {
         super.onStart();
-        Device device = mSourceManager.getJFGDevice(mUUID);
+        Device device = sourceManager.getJFGDevice(mUUID);
         if (device != null) {
             mView.onShowProperty(device);
         }

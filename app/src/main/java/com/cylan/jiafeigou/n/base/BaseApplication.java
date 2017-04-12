@@ -17,6 +17,9 @@ import com.cylan.jiafeigou.DaemonReceiver1;
 import com.cylan.jiafeigou.DaemonReceiver2;
 import com.cylan.jiafeigou.DaemonService1;
 import com.cylan.jiafeigou.DaemonService2;
+import com.cylan.jiafeigou.base.injector.component.AppComponent;
+import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
+import com.cylan.jiafeigou.base.injector.module.AppModule;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -40,6 +43,8 @@ import com.marswin89.marsdaemon.DaemonClient;
 import com.marswin89.marsdaemon.DaemonConfigurations;
 import com.squareup.leakcanary.LeakCanary;
 
+import javax.inject.Inject;
+
 import permissions.dispatcher.PermissionUtils;
 
 /**
@@ -48,10 +53,13 @@ import permissions.dispatcher.PermissionUtils;
 public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks, HuaweiApiClient.ConnectionCallbacks, HuaweiApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "BaseApplication";
-    private HttpProxyCacheServer proxy;
 
     private DaemonClient mDaemonClient;
     private HuaweiApiClient client;
+
+    private static AppComponent appComponent;
+    @Inject
+    protected HttpProxyCacheServer proxy;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -116,6 +124,10 @@ public class BaseApplication extends MultiDexApplication implements Application.
         super.onCreate();
         PerformanceUtils.startTrace("appStart");
         PerformanceUtils.startTrace("appStart0");
+        //Dagger2 依赖注入
+        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+
+        long time = System.currentTimeMillis();
         PreferencesUtils.init(getApplicationContext());
         enableDebugOptions();
         //每一个新的进程启动时，都会调用onCreate方法。
@@ -274,13 +286,11 @@ public class BaseApplication extends MultiDexApplication implements Application.
         }
     }
 
-    public static HttpProxyCacheServer getProxy(Context context) {
-        BaseApplication app = (BaseApplication) context.getApplicationContext();
-        return app.proxy == null ? (app.proxy = app.newProxy()) : app.proxy;
+    public HttpProxyCacheServer getProxy() {
+        return proxy;
     }
 
-    private HttpProxyCacheServer newProxy() {
-        return new HttpProxyCacheServer.Builder(this).maxCacheSize(Long.MAX_VALUE).maxCacheFilesCount(Integer.MAX_VALUE).build();
+    public static AppComponent getAppComponent() {
+        return appComponent;
     }
-
 }

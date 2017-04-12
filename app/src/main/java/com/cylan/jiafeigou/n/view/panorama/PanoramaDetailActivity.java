@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 
 /**
@@ -8,9 +9,10 @@ import com.cylan.jiafeigou.base.wrapper.BaseActivity;
  */
 
 public class PanoramaDetailActivity extends BaseActivity<PanoramaDetailContact.Presenter> {
+
     @Override
-    protected PanoramaDetailContact.Presenter onCreatePresenter() {
-        return null;
+    protected void setActivityComponent(ActivityComponent activityComponent) {
+        activityComponent.inject(this);
     }
 
     @Override

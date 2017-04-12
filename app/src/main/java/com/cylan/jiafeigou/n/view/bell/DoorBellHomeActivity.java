@@ -29,6 +29,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
+import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -36,7 +37,6 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
-import com.cylan.jiafeigou.n.mvp.impl.bell.DBellHomePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.n.view.adapter.BellCallRecordListAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -114,7 +114,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         registerNetWorkObserver();
         mLastEnterTime = PreferencesUtils.getLong(JConstant.BELL_HOME_LAST_ENTER_TIME);
         try {
-            DataSourceManager.getInstance().clearValue(mUUID,1004,1005);
+            DataSourceManager.getInstance().clearValue(uuid,1004,1005);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -137,17 +137,17 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     }
 
     @Override
-    protected DoorBellHomeContract.Presenter onCreatePresenter() {
-        return new DBellHomePresenterImpl();
-    }
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if (pageSub != null && pageSub.isUnsubscribed()) {
             pageSub.unsubscribe();
             pageSub = null;
         }
+    }
+
+    @Override
+    protected void setActivityComponent(ActivityComponent activityComponent) {
+        activityComponent.inject(this);
     }
 
     @Override
@@ -198,7 +198,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     private void startLoadData(boolean asc, long version) {
         LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.LOADING), false);
         mIsLastLoadFinish = false;
-        mPresenter.fetchBellRecordsList(asc, version);
+        presenter.fetchBellRecordsList(asc, version);
     }
 
     @OnClick({R.id.tv_top_bar_left, R.id.imgv_toolbar_right})
@@ -225,13 +225,13 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        mPresenter.cancelFetch();
+        presenter.cancelFetch();
         LoadingDialog.dismissLoading(getSupportFragmentManager());
     }
 
     private void initSettingFragment() {
         if (fragmentWeakReference == null || fragmentWeakReference.get() == null) {
-            fragmentWeakReference = new WeakReference<>(BellSettingFragment.newInstance(mUUID));
+            fragmentWeakReference = new WeakReference<>(BellSettingFragment.newInstance(uuid));
         }
     }
 
@@ -369,7 +369,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 List<BellCallRecordBean> list = bellCallRecordListAdapter.getSelectedList();
-                                mPresenter.deleteBellCallRecord(list);
+                                presenter.deleteBellCallRecord(list);
                                 bellCallRecordListAdapter.setMode(0);
                                 showEditBar(false);
                                 LoadingDialog.showLoading(getSupportFragmentManager(), getString(R.string.DELETEING));
@@ -385,7 +385,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onMakeCall() {
         Intent intent = new Intent(this, BellLiveActivity.class);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
-        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent);
     }
 
@@ -393,7 +393,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void loadMedia(final BellCallRecordBean item, final ImageView imageView) {
         ((ImageViewTip) imageView).setShowDot(item.answerState == 0 && item.timeInLong > mLastEnterTime);
         Glide.with(this)
-                .load(new JFGGlideURL(mUUID, item.timeInLong / 1000 + ".jpg"))
+                .load(new JFGGlideURL(uuid, item.timeInLong / 1000 + ".jpg"))
                 .asBitmap()
                 .placeholder(R.drawable.pic_head_normal240px)
                 .centerCrop()
@@ -459,7 +459,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         } else {//普通模式下的点击事件,即查看大图模式
             Intent intent = new Intent(this, BellRecordDetailActivity.class);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_BUNDLE, bellCallRecordListAdapter.getItem(position));
-            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
+            intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
             startActivity(intent);
         }
 
@@ -488,7 +488,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     public void onBackStackChanged() {
         final int count = getSupportFragmentManager().getBackStackEntryCount();
         if (count == 0) {
-            mPresenter.onStart();
+            presenter.onStart();
         } else {
             for (Fragment fragment : getSupportFragmentManager().getFragments()) {
                 if (fragment instanceof BellSettingFragment) {
@@ -509,7 +509,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 //改变背景或者 处理网络的全局变量
             } else {
                 //改变背景或者 处理网络的全局变量
-                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(mUUID, DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
                 if (net != null) {
                     cvBellHomeBackground.setState(net.net);
                 } else {

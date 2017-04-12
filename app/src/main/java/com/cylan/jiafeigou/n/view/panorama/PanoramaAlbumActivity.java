@@ -17,8 +17,8 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.model.PAlbumBean;
 import com.cylan.jiafeigou.n.view.adapter.PanoramaAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
@@ -29,7 +29,6 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundRectPopup;
 
-import java.io.File;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -65,15 +64,10 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     private PanoramaAdapter panoramaAdapter;
 
     @Override
-    protected PanoramaAlbumContact.Presenter onCreatePresenter() {
-        return new PanoramaAlbumPresenter();
-    }
-
-    @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPresenter.onSetViewUUID(getIntent().getStringExtra(KEY_DEVICE_ITEM_UUID));
-        panoramaAdapter = new PanoramaAdapter(mUUID, this, null, null);
+        presenter.onSetViewUUID(getIntent().getStringExtra(KEY_DEVICE_ITEM_UUID));
+        panoramaAdapter = new PanoramaAdapter(uuid, this, null, null);
         panoramaAdapter.setOnItemClickListener(this);
         panoramaAdapter.setOnItemLongClickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false));
@@ -96,6 +90,11 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
     protected void onStop() {
         super.onStop();
         ViewUtils.clearViewPaddingStatusBar(toolbarContainer);
+    }
+
+    @Override
+    protected void setActivityComponent(ActivityComponent activityComponent) {
+        activityComponent.inject(this);
     }
 
     @Override
@@ -198,7 +197,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
             panoramaAdapter.reverseItemSelectedState(position);
         } else {
             Bundle bundle = new Bundle();
-            bundle.putString(KEY_DEVICE_ITEM_UUID, mUUID);
+            bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
             bundle.putParcelable("item_url", panoramaAdapter.getItem(position));
             Pan720FullFragment fullFragment = Pan720FullFragment.newInstance(bundle);
             ActivityUtils.addFragmentSlideInFromRight(getSupportFragmentManager(), fullFragment, android.R.id.content);
@@ -219,7 +218,7 @@ public class PanoramaAlbumActivity extends BaseActivity<PanoramaAlbumContact.Pre
 
     @Override
     public void onRefresh() {
-        mPresenter.refresh(false);
+        presenter.refresh(false);
     }
 
     @Override

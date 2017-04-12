@@ -8,7 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
@@ -52,8 +52,8 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
     }
 
     @Override
-    protected JFGPresenter onCreatePresenter() {//保留此接口,此view所需数据简单的由父activity提供
-        return null;
+    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
+        fragmentComponent.inject(this);
     }
 
     @Override

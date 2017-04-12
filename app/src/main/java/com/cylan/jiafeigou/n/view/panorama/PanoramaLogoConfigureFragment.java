@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.FrameLayout;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
@@ -41,11 +42,6 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
     }
 
     @Override
-    protected PanoramaLogoConfigureContact.Presenter onCreatePresenter() {
-        return new PanoramaLogoConfigurePresenter();
-    }
-
-    @Override
     protected void initViewAndListener() {
         super.initViewAndListener();
         LinearLayoutManager manager = new LinearLayoutManager(logoList.getContext());
@@ -54,6 +50,11 @@ public class PanoramaLogoConfigureFragment extends BaseFragment<PanoramaLogoConf
         logoListAdapter = new LogoListAdapter(logoList.getContext(), builtInLogo);
         logoListAdapter.setOnItemClickListener(this);
         logoList.setAdapter(logoListAdapter);
+    }
+
+    @Override
+    protected void setFragmentComponent(FragmentComponent fragmentComponent) {
+        fragmentComponent.inject(this);
     }
 
     @Override
