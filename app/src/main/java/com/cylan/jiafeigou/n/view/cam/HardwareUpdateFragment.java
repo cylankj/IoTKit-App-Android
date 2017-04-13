@@ -35,6 +35,8 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -221,7 +223,9 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         int netType = NetUtils.getNetType(getContext());
         if (netType == 1) {
             //开始下载
-            basePresenter.startDownload(basePresenter.creatDownLoadBean());
+//            basePresenter.startDownload(basePresenter.creatDownLoadBean());
+            basePresenter.myDownLoad(checkDevVersion.url,checkDevVersion.version);
+            AppLogger.d("url:"+checkDevVersion.url+":name:"+checkDevVersion.version);
         } else if (netType == 0 || netType == 2 || netType == 3 || netType == 4) {
             Bundle bundle = new Bundle();
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));

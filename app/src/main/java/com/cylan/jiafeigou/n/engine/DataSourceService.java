@@ -568,7 +568,7 @@ public class DataSourceService extends Service implements AppCallBack {
         // 客户端升级测试
         if (!TextUtils.isEmpty(s)) {
 //            String url = "http://121.15.220.150/imtt.dd.qq.com/16891/AE6502757AE91F88EE91D985D5AAE5AD.apk?mkey=58eb4c2e30b4058c&f=2409&c=0&fsname=com.cylan.jiafeigou_2.4.9.5296_20170228.apk&csr=1bbd&p=.apk";
-            String url = "http://d.app8h.com/d1/969/5689/Clever%20Dog.apk";
+            String url = "http://d.app8h.com/d1/966/5708/Clever%20Dog.apk";
             ClientUpdateManager.getInstance().startDownload(getApplicationContext(), url, "3.2.0", 1);
         }
     }

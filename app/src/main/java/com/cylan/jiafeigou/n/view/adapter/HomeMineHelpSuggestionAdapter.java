@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.AnimationDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
+import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -45,9 +47,8 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
     private static final int TYPE_Client = 1;//客户端类型
 
-    private ImageView clientImage;
-
     private OnResendFeedBackListener resendFeedBack;
+    private AnimationDrawable animationDrawable;
 
     public interface OnResendFeedBackListener {
         void onResend(SuperViewHolder holder, MineHelpSuggestionBean item, int position);
@@ -91,11 +92,10 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
             if (item.pro_falag == 0) {
                 //显示正在发送
                 iv_send_pro.setVisibility(View.VISIBLE);
-                iv_send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
-                Animation animation = AnimationUtils.loadAnimation(getContext(), R.anim.loading_progress_rotate);
-                LinearInterpolator lir = new LinearInterpolator();
-                animation.setInterpolator(lir);
-                iv_send_pro.startAnimation(animation);
+                iv_send_pro.setImageDrawable(null);
+                iv_send_pro.setBackgroundResource(R.drawable.feekback_loading);
+                animationDrawable = (AnimationDrawable) iv_send_pro.getBackground();
+                animationDrawable.start();
 
             } else if (item.pro_falag == 1) {
                 //显示发送失败
@@ -103,6 +103,10 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
             } else {
                 //显示发送成功
                 holder.setVisibility(R.id.iv_send_pro, View.GONE);
+                if(animationDrawable != null){
+                    animationDrawable.stop();
+                    animationDrawable = null;
+                }
                 iv_send_pro.clearAnimation();
             }
 
@@ -115,7 +119,7 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
                 }
             });
 
-            clientImage = holder.getView(R.id.iv_mine_suggestion_client);
+            ImageView clientImage = holder.getView(R.id.iv_mine_suggestion_client);
             MyImageViewTarget myImageViewTarget = new MyImageViewTarget(clientImage, getContext().getResources());
             Glide.with(getContext()).load(item.getIcon())
                     .asBitmap()
@@ -126,7 +130,6 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
                     .into(myImageViewTarget);
 
         } else {     //服务端
-
             TextView textView = holder.getView(R.id.tv_mine_suggestion_server_speak);
             ViewGroup.LayoutParams lp = textView.getLayoutParams();
             // 动态改变条目的长度
@@ -150,7 +153,6 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
 
             holder.setBackgroundResource(R.id.iv_mine_suggestion_server, R.drawable.pic_head);
         }
-
     }
 
     @Override

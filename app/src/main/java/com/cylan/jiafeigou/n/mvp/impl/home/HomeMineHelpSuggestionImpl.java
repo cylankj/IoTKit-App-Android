@@ -391,7 +391,6 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             if (oldTime > newTime)
                 return -1;
             return 1;
-
         }
     }
 

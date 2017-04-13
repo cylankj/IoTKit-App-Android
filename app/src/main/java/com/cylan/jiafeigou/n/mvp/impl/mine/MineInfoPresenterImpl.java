@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 import java.io.File;
 
