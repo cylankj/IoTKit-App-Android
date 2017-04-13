@@ -5,7 +5,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,7 +20,6 @@ import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import javax.inject.Inject;
@@ -42,6 +40,7 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     protected static Toast sToast;
 
     protected Unbinder unbinder;
+    protected FragmentComponent component;
 
     @Override
     public Context getAppContext() {
@@ -75,16 +74,8 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        FragmentActivity activity = getActivity();
-        FragmentComponent component;
-        if (activity != null && activity instanceof BaseActivity) {
-            component = ((BaseActivity) activity).getFragmentComponent();
-            AppLogger.d("从宿主 Activity 中获取 FragmentComponent");
-        } else {
-            component = DaggerFragmentComponent.builder().appComponent(BaseApplication.getAppComponent()).build();
-            AppLogger.d("将创建新的 FragmentComponent, 自己创建的 component 无法在 fragment 间共享资源");
-        }
-        if (component != null) {
+        this.component = DaggerFragmentComponent.builder().appComponent(BaseApplication.getAppComponent()).build();
+        if (this.component != null) {
             setFragmentComponent(component);
         }
         if (presenter != null) {

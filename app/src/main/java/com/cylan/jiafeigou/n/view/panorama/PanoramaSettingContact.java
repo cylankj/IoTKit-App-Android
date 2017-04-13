@@ -14,7 +14,7 @@ public interface PanoramaSettingContact {
         void unbindDeviceRsp(int resultCode);
     }
 
-    interface Presenter extends JFGPresenter {
+    interface Presenter extends JFGPresenter<View> {
 
         void unBindDevice();
     }

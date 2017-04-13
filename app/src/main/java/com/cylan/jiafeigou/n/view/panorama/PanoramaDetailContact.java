@@ -13,7 +13,7 @@ public interface PanoramaDetailContact {
 
     }
 
-    interface Presenter extends JFGPresenter {
+    interface Presenter extends JFGPresenter<View> {
 
     }
 }

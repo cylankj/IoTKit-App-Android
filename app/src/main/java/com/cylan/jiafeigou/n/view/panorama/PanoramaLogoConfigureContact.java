@@ -21,7 +21,7 @@ public interface PanoramaLogoConfigureContact {
 
     }
 
-    interface Presenter extends JFGPresenter {
+    interface Presenter extends JFGPresenter<View> {
 
     }
 }

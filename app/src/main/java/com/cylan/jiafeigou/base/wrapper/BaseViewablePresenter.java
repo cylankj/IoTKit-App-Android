@@ -37,7 +37,7 @@ import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
  * Created by yzd on 16-12-30.
  */
 
-public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter, IFeedRtcp.MonitorListener {
+public abstract class BaseViewablePresenter<V extends ViewableView> extends BasePresenter<V> implements ViewablePresenter<V>, IFeedRtcp.MonitorListener {
     protected boolean mIsMicrophoneOn = false;
     protected boolean hasLiveStream = false;
     protected boolean mIsSpeakerOn = false;

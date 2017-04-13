@@ -102,10 +102,6 @@ public class ShareDialogFragment extends BaseDialog {
                 }
                 break;
             case R.id.tv_share_to_twitter_friends:
-                if (!ShareUtils.isWechatInstalled()) {
-                    ToastUtil.showToast(getString(R.string.Tap2_share_unabletoshare));
-                    return;
-                }
                 if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.shareVideoToTwitter(getActivity(), mVideoURL, glideUrl);
                 } else if (glideUrl != null) {

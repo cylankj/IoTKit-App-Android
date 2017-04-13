@@ -15,19 +15,14 @@ import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
-import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
-import com.cylan.udpMsgPack.JfgUdpMsg;
 
-import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import rx.Observable;
 import rx.Subscription;
@@ -40,15 +35,11 @@ import rx.subscriptions.CompositeSubscription;
  * Created by yzd on 16-12-28.
  */
 
-public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
+public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V> {
     protected String TAG = getClass().getName();
-
     protected String mUUID;
-
     protected JFGSourceManager sourceManager;
-
-    private CompositeSubscription mSubscriptions;
-    private Map<String, LocalUDPMessageParser> mLocalMessageParserMap = new HashMap<>(32);
+    private CompositeSubscription compositeSubscription;
 
     protected V mView;
 
@@ -64,8 +55,8 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
 
 
     @Override
-    public void onViewAttached(JFGView view) {
-        mView = (V) view;
+    public void onViewAttached(V view) {
+        mView = view;
         onRegisterResponseParser();
         sourceManager = DataSourceManager.getInstance();
     }
@@ -87,8 +78,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
         registerSubscription(
                 getDeviceSyncSub(),
                 getLoginStateSub(),
-                getDeleteDataRspSub(),
-                getLocalUDPMessageSub()
+                getDeleteDataRspSub()
         );
     }
 
@@ -100,8 +90,8 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
      * 如果不需要在onStop中进行反注册,可以重写这个方法,然后在自定义的地方反注册
      */
     protected void onUnRegisterSubscription() {
-        unSubscribe(mSubscriptions);
-        mSubscriptions = null;
+        unSubscribe(compositeSubscription);
+        compositeSubscription = null;
     }
 
     @Override
@@ -135,26 +125,6 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
                 .subscribe(this::onLoginStateChanged, e -> {
                     e.printStackTrace();
                     registerSubscription(getLoginStateSub());//出现异常了要重现注册
-                });
-    }
-
-    protected Subscription getLocalUDPMessageSub() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(msg -> {
-                    try {
-                        JfgUdpMsg.UdpHeader header = DpUtils.unpackData(msg.data, JfgUdpMsg.UdpHeader.class);
-                        LocalUDPMessageParser parser;
-                        if (header != null && (parser = mLocalMessageParserMap.get(header.cmd)) != null) {
-                            parser.onParseLocalUDPMsg(msg);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }, throwable -> {
-                    registerSubscription(getLocalUDPMessageSub());
-                    throwable.printStackTrace();
                 });
     }
 
@@ -243,21 +213,17 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter {
     }
 
 
-    public interface LocalUDPMessageParser {
-        void onParseLocalUDPMsg(RxEvent.LocalUdpMsg msg);
-    }
-
     protected void registerSubscription(Subscription... subscriptions) {
-        if (mSubscriptions == null) {
+        if (compositeSubscription == null) {
             synchronized (this) {
-                if (mSubscriptions == null) {
-                    mSubscriptions = new CompositeSubscription();
+                if (compositeSubscription == null) {
+                    compositeSubscription = new CompositeSubscription();
                 }
             }
         }
         if (subscriptions != null) {
             for (Subscription subscription : subscriptions) {
-                mSubscriptions.add(subscription);
+                compositeSubscription.add(subscription);
             }
         }
     }

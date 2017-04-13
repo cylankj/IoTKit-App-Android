@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.base.injector.module.AppModule;
 import com.cylan.jiafeigou.base.injector.module.CommonModule;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 
 import javax.inject.Singleton;
 
@@ -25,5 +26,7 @@ public interface AppComponent {
     JFGPresenter getDefaultPresenter();
 
     JFGSourceManager getSourceManager();
+
+    IDBHelper getDBHelper();
 
 }

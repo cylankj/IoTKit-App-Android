@@ -61,7 +61,7 @@ public interface PanoramaCameraContact {
         void onMakePhotographSuccess(Bitmap picture);
     }
 
-    interface Presenter extends ViewablePresenter {
+    interface Presenter extends ViewablePresenter<View> {
 
         class RecordProgress {
             long second;

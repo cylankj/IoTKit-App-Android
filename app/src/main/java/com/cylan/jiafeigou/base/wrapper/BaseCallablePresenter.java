@@ -26,7 +26,7 @@ import rx.android.schedulers.AndroidSchedulers;
  * Created by yzd on 16-12-30.
  */
 
-public abstract class BaseCallablePresenter<V extends CallableView> extends BaseViewablePresenter<V> implements CallablePresenter {
+public abstract class BaseCallablePresenter<V extends CallableView> extends BaseViewablePresenter<V> implements CallablePresenter<V> {
     protected Caller mCaller;
     protected Caller mHolderCaller;
     protected boolean mIsInViewerMode = false;

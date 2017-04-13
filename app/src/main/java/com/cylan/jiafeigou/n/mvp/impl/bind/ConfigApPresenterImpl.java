@@ -134,7 +134,10 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribeOn(Schedulers.newThread())
                 .delay(1, TimeUnit.SECONDS)
                 //网络为3
-                .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net == 3)
+                .filter(udpDevicePortrait -> {
+                    AppLogger.d(UdpConstant.BIND_TAG + new Gson().toJson(udpDevicePortrait));
+                    return udpDevicePortrait != null && udpDevicePortrait.net > 1;
+                })
                 .map(udpDevicePortrait -> {
                     AppLogger.d(UdpConstant.BIND_TAG + "start bind 3g last state");
                     if (aFullBind != null) {

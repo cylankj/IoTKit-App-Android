@@ -17,8 +17,6 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerActivityComponent;
-import com.cylan.jiafeigou.base.injector.component.DaggerFragmentComponent;
-import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -44,7 +42,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     protected AlertDialog alertDialog;
     protected Toast mToast;
 
-    protected FragmentComponent fragmentComponent;
+    protected ActivityComponent component;
 
     @Override
     public Context getAppContext() {
@@ -61,8 +59,11 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         super.onCreate(savedInstanceState);
         setContentView(getContentViewID());
         ButterKnife.bind(this);
-        AppComponent appComponent = ((BaseApplication) getApplication()).getAppComponent();
-        setActivityComponent(DaggerActivityComponent.builder().appComponent(appComponent).build());
+        AppComponent appComponent = BaseApplication.getAppComponent();
+        this.component = DaggerActivityComponent.builder().appComponent(appComponent).build();
+        if (this.component != null) {
+            setActivityComponent(this.component);
+        }
         uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         if (presenter != null) {
             presenter.onSetViewUUID(uuid);
@@ -109,7 +110,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
         super.onDestroy();
         if (presenter != null) {
             presenter.onViewDetached();
-            fragmentComponent = null;
+            component = null;
             presenter = null;
         }
     }
@@ -125,19 +126,6 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
 
     protected abstract void setActivityComponent(ActivityComponent activityComponent);
 
-    public FragmentComponent getFragmentComponent() {
-        if (fragmentComponent == null) {
-            synchronized (this) {
-                if (fragmentComponent == null) {
-                    fragmentComponent = DaggerFragmentComponent
-                            .builder()
-                            .appComponent(((BaseApplication) getApplication()).getAppComponent())
-                            .build();
-                }
-            }
-        }
-        return fragmentComponent;
-    }
 
     @Override
     public String showAlert(String title, String msg, String ok, String cancel) {

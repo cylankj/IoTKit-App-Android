@@ -4,9 +4,9 @@ package com.cylan.jiafeigou.base.view;
  * Created by yzd on 16-12-28.
  */
 
-public interface JFGPresenter {
+public interface JFGPresenter<V extends JFGView> {
 
-    void onViewAttached(JFGView view);
+    void onViewAttached(V view);
 
     void onStart();
 

@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.panorama;
 
-import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.n.mvp.model.PAlbumBean;
@@ -38,7 +37,7 @@ public interface PanoramaAlbumContact {
         void onFileState(int state);
     }
 
-    interface Presenter extends JFGPresenter {
+    interface Presenter extends JFGPresenter<View> {
         /**
          * 刷新列表d
          *

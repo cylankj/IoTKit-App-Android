@@ -512,7 +512,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 if (mRecorder != null) {
                     mRecorder.release();
                 }
-                AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.audioRecordPermissionDenied());
+                AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+                            if (mView != null) mView.audioRecordPermissionDenied();
+                        }
+                );
             }
         }
         AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));

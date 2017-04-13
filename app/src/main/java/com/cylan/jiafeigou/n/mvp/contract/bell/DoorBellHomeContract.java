@@ -34,7 +34,7 @@ public interface DoorBellHomeContract {
         void onFinish();
     }
 
-    interface Presenter extends JFGPresenter {
+    interface Presenter extends JFGPresenter<View> {
 
         void fetchBellRecordsList(boolean asc, long time);
 

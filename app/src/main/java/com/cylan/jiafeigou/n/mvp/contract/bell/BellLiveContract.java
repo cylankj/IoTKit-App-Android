@@ -17,7 +17,6 @@ public interface BellLiveContract {
         void onLiveStop(int errId);
 
 
-
         void onTakeSnapShotSuccess(Bitmap bitmap);
 
         void onTakeSnapShotFailed();
@@ -25,7 +24,7 @@ public interface BellLiveContract {
         void onDeviceUnBind();
     }
 
-    interface Presenter extends CallablePresenter {
+    interface Presenter extends CallablePresenter<View> {
 
         void capture();
     }

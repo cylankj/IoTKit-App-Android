@@ -49,7 +49,7 @@ public interface HomeWonderfulContract {
         void onQueryTimeLineCompleted();
     }
 
-    interface Presenter extends JFGPresenter {
+    interface Presenter extends JFGPresenter<View> {
         void startRefresh();
 
         void startLoadMore();

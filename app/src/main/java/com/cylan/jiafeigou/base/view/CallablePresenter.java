@@ -4,7 +4,7 @@ package com.cylan.jiafeigou.base.view;
  * Created by yzd on 16-12-30.
  */
 
-public interface CallablePresenter extends ViewablePresenter {
+public interface CallablePresenter<V extends CallableView> extends ViewablePresenter<V> {
 
     /**
      * 可拨打的view都应该具备接听的能力
