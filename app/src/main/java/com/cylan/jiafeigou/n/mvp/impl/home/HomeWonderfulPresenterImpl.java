@@ -182,15 +182,9 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         .setAction(DBAction.DELETED)
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
                 .flatMap(this::perform)
-                .map(ret -> new DPEntity()
-                        .setUuid(mWonderItems.get(position).cid)
-                        .setVersion((long) mWonderItems.get(position).time)
-                        .setAction(DBAction.DELETED)
-                        .setMsgId(511))
-                .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(result -> {
-                    if (result.getResultCode() == 0) {//成功了
+                .map(ret -> {
+                    if (ret.getResultCode() == 0) {//成功了
                         AppLogger.d("删除 TimeLine数据成功: position 为:" + position);
                         DpMsgDefine.DPWonderItem item = mWonderItems.remove(position);
                         mWonderItems.remove(item);
@@ -200,6 +194,16 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         }
                         RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
                     }
+                    return ret;
+                })
+                .observeOn(Schedulers.io())
+                .map(ret -> new DPEntity()
+                        .setUuid(mWonderItems.get(position).cid)
+                        .setVersion((long) mWonderItems.get(position).time)
+                        .setAction(DBAction.DELETED)
+                        .setMsgId(511))
+                .flatMap(this::perform)
+                .subscribe(result -> {
                 }, e -> {
                     e.printStackTrace();
                     AppLogger.d(e.getMessage());

@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -9,14 +10,13 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
 import com.cylan.jiafeigou.dp.DataPoint;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import rx.Observable;
-import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
@@ -92,7 +92,45 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(this::makeGetDataRspResponse)
                 .flatMap(rsp -> {
                     AppLogger.d("收到从服务器返回数据!!!");
-                    return performLocal();
+                    return parseServerRsp(rsp);
                 });
+    }
+
+    protected Observable<BaseDPTaskResult> parseServerRsp(RobotoGetDataRsp rsp) {
+        if (option.type == 1) {//one by one 精准查询
+            Object result = null;
+            if (rsp != null && rsp.map != null && rsp.map.size() > 0) {
+                ArrayList<JFGDPMsg> msgs = rsp.map.entrySet().iterator().next().getValue();
+                if (msgs != null && msgs.size() > 0) {
+                    JFGDPMsg msg = msgs.get(0);
+                    result = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                }
+            }
+            BaseDPTaskResult taskResult = new BaseDPTaskResult();
+            taskResult.setResultCode(result == null ? -1 : 0);
+            taskResult.setResultResponse(result);
+            return Observable.just(taskResult);
+        } else if (option.type == 0) {
+            List<DataPoint> result = new ArrayList<>();
+            if (rsp != null && rsp.map != null && rsp.map.size() > 0) {
+                for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
+                    if ((int) entity.getMsgId() == entry.getKey()) {
+                        ArrayList<JFGDPMsg> msgs = entry.getValue();
+                        if (msgs != null) {
+                            for (JFGDPMsg msg : msgs) {
+                                DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                                result.add(dataPoint);
+                            }
+                        }
+                    }
+                }
+
+            }
+            BaseDPTaskResult taskResult = new BaseDPTaskResult();
+            taskResult.setResultCode(0);
+            taskResult.setResultResponse(result);
+            return Observable.just(taskResult);
+        }
+        return Observable.just(BaseDPTaskResult.SUCCESS);
     }
 }
