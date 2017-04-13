@@ -58,8 +58,12 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_camera_live);
-        this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         ButterKnife.bind(this);
+        this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        if (TextUtils.isEmpty(uuid)) {
+            AppLogger.e("what the hell uuid is null");
+            finishExt();
+        }
         initToolbar();
         initAdapter();
     }
@@ -90,6 +94,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
+        this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        if (TextUtils.isEmpty(uuid)) {
+            AppLogger.e("what the hell uuid is null");
+            finishExt();
+        }
+        initToolbar();
+        initAdapter();
     }
 
     @Override
@@ -124,8 +135,10 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     }
 
     private void initAdapter() {
-        SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(), uuid);
-        vpCameraLive.setAdapter(simpleAdapterPager);
+        if (vpCameraLive.getAdapter() == null) {
+            SimpleAdapterPager simpleAdapterPager = new SimpleAdapterPager(getSupportFragmentManager(), uuid);
+            vpCameraLive.setAdapter(simpleAdapterPager);
+        }
         final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
         vpCameraLive.setPagingScrollListener(event -> {
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
@@ -141,7 +154,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         Intent intent = getIntent();
         if (intent.hasExtra("jump_to_message")) {
             //跳转到
-            if (simpleAdapterPager.getCount() > 1) {
+            if (vpCameraLive.getAdapter().getCount() > 1) {
                 vpCameraLive.setCurrentItem(1);
             }
         }
