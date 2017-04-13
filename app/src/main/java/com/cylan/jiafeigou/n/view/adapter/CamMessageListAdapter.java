@@ -49,10 +49,8 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     //图片Container的总体宽度,可能有3条,可能有2条.
     private final int pic_container_width;//宽度是固定的，需要调整高度。
     private Map<Integer, Integer> selectedMap = new HashMap<>();
-    private Map<Integer, Integer> loadFailedMap = new HashMap<>();
     private boolean hasSdcard;
 
-    private int pic_container_height;//5+26+48
 
     public CamMessageListAdapter(String uiid, Context context, List<CamMessageBean> items, IMulItemViewType<CamMessageBean> mulItemViewType) {
         super(context, items, mulItemViewType);

@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.DaemonReceiver1;
@@ -32,6 +33,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
@@ -122,23 +124,24 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onCreate() {
         super.onCreate();
-        PerformanceUtils.startTrace("appStart");
-        PerformanceUtils.startTrace("appStart0");
-        //Dagger2 依赖注入
-        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-
-        long time = System.currentTimeMillis();
-        PreferencesUtils.init(getApplicationContext());
-        enableDebugOptions();
-        //每一个新的进程启动时，都会调用onCreate方法。
-        try2init();
-        initBugMonitor();
+        //这是主进程
+        if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
+            PerformanceUtils.startTrace("appStart");
+            PerformanceUtils.startTrace("appStart0");
+            //Dagger2 依赖注入
+            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+            PreferencesUtils.init(getApplicationContext());
+            enableDebugOptions();
+            //每一个新的进程启动时，都会调用onCreate方法。
+            try2init();
+            initBugMonitor();
 //        initLeakCanary();
-        registerBootComplete();
-        registerActivityLifecycleCallbacks(this);
-        initHuaweiPushSDK();
-        startService(new Intent(this, DataSourceService.class));
-        PerformanceUtils.stopTrace("appStart");
+            registerBootComplete();
+            registerActivityLifecycleCallbacks(this);
+            initHuaweiPushSDK();
+            startService(new Intent(this, DataSourceService.class));
+            PerformanceUtils.stopTrace("appStart");
+        }
     }
 
     /**

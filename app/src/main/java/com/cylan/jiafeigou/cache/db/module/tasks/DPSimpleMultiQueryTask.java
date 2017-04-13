@@ -11,8 +11,10 @@ import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -45,18 +47,24 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         List<Integer> list = new ArrayList<>();
         for (IDPEntity entity : multiEntity) {
             list.add(entity.getMsgId());
-            Log.d("DPSimpleMultiQueryTask", "DPSimpleMultiQueryTask: " + entity);
+            Log.d("DPSimpleMultiQueryTask", "pre DPSimpleMultiQueryTask: " + entity);
         }
         QueryBuilder<DPEntity> builder = ((BaseDBHelper) mDPHelper).buildDPMsgQueryBuilder(multiEntity.get(0).getAccount(),
                 OptionsImpl.getServer(), multiEntity.get(0).getUuid(), null, null,
                 list, null, null, null);
-        return mDPHelper.queryDpMsg(builder)
-                .map(ret -> {
-                    Object result = null;
-                    if (ret != null && DBAction.AVAILABLE.accept(ret.action())) {
-                        result = propertyParser.parser(ret.getMsgId(), ret.getBytes(), ret.getVersion());
+        return mDPHelper.queryMultiDpMsg(builder)
+                .map(rList -> {
+                    List<DataPoint> dpEntities = new ArrayList<>(ListUtils.getSize(rList));
+                    if (rList != null) {
+                        for (DPEntity entity : rList) {
+                            if (DBAction.AVAILABLE.accept(entity.action())) {
+                                DataPoint result = propertyParser.parser(entity.getMsgId(), entity.getBytes(), entity.getVersion());
+                                dpEntities.add(result);
+                            }
+                        }
                     }
-                    return new BaseDPTaskResult().setResultCode(0).setResultResponse(result);
+                    Log.d("DPSimpleMultiQueryTask", "after DPSimpleMultiQueryTask: " + dpEntities);
+                    return new BaseDPTaskResult().setResultCode(0).setResultResponse(dpEntities);
                 });
     }
 

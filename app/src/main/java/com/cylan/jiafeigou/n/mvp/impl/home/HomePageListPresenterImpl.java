@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
@@ -15,14 +14,12 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
-import com.cylan.jiafeigou.misc.br.TimeTickBroadcast;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -41,12 +38,10 @@ import rx.schedulers.Schedulers;
 public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListContract.View>
         implements HomePageListContract.Presenter {
 
-    private TimeTickBroadcast timeTickBroadcast;
 
     public HomePageListPresenterImpl(HomePageListContract.View view) {
         super(view);
         view.setPresenter(this);
-        registerWorker();
     }
 
     @Override
@@ -266,29 +261,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribe((NetworkInfo info) -> getView().onNetworkChanged(info != null && info.isConnected()), AppLogger::e);
     }
 
-    @Override
-    public void registerWorker() {
-        initTimeTickBroadcast();
-    }
-
-    @Override
-    public void unRegisterWorker() {
-        Context context = ContextUtils.getContext();
-        if (timeTickBroadcast != null && context != null) {
-            context.unregisterReceiver(timeTickBroadcast);
-            timeTickBroadcast = null;
-        }
-    }
-
-    private void initTimeTickBroadcast() {
-        timeTickBroadcast = new TimeTickBroadcast();
-        IntentFilter filter = new IntentFilter(Intent.ACTION_TIME_CHANGED);
-        filter.addAction(Intent.ACTION_TIME_TICK);
-        getView().getContext()
-                .getApplicationContext()
-                .registerReceiver(timeTickBroadcast, filter);
-    }
-
     private static final class InternalHelp {
     }
 
@@ -315,7 +287,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
                     try {
-                        if (!PreferencesUtils.getBoolean(JConstant.IS_UPDATE_DOWNLOADING,false)){
+                        if (!PreferencesUtils.getBoolean(JConstant.IS_UPDATE_DOWNLOADING, false)) {
                             int req = JfgCmdInsurance.getCmd().checkClientVersion("0001");
                             AppLogger.d("client_update:" + req);
                         }

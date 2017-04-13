@@ -25,7 +25,6 @@ import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -85,8 +84,8 @@ public class ClientUpdateManager {
             updateFileBean.savePath = JConstant.MISC_PATH;
         }
 //        apkPath = "/mnt/sdcard"+updateFileBean.savePath+ updateFileBean.fileName+".apk";
-        apkPath =  JConstant.MISC_PATH+"/"+updateFileBean.fileName+".apk";
-        checkLocal(apkPath,url,context);
+        apkPath = JConstant.MISC_PATH + "/" + updateFileBean.fileName + ".apk";
+        checkLocal(apkPath, url, context);
     }
 
     private ServiceConnection serviceConnection = new ServiceConnection() {
@@ -149,7 +148,7 @@ public class ClientUpdateManager {
 //            cBuilder.setContentText("下载完成").setProgress(0, 0, false);
 //            sent();
             //下载完成通知
-            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING,false);
+            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING, false);
             RxBus.getCacheInstance().postSticky(new RxEvent.ClientUpgrade(apkPath));
             realse(ContextUtils.getContext());
         }
@@ -157,7 +156,7 @@ public class ClientUpdateManager {
         @Override
         public void onFailedReason(long taskId, int reason) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onFailedReason:" + taskId);
-            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING,false);
+            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING, false);
         }
     };
 
@@ -166,7 +165,7 @@ public class ClientUpdateManager {
      *
      * @return
      */
-    public void checkLocal(String apkPath,String url,Context context){
+    public void checkLocal(String apkPath, String url, Context context) {
         checkLocalSub = Observable.just(url)
                 .subscribeOn(Schedulers.newThread())
                 .flatMap(new Func1<String, Observable<Boolean>>() {
@@ -188,11 +187,11 @@ public class ClientUpdateManager {
                             AppLogger.d("file_exit:" + file.exists());
                             if (file.exists()) {
                                 //包是否完整
-                                if (getFileSize(file) == length){
+                                if (getFileSize(file) == length) {
                                     return Observable.just(true);
-                                }else {
+                                } else {
                                     boolean delete = file.delete();
-                                    AppLogger.d("update_file_del:"+delete);
+                                    AppLogger.d("update_file_del:" + delete);
                                 }
                             }
                             return Observable.just(false);
@@ -202,29 +201,29 @@ public class ClientUpdateManager {
                         }
                     }
                 })
-                .subscribe(b->{
-                    if (b){
+                .subscribe(b -> {
+                    if (b) {
                         //直接传送APK地址
                         ToastUtil.showPositiveToast("已下载");
                         RxBus.getCacheInstance().postSticky(new RxEvent.ClientUpgrade(apkPath));
-                    }else {
+                    } else {
                         //仅wifi环境下升级
-                        if (NetUtils.getNetType(ContextUtils.getContext()) == 1){
+                        if (NetUtils.getNetType(ContextUtils.getContext()) == 1) {
                             Intent intent = new Intent(context, DownloadService.class);
                             intent.putExtra(DownloadService.KEY_PARCELABLE, updateFileBean);
                             context.bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
-                            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING,true);
+                            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING, true);
                         }
                     }
-                },throwable -> {
-                    AppLogger.e("checkLocal"+throwable.getLocalizedMessage());
+                }, throwable -> {
+                    AppLogger.e("checkLocal" + throwable.getLocalizedMessage());
                 });
     }
 
 
-
     /**
      * 获取文件大小
+     *
      * @param file
      * @return
      * @throws Exception
@@ -291,7 +290,7 @@ public class ClientUpdateManager {
         }
         context.unbindService(serviceConnection);
 
-        if (checkLocalSub != null && !checkLocalSub.isUnsubscribed()){
+        if (checkLocalSub != null && !checkLocalSub.isUnsubscribed()) {
             checkLocalSub.unsubscribe();
         }
     }

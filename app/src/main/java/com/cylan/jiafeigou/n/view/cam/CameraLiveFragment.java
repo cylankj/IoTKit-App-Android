@@ -253,7 +253,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                 Log.d("onSnapshot", "onSnapshot: " + (bitmap == null));
             }
         });
-        String _509 = device.$(509, "0");
+        String _509 = device.$(509, "1");
         videoView.config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         videoView.setMode(TextUtils.equals("0", _509) ? 0 : 1);
         videoView.detectOrientationChanged();
@@ -321,7 +321,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         if (vLive != null && vLive.getVideoView() != null) {
             vLive.getVideoView().onResume();
             Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-            String dpPrimary = device.$(509, "0");//0:俯视
+            String dpPrimary = device.$(509, "1");//0:俯视
             vLive.getVideoView().setMode(TextUtils.equals(dpPrimary, "0") ? 0 : 1);
             vLive.getVideoView().config360(TextUtils.equals(dpPrimary, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         }
@@ -500,9 +500,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 //            if(formatRsp)
             initSdcardFormatDialog();
         }
-        if (msgId == 509) {
+        if (msgId == 509) {//0俯视,1:平视
             Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-            String _509 = device.$(509, "0");
+            String _509 = device.$(509, "1");
             vLive.getVideoView().config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
             vLive.getVideoView().setMode(TextUtils.equals("0", _509) ? 0 : 1);
             vLive.getVideoView().detectOrientationChanged();

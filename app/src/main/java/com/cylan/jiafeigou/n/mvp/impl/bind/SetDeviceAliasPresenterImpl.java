@@ -3,12 +3,16 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -41,21 +45,30 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                 .map(s -> alias)
                 .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
-                    if (s != null && s.trim().length() == 0) return s;//如果是空格则跳过,显示默认名称
+                    if (s != null && s.trim().length() == 0) return -1;//如果是空格则跳过,显示默认名称
                     try {
-                        JfgCmdInsurance.getCmd().setAliasByCid(uuid, s);
-                        AppLogger.i("setup alias: " + s);
+                        int ret = JfgCmdInsurance.getCmd().setAliasByCid(uuid, s);
+                        AppLogger.i("setup alias: " + s + ",ret:" + ret);
+                        return ret;
                     } catch (JfgException e) {
-                        e.printStackTrace();
+                        return -1;
                     }
-                    return s;
-
                 })
+                .timeout(3, TimeUnit.SECONDS)
+                .flatMap(result -> RxBus.getCacheInstance().toObservable(RxEvent.SetAlias.class)
+                        .flatMap(setAlias -> Observable.just(setAlias != null
+                                && setAlias.result != null
+                                && setAlias.result.code == JError.ErrorOK ? JError.ErrorOK : -1)))
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((String s) -> {
-                    getView().setupAliasDone(0);
-                }, AppLogger::e);
+                .subscribe((Integer result) -> {
+                    getView().setupAliasDone(result);
+                }, throwable -> {
+                    if (throwable instanceof TimeoutException) {
+                        getView().setupAliasDone(-1);
+                    }
+                    AppLogger.e(throwable);
+                });
         addSubscription(subscribe, "setupAlias");
     }
 }

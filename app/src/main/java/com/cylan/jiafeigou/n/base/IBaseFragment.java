@@ -19,8 +19,8 @@ public abstract class IBaseFragment<P extends BasePresenter> extends Fragment {
     }
 
     @Override
-    public void onPause() {
-        super.onPause();
+    public void onStop() {
+        super.onStop();
         if (basePresenter != null) basePresenter.stop();
     }
 

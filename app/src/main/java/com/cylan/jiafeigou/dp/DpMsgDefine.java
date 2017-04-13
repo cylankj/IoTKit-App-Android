@@ -960,6 +960,18 @@ public class DpMsgDefine {
             guideBean.time = (int) (System.currentTimeMillis() / 1000);
             return guideBean;
         }
+
+        @Override
+        public String toString() {
+            return "DPWonderItem{" +
+                    "cid='" + cid + '\'' +
+                    ", time=" + time +
+                    ", msgType=" + msgType +
+                    ", regionType=" + regionType +
+                    ", fileName='" + fileName + '\'' +
+                    ", place='" + place + '\'' +
+                    '}';
+        }
     }
 
     @Message
