@@ -777,10 +777,19 @@ public class DataSourceManager implements JFGSourceManager {
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
                                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                                    int count = entity.getValue(0);
+                                    final String title = count == 0 ? ContextUtils.getContext().getString(R.string.app_name) :
+                                            String.format(ContextUtils.getContext().getString(R.string.app_name) + "(%s%s)", count, ContextUtils.getContext().getString(R.string.DOOR_NOT_CONNECT));
+                                    final String subTitle = count == 0 ?
+                                            ContextUtils.getContext().getString(R.string.Slogan) : ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL);
                                     bean.time = entity.getVersion();
-                                    bean.content = ContextUtils.getContext().getResources().getString(R.string.SETTINGS_1);
-                                    bean.resId = R.drawable.icon_home_doorbell_online;
+                                    bean.resId = R.mipmap.ic_launcher;
                                     bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    bean.time = entity.getVersion();
+                                    bean.resId = R.mipmap.ic_launcher;
+                                    bean.notificationId = (uuid + "bell").hashCode();
+                                    bean.content = title;
+                                    bean.subContent = subTitle;
                                     NotifyManager.getNotifyManager().sendNotify(bean);
                                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
                     } catch (Exception e) {
