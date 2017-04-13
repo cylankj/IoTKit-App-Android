@@ -33,7 +33,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.stat.BugMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.HandlerThreadUtils;
-import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
@@ -129,12 +128,24 @@ public class BaseApplication extends MultiDexApplication implements Application.
             PerformanceUtils.startTrace("appStart");
             PerformanceUtils.startTrace("appStart0");
             //Dagger2 依赖注入
-            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
             PreferencesUtils.init(getApplicationContext());
             enableDebugOptions();
             //每一个新的进程启动时，都会调用onCreate方法。
             try2init();
             initBugMonitor();
+        PerformanceUtils.startTrace("appStart");
+        PerformanceUtils.startTrace("appStart0");
+        //Dagger2 依赖注入,初始化全局资源
+        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+        appComponent.initBaseModule();
+        appComponent.getSourceManager().initSubscription();
+
+        long time = System.currentTimeMillis();
+        PreferencesUtils.init(getApplicationContext());
+        enableDebugOptions();
+        //每一个新的进程启动时，都会调用onCreate方法。
+        try2init();
+        initBugMonitor();
 //        initLeakCanary();
             registerBootComplete();
             registerActivityLifecycleCallbacks(this);
@@ -283,7 +294,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         @Override
         public void onReceive(Context context, Intent intent) {
             if (!ProcessUtils.isServiceRunning(context, DataSourceService.class)) {
-                AppLogger.i("start DataSourceService");
+                AppLogger.i("initSubscription DataSourceService");
 //                context.startService(new Intent(context, DataSourceService.class));
             }
         }

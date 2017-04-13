@@ -141,7 +141,7 @@
 # Application classes that will be serialized/deserialized over Gson
 # -keep class mypersonalclass.data.model.** { *; }
 
-##  okhttp3   ####start
+##  okhttp3   ####initSubscription
 # OkHttp
 -keepattributes Signature
 -keepattributes *Annotation*

@@ -9,13 +9,13 @@ import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.google.gson.Gson;
 
@@ -459,7 +459,7 @@ public class MiscUtils {
                 .setUuid(uuid)
                 .setVersion(version)
                 .setOption(new DBOption.SimpleMultiDpQueryOption(1, asc))
-                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
         return list;
     }
 
@@ -475,7 +475,7 @@ public class MiscUtils {
                     .setUuid(uuid)
                     .setVersion(version)
                     .setOption(new DBOption.SimpleMultiDpQueryOption(1, asc))
-                    .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+                    .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
             return this;
         }
 

@@ -207,7 +207,7 @@ public class DownloadManagerPro {
 
     /**
      * <p>
-     * first of all check task state and depend on start download process from where ever need
+     * first of all check task state and depend on initSubscription download process from where ever need
      * </p>
      *
      * @param token now token is download task msgId

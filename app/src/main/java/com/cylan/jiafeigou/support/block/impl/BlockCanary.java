@@ -101,7 +101,7 @@ public final class BlockCanary {
     }
 
     /**
-     * Record monitor start startTime to preference, you may use it when after push which tells start BlockCanary.
+     * Record monitor initSubscription startTime to preference, you may use it when after push which tells initSubscription BlockCanary.
      */
     public void recordStartTime() {
         PreferenceManager.getDefaultSharedPreferences(BlockCanaryContext.get().getContext())

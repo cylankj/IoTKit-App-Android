@@ -92,7 +92,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
         showLoadProgressAnim();
         //判断网络状况
         final int net = NetUtils.getJfgNetType(ContextUtils.getContext());
-        AppLogger.i("play start live " + net + " " + uuid);
+        AppLogger.i("play initSubscription live " + net + " " + uuid);
         if (net == 0) {
             getView().onLiveStop(JFGRules.PlayErr.ERR_NERWORK);
             return;

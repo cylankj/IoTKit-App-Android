@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
@@ -42,7 +40,7 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                 .filter(ret -> ListUtils.getSize(multiEntity) > 0)
                 .subscribeOn(Schedulers.io())
                 .flatMap(idpEntity -> {
-                    BaseDBHelper.getInstance().saveOrUpdate(idpEntity.getAccount(), null, idpEntity.getUuid(),
+                   dpHelper.saveOrUpdate(idpEntity.getAccount(), null, idpEntity.getUuid(),
                             idpEntity.getVersion(), idpEntity.getMsgId(), idpEntity.getBytes(), null, null, null);
                     return Observable.just(idpEntity.getVersion());
                 })
@@ -55,7 +53,7 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                     return Observable.just(result);
                 })
                 .flatMap(baseDPTaskResult -> {
-                    if (DataSourceManager.getInstance().isOnline()) {
+                    if (sourceManager.isOnline()) {
                         performServer().doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage())).subscribe(ret -> {
                         }, AppLogger::e);
                     }

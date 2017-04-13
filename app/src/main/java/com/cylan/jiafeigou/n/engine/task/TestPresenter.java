@@ -38,7 +38,7 @@ public class TestPresenter extends AbstractPresenter {
 
     @Override
     public void start() {
-        Toast.makeText(baseView.getContext(), "start: ", Toast.LENGTH_LONG).show();
+        Toast.makeText(baseView.getContext(), "initSubscription: ", Toast.LENGTH_LONG).show();
         Task<String> task = new TestTask();
         submitCallbackUI(task, Schedulers.newThread());
         initNetwork();

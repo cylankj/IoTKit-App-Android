@@ -19,10 +19,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.TimezoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.TimezonePresenterImpl;
@@ -133,7 +133,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         lvTimezoneDetail.setLayoutManager(layoutManager);
         adapter = new DeviceTimeZoneAdapter(getActivity().getApplicationContext());
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
         String timeZoneId = zone == null ? "" : zone.timezone;
         adapter.setChooseId(timeZoneId);
@@ -149,14 +149,14 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                             .setMessage(getString(R.string.TIMEZONE_INFO))
                             .setNegativeButton(getString(R.string.CANCEL), null)
                             .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                Device aDevice = DataSourceManager.getInstance().getJFGDevice(uuid);
+                                Device aDevice = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                                 DpMsgDefine.DPTimeZone timeZone = aDevice.$(214, new DpMsgDefine.DPTimeZone());
                                 TimeZoneBean bean = adapter.getItem(position);
                                 if (!TextUtils.equals(timeZone.timezone, bean.getId())) {
                                     timeZone.timezone = bean.getId();
                                     timeZone.offset = bean.getOffset();
                                     try {
-                                        DataSourceManager.getInstance().updateValue(uuid, timeZone, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+                                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, timeZone, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
                                     } catch (Exception e) {
                                         AppLogger.e("err: " + e.getLocalizedMessage());
                                     }

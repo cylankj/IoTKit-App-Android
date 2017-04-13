@@ -3,17 +3,14 @@ package com.cylan.jiafeigou.n.mvp.impl.setting;
 import android.content.Context;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
-
-import javax.microedition.khronos.opengles.GL;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
@@ -41,7 +38,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -52,7 +49,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
 
     @Override
     public String getRepeatMode(Context context) {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         boolean f = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         if (!f) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);

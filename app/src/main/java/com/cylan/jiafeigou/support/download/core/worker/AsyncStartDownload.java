@@ -74,12 +74,12 @@ public class AsyncStartDownload extends Thread {
                 //          * delete old file
                 //          * insert new chunk
                 //          * make new file
-                // -->start to download any chunk
+                // -->initSubscription to download any chunk
                 if (!task.resumable) {
                     deleteChunk(task);
                     generateNewChunk(task);
                 }
-                L.d("moderator start");
+                L.d("moderator initSubscription");
                 moderator.start(task, downloadManagerListener);
                 break;
 

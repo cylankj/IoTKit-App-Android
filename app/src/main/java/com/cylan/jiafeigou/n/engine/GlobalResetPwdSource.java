@@ -9,9 +9,9 @@ import android.view.WindowManager;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -106,7 +106,7 @@ public class GlobalResetPwdSource {
         clearSub = Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    AutoSignIn.getInstance().autoSave(DataSourceManager.getInstance().getJFGAccount().getAccount(), 1, "")
+                    AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount(), 1, "")
                             .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                             .subscribe();
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));

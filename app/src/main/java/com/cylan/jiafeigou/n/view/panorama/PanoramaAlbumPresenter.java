@@ -78,7 +78,7 @@ public class PanoramaAlbumPresenter extends BasePresenter<PanoramaAlbumContact.V
                 .subscribe(s -> {
                     if (socketPointer == -1)
                         socketPointer = JFGSocket.InitSocket(PanoramaAlbumPresenter.this);
-                    AppLogger.d("start: " + socketPointer);
+                    AppLogger.d("initSubscription: " + socketPointer);
                     makeTCPBridge();
                 }, AppLogger::e);
     }

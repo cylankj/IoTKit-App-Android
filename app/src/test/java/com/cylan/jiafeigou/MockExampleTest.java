@@ -41,11 +41,11 @@
 ////
 ////        //using mock object
 ////        mockedList.add("one");
-////        mockedList.clear();
+////        mockedList.clearLocal();
 ////
 ////        //verification
 ////        verify(mockedList).add("one");
-////        verify(mockedList).clear();
+////        verify(mockedList).clearLocal();
 //        //You can mock concrete classes, not just interfaces
 //        //例子
 //        // http://waylau.com/mockito-quick-start/

@@ -28,10 +28,10 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLivePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
@@ -115,7 +115,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     }
 
     private void initTitle() {
-        Device jfgDevice = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device jfgDevice = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         tvDeviceName.setText(TextUtils.isEmpty(jfgDevice.alias) ? jfgDevice.uuid : jfgDevice.alias);
 //        CloudLiveCallActivity.setOnCloudMesgBackListener(this);
     }

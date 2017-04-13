@@ -16,11 +16,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -230,7 +230,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         public void onPageSelected(int position) {
             if (position == 1) {
                 try {
-                    DataSourceManager.getInstance().clearValue(uuid, 1001, 1002, 1003);
+                    BaseApplication.getAppComponent().getSourceManager().clearValue(uuid, 1001, 1002, 1003);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -270,7 +270,7 @@ class SimpleAdapterPager extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         String shareAccount = device == null ? "" : device.shareAccount;
         return !TextUtils.isEmpty(shareAccount) ? 1 : 2;
     }

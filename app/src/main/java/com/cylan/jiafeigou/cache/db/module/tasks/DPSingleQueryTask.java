@@ -40,7 +40,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
         if (option.type == 1) {//one by one 精准查询
-            return mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId())
+            return dpHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId())
                     .map(ret -> {
                         Object result = null;
                         if (ret != null && DBAction.AVAILABLE.accept(ret.action())) {
@@ -49,7 +49,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                         return new BaseDPTaskResult().setResultCode(0).setResultResponse(result);
                     });
         } else if (option.type == 0) {
-            return mDPHelper.queryDPMsg(entity.getUuid(), entity.getVersion() == 0 ? Long.MAX_VALUE : entity.getVersion(), entity.getMsgId(), option.asc, option.limit)
+            return dpHelper.queryDPMsg(entity.getUuid(), entity.getVersion() == 0 ? Long.MAX_VALUE : entity.getVersion(), entity.getMsgId(), option.asc, option.limit)
                     .map(items -> {
                         List<DataPoint> result = null;
                         if (items != null && items.size() > 0) {
@@ -68,6 +68,9 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public Observable<BaseDPTaskResult> performServer() {
+        if (entity.getVersion() == 0) {
+            dpHelper.clear(entity.getUuid(), entity.getMsgId());
+        }
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 AppLogger.d("正在发送查询请求,uuid:" + entity.getUuid() + ",version:" + entity.getVersion() + ",type" + option.type + "count:" + option.limit + "acs:" + option.asc);
@@ -80,6 +83,9 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 } else if (option.type == 1) {
                     seq = getCmd().robotGetDataByTime(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
                 }
+                if (seq <= 0) {
+                    throw new JfgException("内部错误");
+                }
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
@@ -87,8 +93,6 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 subscriber.onError(e);
             }
         })
-//                .subscribeOn(Schedulers.io())
-                .filter(seq -> seq > 0)
                 .flatMap(this::makeGetDataRspResponse)
                 .flatMap(rsp -> {
                     AppLogger.d("收到从服务器返回数据!!!");

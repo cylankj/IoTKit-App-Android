@@ -2,8 +2,6 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
@@ -50,7 +48,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
             option.timeEnd = tmp;
         }
         AppLogger.d("let's go for local cache:" + option);
-        return BaseDBHelper.getInstance().queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
+        return dpHelper.queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
                 option.timeStart, option.timeEnd, list, 1000, null, DBState.SUCCESS, null)
                 .flatMap(new Func1<List<DPEntity>, Observable<BaseDPTaskResult>>() {
                     @Override
@@ -77,7 +75,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
                 AppLogger.d("let's go for server cache:" + option);
-                long seq = DataSourceManager.getInstance().syncJFGCameraWarn(entity.getUuid() == null ? "" : entity.getUuid(), option.timeStart, option.asc, 100);
+                long seq = sourceManager.syncJFGCameraWarn(entity.getUuid() == null ? "" : entity.getUuid(), option.timeStart, option.asc, 100);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (Exception e) {

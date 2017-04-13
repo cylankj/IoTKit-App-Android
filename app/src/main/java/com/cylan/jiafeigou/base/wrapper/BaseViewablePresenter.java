@@ -59,7 +59,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     if (mView != null) {
                         mView.onDeviceUnBind();
                     }
-                }, e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override

@@ -24,7 +24,6 @@ import rx.schedulers.Schedulers;
 public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.View>
         implements BellSettingContract.Presenter {
 
-
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();

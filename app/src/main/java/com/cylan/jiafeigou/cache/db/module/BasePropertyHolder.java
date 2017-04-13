@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.cache.db.module;
 import android.util.SparseArray;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.IEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -16,7 +15,7 @@ import java.util.ArrayList;
  */
 
 public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<T> {
-    protected transient IPropertyParser propertyParser = BasePropertyParser.getInstance();
+    protected transient IPropertyParser propertyParser;
     protected transient SparseArray<DPEntity> properties = new SparseArray<>();
 
     protected abstract int pid();
@@ -38,20 +37,25 @@ public abstract class BasePropertyHolder<T> implements IPropertyHolder, IEntity<
     }
 
     @Override
+    public void setPropertyParser(IPropertyParser propertyParser) {
+        this.propertyParser = propertyParser;
+    }
+
+    @Override
     public final ArrayList<JFGDPMsg> getQueryParams() {
         return propertyParser.getQueryParameters(pid());
     }
 
     @Override
+    @Deprecated
     public final boolean setValue(int msgId, byte[] bytes, long version) {
-        DPEntity property = getProperty(msgId);
-        return property != null && property.setValue(bytes, version);
+        return false;
     }
 
     @Override
     public final boolean setValue(int msgId, DataPoint value) {
         DPEntity property = getProperty(msgId);
-        return property != null && property.setValue(value);
+        return property != null && property.setValue(value, value == null ? null : value.toBytes(), value == null ? 0 : value.version);
     }
 
     public DPEntity getProperty(int msgId) {

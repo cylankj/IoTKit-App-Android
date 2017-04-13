@@ -8,11 +8,11 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -55,7 +55,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
      */
     @Override
     public void logOut(String account) {
-        DataSourceManager.getInstance().logout()
+        BaseApplication.getAppComponent().getSourceManager().logout()
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
                     JfgCmdInsurance.getCmd().logout();

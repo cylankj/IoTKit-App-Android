@@ -12,11 +12,11 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveDeviceInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveDeviceInfoPresenterImp;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -107,21 +107,21 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
     }
 
     private void updateDetails() {
-        DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC,null);
+        DpMsgDefine.DPPrimary<String> mac = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_202_MAC,null);
         String m = MiscUtils.safeGet(mac, "");
         tvDeviceMac.setText(m);
-        DpMsgDefine.DPPrimary<String> version = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION,null);
+        DpMsgDefine.DPPrimary<String> version = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION,null);
         String v = MiscUtils.safeGet(version, "");
         tvSoftVersion.setText(v);
-        DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION,null);
+        DpMsgDefine.DPPrimary<String> sVersion =BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION,null);
         String sv = MiscUtils.safeGet(sVersion, "");
         tvSystemVersion.setText(sv);
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         if (device != null) {
             tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
         }
-        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE,null);
+        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_204_SDCARD_STORAGE,null);
         if (status == null || !status.hasSdcard) {
             tvDeviceStorage.setText(getString(R.string.SD_NO));
         } else {
@@ -175,7 +175,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
             public void onDialogAction(int id, Object value) {
                 if (presenter != null && value != null && value instanceof String) {
                     String content = (String) value;
-                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                     if (!TextUtils.isEmpty(content)
                             && !TextUtils.equals(device.alias, content)) {
                         tvInformationFacilityName.setText(content);

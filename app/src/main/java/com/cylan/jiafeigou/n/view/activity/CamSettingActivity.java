@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -29,6 +28,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamSettingPresenterImpl;
@@ -117,7 +117,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         if (getIntent().getBooleanExtra(JConstant.KEY_JUMP_TO_CAM_DETAIL, false)) {
             jumpDetail(false);
         }
-        deviceUpdate(DataSourceManager.getInstance().getJFGDevice(this.uuid));
+        deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGDevice(this.uuid));
     }
 
     @Override
@@ -149,7 +149,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         initInfoDetailFragment();
         DeviceInfoDetailFragment fragment = informationWeakReference.get();
         fragment.setCallBack((Object t) -> {
-            deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
+            deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid));
         });
         Bundle bundle = new Bundle();
         bundle.putString(KEY_DEVICE_ITEM_UUID, uuid);
@@ -184,7 +184,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                 new AlertDialog.Builder(this)
                         .setMessage(getString(R.string.SURE_DELETE_1, JFGRules.getDeviceAlias(device)))
                         .setPositiveButton(getString(R.string.OK), (DialogInterface dialogInterface, int i) -> {
@@ -203,7 +203,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
-                    deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
+                    deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid));
                 });
                 basePresenter.updateSettingTips(basePresenter.getSettingTips().setAutoRecord(0));
             }
@@ -215,7 +215,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 fragment.setArguments(bundle);
                 loadFragment(android.R.id.content, getSupportFragmentManager(), fragment);
                 fragment.setCallBack((Object t) -> {
-                    deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
+                    deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid));
                 });
                 basePresenter.updateSettingTips(basePresenter.getSettingTips().setSafe(0));
             }
@@ -242,7 +242,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     }
 
     private void handleJumpToConfig() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         if (device == null) {
             finishExt();
             return;
@@ -346,7 +346,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDeviceStandbyMode.setChecked(dpStandby.standby);
             svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 switchBtn(lLayoutSettingItemContainer, !isChecked);
-                DpMsgDefine.DPStandby standby = DataSourceManager.getInstance().getJFGDevice(uuid).$(508, new DpMsgDefine.DPStandby());
+                DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(508, new DpMsgDefine.DPStandby());
                 standby.standby = isChecked;
                 standby.version = System.currentTimeMillis();
                 triggerStandby(standby);
@@ -371,7 +371,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                 svSettingDeviceLedIndicator.setChecked(ledTrigger);
             }
             svSettingDeviceLedIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                DpMsgDefine.DPStandby standby = DataSourceManager.getInstance().getJFGDevice(uuid).$(508, new DpMsgDefine.DPStandby());
+                DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(508, new DpMsgDefine.DPStandby());
                 if (standby != null && standby.standby) return;//开启待机模式引起的
                 DpMsgDefine.DPPrimary<Boolean> check = new DpMsgDefine.DPPrimary<>();
                 check.value = isChecked;
@@ -480,14 +480,14 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             case DpMsgMap.ID_223_MOBILE_NET:
             case ID_209_LED_INDICATOR:
             case DpMsgMap.ID_304_DEVICE_CAMERA_ROTATE:
-                deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
+                deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid));
                 //	0 未知, 1 没卡, 2 user's PIN, 3 user's PUK, 4 network PIN, 5 正常
                 break;
         }
     }
 
     private boolean ledPreState() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         return device.$(ID_209_LED_INDICATOR, false);
     }
 
@@ -497,12 +497,12 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
      * @return
      */
     private boolean alarmPreState() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         return device.$(ID_501_CAMERA_ALARM_FLAG, false);
     }
 
     private int autoRecordPreState() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         return device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
     }
 

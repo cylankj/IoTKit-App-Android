@@ -13,10 +13,10 @@ import android.view.ViewGroup;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
@@ -81,7 +81,7 @@ public class NormalMediaFragment extends IBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         int index = getArguments().getInt(KEY_INDEX);
         DpMsgDefine.DPAlarm dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         if (dpAlarm != null) {

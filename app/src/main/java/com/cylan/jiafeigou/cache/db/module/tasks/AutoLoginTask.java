@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JFGRules;
@@ -26,13 +25,13 @@ import rx.schedulers.Schedulers;
 public class AutoLoginTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        return mDPHelper.getActiveAccount()
+        return dpHelper.getActiveAccount()
                 .timeout(1, TimeUnit.SECONDS, Observable.just(null))//说明数据库当前无已激活的 Account
                 .observeOn(Schedulers.io())
                 .map(account -> {
                     if (account == null) return null;//无已激活的 account ,剩下的操作无需再进行了
                     if (!NetUtils.ping()) {//当前是无网络状态
-                        DataSourceManager.getInstance().initFromDB();//无网络情况下从数据库初始化
+//                        BaseApplication.getAppComponent().getSourceManager().initFromDB();//无网络情况下从数据库初始化
                     }
                     return account;
                 })

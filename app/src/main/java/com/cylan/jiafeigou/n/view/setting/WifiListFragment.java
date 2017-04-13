@@ -24,9 +24,9 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.WifiListPresenterImpl;
@@ -247,7 +247,7 @@ public class WifiListFragment extends IBaseFragment<WifiListContract.Presenter>
             if (value != null && value instanceof String) {
                 //pwd
                 String routeName = NetUtils.getNetName(ContextUtils.getContext());
-                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                 DpMsgDefine.DPNet net = device == null ? new DpMsgDefine.DPNet() : device.$(201, new DpMsgDefine.DPNet());
                 if (!TextUtils.equals(routeName, net.ssid)) {
                     ToastUtil.showNegativeToast(getString(R.string.setwifi_check, net.ssid));

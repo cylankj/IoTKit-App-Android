@@ -6,12 +6,12 @@ import android.view.View;
 import android.widget.RadioButton;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -43,7 +43,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         ButterKnife.bind(this);
         customToolbar.setBackAction((View v) -> onBackPressed());
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         //平视
         String dpPrimary = device.$(509, "1");
         initValue = dpPrimary;
@@ -75,7 +75,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
                         .map(s -> {
                             try {
                                 DpMsgDefine.DPPrimary<String> dpPrimary = new DpMsgDefine.DPPrimary<String>("1");
-                                DataSourceManager.getInstance().updateValue(uuid, dpPrimary, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+                                BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, dpPrimary, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
                             } catch (IllegalAccessException e) {
                                 AppLogger.e("err: ");
                             }
@@ -91,7 +91,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
                         .map(s -> {
                             DpMsgDefine.DPPrimary<String> dpPrimary = new DpMsgDefine.DPPrimary<String>("0");
                             try {
-                                DataSourceManager.getInstance().updateValue(uuid, dpPrimary, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
+                                BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, dpPrimary, DpMsgMap.ID_509_CAMERA_MOUNT_MODE);
                             } catch (IllegalAccessException e) {
                                 AppLogger.e("err: ");
                             }
@@ -107,7 +107,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         //平视
         String dpPrimary = device.$(509, "0");
         if (!TextUtils.equals(dpPrimary, initValue))

@@ -7,6 +7,7 @@ import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.dp.DataPoint;
 
 import java.util.ArrayList;
@@ -108,5 +109,17 @@ public interface JFGSourceManager {
     Observable<Device> unBindDevice(String uuid);
 
     ArrayList<Long> getHisDateList(String uuid);
+
+    void setDBHelper(IDBHelper dbHelper);
+
+    void setPropertyParser(IPropertyParser parser);
+
+    void initFromDB();
+
+    void setOnline(boolean online);
+
+    void initAccount();
+
+    void initSubscription();
 
 }

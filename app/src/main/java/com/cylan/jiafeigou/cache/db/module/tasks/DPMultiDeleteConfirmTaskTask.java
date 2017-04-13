@@ -16,7 +16,7 @@ public class DPMultiDeleteConfirmTaskTask extends BaseDPTask<BaseDPTaskResult> {
         return Observable.from(multiEntity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(entity -> mDPHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null))
+                .flatMap(entity -> dpHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null))
                 .buffer(multiEntity.size())
                 .map(items -> new BaseDPTaskResult().setResultCode(0).setResultResponse(items));
     }

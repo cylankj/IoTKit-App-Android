@@ -108,7 +108,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  */
 public class ViewServer implements Runnable {
     /**
-     * The default port used to start view servers.
+     * The default port used to initSubscription view servers.
      */
     private static final int VIEW_SERVER_DEFAULT_PORT = 4939;
     private static final int VIEW_SERVER_MAX_CONNECTIONS = 10;

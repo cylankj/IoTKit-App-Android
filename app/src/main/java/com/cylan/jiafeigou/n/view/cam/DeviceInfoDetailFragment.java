@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -18,6 +17,7 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.DeviceInfoDetailPresenterImpl;
@@ -104,7 +104,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     public void onAttach(Context context) {
         super.onAttach(context);
         this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
-        device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         basePresenter = new DeviceInfoDetailPresenterImpl(this, uuid);
     }
 
@@ -143,7 +143,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     }
 
     private void updateDetails() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         if (device == null) return;
         //是否分享设备
         if (!TextUtils.isEmpty(device.shareAccount)) {
@@ -232,7 +232,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 toEditTimezone();
                 break;
             case R.id.tv_device_sdcard_state:
-                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                 DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
                 String statusContent = getSdcardState(status.hasSdcard, status.err);
                 if (!TextUtils.isEmpty(statusContent) && statusContent.contains("(")) {
@@ -302,7 +302,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             if (!(o instanceof DpMsgDefine.DPTimeZone)) {
                 return;
             }
-            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+            Device device =BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
             //更新ui
             DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
             if (zone != null)
@@ -341,7 +341,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         editDialogFragment.setAction((int id, Object value) -> {
             if (value != null && value instanceof String) {
                 String content = (String) value;
-                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                Device device =BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                 if (!TextUtils.isEmpty(content) && device != null && !TextUtils.equals(content, device.alias)) {
                     device.alias = content;
                     tvDeviceAlias.setTvSubTitle((CharSequence) value);
@@ -366,7 +366,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
 
     @Override
     public void checkDevResult(RxEvent.CheckDevVersionRsp checkDevVersionRsp) {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         String s = device.$(207, "");
         checkDevVersion = checkDevVersionRsp;
         rlHardwareUpdate.setTvSubTitle(checkDevVersionRsp.hasNew ? getString(R.string.Tap1_NewFirmware) : s);
@@ -421,7 +421,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 MiscUtils.loadTimeZoneList()
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe((List<TimeZoneBean> list) -> {
-                            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                             //更新ui
                             DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
                             if (zone == null) return;
@@ -437,7 +437,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 break;
             case 201:
                 //wifi
-                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                 DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
                 tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
                 break;

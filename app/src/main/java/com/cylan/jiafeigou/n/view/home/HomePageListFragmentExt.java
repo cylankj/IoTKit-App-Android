@@ -30,12 +30,12 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomePageListPresenterImpl;
@@ -242,7 +242,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @OnClick(R.id.imgV_add_devices)
     void onClickAddDevice() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
             ((NeedLoginActivity) getActivity()).signInFirst(null);
             return;
         }
@@ -356,7 +356,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
      * @return
      */
     private String getBeautifulAlias(JFGAccount account) {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) return "";
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) return "";
         if (account == null) return "";
         String temp = TextUtils.isEmpty(account.getAlias()) ? account.getAccount() : account.getAlias();
         return "," + MiscUtils.getBeautifulString(temp, 8);
@@ -441,7 +441,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         //不使用post,因为会泄露
         srLayoutMainContentHolder.post(() -> srLayoutMainContentHolder.setRefreshing(true));
 //        enableNestedScroll();
-        Log.d("refresh", "refresh:start ");
+        Log.d("refresh", "refresh:initSubscription ");
         if (basePresenter != null)
             basePresenter.fetchDeviceList(true);
     }

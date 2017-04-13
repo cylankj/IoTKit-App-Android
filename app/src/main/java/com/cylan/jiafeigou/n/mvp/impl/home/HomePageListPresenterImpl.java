@@ -9,11 +9,11 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -150,8 +150,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        getView().onItemsInsert(DataSourceManager.getInstance().getAllJFGDevice());
-        getView().onAccountUpdate(DataSourceManager.getInstance().getJFGAccount());
+        getView().onItemsInsert(BaseApplication.getAppComponent().getSourceManager().getAllJFGDevice());
+        getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
     }
 
     /**
@@ -206,7 +206,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
 
     @Override
     public void fetchDeviceList(boolean manually) {
-        int state = DataSourceManager.getInstance().getLoginState();
+        int state = BaseApplication.getAppComponent().getSourceManager().getLoginState();
         if (state != LogState.STATE_ACCOUNT_ON) {
             getView().onLoginState(false);
         }
@@ -217,7 +217,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .delay(1, TimeUnit.SECONDS)
                 .map((Boolean aBoolean) -> {
                     if (manually)
-                        DataSourceManager.getInstance().syncAllJFGDevicePropertyManually();
+                        BaseApplication.getAppComponent().getSourceManager().syncAllJFGDevicePropertyManually();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return aBoolean;
                 })

@@ -37,7 +37,7 @@ import java.io.File;
  * <strong>Others</strong>
  * <li>{@link PackageUtils#getInstallLocation()} get system install location</li>
  * top of the stack</li>
- * <li>{@link PackageUtils#startInstalledAppDetails(Context, String)} start InstalledAppDetails Activity</li>
+ * <li>{@link PackageUtils#startInstalledAppDetails(Context, String)} initSubscription InstalledAppDetails Activity</li>
  * </ul>
  *
  * @author <a href="http://www.trinea.cn" target="_blank">Trinea</a> 2013-5-15
@@ -299,7 +299,7 @@ public class PackageUtils {
     }
 
     /**
-     * uninstall package and clear data of app silent by root
+     * uninstall package and clearLocal data of app silent by root
      *
      * @param context
      * @param packageName package name of app
@@ -575,7 +575,7 @@ public class PackageUtils {
     }
 
     /**
-     * start InstalledAppDetails Activity
+     * initSubscription InstalledAppDetails Activity
      *
      * @param context
      * @param packageName

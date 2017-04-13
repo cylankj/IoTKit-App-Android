@@ -34,16 +34,13 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
-import com.cylan.jiafeigou.base.injector.component.AppComponent;
-import com.cylan.jiafeigou.base.injector.component.DaggerActivityComponent;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
-import com.cylan.jiafeigou.n.mvp.impl.bell.BellLivePresenterImpl;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -61,6 +58,8 @@ import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -115,6 +114,8 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     //    private boolean isLanchFromBellCall = false;
     private MediaPlayer mediaPlayer;
     private RoundCardPopup roundCardPopup;
+    @Inject
+    JFGSourceManager sourceManager;
 
 
     @Override
@@ -131,7 +132,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                         | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                         | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         registSreenStatusReceiver();
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = sourceManager.getJFGDevice(uuid);
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         }
@@ -551,7 +552,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //        dismissAlert();
         mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
 //        INotify.NotifyBean notify = new INotify.NotifyBean();
-//        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+//        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
 //        int count = 0;
 //        if (device != null) {
 //            DPEntity entity = MiscUtils.getMaxVersionEntity(device.getProperty(1004), device.getProperty(1005));

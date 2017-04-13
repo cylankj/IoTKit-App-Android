@@ -30,7 +30,6 @@ import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -114,7 +113,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         registerNetWorkObserver();
         mLastEnterTime = PreferencesUtils.getLong(JConstant.BELL_HOME_LAST_ENTER_TIME);
         try {
-            DataSourceManager.getInstance().clearValue(uuid,1004,1005);
+            sourceManager.clearValue(uuid, 1004, 1005);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -509,7 +508,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
                 //改变背景或者 处理网络的全局变量
             } else {
                 //改变背景或者 处理网络的全局变量
-                DpMsgDefine.DPNet net = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+                DpMsgDefine.DPNet net = sourceManager.getValue(uuid, DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
                 if (net != null) {
                     cvBellHomeBackground.setState(net.net);
                 } else {

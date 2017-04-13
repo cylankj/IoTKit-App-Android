@@ -13,12 +13,10 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -34,6 +32,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.NotifyManager;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -72,36 +71,17 @@ public class DataSourceManager implements JFGSourceManager {
     private final String TAG = getClass().getName();
 
     private IDBHelper dbHelper;
+    private IPropertyParser propertyParser;
     /**
      * 只缓存当前账号下的数据,一旦注销将会清空所有的缓存,内存缓存方式
      */
     private Map<String, Device> mCachedDeviceMap = new HashMap<>();//和uuid相关的数据缓存
     private Account account;//账号相关的数据全部保存到这里面
-    private static DataSourceManager mDataSourceManager;
     private ArrayList<JFGShareListInfo> shareList = new ArrayList<>();
     private List<Pair<Integer, String>> rawDeviceOrder = new ArrayList<>();
     @Deprecated
     private boolean isOnline;
     private JFGAccount jfgAccount;
-
-
-    private DataSourceManager() {
-        dbHelper = BaseDBHelper.getInstance();
-        dbHelper.getActiveAccount().subscribe(ret -> {
-            account = ret;
-        }, e -> {
-            AppLogger.d(e.getMessage());
-            e.printStackTrace();
-        });
-        initSubscription();
-    }
-
-    private void initSubscription() {
-        makeCacheGetDataSub();
-        makeCacheSyncDataSub();
-        makeCacheAccountSub();
-        makeCacheDeviceSub();
-    }
 
     public void initFromDB() {//根据需要初始化
         dbHelper.getActiveAccount()
@@ -129,7 +109,10 @@ public class DataSourceManager implements JFGSourceManager {
                             @Override
                             public Observable<List<DPEntity>> call(List<DPEntity> ret) {
                                 if (ret != null) {
+                                    DataPoint dataPoint;
                                     for (DPEntity dpEntity : ret) {
+                                        dataPoint = propertyParser.parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
+                                        dpEntity.setValue(dataPoint, dpEntity.getBytes(), dpEntity.getVersion());
                                         device.updateProperty(dpEntity.getMsgId(), dpEntity);
                                     }
                                 }
@@ -146,17 +129,6 @@ public class DataSourceManager implements JFGSourceManager {
                     AppLogger.e(e.getMessage());
                     e.printStackTrace();
                 });
-    }
-
-    public static DataSourceManager getInstance() {
-        if (mDataSourceManager == null) {
-            synchronized (DataSourceManager.class) {
-                if (mDataSourceManager == null) {
-                    mDataSourceManager = new DataSourceManager();
-                }
-            }
-        }
-        return mDataSourceManager;
     }
 
     @Deprecated
@@ -181,10 +153,6 @@ public class DataSourceManager implements JFGSourceManager {
                     return new Device();
                 }
             }
-        }
-        if (device == null) {
-            device = new Device();
-            AppLogger.e("device is null:" + uuid);
         }
         return device;
     }
@@ -272,6 +240,17 @@ public class DataSourceManager implements JFGSourceManager {
         return History.getHistory().getDateList(uuid);
     }
 
+    @Override
+    public void setDBHelper(IDBHelper dbHelper) {
+        this.dbHelper = dbHelper;
+
+    }
+
+    @Override
+    public void setPropertyParser(IPropertyParser parser) {
+        this.propertyParser = parser;
+    }
+
     private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
         return dbHelper.unBindDeviceWithConfirm(uuids)
                 .map(devices -> {
@@ -331,7 +310,7 @@ public class DataSourceManager implements JFGSourceManager {
         isOnline = false;
         account = null;
         jfgAccount = null;
-//        if (unreadMap != null) unreadMap.clear();
+//        if (unreadMap != null) unreadMap.clearLocal();
         if (shareList != null) shareList.clear();
         if (rawDeviceOrder != null) rawDeviceOrder.clear();
         if (mCachedDeviceMap != null) mCachedDeviceMap.clear();
@@ -417,10 +396,10 @@ public class DataSourceManager implements JFGSourceManager {
     public void setLoginState(LogState loginState) {
         PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, loginState.state);
         if (loginState.state == LogState.STATE_NONE) {
-//            shareList.clear();
+//            shareList.clearLocal();
             setJfgAccount(null);
         } else if (loginState.state == LogState.STATE_ACCOUNT_OFF) {
-//            shareList.clear();
+//            shareList.clearLocal();
         } else {
 
         }
@@ -492,7 +471,7 @@ public class DataSourceManager implements JFGSourceManager {
                     if (device != null) {
                         ArrayList<JFGDPMsg> list = new ArrayList<>();
                         for (int msgId : msgIdList) {
-                            device.setValue(msgId, new byte[]{0}, 0);
+                            device.setValue(msgId, null);
                             JFGDPMsg jfgdpMsg = new JFGDPMsg(msgId, 0);
                             jfgdpMsg.packValue = DpUtils.pack(0);
                             list.add(jfgdpMsg);
@@ -543,7 +522,7 @@ public class DataSourceManager implements JFGSourceManager {
                             }
                             getCacheInstance().post(account);
                             getCacheInstance().postSticky(new RxEvent.AccountArrived(this.account));
-                            BaseDPTaskDispatcher.getInstance().perform();
+//                            BaseDPTaskDispatcher.getInstance().perform();
                             return "";
                         }))
                 .subscribe(new Subscriber<String>() {
@@ -718,7 +697,7 @@ public class DataSourceManager implements JFGSourceManager {
      * @param arrayList
      */
     private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = getJFGDevice(uuid);
         //需要考虑,app进入后台.
         if (device != null && !TextUtils.isEmpty(device.account)) {
             ArrayList<JFGDPMsg> list = new ArrayList<>(arrayList);
@@ -731,6 +710,10 @@ public class DataSourceManager implements JFGSourceManager {
                     bean.resId = R.drawable.icon_home_doorbell_online;
                     try {
                         AppLogger.d("通知栏..." + list.get(i));
+                        bean.time = list.get(i).version;
+                        bean.resId = R.mipmap.ic_launcher;
+                        NotifyManager.getNotifyManager().sendNotify(bean);
+                        AppLogger.e("报警消息来了,但是未读数,跟不上.");
                         DPSimpleMultiQueryTask task = new DPSimpleMultiQueryTask()
                                 .init(new MiscUtils.DPEntityBuilder()
                                         .add(uuid, 1001, 0, true)
@@ -739,7 +722,7 @@ public class DataSourceManager implements JFGSourceManager {
                                         .build());
                         task.run().subscribeOn(Schedulers.newThread())
                                 .subscribe(baseDPTaskResult -> {
-                                    Device dd = DataSourceManager.getInstance().getJFGDevice(uuid);
+                                    Device dd = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                                     String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
                                     bean.time = entity.getVersion();
@@ -770,7 +753,7 @@ public class DataSourceManager implements JFGSourceManager {
                                         .build());
                         task.run().subscribeOn(Schedulers.newThread())
                                 .subscribe(baseDPTaskResult -> {
-                                    Device dd = DataSourceManager.getInstance().getJFGDevice(uuid);
+                                    Device dd = getJFGDevice(uuid);
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
                                     AppLogger.d("通知栏..." + entity);
                                     Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
@@ -802,5 +785,13 @@ public class DataSourceManager implements JFGSourceManager {
 
     public void initAccount() {
         dbHelper.getActiveAccount().subscribe(ret -> this.account = ret, e -> AppLogger.d(e.getMessage()));
+    }
+
+    @Override
+    public void initSubscription() {
+        makeCacheGetDataSub();
+        makeCacheSyncDataSub();
+        makeCacheAccountSub();
+        makeCacheDeviceSub();
     }
 }

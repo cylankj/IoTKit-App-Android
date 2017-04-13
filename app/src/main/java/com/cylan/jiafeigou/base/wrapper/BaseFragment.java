@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.DaggerFragmentComponent;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -34,7 +35,8 @@ import butterknife.Unbinder;
 public abstract class BaseFragment<P extends JFGPresenter> extends Fragment implements JFGView, View.OnKeyListener {
     @Inject
     protected P presenter;
-
+    @Inject
+    protected JFGSourceManager sourceManager;
     protected String mUUID;
 
     protected static Toast sToast;

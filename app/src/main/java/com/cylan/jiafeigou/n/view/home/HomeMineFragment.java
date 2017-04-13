@@ -20,8 +20,8 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
@@ -98,7 +98,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void onStart() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             //访客状态
             Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
@@ -112,7 +112,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 点击个人头像
      */
     public void portrait() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
@@ -126,7 +126,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     public void friendItem(View view) {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
@@ -167,7 +167,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     public void settingsItem(View view) {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
@@ -183,7 +183,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     public void shareItem(View view) {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
@@ -320,7 +320,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     }
 
     private boolean needStartLoginFragment() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON && RxBus.getCacheInstance().hasObservers()) {
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON && RxBus.getCacheInstance().hasObservers()) {
             ((NeedLoginActivity) getActivity()).signInFirst(null);
             return true;
         }
@@ -384,7 +384,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * @param view
      */
     private void helpItem(View view) {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
@@ -406,7 +406,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转到消息界面
      */
     private void jump2MesgFragment() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
@@ -432,7 +432,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 点击个人昵称
      */
     private void jump2UserInfo() {
-        if (DataSourceManager.getInstance().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
 //        if (PreferencesUtils.getInt(JConstant.IS_lOGINED, 0) == 0) {
             needStartLoginFragment();
             return;
@@ -458,7 +458,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     private void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
-        bundle.putSerializable("userinfo", DataSourceManager.getInstance().getJFGAccount());
+        bundle.putSerializable("userinfo", BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
         MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right

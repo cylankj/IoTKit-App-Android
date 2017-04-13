@@ -275,7 +275,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         mPhotoTapListener = null;
         mViewTapListener = null;
 
-        // Finally, clear ImageView
+        // Finally, clearLocal ImageView
         mImageView = null;
     }
 
@@ -384,7 +384,7 @@ public class PhotoViewAttacher implements IPhotoView, View.OnTouchListener,
         checkAndDisplayMatrix();
 
         /**
-         * Here we decide whether to let the ImageView's parent to start taking
+         * Here we decide whether to let the ImageView's parent to initSubscription taking
          * over the touch event.
          *
          * First we check whether this function is enabled. We never want the

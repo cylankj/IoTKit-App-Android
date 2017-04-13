@@ -4,9 +4,7 @@ import android.graphics.Bitmap;
 import android.text.TextUtils;
 
 import com.cylan.jfgapp.interfases.CallBack;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseCallablePresenter;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -32,7 +30,6 @@ import rx.schedulers.Schedulers;
 
 public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContract.View> implements
         BellLiveContract.Presenter {
-
     @Override
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
@@ -50,7 +47,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                     DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                     item.cid = mUUID;
-                    Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+                    Device device = sourceManager.getJFGDevice(mUUID);
                     item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
                     long time = System.currentTimeMillis();
                     item.fileName = time / 1000 + ".jpg";
@@ -59,7 +56,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                             .setUuid(mUUID)
                             .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                             .setVersion(System.currentTimeMillis())
-                            .setAccount(DataSourceManager.getInstance().getAJFGAccount().getAccount())
+                            .setAccount(sourceManager.getAJFGAccount().getAccount())
                             .setAction(DBAction.SHARED)
                             .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
                             .setBytes(item.toBytes());
@@ -67,7 +64,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                     subscriber.onCompleted();
                 })
                         .subscribeOn(Schedulers.io())
-                        .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
+                        .flatMap(entity -> taskDispatcher.perform(entity))
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribe(result -> {
                         }, e -> AppLogger.d(e.getMessage()));

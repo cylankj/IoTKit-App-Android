@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Created by Majid Golshadi on 4/14/2014.
  * <p>
- * start
+ * initSubscription
  * stop
  * downloader thread hear i call them AsyncWorker because i use AsyncTask instead of thread
  * for more information you can see these ref:
@@ -52,7 +52,7 @@ public class Moderator {
         // getJFGDevice task chunk info
         // set task state to Downloading
         // get any chunk file size calculate where it has to begin
-        // start any of them as AsyncTask
+        // initSubscription any of them as AsyncTask
 
         // getJFGDevice task chunk info
         List<Chunk> taskChunks = chunksDataSource.chunksRelatedTask(task.id);
@@ -65,7 +65,7 @@ public class Moderator {
         if (taskChunks != null) {
 
             // set task state to Downloading
-            // to lock start download again!
+            // to lock initSubscription download again!
             task.state = TaskStates.DOWNLOADING;
             tasksDataSource.update(task);
 
@@ -77,15 +77,15 @@ public class Moderator {
                 if (!task.resumable) {
                     chunk.begin = 0;
                     chunk.end = 0;
-                    // start one chunk as AsyncTask (duplicate code!! :( )                    
+                    // initSubscription one chunk as AsyncTask (duplicate code!! :( )
                     Thread chunkDownloaderThread = new AsyncWorker(task, chunk, this);
                     workerList.put(chunk.id, chunkDownloaderThread);
                     chunkDownloaderThread.start();
                 } else if (!downloaded.equals(totalSize)) {
                     // where it has to begin
-                    // perform start point but i have not save it in Database
+                    // perform initSubscription point but i have not save it in Database
                     chunk.begin = chunk.begin + downloaded;
-                    // start any of them as AsyncTask
+                    // initSubscription any of them as AsyncTask
                     Thread chunkDownloaderThread = new AsyncWorker(task, chunk, this);
                     workerList.put(chunk.id, chunkDownloaderThread);
                     chunkDownloaderThread.start();
@@ -97,7 +97,7 @@ public class Moderator {
                 }
 //                Thread chunkDownloaderThread = new AsyncWorker(task, chunk, this);
 //                workerList.put(chunk.msgId, chunkDownloaderThread);
-//                chunkDownloaderThread.start();
+//                chunkDownloaderThread.initSubscription();
             }
 
             // notify to developer------------------------------------------------------------

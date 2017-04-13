@@ -68,7 +68,7 @@ public abstract class EmptyView implements IEmptyView {
 //            View view = reInit();
 //            if (view != null && !view.isShown()) {
 //                if (showAnimation != null) {
-//                    showAnimation.start();
+//                    showAnimation.initSubscription();
 //                    return;
 //                }
 //                view.setVisibility(View.VISIBLE);
@@ -79,7 +79,7 @@ public abstract class EmptyView implements IEmptyView {
 //            View view = emptyViewRef.get();
 //            if (view.isShown()) {
 //                if (hideAnimation != null) {
-//                    hideAnimation.start();
+//                    hideAnimation.initSubscription();
 //                    return;
 //                }
 //                view.setVisibility(View.GONE);

@@ -184,9 +184,10 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                 .flatMap(this::perform)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(ret -> {
+                    DpMsgDefine.DPWonderItem item = null;
                     if (ret.getResultCode() == 0) {//成功了
                         AppLogger.d("删除 TimeLine数据成功: position 为:" + position);
-                        DpMsgDefine.DPWonderItem item = mWonderItems.remove(position);
+                        item = mWonderItems.remove(position);
                         mWonderItems.remove(item);
                         mView.onDeleteWonderSuccess(position);
                         if (mWonderItems.isEmpty()) {//说明当天的已经删完了
@@ -194,12 +195,13 @@ public class HomeWonderfulPresenterImpl extends BasePresenter<HomeWonderfulContr
                         }
                         RxBus.getCacheInstance().post(new RxEvent.DeleteWonderRsp(true, position));
                     }
-                    return ret;
+                    return item;
                 })
+                .filter(item -> item != null)
                 .observeOn(Schedulers.io())
-                .map(ret -> new DPEntity()
-                        .setUuid(mWonderItems.get(position).cid)
-                        .setVersion((long) mWonderItems.get(position).time)
+                .map(item -> new DPEntity()
+                        .setUuid(item.cid)
+                        .setVersion(item.time)
                         .setAction(DBAction.DELETED)
                         .setMsgId(511))
                 .flatMap(this::perform)

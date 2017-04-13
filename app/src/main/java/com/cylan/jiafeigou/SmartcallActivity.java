@@ -222,9 +222,9 @@ public class SmartcallActivity extends NeedLoginActivity
 //          密码错误且是自动登录才走此
             splashOver();
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
-            Account account = DataSourceManager.getInstance().getAJFGAccount();
+            Account account = BaseApplication.getAppComponent().getSourceManager().getAJFGAccount();
             if (account != null && !TextUtils.isEmpty(account.getAccount()))
-                AutoSignIn.getInstance().autoSave(DataSourceManager.getInstance().getJFGAccount().getAccount(), 1, "");
+                AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount(), 1, "");
             PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
             PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
         }

@@ -65,10 +65,9 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_701_SYS_PUSH_FLAG;
  */
 
 public class BasePropertyParser implements IPropertyParser {
-    private static BasePropertyParser instance;
     private SparseArray<DPProperty> properties = new SparseArray<>();
 
-    private BasePropertyParser() {
+    public BasePropertyParser() {
         init();
     }
 
@@ -126,18 +125,6 @@ public class BasePropertyParser implements IPropertyParser {
         properties.put(ID_202_MAC, new DPProperty(String.class, CAMERA, DOORBELL));
         properties.put(ID_201_NET, new DPProperty(DpMsgDefine.DPNet.class, CAMERA, DOORBELL));
     }
-
-    public static BasePropertyParser getInstance() {
-        if (instance == null) {
-            synchronized (BasePropertyParser.class) {
-                if (instance == null) {
-                    instance = new BasePropertyParser();
-                }
-            }
-        }
-        return instance;
-    }
-
 
     @Override
     public boolean accept(int pid, int msgId) {

@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -49,9 +48,9 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
         Observable.just(value)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
-                    AppLogger.i("save start: " + id + " " + value);
+                    AppLogger.i("save initSubscription: " + id + " " + value);
                     try {
-                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        sourceManager.updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -67,8 +66,8 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                    DpMsgDefine.DPPrimary<String> sVersion = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, null);
+                    Device device = sourceManager.getJFGDevice(uuid);
+                    DpMsgDefine.DPPrimary<String> sVersion = sourceManager.getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, null);
                     try {
                         long req = JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, device.$(ID_207_DEVICE_VERSION, ""));
                         AppLogger.d("Bell_checkNewVersion:" + req);

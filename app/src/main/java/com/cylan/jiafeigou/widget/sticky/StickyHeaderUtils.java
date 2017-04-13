@@ -72,7 +72,7 @@ public class StickyHeaderUtils {
                             final View header = headerReference.get();
 
                             if (!mDownEventDispatched) {
-                                // if moving, create activity_cloud_live_mesg_call_out_item fake down event for the scrollingView to start the scroll. the y of the touch in the scrolling view is the y coordinate of the touch in the header + the translation of the header
+                                // if moving, create activity_cloud_live_mesg_call_out_item fake down event for the scrollingView to initSubscription the scroll. the y of the touch in the scrolling view is the y coordinate of the touch in the header + the translation of the header
                                 final MotionEvent downEvent = MotionEvent.obtain(event.getDownTime() - 1, event.getEventTime() - 1, MotionEvent.ACTION_DOWN, event.getX(), event.getY() + StickyCompat.getTranslationY(header), 0);
                                 scrollingView.dispatchTouchEvent(downEvent);
                                 mDownEventDispatched = true;

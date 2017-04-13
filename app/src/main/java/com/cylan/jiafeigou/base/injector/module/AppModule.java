@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.base.injector.module;
 import android.content.Context;
 
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
+import com.cylan.jiafeigou.base.module.BasePresenterInjector;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -38,8 +39,7 @@ public class AppModule {
     }
 
     @Provides
-    public JFGPresenter provideDefaultPresenter() {
-        return new BasePresenter() {
-        };
+    public JFGPresenter provideDefaultPresenter(BasePresenterInjector injector) {
+        return injector.inject(new BasePresenter() {});
     }
 }

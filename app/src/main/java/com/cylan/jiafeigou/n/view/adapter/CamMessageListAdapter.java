@@ -13,10 +13,10 @@ import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
@@ -58,7 +58,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         pic_container_width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
-        DpMsgDefine.DPSdStatus status = DataSourceManager.getInstance().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
         this.hasSdcard = status.hasSdcard && status.err != 0;
     }
 
@@ -67,7 +67,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private boolean online() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         return net != null && net.net > 0;
     }
@@ -178,7 +178,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * 来自一个全局的通知消息
      */
     public void notifySdcardStatus(boolean status, int position) {
-        DpMsgDefine.DPSdStatus nowStatus = DataSourceManager.getInstance().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus nowStatus = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
         this.hasSdcard = nowStatus.hasSdcard && nowStatus.err != 0;
         updateItemFrom(position);
     }

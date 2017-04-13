@@ -8,12 +8,11 @@ import android.support.annotation.CallSuper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -39,6 +38,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
     protected String TAG = getClass().getName();
     protected String mUUID;
     protected JFGSourceManager sourceManager;
+    protected IDPTaskDispatcher taskDispatcher;
     private CompositeSubscription compositeSubscription;
 
     protected V mView;
@@ -53,18 +53,23 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
         }
     }
 
+    public void setSourceManager(JFGSourceManager manager) {
+        this.sourceManager = manager;
+    }
+
+    public void setTaskDispatcher(IDPTaskDispatcher taskDispatcher) {
+        this.taskDispatcher = taskDispatcher;
+    }
 
     @Override
     public void onViewAttached(V view) {
         mView = view;
         onRegisterResponseParser();
-        sourceManager = DataSourceManager.getInstance();
     }
 
     @Override
     @CallSuper
     public void onStart() {
-        sourceManager = DataSourceManager.getInstance();
         onRegisterSubscription();
         if (registerTimeTick()) {
             if (timeTick == null) timeTick = new TimeTick(this);
@@ -164,11 +169,11 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
     }
 
     public Observable<IDPTaskResult> perform(IDPEntity entity) {
-        return BaseDPTaskDispatcher.getInstance().perform(entity);
+        return taskDispatcher.perform(entity);
     }
 
     public Observable<IDPTaskResult> perform(List<? extends IDPEntity> entity) {
-        return BaseDPTaskDispatcher.getInstance().perform(entity);
+        return taskDispatcher.perform(entity);
     }
 
     /**

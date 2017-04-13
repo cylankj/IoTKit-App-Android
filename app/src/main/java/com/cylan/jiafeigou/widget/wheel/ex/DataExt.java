@@ -97,7 +97,7 @@ public class DataExt implements IData {
         if (DEBUG)
             Log.d(TAG, String.format("getData:%s,%s", end, start));
         if (start < 0 || start > end || end > flattenDataList.size()) {
-//            System.out.println("出界: " + start);
+//            System.out.println("出界: " + initSubscription);
             end = flattenDataList.size() - start;
             if (end <= 0)
                 return null;

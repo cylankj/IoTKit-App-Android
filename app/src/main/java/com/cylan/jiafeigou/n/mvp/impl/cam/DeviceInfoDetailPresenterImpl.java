@@ -5,7 +5,6 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -14,6 +13,7 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -91,7 +91,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        com.cylan.jiafeigou.base.module.DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -106,7 +106,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                     try {
                         JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, device.$(ID_207_DEVICE_VERSION, "0.0"));
                     } catch (Exception e) {
@@ -194,7 +194,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     public void updateAlias(Device device) {
         addSubscription(Observable.just(device)
                 .map(device1 -> {
-                    DataSourceManager.getInstance().updateJFGDevice(device);
+                    BaseApplication.getAppComponent().getSourceManager().updateJFGDevice(device);
                     try {
                         JfgCmdInsurance.getCmd().setAliasByCid(device.uuid, device.alias);
                         AppLogger.d("update alias suc");

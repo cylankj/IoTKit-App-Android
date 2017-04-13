@@ -99,7 +99,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     @Override
     public void onStart() {
         super.onStart();
-//        if (presenter != null) presenter.start();
+//        if (presenter != null) presenter.initSubscription();
     }
 
     @Override

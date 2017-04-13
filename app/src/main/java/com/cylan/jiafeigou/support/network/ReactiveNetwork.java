@@ -191,7 +191,7 @@ public class ReactiveNetwork {
                     @Override
                     public void onReceive(Context context, Intent intent) {
                         if (wifiManager.getScanResults() == null && nullAgain)
-                            // we need to start scan again to get refresh results ASAP
+                            // we need to initSubscription scan again to get refresh results ASAP
                             wifiManager.startScan();
                         subscriber.onNext(wifiManager.getScanResults());
                     }

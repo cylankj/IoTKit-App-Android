@@ -25,7 +25,6 @@ import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -140,7 +139,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private Runnable autoLoading = () -> presenter.startRefresh();
 
     private void lazyLoad() {
-        if (getUserVisibleHint() && isPrepaper && DataSourceManager.getInstance().getAJFGAccount() != null) {
+        if (getUserVisibleHint() && isPrepaper && sourceManager.getAJFGAccount() != null) {
             srLayoutMainContentHolder.setRefreshing(true);
             srLayoutMainContentHolder.postDelayed(autoLoading, 100);//避免刷新过快
         }
@@ -347,7 +346,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     //    @OnClick(R.msgId.item_wonderful_to_start)
     public void openWonderful() {
-        if (DataSourceManager.getInstance().getLoginState() == LogState.STATE_ACCOUNT_ON) {//在线表示已登录
+        if (sourceManager.getLoginState() == LogState.STATE_ACCOUNT_ON) {//在线表示已登录
             Intent intent = new Intent(getActivityContext(), DelayRecordActivity.class);
             intent.putExtra(JConstant.VIEW_CALL_WAY, VIEW_LAUNCH_WAY_WONDERFUL);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
@@ -410,7 +409,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
 
     @Override
     public void onRefresh() {
-        if (DataSourceManager.getInstance().getAJFGAccount() != null) {
+        if (sourceManager.getAJFGAccount() != null) {
             srLayoutMainContentHolder.removeCallbacks(autoLoading);
             presenter.startRefresh();
             srLayoutMainContentHolder.setRefreshing(true);

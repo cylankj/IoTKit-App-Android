@@ -16,10 +16,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.Base;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
-import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
@@ -35,6 +32,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
@@ -151,7 +149,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     public Observable<IData> assembleTheDay(long timeStart) {
         long timeEnd = timeStart + 24 * 3600 - 1;
         AppLogger.d("historyFile:timeEnd?" + timeStart);
-        return BaseDBHelper.getInstance().loadHistoryFile(uuid, timeStart, timeEnd)
+        return BaseApplication.getAppComponent().getDBHelper().loadHistoryFile(uuid, timeStart, timeEnd)
                 .subscribeOn(Schedulers.io())
                 .flatMap(historyFiles -> {
                     AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
@@ -210,7 +208,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public void fetchHistoryDataList() {
 //        test();
-        Subscription subscription = DataSourceManager.getInstance().queryHistory(uuid)
+        Subscription subscription = BaseApplication.getAppComponent().getSourceManager().queryHistory(uuid)
                 .subscribeOn(Schedulers.newThread())
                 .filter(ret -> {
                     AppLogger.d("get history?" + ret);
@@ -230,7 +228,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         .subscribeOn(AndroidSchedulers.mainThread())
                         .map(longs -> {
                             //更新日历
-                            ArrayList<Long> dateList = DataSourceManager.getInstance().getHisDateList(uuid);
+                            ArrayList<Long> dateList = BaseApplication.getAppComponent().getSourceManager().getHisDateList(uuid);
                             mView.onHistoryDateListUpdate(dateList);
                             AppLogger.d("历史录像日历更新,天数: " + ListUtils.getSize(dateList));
                             return null;
@@ -286,7 +284,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.d("option: " + result);
                     return TextUtils.equals(result, "JFGMsgVideoResolution");
                 }), (String s, Object o) -> {
-            AppLogger.i("start to receive rtcp");
+            AppLogger.i("initSubscription to receive rtcp");
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub()
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
@@ -429,7 +427,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.d("option: " + result);
                     return TextUtils.equals(result, "JFGMsgVideoResolution");
                 }), (String s, Object o) -> {
-            AppLogger.i("start to receive rtcp");
+            AppLogger.i("initSubscription to receive rtcp");
             //开始接收rtcp
             liveSubscription.add(rtcpNotifySub()
                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
@@ -557,7 +555,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public void takeSnapShot(boolean forPreview) {
-        AppLogger.d("take shot start");
+        AppLogger.d("take shot initSubscription");
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map(o -> {
@@ -643,7 +641,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                     item.cid = uuid;
-                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                     item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
                     item.fileName = time / 1000 + ".jpg";
                     item.time = (int) (time / 1000);
@@ -651,11 +649,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             .setUuid(uuid)
                             .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                             .setVersion(System.currentTimeMillis())
-                            .setAccount(DataSourceManager.getInstance().getAJFGAccount().getAccount())
+                            .setAccount(BaseApplication.getAppComponent().getSourceManager().getAJFGAccount().getAccount())
                             .setAction(DBAction.SHARED)
                             .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
                             .setBytes(item.toBytes());
-                    BaseDPTaskDispatcher.getInstance().perform(entity);
+                    BaseApplication.getAppComponent().getTaskDispatcher().perform(entity);
                     AppLogger.d("take shot step collect ");
                 }, throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
     }
@@ -668,7 +666,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public ArrayList<Long> getFlattenDateList() {
-        return DataSourceManager.getInstance().getHisDateList(uuid);
+        return BaseApplication.getAppComponent().getSourceManager().getHisDateList(uuid);
     }
 
     @Override
@@ -678,7 +676,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public boolean needShowHistoryWheelView() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         boolean show = JFGRules.isDeviceOnline(net)
@@ -696,7 +694,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -801,7 +799,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     if (TimeUtils.isToday(PreferencesUtils.getLong(JConstant.CHECK_HARDWARE_TIME, 0))) {
                         return;
                     }
-                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                     try {
                         String version = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "");
                         JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, version);

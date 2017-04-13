@@ -16,12 +16,12 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.SafeInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.SafeInfoPresenterImpl;
@@ -110,13 +110,13 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
+        device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(this.uuid);
     }
 
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         customToolbar.setBackAction((View v) -> {
             getActivity().getSupportFragmentManager().popBackStack();
         });
@@ -126,7 +126,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
         //移动侦测
         swMotionDetection.setChecked(f);
         swMotionDetection.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-            Device aDevice = DataSourceManager.getInstance().getJFGDevice(uuid);
+            Device aDevice = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
             DpMsgDefine.DPSdStatus sdcard = aDevice.$(204, new DpMsgDefine.DPSdStatus());
             if (!isChecked) {
                 if (!JFGRules.hasSdcard(sdcard)) {
@@ -205,7 +205,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> !isDetached())
                 .subscribe(what -> {
-                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                     //提示音
                     DpMsgDefine.DPNotificationInfo notificationInfo = device.$(504, new DpMsgDefine.DPNotificationInfo());
                     fLayoutProtectionWarnEffect.setTvSubTitle(getString(notificationInfo.notification == 0
@@ -265,7 +265,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 timePickDialogFragment.setArguments(getBundle(getString(R.string.FROME)));
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
                         if (info.timeStart != (int) value) {
                             info.timeStart = (int) value;
@@ -284,7 +284,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 timePickDialogFragment.setArguments(getBundle(getString(R.string.TO)));
                 timePickDialogFragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
-                        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
                         if (info.timeEnd != (int) value) {
                             info.timeEnd = (int) value;
@@ -304,7 +304,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 fragment.setAction((int id, Object value) -> {
                     if (value != null && value instanceof Integer) {
                         int result = (int) value;
-                        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
                         if (info.day != result) {
                             info.day = result;

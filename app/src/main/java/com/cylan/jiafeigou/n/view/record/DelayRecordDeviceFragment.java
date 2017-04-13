@@ -94,7 +94,7 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
 //        if (option == JFGView.VIEW_ACTION_OFFER) {
 //            if (TextUtils.equals(handler, "devices")) {
 //                mDeviceEmptyView.setVisibility(View.GONE);
-//                mDeviceAdapter.clear();
+//                mDeviceAdapter.clearLocal();
 //                mDeviceAdapter.addAll((List<String>) extra);
 //            }
 //            if (TextUtils.equals(handler, "empty")) {//无任何可用３G狗设备
@@ -128,7 +128,7 @@ public class DelayRecordDeviceFragment extends BaseFragment implements OnItemCli
 
         @Override
         public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, String item) {
-//            JFGCameraDevice device = DataSourceManager.getInstance().getJFGDevice(item);
+//            JFGCameraDevice device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(item);
 //            boolean online = device.net != null && (device.net.net != 0 && device.net.net != -1);
 //            holder.setEnabled(R.id.item_device_container, online);
 //            holder.setText(R.id.item_device_alias, device.alias);

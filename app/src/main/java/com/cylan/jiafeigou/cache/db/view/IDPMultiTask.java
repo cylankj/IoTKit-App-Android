@@ -10,4 +10,6 @@ import java.util.List;
 public interface IDPMultiTask<T extends IDPTaskResult> extends IDPTask<T> {
 
     <R extends IDPMultiTask<T>> R init(List<IDPEntity> cache) throws Exception;
+
+
 }

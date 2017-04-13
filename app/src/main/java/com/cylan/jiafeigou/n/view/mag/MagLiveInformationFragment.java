@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mag.MagLiveInformationContract;
 import com.cylan.jiafeigou.n.mvp.impl.mag.MagLiveInformationPresenterImp;
@@ -121,13 +122,13 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
     }
 
     private void updateDetails() {
-        DpMsgDefine.DPPrimary<String> mac = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_202_MAC,null);
+        DpMsgDefine.DPPrimary<String> mac = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_202_MAC,null);
         tvDeviceMac.setText(MiscUtils.safeGet(mac, ""));
-        DpMsgDefine.DPPrimary<Integer> battery = DataSourceManager.getInstance().getValue(uuid, DpMsgMap.ID_206_BATTERY,null);
+        DpMsgDefine.DPPrimary<Integer> battery = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_206_BATTERY,null);
         int b = MiscUtils.safeGet(battery, 0);
         tvDeviceBatteryLevel.setText(b + "");
 
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         if (device != null) {
             tvDeviceAlias.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
@@ -169,7 +170,7 @@ public class MagLiveInformationFragment extends IBaseFragment<MagLiveInformation
             public void onDialogAction(int id, Object value) {
                 if (presenter != null && value != null && value instanceof String) {
                     String content = (String) value;
-                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                     if (!TextUtils.isEmpty(content)
                             && !TextUtils.equals(device.alias, content)) {
                         tvDeviceAlias.setText(content);

@@ -57,11 +57,11 @@ public class ApplicationTest extends ApplicationTestCase<Application> {
 //            list.add(msg);
 //        }
 //        Log.e("AAAAA", "开始解析了.......");
-//        long start = System.currentTimeMillis();
+//        long initSubscription = System.currentTimeMillis();
 //        for (JFGDPMsg jfgdpMsg : list) {
 ////            device.setPackValue(jfgdpMsg);
 //        }
 //        long end = System.currentTimeMillis();
-//        Log.e("AAAAA", "解析100000条数据共耗时" + (end - start) + "毫秒");
+//        Log.e("AAAAA", "解析100000条数据共耗时" + (end - initSubscription) + "毫秒");
     }
 }

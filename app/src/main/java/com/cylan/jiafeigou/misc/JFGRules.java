@@ -3,9 +3,9 @@ package com.cylan.jiafeigou.misc;
 import android.content.Context;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -321,7 +321,7 @@ public class JFGRules {
 
     public static boolean isShareDevice(String uuid) {
         if (TextUtils.isEmpty(uuid)) return false;
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         return device != null && !TextUtils.isEmpty(device.shareAccount);
     }
 

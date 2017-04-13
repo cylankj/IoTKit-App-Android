@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.cache.db.module;
 
-import com.cylan.jiafeigou.base.module.BasePropertyParser;
-import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -34,8 +32,7 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     private String state;
     private String option;//json 格式的字符串
 
-    private transient DataPoint value;//bytes 转换好了会放在这里,这样就不用每次都转换了
-    private transient static IPropertyParser propertyParser = BasePropertyParser.getInstance();
+    private transient DataPoint dataPointValue;//bytes 转换好了会放在这里,这样就不用每次都转换了
     /**
      * Used to resolve relations
      */
@@ -47,36 +44,26 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     @Generated(hash = 1268361579)
     private transient DPEntityDao myDao;
 
+    //只是把设置的 dataPointValue 返回回去,避免频繁 parse
     public <V> V getValue(V defaultValue) {
-        if (this.value == null) {
-            this.value = propertyParser.parser(msgId, bytes, version);
-        }
-        if (this.value == null) {
+        if (this.dataPointValue == null) {
             return defaultValue;
         } else if (defaultValue == null || defaultValue instanceof DataPoint) {
-            return this.value.getClass().isInstance(defaultValue) ? (V) this.value : defaultValue;
-        } else if (this.value instanceof DpMsgDefine.DPPrimary) {
-            return (V) ((DpMsgDefine.DPPrimary) this.value).value;
+            return this.dataPointValue.getClass().isInstance(defaultValue) ? (V) this.dataPointValue : defaultValue;
+        } else if (this.dataPointValue instanceof DpMsgDefine.DPPrimary) {
+            return (V) ((DpMsgDefine.DPPrimary) this.dataPointValue).value;
         } else {
             return defaultValue;
         }
     }
 
-    public final boolean setValue(byte[] bytes, long version) {
-        AppLogger.d("正在设置数据:, msgId:" + msgId);
-        DataPoint dataPoint = propertyParser.parser(this.msgId, bytes, version);
-        this.value = dataPoint;
-        this.bytes = bytes;
-        this.update();
-        return dataPoint != null;
-    }
-
-    public final boolean setValue(DataPoint value) {
+    public final boolean setValue(DataPoint dataPointValue, byte[] bytesValue, long version) {
         AppLogger.d("正在设置数据,msgId:" + msgId);
-        this.value = value;
-        this.bytes = value == null ? null : value.toBytes();
-        this.update();
-        return value != null;
+        this.dataPointValue = dataPointValue;
+        this.bytes = bytesValue;
+        this.version = version;
+//        if (myDao != null) this.update();//这里不再更新数据库了,考虑到更新数据库需要时间,这里只更新 entity 里的值就行了
+        return dataPointValue != null;
     }
 
     @Generated(hash = 99264848)

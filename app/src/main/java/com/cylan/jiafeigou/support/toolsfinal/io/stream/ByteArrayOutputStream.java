@@ -138,7 +138,7 @@ public class ByteArrayOutputStream extends OutputStream {
      * Write the bytes to byte array.
      *
      * @param b   the bytes to write
-     * @param off The start offset
+     * @param off The initSubscription offset
      * @param len The number of bytes to write
      */
     @Override

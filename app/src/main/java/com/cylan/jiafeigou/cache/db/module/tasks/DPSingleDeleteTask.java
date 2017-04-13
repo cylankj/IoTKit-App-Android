@@ -19,7 +19,7 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
 
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        return mDPHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
+        return dpHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
                 .map(dpEntity -> new BaseDPTaskResult().setResultCode(0).setResultResponse(dpEntity));
     }
 
@@ -31,12 +31,15 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
             params.add(msg);
             try {
                 long seq = JfgCmdInsurance.getCmd().robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
+                if (seq <= 0) {
+                    throw new JfgException("内部错误!");
+                }
                 AppLogger.d("正在执行删除任务,seq:" + seq + ", uuid:" + entity.getUuid() + ",msgId:" + entity.getMsgId() + ",version:" + entity.getVersion() + ",option:" + entity.action());
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {
                 e.printStackTrace();
-                subscriber.onCompleted();
+                subscriber.onError(e);
                 AppLogger.d("执行 task 出错了 ,错误信息为:" + e.getMessage());
             }
         })
@@ -44,7 +47,7 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(this::makeDeleteDataRspResponse)
                 .flatMap(rsp -> {
                             if (rsp.resultCode == 0) {
-                                return mDPHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
+                                return dpHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
                                         .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(rsp));
                             } else {
                                 return Observable.just(new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(rsp));

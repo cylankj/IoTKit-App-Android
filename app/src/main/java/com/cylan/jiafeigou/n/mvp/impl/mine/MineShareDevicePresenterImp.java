@@ -1,16 +1,15 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 import android.Manifest;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
@@ -93,7 +92,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                             }
 
                             if (NetUtils.getNetType(getView().getContext()) == -1) {
-                                ArrayList<JFGShareListInfo> shareList = DataSourceManager.getInstance().getShareList();
+                                ArrayList<JFGShareListInfo> shareList = BaseApplication.getAppComponent().getSourceManager().getShareList();
                                 if (shareList == null || shareList.size() == 0) {
                                     handlerShareDeviceListData(allDevice);
                                     return;
@@ -168,7 +167,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
      */
     private ArrayList<DeviceBean> getShareDeviceList() {
         ArrayList<DeviceBean> list = new ArrayList<>();
-        List<Device> devices = DataSourceManager.getInstance().getAllJFGDevice();
+        List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllJFGDevice();
         for (Device info : devices) {
             DeviceBean bean = new DeviceBean();
             bean.alias = info.alias;

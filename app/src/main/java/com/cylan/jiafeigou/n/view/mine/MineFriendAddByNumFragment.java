@@ -21,7 +21,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddByNumPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -101,7 +101,7 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
             @Override
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-                    String account = DataSourceManager.getInstance().getJFGAccount().getAccount();
+                    String account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
                     if (TextUtils.isEmpty(getInputNum())) {
                         ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
                     } else if (getInputNum().equals(account)) {

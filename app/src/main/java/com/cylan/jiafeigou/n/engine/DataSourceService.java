@@ -30,7 +30,6 @@ import com.cylan.entity.jniCall.RobotMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.interfases.AppCallBack;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -42,6 +41,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
@@ -164,7 +164,7 @@ public class DataSourceService extends Service implements AppCallBack {
                                                     }
                                                     PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                                                 }
-                                                DataSourceManager.getInstance().initFromDB();
+                                                BaseApplication.getAppComponent().getSourceManager().initFromDB();
                                                 return null;
                                             }))
                                     .subscribe(ret -> {
@@ -224,7 +224,7 @@ public class DataSourceService extends Service implements AppCallBack {
     @Override
     public void OnUpdateHistoryVideoList(JFGHistoryVideo jfgHistoryVideo) {
         AppLogger.d("OnUpdateHistoryVideoList :" + jfgHistoryVideo.list.size());
-        DataSourceManager.getInstance().cacheHistoryDataList(jfgHistoryVideo);
+        BaseApplication.getAppComponent().getSourceManager().cacheHistoryDataList(jfgHistoryVideo);
     }
 
     @Override
@@ -241,7 +241,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnLogoutByServer(int i) {
         AppLogger.d("OnLocalMessage hh:" + i);
         RxBus.getCacheInstance().post(new RxEvent.PwdHasResetEvent(i));
-        DataSourceManager.getInstance().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
+        BaseApplication.getAppComponent().getSourceManager().setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
     }
 
     @Override
@@ -325,7 +325,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnlineStatus(boolean b) {
         AppLogger.d("OnlineStatus :" + b);
         RxBus.getCacheInstance().post(new RxEvent.OnlineStatusRsp(b));
-        DataSourceManager.getInstance().setOnline(b);//设置用户在线信息
+        BaseApplication.getAppComponent().getSourceManager().setOnline(b);//设置用户在线信息
     }
 
     @Override
@@ -415,7 +415,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
-//        DataSourceManager.getInstance().cacheUnreadCount(l, s, arrayList);
+//        BaseApplication.getAppComponent().getSourceManager().cacheUnreadCount(l, s, arrayList);
 //        AppLogger.d("OnRobotCountDataRsp :");
     }
 
@@ -479,7 +479,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnGetShareListRsp(int i, ArrayList<JFGShareListInfo> arrayList) {
         AppLogger.d("OnGetShareListRsp :");
         RxBus.getCacheInstance().post(new RxEvent.GetShareListCallBack(i, arrayList));
-        DataSourceManager.getInstance().cacheShareList(arrayList);
+        BaseApplication.getAppComponent().getSourceManager().cacheShareList(arrayList);
     }
 
     @Override

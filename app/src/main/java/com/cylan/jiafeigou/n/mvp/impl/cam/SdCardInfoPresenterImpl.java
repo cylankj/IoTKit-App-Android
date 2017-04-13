@@ -6,11 +6,11 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -66,7 +66,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
      */
     @Override
     public boolean getSdcardState() {
-        DpMsgDefine.DPSdStatus sdStatus = DataSourceManager.getInstance().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus sdStatus = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
         //sd卡状态
         if (sdStatus != null) {
             if (!sdStatus.hasSdcard && sdStatus.err != 0) {

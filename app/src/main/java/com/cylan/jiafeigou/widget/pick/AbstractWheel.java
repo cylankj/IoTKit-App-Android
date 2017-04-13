@@ -131,7 +131,7 @@ public abstract class AbstractWheel extends View {
 
     //--------------------------------------------------------------------------
     //
-    //  Initiating data and assets at start up
+    //  Initiating data and assets at initSubscription up
     //
     //--------------------------------------------------------------------------
 

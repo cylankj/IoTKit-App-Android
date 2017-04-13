@@ -6,10 +6,10 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
@@ -143,7 +143,7 @@ public class History {
                     AppLogger.d("cacheHistoryDataList2:" + PerformanceUtils.getFreeMemory());
                     long timeStart = helper.timeList.get(0);
                     long timeEnd = helper.timeList.get(ListUtils.getSize(helper.timeList) - 1);
-                    BaseDBHelper.getInstance().deleteHistoryFile(helper.uuid, Math.min(timeStart, timeEnd),
+                    BaseApplication.getAppComponent().getDBHelper().deleteHistoryFile(helper.uuid, Math.min(timeStart, timeEnd),
                             Math.max(timeStart, timeEnd))
                             .subscribeOn(Schedulers.io())
                             .flatMap(aBoolean -> {
@@ -152,7 +152,7 @@ public class History {
                                 return Observable.from(helper.files);
                             })
                             .map(historyFile -> {
-                                BaseDBHelper.getInstance().saveHistoryFile(historyFile)
+                                BaseApplication.getAppComponent().getDBHelper().saveHistoryFile(historyFile)
                                         .subscribeOn(Schedulers.io())
                                         .subscribe(ret -> {
                                         }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
@@ -181,7 +181,7 @@ public class History {
 
 
     public boolean clearHistoryFile(String uuid) {
-        BaseDBHelper.getInstance().deleteAllHistoryFile(uuid)
+        BaseApplication.getAppComponent().getDBHelper().deleteAllHistoryFile(uuid)
                 .subscribeOn(Schedulers.io())
                 .subscribe(ret -> {
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));

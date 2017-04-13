@@ -112,7 +112,7 @@ public interface IWheelPicker {
      * Set the position of current selected item in data source
      * Call this method and set a new value may be reinitialize the location of WheelPicker. For
      * example, you call this method after scroll the WheelPicker and set selected item position
-     * with a new value, WheelPicker will clear the related parameters last scroll set and reset
+     * with a new value, WheelPicker will clearLocal the related parameters last scroll set and reset
      * series of data, and make the position 3 as a new starting point of WheelPicker, this behavior
      * maybe influenced some attribute you set last startTime, such as parameters of method in
      * {@link WheelPicker.OnWheelChangeListener} and

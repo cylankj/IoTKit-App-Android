@@ -4,8 +4,8 @@ package com.cylan.jiafeigou.n.mvp.impl.setting;
  * Created by cylan-hunt on 16-12-3.
  */
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -31,7 +31,7 @@ public class VideoAutoRecordPresenterImpl extends AbstractPresenter<VideoAutoRec
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }

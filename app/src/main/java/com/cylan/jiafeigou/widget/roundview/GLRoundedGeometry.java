@@ -215,7 +215,7 @@ public class GLRoundedGeometry {
     }
 
     /**
-     * Adds the vertices of a number of triangles to form a rounded corner. The triangles start at
+     * Adds the vertices of a number of triangles to form a rounded corner. The triangles initSubscription at
      * some center point and will sweep from a given initial angle up to a final one. The size of
      * the triangles is defined by the radius.
      * <p>
@@ -225,7 +225,7 @@ public class GLRoundedGeometry {
      *
      * @param geoArrays an object containing the vertex and index data arrays and their current
      *                  offsets.
-     * @param center    the center point where all triangles will start.
+     * @param center    the center point where all triangles will initSubscription.
      * @param radius    the desired radius in the x and y axis, in viewport dimensions.
      * @param rads0     the initial angle.
      * @param rads1     the final angle.

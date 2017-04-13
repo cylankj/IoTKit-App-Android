@@ -8,12 +8,12 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.setting.WifiListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -122,7 +122,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
      * 每次fping都是为了得到最新的mac
      */
     private String getLatestMac() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         String m = device.$(202, "");
         if (JConstant.MAC_REG.matcher(m).find()) {
             AppLogger.i("get mac from local: " + m);

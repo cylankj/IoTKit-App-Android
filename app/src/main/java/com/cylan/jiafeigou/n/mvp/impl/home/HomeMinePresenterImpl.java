@@ -9,11 +9,11 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -180,7 +180,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             return Observable.just(account);
                         } else {
                             return Observable.interval(0, 2, TimeUnit.SECONDS)
-                                    .map(s -> DataSourceManager.getInstance().getJFGAccount())
+                                    .map(s -> BaseApplication.getAppComponent().getSourceManager().getJFGAccount())
                                     .filter(account -> account != null).first();
                         }
                     }

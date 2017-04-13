@@ -187,7 +187,7 @@ public class SuperWaveView extends View {
                     0,
                     getHeight());
             // translate shader according to mWaveShiftRatio and mWaterLevelRatio
-            // this decides the start position(mWaveShiftRatio for x, mWaterLevelRatio for y) of waves
+            // this decides the initSubscription position(mWaveShiftRatio for x, mWaterLevelRatio for y) of waves
             shaderMatrix[index].postTranslate(
                     waveShiftRatio[index] * getWidth(),
                     0);

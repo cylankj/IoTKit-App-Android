@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
@@ -21,7 +20,7 @@ import rx.schedulers.Schedulers;
 public class DPUnBindDeviceTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        return mDPHelper.unBindDeviceNotConfirm(entity.getUuid()).map(device -> new BaseDPTaskResult().setResultCode(0).setResultResponse(device));
+        return dpHelper.unBindDeviceNotConfirm(entity.getUuid()).map(device -> new BaseDPTaskResult().setResultCode(0).setResultResponse(device));
     }
 
     @Override
@@ -46,7 +45,7 @@ public class DPUnBindDeviceTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(rsp -> {
                     if (rsp.code == 0) {//成功
                         AppLogger.d("删除设备成功");
-                        return DataSourceManager.getInstance().unBindDevice(entity.getUuid())
+                        return sourceManager.unBindDevice(entity.getUuid())
                                 .map(device -> new BaseDPTaskResult().setResultCode(rsp.code).setResultResponse(device));
                     } else {
                         return Observable.just(new BaseDPTaskResult().setResultCode(rsp.code).setResultResponse(null));

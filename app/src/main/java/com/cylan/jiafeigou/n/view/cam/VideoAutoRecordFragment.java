@@ -14,11 +14,11 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.setting.VideoAutoRecordContract;
 import com.cylan.jiafeigou.n.mvp.impl.setting.VideoAutoRecordPresenterImpl;
@@ -90,12 +90,12 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        if (JFGRules.isFreeCam(DataSourceManager.getInstance().getJFGDevice(uuid))) {
+        if (JFGRules.isFreeCam(BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid))) {
             rb24Hours.setVisibility(View.GONE);
             view.findViewById(R.id.lLayout_mode_24_hours).setVisibility(View.GONE);
         }
         customToolbar.setBackAction(v -> getFragmentManager().popBackStack());
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         if (!status.hasSdcard) oldOption = -1;
@@ -109,7 +109,7 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     @Override
     public void onDetach() {
         super.onDetach();
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         int a = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         if (oldOption != a && oldOption != -1) {
             ToastUtil.showToast(getString(R.string.SCENE_SAVED));
@@ -195,12 +195,12 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     }
 
     private boolean alarmDisable() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         return device.$(ID_501_CAMERA_ALARM_FLAG, false);
     }
 
     private boolean hasSdcard() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         DpMsgDefine.DPSdStatus status = device.$(204, new DpMsgDefine.DPSdStatus());
         return status != null && status.hasSdcard && status.err == 0;
     }

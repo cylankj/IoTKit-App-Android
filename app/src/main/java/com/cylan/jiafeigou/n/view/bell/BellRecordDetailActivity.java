@@ -24,14 +24,13 @@ import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
+import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -55,6 +54,8 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.concurrent.ExecutionException;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.OnClick;
@@ -97,7 +98,8 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
     private long collectVersion = -1;
     private boolean canCollect = true;
     private CompositeSubscription compositeSubscription;
-
+    @Inject
+    IDPTaskDispatcher taskDispatcher;
 
     @Override
     protected int getContentViewID() {
@@ -232,7 +234,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
             item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
             item.cid = uuid;
-            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+            Device device = sourceManager.getJFGDevice(uuid);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             item.fileName = mCallRecord.timeInLong / 1000 + ".jpg";
             item.time = (int) (mCallRecord.timeInLong / 1000);
@@ -251,7 +253,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     .setUuid(uuid)
                     .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                     .setVersion(System.currentTimeMillis())
-                    .setAccount(DataSourceManager.getInstance().getAJFGAccount().getAccount())
+                    .setAccount(sourceManager.getAJFGAccount().getAccount())
                     .setAction(DBAction.SHARED)
                     .setOption(new DBOption.SingleSharedOption(1, 1, path))
                     .setBytes(item.toBytes());
@@ -259,7 +261,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             subscriber.onCompleted();
         })
                 .subscribeOn(Schedulers.io())
-                .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
+                .flatMap(entity -> taskDispatcher.perform(entity))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     if (result.getResultCode() == 0) {
@@ -290,13 +292,13 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                         .setVersion(version)
                         .setAction(DBAction.DELETED)
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
-                .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
+                .flatMap(task -> taskDispatcher.perform(task))
                 .map(ret -> new DPEntity()
                         .setUuid(uuid)
                         .setVersion(mCallRecord.timeInLong / 1000L)
                         .setAction(DBAction.DELETED)
                         .setMsgId(511))
-                .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
+                .flatMap(task -> taskDispatcher.perform(task))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     if (result.getResultCode() == 0) {//成功了
@@ -392,7 +394,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 .setAction(DBAction.QUERY)
                 .setVersion(mCallRecord.timeInLong / 1000L)
                 .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
-                .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
+                .flatMap(entity -> taskDispatcher.perform(entity))
                 .map(ret -> {
                     DpMsgDefine.DPPrimary<Long> version = ret.getResultResponse();
                     if (version != null) {

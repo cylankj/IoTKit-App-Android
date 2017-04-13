@@ -5,9 +5,13 @@ import android.content.Context;
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
 import com.cylan.jiafeigou.base.injector.module.CommonModule;
+import com.cylan.jiafeigou.base.module.BaseModuleInjector;
+import com.cylan.jiafeigou.base.module.BasePresenterInjector;
+import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
+import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 
 import javax.inject.Singleton;
 
@@ -29,4 +33,11 @@ public interface AppComponent {
 
     IDBHelper getDBHelper();
 
+    IDPTaskDispatcher getTaskDispatcher();
+
+    IPropertyParser getPropertyParser();
+
+    BasePresenterInjector getBasePresenterInjector();
+
+    BaseModuleInjector initBaseModule();
 }

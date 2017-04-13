@@ -44,14 +44,14 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
         AppLogger.d("正在执行离线收藏");
-        return mDPHelper.saveOrUpdate(entity.getUuid(), entity.getVersion(), entity.getMsgId(), entity.getBytes(), entity.action(), DBState.NOT_CONFIRM, option)
+        return dpHelper.saveOrUpdate(entity.getUuid(), entity.getVersion(), entity.getMsgId(), entity.getBytes(), entity.action(), DBState.NOT_CONFIRM, option)
                 .flatMap(entity -> {
                     try {
                         AppLogger.d("离线收藏步骤一,保存602消息,结果为:" + parser.toJson(entity));
                         DpMsgDefine.DPWonderItem wonderItem = DpUtils.unpackData(entity.getBytes(), DpMsgDefine.DPWonderItem.class);
                         if (wonderItem != null) {
                             AppLogger.d("离线收藏步骤二,保存511消息");
-                            return mDPHelper.saveOrUpdate(entity.getUuid(), (long) wonderItem.time, 511, DpUtils.pack(entity.getVersion()), DBAction.SAVED, DBState.SUCCESS, null)
+                            return dpHelper.saveOrUpdate(entity.getUuid(), (long) wonderItem.time, 511, DpUtils.pack(entity.getVersion()), DBAction.SAVED, DBState.SUCCESS, null)
                                     .map(ret -> wonderItem);
                         }
                     } catch (IOException e) {
@@ -110,7 +110,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                     AppLogger.d("putFileToCloud 返回结果码为" + rsp.ret);
                     if (rsp.ret != 200) throw new BaseDPTaskException(rsp.ret, "分享步骤二失败");
                     AppLogger.d("分享操作步骤二执行成功,正在更新本地数据Version" + new Gson().toJson(entity));
-                    return mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId())
+                    return dpHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId())
                             .map(dpEntity -> {
                                 AppLogger.d("更新本地数据成功");
                                 dpEntity.setState(DBState.SUCCESS);
@@ -151,8 +151,8 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                         p602.add(new JFGDPMsg(602, entity.getVersion()));
                         JfgCmdInsurance.getCmd().robotDelData(entity.getUuid(), p511, 0);
                         JfgCmdInsurance.getCmd().robotDelData("", p602, 0);
-                        mDPHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(DPEntity::delete, error -> AppLogger.d(error.getMessage()));
-                        mDPHelper.findDPMsg(entity.getUuid(), (long) wonderItem.time, 511).subscribe(DPEntity::delete, error -> AppLogger.d(error.getMessage()));
+                        dpHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(DPEntity::delete, error -> AppLogger.d(error.getMessage()));
+                        dpHelper.findDPMsg(entity.getUuid(), (long) wonderItem.time, 511).subscribe(DPEntity::delete, error -> AppLogger.d(error.getMessage()));
                     } catch (JfgException e1) {
                         AppLogger.d(e1.getMessage());
                     }

@@ -375,7 +375,7 @@ public class RxBusTest {
         Subscription subscription = Observable.create(new Observable.OnSubscribe<Subscriber>() {
             @Override
             public void call(Subscriber<? super Subscriber> subscriber) {
-                System.out.println("start");
+                System.out.println("initSubscription");
                 subscriber.onNext(subscriber);
                 subscriber.onCompleted();
             }

@@ -9,9 +9,8 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.jiafeigou.base.module.BasePropertyParser;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.AccountDao;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -26,6 +25,7 @@ import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
+import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -33,6 +33,7 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
+import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.query.QueryBuilder;
 import org.greenrobot.greendao.query.WhereCondition;
 import org.greenrobot.greendao.rx.RxQuery;
@@ -57,31 +58,19 @@ public class BaseDBHelper implements IDBHelper {
     private AccountDao accountDao;
     private DeviceDao deviceDao;
     private HistoryFileDao historyFileDao;
-    private static BaseDBHelper instance;
     private IPropertyParser propertyParser;
     private Account dpAccount;
-    private String serverAddress;
+    private final DaoSession daoSession;
+    private JFGSourceManager sourceManager;
 
-    public static BaseDBHelper getInstance() {
-        if (instance == null) {
-            synchronized (BaseDBHelper.class) {
-                if (instance == null) {
-                    instance = new BaseDBHelper();
-                }
-            }
-        }
-        return instance;
-    }
-
-    private BaseDBHelper() {
+    public BaseDBHelper() {
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(new GreenDaoContext(), "dp_cache.db");
         DaoMaster master = new DaoMaster(helper.getWritableDb());
-        DaoSession daoSession = master.newSession();
+        daoSession = master.newSession();
         mEntityDao = daoSession.getDPEntityDao();
         accountDao = daoSession.getAccountDao();
         deviceDao = daoSession.getDeviceDao();
         historyFileDao = daoSession.getHistoryFileDao();
-        propertyParser = BasePropertyParser.getInstance();
     }
 
     private DPEntity unique(QueryBuilder<DPEntity> builder) {
@@ -112,31 +101,25 @@ public class BaseDBHelper implements IDBHelper {
         AppLogger.d("saveDPByteInTx:uuid:msgs");
         return getActiveAccount().map(account -> {
             Set<DPEntity> result = new HashSet<>();
-            QueryBuilder<DPEntity> queryBuilder;
-            DPEntity dpEntity;
+            DPEntity dpEntity = null;
+            Device device = sourceManager.getJFGDevice(uuid);
             for (JFGDPMsg msg : msgs) {
-                if (propertyParser.isProperty((int) msg.id)) {
-                    dpEntity = getProperty(uuid, (int) msg.id);
-                } else {
-                    queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
-                    dpEntity = unique(queryBuilder);
+                if (device != null) {
+                    dpEntity = device.getProperty((int) msg.id);
                 }
                 if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                     continue;
                 }
-                if (dpEntity != null && dpEntity.getVersion() == msg.version) {
+                if (dpEntity != null && dpEntity.getVersion() >= msg.version) {
                     continue;
                 }
                 if (dpEntity == null) {
                     dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
-                } else {
-                    dpEntity.setValue(msg.packValue, msg.version);
                 }
-                if (propertyParser.isProperty((int) msg.id)) {
-                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-                    if (device != null) {
-                        device.updateProperty((int) msg.id, dpEntity);
-                    }
+                DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                dpEntity.setValue(dataPoint, msg.packValue, msg.version);
+                if (device != null) {
+                    device.updateProperty((int) msg.id, dpEntity);
                 }
                 result.add(dpEntity);
             }
@@ -151,32 +134,26 @@ public class BaseDBHelper implements IDBHelper {
         return getActiveAccount().map(account -> {
             if (dataRsp.map == null) return null;
             Set<DPEntity> result = new HashSet<>();
-            QueryBuilder<DPEntity> queryBuilder;
-            DPEntity dpEntity;
+            DPEntity dpEntity = null;
+            Device device = sourceManager.getJFGDevice(dataRsp.identity);
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
                 for (JFGDPMsg msg : entry.getValue()) {
-                    if (propertyParser.isProperty((int) msg.id)) {
-                        dpEntity = getProperty(dataRsp.identity, (int) msg.id);
-                    } else {
-                        queryBuilder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
-                        dpEntity = unique(queryBuilder);
+                    if (device != null) {
+                        dpEntity = device.getProperty((int) msg.id);
                     }
                     if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                         continue;
                     }
-                    if (dpEntity != null && dpEntity.getVersion() == msg.version) {
+                    if (dpEntity != null && dpEntity.getVersion() >= msg.version) {
                         continue;
                     }
                     if (dpEntity == null) {
                         dpEntity = new DPEntity(null, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
-                    } else {
-                        dpEntity.setValue(msg.packValue, msg.version);
                     }
-                    if (propertyParser.isProperty((int) msg.id)) {
-                        Device device = DataSourceManager.getInstance().getJFGDevice(dataRsp.identity);
-                        if (device != null) {
-                            device.updateProperty((int) msg.id, dpEntity);
-                        }
+                    DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                    dpEntity.setValue(dataPoint, msg.packValue, msg.version);
+                    if (device != null) {
+                        device.updateProperty((int) msg.id, dpEntity);
                     }
                     result.add(dpEntity);
                 }
@@ -198,11 +175,7 @@ public class BaseDBHelper implements IDBHelper {
         if (limit != null) {
             builder.limit(limit);
         }
-        return builder.orderDesc(DPEntityDao.Properties.Version).rx().list().map(dpEntities -> {
-            if (dpEntities != null) {
-            }
-            return dpEntities;
-        });
+        return builder.orderDesc(DPEntityDao.Properties.Version).rx().list().map(dpEntities -> dpEntities);
     }
 
     @Override
@@ -250,7 +223,9 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Device getJFGDevice(String uuid) {
         QueryBuilder<Device> queryBuilder = buildDPDeviceQueryBuilder(dpAccount.getAccount(), getServer(), uuid, DBAction.SAVED, DBState.SUCCESS, null);
-        return queryBuilder.unique();
+        Device device = queryBuilder.unique();
+        device.setPropertyParser(propertyParser);
+        return device;
     }
 
     @Override
@@ -284,6 +259,40 @@ public class BaseDBHelper implements IDBHelper {
     @Override
     public Observable<Void> deleteAllHistoryFile(String uuid) {
         return historyFileDao.rx().deleteAll();
+    }
+
+    @Override
+    public void clear(String uuid, Integer msgId) {
+        if (dpAccount == null || dpAccount.getAccount() == null) return;
+        String uuidCond = "";
+        List<Object> args = new ArrayList<>(4);
+        args.add(dpAccount.getAccount());
+        args.add(getServer());
+        if (uuid != null) {
+            uuidCond = " AND UUID = ? ";
+            args.add(uuid);
+        }
+        String msgIdCond = "";
+        if (msgId != null) {
+            msgIdCond = " AND MSG_ID = ? ";
+            args.add(msgId);
+        }
+        String execSQL = "DELETE FROM DPENTITY WHERE ACCOUNT = ? AND SERVER = ? " + uuidCond + msgIdCond;
+        Database database = daoSession.getDatabase();
+        database.beginTransaction();
+        AppLogger.d("正在清除数据:" + execSQL);
+        database.execSQL(execSQL, args.toArray());
+        database.endTransaction();
+    }
+
+    @Override
+    public void setDataSourceManager(JFGSourceManager manager) {
+        this.sourceManager = manager;
+    }
+
+    @Override
+    public void setPropertyParser(IPropertyParser parser) {
+        this.propertyParser = parser;
     }
 
     @Override
@@ -460,8 +469,7 @@ public class BaseDBHelper implements IDBHelper {
                     JFGDevice dev;
                     for (int i = 0; i < device.length; i++) {
                         dev = device[i];
-                        List<DPEntity> entities = buildDPMsgQueryBuilder(getDpAccount(), getServer(), dev.uuid, null, null, null, null, null).list();
-                        mEntityDao.deleteInTx(entities);
+                        clear(dev.uuid, null);
                         queryBuilder = deviceDao.queryBuilder().where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(account.getAccount()));
                         dpDevice = queryBuilder.unique();
                         if (dpDevice == null) {
@@ -471,6 +479,7 @@ public class BaseDBHelper implements IDBHelper {
                         }
                         dpDevice.setDevice(dev);
                         dpDevice.setOption(new DBOption.RawDeviceOrderOption(i));
+                        dpDevice.setPropertyParser(propertyParser);
                         result.add(dpDevice);
                     }
                     deviceDao.insertOrReplaceInTx(result);
@@ -480,14 +489,19 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<Device> updateDevice(Device device) {
-        return deviceDao.rx().save(device);
+        return deviceDao.rx().save(device).map(dev -> {
+            dev.setPropertyParser(propertyParser);
+            return dev;
+        });
     }
 
     @Override
     public Observable<Device> unBindDeviceNotConfirm(String uuid) {
         return markDevice(getDpAccount(), getServer(), uuid, DBAction.UNBIND, DBState.NOT_CONFIRM, null).map(items -> {
             if (items == null || items.size() == 0) return null;
-            return items.get(0);
+            Device device = items.get(0);
+            device.setPropertyParser(propertyParser);
+            return device;
         });
     }
 
@@ -495,9 +509,10 @@ public class BaseDBHelper implements IDBHelper {
     public Observable<Device> unBindDeviceWithConfirm(String uuid) {
         return markDevice(getDpAccount(), getServer(), uuid, DBAction.UNBIND, DBState.SUCCESS, null).map(items -> {
             if (items == null || items.size() == 0) return null;
-            List<DPEntity> entities = buildDPMsgQueryBuilder(getDpAccount(), getServer(), uuid, null, null, null, null, null).list();
-            mEntityDao.deleteInTx(entities);
-            return items.get(0);
+            clear(uuid, null);
+            Device device = items.get(0);
+            device.setPropertyParser(propertyParser);
+            return device;
         });
     }
 
@@ -512,8 +527,8 @@ public class BaseDBHelper implements IDBHelper {
                     device.setAction(DBAction.UNBIND);
                     device.setState(DBState.SUCCESS);
                     result.add(device);
-                    List<DPEntity> entities = buildDPMsgQueryBuilder(account.getAccount(), getServer(), device.getUuid(), null, null, null, null, null).list();
-                    mEntityDao.deleteInTx(entities);
+                    device.setPropertyParser(propertyParser);
+                    clear(device.getUuid(), null);
                 }
             }
             deviceDao.saveInTx(result);
@@ -537,6 +552,7 @@ public class BaseDBHelper implements IDBHelper {
                             item.setAction(action);
                             item.setState(state);
                             item.setOption(option);
+                            item.setPropertyParser(propertyParser);
                         }
                     }
                     deviceDao.updateInTx(items);
@@ -546,7 +562,16 @@ public class BaseDBHelper implements IDBHelper {
 
     @Override
     public Observable<List<Device>> getAccountDevice(String account) {
-        return deviceDao.queryBuilder().where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Account.eq(account), DeviceDao.Properties.Action.notEq(DBAction.UNBIND.action())).rx().list();
+        return deviceDao.queryBuilder()
+                .where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Account.eq(account), DeviceDao.Properties.Action.notEq(DBAction.UNBIND.action()))
+                .rx().list().map(devices -> {
+                            if (devices == null) return null;
+                            for (Device device : devices) {
+                                device.setPropertyParser(propertyParser);
+                            }
+                            return devices;
+                        }
+                );
     }
 
     @Override
@@ -768,8 +793,7 @@ public class BaseDBHelper implements IDBHelper {
         @Override
         public SQLiteDatabase openOrCreateDatabase(String name, int mode,
                                                    SQLiteDatabase.CursorFactory factory) {
-            SQLiteDatabase result = SQLiteDatabase.openOrCreateDatabase(getDatabasePath(name), factory);
-            return result;
+            return SQLiteDatabase.openOrCreateDatabase(getDatabasePath(name), factory);
         }
 
         /**
@@ -786,8 +810,7 @@ public class BaseDBHelper implements IDBHelper {
         @Override
         public SQLiteDatabase openOrCreateDatabase(String name, int mode, SQLiteDatabase.CursorFactory factory,
                                                    DatabaseErrorHandler errorHandler) {
-            SQLiteDatabase result = SQLiteDatabase.openOrCreateDatabase(getDatabasePath(name), factory);
-            return result;
+            return SQLiteDatabase.openOrCreateDatabase(getDatabasePath(name), factory);
         }
     }
 }

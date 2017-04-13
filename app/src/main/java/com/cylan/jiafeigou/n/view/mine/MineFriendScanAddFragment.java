@@ -6,13 +6,12 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendScanAddPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -197,7 +196,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
 
     @Override
     public void handleResult(final Result rawResult) {
-        String account = DataSourceManager.getInstance().getJFGAccount().getAccount();
+        String account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
 
         if (NetUtils.getNetType(getContext()) == 0) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));

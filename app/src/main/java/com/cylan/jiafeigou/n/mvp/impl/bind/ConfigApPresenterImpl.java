@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.misc.bind.AFullBind;
 import com.cylan.jiafeigou.misc.bind.IBindResult;
 import com.cylan.jiafeigou.misc.bind.SimpleBindFlow;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -99,7 +100,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         Observable.just("just send wifi info")
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(s -> {
-                    Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                     String mac = device.$(202, "");
                     aFullBind.sendWifiInfo(uuid, mac, ssid, pwd, type)
                             .subscribe(ret -> {
@@ -139,7 +140,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                     return udpDevicePortrait != null && udpDevicePortrait.net > 1;
                 })
                 .map(udpDevicePortrait -> {
-                    AppLogger.d(UdpConstant.BIND_TAG + "start bind 3g last state");
+                    AppLogger.d(UdpConstant.BIND_TAG + "initSubscription bind 3g last state");
                     if (aFullBind != null) {
                         aFullBind.setServerLanguage(udpDevicePortrait);
                         aFullBind.sendWifiInfo("", "", 0);

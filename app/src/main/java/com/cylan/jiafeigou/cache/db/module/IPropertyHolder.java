@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
+import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.dp.DataPoint;
 
 import java.util.ArrayList;
@@ -19,4 +20,6 @@ public interface IPropertyHolder {
     boolean setValue(int msgId, DataPoint value);
 
     void updateProperty(int msgId, DPEntity entity);
+
+    void setPropertyParser(IPropertyParser parser);
 }

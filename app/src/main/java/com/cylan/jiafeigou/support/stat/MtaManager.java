@@ -31,7 +31,7 @@
 //                StatConfig.setInstallChannel(context, JFGRules.getTrimPackageName());
 //                isInit = true;
 //            }
-//        }).start();
+//        }).initSubscription();
 //    }
 //
 //    /**
@@ -103,7 +103,7 @@
 //
 //    static {
 //        HandlerThread thread = new HandlerThread("custom-mta");
-//        thread.start();
+//        thread.initSubscription();
 //        handler = new Handler(thread.getLooper());
 //    }
 //

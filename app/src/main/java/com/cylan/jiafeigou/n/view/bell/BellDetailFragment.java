@@ -12,7 +12,6 @@ import android.widget.RelativeLayout;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -117,7 +116,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         editDialogFragment.setAction((id, value) -> {
             if (value != null && value instanceof String) {
                 String content = (String) value;
-                Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+                Device device = sourceManager.getJFGDevice(mUUID);
                 if (!TextUtils.isEmpty(content)
                         && device != null && !TextUtils.equals(device.alias, content)) {
                     device.alias = content;
@@ -132,7 +131,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
 
 
     public void updateAlias(Device device) {
-        DataSourceManager.getInstance().updateJFGDevice(device);
+        sourceManager.updateJFGDevice(device);
         try {
             JfgCmdInsurance.getCmd().setAliasByCid(device.uuid, device.alias);
             AppLogger.d("update alias suc");

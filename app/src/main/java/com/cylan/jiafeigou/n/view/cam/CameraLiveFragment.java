@@ -36,7 +36,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -47,6 +46,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.CamLivePresenterImpl;
@@ -77,7 +77,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.panorama.CameraParam;
 import com.google.gson.Gson;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.SoftReference;
@@ -178,7 +177,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
     }
 
@@ -232,7 +231,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     private void initLiveView() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         if (device == null) {
             AppLogger.e("device is null");
             getActivity().finish();
@@ -320,8 +319,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.notifyOrientationChange(getResources().getConfiguration().orientation);
         if (vLive != null && vLive.getVideoView() != null) {
             vLive.getVideoView().onResume();
-            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-            String dpPrimary = device.$(509, "1");//0:俯视
+            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+            String dpPrimary = device.$(509, "0");//0:俯视
             vLive.getVideoView().setMode(TextUtils.equals(dpPrimary, "0") ? 0 : 1);
             vLive.getVideoView().config360(TextUtils.equals(dpPrimary, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         }
@@ -339,7 +338,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         DpMsgDefine.DPStandby isStandBY = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         if (isStandBY != null && isStandBY.standby) return;
         if (!getUserVisibleHint()) return;//看不见，就不需要播放了。
@@ -350,7 +349,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
         if (isStandBY == null || isStandBY.standby) return;
         basePresenter.startPlayHistory(time);
@@ -435,7 +434,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onDeviceInfoChanged(long msgId) {
         if (msgId == -1 || msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
-            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
             DpMsgDefine.DPStandby isStandBY = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
             boolean flag = isStandBY.standby;
             fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
@@ -500,9 +499,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 //            if(formatRsp)
             initSdcardFormatDialog();
         }
-        if (msgId == 509) {//0俯视,1:平视
-            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
-            String _509 = device.$(509, "1");
+        if (msgId == 509) {
+            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+            String _509 = device.$(509, "0");
             vLive.getVideoView().config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
             vLive.getVideoView().setMode(TextUtils.equals("0", _509) ? 0 : 1);
             vLive.getVideoView().detectOrientationChanged();
@@ -735,7 +734,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setLiveTime(0);
         switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
-                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                 DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
                 if (isStandBY == null || isStandBY.standby) break;//
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1), getString(R.string.USER_HELP));

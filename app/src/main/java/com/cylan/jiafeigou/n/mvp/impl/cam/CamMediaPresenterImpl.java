@@ -9,8 +9,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.FutureTarget;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskException;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -20,6 +18,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMediaContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxHelper;
@@ -94,13 +93,13 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                         .setVersion(targetTime)
                         .setAction(DBAction.DELETED)
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
-                .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
+                .flatMap(task -> BaseApplication.getAppComponent().getTaskDispatcher().perform(task))
                 .map(ret -> new DPEntity()
                         .setUuid(uuid)
                         .setVersion(targetTime)
                         .setAction(DBAction.DELETED)
                         .setMsgId(511))
-                .flatMap(task -> BaseDPTaskDispatcher.getInstance().perform(task))
+                .flatMap(task -> BaseApplication.getAppComponent().getTaskDispatcher().perform(task))
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
@@ -121,7 +120,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
             DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
             item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
             item.cid = uuid;
-            Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             item.fileName = version / 1000 + "_" + (index + 1) + ".jpg";
             item.time = (int) (version / 1000) + index + 1;//
@@ -142,13 +141,13 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                     .setVersion(System.currentTimeMillis())
                     .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
                     .setAction(DBAction.SHARED)
-                    .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount())
+                    .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount())
                     .setBytes(item.toBytes());
             subscriber.onNext(entity);
             subscriber.onCompleted();
         })
                 .subscribeOn(Schedulers.io())
-                .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
+                .flatMap(entity -> BaseApplication.getAppComponent().getTaskDispatcher().perform(entity))
                 .filter(ret -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
@@ -170,7 +169,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                 .setVersion(time / 1000 + index + 1)
                 .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
                 .subscribeOn(Schedulers.io())
-                .flatMap(entity -> BaseDPTaskDispatcher.getInstance().perform(entity))
+                .flatMap(entity -> BaseApplication.getAppComponent().getTaskDispatcher().perform(entity))
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
                 .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))

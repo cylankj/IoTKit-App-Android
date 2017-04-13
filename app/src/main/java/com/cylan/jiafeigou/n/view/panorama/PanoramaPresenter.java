@@ -4,7 +4,6 @@ import android.net.wifi.WifiInfo;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.injector.lifecycle.PerActivity;
 import com.cylan.jiafeigou.base.module.PanoramaEvent;
 import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -28,8 +27,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import javax.inject.Inject;
 
 import rx.Observable;
 import rx.Subscription;

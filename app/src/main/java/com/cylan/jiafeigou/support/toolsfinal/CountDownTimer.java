@@ -38,7 +38,7 @@ import android.os.SystemClock;
  * public void onFinish() {
  * mTextField.setText("done!");
  * }
- * }.start();
+ * }.initSubscription();
  * </pre>
  * <p>
  * The calls to {@link #onTick(long)} are synchronized to this object so that

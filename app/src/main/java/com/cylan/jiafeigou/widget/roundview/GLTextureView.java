@@ -183,7 +183,7 @@ public class GLTextureView extends TextureView
 
     /**
      * Set the renderer associated with this view. Also starts the thread that
-     * will call the renderer, which in turn causes the rendering to start.
+     * will call the renderer, which in turn causes the rendering to initSubscription.
      * <p>This method should be called once and only once in the life-cycle of
      * a GLTextureView.
      * <p>The following GLTextureView methods can only be called <em>before</em>
@@ -887,7 +887,7 @@ public class GLTextureView extends TextureView
          */
         public void start() {
             if (LOG_EGL) {
-                Log.w("EglHelper", "start() tid=" + Thread.currentThread().getId());
+                Log.w("EglHelper", "initSubscription() tid=" + Thread.currentThread().getId());
             }
             /*
              * Get an EGL instance

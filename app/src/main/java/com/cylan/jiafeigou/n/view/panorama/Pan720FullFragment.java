@@ -19,7 +19,6 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgMap;
@@ -145,7 +144,7 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
-        Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+        Device device = sourceManager.getJFGDevice(mUUID);
         String mac = device.$(DpMsgMap.ID_202_MAC, "");
         if (!TextUtils.equals(mac, NetUtils.getRouterMacAddress((Application) ContextUtils.getContext()))) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));

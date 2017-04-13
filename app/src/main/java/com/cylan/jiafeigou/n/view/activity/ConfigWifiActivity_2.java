@@ -17,10 +17,10 @@ import android.view.View;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.ConfigApPresenterImpl;
 import com.cylan.jiafeigou.n.view.bind.WiFiListDialogFragment;
@@ -150,7 +150,7 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
             if (value != null && value instanceof String) {
                 //pwd
                 String routeName = NetUtils.getNetName(ContextUtils.getContext());
-                Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+                Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                 DpMsgDefine.DPNet net = device == null ? new DpMsgDefine.DPNet() : device.$(201, new DpMsgDefine.DPNet());
                 if (!TextUtils.equals(routeName, net.ssid)) {
                     ToastUtil.showNegativeToast(getString(R.string.setwifi_check, net.ssid));

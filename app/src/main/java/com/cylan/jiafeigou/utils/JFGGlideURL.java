@@ -4,9 +4,9 @@ import android.text.TextUtils;
 
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -29,7 +29,7 @@ public class JFGGlideURL extends GlideUrl {
 
     public JFGGlideURL(String cid, String fileName) {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
-        Device device = DataSourceManager.getInstance().getJFGDevice(cid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(cid);
         this.vid = Security.getVId();
         if (device != null) {
             this.V2 = TextUtils.isEmpty(device.vid);

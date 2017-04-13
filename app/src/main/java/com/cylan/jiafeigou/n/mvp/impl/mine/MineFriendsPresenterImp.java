@@ -11,8 +11,8 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.db.DbManager;
 import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
@@ -58,7 +57,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public MineFriendsPresenterImp(MineFriendsContract.View view) {
         super(view);
         view.setPresenter(this);
-        account = DataSourceManager.getInstance().getJFGAccount().getAccount();
+        account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
     }
 
     @Override

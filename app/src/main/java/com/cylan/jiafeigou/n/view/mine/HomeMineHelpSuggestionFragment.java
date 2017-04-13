@@ -169,7 +169,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
             bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
             SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
-            dialogFragment.setValue("clear");
+            dialogFragment.setValue("clearLocal");
             dialogFragment.setAction(this);
             dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
         }

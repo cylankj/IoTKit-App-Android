@@ -7,8 +7,6 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -17,6 +15,7 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.SettingTip;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -57,7 +56,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public CamSettingPresenterImpl(CamSettingContract.View view, String uuid) {
         super(view, uuid);
         view.setPresenter(this);
-        device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
     }
 
     @Override
@@ -105,7 +104,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RobotoGetDataRsp update) -> {
-                    getView().deviceUpdate(DataSourceManager.getInstance().getJFGDevice(uuid));
+                    getView().deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid));
                     return null;
                 })
                 .subscribe(ret -> {
@@ -158,7 +157,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
             //sd初始化失败时候显示
             return context.getString(R.string.SD_INIT_ERR, err);
         }
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         return device != null && TextUtils.isEmpty(device.alias) ?
                 device.uuid : (device != null ? device.alias : "");
     }
@@ -187,7 +186,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 //            4:12:01-12:00显示：12:01-次日12:00
     @Override
     public String getAlarmSubTitle(Context context) {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         boolean f = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
         return MiscUtils.getChaosTime(context, info, f);
@@ -196,7 +195,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public String getAutoRecordTitle(Context context) {
-        Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
         int deviceAutoVideoRecord = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0)
@@ -215,9 +214,9 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         Subscription subscription = Observable.just(value)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
-                    AppLogger.i("save start: " + id + " " + value);
+                    AppLogger.i("save initSubscription: " + id + " " + value);
                     try {
-                        DataSourceManager.getInstance().updateValue(uuid, value, (int) id);
+                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value, (int) id);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err:" + e.getLocalizedMessage());
                     }
@@ -231,9 +230,9 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         Subscription subscription = Observable.just(value)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
-                    AppLogger.i("save start: " + " " + value);
+                    AppLogger.i("save initSubscription: " + " " + value);
                     try {
-                        DataSourceManager.getInstance().updateValue(uuid, value);
+                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, value);
                     } catch (IllegalAccessException e) {
                         AppLogger.e("err:" + e.getLocalizedMessage());
                     }
@@ -249,7 +248,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 .setAction(DBAction.UNBIND))
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(item -> BaseDPTaskDispatcher.getInstance().perform(item))
+                .flatMap(item -> BaseApplication.getAppComponent().getTaskDispatcher().perform(item))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(rsp -> mView.unbindDeviceRsp(rsp.getResultCode()), e -> {
                     if (e instanceof TimeoutException) {

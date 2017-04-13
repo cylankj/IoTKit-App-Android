@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.base.injector.module;
 
 import com.cylan.jiafeigou.base.injector.lifecycle.PerFragment;
+import com.cylan.jiafeigou.base.module.BasePresenterInjector;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellSettingContract;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
@@ -23,36 +24,37 @@ import dagger.Provides;
 public class FragmentModule {
     @Provides
     @PerFragment
-    public BellDetailContract.Presenter provideBellDetailPresenter() {
-        return new BellDetailSettingPresenterImpl();
+    public BellDetailContract.Presenter provideBellDetailPresenter(BasePresenterInjector injector) {
+        return injector.inject(new BellDetailSettingPresenterImpl());
     }
 
     @Provides
     @PerFragment
-    public BellSettingContract.Presenter provideBellSettingPresenter() {
-        return new BellSettingPresenterImpl();
+    public BellSettingContract.Presenter provideBellSettingPresenter(BasePresenterInjector injector) {
+        return injector.inject(new BellSettingPresenterImpl());
     }
 
     @Provides
     @PerFragment
-    public HomeWonderfulContract.Presenter provideHomeWonderfulPresenter() {
-        return new HomeWonderfulPresenterImpl();
+    public HomeWonderfulContract.Presenter provideHomeWonderfulPresenter(BasePresenterInjector injector) {
+        return injector.inject(new HomeWonderfulPresenterImpl());
     }
 
     @Provides
     @PerFragment
-    public Pan720FullContract.Presenter providePan720FullPresenter() {
-        return new Pan720FullPresenter();
+    public Pan720FullContract.Presenter providePan720FullPresenter(BasePresenterInjector injector) {
+        return injector.inject(new Pan720FullPresenter());
     }
 
     @Provides
     @PerFragment
-    public PanoramaLogoConfigureContact.Presenter providePanoramaLogoConfigurePresenter() {
-        return new PanoramaLogoConfigurePresenter();
+    public PanoramaLogoConfigureContact.Presenter providePanoramaLogoConfigurePresenter(BasePresenterInjector injector) {
+        return injector.inject(new PanoramaLogoConfigurePresenter());
     }
+
     @Provides
     @PerFragment
-    public CamDelayRecordContract.Presenter provideCamDelayRecordPresenter() {
-        return new CamDelayRecordContract.Presenter();
+    public CamDelayRecordContract.Presenter provideCamDelayRecordPresenter(BasePresenterInjector injector) {
+        return injector.inject(new CamDelayRecordContract.Presenter());
     }
 }

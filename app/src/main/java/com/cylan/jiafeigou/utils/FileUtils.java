@@ -94,7 +94,7 @@ public class FileUtils {
      *
      * @param filePath
      * @param content
-     * @param append   is append, if true, write to the end of file, else clear content of file and write into it
+     * @param append   is append, if true, write to the end of file, else clearLocal content of file and write into it
      * @return return false if content is empty, true otherwise
      * @throws RuntimeException if an error occurs while operator FileWriter
      */
@@ -129,7 +129,7 @@ public class FileUtils {
      *
      * @param filePath
      * @param contentList
-     * @param append      is append, if true, write to the end of file, else clear content of file and write into it
+     * @param append      is append, if true, write to the end of file, else clearLocal content of file and write into it
      * @return return false if contentList is empty, true otherwise
      * @throws RuntimeException if an error occurs while operator FileWriter
      */

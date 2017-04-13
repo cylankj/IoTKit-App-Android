@@ -5,12 +5,12 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
@@ -55,7 +55,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
             holder.setVisibility(R.id.img_device_state_1, GONE);
         } else {
-            if (DataSourceManager.getInstance().isDeviceSharedTo(uuid)) {
+            if (BaseApplication.getAppComponent().getSourceManager().isDeviceSharedTo(uuid)) {
                 holder.setVisibility(R.id.img_device_state_1, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_1, R.drawable.home_icon_net_link);
             } else {

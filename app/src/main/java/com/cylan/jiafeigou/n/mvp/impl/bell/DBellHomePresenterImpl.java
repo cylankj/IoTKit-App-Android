@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -47,7 +46,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     private void notifyBellLowBattery() {
         if (isFirst) {
             isFirst = false;
-            Account account = DataSourceManager.getInstance().getAJFGAccount();
+            Account account = sourceManager.getAJFGAccount();
             if (account != null) {
                 long lastTime = PreferencesUtils.getLong(account.getAccount() + ":" + mUUID + ":" + JConstant.LAST_ENTER_TIME, System.currentTimeMillis());
                 DpMsgDefine.DPPrimary<Integer> battery = sourceManager.getValue(mUUID, DpMsgMap.ID_206_BATTERY, null);

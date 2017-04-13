@@ -118,7 +118,7 @@ public abstract class RecyclingPagerAdapter extends PagerAdapter {
     /**
      * The RecycleBin facilitates reuse of views across layouts. The RecycleBin has two levels of
      * storage: ActiveViews and ScrapViews. ActiveViews are those views which were onscreen at the
-     * start of a layout. By construction, they are displaying current information. At the end of
+     * initSubscription of a layout. By construction, they are displaying current information. At the end of
      * layout, all views in ActiveViews are demoted to ScrapViews. ScrapViews are old views that
      * could potentially be used by the adapter to avoid allocating views unnecessarily.
      * <p>
@@ -127,7 +127,7 @@ public abstract class RecyclingPagerAdapter extends PagerAdapter {
      */
     public static class RecycleBin {
         /**
-         * Views that were on screen at the start of layout. This array is populated at the start of
+         * Views that were on screen at the initSubscription of layout. This array is populated at the initSubscription of
          * layout, and at the end of layout all view in activeViews are moved to scrapViews.
          * Views in activeViews represent a contiguous range of Views, with position of the first
          * view store in mFirstActivePosition.

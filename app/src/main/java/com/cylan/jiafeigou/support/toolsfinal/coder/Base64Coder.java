@@ -100,7 +100,7 @@ public class Base64Coder {
      * are present, there must be the correct number of them.
      *
      * @param input  the data to decode
-     * @param offset the position within the input array at which to start
+     * @param offset the position within the input array at which to initSubscription
      * @param len    the number of bytes of input to decode
      * @param flags  controls certain features of the decoded output. Pass
      *               {@code DEFAULT} to decode standard Base64.
@@ -153,7 +153,7 @@ public class Base64Coder {
      * result.
      *
      * @param input  the data to encode
-     * @param offset the position within the input array at which to start
+     * @param offset the position within the input array at which to initSubscription
      * @param len    the number of bytes of input to encode
      * @param flags  controls certain features of the encoded output. Passing
      *               {@code DEFAULT} results in output that adheres to RFC 2045.
@@ -184,7 +184,7 @@ public class Base64Coder {
      * result.
      *
      * @param input  the data to encode
-     * @param offset the position within the input array at which to start
+     * @param offset the position within the input array at which to initSubscription
      * @param len    the number of bytes of input to encode
      * @param flags  controls certain features of the encoded output. Passing
      *               {@code DEFAULT} results in output that adheres to RFC 2045.

@@ -36,7 +36,7 @@ public abstract class Sampler {
     }
 
     /**
-     * start sampling.
+     * initSubscription sampling.
      */
     public void start() {
         // exit if dumping

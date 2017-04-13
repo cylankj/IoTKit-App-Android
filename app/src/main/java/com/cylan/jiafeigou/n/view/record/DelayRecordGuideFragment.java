@@ -6,7 +6,6 @@ import android.view.ViewGroup;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -84,7 +83,7 @@ public class DelayRecordGuideFragment extends BaseFragment {
     }
 
     private boolean isDeviceSleeping() {
-        Device device = DataSourceManager.getInstance().getJFGDevice(mUUID);
+        Device device = sourceManager.getJFGDevice(mUUID);
         DpMsgDefine.DPStandby isStandBY = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         return isStandBY.standby;
     }

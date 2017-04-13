@@ -18,6 +18,7 @@ import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerActivityComponent;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -37,12 +38,14 @@ import butterknife.ButterKnife;
 public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActivity implements JFGView {
     @Inject
     protected P presenter;
-
+    @Inject
+    protected JFGSourceManager sourceManager;
     protected String uuid;
     protected AlertDialog alertDialog;
     protected Toast mToast;
 
     protected ActivityComponent component;
+
 
     @Override
     public Context getAppContext() {

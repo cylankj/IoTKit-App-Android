@@ -5,7 +5,6 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -38,7 +37,7 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     }
 
     public Observable<BaseDPTaskResult> run() {
-        if (DataSourceManager.getInstance().isOnline())
+        if (sourceManager.isOnline())
             return performServer();
         else return performLocal();
     }
@@ -50,10 +49,10 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
             list.add(entity.getMsgId());
             Log.d("DPSimpleMultiQueryTask", "pre DPSimpleMultiQueryTask: " + entity);
         }
-        QueryBuilder<DPEntity> builder = ((BaseDBHelper) mDPHelper).buildDPMsgQueryBuilder(multiEntity.get(0).getAccount(),
+        QueryBuilder<DPEntity> builder = ((BaseDBHelper) dpHelper).buildDPMsgQueryBuilder(multiEntity.get(0).getAccount(),
                 OptionsImpl.getServer(), multiEntity.get(0).getUuid(), null, null,
                 list, null, null, null);
-        return mDPHelper.queryMultiDpMsg(builder)
+        return dpHelper.queryMultiDpMsg(builder)
                 .map(rList -> {
                     List<DataPoint> dpEntities = new ArrayList<>(ListUtils.getSize(rList));
                     if (rList != null) {

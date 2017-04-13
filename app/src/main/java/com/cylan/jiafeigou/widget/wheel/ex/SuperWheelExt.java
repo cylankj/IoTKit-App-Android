@@ -187,7 +187,7 @@ public class SuperWheelExt extends View {
         int start = offsetCount >= count / 2 ? Math.abs(count / 2 - offsetCount) : 0;
         int end = totalCount - start > count ? count + start : totalCount;
         if (DEBUG)
-            Log.d(TAG, String.format("offset:%s,count:%s,totalCount:%s,start:%s,end:%s",
+            Log.d(TAG, String.format("offset:%s,count:%s,totalCount:%s,initSubscription:%s,end:%s",
                     offsetCount, count, totalCount, start, end));
         return iDataProvider == null ? new long[]{0, 0} : iDataProvider.getTimeArray(end, start);
     }

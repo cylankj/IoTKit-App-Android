@@ -1,12 +1,10 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.DPEntityDao;
@@ -18,7 +16,6 @@ import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.wheel.WonderIndicatorWheelView;
-import com.google.gson.Gson;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 import org.greenrobot.greendao.query.WhereCondition;
@@ -52,7 +49,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     return Observable.from(will);
                 })
                 .flatMap(aLong -> {
-                    QueryBuilder<DPEntity> builder = BaseDBHelper.getInstance().getDpEntityQueryBuilder();
+                    QueryBuilder<DPEntity> builder = dpHelper.getDpEntityQueryBuilder();
                     String account = entity.getAccount();
                     if (!TextUtils.isEmpty(account)) {
                         builder.where(DPEntityDao.Properties.Account.eq(account));//设置 dpAccount 约束

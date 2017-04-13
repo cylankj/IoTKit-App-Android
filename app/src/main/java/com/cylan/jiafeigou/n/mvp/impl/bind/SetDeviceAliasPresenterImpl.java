@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -39,7 +39,7 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
     public void setupAlias(String alias) {
         Subscription subscribe = Observable.interval(0, 2, TimeUnit.SECONDS)
                 .takeUntil(aLong -> {
-                    Account account = DataSourceManager.getInstance().getAJFGAccount();
+                    Account account = BaseApplication.getAppComponent().getSourceManager().getAJFGAccount();
                     return account != null && account.isOnline();
                 })
                 .map(s -> alias)

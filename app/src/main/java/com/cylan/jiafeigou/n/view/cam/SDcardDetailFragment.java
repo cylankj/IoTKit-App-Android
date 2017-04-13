@@ -12,14 +12,12 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.SdCardInfoPresenterImpl;
@@ -29,8 +27,6 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-
-import java.text.DecimalFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -211,7 +207,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             showHasNoSdDialog();
             return;
         }
-        Device device = DataSourceManager.getInstance().getJFGDevice(this.uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(this.uuid);
         //仅3G摄像头显示此栏
         if (device != null && JFGRules.is3GCam(device.pid)) {
             tvClearRestart.setVisibility(View.VISIBLE);

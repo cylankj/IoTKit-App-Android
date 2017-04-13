@@ -4,8 +4,6 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
-import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPCamDateQueryTask;
@@ -16,6 +14,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamMessageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.CamMessageBean;
@@ -83,7 +82,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         e.printStackTrace();
                     }
                     AppLogger.d("收到,属性同步了");
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
 
@@ -93,17 +92,17 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                 .setMsgId(222)
                 .setUuid(uuid)
                 .setOption(new DBOption.MultiQueryOption(timeStart, timeEnd, asc))
-                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
         list.add(new DPEntity()
                 .setMsgId(505)
                 .setUuid(uuid)
                 .setOption(new DBOption.MultiQueryOption(timeStart, timeEnd, asc))
-                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
         list.add(new DPEntity()
                 .setMsgId(512)
                 .setUuid(uuid)
                 .setOption(new DBOption.MultiQueryOption(timeStart, timeEnd, asc))
-                .setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount()));
+                .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
         return list;
     }
 
@@ -121,7 +120,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
             //需要注意这个timeEnd,他可以小于timeStart.可以大于timeStart.
             //查询本地的时候，不用asc.只用timeStart,timeEnd
             //查询服务器的时候，用timeStart中大的一个，加上asc.
-            if (DataSourceManager.getInstance().isOnline()) {
+            if (BaseApplication.getAppComponent().getSourceManager().isOnline()) {
                 return new DPCamMultiQueryTask()
                         .init(buildEntity(timeStart, timeEnd, asc))//服务器查询不理会timeEnd
                         .performServer();
@@ -224,7 +223,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         for (CamMessageBean bean : beanList) {
             DPEntity dpEntity = new DPEntity();
             dpEntity.setUuid(uuid);
-            dpEntity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());
+            dpEntity.setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount());
             dpEntity.setMsgId((int) bean.id);
             dpEntity.setVersion(bean.version);
             dpEntity.setAction(DBAction.DELETED);
@@ -234,14 +233,14 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     public Observable<IDPTaskResult> perform(List<? extends IDPEntity> entity) {
-        return BaseDPTaskDispatcher.getInstance().perform(entity);
+        return BaseApplication.getAppComponent().getTaskDispatcher().perform(entity);
     }
 
     @Override
     public void removeItems(ArrayList<CamMessageBean> beanList) {
         if (ListUtils.isEmpty(beanList)) return;
         List<DPEntity> list = buildMultiEntities(beanList);
-        Subscription subscription = BaseDPTaskDispatcher.getInstance().perform(list)
+        Subscription subscription = BaseApplication.getAppComponent().getTaskDispatcher().perform(list)
                 .subscribeOn(Schedulers.io())
                 .filter(result -> mView != null)
                 .observeOn(AndroidSchedulers.mainThread())
@@ -270,10 +269,10 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
      */
     private Observable<BaseDPTaskResult> getDateListQuery() {
         DPEntity entity = new DPEntity();
-        entity.setAccount(DataSourceManager.getInstance().getJFGAccount().getAccount());
+        entity.setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount());
         entity.setUuid(uuid);
         try {
-            if (DataSourceManager.getInstance().isOnline()) {
+            if (BaseApplication.getAppComponent().getSourceManager().isOnline()) {
                 return new DPCamDateQueryTask()
                         .init(entity)
                         .performServer();

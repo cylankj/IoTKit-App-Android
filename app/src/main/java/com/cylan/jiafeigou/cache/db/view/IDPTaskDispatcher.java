@@ -1,5 +1,8 @@
 package com.cylan.jiafeigou.cache.db.view;
 
+import com.cylan.jiafeigou.base.view.IPropertyParser;
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
+
 import java.util.List;
 
 import rx.Observable;
@@ -20,4 +23,12 @@ public interface IDPTaskDispatcher {
     Observable<IDPTaskResult> perform(IDPEntity entity);
 
     Observable<IDPTaskResult> perform(List<? extends IDPEntity> entities);
+
+    void setDBHelper(IDBHelper helper);
+
+    void setSourceManager(JFGSourceManager manager);
+
+    void setTaskFactory(IDPTaskFactory taskFactory);
+
+    void setPropertyParser(IPropertyParser parser);
 }

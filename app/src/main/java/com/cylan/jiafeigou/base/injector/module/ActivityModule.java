@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.base.injector.module;
 
 import com.cylan.jiafeigou.base.injector.lifecycle.PerActivity;
+import com.cylan.jiafeigou.base.module.BasePresenterInjector;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
@@ -27,43 +28,43 @@ public class ActivityModule {
 
     @Provides
     @PerActivity
-    public BellLiveContract.Presenter provideBellLivePresenter() {
-        return new BellLivePresenterImpl();
+    public BellLiveContract.Presenter provideBellLivePresenter(BasePresenterInjector injector) {
+        return injector.inject(new BellLivePresenterImpl());
     }
 
     @Provides
     @PerActivity
-    public PanoramaCameraContact.Presenter providePanoramaCameraPresenter() {
-        return new PanoramaPresenter();
+    public PanoramaCameraContact.Presenter providePanoramaCameraPresenter(BasePresenterInjector injector) {
+        return injector.inject(new PanoramaPresenter());
     }
 
     @Provides
     @PerActivity
-    public PanoramaAlbumContact.Presenter providePanoramaAlbumPresenter() {
-        return new PanoramaAlbumPresenter();
+    public PanoramaAlbumContact.Presenter providePanoramaAlbumPresenter(BasePresenterInjector injector) {
+        return injector.inject(new PanoramaAlbumPresenter());
     }
 
     @Provides
     @PerActivity
-    public PanoramaDetailContact.Presenter providePanoramaDetailPresenter() {
+    public PanoramaDetailContact.Presenter providePanoramaDetailPresenter(BasePresenterInjector injector) {
         return null;
     }
 
     @Provides
     @PerActivity
-    public PanoramaSettingContact.Presenter providePanoramaSettingPresenter() {
-        return new PanoramaSettingPresenter();
+    public PanoramaSettingContact.Presenter providePanoramaSettingPresenter(BasePresenterInjector injector) {
+        return injector.inject(new PanoramaSettingPresenter());
     }
 
     @Provides
     @PerActivity
-    public DelayRecordContract.Presenter provideDelayRecordPresenter() {
-        return new DelayRecordPresenterImpl();
+    public DelayRecordContract.Presenter provideDelayRecordPresenter(BasePresenterInjector injector) {
+        return injector.inject( new DelayRecordPresenterImpl());
     }
 
     @Provides
     @PerActivity
-    public DoorBellHomeContract.Presenter provideDoorBellHomePresenter() {
-        return new DBellHomePresenterImpl();
+    public DoorBellHomeContract.Presenter provideDoorBellHomePresenter(BasePresenterInjector injector) {
+        return  injector.inject(new DBellHomePresenterImpl());
     }
 }

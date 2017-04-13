@@ -21,7 +21,7 @@ import rx.schedulers.Schedulers;
 public class DPSingleClearTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
-        return mDPHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getMsgId(), null)
+        return dpHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getMsgId(), null)
                 .map(items -> {
                     DPEntity entity = null;
                     if (items != null && items.size() > 0) {
@@ -54,7 +54,7 @@ public class DPSingleClearTask extends BaseDPTask<BaseDPTaskResult> {
                 .flatMap(this::makeDeleteDataRspResponse)
                 .flatMap(rsp -> {
                     if (rsp.resultCode == 0) {
-                        return mDPHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
+                        return dpHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
                                 .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(rsp));
                     } else {
                         return Observable.just(new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(rsp));

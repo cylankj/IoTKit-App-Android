@@ -16,19 +16,16 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoBineMailPresenterImp;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
-
-import java.io.Serializable;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -81,7 +78,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
             if (code == JError.ErrorOK) {
                 //区分第三方登录
                 if (presenter.isOpenLogin()){
-                    JFGAccount userAccount = DataSourceManager.getInstance().getJFGAccount();
+                    JFGAccount userAccount = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
                     AppLogger.d("bindmail2:"+userAccount.getPhone());
                     if (TextUtils.isEmpty(userAccount.getPhone())) {
                         jump2SetPasswordFragment(getEditText());
