@@ -18,9 +18,10 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.AESUtil;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 import java.io.File;
 
@@ -248,7 +249,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(i -> {
-                    if (getView() != null)getView().setAccount(account,i);
+                    if (getView() != null) getView().setAccount(account, i);
                 });
     }
 
