@@ -192,7 +192,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         //只有app退出后，被调用。
         if (basePresenter != null) {
             basePresenter.stop();
-            basePresenter.unRegisterWorker();
             basePresenter = null;
         }
     }

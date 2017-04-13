@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
@@ -21,6 +22,8 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observable;
 import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_CAM_SIGHT_SETTING;
 
 public class SightSettingActivity extends BaseFullScreenFragmentActivity {
 
@@ -42,7 +45,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
         Device device = DataSourceManager.getInstance().getJFGDevice(uuid);
         //平视
-        String dpPrimary = device.$(509, "0");
+        String dpPrimary = device.$(509, "1");
         initValue = dpPrimary;
         try {
             //0:俯视
@@ -50,6 +53,12 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
             rbtnSightVertical.setChecked(TextUtils.equals("0", dpPrimary));
         } catch (Exception e) {
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        PreferencesUtils.putBoolean(KEY_CAM_SIGHT_SETTING + uuid, false);
     }
 
     @Override

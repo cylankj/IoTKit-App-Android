@@ -138,6 +138,13 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
             } else
                 return true;
         });
+        Intent intent = getIntent();
+        if (intent.hasExtra("jump_to_message")) {
+            //跳转到
+            if (simpleAdapterPager.getCount() > 1) {
+                vpCameraLive.setCurrentItem(1);
+            }
+        }
     }
 
     private void initToolbar() {

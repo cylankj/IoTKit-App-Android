@@ -13,6 +13,7 @@ import com.cylan.entity.jniCall.JFGDevice;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
@@ -33,6 +34,7 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.NotifyManager;
+import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -179,6 +181,10 @@ public class DataSourceManager implements JFGSourceManager {
                     return new Device();
                 }
             }
+        }
+        if (device == null) {
+            device = new Device();
+            AppLogger.e("device is null:" + uuid);
         }
         return device;
     }
@@ -721,32 +727,33 @@ public class DataSourceManager implements JFGSourceManager {
                 if (msgId == 505 || msgId == 512 || msgId == 222) {
                     AppLogger.d("may fire a notification: " + msgId);
                     //cam 1001 1002  1003
-//                    NotifyManager.getNotifyManager().sendNotify();
                     INotify.NotifyBean bean = new INotify.NotifyBean();
                     bean.resId = R.drawable.icon_home_doorbell_online;
                     try {
                         AppLogger.d("通知栏..." + list.get(i));
-                        bean.time = list.get(i).version;
-                        bean.resId = R.mipmap.ic_launcher;
-                        NotifyManager.getNotifyManager().sendNotify(bean);
-                        AppLogger.e("报警消息来了,但是未读数,跟不上.");
-//                        DPSimpleMultiQueryTask task = new DPSimpleMultiQueryTask()
-//                                .init(new MiscUtils.DPEntityBuilder()
-//                                        .add(uuid, 505, 0, true)
-//                                        .add(uuid, 512, 0, true)
-//                                        .add(uuid, 222, 0, true)
-//                                        .build());
-//                        task.run().subscribeOn(Schedulers.newThread())
-//                                .subscribe(baseDPTaskResult -> {
-//                                    Device dd = DataSourceManager.getInstance().getJFGDevice(uuid);
-//                                    DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
-//                                    AppLogger.d("通知栏..." + entity);
-//                                    bean.time = entity.getVersion();
-//                                    bean.content = ContextUtils.getContext().getResources().getString(R.string.SETTINGS_1);
-//                                    bean.resId = R.drawable.icon_home_camera_online;
-//                                    NotifyManager.getNotifyManager().sendNotify(bean);
-////                                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
-//                                });
+                        DPSimpleMultiQueryTask task = new DPSimpleMultiQueryTask()
+                                .init(new MiscUtils.DPEntityBuilder()
+                                        .add(uuid, 1001, 0, true)
+                                        .add(uuid, 1002, 0, true)
+                                        .add(uuid, 1003, 0, true)
+                                        .build());
+                        task.run().subscribeOn(Schedulers.newThread())
+                                .subscribe(baseDPTaskResult -> {
+                                    Device dd = DataSourceManager.getInstance().getJFGDevice(uuid);
+                                    String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
+                                    DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
+                                    bean.time = entity.getVersion();
+                                    bean.resId = R.mipmap.ic_launcher;
+                                    bean.notificationId = (uuid + "cam").hashCode();
+                                    bean.content = alias;
+                                    int count = entity.getValue(0);
+                                    bean.subContent = ContextUtils.getContext().getString(R.string.receive_new_news, count > 99 ? "99+" : count);
+                                    final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
+                                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                                    intent.putExtra("jump_to_message", "jump_to_message");
+                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                                    NotifyManager.getNotifyManager().sendNotify(bean);
+                                }, AppLogger::e);
                     } catch (Exception e) {
 
                     }
@@ -770,11 +777,19 @@ public class DataSourceManager implements JFGSourceManager {
                                     intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                                     intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
                                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                                    int count = entity.getValue(0);
+                                    final String title = count == 0 ? ContextUtils.getContext().getString(R.string.app_name) :
+                                            String.format(ContextUtils.getContext().getString(R.string.app_name) + "(%s%s)", count, ContextUtils.getContext().getString(R.string.DOOR_NOT_CONNECT));
+                                    final String subTitle = count == 0 ?
+                                            ContextUtils.getContext().getString(R.string.Slogan) : ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL);
                                     bean.time = entity.getVersion();
-                                    bean.content = ContextUtils.getContext().getResources().getString(R.string.SETTINGS_1);
-                                    bean.resId = R.drawable.icon_home_doorbell_online;
-                                    bean.count = entity.getValue(0);
+                                    bean.resId = R.mipmap.ic_launcher;
                                     bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    bean.time = entity.getVersion();
+                                    bean.resId = R.mipmap.ic_launcher;
+                                    bean.notificationId = (uuid + "bell").hashCode();
+                                    bean.content = title;
+                                    bean.subContent = subTitle;
                                     NotifyManager.getNotifyManager().sendNotify(bean);
                                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
                     } catch (Exception e) {

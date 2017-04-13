@@ -50,6 +50,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -391,7 +392,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
         ////////////////////////////net////////////////////////////////////////
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
-        svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
+        boolean isMobileNet = net.net > 1;
+        svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? "" : net.ssid) : getString(R.string.OFF_LINE));
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
         svSettingDeviceMobileNetwork.setVisibility(simCard > 1 ? View.VISIBLE : View.GONE);
@@ -456,6 +458,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             } catch (Exception e) {
             }
         } else sbtnSettingSight.setVisibility(View.GONE);
+        AppLogger.d(String.format(Locale.getDefault(), "3g?%s,net?%s,", isMobileNet, net));
     }
 
     @Override

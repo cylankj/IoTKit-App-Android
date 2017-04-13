@@ -25,6 +25,11 @@ public interface INotify {
 
     void sendNotify(NotifyBean notifyBean);
 
+
+    int BELL_NOTIFY_ID = Math.abs("bell".hashCode());
+    int CAM_NOTIFY_ID = Math.abs("cam".hashCode());
+    int ACCOUNT_NOTIFY_ID = Math.abs("account".hashCode());
+
     class NotifyBean {
         /**
          * 标题：一般是"加菲狗"
@@ -38,10 +43,10 @@ public interface INotify {
          * 事件时间，最后一条数据的时间。
          */
         public long time;
-        /**
-         * 条数
-         */
-        public int count;
+//        /**
+//         * 条数
+//         */
+//        public int count;
         /**
          *
          */
@@ -55,6 +60,9 @@ public interface INotify {
          * 是否播放音效
          */
         public boolean sound;
+        public boolean vibrate;
+
+        public int notificationId = -1;
 
     }
 }

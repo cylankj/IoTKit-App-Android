@@ -15,6 +15,7 @@ import android.widget.ImageView;
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.bind.SetDeviceAliasPresenterImpl;
@@ -121,7 +122,7 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
 
     @Override
     public void setupAliasDone(int state) {
-        if (state == 0) {
+        if (state == JError.ErrorOK) {
             ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
             Intent intent = new Intent(getActivity(), NewHomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);

@@ -61,12 +61,6 @@ public interface HomePageListContract {
 
         void fetchDeviceList(boolean manually);
 
-//        void unBindDevReq(String uuid);
-
-        void registerWorker();
-
-        void unRegisterWorker();
-
         void checkClientUpdate();
     }
 }

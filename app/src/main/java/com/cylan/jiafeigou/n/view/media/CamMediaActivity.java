@@ -302,6 +302,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 ToastUtil.showNegativeToast(getString(R.string.DailyGreatTips_Full));
                 break;
             case 0:
+                imgVBigPicCollect.setTag(true);
                 imgVBigPicCollect.setImageResource(R.drawable.icon_collected);
                 break;
         }

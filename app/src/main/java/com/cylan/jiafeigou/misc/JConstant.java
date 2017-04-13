@@ -234,6 +234,8 @@ public class JConstant {
             case 2:
                 return R.drawable.icon_home_net_2g;
             case 3:
+            case 4:
+            case 5:
                 return R.drawable.icon_home_net_3g;
             default:
                 return -1;
