@@ -107,7 +107,13 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                                 }
                                 handlerShareDeviceListData(allDevice);
                             } else {
-                                getDeviceInfo(cidList);
+                                if(cidList.size()==0){
+                                    //都是分享设备
+                                    getView().hideLoadingDialog();
+                                    getView().showNoDeviceView();
+                                }else {
+                                    getDeviceInfo(cidList);
+                                }
                             }
                         } else {
                             getView().hideLoadingDialog();

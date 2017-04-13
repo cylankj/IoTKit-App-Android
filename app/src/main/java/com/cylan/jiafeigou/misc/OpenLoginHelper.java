@@ -157,7 +157,8 @@ public class OpenLoginHelper {
                 //处理自己需要的信息
                 JSONObject jsonObject = (JSONObject) response;
                 String nickname = jsonObject.getString("nickname");
-                String figureurl = jsonObject.getString("figureurl");
+//                String figureurl = jsonObject.getString("figureurl_2");
+                String figureurl = jsonObject.getString("figureurl_qq_2");
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, figureurl);
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, nickname);
                 AppLogger.d("jsonObject:" + jsonObject.toString());

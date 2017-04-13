@@ -39,7 +39,7 @@
                 android:padding="@dimen/x10"
                 android:layout_gravity="center_vertical"
                 android:id="@+id/iv_send_pro"
-                android:src="@drawable/listview_loading"
+                android:background="@drawable/feekback_loading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content" />
 

@@ -28,20 +28,27 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Index;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
@@ -84,17 +91,13 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         downLoadBean.version = checkDevVersion.version;
         downLoadBean.fileName = checkDevVersion.version;
 
-        //TEST
-//        UpdateFileBean downLoadBean = new UpdateFileBean();
-//        downLoadBean.url = "http://yf.cylan.com.cn:82/sdk/libmedia-engine-jni-master.so";
-//        downLoadBean.version = "3330000";
-//        downLoadBean.fileName = "3330000";
-
-        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+        downLoadBean.savePath = getView().getContext().getApplicationContext().getFilesDir().getAbsolutePath();
+        AppLogger.d("initSavePath:"+downLoadBean.savePath);
+/*        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             downLoadBean.savePath = getView().getContext().getFilesDir().getAbsolutePath();
         } else {
             downLoadBean.savePath = JConstant.MISC_PATH;
-        }
+        }*/
         return downLoadBean;
     }
 
@@ -184,8 +187,8 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                             AppLogger.d("file name:" + headerField);
                             AppLogger.d("file_length:" + length);
                             //先从本地获取看看是否已下载
-//                            String localUrl = "/mnt/sdcard" + Environment.getExternalStorageDirectory().getAbsolutePath() +"/"+ bean.fileName + ".bin";
-                            String localUrl = "/mnt/sdcard"+JConstant.MISC_PATH+"/"+ bean.fileName + ".bin";
+                            String localUrl = getView().getContext().getApplicationContext().getFilesDir().getAbsolutePath() +"/"+ bean.fileName + ".bin";
+//                            String localUrl = bean.savePath+"/"+ bean.fileName + ".bin";
                             File file = new File(localUrl);
                             AppLogger.d("local_url:" + file.getAbsolutePath());
                             AppLogger.d("file_length:" + getFileSize(file));
@@ -310,7 +313,6 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-//                        String localUrl = "/mnt/sdcard" + downLoadBean.savePath + downLoadBean.fileName + ".bin";
                         int ipAddress = 0;
                         WifiManager mWifi = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
                         if (mWifi.isWifiEnabled()) {
@@ -318,7 +320,8 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                             ipAddress = wifiInfo.getIpAddress();
                         }
                         String ip = intToIp(ipAddress);
-                        String localUrl = "http://"+ip+":8765"+"/mnt/sdcard"+JConstant.MISC_PATH+"/"+ downLoadBean.fileName + ".bin";
+                        String localUrl = "http://"+ip+":8765/" + downLoadBean.fileName + ".bin";
+//                        String localUrl = downLoadBean.savePath+"/"+ downLoadBean.fileName + ".bin";
                         AppLogger.d("localUrl2:" + localUrl);
                         updateTime = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(localUrl,uuid).toBytes());
                         AppLogger.d("beginUpdate:" + updateTime);
@@ -347,12 +350,11 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         JfgUdpMsg.UdpHeader header = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
                         final String headTag = header.cmd;
                         AppLogger.d("udp_cmd:" + headTag);
-                        if (updateTime == localUdpMsg.time){
-                            if (TextUtils.equals(headTag, "f_upgrade")) {
-                                getView().handlerResult(2);
-                            } else {
-                                getView().handlerResult(3);
-                            }
+                        if (TextUtils.equals(headTag, "f_upgrade")) {
+                            getView().handlerResult(2);
+                            AppLogger.d("f_upgrade:succ");
+                        } else {
+//                          getView().handlerResult(3);
                         }
                     } catch (IOException e) {
                         AppLogger.i("unpack msgpack failed:" + e.getLocalizedMessage());
@@ -371,6 +373,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         if (simulatePercent != null)
             simulatePercent.stop();
     }
+
 
     @org.msgpack.annotation.Message
     public static class UpdatePing extends JfgUdpMsg.UdpRecvHeard {
@@ -412,5 +415,52 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         return size;
     }
 
-    //http:192.1
+
+
+    @Override
+    public void myDownLoad(String url,String fileName) {
+        Observable.just(url)
+                .subscribeOn(Schedulers.newThread())
+                .map(new Func1<String, Object>() {
+                    @Override
+                    public Object call(String s) {
+                        try {
+                            String file = fileName;
+                            FileOutputStream fileOutputStream = getView().getContext().getApplicationContext().openFileOutput(file, Context.MODE_WORLD_WRITEABLE);
+                            URL url=new URL(s);
+                            HttpURLConnection conn=(HttpURLConnection)url.openConnection();
+                            InputStream input= null;
+                            input = conn.getInputStream();
+                            byte[] buffer = new byte[1024];
+                            int len = 0;
+                            while ((len = input.read(buffer)) != -1) {
+                                fileOutputStream.write(buffer,0,len);
+                                AppLogger.d("myDown:"+len);
+                            }
+                            fileOutputStream.close();
+                            input.close();
+                            AppLogger.d("myDown:下完了");
+                        } catch (IOException e) {
+                            AppLogger.d("myDown:"+e.getLocalizedMessage());
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Object>() {
+                    @Override
+                    public void call(Object o) {
+                        AppLogger.d("开始升级...");
+                        ToastUtil.showNegativeToast("开始升级了");
+                        String[] strings = getView().getContext().getApplicationContext().fileList();
+                        for (String s:strings){
+                            AppLogger.d("file_name:"+s);
+                        }
+                        startUpdate();
+                    }
+                });
+
+    }
+
 }

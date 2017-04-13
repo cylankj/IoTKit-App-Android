@@ -341,10 +341,10 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
             Collator ca = Collator.getInstance(Locale.CHINA);
             int flags = 0;
-            if (ca.compare(lhs.alias,rhs.alias) < 0) {
+            if (ca.compare(lhs.alias.toLowerCase(),rhs.alias.toLowerCase()) < 0) {
                 flags = -1;
             }
-            else if(ca.compare(lhs.alias,rhs.alias) > 0) {
+            else if(ca.compare(lhs.alias.toLowerCase(),rhs.alias.toLowerCase()) > 0) {
                 flags = 1;
             }
             else {

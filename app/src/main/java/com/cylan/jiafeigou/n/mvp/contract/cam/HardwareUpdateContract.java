@@ -59,5 +59,7 @@ public interface HardwareUpdateContract {
          */
         void endCounting();
 
+        void myDownLoad(String url,String fileName);
+
     }
 }

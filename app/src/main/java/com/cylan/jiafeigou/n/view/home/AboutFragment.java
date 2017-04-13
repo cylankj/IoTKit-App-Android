@@ -54,8 +54,6 @@ public class AboutFragment extends Fragment {
     SettingItemView0 svHotLine;
     @BindView(R.id.tv_copy_right)
     TextView tvCopyRight;
-    @BindView(R.id.sv_official_update)
-    SettingItemView0 svOfficialUpdate;
 
     private Intent intent;
     private static final String COPY_RIGHT = "Copyright @ 2005-%s Cylan.All Rights Reserved";
@@ -170,11 +168,4 @@ public class AboutFragment extends Fragment {
         startActivity(localIntent);
     }
 
-    @OnClick(R.id.sv_official_update)
-    public void onClick() {
-        // 客户端升级测试
-        ToastUtil.showPositiveToast("开始下载");
-        String url = "http://119.147.33.13/imtt.dd.qq.com/16891/AE6502757AE91F88EE91D985D5AAE5AD.apk?mkey=58e58becd16f4a84&f=5107&c=0&fsname=com.cylan.jiafeigou_2.4.9.5296_20170228.apk&csr=1bbd&p=.apk";
-        ClientUpdateManager.getInstance().startDownload(getContext().getApplicationContext(), url, "3.1.0", 1);
-    }
 }

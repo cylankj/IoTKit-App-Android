@@ -65,7 +65,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     private MineShareDeviceContract.Presenter presenter;
     private MineDevicesShareManagerFragment mineDevicesShareManagerFragment;
     private MineShareToFriendFragment shareToRelativeAndFriendFragment;
-    private MineShareToContactFragment mineShareToContactFragment;
     private AlertDialog alertDialog;
     private MineShareDeviceAdapter adapter;
     private DeviceBean whichClick;
@@ -146,7 +145,7 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
         Bundle bundle = new Bundle();
         bundle.putParcelable("deviceinfo", whichClick);
         bundle.putParcelableArrayList("sharefriend", presenter.getJFGInfo(position));
-        mineShareToContactFragment = MineShareToContactFragment.newInstance(bundle);
+        MineShareToContactFragment mineShareToContactFragment = MineShareToContactFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
