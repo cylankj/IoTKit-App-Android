@@ -92,7 +92,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
             if (getActivity() != null)
                 getActivity().getSupportFragmentManager().popBackStack();
         });
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPNotificationInfo notificationInfo = device.$(DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
         if (notificationInfo == null) notificationInfo = new DpMsgDefine.DPNotificationInfo();
         int effect = notificationInfo.notification;
@@ -109,7 +109,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
     public void onDetach() {
         super.onDetach();
         if (callBack != null) {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             DpMsgDefine.DPNotificationInfo notificationInfo = device.$(DpMsgMap.ID_504_CAMERA_ALARM_NOTIFICATION, new DpMsgDefine.DPNotificationInfo());
             callBack.callBack(notificationInfo);
         }
@@ -127,7 +127,7 @@ public class AlarmSoundEffectFragment extends IBaseFragment<CamWarnContract.Pres
 
     @OnClick({R.id.sv_mode_mute, R.id.sv_mode_bark, R.id.sv_mode_alarm, R.id.sv_warn_repeat_mode})
     public void onClick(View view) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPNotificationInfo notificationInfo = device.$(504, new DpMsgDefine.DPNotificationInfo());
         switch (view.getId()) {
             case R.id.sv_mode_mute:

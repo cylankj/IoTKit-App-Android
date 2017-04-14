@@ -451,7 +451,7 @@ public class DataSourceManager implements JFGSourceManager {
                             jfgdpMsg.packValue = data.toBytes();
                             list.add(jfgdpMsg);
                         }
-                        List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.UPDATE, uuid, getAJFGAccount().getAccount(), OptionsImpl.getServer(), list);
+                        List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
                                 .subscribeOn(Schedulers.io())
                                 .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
@@ -480,7 +480,7 @@ public class DataSourceManager implements JFGSourceManager {
                             list.add(jfgdpMsg);
                         }
                         try {
-                            List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.UPDATE, uuid, getAJFGAccount().getAccount(), OptionsImpl.getServer(), list);
+                            List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
                             BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
                                     .subscribeOn(Schedulers.io())
                                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
@@ -715,14 +715,14 @@ public class DataSourceManager implements JFGSourceManager {
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
                                 .subscribeOn(Schedulers.newThread())
                                 .subscribe(baseDPTaskResult -> {
-                                    if (getAJFGAccount() == null || !getJFGAccount().isEnablePush())
+                                    if (getAccount() == null || !getJFGAccount().isEnablePush())
                                         return;
-                                    Device dd = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                                    Device dd = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                                     String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
                                     INotify.NotifyBean bean = new INotify.NotifyBean();
-                                    bean.sound = getAJFGAccount() != null && getAJFGAccount().getEnableSound();
-                                    bean.vibrate = getAJFGAccount() != null && getJFGAccount().isEnableVibrate();
+                                    bean.sound = getAccount() != null && getAccount().getEnableSound();
+                                    bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
                                     bean.time = System.currentTimeMillis();
                                     bean.resId = R.mipmap.ic_launcher;
                                     bean.notificationId = (uuid + "cam").hashCode();
