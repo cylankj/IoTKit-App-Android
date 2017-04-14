@@ -16,7 +16,6 @@ import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.n.view.cam.HardwareUpdateFragment;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -116,7 +115,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
         editDialogFragment.setAction((id, value) -> {
             if (value != null && value instanceof String) {
                 String content = (String) value;
-                Device device = sourceManager.getJFGDevice(mUUID);
+                Device device = sourceManager.getDevice(mUUID);
                 if (!TextUtils.isEmpty(content)
                         && device != null && !TextUtils.equals(device.alias, content)) {
                     device.alias = content;
@@ -133,7 +132,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
     public void updateAlias(Device device) {
         sourceManager.updateJFGDevice(device);
         try {
-            JfgCmdInsurance.getCmd().setAliasByCid(device.uuid, device.alias);
+            appCmd.setAliasByCid(device.uuid, device.alias);
             AppLogger.d("update alias suc");
         } catch (JfgException e) {
             AppLogger.e("err: set up remote alias failed: " + new Gson().toJson(device));

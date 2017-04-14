@@ -81,7 +81,7 @@ public class NormalMediaFragment extends IBaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         int index = getArguments().getInt(KEY_INDEX);
         DpMsgDefine.DPAlarm dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         if (dpAlarm != null) {

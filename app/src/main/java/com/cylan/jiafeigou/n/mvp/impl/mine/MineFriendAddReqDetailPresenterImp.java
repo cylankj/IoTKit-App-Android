@@ -2,7 +2,7 @@ package com.cylan.jiafeigou.n.mvp.impl.mine;
 
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -64,7 +64,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                     @Override
                     public void call(String account) {
                         try {
-                            JfgCmdInsurance.getCmd().consentAddFriend(account);
+                            BaseApplication.getAppComponent().getCmd().consentAddFriend(account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -109,7 +109,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                     @Override
                     public void call(MineAddReqBean mineAddReqBean) {
                         try {
-                            JfgCmdInsurance.getCmd().addFriend(mineAddReqBean.account, "");
+                            BaseApplication.getAppComponent().getCmd().addFriend(mineAddReqBean.account, "");
                             isAddReqBack = true;
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -159,7 +159,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JfgCmdInsurance.getCmd().getFriendRequestList();
+                        BaseApplication.getAppComponent().getCmd().getFriendRequestList();
                     }
                 }, new Action1<Throwable>() {
                     @Override

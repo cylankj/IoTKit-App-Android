@@ -5,7 +5,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -33,7 +32,7 @@ public class DPSingleFindTask extends BaseDPTask<BaseDPTaskResult> {
                 ArrayList<JFGDPMsg> params = new ArrayList<>(1);
                 JFGDPMsg msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
                 params.add(msg);
-                long seq = JfgCmdInsurance.getCmd().robotGetDataByTime(entity.getUuid(), params, 0);
+                long seq = appCmd.robotGetDataByTime(entity.getUuid(), params, 0);
                 AppLogger.d("正在检查DP消息, uuid为:" + entity.getUuid() + ",msgId为:" + entity.getMsgId() + ",version 为:" + entity.getVersion() + ",seq 为:" + seq);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();

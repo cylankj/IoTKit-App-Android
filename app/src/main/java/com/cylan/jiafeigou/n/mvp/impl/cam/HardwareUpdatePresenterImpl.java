@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 import android.content.Context;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -11,10 +10,9 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.HardwareUpdateContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
@@ -27,20 +25,17 @@ import com.cylan.jiafeigou.support.download.report.listener.FailReason;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import org.msgpack.MessagePack;
 import org.msgpack.annotation.Index;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -92,7 +87,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         downLoadBean.fileName = checkDevVersion.version;
 
         downLoadBean.savePath = getView().getContext().getApplicationContext().getFilesDir().getAbsolutePath();
-        AppLogger.d("initSavePath:"+downLoadBean.savePath);
+        AppLogger.d("initSavePath:" + downLoadBean.savePath);
 /*        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             downLoadBean.savePath = getView().getContext().getFilesDir().getAbsolutePath();
         } else {
@@ -187,7 +182,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                             AppLogger.d("file name:" + headerField);
                             AppLogger.d("file_length:" + length);
                             //先从本地获取看看是否已下载
-                            String localUrl = getView().getContext().getApplicationContext().getFilesDir().getAbsolutePath() +"/"+ bean.fileName + ".bin";
+                            String localUrl = getView().getContext().getApplicationContext().getFilesDir().getAbsolutePath() + "/" + bean.fileName + ".bin";
 //                            String localUrl = bean.savePath+"/"+ bean.fileName + ".bin";
                             File file = new File(localUrl);
                             AppLogger.d("local_url:" + file.getAbsolutePath());
@@ -320,10 +315,10 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                             ipAddress = wifiInfo.getIpAddress();
                         }
                         String ip = intToIp(ipAddress);
-                        String localUrl = "http://"+ip+":8765/" + downLoadBean.fileName + ".bin";
+                        String localUrl = "http://" + ip + ":8765/" + downLoadBean.fileName + ".bin";
 //                        String localUrl = downLoadBean.savePath+"/"+ downLoadBean.fileName + ".bin";
                         AppLogger.d("localUrl2:" + localUrl);
-                        updateTime = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(localUrl,uuid).toBytes());
+                        updateTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(localUrl, uuid).toBytes());
                         AppLogger.d("beginUpdate:" + updateTime);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -332,10 +327,10 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     }
 
     private String intToIp(int i) {
-        return (i & 0xFF ) + "." +
-                ((i >> 8 ) & 0xFF) + "." +
-                ((i >> 16 ) & 0xFF) + "." +
-                ( i >> 24 & 0xFF) ;
+        return (i & 0xFF) + "." +
+                ((i >> 8) & 0xFF) + "." +
+                ((i >> 16) & 0xFF) + "." +
+                (i >> 24 & 0xFF);
     }
 
     @Override
@@ -416,9 +411,8 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     }
 
 
-
     @Override
-    public void myDownLoad(String url,String fileName) {
+    public void myDownLoad(String url, String fileName) {
         Observable.just(url)
                 .subscribeOn(Schedulers.newThread())
                 .map(new Func1<String, Object>() {
@@ -427,21 +421,21 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         try {
                             String file = fileName;
                             FileOutputStream fileOutputStream = getView().getContext().getApplicationContext().openFileOutput(file, Context.MODE_WORLD_WRITEABLE);
-                            URL url=new URL(s);
-                            HttpURLConnection conn=(HttpURLConnection)url.openConnection();
-                            InputStream input= null;
+                            URL url = new URL(s);
+                            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                            InputStream input = null;
                             input = conn.getInputStream();
                             byte[] buffer = new byte[1024];
                             int len = 0;
                             while ((len = input.read(buffer)) != -1) {
-                                fileOutputStream.write(buffer,0,len);
-                                AppLogger.d("myDown:"+len);
+                                fileOutputStream.write(buffer, 0, len);
+                                AppLogger.d("myDown:" + len);
                             }
                             fileOutputStream.close();
                             input.close();
                             AppLogger.d("myDown:下完了");
                         } catch (IOException e) {
-                            AppLogger.d("myDown:"+e.getLocalizedMessage());
+                            AppLogger.d("myDown:" + e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                         return null;
@@ -454,8 +448,8 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         AppLogger.d("开始升级...");
                         ToastUtil.showNegativeToast("开始升级了");
                         String[] strings = getView().getContext().getApplicationContext().fileList();
-                        for (String s:strings){
-                            AppLogger.d("file_name:"+s);
+                        for (String s : strings) {
+                            AppLogger.d("file_name:" + s);
                         }
                         startUpdate();
                     }

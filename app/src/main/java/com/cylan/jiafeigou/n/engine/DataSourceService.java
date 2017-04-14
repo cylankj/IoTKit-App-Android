@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.JResultEvent;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -84,7 +83,7 @@ public class DataSourceService extends Service implements AppCallBack {
 
     @Override
     public void onCreate() {
-        initNative();
+        Schedulers.io().createWorker().schedule(this::initNative);
         GlobalUdpDataSource.getInstance().register();
         GlobalBellCallSource.getInstance().register();
         GlobalResetPwdSource.getInstance().register();
@@ -105,32 +104,28 @@ public class DataSourceService extends Service implements AppCallBack {
 
 
     public void initNative() {
-
-//        HandlerThreadUtils.clean();
-        HandlerThreadUtils.postAtFrontOfQueue(() -> {
-            Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
-            try {
-                //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
-                String vid = Security.getVId();
-                String vKey = Security.getVKey();
-                JfgCmdInsurance.getCmd().setCallBack(DataSourceService.this);
-                JfgCmdInsurance.getCmd().initNativeParam(vid, vKey, OptionsImpl.getServer());
-                JfgCmdInsurance.getCmd().enableLog(true, JConstant.LOG_PATH);
+        Process.setThreadPriority(Process.THREAD_PRIORITY_FOREGROUND);
+        try {
+            //研发平台下才能使用额外配置的服务器地址.不检查服务器地址格式.
+            String vid = Security.getVId();
+            String vKey = Security.getVKey();
+//            JfgCmdInsurance.getCmd().setCallBack(DataSourceService.this);
+            BaseApplication.getAppComponent().getCmd().initNativeParam(vid, vKey, OptionsImpl.getServer());
+            BaseApplication.getAppComponent().getCmd().enableLog(true, JConstant.LOG_PATH);
 //                AppLogger.d("sdk version:" + JfgCmdInsurance.getCmd().getSdkVersion());
-                Log.d("DataSourceService", "vid:" + vid);
-                Log.d("DataSourceService", "vKey:" + vKey);
-                Log.d("DataSourceService", "server:" + OptionsImpl.getServer());
-            } catch (Exception e) {
-                AppLogger.d("let's go err:" + e.getLocalizedMessage());
-            }
-            try2autoLogin();
-            AppLogger.d("let's go initNative:");
-            try {
-                JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-            } catch (JfgException e) {
-                e.printStackTrace();
-            }
-        });
+            Log.d("DataSourceService", "vid:" + vid);
+            Log.d("DataSourceService", "vKey:" + vKey);
+            Log.d("DataSourceService", "server:" + OptionsImpl.getServer());
+        } catch (Exception e) {
+            AppLogger.d("let's go err:" + e.getLocalizedMessage());
+        }
+        try2autoLogin();
+        AppLogger.d("let's go initNative:");
+        try {
+            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+        } catch (JfgException e) {
+            e.printStackTrace();
+        }
     }
 
     private void try2autoLogin() {
@@ -185,7 +180,7 @@ public class DataSourceService extends Service implements AppCallBack {
             PreferencesUtils.putBoolean(JConstant.UPDATAE_AUTO_LOGIN, true);
             //同时自动登录保存3.0的账号密码
             try {
-                JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account2x, pwd2x);
+                BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account2x, pwd2x);
                 AutoSignIn.getInstance().autoSave(account2x, 1, pwd2x);
             } catch (JfgException e) {
                 e.printStackTrace();

@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.cache.db.view;
 
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 
@@ -31,4 +32,6 @@ public interface IDPTaskDispatcher {
     void setTaskFactory(IDPTaskFactory taskFactory);
 
     void setPropertyParser(IPropertyParser parser);
+
+    void setAppCmd(AppCmd appCmd);
 }

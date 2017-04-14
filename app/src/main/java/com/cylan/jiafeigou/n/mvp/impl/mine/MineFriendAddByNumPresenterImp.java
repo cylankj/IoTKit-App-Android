@@ -10,7 +10,7 @@ import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddByNumContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
@@ -87,7 +87,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                     @Override
                     public void call(String account) {
                         try {
-                            JfgCmdInsurance.getCmd().checkFriendAccount(account);
+                            BaseApplication.getAppComponent().getCmd().checkFriendAccount(account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -133,7 +133,7 @@ public class MineFriendAddByNumPresenterImp extends AbstractPresenter<MineFriend
                 addReqBean.alias = checkAccountCallback.s1;
                 try {
                     //头像
-                    addReqBean.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", addReqBean.account));
+                    addReqBean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", addReqBean.account));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

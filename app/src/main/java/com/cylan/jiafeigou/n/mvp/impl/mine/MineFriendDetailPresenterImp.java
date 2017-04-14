@@ -9,7 +9,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -74,7 +74,7 @@ public class MineFriendDetailPresenterImp extends AbstractPresenter<MineFriendDe
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().delFriend(account);
+                            BaseApplication.getAppComponent().getCmd().delFriend(account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

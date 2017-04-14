@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPSingleTask;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.gson.Gson;
@@ -22,8 +21,6 @@ import java.util.ArrayList;
 
 import rx.Observable;
 import rx.schedulers.Schedulers;
-
-import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 
 /**
@@ -70,7 +67,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                 JFGDPMsg msg602 = new JFGDPMsg(602, entity.getVersion());
                 msg602.packValue = entity.getBytes();
                 req.add(msg602);
-                result = JfgCmdInsurance.getCmd().robotSetDataByTime("", req);
+                result = appCmd.robotSetDataByTime("", req);
                 AppLogger.d("正在执行分享操作步骤一:设置602 DP消息" + result);
             } catch (Exception e) {
                 AppLogger.d("分享操作步骤一操作失败!!!" + e.getMessage());
@@ -95,7 +92,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                                 wonderItem.cid + //cid
                                 "/" +
                                 wonderItem.fileName;
-                        result = getCmd().putFileToCloud(remotePath, option.filePath);
+                        result = appCmd.putFileToCloud(remotePath, option.filePath);
 
                     } catch (Exception e) {
                         AppLogger.d("分享操作步骤二操作失败,错误信息为:" + e.getMessage());
@@ -125,7 +122,7 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                         JFGDPMsg msg511 = new JFGDPMsg(511, wonderItem.time);
                         msg511.packValue = DpUtils.pack(entity.getVersion());
                         req.add(msg511);
-                        result = JfgCmdInsurance.getCmd().robotSetDataByTime(entity.getUuid(), req);
+                        result = appCmd.robotSetDataByTime(entity.getUuid(), req);
                         AppLogger.d("正在执行分享操作步骤三:设置511 DP消息" + result);
                     } catch (Exception e) {
                         AppLogger.d("分享操作步骤三操作失败!!!" + e.getMessage());
@@ -149,8 +146,8 @@ public class DPSingleSharedTask extends BaseDPTask<BaseDPTaskResult> {
                         ArrayList<JFGDPMsg> p602 = new ArrayList<>(1);
                         p511.add(new JFGDPMsg(511, (long) wonderItem.time));
                         p602.add(new JFGDPMsg(602, entity.getVersion()));
-                        JfgCmdInsurance.getCmd().robotDelData(entity.getUuid(), p511, 0);
-                        JfgCmdInsurance.getCmd().robotDelData("", p602, 0);
+                        appCmd.robotDelData(entity.getUuid(), p511, 0);
+                        appCmd.robotDelData("", p602, 0);
                         dpHelper.findDPMsg(entity.getUuid(), entity.getVersion(), entity.getMsgId()).subscribe(DPEntity::delete, error -> AppLogger.d(error.getMessage()));
                         dpHelper.findDPMsg(entity.getUuid(), (long) wonderItem.time, 511).subscribe(DPEntity::delete, error -> AppLogger.d(error.getMessage()));
                     } catch (JfgException e1) {

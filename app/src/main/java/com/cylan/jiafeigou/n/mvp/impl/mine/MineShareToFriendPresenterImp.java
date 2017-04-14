@@ -1,16 +1,13 @@
 package com.cylan.jiafeigou.n.mvp.impl.mine;
 
-import com.cylan.entity.JfgEnum;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -83,7 +80,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                     public void call(ArrayList<RelAndFriendBean> list) {
                         for (RelAndFriendBean bean : list) {
                             try {
-                                JfgCmdInsurance.getCmd().shareDevice(cid, bean.account);
+                                BaseApplication.getAppComponent().getCmd().shareDevice(cid, bean.account);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
@@ -133,7 +130,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
                     @Override
                     public void call(String cid) {
                         try {
-                            JfgCmdInsurance.getCmd().getUnShareListByCid(cid);
+                            BaseApplication.getAppComponent().getCmd().getUnShareListByCid(cid);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -220,7 +217,7 @@ public class MineShareToFriendPresenterImp extends AbstractPresenter<MineShareTo
             bean.alias = friendAccount.alias;
             bean.markName = friendAccount.markName;
             try {
-                bean.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", friendAccount.account));
+                bean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", friendAccount.account));
             } catch (Exception e) {
                 e.printStackTrace();
             }

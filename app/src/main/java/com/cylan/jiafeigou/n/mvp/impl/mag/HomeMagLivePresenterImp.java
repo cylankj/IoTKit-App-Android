@@ -141,7 +141,7 @@ public class HomeMagLivePresenterImp extends AbstractPresenter<HomeMagLiveContra
      */
     @Override
     public String getDeviceName() {
-        Device jfgDevice = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device jfgDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (jfgDevice == null)
             return uuid;
         return TextUtils.isEmpty(jfgDevice.alias) ?

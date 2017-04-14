@@ -8,7 +8,6 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -44,7 +43,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     private CompositeSubscription subscription;
     private ArrayList<DeviceBean> allDevice = new ArrayList<>();
     private ArrayList<RelAndFriendBean> hasShareFriendData = new ArrayList<>();
-    private HashMap<Integer,ArrayList<RelAndFriendBean>> map = new HashMap<>();
+    private HashMap<Integer, ArrayList<RelAndFriendBean>> map = new HashMap<>();
 
     public MineShareDevicePresenterImp(MineShareDeviceContract.View view) {
         super(view);
@@ -106,11 +105,11 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                                 }
                                 handlerShareDeviceListData(allDevice);
                             } else {
-                                if(cidList.size()==0){
+                                if (cidList.size() == 0) {
                                     //都是分享设备
                                     getView().hideLoadingDialog();
                                     getView().showNoDeviceView();
-                                }else {
+                                } else {
                                     getDeviceInfo(cidList);
                                 }
                             }
@@ -126,7 +125,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     public ArrayList<RelAndFriendBean> getJFGInfo(int position) {
         hasShareFriendData.clear();
         ArrayList<RelAndFriendBean> shareSuccList = map.get(position);
-        if (shareSuccList != null && shareSuccList.size() > 0){
+        if (shareSuccList != null && shareSuccList.size() > 0) {
             hasShareFriendData.addAll(shareSuccList);
         }
         if (this.hasShareFriendList != null && this.hasShareFriendList.size() != 0) {
@@ -136,7 +135,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                 relAndFriendBean.alias = info.alias;
                 relAndFriendBean.markName = info.markName;
                 try {
-                    relAndFriendBean.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", info.account));
+                    relAndFriendBean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", info.account));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -167,7 +166,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
      */
     private ArrayList<DeviceBean> getShareDeviceList() {
         ArrayList<DeviceBean> list = new ArrayList<>();
-        List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllJFGDevice();
+        List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
         for (Device info : devices) {
             DeviceBean bean = new DeviceBean();
             bean.alias = info.alias;
@@ -209,7 +208,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
                     @Override
                     public void call(ArrayList<String> cid) {
                         if (cid != null && cid.size() != 0) {
-                            JfgCmdInsurance.getCmd().getShareList(cid);
+                            BaseApplication.getAppComponent().getCmd().getShareList(cid);
                         }
                     }
                 }, throwable -> {
@@ -283,7 +282,7 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
             }
         }
         ArrayList<RelAndFriendBean> shareSuccList = map.get(position);
-        if (shareSuccList != null && shareSuccList.size()>0){
+        if (shareSuccList != null && shareSuccList.size() > 0) {
             Iterator iterator2 = shareSuccList.iterator();
             while (iterator2.hasNext()) {
                 RelAndFriendBean friend = (RelAndFriendBean) iterator2.next();
@@ -297,19 +296,19 @@ public class MineShareDevicePresenterImp extends AbstractPresenter<MineShareDevi
     }
 
     @Override
-    public void shareSucceedAdd(int key,ArrayList<RelAndFriendBean> list) {
+    public void shareSucceedAdd(int key, ArrayList<RelAndFriendBean> list) {
         ArrayList<RelAndFriendBean> shareSuccList = map.get(key);
-        if (shareSuccList == null){
+        if (shareSuccList == null) {
             shareSuccList = new ArrayList<>();
         }
         shareSuccList.addAll(list);
-        map.put(key,shareSuccList);
+        map.put(key, shareSuccList);
     }
 
     @Override
     public void clearData() {
         if (map != null)
-        map.clear();
+            map.clear();
     }
 
 }

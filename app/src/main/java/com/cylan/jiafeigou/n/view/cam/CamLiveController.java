@@ -194,7 +194,7 @@ public class CamLiveController implements
     public void setPortSafeSetter(ISafeStateSetter setter) {
         this.iSafeStateSetterPort = setter;
         iSafeStateSetterPort.setFlipListener(this);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean safe = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         iSafeStateSetterPort.setFlipped(!safe);
         Log.d(TAG, "setFlip: " + safe + " " + uuid);
@@ -278,7 +278,7 @@ public class CamLiveController implements
     public void notifyOrientationChange(final int orientation) {
         boolean land = orientation == Configuration.ORIENTATION_LANDSCAPE;
         boolean isShareDevice = presenterRef != null && presenterRef.get() != null && presenterRef.get().isShareDevice();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPSdStatus sd = device.$(204, new DpMsgDefine.DPSdStatus());
         boolean sdCardStatus = sd.hasSdcard && sd.err == 0;
         boolean safe = device.$(501, false);
@@ -344,7 +344,7 @@ public class CamLiveController implements
                 AppLogger.i("没有历史视频数据,或者没准备好");
                 return;
             }
-            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
             boolean deviceState = JFGRules.isDeviceOnline(net);
             //播放状态
@@ -529,7 +529,7 @@ public class CamLiveController implements
             AppLogger.d("no net work");
             return;
         }
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         if (net != null &&
                 net.net == 0) {
@@ -640,7 +640,7 @@ public class CamLiveController implements
     public void onClick(FlipImageView view) {
         boolean land = view.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         AppLogger.i("land: " + land + " " + (!view.isFlipped()));
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean aFlag = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
 //        int aVideo = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         if (aFlag) {//已开启自动录像和移动侦测

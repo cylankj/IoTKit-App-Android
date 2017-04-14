@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseFragment;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamDelayRecordContract;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -299,7 +298,7 @@ public class DelayRecordMainFragment extends BaseFragment<CamDelayRecordContract
         SurfaceView surfaceView = presenter.getViewerInstance();
         mVideoViewContainer.removeAllViews();
         mVideoViewContainer.addView(surfaceView);
-        JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, surfaceView);
+        appCmd.enableRenderSingleRemoteView(true, surfaceView);
         mRecordStatus = -2;
         refreshLayout();
     }

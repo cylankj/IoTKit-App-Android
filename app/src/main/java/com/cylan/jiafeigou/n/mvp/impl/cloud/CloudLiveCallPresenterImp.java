@@ -6,7 +6,7 @@ import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveCallContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -99,11 +99,11 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
         }
         try {
             if (uuid != null) {
-                int ret = JfgCmdInsurance.getCmd().stopPlay(uuid);
+                int ret = BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
                 AppLogger.e("disconnect ret: " + ret);
             }
             isConnectOk = false;
-            JfgCmdInsurance.getCmd().playVideo(uuid);
+            BaseApplication.getAppComponent().getCmd().playVideo(uuid);
         } catch (JfgException e) {
             e.printStackTrace();
         }
@@ -193,9 +193,9 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
                 .subscribe((String s) -> {
                     try {
                         AppLogger.i("stopPlayVideo:" + s);
-                        JfgCmdInsurance.getCmd().stopPlay(s);
+                        BaseApplication.getAppComponent().getCmd().stopPlay(s);
 //                        JfgCmdInsurance.getCmd().enableCamera(false, false);
-                        JfgCmdInsurance.getCmd().enableRenderLocalView(false, null);
+                        BaseApplication.getAppComponent().getCmd().enableRenderLocalView(false, null);
 //                        JfgCmdInsurance.getCmd().enableRenderRemoteView(false, null);
                     } catch (JfgException e) {
                         e.printStackTrace();

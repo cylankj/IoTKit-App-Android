@@ -134,7 +134,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
-                Device device = sourceManager.getJFGDevice(mUUID);
+                Device device = sourceManager.getDevice(mUUID);
                 String name = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.SURE_DELETE_1, name))
@@ -161,7 +161,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
 
     private void handleJumpToConfig() {
         String uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
-        Device device = sourceManager.getJFGDevice(uuid);
+        Device device = sourceManager.getDevice(uuid);
         if (device == null) {
             getActivity().finish();
             return;
@@ -205,7 +205,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
         }
 //        svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(device.$(DpMsgMap.ID_201_NET, null)));
 
-        DpMsgDefine.DPNet net = sourceManager.getJFGDevice(mUUID).$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
+        DpMsgDefine.DPNet net = sourceManager.getDevice(mUUID).$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         if (net != null) svSettingDeviceWifi.setTvSubTitle(DpMsgDefine.DPNet.getNormalString(net));
         tvSettingClear.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);
         mNetWorkContainer.setVisibility(TextUtils.isEmpty(device.shareAccount) ? View.VISIBLE : View.GONE);

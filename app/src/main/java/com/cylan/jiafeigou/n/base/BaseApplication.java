@@ -21,19 +21,11 @@ import com.cylan.jiafeigou.DaemonService2;
 import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.OptionsImpl;
-import com.cylan.jiafeigou.support.block.impl.BlockCanary;
-import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.stat.BugMonitor;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.HandlerThreadUtils;
-import com.cylan.jiafeigou.utils.PathGetter;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
@@ -42,11 +34,9 @@ import com.huawei.hms.api.HuaweiApiClient;
 import com.huawei.hms.support.api.push.HuaweiPush;
 import com.marswin89.marsdaemon.DaemonClient;
 import com.marswin89.marsdaemon.DaemonConfigurations;
-import com.squareup.leakcanary.LeakCanary;
-
-import javax.inject.Inject;
 
 import permissions.dispatcher.PermissionUtils;
+import rx.schedulers.Schedulers;
 
 /**
  * Created by hunt on 16-5-14.
@@ -59,8 +49,11 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private HuaweiApiClient client;
 
     private static AppComponent appComponent;
-    @Inject
-    protected HttpProxyCacheServer proxy;
+
+
+    static {
+        System.loadLibrary("jfgsdk");
+    }
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -125,32 +118,22 @@ public class BaseApplication extends MultiDexApplication implements Application.
         super.onCreate();
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
+            //Dagger2 依赖注入
+            appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
+            Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
             PerformanceUtils.startTrace("appStart");
             PerformanceUtils.startTrace("appStart0");
-            //Dagger2 依赖注入
             PreferencesUtils.init(getApplicationContext());
-            enableDebugOptions();
             //每一个新的进程启动时，都会调用onCreate方法。
             try2init();
-            initBugMonitor();
-        PerformanceUtils.startTrace("appStart");
-        PerformanceUtils.startTrace("appStart0");
-        //Dagger2 依赖注入,初始化全局资源
-        appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-        appComponent.initBaseModule();
-        appComponent.getSourceManager().initSubscription();
+            PerformanceUtils.startTrace("appStart");
+            PerformanceUtils.startTrace("appStart0");
+            //Dagger2 依赖注入,初始化全局资源
 
-        long time = System.currentTimeMillis();
-        PreferencesUtils.init(getApplicationContext());
-        enableDebugOptions();
-        //每一个新的进程启动时，都会调用onCreate方法。
-        try2init();
-        initBugMonitor();
-//        initLeakCanary();
             registerBootComplete();
             registerActivityLifecycleCallbacks(this);
             initHuaweiPushSDK();
-            startService(new Intent(this, DataSourceService.class));
+//            startService(new Intent(this, DataSourceService.class));
             PerformanceUtils.stopTrace("appStart");
         }
     }
@@ -161,13 +144,11 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public void try2init() {
         if (PermissionUtils.hasSelfPermissions(getApplicationContext(), Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
-            initBlockCanary();
         } else {
             RxBus.getCacheInstance().postSticky(new RxEvent.ShouldCheckPermission());
             Log.d("try2init", "try2init failed");
         }
     }
-
 
     private void initHuaweiPushSDK() {
         AppLogger.d("正在初始化华为推送SDK");
@@ -177,33 +158,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
                 .addOnConnectionFailedListener(this)
                 .build();
         client.connect();
-    }
-
-
-    private void initLeakCanary() {
-        HandlerThreadUtils.post(new Runnable() {
-            @Override
-            public void run() {
-                LeakCanary.install(BaseApplication.this);
-            }
-        });
-    }
-
-    private void initBlockCanary() {
-        HandlerThreadUtils.post(new Runnable() {
-            @Override
-            public void run() {
-                AppLogger.d("initBlockCanary");
-                //BlockCanary
-                BlockCanary.install(ContextUtils.getContext(), new BlockCanaryContext()).start();
-            }
-        });
-    }
-
-    private void initBugMonitor() {
-        HandlerThreadUtils.post(() ->
-                //bugLy
-                BugMonitor.init(ContextUtils.getContext()));
     }
 
     /**
@@ -220,14 +174,11 @@ public class BaseApplication extends MultiDexApplication implements Application.
         }
     }
 
-    private void enableDebugOptions() {
-        OptionsImpl.enableCrashHandler(this, PathGetter.createPath(JConstant.CRASH_PATH));
-    }
-
     @Override
     public void onTerminate() {
         super.onTerminate();
         AppLogger.d("进程已被销毁!!!!");
+        appComponent.getInitializationManager().clean();
         if (client != null && client.isConnected()) {
             client.disconnect();
         }
@@ -295,13 +246,12 @@ public class BaseApplication extends MultiDexApplication implements Application.
         public void onReceive(Context context, Intent intent) {
             if (!ProcessUtils.isServiceRunning(context, DataSourceService.class)) {
                 AppLogger.i("initSubscription DataSourceService");
-//                context.startService(new Intent(context, DataSourceService.class));
             }
         }
     }
 
-    public HttpProxyCacheServer getProxy() {
-        return proxy;
+    public static HttpProxyCacheServer getProxy() {
+        return appComponent.getHttpProxyCacheServer();
     }
 
     public static AppComponent getAppComponent() {

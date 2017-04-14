@@ -144,7 +144,7 @@ public class Pan720FullFragment extends BaseFragment<Pan720FullContract.Presente
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
             return;
         }
-        Device device = sourceManager.getJFGDevice(mUUID);
+        Device device = sourceManager.getDevice(mUUID);
         String mac = device.$(DpMsgMap.ID_202_MAC, "");
         if (!TextUtils.equals(mac, NetUtils.getRouterMacAddress((Application) ContextUtils.getContext()))) {
             ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));

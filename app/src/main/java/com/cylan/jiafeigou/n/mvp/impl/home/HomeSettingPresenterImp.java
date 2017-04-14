@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
 import android.content.Context;
-import android.content.pm.ResolveInfo;
 import android.os.Environment;
 import android.text.TextUtils;
 import android.util.Log;
@@ -9,7 +8,7 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeSettingContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -19,7 +18,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.io.File;
 import java.text.DecimalFormat;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -105,7 +103,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
 
     @Override
     public void calculateCacheSize() {
-        if (getView() != null){
+        if (getView() != null) {
             getView().showLoadCacheSizeProgress();
         }
         rx.Observable.just(null)
@@ -179,7 +177,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 userInfo.resetFlag();
                 userInfo.setEnablePush(aBoolean);
                 try {
-                    JfgCmdInsurance.getCmd().setAccount(userInfo);
+                    BaseApplication.getAppComponent().getCmd().setAccount(userInfo);
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }
@@ -189,7 +187,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 userInfo.resetFlag();
                 userInfo.setEnableSound(aBoolean);
                 try {
-                    JfgCmdInsurance.getCmd().setAccount(userInfo);
+                    BaseApplication.getAppComponent().getCmd().setAccount(userInfo);
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }
@@ -199,7 +197,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 userInfo.resetFlag();
                 userInfo.setEnableVibrate(aBoolean);
                 try {
-                    JfgCmdInsurance.getCmd().setAccount(userInfo);
+                    BaseApplication.getAppComponent().getCmd().setAccount(userInfo);
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }

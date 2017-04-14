@@ -39,7 +39,6 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.n.view.media.NormalMediaFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -132,7 +131,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                         | WindowManager.LayoutParams.FLAG_DISMISS_KEYGUARD
                         | WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         registSreenStatusReceiver();
-        Device device = sourceManager.getJFGDevice(uuid);
+        Device device = sourceManager.getDevice(uuid);
         if (device != null) {
             mLiveTitle = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
         }
@@ -392,7 +391,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
         initVideoView();
-        JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, mSurfaceView);
+        appCmd.enableRenderSingleRemoteView(true, mSurfaceView);
         mBellLiveVideoPicture.setVisibility(View.GONE);
         mVideoPlayController.setState(ILiveControl.STATE_IDLE, null);
         imgvBellLiveCapture.setEnabled(true);
@@ -552,7 +551,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 //        dismissAlert();
         mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
 //        INotify.NotifyBean notify = new INotify.NotifyBean();
-//        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+//        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
 //        int count = 0;
 //        if (device != null) {
 //            DPEntity entity = MiscUtils.getMaxVersionEntity(device.getProperty(1004), device.getProperty(1005));

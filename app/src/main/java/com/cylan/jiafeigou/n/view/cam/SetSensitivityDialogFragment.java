@@ -79,7 +79,7 @@ public class SetSensitivityDialogFragment extends BaseDialog {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         getDialog().setCanceledOnTouchOutside(false);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         final int count = rgSensitivity.getChildCount();
         int defaultLevel = device.$(ID_503_CAMERA_ALARM_SENSITIVITY, 1);
         for (int i = 0; i < count; i++) {

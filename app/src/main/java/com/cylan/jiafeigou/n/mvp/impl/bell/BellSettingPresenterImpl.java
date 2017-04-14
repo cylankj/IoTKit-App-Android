@@ -32,7 +32,7 @@ public class BellSettingPresenterImpl extends BasePresenter<BellSettingContract.
     @Override
     public void onStart() {
         super.onStart();
-        Device device = sourceManager.getJFGDevice(mUUID);
+        Device device = sourceManager.getDevice(mUUID);
         if (device != null) {
             mView.onShowProperty(device);
         }

@@ -9,7 +9,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -18,8 +18,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
-
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -73,7 +71,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().addFriend(account, mesg);
+                            BaseApplication.getAppComponent().getCmd().addFriend(account, mesg);
                             isSendReq = true;
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -131,7 +129,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                            BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

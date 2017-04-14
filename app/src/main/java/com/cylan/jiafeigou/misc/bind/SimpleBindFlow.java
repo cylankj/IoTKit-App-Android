@@ -7,7 +7,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.OptionsImpl;
@@ -89,10 +88,10 @@ public class SimpleBindFlow extends AFullBind {
                 .subscribeOn(Schedulers.newThread())
                 .subscribe((Integer integer) -> {
                     try {
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                 UdpConstant.PORT,
                                 new JfgUdpMsg.Ping().toBytes());
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                 UdpConstant.PORT,
                                 new JfgUdpMsg.FPing().toBytes());
                     } catch (JfgException e) {
@@ -158,16 +157,16 @@ public class SimpleBindFlow extends AFullBind {
             JfgUdpMsg.FBindDeviceCode code = new JfgUdpMsg.FBindDeviceCode(
                     udpDevicePortrait.uuid, udpDevicePortrait.mac, bindCode);
             try {
-                JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes());
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, code.toBytes());
             } catch (JfgException e) {
                 AppLogger.e("e: " + e.getLocalizedMessage());
             }
             try {
-                JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                         UdpConstant.PORT,
                         setServer.toBytes());
                 //
-                JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                         UdpConstant.PORT,
                         setLanguage.toBytes());
             } catch (JfgException e) {
@@ -239,7 +238,7 @@ public class SimpleBindFlow extends AFullBind {
                     setWifi.security = type;
                     //发送wifi配置
                     try {
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                 UdpConstant.PORT,
                                 setWifi.toBytes());
                         AppLogger.d(TAG + new Gson().toJson(setWifi));
@@ -302,10 +301,10 @@ public class SimpleBindFlow extends AFullBind {
                     setWifi.security = type;
                     //发送wifi配置
                     try {
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                 UdpConstant.PORT,
                                 setWifi.toBytes());
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+                        BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                                 UdpConstant.PORT,
                                 setWifi.toBytes());
                         AppLogger.d(TAG + new Gson().toJson(setWifi));

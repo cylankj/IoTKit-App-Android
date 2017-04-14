@@ -92,7 +92,7 @@ public class PanoramicViewFragment extends IBaseFragment {
         lp.height = screenWidth;
         mPanoramicContainer.setLayoutParams(lp);
         this.uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        this.device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        this.device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         dpAlarm = getArguments().getParcelable(KEY_SHARED_ELEMENT_LIST);
         if (getUserVisibleHint()) {//当前页面才显示
             loadBitmap(getArguments().getInt("key_index", 0));

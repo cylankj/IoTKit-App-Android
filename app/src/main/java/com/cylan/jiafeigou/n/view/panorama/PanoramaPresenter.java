@@ -11,7 +11,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -52,7 +51,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
     @Override
     public void onStart() {
         super.onStart();
-        Device device = sourceManager.getJFGDevice(mUUID);
+        Device device = sourceManager.getDevice(mUUID);
         if (device != null) {
             mView.onShowProperty(device);
         }
@@ -112,8 +111,8 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
                             socketHandler = JFGSocket.InitSocket(this);
                         }
                         AppLogger.d("正在发送 FPing 消息");
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
-                        JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                        appCmd.sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
+                        appCmd.sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
                     } catch (JfgException e) {
                         e.printStackTrace();
                         AppLogger.d("连接 socket 出现错误");
@@ -188,7 +187,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void makePhotograph() {
-        Subscription subscribe = checkSDCard(sourceManager.getJFGDevice(mUUID))
+        Subscription subscribe = checkSDCard(sourceManager.getDevice(mUUID))
                 .observeOn(Schedulers.io())
                 .map(dev -> fillRawMsg(new PanoramaEvent.RawReqMsg(), MIDRobotForwardDataV2, TYPE_TAKE_PICTURE_REQ, pack(new PanoramaEvent.MSG_TYPE_TAKE_PICTURE_REQ())))
                 .flatMap(this::sendAndReceiveRawMsg)
@@ -252,7 +251,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startMakeLongVideo() {
-        Subscription subscribe = checkSDCard(sourceManager.getJFGDevice(mUUID))
+        Subscription subscribe = checkSDCard(sourceManager.getDevice(mUUID))
                 .observeOn(Schedulers.io())
                 .flatMap(this::checkBattery)
                 .observeOn(Schedulers.io())
@@ -355,7 +354,7 @@ public class PanoramaPresenter extends BaseViewablePresenter<PanoramaCameraConta
 
     @Override
     public void startMakeShortVideo() {
-        Subscription subscribe = checkSDCard(sourceManager.getJFGDevice(mUUID))
+        Subscription subscribe = checkSDCard(sourceManager.getDevice(mUUID))
                 .observeOn(Schedulers.io())
                 .flatMap(ret -> startMakeVideo(1))
                 .observeOn(AndroidSchedulers.mainThread())

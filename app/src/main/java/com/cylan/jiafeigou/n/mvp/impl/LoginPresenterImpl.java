@@ -10,7 +10,7 @@ import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.login.LoginContract;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -62,9 +62,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     Log.d("CYLAN_TAG", "map executeLogin next");
                     try {
                         if (o.loginType) {
-                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd, o.openLoginType);
+                            BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd, o.openLoginType);
                         } else {
-                            JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
+                            BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
                             //账号和密码
                         }
                         PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
@@ -203,7 +203,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    JfgCmdInsurance.getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
+                    try {
+                        BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
                     AppLogger.d("phone:" + phone);
                 }, throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
     }
@@ -214,7 +218,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
                     try {
-                        JfgCmdInsurance.getCmd().verifySMS(phone, code, token);
+                        BaseApplication.getAppComponent().getCmd().verifySMS(phone, code, token);
                         isRegSms = true;
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -232,7 +236,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     public void call(String s) {
                         try {
                             isReg = true;
-                            JfgCmdInsurance.getCmd().checkAccountRegState(s);
+                            BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
                             AppLogger.d("checkAccountIsReg: " + s);
                         } catch (JfgException e) {
                             e.printStackTrace();

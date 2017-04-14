@@ -6,8 +6,8 @@ import android.content.Intent;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -67,7 +67,7 @@ public class AfterLoginService extends IntentService {
             AppLogger.i("AfterLoginService: " + action);
             if (TextUtils.equals(action, ACTION_SAVE_ACCOUNT)) {
             } else if (TextUtils.equals(action, ACTION_GET_ACCOUNT)) {
-                JfgCmdInsurance.getCmd().getAccount();
+                BaseApplication.getAppComponent().getCmd().getAccount();
             } else if (TextUtils.equals(action, ACTION_SYN_OFFLINE_REQ)) {
                 Observable.just("go and do something")
                         .subscribeOn(Schedulers.newThread())
@@ -76,7 +76,7 @@ public class AfterLoginService extends IntentService {
                                 String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
                                 UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
                                 if (portrait != null)
-                                    JfgCmdInsurance.getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                                    BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
                             } catch (Exception e) {
                                 AppLogger.d("err: " + e.getLocalizedMessage());
                             }

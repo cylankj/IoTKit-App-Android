@@ -28,7 +28,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cloud.CloudLiveCallContract;
 import com.cylan.jiafeigou.n.mvp.impl.cloud.CloudLiveCallPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.CloudLiveBaseBean;
@@ -386,9 +386,8 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
                         1);
             }
         } else {
-//            JfgCmdInsurance.getCmd().enableCamera(true,true);
-            JfgCmdInsurance.getCmd().enableRenderLocalView(true, mLocalSurfaceView);
-            JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, mRenderSurfaceView);
+            BaseApplication.getAppComponent().getCmd().enableRenderLocalView(true, mLocalSurfaceView);
+            BaseApplication.getAppComponent().getCmd().enableRenderSingleRemoteView(true, mRenderSurfaceView);
             hideLoadingView();
         }
     }
@@ -397,9 +396,8 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (requestCode == 1) {
             try {
-//                JfgCmdInsurance.getCmd().enableCamera(true,true);
-                JfgCmdInsurance.getCmd().enableRenderLocalView(true, mLocalSurfaceView);
-                JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, mRenderSurfaceView);
+                BaseApplication.getAppComponent().getCmd().enableRenderLocalView(true, mLocalSurfaceView);
+                BaseApplication.getAppComponent().getCmd().enableRenderSingleRemoteView(true, mRenderSurfaceView);
                 hideLoadingView();
             } catch (JfgException e) {
                 e.printStackTrace();

@@ -13,7 +13,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellLiveContract;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
@@ -37,7 +37,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
 
     @Override
     public void capture() {
-        JfgCmdInsurance.getCmd().screenshot(false, new CallBack<Bitmap>() {
+        BaseApplication.getAppComponent().getCmd().screenshot(false, new CallBack<Bitmap>() {
             @Override
             public void onSucceed(Bitmap bitmap) {
                 String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
@@ -47,7 +47,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                     DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                     item.cid = mUUID;
-                    Device device = sourceManager.getJFGDevice(mUUID);
+                    Device device = sourceManager.getDevice(mUUID);
                     item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
                     long time = System.currentTimeMillis();
                     item.fileName = time / 1000 + ".jpg";
@@ -56,7 +56,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                             .setUuid(mUUID)
                             .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                             .setVersion(System.currentTimeMillis())
-                            .setAccount(sourceManager.getAJFGAccount().getAccount())
+                            .setAccount(sourceManager.getAccount().getAccount())
                             .setAction(DBAction.SHARED)
                             .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
                             .setBytes(item.toBytes());

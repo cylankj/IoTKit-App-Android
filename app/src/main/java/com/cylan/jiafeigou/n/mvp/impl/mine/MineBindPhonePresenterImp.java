@@ -15,7 +15,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineBindPhoneContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -79,7 +79,11 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .subscribe(new Action1<String>() {
                     @Override
                     public void call(String s) {
-                        JfgCmdInsurance.getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
+                        try {
+                            BaseApplication.getAppComponent().getCmd().sendCheckCode(phone, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_REGISTER);
+                        } catch (JfgException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -100,7 +104,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                            BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -131,7 +135,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             }
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -147,7 +151,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                         try {
                             account.resetFlag();
                             account.setPhone(newPhone, token);
-                            int req = JfgCmdInsurance.getCmd().setAccount(account);
+                            int req = BaseApplication.getAppComponent().getCmd().setAccount(account);
                             sendReq = true;
                             AppLogger.d("sendChangePhoneReq:" + req + ":" + newPhone + ":" + token);
                         } catch (JfgException e) {
@@ -185,7 +189,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             }
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -204,7 +208,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             jfgAccount = getUserInfo.jfgAccount;
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -225,7 +229,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             }
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -241,7 +245,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                     @Override
                     public void call(String code) {
                         try {
-                            JfgCmdInsurance.getCmd().verifySMS(phone, inputCode, code);
+                            BaseApplication.getAppComponent().getCmd().verifySMS(phone, inputCode, code);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -312,7 +316,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(thirdLoginTab -> {
                     isOpenLogin = thirdLoginTab.isThird;
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -329,14 +333,14 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     public Subscription changeAccountBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.RessetAccountBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(rsp->{
-                    if (rsp != null){
+                .subscribe(rsp -> {
+                    if (rsp != null) {
                         if (sendReq) {
                             getView().handlerResetPhoneResult(rsp.jfgResult.code);
                             sendReq = false;
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -370,6 +374,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 }

@@ -82,7 +82,7 @@ public class TimePickDialogFragment extends BaseDialog<Integer> {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         String title = getArguments().getString(KEY_TITLE);
         tvDialogTitle.setText(title);
         DpMsgDefine.DPAlarmInfo alarmInfo = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());

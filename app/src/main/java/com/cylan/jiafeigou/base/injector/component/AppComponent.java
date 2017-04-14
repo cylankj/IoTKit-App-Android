@@ -2,16 +2,18 @@ package com.cylan.jiafeigou.base.injector.component;
 
 import android.content.Context;
 
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
 import com.cylan.jiafeigou.base.injector.module.CommonModule;
-import com.cylan.jiafeigou.base.module.BaseModuleInjector;
+import com.cylan.jiafeigou.base.module.BaseInitializationManager;
 import com.cylan.jiafeigou.base.module.BasePresenterInjector;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
+import com.danikula.videocache.HttpProxyCacheServer;
 
 import javax.inject.Singleton;
 
@@ -39,5 +41,11 @@ public interface AppComponent {
 
     BasePresenterInjector getBasePresenterInjector();
 
-    BaseModuleInjector initBaseModule();
+    BaseInitializationManager getInitializationManager();
+
+    AppCmd getCmd();
+
+    HttpProxyCacheServer getHttpProxyCacheServer();
+
+
 }

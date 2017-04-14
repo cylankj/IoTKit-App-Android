@@ -49,12 +49,12 @@ public class Moderator {
 
     public void start(Task task, DownloadManagerListenerModerator listener) {
         downloadManagerListener = listener;
-        // getJFGDevice task chunk info
+        // getDevice task chunk info
         // set task state to Downloading
         // get any chunk file size calculate where it has to begin
         // initSubscription any of them as AsyncTask
 
-        // getJFGDevice task chunk info
+        // getDevice task chunk info
         List<Chunk> taskChunks = chunksDataSource.chunksRelatedTask(task.id);
         ReportStructure rps = new ReportStructure();
         rps.setObjectValues(task, taskChunks);

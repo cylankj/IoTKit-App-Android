@@ -46,7 +46,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     private void notifyBellLowBattery() {
         if (isFirst) {
             isFirst = false;
-            Account account = sourceManager.getAJFGAccount();
+            Account account = sourceManager.getAccount();
             if (account != null) {
                 long lastTime = PreferencesUtils.getLong(account.getAccount() + ":" + mUUID + ":" + JConstant.LAST_ENTER_TIME, System.currentTimeMillis());
                 DpMsgDefine.DPPrimary<Integer> battery = sourceManager.getValue(mUUID, DpMsgMap.ID_206_BATTERY, null);
@@ -64,7 +64,7 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     @Override
     public void onStart() {
         super.onStart();
-        Device device = sourceManager.getJFGDevice(mUUID);
+        Device device = sourceManager.getDevice(mUUID);
         if (device == null) {
             mView.onDeviceUnBind();
         } else {

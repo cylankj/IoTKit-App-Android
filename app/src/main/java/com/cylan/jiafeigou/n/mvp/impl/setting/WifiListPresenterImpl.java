@@ -10,7 +10,6 @@ import android.text.TextUtils;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -106,10 +105,10 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
         setWifi.security = security;
         //发送wifi配置
         try {
-            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                     UdpConstant.PORT,
                     setWifi.toBytes());
-            JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,
+            BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,
                     UdpConstant.PORT,
                     setWifi.toBytes());
             AppLogger.i(TAG + new Gson().toJson(setWifi));
@@ -122,7 +121,7 @@ public class WifiListPresenterImpl extends AbstractPresenter<WifiListContract.Vi
      * 每次fping都是为了得到最新的mac
      */
     private String getLatestMac() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         String m = device.$(202, "");
         if (JConstant.MAC_REG.matcher(m).find()) {
             AppLogger.i("get mac from local: " + m);

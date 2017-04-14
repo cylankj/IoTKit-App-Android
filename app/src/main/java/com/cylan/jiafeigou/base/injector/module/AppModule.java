@@ -19,7 +19,7 @@ import dagger.Provides;
  */
 @Module
 public class AppModule {
-    private BaseApplication application;
+    private static BaseApplication application;
 
     public AppModule(BaseApplication application) {
         this.application = application;
@@ -27,19 +27,20 @@ public class AppModule {
 
     @Provides
     @Singleton
-    public HttpProxyCacheServer provideHttpProxyCacheServer(@ContextLife Context context) {
+    public static HttpProxyCacheServer provideHttpProxyCacheServer(@ContextLife Context context) {
         return new HttpProxyCacheServer.Builder(context).maxCacheSize(Long.MAX_VALUE).maxCacheFilesCount(Integer.MAX_VALUE).build();
     }
 
     @Provides
     @ContextLife
     @Singleton
-    public Context provideAppContext() {
+    public static Context provideAppContext() {
         return application;
     }
 
     @Provides
-    public JFGPresenter provideDefaultPresenter(BasePresenterInjector injector) {
-        return injector.inject(new BasePresenter() {});
+    public static JFGPresenter provideDefaultPresenter(BasePresenterInjector injector) {
+        return injector.inject(new BasePresenter() {
+        });
     }
 }

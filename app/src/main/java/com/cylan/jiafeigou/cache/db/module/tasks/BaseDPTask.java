@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
@@ -29,6 +30,7 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     protected IDBHelper dpHelper;
     protected JFGSourceManager sourceManager;
     protected IPropertyParser propertyParser;
+    protected AppCmd appCmd;
     protected static Gson parser = new Gson();
     public static final long GLOBAL_NET_OPERATION_TIME_OUT = 30;
 
@@ -46,10 +48,23 @@ public abstract class BaseDPTask<T extends IDPTaskResult> implements IDPSingleTa
     }
 
     @Override
-    public void inject(IDBHelper helper, JFGSourceManager sourceManager, IPropertyParser propertyParser) {
+    public void setDBHelper(IDBHelper helper) {
         this.dpHelper = helper;
+    }
+
+    @Override
+    public void setSourceManager(JFGSourceManager sourceManager) {
         this.sourceManager = sourceManager;
+    }
+
+    @Override
+    public void setPropertyParser(IPropertyParser propertyParser) {
         this.propertyParser = propertyParser;
+    }
+
+    @Override
+    public void setAppCmd(AppCmd appCmd) {
+        this.appCmd = appCmd;
     }
 
     //以 make 开头的是和 DP 打交道的,因此是有网操作

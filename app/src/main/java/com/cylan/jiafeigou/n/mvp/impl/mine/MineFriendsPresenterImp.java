@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsContract;
@@ -93,7 +92,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.account = jfgFriendRequest.account;
             emMessage.time = jfgFriendRequest.time;
             try {
-                emMessage.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", jfgFriendRequest.account));
+                emMessage.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", jfgFriendRequest.account));
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -113,7 +112,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
             emMessage.account = account.account;
             emMessage.alias = account.alias;
             try {
-                emMessage.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", account.account));
+                emMessage.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", account.account));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -239,7 +238,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JfgCmdInsurance.getCmd().getFriendRequestList();
+                        BaseApplication.getAppComponent().getCmd().getFriendRequestList();
                     }
                 }, throwable -> {
                     AppLogger.e("getAddRequest: " + throwable.getLocalizedMessage());
@@ -261,7 +260,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                         if (NetUtils.getNetType(getView().getContext()) == -1) {
                             return getAllFromDb();
                         } else {
-                            JfgCmdInsurance.getCmd().getFriendList();
+                            BaseApplication.getAppComponent().getCmd().getFriendList();
                             return null;
                         }
                     }
@@ -291,7 +290,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     @Override
                     public void call(Object o) {
                         try {
-                            JfgCmdInsurance.getCmd().addFriend(account, "");
+                            BaseApplication.getAppComponent().getCmd().addFriend(account, "");
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -312,7 +311,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     @Override
                     public void call(String account) {
                         try {
-                            JfgCmdInsurance.getCmd().consentAddFriend(account);
+                            BaseApplication.getAppComponent().getCmd().consentAddFriend(account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -395,7 +394,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().delAddFriendMsg(account);
+                            BaseApplication.getAppComponent().getCmd().delAddFriendMsg(account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

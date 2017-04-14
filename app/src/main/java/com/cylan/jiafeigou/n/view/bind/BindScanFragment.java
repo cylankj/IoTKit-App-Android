@@ -220,7 +220,7 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
         }
         zxVScan.stopCamera();
         try {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(sn);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(sn);
             if (device != null) {
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_AddedDeviceTips));
                 HandlerThreadUtils.postDelay(() -> {

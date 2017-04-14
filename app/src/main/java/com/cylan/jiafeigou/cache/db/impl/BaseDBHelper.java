@@ -102,9 +102,9 @@ public class BaseDBHelper implements IDBHelper {
         return getActiveAccount().map(account -> {
             Set<DPEntity> result = new HashSet<>();
             DPEntity dpEntity = null;
-            Device device = sourceManager.getJFGDevice(uuid);
+            Device device = sourceManager.getDevice(uuid);
             for (JFGDPMsg msg : msgs) {
-                if (device != null) {
+                if (device != null && device.available()) {
                     dpEntity = device.getProperty((int) msg.id);
                 }
                 if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
@@ -116,10 +116,12 @@ public class BaseDBHelper implements IDBHelper {
                 if (dpEntity == null) {
                     dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                 }
-                DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
-                dpEntity.setValue(dataPoint, msg.packValue, msg.version);
-                if (device != null) {
-                    device.updateProperty((int) msg.id, dpEntity);
+                if (propertyParser.isProperty((int) msg.id)) {
+                    DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                    dpEntity.setValue(dataPoint, msg.packValue, msg.version);
+                    if (device != null && device.available()) {
+                        device.updateProperty((int) msg.id, dpEntity);
+                    }
                 }
                 result.add(dpEntity);
             }
@@ -135,10 +137,10 @@ public class BaseDBHelper implements IDBHelper {
             if (dataRsp.map == null) return null;
             Set<DPEntity> result = new HashSet<>();
             DPEntity dpEntity = null;
-            Device device = sourceManager.getJFGDevice(dataRsp.identity);
+            Device device = sourceManager.getDevice(dataRsp.identity);
             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : dataRsp.map.entrySet()) {
                 for (JFGDPMsg msg : entry.getValue()) {
-                    if (device != null) {
+                    if (device != null && device.available()) {
                         dpEntity = device.getProperty((int) msg.id);
                     }
                     if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
@@ -150,10 +152,12 @@ public class BaseDBHelper implements IDBHelper {
                     if (dpEntity == null) {
                         dpEntity = new DPEntity(null, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                     }
-                    DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
-                    dpEntity.setValue(dataPoint, msg.packValue, msg.version);
-                    if (device != null) {
-                        device.updateProperty((int) msg.id, dpEntity);
+                    if (propertyParser.isProperty((int) msg.id)) {
+                        DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
+                        dpEntity.setValue(dataPoint, msg.packValue, msg.version);
+                        if (device != null && device.available()) {
+                            device.updateProperty((int) msg.id, dpEntity);
+                        }
                     }
                     result.add(dpEntity);
                 }

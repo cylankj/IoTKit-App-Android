@@ -44,7 +44,6 @@ import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.listener.ILiveStateListener;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -177,7 +176,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         isNormalView = device != null && !JFGRules.isNeedPanoramicView(device.pid);
     }
 
@@ -231,7 +230,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     private void initLiveView() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (device == null) {
             AppLogger.e("device is null");
             getActivity().finish();
@@ -319,7 +318,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.notifyOrientationChange(getResources().getConfiguration().orientation);
         if (vLive != null && vLive.getVideoView() != null) {
             vLive.getVideoView().onResume();
-            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             String dpPrimary = device.$(509, "0");//0:俯视
             vLive.getVideoView().setMode(TextUtils.equals(dpPrimary, "0") ? 0 : 1);
             vLive.getVideoView().config360(TextUtils.equals(dpPrimary, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
@@ -338,7 +337,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPStandby isStandBY = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         if (isStandBY != null && isStandBY.standby) return;
         if (!getUserVisibleHint()) return;//看不见，就不需要播放了。
@@ -349,7 +348,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         AppLogger.d("startPlay: old == null: " + (old == null));
         if (old != null) return;//不用播放
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
         if (isStandBY == null || isStandBY.standby) return;
         basePresenter.startPlayHistory(time);
@@ -434,7 +433,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onDeviceInfoChanged(long msgId) {
         if (msgId == -1 || msgId == DpMsgMap.ID_508_CAMERA_STANDBY_FLAG) {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             DpMsgDefine.DPStandby isStandBY = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
             boolean flag = isStandBY.standby;
             fLayoutLiveBottomHandleBar.setVisibility(flag ? View.INVISIBLE : View.VISIBLE);
@@ -500,7 +499,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             initSdcardFormatDialog();
         }
         if (msgId == 509) {
-            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             String _509 = device.$(509, "0");
             vLive.getVideoView().config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
             vLive.getVideoView().setMode(TextUtils.equals("0", _509) ? 0 : 1);
@@ -734,7 +733,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         camLiveController.setLiveTime(0);
         switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
-                Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
                 if (isStandBY == null || isStandBY.standby) break;//
                 camLiveController.setLoadingState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1), getString(R.string.USER_HELP));
@@ -844,7 +843,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onResolution(JFGMsgVideoResolution resolution) throws JfgException {
-        JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, (View) vLive.getVideoView());
+        BaseApplication.getAppComponent().getCmd().enableRenderSingleRemoteView(true, (View) vLive.getVideoView());
         updateVideoViewLayoutParameters(resolution);
         if (resolution != null && resolution.height > 0 && resolution.width > 0) {
             PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);

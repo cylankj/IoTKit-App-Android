@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -30,7 +29,7 @@ public class DPSingleDeleteTask extends BaseDPTask<BaseDPTaskResult> {
             JFGDPMsg msg = new JFGDPMsg(entity.getMsgId(), entity.getVersion());
             params.add(msg);
             try {
-                long seq = JfgCmdInsurance.getCmd().robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
+                long seq = appCmd.robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
                 if (seq <= 0) {
                     throw new JfgException("内部错误!");
                 }

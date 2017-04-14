@@ -43,7 +43,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
         ButterKnife.bind(this);
         customToolbar.setBackAction((View v) -> onBackPressed());
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         //平视
         String dpPrimary = device.$(509, "1");
         initValue = dpPrimary;
@@ -107,7 +107,7 @@ public class SightSettingActivity extends BaseFullScreenFragmentActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         //平视
         String dpPrimary = device.$(509, "0");
         if (!TextUtils.equals(dpPrimary, initValue))

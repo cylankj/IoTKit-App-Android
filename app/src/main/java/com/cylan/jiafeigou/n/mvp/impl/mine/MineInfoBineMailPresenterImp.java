@@ -11,7 +11,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoBindMailContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -20,8 +20,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
-
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -62,7 +60,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().checkFriendAccount(email);
+                            BaseApplication.getAppComponent().getCmd().checkFriendAccount(email);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -85,15 +83,15 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                         try {
                             jfgAccount.resetFlag();
                             jfgAccount.setEmail(newEmail);
-                            int req = JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                            int req = BaseApplication.getAppComponent().getCmd().setAccount(jfgAccount);
                             isSetAcc = true;
-                            AppLogger.d("send_setAcc:"+req);
+                            AppLogger.d("send_setAcc:" + req);
                         } catch (JfgException e) {
-                            AppLogger.e("send_setAcc:"+e.getLocalizedMessage());
+                            AppLogger.e("send_setAcc:" + e.getLocalizedMessage());
                             e.printStackTrace();
                         }
                     }
-                },throwable -> {
+                }, throwable -> {
                     AppLogger.e("sendSetAccountReq" + throwable.getLocalizedMessage());
                 });
 
@@ -101,6 +99,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
 
     /**
      * 检验邮箱是否已经注册过
+     *
      * @return
      */
     @Override
@@ -114,7 +113,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                             handlerCheckAccoutResult(checkAccountCallback);
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -128,12 +127,12 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                     @Override
                     public void call(RxEvent.GetUserInfo getUserInfo) {
                         if (getUserInfo != null) {
-                            AppLogger.d("changacc:"+getUserInfo.jfgAccount.getEmail());
+                            AppLogger.d("changacc:" + getUserInfo.jfgAccount.getEmail());
                             getView().getUserAccountData(getUserInfo.jfgAccount);
                             jfgAccount = getUserInfo.jfgAccount;
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -197,7 +196,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(thirdLoginTab -> {
                     isOpenLogin = thirdLoginTab.isThird;
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -210,13 +209,13 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
         return RxBus.getCacheInstance().toObservable(RxEvent.RessetAccountBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(ressetAccountBack -> {
-                    if (ressetAccountBack != null){
-                        if (isSetAcc){
+                    if (ressetAccountBack != null) {
+                        if (isSetAcc) {
                             getView().showSendReqResult(ressetAccountBack.jfgResult.code);
                             isSetAcc = false;
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -250,7 +249,7 @@ public class MineInfoBineMailPresenterImp extends AbstractPresenter<MineInfoBind
                     public void call(Integer integer) {
                         getView().onNetStateChanged(integer);
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
 

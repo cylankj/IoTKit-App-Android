@@ -116,7 +116,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
         DpMsgDefine.DPPrimary<String> sVersion =BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_208_DEVICE_SYS_VERSION,null);
         String sv = MiscUtils.safeGet(sVersion, "");
         tvSystemVersion.setText(sv);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (device != null) {
             tvInformationFacilityName.setText(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
             tvDeviceCid.setText(device.uuid);
@@ -175,7 +175,7 @@ public class CloudLiveDeviceInfoFragment extends Fragment implements CloudLiveDe
             public void onDialogAction(int id, Object value) {
                 if (presenter != null && value != null && value instanceof String) {
                     String content = (String) value;
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     if (!TextUtils.isEmpty(content)
                             && !TextUtils.equals(device.alias, content)) {
                         tvInformationFacilityName.setText(content);

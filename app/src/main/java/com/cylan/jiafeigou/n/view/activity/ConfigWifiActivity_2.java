@@ -150,7 +150,7 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
             if (value != null && value instanceof String) {
                 //pwd
                 String routeName = NetUtils.getNetName(ContextUtils.getContext());
-                Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 DpMsgDefine.DPNet net = device == null ? new DpMsgDefine.DPNet() : device.$(201, new DpMsgDefine.DPNet());
                 if (!TextUtils.equals(routeName, net.ssid)) {
                     ToastUtil.showNegativeToast(getString(R.string.setwifi_check, net.ssid));

@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.cache.db.module.tasks;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -112,7 +111,7 @@ public class AutoLoginTask extends BaseDPTask<BaseDPTaskResult> {
         int loginType = account.getLoginType();
         String password = AESUtil.decrypt(account.getPassword());
         if (loginType == 1) {
-            JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), account.getAccount(), password);
+            appCmd.login(JFGRules.getLanguageType(ContextUtils.getContext()), account.getAccount(), password);
         } else if (loginType >= 3) {
 //            效验本地token是否过期
             if (checkTokenOut(loginType)) {
@@ -121,7 +120,7 @@ public class AutoLoginTask extends BaseDPTask<BaseDPTaskResult> {
             } else {
                 AppLogger.d("isout:no");
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), account.getAccount(), password, loginType);
+                appCmd.openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), account.getAccount(), password, loginType);
                 RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
             }
         }

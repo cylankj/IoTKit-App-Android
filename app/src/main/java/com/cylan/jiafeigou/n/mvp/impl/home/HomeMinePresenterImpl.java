@@ -12,7 +12,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -231,7 +230,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         list.add(msg1);
                         list.add(msg2);
                         list.add(msg3);
-                        requstId = JfgCmdInsurance.getCmd().robotGetData("", list, 10, false, 0);
+                        requstId = BaseApplication.getAppComponent().getCmd().robotGetData("", list, 10, false, 0);
                         AppLogger.d("getUnReadMesg:" + requstId);
 
                         //新接口

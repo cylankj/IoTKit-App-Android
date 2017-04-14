@@ -1,14 +1,12 @@
 package com.cylan.jiafeigou.cache.video;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGVideo;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -69,7 +67,7 @@ public class History {
             return false;
         }
         try {
-            JfgCmdInsurance.getCmd().getVideoList(device.uuid);
+            BaseApplication.getAppComponent().getCmd().getVideoList(device.uuid);
             return true;
         } catch (JfgException e) {
             AppLogger.e("uuid is null: " + e.getLocalizedMessage());

@@ -336,6 +336,16 @@ public class RxEvent {
         public short port;
         public byte[] data;
 
+        public LocalUdpMsg() {
+        }
+
+        public LocalUdpMsg(long time, String ip, short port, byte[] data) {
+            this.time = time;
+            this.ip = ip;
+            this.port = port;
+            this.data = data;
+        }
+
         @Override
         public String toString() {
             return "LocalUdpMsg{" +
@@ -553,6 +563,11 @@ public class RxEvent {
 
         public BellCallEvent(JFGDoorBellCaller jfgDoorBellCaller) {
             this.caller = jfgDoorBellCaller;
+        }
+
+        public BellCallEvent(JFGDoorBellCaller caller, boolean isFromLocal) {
+            this.caller = caller;
+            this.isFromLocal = isFromLocal;
         }
     }
 

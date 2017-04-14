@@ -12,7 +12,7 @@ import android.util.Log;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineClipImageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -62,7 +62,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                     @Override
                     public void call(String path) {
                         try {
-                            req = JfgCmdInsurance.getCmd().updateAccountPortrait(path);
+                            req = BaseApplication.getAppComponent().getCmd().updateAccountPortrait(path);
                             AppLogger.d("upLoadUserHeadImag:" + req);
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -124,7 +124,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                             try {
                                 jfgAccount.resetFlag();
                                 jfgAccount.setPhoto(true);
-                                int req = JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                                int req = BaseApplication.getAppComponent().getCmd().setAccount(jfgAccount);
                                 AppLogger.d("sendResetUrl:" + req);
                             } catch (JfgException e) {
                                 e.printStackTrace();

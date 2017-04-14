@@ -89,7 +89,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         setContentView(R.layout.activity_cam_media);
         ButterKnife.bind(this);
         uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
-        device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         basePresenter = new CamMediaPresenterImpl(this, uuid);
         alarmMsg = getIntent().getParcelableExtra(KEY_BUNDLE);
         CustomAdapter customAdapter = new CustomAdapter(getSupportFragmentManager());

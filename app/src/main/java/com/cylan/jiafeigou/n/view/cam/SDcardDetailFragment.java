@@ -207,7 +207,7 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
             showHasNoSdDialog();
             return;
         }
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(this.uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(this.uuid);
         //仅3G摄像头显示此栏
         if (device != null && JFGRules.is3GCam(device.pid)) {
             tvClearRestart.setVisibility(View.VISIBLE);

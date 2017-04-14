@@ -4,7 +4,6 @@ import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.misc.JResultEvent;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
@@ -27,7 +26,7 @@ public class DPUnBindDeviceTask extends BaseDPTask<BaseDPTaskResult> {
     public Observable<BaseDPTaskResult> performServer() {
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {
-                int seq = JfgCmdInsurance.getCmd().unBindDevice(entity.getUuid());
+                int seq = appCmd.unBindDevice(entity.getUuid());
                 AppLogger.d("正在删除设备+" + entity.getUuid() + "seq:" + seq);
                 subscriber.onNext((long) seq);
                 subscriber.onCompleted();

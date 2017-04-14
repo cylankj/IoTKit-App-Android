@@ -75,7 +75,7 @@ public class CapturePeriodDialogFragment extends BaseDialog {
 
     private void initView() {
         String uuid = getArguments().getString(JConstant.KEY_DEVICE_ITEM_UUID);
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPAlarmInfo alarmInfo = device.$(502, new DpMsgDefine.DPAlarmInfo());
         checkedSerial = alarmInfo.day;
         final int checkBoxCount = lLayoutWeek.getChildCount();//应该是7

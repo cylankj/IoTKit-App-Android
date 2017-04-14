@@ -29,7 +29,6 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -194,7 +193,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         header.isAck = 1;//需要相应
                         header.msgId = 2000;
                         header.msgByte = data;
-                        int ret = JfgCmdInsurance.getCmd().SendForwardData(DpUtils.pack(header));
+                        int ret = BaseApplication.getAppComponent().getCmd().SendForwardData(DpUtils.pack(header));
                         AppLogger.d("send foreword: " + ret);
                     }
                 }, new Action1<Throwable>() {
@@ -264,7 +263,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
         liveSubscription.add(prePlay(s -> {
             try {
-                int ret = JfgCmdInsurance.getCmd().playVideo(uuid);
+                int ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
                 AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
                 e.printStackTrace();
@@ -404,10 +403,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             try {
                 //先停止播放{历史录像,直播都需要停止播放}
                 if (playState != PLAY_STATE_IDLE) {
-                    JfgCmdInsurance.getCmd().stopPlay(uuid);
+                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
                     AppLogger.i("stop play history");
                 }
-                int ret = JfgCmdInsurance.getCmd().playHistoryVideo(uuid, time / 1000L);
+                int ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time / 1000L);
                 AppLogger.i(String.format("play history video:%s,%s ", uuid, time / 1000L) + " " + ret);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
@@ -450,7 +449,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
                     try {
-                        JfgCmdInsurance.getCmd().stopPlay(s);
+                        BaseApplication.getAppComponent().getCmd().stopPlay(s);
                         playType = CamLiveContract.TYPE_NONE;
                         playState = PLAY_STATE_IDLE;
                         AppLogger.i("stopPlayVideo:" + s);
@@ -497,14 +496,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     private void setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
-        JfgCmdInsurance.getCmd().setAudio(false, remoteSpeaker, remoteMic);
+        BaseApplication.getAppComponent().getCmd().setAudio(false, remoteSpeaker, remoteMic);
         if (localSpeaker) {
             MediaRecorder mRecorder = null;
             try {
                 mRecorder = new MediaRecorder();
                 mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 mRecorder.release();
-                JfgCmdInsurance.getCmd().setAudio(true, true, localMic);
+                BaseApplication.getAppComponent().getCmd().setAudio(true, true, localMic);
             } catch (Exception e) {
                 AppLogger.d(e.getMessage());
                 if (mRecorder != null) {
@@ -561,7 +560,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .map(o -> {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                     long time = System.currentTimeMillis();
-                    JfgCmdInsurance.getCmd().screenshot(false, new CallBack<Bitmap>() {
+                    BaseApplication.getAppComponent().getCmd().screenshot(false, new CallBack<Bitmap>() {
                         @Override
                         public void onSucceed(Bitmap resource) {
                             AppLogger.d("take shot step assemble by sdk");
@@ -641,7 +640,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                     item.cid = uuid;
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
                     item.fileName = time / 1000 + ".jpg";
                     item.time = (int) (time / 1000);
@@ -649,7 +648,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             .setUuid(uuid)
                             .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                             .setVersion(System.currentTimeMillis())
-                            .setAccount(BaseApplication.getAppComponent().getSourceManager().getAJFGAccount().getAccount())
+                            .setAccount(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount())
                             .setAction(DBAction.SHARED)
                             .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
                             .setBytes(item.toBytes());
@@ -676,7 +675,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public boolean needShowHistoryWheelView() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPNet net = device.$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         boolean show = JFGRules.isDeviceOnline(net)
@@ -799,10 +798,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     if (TimeUtils.isToday(PreferencesUtils.getLong(JConstant.CHECK_HARDWARE_TIME, 0))) {
                         return;
                     }
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     try {
                         String version = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "");
-                        JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, version);
+                        BaseApplication.getAppComponent().getCmd().checkDevVersion(device.pid, uuid, version);
                     } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
                         e.printStackTrace();

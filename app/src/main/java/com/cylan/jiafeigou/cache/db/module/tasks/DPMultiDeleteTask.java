@@ -4,7 +4,6 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -38,7 +37,7 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
                 params.add(msg);
             }
             try {
-                long seq = JfgCmdInsurance.getCmd().robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
+                long seq = appCmd.robotDelData(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {

@@ -270,7 +270,7 @@ class SimpleAdapterPager extends FragmentPagerAdapter {
 
     @Override
     public int getCount() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         String shareAccount = device == null ? "" : device.shareAccount;
         return !TextUtils.isEmpty(shareAccount) ? 1 : 2;
     }

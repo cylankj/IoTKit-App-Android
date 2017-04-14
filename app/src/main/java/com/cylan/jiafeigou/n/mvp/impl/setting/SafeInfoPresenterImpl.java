@@ -49,7 +49,7 @@ public class SafeInfoPresenterImpl extends AbstractPresenter<SafeInfoContract.Vi
 
     @Override
     public String getRepeatMode(Context context) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean f = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         if (!f) {
             return getView().getContext().getString(R.string.MAGNETISM_OFF);

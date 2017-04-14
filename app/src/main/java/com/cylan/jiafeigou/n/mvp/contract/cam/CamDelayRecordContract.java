@@ -9,7 +9,7 @@ import com.cylan.jiafeigou.base.wrapper.BaseViewablePresenter;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 
 import java.util.ArrayList;
 
@@ -64,7 +64,7 @@ public interface CamDelayRecordContract {
             ArrayList<JFGDPMsg> params = new ArrayList<>();
             params.add(msg);
             try {
-                JfgCmdInsurance.getCmd().robotSetData(mUUID, params);
+                BaseApplication.getAppComponent().getCmd().robotSetData(mUUID, params);
             } catch (JfgException e) {
                 e.printStackTrace();
             }

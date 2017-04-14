@@ -24,7 +24,6 @@ import java.util.List;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 /**
  * Created by yanzhendong on 2017/3/2.
@@ -81,7 +80,7 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     params.add(msg);
                 }
                 long seq = -1;
-                seq = getCmd().robotGetData(uuid, params, option.limit, option.asc, 0);//多请求一条数据,用来判断是否是一天最后一条
+                seq = appCmd.robotGetData(uuid, params, option.limit, option.asc, 0);//多请求一条数据,用来判断是否是一天最后一条
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {

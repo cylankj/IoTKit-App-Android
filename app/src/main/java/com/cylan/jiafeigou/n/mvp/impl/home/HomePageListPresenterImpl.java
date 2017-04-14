@@ -12,7 +12,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -150,7 +149,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
      * @return
      */
     private void subUuidList() {
-        getView().onItemsInsert(BaseApplication.getAppComponent().getSourceManager().getAllJFGDevice());
+        getView().onItemsInsert(BaseApplication.getAppComponent().getSourceManager().getAllDevice());
         getView().onAccountUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
     }
 
@@ -217,7 +216,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .delay(1, TimeUnit.SECONDS)
                 .map((Boolean aBoolean) -> {
                     if (manually)
-                        BaseApplication.getAppComponent().getSourceManager().syncAllJFGDevicePropertyManually();
+                        BaseApplication.getAppComponent().getSourceManager().syncAllDevicePropertyManually();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return aBoolean;
                 })
@@ -288,7 +287,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribe(o -> {
                     try {
                         if (!PreferencesUtils.getBoolean(JConstant.IS_UPDATE_DOWNLOADING, false)) {
-                            int req = JfgCmdInsurance.getCmd().checkClientVersion("0001");
+                            int req = BaseApplication.getAppComponent().getCmd().checkClientVersion("0001");
                             AppLogger.d("client_update:" + req);
                         }
                     } catch (JfgException e) {

@@ -13,6 +13,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.DaggerFragmentComponent;
 import com.cylan.jiafeigou.base.injector.component.FragmentComponent;
@@ -37,6 +38,8 @@ public abstract class BaseFragment<P extends JFGPresenter> extends Fragment impl
     protected P presenter;
     @Inject
     protected JFGSourceManager sourceManager;
+    @Inject
+    protected AppCmd appCmd;
     protected String mUUID;
 
     protected static Toast sToast;

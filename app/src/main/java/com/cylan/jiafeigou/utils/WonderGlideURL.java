@@ -4,7 +4,6 @@ import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.model.Headers;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.Security;
@@ -27,9 +26,9 @@ public class WonderGlideURL extends GlideUrl {
         super("http://www.cylan.com.cn", Headers.DEFAULT);
         mBean = bean;
         this.vid = Security.getVId();
-        if (BaseApplication.getAppComponent().getSourceManager().getAJFGAccount() != null)
-            this.account = BaseApplication.getAppComponent().getSourceManager().getAJFGAccount().getAccount();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(bean.cid);
+        if (BaseApplication.getAppComponent().getSourceManager().getAccount() != null)
+            this.account = BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount();
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(bean.cid);
         if (device != null)
             this.regionType = device.regionType;
     }
@@ -45,7 +44,7 @@ public class WonderGlideURL extends GlideUrl {
         try {
             String u = String.format(Locale.getDefault(), "/long/%s/%s/wonder/%s/%s",
                     vid, account, mBean.cid, mBean.fileName);
-            url = JfgCmdInsurance.getCmd().getSignedCloudUrl(this.regionType, u);
+            url = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(this.regionType, u);
         } catch (Exception e) {
             e.printStackTrace();
         }

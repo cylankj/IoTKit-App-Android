@@ -12,7 +12,6 @@ import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -106,9 +105,9 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     try {
-                        JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, device.$(ID_207_DEVICE_VERSION, "0.0"));
+                        BaseApplication.getAppComponent().getCmd().checkDevVersion(device.pid, uuid, device.$(ID_207_DEVICE_VERSION, "0.0"));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -135,7 +134,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
                         mesg.packValue = DpUtils.pack(0);
                         ipList.add(mesg);
-                        JfgCmdInsurance.getCmd().robotSetData(uuid, ipList);
+                        BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
                     } catch (Exception e) {
                         AppLogger.e("format sd： " + e.getLocalizedMessage());
                     }
@@ -196,7 +195,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .map(device1 -> {
                     BaseApplication.getAppComponent().getSourceManager().updateJFGDevice(device);
                     try {
-                        JfgCmdInsurance.getCmd().setAliasByCid(device.uuid, device.alias);
+                        BaseApplication.getAppComponent().getCmd().setAliasByCid(device.uuid, device.alias);
                         AppLogger.d("update alias suc");
                     } catch (JfgException e) {
                         AppLogger.e("err: set up remote alias failed: " + new Gson().toJson(device));

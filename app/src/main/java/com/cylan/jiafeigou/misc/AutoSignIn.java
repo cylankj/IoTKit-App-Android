@@ -79,7 +79,7 @@ public class AutoSignIn {
                                     String finalPwd = AESUtil.decrypt(pwd.toString());
                                     if (signType.type == 1) {
                                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                                        JfgCmdInsurance.getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd);
+                                        BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd);
                                         RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
                                     } else if (signType.type >= 3) {
                                         //效验本地token是否过期
@@ -90,7 +90,7 @@ public class AutoSignIn {
                                         } else {
                                             AppLogger.d("isout:no");
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                                            JfgCmdInsurance.getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd, signType.type);
+                                            BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd, signType.type);
                                             RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
                                         }
                                     }

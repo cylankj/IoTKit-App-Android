@@ -234,7 +234,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
             DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
             item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
             item.cid = uuid;
-            Device device = sourceManager.getJFGDevice(uuid);
+            Device device = sourceManager.getDevice(uuid);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             item.fileName = mCallRecord.timeInLong / 1000 + ".jpg";
             item.time = (int) (mCallRecord.timeInLong / 1000);
@@ -253,7 +253,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                     .setUuid(uuid)
                     .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
                     .setVersion(System.currentTimeMillis())
-                    .setAccount(sourceManager.getAJFGAccount().getAccount())
+                    .setAccount(sourceManager.getAccount().getAccount())
                     .setAction(DBAction.SHARED)
                     .setOption(new DBOption.SingleSharedOption(1, 1, path))
                     .setBytes(item.toBytes());

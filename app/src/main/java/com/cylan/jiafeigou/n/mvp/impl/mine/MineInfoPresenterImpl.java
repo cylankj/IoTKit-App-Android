@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -58,7 +57,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
         BaseApplication.getAppComponent().getSourceManager().logout()
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    JfgCmdInsurance.getCmd().logout();
+                    BaseApplication.getAppComponent().getCmd().logout();
                     RxBus.getCacheInstance().removeAllStickyEvents();
                     AutoSignIn.getInstance().autoSave(account, 1, "")
                             .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))

@@ -9,7 +9,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -66,7 +65,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
      */
     @Override
     public boolean getSdcardState() {
-        DpMsgDefine.DPSdStatus sdStatus = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus sdStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
         //sd卡状态
         if (sdStatus != null) {
             if (!sdStatus.hasSdcard && sdStatus.err != 0) {
@@ -90,7 +89,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                         JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
                         mesg.packValue = DpUtils.pack(0);
                         ipList.add(mesg);
-                        JfgCmdInsurance.getCmd().robotSetData(uuid, ipList);
+                        BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
                         AppLogger.d("clear_excute:");
                     } catch (Exception e) {
                         AppLogger.e("err_sd: " + e.getLocalizedMessage());
@@ -176,7 +175,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                                 getView().showSdPopDialog();
                         }
                     }
-                },e->AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     /**
@@ -194,7 +193,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                             ArrayList<JFGDPMsg> dpID = new ArrayList<JFGDPMsg>();
                             JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_204_SDCARD_STORAGE, System.currentTimeMillis());
                             dpID.add(msg);
-                            req = JfgCmdInsurance.getCmd().robotGetData(uuid, dpID, 1, false, 0);
+                            req = BaseApplication.getAppComponent().getCmd().robotGetData(uuid, dpID, 1, false, 0);
                             AppLogger.d("getSdCapacity:" + req);
                         } catch (JfgException e) {
                             AppLogger.e("getSdCapacity_err:" + e.getLocalizedMessage());

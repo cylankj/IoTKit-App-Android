@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.ContentResolver;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.net.Uri;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -13,7 +12,7 @@ import android.text.TextUtils;
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareToContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
@@ -109,7 +108,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     @Override
                     public void call(String account) {
                         try {
-                            JfgCmdInsurance.getCmd().shareDevice(cid, account);
+                           BaseApplication.getAppComponent().getCmd().shareDevice(cid, account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -136,7 +135,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().getUnShareListByCid(cid);
+                            BaseApplication.getAppComponent().getCmd().getUnShareListByCid(cid);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -206,6 +205,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
 
     /**
      * 检测发送短信权限
+     *
      * @return
      */
     @Override
@@ -269,7 +269,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
      */
     private void handlerContactDataResult(ArrayList<RelAndFriendBean> list) {
         if (getView() != null && list != null && list.size() != 0) {
-            Collections.sort(list,new Comparent());
+            Collections.sort(list, new Comparent());
             getView().hideNoContactNullView();
             getView().initContactReclyView(list);
         } else {
@@ -341,13 +341,11 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
             Collator ca = Collator.getInstance(Locale.CHINA);
             int flags = 0;
-            if (ca.compare(lhs.alias.toLowerCase(),rhs.alias.toLowerCase()) < 0) {
+            if (ca.compare(lhs.alias.toLowerCase(), rhs.alias.toLowerCase()) < 0) {
                 flags = -1;
-            }
-            else if(ca.compare(lhs.alias.toLowerCase(),rhs.alias.toLowerCase()) > 0) {
+            } else if (ca.compare(lhs.alias.toLowerCase(), rhs.alias.toLowerCase()) > 0) {
                 flags = 1;
-            }
-            else {
+            } else {
                 flags = 0;
             }
             return flags;

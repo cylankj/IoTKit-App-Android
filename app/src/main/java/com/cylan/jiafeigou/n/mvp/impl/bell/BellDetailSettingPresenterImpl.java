@@ -6,7 +6,6 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -37,7 +36,7 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
     @Override
     public void onStart() {
         super.onStart();
-        Device device = sourceManager.getJFGDevice(mUUID);
+        Device device = sourceManager.getDevice(mUUID);
         if (device != null) {
             mView.onShowProperty(device);
         }
@@ -66,10 +65,10 @@ public class BellDetailSettingPresenterImpl extends BasePresenter<BellDetailCont
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
-                    Device device = sourceManager.getJFGDevice(uuid);
+                    Device device = sourceManager.getDevice(uuid);
                     DpMsgDefine.DPPrimary<String> sVersion = sourceManager.getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION, null);
                     try {
-                        long req = JfgCmdInsurance.getCmd().checkDevVersion(device.pid, uuid, device.$(ID_207_DEVICE_VERSION, ""));
+                        long req = appCmd.checkDevVersion(device.pid, uuid, device.$(ID_207_DEVICE_VERSION, ""));
                         AppLogger.d("Bell_checkNewVersion:" + req);
                     } catch (JfgException e) {
                         e.printStackTrace();

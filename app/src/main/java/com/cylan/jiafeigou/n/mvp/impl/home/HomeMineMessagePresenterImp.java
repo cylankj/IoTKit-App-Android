@@ -5,7 +5,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineMessageContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -172,7 +172,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             ArrayList<JFGDPMsg> params = new ArrayList<>();
                             params.add(msg1);
                             params.add(msg4);
-                            seq = JfgCmdInsurance.getCmd().robotGetData("", params, 100, false, 0);
+                            seq = BaseApplication.getAppComponent().getCmd().robotGetData("", params, 100, false, 0);
                             AppLogger.d("getMesgDpData:" + seq);
                         } catch (Exception e) {
                             AppLogger.e("getMesgDpData:" + e.getLocalizedMessage());
@@ -288,7 +288,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
                             JFGDPMsg msg = new JFGDPMsg(type, version);
                             list.add(msg);
-                            long req = JfgCmdInsurance.getCmd().robotDelData("", list, 0);
+                            long req = BaseApplication.getAppComponent().getCmd().robotDelData("", list, 0);
                             AppLogger.d("deleteServiceMsg:" + req);
                         } catch (JfgException e) {
                             AppLogger.e("deleteServiceMsg:" + e.getLocalizedMessage());
@@ -336,7 +336,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                         list.add(msg1);
                         list.add(msg2);
                         list.add(msg3);
-                        long req = JfgCmdInsurance.getCmd().robotSetData("", list);
+                        long req = BaseApplication.getAppComponent().getCmd().robotSetData("", list);
                         AppLogger.d("mine_markHasRead:" + req);
                     } catch (JfgException e) {
                         AppLogger.e("mine_markHasRead:" + e.getLocalizedMessage());

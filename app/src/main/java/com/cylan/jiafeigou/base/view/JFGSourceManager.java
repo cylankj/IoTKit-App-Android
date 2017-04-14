@@ -4,6 +4,7 @@ package com.cylan.jiafeigou.base.view;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -21,32 +22,29 @@ import rx.Observable;
 
 public interface JFGSourceManager {
 
-    Device getJFGDevice(String uuid);
+    Device getDevice(String uuid);
 
-    List<Device> getAllJFGDevice();
+    List<Device> getAllDevice();
 
-    Account getAJFGAccount();
+    Account getAccount();
 
     JFGAccount getJFGAccount();
 
     <T> T getValue(String uuid, long msgId, T defaultValue);
 
-    List<Device> getJFGDeviceByPid(int... pids);
+    List<Device> getDevicesByPid(int... pids);
 
-    List<String> getJFGDeviceUUIDByPid(int... pids);
+    List<String> getDeviceUuidByPid(int... pids);
 
-    void syncJFGDeviceProperty(String uuid);
+    void syncDeviceProperty(String uuid);
 
     /**
      * 刷新设备属性，首页需要
      * ,手动刷
      */
-    void syncAllJFGDevicePropertyManually();
-
-//    <T extends DataPoint> List<T> getValueBetween(String uuid, long msgId, long startVersion, long endVersion);
+    void syncAllDevicePropertyManually();
 
     boolean isOnline();
-
 
     /**
      * 该设备是否已经被分享给其他用户
@@ -113,6 +111,8 @@ public interface JFGSourceManager {
     void setDBHelper(IDBHelper dbHelper);
 
     void setPropertyParser(IPropertyParser parser);
+
+    void setAppCmd(AppCmd appCmd);
 
     void initFromDB();
 

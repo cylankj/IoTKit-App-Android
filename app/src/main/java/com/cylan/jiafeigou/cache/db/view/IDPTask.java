@@ -1,5 +1,6 @@
 package com.cylan.jiafeigou.cache.db.view;
 
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 
@@ -15,5 +16,11 @@ public interface IDPTask<T extends IDPTaskResult> {
 
     Observable<T> performServer();
 
-    void inject(IDBHelper helper, JFGSourceManager sourceManager, IPropertyParser propertyParser);
+    void setDBHelper(IDBHelper helper);
+
+    void setSourceManager(JFGSourceManager manager);
+
+    void setPropertyParser(IPropertyParser parser);
+
+    void setAppCmd(AppCmd appCmd);
 }

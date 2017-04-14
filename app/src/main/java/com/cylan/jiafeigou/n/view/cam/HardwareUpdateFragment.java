@@ -34,8 +34,6 @@ import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
-import java.io.File;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -116,7 +114,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 //        DpMsgDefine.DPPrimary<String> sVersion = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_207_DEVICE_VERSION);
 //        String s = MiscUtils.safeGet(sVersion, "");
         JFGSourceManager manager = BaseApplication.getAppComponent().getSourceManager();
-        Device device = manager.getJFGDevice(uuid);
+        Device device = manager.getDevice(uuid);
         tvHardwareNowVersion.setText(device.$(ID_207_DEVICE_VERSION, ""));
         tvHardwareNewVersion.setText(device.$(ID_207_DEVICE_VERSION, ""));
 
@@ -152,7 +150,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 }
 
 //                DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_201_NET);
-                DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
+                DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
                 boolean show = net != null && JFGRules.isDeviceOnline(net);
                 if (!show) {
                     ToastUtil.showNegativeToast(getString(R.string.NOT_ONLINE));
@@ -185,7 +183,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
         //设备在线
 //        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_201_NET);
-        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
+        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         String remoteSSid = net.ssid;
         if (!TextUtils.equals(localSSid, remoteSSid)) {
@@ -274,7 +272,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         llDownloadPgContainer.setVisibility(View.GONE);
         //设备在线
 //        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_201_NET);
-        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
+        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         String remoteSSid = net.ssid;
         if (TextUtils.equals(localSSid, remoteSSid)) {

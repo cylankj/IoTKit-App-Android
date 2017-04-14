@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.widget.Toast;
 
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.injector.component.AppComponent;
@@ -40,6 +41,8 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     protected P presenter;
     @Inject
     protected JFGSourceManager sourceManager;
+    @Inject
+    protected AppCmd appCmd;
     protected String uuid;
     protected AlertDialog alertDialog;
     protected Toast mToast;

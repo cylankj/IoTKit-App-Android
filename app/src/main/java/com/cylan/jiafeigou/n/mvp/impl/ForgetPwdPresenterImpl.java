@@ -4,7 +4,7 @@ import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.login.ForgetPwdContract;
 import com.cylan.jiafeigou.n.mvp.model.RequestResetPwdBean;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -47,11 +47,15 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                     public void call(String s) {
                         final boolean isPhoneNum = JConstant.PHONE_REG.matcher(account).find();
                         if (isPhoneNum) {
-                            JfgCmdInsurance.getCmd()
-                                    .sendCheckCode(account, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
+                            try {
+                                BaseApplication.getAppComponent().getCmd()
+                                        .sendCheckCode(account, JFGRules.getLanguageType(ContextUtils.getContext()), JfgEnum.SMS_TYPE.JFG_SMS_FORGOTPASS);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                         } else {
                             try {
-                                JfgCmdInsurance.getCmd().forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()), account);
+                                BaseApplication.getAppComponent().getCmd().forgetPassByEmail(JFGRules.getLanguageType(ContextUtils.getContext()), account);
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
@@ -106,7 +110,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         try {
                             PreferencesUtils.putString(JConstant.SAVE_TEMP_ACCOUNT, account);
                             PreferencesUtils.putString(JConstant.SAVE_TEMP_CODE, code);
-                            JfgCmdInsurance.getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                            BaseApplication.getAppComponent().getCmd().verifySMS(account, code, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -116,9 +120,9 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
 
     @Override
     public void start() {
-        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()){
+        if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
-        }else {
+        } else {
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(checkIsRegBack());
             compositeSubscription.add(getForgetPwdByMailSub());
@@ -192,7 +196,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                         String account = PreferencesUtils.getString(JConstant.SAVE_TEMP_ACCOUNT);
                         String code = PreferencesUtils.getString(JConstant.SAVE_TEMP_CODE);
                         try {
-                            JfgCmdInsurance.getCmd().resetPassword(account, s, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
+                            BaseApplication.getAppComponent().getCmd().resetPassword(account, s, PreferencesUtils.getString(JConstant.KEY_REGISTER_SMS_TOKEN));
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -232,7 +236,7 @@ public class ForgetPwdPresenterImpl extends AbstractPresenter<ForgetPwdContract.
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().checkAccountRegState(s);
+                            BaseApplication.getAppComponent().getCmd().checkAccountRegState(s);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

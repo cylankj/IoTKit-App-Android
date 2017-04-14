@@ -4,14 +4,12 @@ import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNewPwdContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,8 +34,10 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
         super(view);
         view.setPresenter(this);
     }
+
     /**
      * 注册
+     *
      * @param account
      * @param pwd
      */
@@ -51,11 +51,11 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                         try {
                             if (!TextUtils.isEmpty(token)) {
 //                                JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, JConstant.TYPE_PHONE, "");
-                                int req = JfgCmdInsurance.getCmd().setPwdWithBindAccount(pwd, JConstant.TYPE_PHONE, token);
-                                AppLogger.d("openLogin_bind_phone:"+req+" token:"+token);
-                            } else{
+                                int req = BaseApplication.getAppComponent().getCmd().setPwdWithBindAccount(pwd, JConstant.TYPE_PHONE, token);
+                                AppLogger.d("openLogin_bind_phone:" + req + " token:" + token);
+                            } else {
 //                                JfgCmdInsurance.getCmd().register(JFGRules.getLanguageType(ContextUtils.getContext()), account, pwd, JConstant.TYPE_EMAIL, "");
-                                JfgCmdInsurance.getCmd().setPwdWithBindAccount(pwd,JConstant.TYPE_EMAIL,"");
+                                BaseApplication.getAppComponent().getCmd().setPwdWithBindAccount(pwd, JConstant.TYPE_EMAIL, "");
                             }
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -68,6 +68,7 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
 
     /**
      * 注册回调
+     *
      * @return
      */
     @Override
@@ -76,7 +77,8 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(openLogInSetPwdBack -> {
                     if (openLogInSetPwdBack != null) {
-                        if (getView() != null) getView().registerResult(openLogInSetPwdBack.jfgResult.code);
+                        if (getView() != null)
+                            getView().registerResult(openLogInSetPwdBack.jfgResult.code);
                     }
                 }, AppLogger::e);
     }
@@ -87,10 +89,10 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
                 .delay(5, TimeUnit.MINUTES)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o->{
+                .subscribe(o -> {
                     isOverTime = true;
-                },throwable -> {
-                    AppLogger.e("timeOverCount_erro"+throwable.getLocalizedMessage());
+                }, throwable -> {
+                    AppLogger.e("timeOverCount_erro" + throwable.getLocalizedMessage());
                 });
     }
 
@@ -102,9 +104,9 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
     @Override
     public void start() {
         super.start();
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
-        }else {
+        } else {
             subscription = new CompositeSubscription();
             subscription.add(registerBack());
             subscription.add(timeOverCount());
@@ -114,7 +116,7 @@ public class MineInfoSetNewPwdPresenterImp extends AbstractPresenter<MineInfoSet
     @Override
     public void stop() {
         super.stop();
-        if (subscription != null && !subscription.isUnsubscribed()){
+        if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
     }

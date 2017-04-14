@@ -7,7 +7,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.SimulatePercent;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -29,7 +28,6 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_SUC;
 import static com.cylan.jiafeigou.utils.BindUtils.BIND_TIME_OUT;
 
@@ -75,7 +73,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
     @Override
     public void start() {
         super.start();
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (startTick == 0) {//可能是覆盖绑定.
             startTick = System.currentTimeMillis();
             //1.可能是覆盖绑定,或者设备列表中已经有了该设备,并且在线状态.
@@ -116,17 +114,17 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
 
     private Subscription submitBindDeviceSub() {
         return Observable.interval(0, 2, TimeUnit.SECONDS)
-                .map(s -> BaseApplication.getAppComponent().getSourceManager().getAJFGAccount())
+                .map(s -> BaseApplication.getAppComponent().getSourceManager().getAccount())
                 .filter(account -> account != null && account.isOnline())
                 .first()
                 .flatMap(s -> Observable.interval(0, 5, TimeUnit.SECONDS))
                 .map(s -> {
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     try {
                         String content = PreferencesUtils.getString(JConstant.BINDING_DEVICE);
                         UdpConstant.UdpDevicePortrait portrait = new Gson().fromJson(content, UdpConstant.UdpDevicePortrait.class);
                         if (portrait != null && device == null) {
-                            getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
+                            BaseApplication.getAppComponent().getCmd().bindDevice(portrait.uuid, portrait.bindCode, portrait.mac, portrait.bindFlag);
                             AppLogger.d("正在发送绑定请求:" + new Gson().toJson(portrait));
                         }
                     } catch (Exception e) {
@@ -142,11 +140,11 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
                     JFGDPMsg msg = new JFGDPMsg(201, 0);
                     params.add(msg);
                     try {
-                        JfgCmdInsurance.getCmd().robotGetData(uuid, params, 1, false, 0);
+                        BaseApplication.getAppComponent().getCmd().robotGetData(uuid, params, 1, false, 0);
                     } catch (JfgException e) {
                         AppLogger.d(e.getMessage());
                     }
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     DpMsgDefine.DPNet net = null;
                     if (device != null) {
                         net = device.$(201, new DpMsgDefine.DPNet());

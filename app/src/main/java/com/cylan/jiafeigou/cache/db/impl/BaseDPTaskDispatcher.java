@@ -5,6 +5,7 @@ package com.cylan.jiafeigou.cache.db.impl;
  */
 
 
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
@@ -31,6 +32,7 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
     private IDBHelper dbHelper;
     private JFGSourceManager sourceManager;
     private IPropertyParser propertyParser;
+    private AppCmd appCmd;
 
     @Override
     public synchronized void perform() {
@@ -55,7 +57,10 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
                     public void onNext(DPEntity entity) {
                         IDPTask<IDPTaskResult> task = taskFactory.getTask(entity.action(), false, entity);
                         if (task != null) {
-                            task.inject(dbHelper, sourceManager, propertyParser);
+                            task.setDBHelper(dbHelper);
+                            task.setSourceManager(sourceManager);
+                            task.setPropertyParser(propertyParser);
+                            task.setAppCmd(appCmd);
                             task.performServer().subscribe(result -> request(1), e -> {
                                 AppLogger.e(e.getMessage());
                                 e.printStackTrace();
@@ -72,7 +77,10 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
         return Observable.just(taskFactory.getTask(entity.action(), false, entity))
                 .filter(task -> {
                     if (task != null) {
-                        task.inject(dbHelper, sourceManager, propertyParser);
+                        task.setDBHelper(dbHelper);
+                        task.setSourceManager(sourceManager);
+                        task.setPropertyParser(propertyParser);
+                        task.setAppCmd(appCmd);
                     }
                     return task != null;
                 })
@@ -86,7 +94,7 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
 
     @Override
     public Observable<IDPTaskResult> perform(List<? extends IDPEntity> entities) {
-        if (sourceManager.getAJFGAccount() == null) {
+        if (sourceManager.getAccount() == null) {
             return Observable.just(BaseDPTaskResult.SUCCESS);
         }
         return Observable.just(taskFactory.getTask(entities.get(0).action(), true, entities))
@@ -94,7 +102,10 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
                 .observeOn(Schedulers.io())
                 .filter(task -> {
                     if (task != null) {
-                        task.inject(dbHelper, sourceManager, propertyParser);
+                        task.setDBHelper(dbHelper);
+                        task.setSourceManager(sourceManager);
+                        task.setPropertyParser(propertyParser);
+                        task.setAppCmd(appCmd);
                     }
                     return task != null;
                 })
@@ -122,5 +133,10 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
     @Override
     public void setPropertyParser(IPropertyParser parser) {
         this.propertyParser = parser;
+    }
+
+    @Override
+    public void setAppCmd(AppCmd appCmd) {
+        this.appCmd = appCmd;
     }
 }

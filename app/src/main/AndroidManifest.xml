@@ -427,7 +427,7 @@
             <!-- </intent-filter> -->
         </activity>
 
-        <service android:name=".n.engine.DataSourceService" />
+        <!--<service android:name=".n.engine.DataSourceService" />-->
 
         <activity
             android:name=".n.view.activity.BindCamActivity"

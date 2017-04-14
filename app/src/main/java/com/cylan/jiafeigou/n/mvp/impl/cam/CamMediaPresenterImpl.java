@@ -120,7 +120,7 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
             DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
             item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
             item.cid = uuid;
-            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             item.fileName = version / 1000 + "_" + (index + 1) + ".jpg";
             item.time = (int) (version / 1000) + index + 1;//

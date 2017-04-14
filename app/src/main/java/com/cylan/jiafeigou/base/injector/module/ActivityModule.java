@@ -28,43 +28,43 @@ public class ActivityModule {
 
     @Provides
     @PerActivity
-    public BellLiveContract.Presenter provideBellLivePresenter(BasePresenterInjector injector) {
+    public static BellLiveContract.Presenter provideBellLivePresenter(BasePresenterInjector injector) {
         return injector.inject(new BellLivePresenterImpl());
     }
 
     @Provides
     @PerActivity
-    public PanoramaCameraContact.Presenter providePanoramaCameraPresenter(BasePresenterInjector injector) {
+    public static PanoramaCameraContact.Presenter providePanoramaCameraPresenter(BasePresenterInjector injector) {
         return injector.inject(new PanoramaPresenter());
     }
 
     @Provides
     @PerActivity
-    public PanoramaAlbumContact.Presenter providePanoramaAlbumPresenter(BasePresenterInjector injector) {
+    public static PanoramaAlbumContact.Presenter providePanoramaAlbumPresenter(BasePresenterInjector injector) {
         return injector.inject(new PanoramaAlbumPresenter());
     }
 
     @Provides
     @PerActivity
-    public PanoramaDetailContact.Presenter providePanoramaDetailPresenter(BasePresenterInjector injector) {
+    public static PanoramaDetailContact.Presenter providePanoramaDetailPresenter(BasePresenterInjector injector) {
         return null;
     }
 
     @Provides
     @PerActivity
-    public PanoramaSettingContact.Presenter providePanoramaSettingPresenter(BasePresenterInjector injector) {
+    public static PanoramaSettingContact.Presenter providePanoramaSettingPresenter(BasePresenterInjector injector) {
         return injector.inject(new PanoramaSettingPresenter());
     }
 
     @Provides
     @PerActivity
-    public DelayRecordContract.Presenter provideDelayRecordPresenter(BasePresenterInjector injector) {
-        return injector.inject( new DelayRecordPresenterImpl());
+    public static DelayRecordContract.Presenter provideDelayRecordPresenter(BasePresenterInjector injector) {
+        return injector.inject(new DelayRecordPresenterImpl());
     }
 
     @Provides
     @PerActivity
-    public DoorBellHomeContract.Presenter provideDoorBellHomePresenter(BasePresenterInjector injector) {
-        return  injector.inject(new DBellHomePresenterImpl());
+    public static DoorBellHomeContract.Presenter provideDoorBellHomePresenter(BasePresenterInjector injector) {
+        return injector.inject(new DBellHomePresenterImpl());
     }
 }

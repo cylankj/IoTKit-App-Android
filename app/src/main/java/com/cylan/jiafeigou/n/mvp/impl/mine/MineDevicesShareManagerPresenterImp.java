@@ -10,7 +10,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineDevicesShareManagerContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
@@ -84,7 +84,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                 .subscribe(new Action1<ArrayList<String>>() {
                     @Override
                     public void call(ArrayList<String> cid) {
-                        JfgCmdInsurance.getCmd().getShareList(cid);
+                        BaseApplication.getAppComponent().getCmd().getShareList(cid);
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -168,7 +168,7 @@ public class MineDevicesShareManagerPresenterImp extends AbstractPresenter<MineD
                     @Override
                     public void call(Object o) {
                         try {
-                            JfgCmdInsurance.getCmd().unShareDevice(cid, bean.account);
+                            BaseApplication.getAppComponent().getCmd().unShareDevice(cid, bean.account);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

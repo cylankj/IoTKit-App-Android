@@ -8,20 +8,17 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.media.session.MediaSession;
 import android.net.ConnectivityManager;
-import android.net.Uri;
 import android.net.wifi.WifiManager;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.media.session.MediaSessionCompat;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGFriendAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
@@ -114,7 +111,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         //得到ContentResolver对象
         ContentResolver cr = getView().getContext().getContentResolver();
         //取得电话本中开始一项的光标
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null,null);
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         if (cursor == null) return list;
         //向下移动光标
         while (cursor.moveToNext()) {
@@ -195,7 +192,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        JfgCmdInsurance.getCmd().getFriendList();
+                        BaseApplication.getAppComponent().getCmd().getFriendList();
                     }
                 }, new Action1<Throwable>() {
                     @Override
@@ -250,7 +247,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().checkFriendAccount(account);
+                            BaseApplication.getAppComponent().getCmd().checkFriendAccount(account);
                             isCheckAcc = true;
                         } catch (JfgException e) {
                             e.printStackTrace();
@@ -346,13 +343,11 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
             Collator ca = Collator.getInstance(Locale.CHINA);
             int flags = 0;
-            if (ca.compare(lhs.alias,rhs.alias) < 0) {
+            if (ca.compare(lhs.alias, rhs.alias) < 0) {
                 flags = -1;
-            }
-            else if(ca.compare(lhs.alias,rhs.alias) > 0) {
+            } else if (ca.compare(lhs.alias, rhs.alias) > 0) {
                 flags = 1;
-            }
-            else {
+            } else {
                 flags = 0;
             }
             return flags;

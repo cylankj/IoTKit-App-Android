@@ -24,37 +24,37 @@ import dagger.Provides;
 public class FragmentModule {
     @Provides
     @PerFragment
-    public BellDetailContract.Presenter provideBellDetailPresenter(BasePresenterInjector injector) {
+    public static BellDetailContract.Presenter provideBellDetailPresenter(BasePresenterInjector injector) {
         return injector.inject(new BellDetailSettingPresenterImpl());
     }
 
     @Provides
     @PerFragment
-    public BellSettingContract.Presenter provideBellSettingPresenter(BasePresenterInjector injector) {
+    public static BellSettingContract.Presenter provideBellSettingPresenter(BasePresenterInjector injector) {
         return injector.inject(new BellSettingPresenterImpl());
     }
 
     @Provides
     @PerFragment
-    public HomeWonderfulContract.Presenter provideHomeWonderfulPresenter(BasePresenterInjector injector) {
+    public static HomeWonderfulContract.Presenter provideHomeWonderfulPresenter(BasePresenterInjector injector) {
         return injector.inject(new HomeWonderfulPresenterImpl());
     }
 
     @Provides
     @PerFragment
-    public Pan720FullContract.Presenter providePan720FullPresenter(BasePresenterInjector injector) {
+    public static Pan720FullContract.Presenter providePan720FullPresenter(BasePresenterInjector injector) {
         return injector.inject(new Pan720FullPresenter());
     }
 
     @Provides
     @PerFragment
-    public PanoramaLogoConfigureContact.Presenter providePanoramaLogoConfigurePresenter(BasePresenterInjector injector) {
+    public static PanoramaLogoConfigureContact.Presenter providePanoramaLogoConfigurePresenter(BasePresenterInjector injector) {
         return injector.inject(new PanoramaLogoConfigurePresenter());
     }
 
     @Provides
     @PerFragment
-    public CamDelayRecordContract.Presenter provideCamDelayRecordPresenter(BasePresenterInjector injector) {
+    public static CamDelayRecordContract.Presenter provideCamDelayRecordPresenter(BasePresenterInjector injector) {
         return injector.inject(new CamDelayRecordContract.Presenter());
     }
 }

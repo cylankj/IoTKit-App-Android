@@ -56,7 +56,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
     public CamSettingPresenterImpl(CamSettingContract.View view, String uuid) {
         super(view, uuid);
         view.setPresenter(this);
-        device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
     }
 
     @Override
@@ -104,7 +104,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
                 ))
                 .observeOn(AndroidSchedulers.mainThread())
                 .map((RobotoGetDataRsp update) -> {
-                    getView().deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid));
+                    getView().deviceUpdate(BaseApplication.getAppComponent().getSourceManager().getDevice(uuid));
                     return null;
                 })
                 .subscribe(ret -> {
@@ -157,7 +157,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
             //sd初始化失败时候显示
             return context.getString(R.string.SD_INIT_ERR, err);
         }
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         return device != null && TextUtils.isEmpty(device.alias) ?
                 device.uuid : (device != null ? device.alias : "");
     }
@@ -186,7 +186,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 //            4:12:01-12:00显示：12:01-次日12:00
     @Override
     public String getAlarmSubTitle(Context context) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         boolean f = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
         DpMsgDefine.DPAlarmInfo info = device.$(DpMsgMap.ID_502_CAMERA_ALARM_INFO, new DpMsgDefine.DPAlarmInfo());
         return MiscUtils.getChaosTime(context, info, f);
@@ -195,7 +195,7 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
 
     @Override
     public String getAutoRecordTitle(Context context) {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         int deviceAutoVideoRecord = device.$(DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
         DpMsgDefine.DPSdStatus sdStatus = device.$(DpMsgMap.ID_204_SDCARD_STORAGE, new DpMsgDefine.DPSdStatus());
         if (sdStatus == null || !sdStatus.hasSdcard || sdStatus.err != 0)

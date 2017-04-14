@@ -9,7 +9,6 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.DPEntityDao;
 import com.cylan.jiafeigou.cache.db.view.DBState;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -102,7 +101,7 @@ public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
                     long todayTimeStamp = TimeUtils.getTodayStartTime();
                     ArrayList<JFGDPMsg> list = (ArrayList<JFGDPMsg>) MiscUtils.getCamDateVersionList(todayTimeStamp);
                     try {
-                        long ret = JfgCmdInsurance.getCmd().robotGetData(entity.getUuid(), list, 1, true, 0);
+                        long ret = appCmd.robotGetData(entity.getUuid(), list, 1, true, 0);
                         return Observable.just(ret);
                     } catch (JfgException e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());

@@ -37,7 +37,6 @@ import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
 import com.cylan.jiafeigou.base.wrapper.BaseActivity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.CircleImageView;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -239,7 +238,7 @@ public class PanoramaCameraActivity extends BaseActivity<PanoramaCameraContact.P
             surfaceView.setLayoutParams(params);
             videoLiveContainer.addView(surfaceView);
         }
-        JfgCmdInsurance.getCmd().enableRenderSingleRemoteView(true, surfaceView);
+        appCmd.enableRenderSingleRemoteView(true, surfaceView);
 
         //enable views
         bottomPanelSwitcher.setEnabled(true);

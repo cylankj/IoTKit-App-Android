@@ -115,7 +115,7 @@ public class CloudLiveActivity extends BaseFullScreenFragmentActivity implements
     }
 
     private void initTitle() {
-        Device jfgDevice = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device jfgDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         tvDeviceName.setText(TextUtils.isEmpty(jfgDevice.alias) ? jfgDevice.uuid : jfgDevice.alias);
 //        CloudLiveCallActivity.setOnCloudMesgBackListener(this);
     }

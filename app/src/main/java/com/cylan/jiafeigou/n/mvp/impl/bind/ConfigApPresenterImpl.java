@@ -10,7 +10,6 @@ import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
@@ -100,7 +99,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
         Observable.just("just send wifi info")
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(s -> {
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     String mac = device.$(202, "");
                     aFullBind.sendWifiInfo(uuid, mac, ssid, pwd, type)
                             .subscribe(ret -> {

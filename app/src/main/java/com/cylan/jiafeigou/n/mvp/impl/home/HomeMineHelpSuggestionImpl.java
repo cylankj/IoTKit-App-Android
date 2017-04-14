@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
-import android.content.Intent;
 import android.os.Environment;
 
 import com.cylan.entity.jniCall.JFGAccount;
@@ -8,8 +7,7 @@ import com.cylan.entity.jniCall.JFGFeedbackInfo;
 import com.cylan.entity.jniCall.JFGMsgHttpResult;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.db.DataBaseUtil;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -22,7 +20,6 @@ import com.cylan.jiafeigou.support.db.ex.DbException;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ZipUtils;
 
 import java.io.File;
@@ -223,7 +220,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<MineHelpSuggestionBean>() {
                     @Override
                     public void call(MineHelpSuggestionBean bean) {
-                        JfgCmdInsurance.getCmd().sendFeedback((Long.parseLong(bean.getDate())) / 1000, bean.getText(), !hasSendLog);
+                        BaseApplication.getAppComponent().getCmd().sendFeedback((Long.parseLong(bean.getDate())) / 1000, bean.getText(), !hasSendLog);
                         if (!hasSendLog) {
                             upLoadLogFile(bean);
                         }
@@ -243,7 +240,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                 .subscribe(new Action1<Object>() {
                     @Override
                     public void call(Object o) {
-                        int req = JfgCmdInsurance.getCmd().getFeedbackList();
+                        int req = BaseApplication.getAppComponent().getCmd().getFeedbackList();
                         AppLogger.d("getSystemAutoReply:" + req);
                     }
                 }, throwable -> {
@@ -354,7 +351,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
         String remoteUrl = null;
         try {
             remoteUrl = "/log/" + Security.getVId() + "/" + userInfomation.getAccount() + "/" + fileName;
-            JfgCmdInsurance.getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
+            BaseApplication.getAppComponent().getCmd().putFileToCloud(remoteUrl, outFile.getAbsolutePath());
             AppLogger.d("upload log:" + remoteUrl);
         } catch (JfgException e) {
             e.printStackTrace();

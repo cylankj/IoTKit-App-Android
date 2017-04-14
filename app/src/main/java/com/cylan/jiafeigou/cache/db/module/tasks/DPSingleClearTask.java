@@ -6,7 +6,6 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBState;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -41,7 +40,7 @@ public class DPSingleClearTask extends BaseDPTask<BaseDPTaskResult> {
             ArrayList<JFGDPMsg> params = new ArrayList<>();
             params.add(request);
             try {
-                long seq = JfgCmdInsurance.getCmd().robotDelData(entity.getUuid(), params, 0);
+                long seq = appCmd.robotDelData(entity.getUuid(), params, 0);
                 subscriber.onNext(seq);
                 subscriber.onCompleted();
             } catch (JfgException e) {

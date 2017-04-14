@@ -8,6 +8,7 @@ import android.support.annotation.CallSuper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
+import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jiafeigou.base.view.JFGPresenter;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
@@ -39,6 +40,7 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
     protected String mUUID;
     protected JFGSourceManager sourceManager;
     protected IDPTaskDispatcher taskDispatcher;
+    protected AppCmd appCmd;
     private CompositeSubscription compositeSubscription;
 
     protected V mView;
@@ -59,6 +61,10 @@ public abstract class BasePresenter<V extends JFGView> implements JFGPresenter<V
 
     public void setTaskDispatcher(IDPTaskDispatcher taskDispatcher) {
         this.taskDispatcher = taskDispatcher;
+    }
+
+    public void setAppCmd(AppCmd appCmd) {
+        this.appCmd = appCmd;
     }
 
     @Override

@@ -11,7 +11,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.ViewablePresenter;
 import com.cylan.jiafeigou.base.view.ViewableView;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.live.IFeedRtcp;
 import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -31,7 +30,6 @@ import rx.schedulers.Schedulers;
 import static com.cylan.jiafeigou.base.view.ViewableView.BAD_FRAME_RATE;
 import static com.cylan.jiafeigou.base.view.ViewableView.BAD_NET_WORK;
 import static com.cylan.jiafeigou.base.view.ViewableView.STOP_VIERER_BY_SYSTEM;
-import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 /**
  * Created by yzd on 16-12-30.
@@ -86,11 +84,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     try {
                         AppLogger.d("正在准备开始直播,对端 cid 为:" + handle);
                         hasLiveStream = true;
-                        int ret = JfgCmdInsurance.getCmd().playVideo(handle);
+                        int ret = appCmd.playVideo(handle);
                         AppLogger.d("准备开始直播返回的结果码为:" + ret);
                         if (ret != 0) {
-                            JfgCmdInsurance.getCmd().stopPlay(handle);
-                            JfgCmdInsurance.getCmd().playVideo(handle);
+                            appCmd.stopPlay(handle);
+                            appCmd.playVideo(handle);
                             AppLogger.d("正在重试播放直播");
                         }
                     } catch (JfgException e) {
@@ -162,7 +160,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     if (!TextUtils.isEmpty(handler)) {
                         try {
                             hasLiveStream = false;
-                            getCmd().stopPlay(handler);
+                            appCmd.stopPlay(handler);
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.remote = getViewHandler();
                             disconn.code = STOP_VIERER_BY_SYSTEM;
@@ -347,8 +345,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 return false;
             }
         }
-        getCmd().setAudio(false, microphone, speaker);//开启设备的扬声器和麦克风
-        getCmd().setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
+        appCmd.setAudio(false, microphone, speaker);//开启设备的扬声器和麦克风
+        appCmd.setAudio(true, speaker, microphone);//开启客户端的扬声器和麦克风
         return true;
     }
 

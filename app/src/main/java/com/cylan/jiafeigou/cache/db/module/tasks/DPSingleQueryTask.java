@@ -18,7 +18,6 @@ import java.util.Map;
 
 import rx.Observable;
 
-import static com.cylan.jiafeigou.misc.JfgCmdInsurance.getCmd;
 
 /**
  * Created by yanzhendong on 2017/3/2.
@@ -79,9 +78,9 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 params.add(msg);
                 long seq = -1;
                 if (option.type == 0) {
-                    seq = getCmd().robotGetData(entity.getUuid() == null ? "" : entity.getUuid(), params, option.limit, option.asc, 0);//多请求一条数据,用来判断是否是一天最后一条
+                    seq = appCmd.robotGetData(entity.getUuid() == null ? "" : entity.getUuid(), params, option.limit, option.asc, 0);//多请求一条数据,用来判断是否是一天最后一条
                 } else if (option.type == 1) {
-                    seq = getCmd().robotGetDataByTime(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
+                    seq = appCmd.robotGetDataByTime(entity.getUuid() == null ? "" : entity.getUuid(), params, 0);
                 }
                 if (seq <= 0) {
                     throw new JfgException("内部错误");

@@ -10,7 +10,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -61,7 +61,7 @@ public class MineInfoSetNamePresenterImpl extends AbstractPresenter<MineInfoSetA
                         jfgAccount.resetFlag();
                         jfgAccount.setAlias(newAliasAccount);
                         try {
-                            JfgCmdInsurance.getCmd().setAccount(jfgAccount);
+                            BaseApplication.getAppComponent().getCmd().setAccount(jfgAccount);
                             isSetAlais = true;
                         } catch (JfgException e) {
                             e.printStackTrace();

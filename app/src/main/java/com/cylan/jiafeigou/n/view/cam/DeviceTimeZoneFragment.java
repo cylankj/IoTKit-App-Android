@@ -133,7 +133,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity().getApplicationContext(), LinearLayoutManager.VERTICAL, false);
         lvTimezoneDetail.setLayoutManager(layoutManager);
         adapter = new DeviceTimeZoneAdapter(getActivity().getApplicationContext());
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
         String timeZoneId = zone == null ? "" : zone.timezone;
         adapter.setChooseId(timeZoneId);
@@ -149,7 +149,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                             .setMessage(getString(R.string.TIMEZONE_INFO))
                             .setNegativeButton(getString(R.string.CANCEL), null)
                             .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                Device aDevice = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+                                Device aDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                                 DpMsgDefine.DPTimeZone timeZone = aDevice.$(214, new DpMsgDefine.DPTimeZone());
                                 TimeZoneBean bean = adapter.getItem(position);
                                 if (!TextUtils.equals(timeZone.timezone, bean.getId())) {

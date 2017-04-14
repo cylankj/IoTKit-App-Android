@@ -6,11 +6,10 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
-import android.os.SystemClock;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineSetRemarkNameContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
@@ -82,7 +81,7 @@ public class MineSetRemarkNamePresenterImp extends AbstractPresenter<MineSetRema
                     @Override
                     public void call(RelAndFriendBean bean) {
                         try {
-                            JfgCmdInsurance.getCmd().setFriendMarkName(friendBean.account, newName);
+                            BaseApplication.getAppComponent().getCmd().setFriendMarkName(friendBean.account, newName);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }

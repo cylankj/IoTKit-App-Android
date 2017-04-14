@@ -8,16 +8,13 @@ import android.net.ConnectivityManager;
 import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
-import com.cylan.entity.JfgEnum;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendScanAddContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
@@ -86,7 +83,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                     @Override
                     public void call(String s) {
                         try {
-                            JfgCmdInsurance.getCmd().checkFriendAccount(s);
+                            BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
                         } catch (JfgException e) {
                             e.printStackTrace();
                         }
@@ -170,7 +167,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
                 resutBean.account = checkAccountCallback.s;
                 resutBean.alias = checkAccountCallback.s1;
                 try {
-                    resutBean.iconUrl = JfgCmdInsurance.getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", checkAccountCallback.s));
+                    resutBean.iconUrl = BaseApplication.getAppComponent().getCmd().getSignedCloudUrl(0, String.format(Locale.getDefault(), "/image/%s.jpg", checkAccountCallback.s));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

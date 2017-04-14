@@ -83,7 +83,7 @@ public class DelayRecordGuideFragment extends BaseFragment {
     }
 
     private boolean isDeviceSleeping() {
-        Device device = sourceManager.getJFGDevice(mUUID);
+        Device device = sourceManager.getDevice(mUUID);
         DpMsgDefine.DPStandby isStandBY = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         return isStandBY.standby;
     }

@@ -58,7 +58,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         pic_container_width = (int) (Resources.getSystem().getDisplayMetrics().widthPixels
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
-        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
         this.hasSdcard = status.hasSdcard && status.err != 0;
     }
 
@@ -67,7 +67,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     }
 
     private boolean online() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         return net != null && net.net > 0;
     }
@@ -178,7 +178,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      * 来自一个全局的通知消息
      */
     public void notifySdcardStatus(boolean status, int position) {
-        DpMsgDefine.DPSdStatus nowStatus = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        DpMsgDefine.DPSdStatus nowStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
         this.hasSdcard = nowStatus.hasSdcard && nowStatus.err != 0;
         updateItemFrom(position);
     }

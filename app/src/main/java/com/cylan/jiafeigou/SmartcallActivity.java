@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou;
 
 import android.Manifest;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -20,8 +19,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -38,10 +35,8 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.facebook.login.LoginResult;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Locale;
 
 import butterknife.BindView;
@@ -222,7 +217,7 @@ public class SmartcallActivity extends NeedLoginActivity
 //          密码错误且是自动登录才走此
             splashOver();
             ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
-            Account account = BaseApplication.getAppComponent().getSourceManager().getAJFGAccount();
+            Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
             if (account != null && !TextUtils.isEmpty(account.getAccount()))
                 AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount(), 1, "");
             PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);

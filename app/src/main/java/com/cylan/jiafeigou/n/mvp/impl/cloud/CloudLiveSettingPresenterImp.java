@@ -73,7 +73,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
     }
 
     private void fillData() {
-        Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         getView().onCloudInfoRsp(TextUtils.isEmpty(device.alias) ? device.uuid : device.alias);
     }
 
@@ -143,7 +143,7 @@ public class CloudLiveSettingPresenterImp extends AbstractPresenter<CloudLiveSet
      */
     @Override
     public String getDeviceName() {
-        Device jfgDevice = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
+        Device jfgDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         if (jfgDevice == null)
             return uuid;
         return TextUtils.isEmpty(jfgDevice.alias) ?

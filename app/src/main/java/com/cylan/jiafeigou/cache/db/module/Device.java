@@ -38,6 +38,8 @@ public class Device extends BasePropertyHolder<Device> {
     public String state;
     public String option;
 
+    private transient boolean available = false;
+
     @Generated(hash = 182677992)
     public Device(Long _id, String uuid, String sn, String alias, String shareAccount,
                   int pid, String vid, String account, int regionType, String server, String action,
@@ -58,6 +60,7 @@ public class Device extends BasePropertyHolder<Device> {
     }
 
     public Device setDevice(JFGDevice device) {
+        if (device == null) return this;
         this.uuid = device.uuid;
         this.sn = device.sn;
         this.alias = device.alias;
@@ -67,6 +70,7 @@ public class Device extends BasePropertyHolder<Device> {
         this.regionType = device.regionType;
         this.action = DBAction.SAVED.action();
         this.state = DBState.SUCCESS.state();
+        this.available = true;
         return this;
     }
 
@@ -74,9 +78,20 @@ public class Device extends BasePropertyHolder<Device> {
     public Device() {
     }
 
+    public boolean available() {
+        return available;
+    }
+
     public Device setAction(String action) {
         this.action = action;
         return this;
+    }
+
+    public final static Device ghost;
+
+    static {
+        ghost = new Device();
+
     }
 
 
