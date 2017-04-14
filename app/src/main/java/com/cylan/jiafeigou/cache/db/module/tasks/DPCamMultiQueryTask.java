@@ -9,6 +9,7 @@ import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.db.view.IDPMultiTask;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.ArrayList;
@@ -32,6 +33,8 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public <R extends IDPMultiTask<BaseDPTaskResult>> R init(List<IDPEntity> cache) throws Exception {
         this.option = cache.get(0).option(DBOption.MultiQueryOption.class);
+        if (sourceManager == null)
+            sourceManager = BaseApplication.getAppComponent().getSourceManager();
         return super.init(cache);
     }
 

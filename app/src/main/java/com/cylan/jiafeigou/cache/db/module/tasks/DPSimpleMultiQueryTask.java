@@ -12,6 +12,7 @@ import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -34,6 +35,8 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     private DBOption.SimpleMultiDpQueryOption option;
 
     public DPSimpleMultiQueryTask() {
+        if (sourceManager == null)
+            sourceManager = BaseApplication.getAppComponent().getSourceManager();
     }
 
     public Observable<BaseDPTaskResult> run() {
@@ -97,7 +100,4 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                 });
     }
 
-    protected Observable<BaseDPTaskResult> parseServerRsp(RobotoGetDataRsp rsp) {
-        return null;
-    }
 }

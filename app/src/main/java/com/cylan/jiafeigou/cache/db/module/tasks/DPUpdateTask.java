@@ -40,7 +40,7 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                 .filter(ret -> ListUtils.getSize(multiEntity) > 0)
                 .subscribeOn(Schedulers.io())
                 .flatMap(idpEntity -> {
-                   dpHelper.saveOrUpdate(idpEntity.getAccount(), null, idpEntity.getUuid(),
+                    dpHelper.saveOrUpdate(idpEntity.getAccount(), null, idpEntity.getUuid(),
                             idpEntity.getVersion(), idpEntity.getMsgId(), idpEntity.getBytes(), null, null, null);
                     return Observable.just(idpEntity.getVersion());
                 })

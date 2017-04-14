@@ -20,10 +20,10 @@ import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.module.tasks.DPSimpleMultiQueryTask;
-import com.cylan.jiafeigou.cache.db.module.tasks.DPUpdateTask;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
+import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -447,7 +447,8 @@ public class DataSourceManager implements JFGSourceManager {
                             jfgdpMsg.packValue = data.toBytes();
                             list.add(jfgdpMsg);
                         }
-                        new DPUpdateTask().init(MiscUtils.msgList(uuid, getAJFGAccount().getAccount(), OptionsImpl.getServer(), list)).performLocal()
+                        List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.UPDATE, uuid, getAJFGAccount().getAccount(), OptionsImpl.getServer(), list);
+                        BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
                                 .subscribeOn(Schedulers.io())
                                 .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
                                 .subscribe(ret -> {
@@ -474,8 +475,8 @@ public class DataSourceManager implements JFGSourceManager {
                             list.add(jfgdpMsg);
                         }
                         try {
-                            new DPUpdateTask().init(MiscUtils.msgList(uuid, getAJFGAccount().getAccount(), OptionsImpl.getServer(), list))
-                                    .performLocal()
+                            List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.UPDATE, uuid, getAJFGAccount().getAccount(), OptionsImpl.getServer(), list);
+                            BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
                                     .subscribeOn(Schedulers.io())
                                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
                                     .subscribe(ret -> {
@@ -630,7 +631,6 @@ public class DataSourceManager implements JFGSourceManager {
                     @Override
                     public void onError(Throwable e) {
                         AppLogger.e(e.getMessage());
-                        e.printStackTrace();
                         makeCacheGetDataSub();
                     }
 
@@ -703,26 +703,22 @@ public class DataSourceManager implements JFGSourceManager {
                 if (msgId == 505 || msgId == 512 || msgId == 222) {
                     AppLogger.d("may fire a notification: " + msgId);
                     //cam 1001 1002  1003
-                    INotify.NotifyBean bean = new INotify.NotifyBean();
-                    bean.resId = R.drawable.icon_home_doorbell_online;
                     try {
                         AppLogger.d("通知栏..." + list.get(i));
-                        bean.time = list.get(i).version;
-                        bean.resId = R.mipmap.ic_launcher;
-                        NotifyManager.getNotifyManager().sendNotify(bean);
-                        AppLogger.e("报警消息来了,但是未读数,跟不上.");
-                        DPSimpleMultiQueryTask task = new DPSimpleMultiQueryTask()
-                                .init(new MiscUtils.DPEntityBuilder()
-                                        .add(uuid, 1001, 0, true)
-                                        .add(uuid, 1002, 0, true)
-                                        .add(uuid, 1003, 0, true)
-                                        .build());
-                        task.run().subscribeOn(Schedulers.newThread())
+                        List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
+                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1001, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1002, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1003, 0, true).build();
+                        BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
+                                .subscribeOn(Schedulers.newThread())
                                 .subscribe(baseDPTaskResult -> {
+                                    if (getAJFGAccount() == null || !getJFGAccount().isEnablePush())
+                                        return;
                                     Device dd = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(uuid);
                                     String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
-                                    bean.time = entity.getVersion();
+                                    INotify.NotifyBean bean = new INotify.NotifyBean();
+                                    bean.sound = getAJFGAccount() != null && getAJFGAccount().getEnableSound();
+                                    bean.vibrate = getAJFGAccount() != null && getJFGAccount().isEnableVibrate();
+                                    bean.time = System.currentTimeMillis();
                                     bean.resId = R.mipmap.ic_launcher;
                                     bean.notificationId = (uuid + "cam").hashCode();
                                     bean.content = alias;
@@ -731,24 +727,23 @@ public class DataSourceManager implements JFGSourceManager {
                                     final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
                                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                                     intent.putExtra("jump_to_message", "jump_to_message");
-                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
                                     NotifyManager.getNotifyManager().sendNotify(bean);
                                 }, AppLogger::e);
                     } catch (Exception e) {
-
+                        AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
                 } else if (msgId == 401) {
                     AppLogger.d("may fire a notification: " + msgId);
                     //for bell 1004 1005
                     INotify.NotifyBean bean = new INotify.NotifyBean();
-                    bean.resId = R.drawable.icon_home_doorbell_online;
                     try {
-                        DPSimpleMultiQueryTask task = new DPSimpleMultiQueryTask()
-                                .init(new MiscUtils.DPEntityBuilder()
-                                        .add(uuid, 1004, 0, true)
-                                        .add(uuid, 1005, 0, true)
-                                        .build());
-                        task.run().subscribeOn(Schedulers.newThread())
+                        AppLogger.d("通知栏..." + list.get(i));
+                        List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
+                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1004, 0, true)
+                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1005, 0, true).build();
+                        BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
+                                .subscribeOn(Schedulers.newThread())
                                 .subscribe(baseDPTaskResult -> {
                                     Device dd = getJFGDevice(uuid);
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
@@ -762,18 +757,17 @@ public class DataSourceManager implements JFGSourceManager {
                                             String.format(ContextUtils.getContext().getString(R.string.app_name) + "(%s%s)", count, ContextUtils.getContext().getString(R.string.DOOR_NOT_CONNECT));
                                     final String subTitle = count == 0 ?
                                             ContextUtils.getContext().getString(R.string.Slogan) : ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL);
-                                    bean.time = entity.getVersion();
+                                    bean.time = System.currentTimeMillis();
                                     bean.resId = R.mipmap.ic_launcher;
                                     bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     bean.time = entity.getVersion();
-                                    bean.resId = R.mipmap.ic_launcher;
                                     bean.notificationId = (uuid + "bell").hashCode();
                                     bean.content = title;
                                     bean.subContent = subTitle;
                                     NotifyManager.getNotifyManager().sendNotify(bean);
                                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
                     } catch (Exception e) {
-                        e.printStackTrace();
+                        AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
                 }
             }
