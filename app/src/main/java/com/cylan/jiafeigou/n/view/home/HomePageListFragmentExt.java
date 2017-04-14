@@ -131,7 +131,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         super.onStart();
         if (basePresenter != null) {
             basePresenter.fetchDeviceList(false);
-            basePresenter.checkClientUpdate();
         } else AppLogger.e("presenter is null");
         need2ShowUseCase();
     }

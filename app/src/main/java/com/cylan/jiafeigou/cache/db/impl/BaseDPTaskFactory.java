@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.cache.db.impl;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPCamDateQueryTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPCamMultiQueryTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPMultiDeleteTask;
+import com.cylan.jiafeigou.cache.db.module.tasks.DPSimpleMultiQueryTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleClearTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleDeleteTask;
 import com.cylan.jiafeigou.cache.db.module.tasks.DPSingleQueryTask;
@@ -34,7 +35,7 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
                 return getSingleTask(action).init((IDPEntity) initValue);
             }
         } catch (Exception e) {
-            AppLogger.d(e.getMessage());
+            AppLogger.e(e.getMessage());
         }
         return null;
     }
@@ -60,8 +61,6 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
             case CAM_DATE_QUERY:
                 result = new DPCamDateQueryTask();
                 break;
-            case UPDATE:
-                result = new DPUpdateTask();
         }
         return result;
     }
@@ -71,6 +70,10 @@ public class BaseDPTaskFactory implements IDPTaskFactory {
             return new DPMultiDeleteTask();
         } else if (DBAction.CAM_MULTI_QUERY == action) {
             return new DPCamMultiQueryTask();
+        } else if (DBAction.MULTI_UPDATE == action) {
+            return new DPUpdateTask();
+        } else if (DBAction.SIMPLE_MULTI_QUERY == action) {
+            return new DPSimpleMultiQueryTask();
         }
         return null;
     }

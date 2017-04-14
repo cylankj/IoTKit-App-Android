@@ -27,6 +27,7 @@ import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.io.File;
 import java.util.concurrent.ExecutionException;
@@ -84,19 +85,20 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
     }
 
     @Override
-    public void unCollect(int index, long version) {
-        long targetTime = version / 1000 + (index + 1);
-        Observable.just(version)
+    public void unCollect(int index, long v) {//1492151447 1492151447
+        long finalVersion = v / 1000 + index + 1;
+        Log.d("finalVersion", "unCollect finalVersion:" + finalVersion + ",index:" + index);
+        Observable.just(finalVersion)
                 .observeOn(Schedulers.io())
                 .map(ver -> new DPEntity()
                         .setUuid("")
-                        .setVersion(targetTime)
+                        .setVersion(finalVersion)
                         .setAction(DBAction.DELETED)
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
                 .flatMap(task -> BaseApplication.getAppComponent().getTaskDispatcher().perform(task))
                 .map(ret -> new DPEntity()
                         .setUuid(uuid)
-                        .setVersion(targetTime)
+                        .setVersion(finalVersion)
                         .setAction(DBAction.DELETED)
                         .setMsgId(511))
                 .flatMap(task -> BaseApplication.getAppComponent().getTaskDispatcher().perform(task))
@@ -108,14 +110,13 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                         AppLogger.d("取消收藏成功");
                         mView.onItemCollectionCheckRsp(false);
                     }
-                }, e -> {
-                    e.printStackTrace();
-                    AppLogger.d(e.getMessage());
-                });
+                }, AppLogger::e);
     }
 
     @Override
     public void collect(int index, long version) {
+        long finalVersion = version / 1000 + index + 1;
+        Log.d("finalVersion", "collect finalVersion:" + finalVersion + ",index:" + index);
         Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
             DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
             item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
@@ -123,17 +124,15 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
             Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             item.fileName = version / 1000 + "_" + (index + 1) + ".jpg";
-            item.time = (int) (version / 1000) + index + 1;//
+            item.time = (int) finalVersion;
             FutureTarget<File> future = Glide.with(ContextUtils.getContext())
                     .load(new JFGGlideURL(uuid, item.fileName))
                     .downloadOnly(100, 100);
             String filePath = null;
             try {
                 filePath = future.get().getAbsolutePath();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } catch (ExecutionException e) {
-                e.printStackTrace();
+            } catch (Exception e) {
+                AppLogger.e("err:" + MiscUtils.getErr(e));
             }
             IDPEntity entity = new DPEntity()
                     .setUuid(uuid)
@@ -162,11 +161,13 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
 
     @Override
     public void checkCollection(long time, int index) {
+        long finalVersion = time / 1000 + index + 1;
+        Log.d("finalVersion", "check finalVersion:" + finalVersion + ",index:" + index);
         Subscription subscription = Observable.just(new DPEntity()
                 .setMsgId(511)
                 .setUuid(uuid)
                 .setAction(DBAction.QUERY)
-                .setVersion(time / 1000 + index + 1)
+                .setVersion(finalVersion)
                 .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
                 .subscribeOn(Schedulers.io())
                 .flatMap(entity -> BaseApplication.getAppComponent().getTaskDispatcher().perform(entity))

@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
@@ -58,6 +59,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(o -> {
                     BaseApplication.getAppComponent().getCmd().logout();
+                    NotifyManager.getNotifyManager().clearAll();
                     RxBus.getCacheInstance().removeAllStickyEvents();
                     AutoSignIn.getInstance().autoSave(account, 1, "")
                             .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
@@ -67,12 +69,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                     PreferencesUtils.putString(KEY_ACCOUNT, "");
                     PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
                     RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("logOut" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, AppLogger::e);
     }
 
     /**

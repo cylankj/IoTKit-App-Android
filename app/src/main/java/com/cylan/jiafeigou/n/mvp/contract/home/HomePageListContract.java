@@ -61,6 +61,5 @@ public interface HomePageListContract {
 
         void fetchDeviceList(boolean manually);
 
-        void checkClientUpdate();
     }
 }

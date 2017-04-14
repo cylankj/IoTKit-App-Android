@@ -21,13 +21,9 @@ import com.cylan.jiafeigou.IRemoteServiceCallback;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.engine.DownloadService;
 import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -80,10 +76,8 @@ public class ClientUpdateManager {
             //没有sd卡
             updateFileBean.savePath = context.getFilesDir().getAbsolutePath();
         } else {
-//            updateFileBean.savePath = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator;
             updateFileBean.savePath = JConstant.MISC_PATH;
         }
-//        apkPath = "/mnt/sdcard"+updateFileBean.savePath+ updateFileBean.fileName+".apk";
         apkPath = JConstant.MISC_PATH + "/" + updateFileBean.fileName + ".apk";
         checkLocal(apkPath, url, context);
     }
@@ -120,9 +114,6 @@ public class ClientUpdateManager {
         public void onDownloadProcess(long taskId, double percent, long downloadedLength) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onDownloadProcess:" + taskId + " percent:" + percent);
             // 改变通知栏
-//            createNotification();
-//            cBuilder.setProgress(100, (int)percent, false);
-//            sent();
         }
 
         @Override
@@ -145,18 +136,12 @@ public class ClientUpdateManager {
         public void onDownloadCompleted(long taskId) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onDownloadCompleted:" + taskId);
             AppLogger.d("test_downC:下载完成了");
-//            cBuilder.setContentText("下载完成").setProgress(0, 0, false);
-//            sent();
-            //下载完成通知
-            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING, false);
-            RxBus.getCacheInstance().postSticky(new RxEvent.ClientUpgrade(apkPath));
-            realse(ContextUtils.getContext());
+            release(ContextUtils.getContext());
         }
 
         @Override
         public void onFailedReason(long taskId, int reason) throws RemoteException {
             Log.d("IRemoteServiceCallback", "onFailedReason:" + taskId);
-            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING, false);
         }
     };
 
@@ -203,16 +188,13 @@ public class ClientUpdateManager {
                 })
                 .subscribe(b -> {
                     if (b) {
-                        //直接传送APK地址
-                        ToastUtil.showPositiveToast("已下载");
-                        RxBus.getCacheInstance().postSticky(new RxEvent.ClientUpgrade(apkPath));
+                        AppLogger.d("已经瞎子?");
                     } else {
                         //仅wifi环境下升级
                         if (NetUtils.getNetType(ContextUtils.getContext()) == 1) {
                             Intent intent = new Intent(context, DownloadService.class);
                             intent.putExtra(DownloadService.KEY_PARCELABLE, updateFileBean);
                             context.bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
-                            PreferencesUtils.putBoolean(JConstant.IS_UPDATE_DOWNLOADING, true);
                         }
                     }
                 }, throwable -> {
@@ -279,7 +261,7 @@ public class ClientUpdateManager {
     }
 
 
-    public void realse(Context context) {
+    public void release(Context context) {
         try {
             if (mService != null) {
                 mService.unregisterCallback(mCallback);

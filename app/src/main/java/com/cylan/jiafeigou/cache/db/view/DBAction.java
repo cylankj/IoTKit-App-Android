@@ -7,7 +7,7 @@ import android.text.TextUtils;
  */
 
 public enum DBAction {
-    SAVED, DELETED, SHARED, QUERY, CAM_MULTI_QUERY,SIMPLE_MULTI_QUERY, CAM_DATE_QUERY, CLEARED, UPDATE, AVAILABLE(OP.NOT_EQS, DELETED.name() + "," + CLEARED.name()) {
+    SAVED, DELETED, SHARED, QUERY, CAM_MULTI_QUERY, SIMPLE_MULTI_QUERY, CAM_DATE_QUERY, CLEARED, MULTI_UPDATE, AVAILABLE(OP.NOT_EQS, DELETED.name() + "," + CLEARED.name()) {
         @Override
         public boolean accept(DBAction action) {
             String[] actions = action().split(",");

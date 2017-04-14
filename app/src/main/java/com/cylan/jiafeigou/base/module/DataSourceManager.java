@@ -451,7 +451,7 @@ public class DataSourceManager implements JFGSourceManager {
                             jfgdpMsg.packValue = data.toBytes();
                             list.add(jfgdpMsg);
                         }
-                        List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
+                        List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.MULTI_UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
                                 .subscribeOn(Schedulers.io())
                                 .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))
@@ -480,7 +480,7 @@ public class DataSourceManager implements JFGSourceManager {
                             list.add(jfgdpMsg);
                         }
                         try {
-                            List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
+                            List<IDPEntity> multiUpdateList = MiscUtils.msgList(DBAction.MULTI_UPDATE, uuid, getAccount().getAccount(), OptionsImpl.getServer(), list);
                             BaseApplication.getAppComponent().getTaskDispatcher().perform(multiUpdateList)
                                     .subscribeOn(Schedulers.io())
                                     .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()))

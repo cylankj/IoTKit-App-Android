@@ -23,6 +23,8 @@ public interface INotify {
     void sendNotify(Notification notification);
 
 
+    void clearAll();
+
     void sendNotify(NotifyBean notifyBean);
 
 

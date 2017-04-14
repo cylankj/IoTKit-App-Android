@@ -75,7 +75,7 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @BindView(R.id.imgV_big_pic_collect)
     ImageView imgVBigPicCollect;
 
-    private int currentIndex = -1, previewFocusIndex = -1;
+    private int currentIndex = -1;
     private DpMsgDefine.DPAlarm alarmMsg;
     private String uuid;
     private Device device;
@@ -139,8 +139,8 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
                 final View v = lLayoutPreview.getChildAt(i);
                 final int jjj = i;
                 v.setOnClickListener(view -> {
-                    if (previewFocusIndex != jjj) {
-                        previewFocusIndex = jjj;
+                    if (currentIndex == -1 || currentIndex != jjj) {
+                        currentIndex = jjj;
                         updateFocus(true, jjj);
                     }
                 });

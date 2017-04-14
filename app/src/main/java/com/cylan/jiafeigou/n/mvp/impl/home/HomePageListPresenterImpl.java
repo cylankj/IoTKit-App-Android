@@ -8,9 +8,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomePageListContract;
@@ -21,8 +19,6 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -52,7 +48,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 devicesUpdate1(),
                 robotDeviceDataSync(),
                 JFGAccountUpdate(),
-                clientUpdateBack()
         };
     }
 
@@ -261,40 +256,6 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
     }
 
     private static final class InternalHelp {
-    }
-
-    //升级只在首页提示
-    private Subscription clientUpdateBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ClientUpgrade.class)
-                .subscribeOn(Schedulers.newThread())
-                .delay(200, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(clientUpgrade -> {
-                    if (!TextUtils.isEmpty(clientUpgrade.apkPath) && PreferencesUtils.getBoolean(JConstant.IS_FIRST_PAGE_VIS, false))
-                        if (!PreferencesUtils.getBoolean(JConstant.CLIENT_UPDATAE_TAB, false)) {
-                            getView().clientUpdateDialog(clientUpgrade.apkPath);
-                        } else {
-                            if (!TimeUtils.isToday(PreferencesUtils.getLong(JConstant.CLIENT_UPDATAE_TIME_TAB)))
-                                getView().clientUpdateDialog(clientUpgrade.apkPath);
-                        }
-                }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
-    }
-
-    @Override
-    public void checkClientUpdate() {
-        Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(o -> {
-                    try {
-                        if (!PreferencesUtils.getBoolean(JConstant.IS_UPDATE_DOWNLOADING, false)) {
-                            int req = BaseApplication.getAppComponent().getCmd().checkClientVersion("0001");
-                            AppLogger.d("client_update:" + req);
-                        }
-                    } catch (JfgException e) {
-                        AppLogger.e("client_update:" + e.getLocalizedMessage());
-                        e.printStackTrace();
-                    }
-                }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
     }
 
 }

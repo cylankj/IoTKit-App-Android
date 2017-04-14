@@ -1000,12 +1000,21 @@ public class RxEvent {
 
     }
 
-    public static final class ClientUpgrade {
-        public String apkPath;
+    public static final class ClientCheckVersion {
+        public int ret;
+        public String result;
+        public int forceUpgrade;//强制升级
 
-        public ClientUpgrade(String apkPath) {
-            this.apkPath = apkPath;
+        public ClientCheckVersion(int ret, String result, int forceUpgrade) {
+        }
+
+        @Override
+        public String toString() {
+            return "ClientCheckVersion{" +
+                    "ret=" + ret +
+                    ", result='" + result + '\'' +
+                    ", forceUpgrade=" + forceUpgrade +
+                    '}';
         }
     }
-
 }
