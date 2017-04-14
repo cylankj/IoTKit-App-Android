@@ -187,7 +187,6 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
-//        BaseApplication.getAppComponent().getSourceManager().cacheUnreadCount(l, s, arrayList);
         AppLogger.d("OnRobotCountDataRsp :" + l + ":" + s + "");
     }
 

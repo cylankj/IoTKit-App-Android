@@ -105,7 +105,9 @@ public interface IDBHelper {
 
     Observable<Void> deleteAllHistoryFile(String uuid);
 
-    void clear(String uuid, Integer msgId);
+    void clearMsg(String uuid, Integer msgId);
+
+    void clearDevice();
 
     void setDataSourceManager(JFGSourceManager manager);
 

@@ -92,10 +92,11 @@ public interface DBOption {
         }
     }
 
-    class RawDeviceOrderOption extends BaseDBOption {
+    class DeviceOption extends BaseDBOption {
         public int rawDeviceOrder;
+        public long lastLowBatteryTime;
 
-        public RawDeviceOrderOption(int order) {
+        public DeviceOption(int order) {
             this.rawDeviceOrder = order;
         }
     }

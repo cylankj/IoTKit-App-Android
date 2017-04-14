@@ -16,8 +16,6 @@ import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
 
 import org.msgpack.MessagePack;
-import org.msgpack.annotation.Index;
-import org.msgpack.annotation.Message;
 
 import java.io.IOException;
 
@@ -33,21 +31,8 @@ import rx.schedulers.Schedulers;
 
 public class GlobalUdpDataSource {
     private Subscription subscription;
-    public static GlobalUdpDataSource instance;
-
-    public static GlobalUdpDataSource getInstance() {
-        if (instance == null)
-            instance = new GlobalUdpDataSource();
-        return instance;
-    }
 
     private GlobalUdpDataSource() {
-    }
-
-    @Message
-    public static class BellRing {
-        @Index(1)
-        public String cid;
     }
 
     public void register() {

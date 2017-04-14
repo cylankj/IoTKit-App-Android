@@ -30,6 +30,7 @@ public class BaseJFGResultParser {
     public Subscription initSubscription() {
         return RxBus.getCacheInstance().toObservable(JFGResult.class)
                 .subscribeOn(Schedulers.io())
+                .retry((integer, throwable) -> true)
                 .subscribe(this::parserResult, AppLogger::e);
     }
 

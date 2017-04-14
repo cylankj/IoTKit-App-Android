@@ -69,7 +69,7 @@ public interface JFGSourceManager {
 
     void setJfgAccount(JFGAccount jfgAccount);
 
-    boolean updateJFGDevice(Device device);
+    boolean updateDevice(Device device);
 
     /**
      * 本地和远程

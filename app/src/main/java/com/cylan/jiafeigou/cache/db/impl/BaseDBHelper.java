@@ -266,26 +266,20 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
-    public void clear(String uuid, Integer msgId) {
+    public void clearMsg(String uuid, Integer msgId) {
         if (dpAccount == null || dpAccount.getAccount() == null) return;
-        String uuidCond = "";
-        List<Object> args = new ArrayList<>(4);
-        args.add(dpAccount.getAccount());
-        args.add(getServer());
-        if (uuid != null) {
-            uuidCond = " AND UUID = ? ";
-            args.add(uuid);
-        }
-        String msgIdCond = "";
-        if (msgId != null) {
-            msgIdCond = " AND MSG_ID = ? ";
-            args.add(msgId);
-        }
-        String execSQL = "DELETE FROM DPENTITY WHERE ACCOUNT = ? AND SERVER = ? " + uuidCond + msgIdCond;
+        List<DPEntity> list = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, null, null, null).list();
+        mEntityDao.deleteInTx(list);
+    }
+
+    @Override
+    public void clearDevice() {
+        if (dpAccount == null || dpAccount.getAccount() == null) return;
+        String execSQL = "DELETE FROM DEVICE WHERE ACCOUNT = ? AND SERVER = ? ";
         Database database = daoSession.getDatabase();
         database.beginTransaction();
         AppLogger.d("正在清除数据:" + execSQL);
-        database.execSQL(execSQL, args.toArray());
+        database.execSQL(execSQL, new Object[]{dpAccount.getAccount(), getServer()});
         database.endTransaction();
     }
 
@@ -471,9 +465,11 @@ public class BaseDBHelper implements IDBHelper {
                     QueryBuilder<Device> queryBuilder = null;
                     Device dpDevice = null;
                     JFGDevice dev;
+                    List<Device> remove = buildDPDeviceQueryBuilder(account.getAccount(), getServer(), null, null, null, null).list();
+                    if (remove == null) remove = new ArrayList<>();
                     for (int i = 0; i < device.length; i++) {
                         dev = device[i];
-                        clear(dev.uuid, null);
+                        clearMsg(dev.uuid, null);
                         queryBuilder = deviceDao.queryBuilder().where(DeviceDao.Properties.Server.eq(getServer()), DeviceDao.Properties.Uuid.eq(dev.uuid), DeviceDao.Properties.Account.eq(account.getAccount()));
                         dpDevice = queryBuilder.unique();
                         if (dpDevice == null) {
@@ -482,10 +478,19 @@ public class BaseDBHelper implements IDBHelper {
                             dpDevice.setAccount(account.getAccount());
                         }
                         dpDevice.setDevice(dev);
-                        dpDevice.setOption(new DBOption.RawDeviceOrderOption(i));
+                        DBOption.DeviceOption option = dpDevice.option(DBOption.DeviceOption.class);
+                        if (option == null) {
+                            option = new DBOption.DeviceOption(i);
+                            dpDevice.setOption(option);
+                        }
+                        if (dpDevice.action() == DBAction.UNBIND) {
+                            option.lastLowBatteryTime = 0;
+                        }
                         dpDevice.setPropertyParser(propertyParser);
                         result.add(dpDevice);
                     }
+                    remove.removeAll(result);
+                    deviceDao.deleteInTx(remove);
                     deviceDao.insertOrReplaceInTx(result);
                     return result;
                 });
@@ -513,9 +518,10 @@ public class BaseDBHelper implements IDBHelper {
     public Observable<Device> unBindDeviceWithConfirm(String uuid) {
         return markDevice(getDpAccount(), getServer(), uuid, DBAction.UNBIND, DBState.SUCCESS, null).map(items -> {
             if (items == null || items.size() == 0) return null;
-            clear(uuid, null);
+            clearMsg(uuid, null);
             Device device = items.get(0);
             device.setPropertyParser(propertyParser);
+            deviceDao.delete(device);
             return device;
         });
     }
@@ -532,10 +538,10 @@ public class BaseDBHelper implements IDBHelper {
                     device.setState(DBState.SUCCESS);
                     result.add(device);
                     device.setPropertyParser(propertyParser);
-                    clear(device.getUuid(), null);
+                    clearMsg(device.getUuid(), null);
                 }
             }
-            deviceDao.saveInTx(result);
+            deviceDao.deleteInTx(result);
             return result;
         });
     }

@@ -193,7 +193,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
     public void updateAlias(Device device) {
         addSubscription(Observable.just(device)
                 .map(device1 -> {
-                    BaseApplication.getAppComponent().getSourceManager().updateJFGDevice(device);
+                    BaseApplication.getAppComponent().getSourceManager().updateDevice(device);
                     try {
                         BaseApplication.getAppComponent().getCmd().setAliasByCid(device.uuid, device.alias);
                         AppLogger.d("update alias suc");

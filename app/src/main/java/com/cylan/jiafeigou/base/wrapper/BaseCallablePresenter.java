@@ -9,7 +9,6 @@ import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.base.view.CallablePresenter;
 import com.cylan.jiafeigou.base.view.CallableView;
 import com.cylan.jiafeigou.misc.JConstant;
-import com.cylan.jiafeigou.n.engine.GlobalBellCallSource;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -72,9 +71,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                 .flatMap(who -> {
                                     switch (mView.onResolveViewLaunchType()) {
                                         case JConstant.VIEW_CALL_WAY_LISTEN:
-                                            Subscription subscription = loadPreview().subscribe(ret -> {
-                                            }, AppLogger::e);
-                                            registerSubscription(subscription);
                                             if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
                                                 mView.onNewCallWhenInLive(mHolderCaller.caller);
                                             } else if (mHolderCaller != null) {
@@ -122,29 +118,29 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
         mIsInViewerMode = false;
     }
 
-    protected Observable<Long> loadPreview() {
+    @Override
+    public void loadPreview(String url) {
+        Subscription subscription = load(url).subscribe(ret -> {
+        }, AppLogger::e);
+        registerSubscription(subscription);
+    }
+
+    protected Observable<Long> load(String url) {
         return Observable.interval(2, TimeUnit.SECONDS)
-                .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(s -> {
-                            RxEvent.BellPreviewEvent event = GlobalBellCallSource.getInstance().getPreviewEvent();
-                            AppLogger.d("正在加载截图:" + event);
-                            if (event != null) {
-                                preload(event.url);
-                            }
-                            return s;
-                        }
-                )
+                    preload(url);
+                    return s;
+                })
                 .takeUntil(RxBus.getCacheInstance().toObservable(Notify.class).first()
                         .observeOn(AndroidSchedulers.mainThread())
                         .filter(ret -> ret != null)
                         .map(notify -> {
                             if (notify.success) {
                                 AppLogger.d("正在显示门铃截图");
-                                if (mView != null && GlobalBellCallSource.getInstance().getPreviewEvent() != null)
-                                    mView.onPreviewPicture(GlobalBellCallSource.getInstance().getPreviewEvent().url);
+                                if (mView != null)
+                                    mView.onPreviewPicture(url);
                             }
-                            GlobalBellCallSource.getInstance().clearPreviewEvent();
                             return notify;
                         })
 

@@ -3,11 +3,8 @@ package com.cylan.jiafeigou.n.base;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
-import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
@@ -21,7 +18,8 @@ import com.cylan.jiafeigou.DaemonService2;
 import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
-import com.cylan.jiafeigou.n.engine.DataSourceService;
+import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
+import com.cylan.jiafeigou.n.engine.TryLogin;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
@@ -47,9 +45,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     private DaemonClient mDaemonClient;
     private HuaweiApiClient client;
-
     private static AppComponent appComponent;
-
 
     static {
         System.loadLibrary("jfgsdk");
@@ -95,7 +91,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     }
 
 
-    class MyDaemonListener implements DaemonConfigurations.DaemonListener {
+    private class MyDaemonListener implements DaemonConfigurations.DaemonListener {
         @Override
         public void onPersistentStart(Context context) {
             AppLogger.d("onPersistentStart");
@@ -118,22 +114,20 @@ public class BaseApplication extends MultiDexApplication implements Application.
         super.onCreate();
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
+            try2init();
+            PerformanceUtils.startTrace("appStart");
             //Dagger2 依赖注入
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
             Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
-            PerformanceUtils.startTrace("appStart");
-            PerformanceUtils.startTrace("appStart0");
+
             PreferencesUtils.init(getApplicationContext());
             //每一个新的进程启动时，都会调用onCreate方法。
-            try2init();
-            PerformanceUtils.startTrace("appStart");
-            PerformanceUtils.startTrace("appStart0");
             //Dagger2 依赖注入,初始化全局资源
-
-            registerBootComplete();
             registerActivityLifecycleCallbacks(this);
             initHuaweiPushSDK();
 //            startService(new Intent(this, DataSourceService.class));
+            GlobalResetPwdSource.getInstance().register();
+            Schedulers.io().createWorker().schedule(TryLogin::tryLogin);
             PerformanceUtils.stopTrace("appStart");
         }
     }
@@ -160,25 +154,12 @@ public class BaseApplication extends MultiDexApplication implements Application.
         client.connect();
     }
 
-    /**
-     * 注册启动监听广播
-     */
-    private void registerBootComplete() {
-        try {
-            BootCompletedReceiver receiver = new BootCompletedReceiver();
-            IntentFilter intentFilter = new IntentFilter(Intent.ACTION_BOOT_COMPLETED);
-            registerReceiver(receiver, intentFilter);
-            Log.d(TAG, "bootComplete");
-        } catch (Exception e) {
-            Log.d(TAG, "bootComplete: e: " + e.toString());
-        }
-    }
-
     @Override
     public void onTerminate() {
         super.onTerminate();
         AppLogger.d("进程已被销毁!!!!");
         appComponent.getInitializationManager().clean();
+        GlobalResetPwdSource.getInstance().unRegister();
         if (client != null && client.isConnected()) {
             client.disconnect();
         }
@@ -238,16 +219,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onActivityDestroyed(Activity activity) {
         AppLogger.i("life:onActivityDestroyed " + activity.getClass().getSimpleName());
-    }
-
-
-    public static class BootCompletedReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            if (!ProcessUtils.isServiceRunning(context, DataSourceService.class)) {
-                AppLogger.i("initSubscription DataSourceService");
-            }
-        }
     }
 
     public static HttpProxyCacheServer getProxy() {

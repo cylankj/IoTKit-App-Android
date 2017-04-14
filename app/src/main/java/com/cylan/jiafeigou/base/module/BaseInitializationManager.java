@@ -23,7 +23,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import rx.Subscription;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -43,9 +42,11 @@ public final class BaseInitializationManager {
     private String vid;
     private String serverAddress;
     private String logPath;
-    private BaseJFGResultParser resultParser;
     private Context appContext;
     private String crashPath;
+    private BaseJFGResultParser resultParser;
+    private BaseGlobalUdpParser udpParser;
+    private BaseBellCallEventListener bellCallEventListener;
 
     @Inject
     public BaseInitializationManager(JFGSourceManager manager,
@@ -61,7 +62,9 @@ public final class BaseInitializationManager {
                                      @Named("LogPath") String logPath,
                                      BaseJFGResultParser resultParser,
                                      @ContextLife Context context,
-                                     @Named("CrashPath") String crashPath
+                                     @Named("CrashPath") String crashPath,
+                                     BaseGlobalUdpParser udpParser,
+                                     BaseBellCallEventListener listener
     ) {
         compositeSubscription = new CompositeSubscription();
         this.manager = manager;
@@ -78,6 +81,8 @@ public final class BaseInitializationManager {
         this.resultParser = resultParser;
         this.appContext = context;
         this.crashPath = crashPath;
+        this.udpParser = udpParser;
+        this.bellCallEventListener = listener;
     }
 
     public void initialization() {
@@ -85,11 +90,17 @@ public final class BaseInitializationManager {
         initSourceManager();
         initDBHelper();
         initTaskDispatcher();
-        initJFGResultParser();
         initAppCmd();
         initBugMonitor();
         initBlockCanary();
         initLeakCanary();
+        initGlobalSubscription();
+    }
+
+    private void initGlobalSubscription() {
+        compositeSubscription.add(resultParser.initSubscription());
+        compositeSubscription.add(udpParser.initSubscription());
+        compositeSubscription.add(bellCallEventListener.initSubscription());
     }
 
     public void clean() {
@@ -113,11 +124,6 @@ public final class BaseInitializationManager {
         String serverAddress = null;
         String logPath = null;
         BaseJFGResultParser resultParser = null;
-    }
-
-    private void initJFGResultParser() {
-        Subscription subscription = resultParser.initSubscription();
-        compositeSubscription.add(subscription);
     }
 
     private void initSourceManager() {
