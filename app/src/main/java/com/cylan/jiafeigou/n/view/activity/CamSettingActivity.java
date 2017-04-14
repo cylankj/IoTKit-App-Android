@@ -319,6 +319,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
 
     @Override
     public void deviceUpdate(Device device) {
+        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
         //////////////////////////分享账号////////////////////////////////////////////
         if (!TextUtils.isEmpty(device.shareAccount)) {
             //分享账号 隐藏
@@ -344,6 +345,10 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDeviceStandbyMode.setVisibility(View.GONE);
         } else {
             svSettingDeviceStandbyMode.setChecked(dpStandby.standby);
+            if (!JFGRules.isDeviceOnline(net)) {
+                enableStandby(false);
+                return;
+            } else enableStandby(true);
             svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 switchBtn(lLayoutSettingItemContainer, !isChecked);
                 DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
@@ -391,7 +396,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceAutoRecord.setAlpha(!dpStandby.standby ? 1.0f : 0.6f);
         svSettingDeviceAutoRecord.setTvSubTitle(dpStandby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
         ////////////////////////////net////////////////////////////////////////
-        DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+
         boolean isMobileNet = net.net > 1;
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? "" : net.ssid) : getString(R.string.OFF_LINE));
         //是否有sim卡
@@ -539,16 +544,21 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
     public void onNetworkChanged(boolean connected) {
         svSettingDeviceMobileNetwork.setEnabled(connected);
         svSettingDeviceDelayCapture.setEnabled(connected);
-        svSettingDeviceStandbyMode.setEnabled(connected);
+
         if (!connected) {
             svSettingDeviceMobileNetwork.setAlpha(0.6f);
             svSettingDeviceDelayCapture.setAlpha(0.6f);
-            svSettingDeviceStandbyMode.setAlpha(0.6f);
+
         } else {
             svSettingDeviceMobileNetwork.setAlpha(1.0f);
             svSettingDeviceDelayCapture.setAlpha(1.0f);
-            svSettingDeviceStandbyMode.setAlpha(1.0f);
         }
+        enableStandby(connected);
+    }
+
+    private void enableStandby(boolean enable) {
+        svSettingDeviceStandbyMode.setEnabled(enable);
+        svSettingDeviceStandbyMode.setAlpha(!enable ? 0.6f : 1.0f);
     }
 
     @Override
