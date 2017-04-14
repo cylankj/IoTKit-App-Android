@@ -454,6 +454,7 @@ public class DataSourceManager implements JFGSourceManager {
                                 .subscribe(ret -> {
                                 }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
                     } catch (Exception e) {
+                        AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
                 }, throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
         return true;
