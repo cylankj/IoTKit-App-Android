@@ -11,6 +11,7 @@ import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DataPoint;
@@ -437,7 +438,7 @@ public class MiscUtils {
         return list.get(0);//降序的
     }
 
-    public static ArrayList<IDPEntity> msgList(String uuid, String account, String server, List<JFGDPMsg> list) {
+    public static ArrayList<IDPEntity> msgList(DBAction dbAction, String uuid, String account, String server, List<JFGDPMsg> list) {
         ArrayList<IDPEntity> idpEntities = new ArrayList<>();
         for (JFGDPMsg jfgdpMsg : list) {
             DPEntity dpEntity = new DPEntity();
@@ -445,6 +446,7 @@ public class MiscUtils {
             dpEntity.setVersion(jfgdpMsg.version);
             dpEntity.setBytes(jfgdpMsg.packValue);
             dpEntity.setMsgId((int) jfgdpMsg.id);
+            dpEntity.setAction(dbAction);
             dpEntity.setAccount(account);
             dpEntity.setServer(server);
             idpEntities.add(dpEntity);
@@ -469,10 +471,11 @@ public class MiscUtils {
         public DPEntityBuilder() {
         }
 
-        public DPEntityBuilder add(String uuid, long msgId, long version, boolean asc) {
+        public DPEntityBuilder add(DBAction action, String uuid, long msgId, long version, boolean asc) {
             list.add(new DPEntity()
                     .setMsgId((int) msgId)
                     .setUuid(uuid)
+                    .setAction(action)
                     .setVersion(version)
                     .setOption(new DBOption.SimpleMultiDpQueryOption(1, asc))
                     .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));

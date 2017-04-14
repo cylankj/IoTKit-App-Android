@@ -71,6 +71,7 @@ public class DurationDialogFragment extends BaseDialog<Integer> {
                 return index + 1 + " s";
             }
         };
+        newValue = value;
         adapter.setTextColor(getContext().getResources().getColor(R.color.color_4b9fd5));
         wheelDurationPick.setViewAdapter(adapter);
         wheelDurationPick.setCurrentItem(value - 1);

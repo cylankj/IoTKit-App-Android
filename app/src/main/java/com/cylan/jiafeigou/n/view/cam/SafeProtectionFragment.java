@@ -140,7 +140,10 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                 }
                 //自动录像选择 侦测到异常时 需要弹框
                 int oldOption = aDevice.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
-                if (oldOption != 0) return;
+                if (oldOption != 0) {
+                    showDetail(false);
+                    return;
+                }
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
                         .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {

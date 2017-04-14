@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.engine;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -86,7 +87,8 @@ public class GlobalUdpDataSource {
                         } else if (TextUtils.equals(headTag, UdpConstant.DOORBELL_RING)) {
                             AppLogger.d("收到局域网呼叫");
                             JfgUdpMsg.UdpRecvHeard recvHeard = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpRecvHeard.class);
-                            if (BaseApplication.getAppComponent().getSourceManager().getDevice(recvHeard.cid) != null) {//说明当前账号有这个设备
+                            Device device = BaseApplication.getAppComponent().getSourceManager().getJFGDevice(recvHeard.cid);
+                            if (device != null && TextUtils.equals(device.uuid, recvHeard.cid)) {//说明当前账号有这个设备
                                 AppLogger.d("当前保存的 NTP 时间为:" + PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL));
                                 JFGDoorBellCaller caller = new JFGDoorBellCaller();
                                 caller.time = System.currentTimeMillis() / 1000L - PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL);

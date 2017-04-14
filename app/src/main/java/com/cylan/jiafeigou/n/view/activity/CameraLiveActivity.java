@@ -95,6 +95,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     protected void onNewIntent(Intent intent) {
         super.onNewIntent(intent);
         this.uuid = getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        Log.d("onNewIntent", "onNewIntent:" + uuid);
         if (TextUtils.isEmpty(uuid)) {
             AppLogger.e("what the hell uuid is null");
             finishExt();
@@ -196,6 +197,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
      */
     @OnClick(R.id.imgV_camera_title_top_setting)
     public void onClickSetting() {
+        Log.d("onClickSetting", "onClickSetting: " + getIntent().getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID));
+        Log.d("onClickSetting", "onClickSetting  uuid: " + uuid);
         Intent intent = new Intent(this, CamSettingActivity.class);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         startActivity(intent, ActivityOptionsCompat.makeCustomAnimation(getApplicationContext(),

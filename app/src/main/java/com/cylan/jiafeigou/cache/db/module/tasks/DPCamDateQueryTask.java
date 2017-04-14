@@ -9,6 +9,8 @@ import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.DPEntityDao;
 import com.cylan.jiafeigou.cache.db.view.DBState;
+import com.cylan.jiafeigou.misc.JfgCmdInsurance;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -32,6 +34,8 @@ import rx.schedulers.Schedulers;
 public class DPCamDateQueryTask extends BaseDPTask<BaseDPTaskResult> {
 
     public DPCamDateQueryTask() {
+        if (sourceManager == null)
+            sourceManager = BaseApplication.getAppComponent().getSourceManager();
     }
 
     @Override
