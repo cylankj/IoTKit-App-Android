@@ -224,8 +224,9 @@ public class BindScanFragment extends IBaseFragment<ScanContract.Presenter> impl
             if (device != null) {
                 ToastUtil.showNegativeToast(getString(R.string.Tap1_AddedDeviceTips));
                 HandlerThreadUtils.postDelay(() -> {
-                    zxVScan.stop();
-                    getActivity().finish();
+                    if (zxVScan != null) zxVScan.stop();
+                    if (getActivity() != null && getActivity().getSupportFragmentManager() != null)
+                        getActivity().getSupportFragmentManager().popBackStack();
                 }, 2000);
             } else {
                 int iPid = Integer.parseInt(pid);

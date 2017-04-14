@@ -148,11 +148,8 @@ public class DataSourceManager implements JFGSourceManager {
     public Device getJFGDevice(String uuid) {
         Device device = mCachedDeviceMap.get(uuid);
         if (device == null) {
-            for (Pair<Integer, String> pair : rawDeviceOrder) {
-                if (pair.second.equals(uuid)) {
-                    return new Device();
-                }
-            }
+            device = new Device();
+            AppLogger.e("device is null:" + uuid);
         }
         return device;
     }
@@ -734,7 +731,7 @@ public class DataSourceManager implements JFGSourceManager {
                                     final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
                                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                                     intent.putExtra("jump_to_message", "jump_to_message");
-                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
                                     NotifyManager.getNotifyManager().sendNotify(bean);
                                 }, AppLogger::e);
                     } catch (Exception e) {
