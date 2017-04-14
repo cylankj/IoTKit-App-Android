@@ -214,7 +214,7 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     //这种方式可以解决:Warning:Conflict with dependency 'com.google.guava:guava'. Resolved versions for app (18.0) and test app (19.0) differ. See http://g.co/androidstudio/app-test-app-conflict for details.
     configurations.all {
-        resolutionStrategy.force  'com.android.support:support-annotations:+'
+        resolutionStrategy.force 'com.android.support:support-annotations:+'
     }
     //////////////test///////////////////////
     //testCompile和androidTestCompile的区别在于，测试文件所在的目录。
@@ -300,5 +300,6 @@ dependencies {
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.google.dagger:dagger:2.10'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
 }
 
