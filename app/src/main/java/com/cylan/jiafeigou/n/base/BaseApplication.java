@@ -122,7 +122,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
             PerformanceUtils.startTrace("appStart");
             //Dagger2 依赖注入
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-            Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
 
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源
@@ -130,7 +129,10 @@ public class BaseApplication extends MultiDexApplication implements Application.
             initHuaweiPushSDK();
 //            startService(new Intent(this, DataSourceService.class));
             GlobalResetPwdSource.getInstance().register();
-            Schedulers.io().createWorker().schedule(TryLogin::tryLogin);
+            Schedulers.io().createWorker().schedule(() ->{
+                appComponent.getInitializationManager().initialization();
+                TryLogin.tryLogin();
+            });
             PerformanceUtils.stopTrace("appStart");
         }
     }
