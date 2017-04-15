@@ -132,21 +132,6 @@ android {
 
 
     productFlavors {
-//        _yun {
-//            //vid vkey已经搬到Security.java
-//            //官方运营
-//            versionName vName
-//            versionCode vCode
-//            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
-//                                    "VID"                : "\\ 0001",
-//                                    "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
-//                                    "qqAppKey"           : "\\ 1103156296",
-//                                    "mtaAppKey"          : "Aqc1103156296",
-//                                    "weChatAppKey"       : "wx3081bcdae8a842cf",
-//                                    "sinaAppKey"         : "\\ 1315129656",
-//                                    "SERVER"             : "yun.jfgou.com:443"]
-//        }
-
         _yun {
             //vid vkey已经搬到Security.java
             //官方运营
@@ -155,9 +140,9 @@ android {
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
-                                    "qqAppKey"           : "\\ 1106028314",
+                                    "qqAppKey"           : "\\ 1103156296",
                                     "mtaAppKey"          : "Aqc1103156296",
-                                    "weChatAppKey"       : "wx1b350d7d8d8920ed",
+                                    "weChatAppKey"       : "wx3081bcdae8a842cf",
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yun.jfgou.com:443"]
         }
