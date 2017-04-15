@@ -199,6 +199,10 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
      */
     @Override
     public void openSendSms() {
+        if (JConstant.EMAIL_REG.matcher(friendAccount).find()){
+            sendEmail();
+            return;
+        }
         if (presenter.checkSmsPermission()) {
             sendSms();
         } else {
@@ -207,6 +211,16 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
                     new String[]{Manifest.permission.SEND_SMS},
                     1);
         }
+    }
+
+    private void sendEmail() {
+        Uri uri = Uri.parse("mailto:3802**92@qq.com");
+        Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
+        intent.putExtra(Intent.EXTRA_EMAIL,
+                new String[] {friendAccount});
+        intent.putExtra(Intent.EXTRA_CC, friendAccount); // 抄送人
+        intent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.Tap1_share_tips), JConstant.EFAMILY_URL_PREFIX)); // 正文
+        startActivity(Intent.createChooser(intent, "请选择邮件类应用"));
     }
 
     /**

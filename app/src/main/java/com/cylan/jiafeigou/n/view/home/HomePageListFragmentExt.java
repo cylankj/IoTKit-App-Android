@@ -511,7 +511,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                 startActivity(intent);
             }
         }
-
         PreferencesUtils.putBoolean(JConstant.CLIENT_UPDATAE_TAB, true);
         PreferencesUtils.putLong(JConstant.CLIENT_UPDATAE_TIME_TAB, System.currentTimeMillis());
     }
