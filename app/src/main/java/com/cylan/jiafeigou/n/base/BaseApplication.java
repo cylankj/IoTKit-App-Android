@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.app.Application;
 import android.content.ComponentCallbacks2;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
@@ -20,6 +21,7 @@ import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.n.engine.TryLogin;
+import com.cylan.jiafeigou.push.WakeupService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
@@ -114,13 +116,14 @@ public class BaseApplication extends MultiDexApplication implements Application.
         super.onCreate();
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
+            startService(new Intent(this, WakeupService.class));
             try2init();
+            PreferencesUtils.init(getApplicationContext());
             PerformanceUtils.startTrace("appStart");
             //Dagger2 依赖注入
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
             Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
 
-            PreferencesUtils.init(getApplicationContext());
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源
             registerActivityLifecycleCallbacks(this);

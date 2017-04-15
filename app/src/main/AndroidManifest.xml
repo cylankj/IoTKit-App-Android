@@ -427,7 +427,7 @@
             <!-- </intent-filter> -->
         </activity>
 
-        <!--<service android:name=".n.engine.DataSourceService" />-->
+        <!-- <service android:name=".n.engine.DataSourceService" /> -->
 
         <activity
             android:name=".n.view.activity.BindCamActivity"
@@ -485,6 +485,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <service
+            android:name=".push.WakeupService"
+            android:enabled="true" />
     </application>
 
 </manifest>

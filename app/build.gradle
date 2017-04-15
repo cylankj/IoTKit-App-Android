@@ -57,6 +57,10 @@ android {
             abiFilters 'armeabi-v7a'//, 'x86'//, 'armeabi-v7a', 'x86_64', 'arm64-v8a'
         }
 
+
+    }
+    dataBinding {
+        enabled true
     }
     sourceSets.main {
         jniLibs.srcDir 'src/main/libs' //set .so files location to libs instead of jniLibs
@@ -301,5 +305,10 @@ dependencies {
     compile 'com.google.dagger:dagger:2.10'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
     compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    compile 'com.jakewharton.rxbinding:rxbinding:1.0.1'
+    compile 'com.jakewharton.rxbinding:rxbinding-support-v4:1.0.1'
+    compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:1.0.1'
+    compile 'com.jakewharton.rxbinding:rxbinding-design:1.0.1'
+    compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.1'
 }
 

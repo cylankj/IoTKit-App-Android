@@ -147,7 +147,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, String uuid, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + gson.toJson(arrayList));
-        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, uuid, arrayList));
     }
 
     @Override
