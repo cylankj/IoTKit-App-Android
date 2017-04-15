@@ -72,6 +72,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                                 .subscribe(ret -> {
                                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+                        AppLogger.d("logresult:"+o.toString());
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -84,10 +85,8 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录结果
-     *
      * @return
      */
-
     private Observable<RxEvent.ResultUserLogin> loginResultObservable() {
         return RxBus.getCacheInstance().toObservable(RxEvent.ResultUserLogin.class);
     }
@@ -353,6 +352,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             }
                             String decryption = AESUtil.decrypt(aesAccount);
                             AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
+                            AppLogger.d("Login:"+signType.toString());
                             if (signType.type != 1) {
                                 return Observable.just("");
                             } else {

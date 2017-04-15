@@ -103,7 +103,7 @@ public class AutoSignIn {
                             AppLogger.d("signType is :" + signType);
                             return Observable.just(-1);
                         } catch (Exception e) {
-                            AppLogger.e("no sign type");
+                            AppLogger.e("no sign type"+e.getLocalizedMessage());
                             return Observable.just(-1);
                         }
                     }
@@ -118,8 +118,8 @@ public class AutoSignIn {
 //                AppLogger.d("isout:" + isOut);
                 break;
             case 4:
-                Oauth2AccessToken oauth2AccessToken = AccessTokenKeeper.readAccessToken(ContextUtils.getContext());
-                isOut = !(oauth2AccessToken != null && oauth2AccessToken.isSessionValid());
+//                Oauth2AccessToken oauth2AccessToken = AccessTokenKeeper.readAccessToken(ContextUtils.getContext());
+//                isOut = !(oauth2AccessToken != null && oauth2AccessToken.isSessionValid());
                 break;
             case 6:
 //                TwitterSession activeSession = Twitter.getSessionManager().getActiveSession();
