@@ -5,7 +5,10 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -23,6 +26,13 @@ public class HuaweiPushReceiver extends PushReceiver {
     @Override
     public boolean onPushMsg(Context context, byte[] bytes, Bundle bundle) {
         AppLogger.e("收到华为推送消息:" + new String(bytes) + bundle);
+        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        if (sourceManager.getAccount() == null) {
+            AppLogger.d("当前为登录");
+            return true;
+        }
+
+
         //[16,'500000000385','',1488012270,1]
         String response = new String(bytes);
         if (TextUtils.isEmpty(response)) {
@@ -37,6 +47,11 @@ public class HuaweiPushReceiver extends PushReceiver {
         String cid = items[1].replace("\'", "");
         long time = Long.parseLong(items[3]);
 
+        Device device = sourceManager.getDevice(cid);
+        if (device == null || !device.available()) {
+            AppLogger.d("当前列表没有这个设备");
+            return true;
+        }
         String url = null;
         try {
             url = new JFGGlideURL(cid, time + ".jpg").toURL().toString();

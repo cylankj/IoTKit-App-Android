@@ -20,7 +20,6 @@ import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
 import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
-import com.cylan.jiafeigou.n.engine.TryLogin;
 import com.cylan.jiafeigou.push.WakeupService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -89,6 +88,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult result) {
+        if (result.getErrorCode() == 1) {
+            AppLogger.d("未安装华为推送服务");
+        }
         AppLogger.d("华为推送连接失败" + result.getErrorCode());
     }
 
@@ -122,7 +124,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
             PerformanceUtils.startTrace("appStart");
             //Dagger2 依赖注入
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
-            Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
 
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源
@@ -130,7 +131,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             initHuaweiPushSDK();
 //            startService(new Intent(this, DataSourceService.class));
             GlobalResetPwdSource.getInstance().register();
-            Schedulers.io().createWorker().schedule(TryLogin::tryLogin);
+            Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
             PerformanceUtils.stopTrace("appStart");
         }
     }

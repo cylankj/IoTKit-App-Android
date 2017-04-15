@@ -199,8 +199,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     private void initSomeViewMargin() {
-        ViewUtils.setFitsSystemWindowsCompat(appbar);
-        ViewUtils.setViewPaddingStatusBar(appbar);
+//        ViewUtils.setFitsSystemWindowsCompat(appbar);
+//        ViewUtils.setViewPaddingStatusBar(appbar);
     }
 
     private void initView() {
@@ -250,7 +250,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     public void onQueryTimeLineSuccess(List<DPWonderItem> resultList, boolean isRefresh) {
         if (!getUserVisibleHint()) return;
         srLayoutMainContentHolder.setRefreshing(false);
-        mHasMore = resultList.size() == 20;
+        mHasMore = resultList.size() == 15;
         int lastPosition = homeWonderAdapter.getCount() - 1;
         if (isRefresh) {
             homeWonderAdapter.clear();
@@ -457,8 +457,15 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
         }
         switch (v.getId()) {
             case R.id.iv_wonderful_item_content:
-                ArrayList<? extends Parcelable> list = (ArrayList<? extends Parcelable>) homeWonderAdapter.getList();
-                onEnterWonderfulContent(list, position, v);
+                List<DPWonderItem> wonderItems = homeWonderAdapter.getList();
+                if (wonderItems != null && wonderItems.size() > 0) {
+                    DPWonderItem item = wonderItems.get(wonderItems.size() - 1);
+                    if (item.msgType != DPWonderItem.TYPE_PIC && item.msgType != DPWonderItem.TYPE_VIDEO) {
+                        wonderItems.remove(item);
+                    }
+                    ArrayList<? extends Parcelable> list = (ArrayList<? extends Parcelable>) wonderItems;
+                    onEnterWonderfulContent(list, position, v);
+                }
                 break;
             case R.id.tv_wonderful_item_share:
                 DPWonderItem bean = homeWonderAdapter.getItem(position);

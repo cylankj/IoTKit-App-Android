@@ -71,23 +71,27 @@ public class DefaultOnDoubleTapListener implements GestureDetector.OnDoubleTapLi
     public boolean onDoubleTap(MotionEvent ev) {
         if (photoViewAttacher == null)
             return false;
+        final RectF displayRect = photoViewAttacher.getDisplayRect();
+        if (null != displayRect) {
+            final float x = ev.getX(), y = ev.getY();
+            // Check to see if the user tapped on the photo
+            if (displayRect.contains(x, y)) {
+                try {
+                    float scale = photoViewAttacher.getScale();
 
-        try {
-            float scale = photoViewAttacher.getScale();
-            float x = ev.getX();
-            float y = ev.getY();
-
-            if (scale < photoViewAttacher.getMediumScale()) {
-                photoViewAttacher.setScale(photoViewAttacher.getMediumScale(), x, y, true);
-            } else if (scale >= photoViewAttacher.getMediumScale() && scale < photoViewAttacher.getMaximumScale()) {
-                photoViewAttacher.setScale(photoViewAttacher.getMaximumScale(), x, y, true);
-            } else {
-                photoViewAttacher.setScale(photoViewAttacher.getMinimumScale(), x, y, true);
+                    if (scale < photoViewAttacher.getMediumScale()) {
+                        photoViewAttacher.setScale(photoViewAttacher.getMediumScale(), x, y, true);
+                    } else if (scale >= photoViewAttacher.getMediumScale() && scale < photoViewAttacher.getMaximumScale()) {
+                        photoViewAttacher.setScale(photoViewAttacher.getMaximumScale(), x, y, true);
+                    } else {
+                        photoViewAttacher.setScale(photoViewAttacher.getMinimumScale(), x, y, true);
+                    }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    // Can sometimes happen when getX() and getY() is called
+                }
+                return true;
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
-            // Can sometimes happen when getX() and getY() is called
         }
-
         return true;
     }
 

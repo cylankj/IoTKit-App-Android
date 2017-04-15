@@ -95,7 +95,7 @@
         <!-- 华为推送 Start -->
         <meta-data
             android:name="com.huawei.hms.client.appid"
-            android:value="10826402" />
+            android:value="10515998" />
         <meta-data
             android:name="BUGLY_APPID"
             android:value="900026046" />
@@ -489,6 +489,12 @@
         <service
             android:name=".push.WakeupService"
             android:enabled="true" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1866682200216878"
+            android:exported="true" />
+
     </application>
 
 </manifest>
