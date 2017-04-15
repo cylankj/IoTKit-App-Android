@@ -34,6 +34,7 @@ public interface DBOption {
         public static final SingleQueryOption ONE_BY_TIME = new SingleQueryOption(1, false, 1);
         public static final SingleQueryOption DESC_20_LIMIT = new SingleQueryOption(false, 20);
         public static final SingleQueryOption ASC_20_LIMIT = new SingleQueryOption(true, 20);
+        public static final SingleQueryOption DESC_15_LIMIT = new SingleQueryOption(false, 15);
 
         public SingleQueryOption(boolean asc, int limit) {
             this(0, asc, limit);

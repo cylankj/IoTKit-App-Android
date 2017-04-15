@@ -199,8 +199,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     }
 
     private void initSomeViewMargin() {
-        ViewUtils.setFitsSystemWindowsCompat(appbar);
-        ViewUtils.setViewPaddingStatusBar(appbar);
+//        ViewUtils.setFitsSystemWindowsCompat(appbar);
+//        ViewUtils.setViewPaddingStatusBar(appbar);
     }
 
     private void initView() {
@@ -250,7 +250,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     public void onQueryTimeLineSuccess(List<DPWonderItem> resultList, boolean isRefresh) {
         if (!getUserVisibleHint()) return;
         srLayoutMainContentHolder.setRefreshing(false);
-        mHasMore = resultList.size() == 20;
+        mHasMore = resultList.size() == 15;
         int lastPosition = homeWonderAdapter.getCount() - 1;
         if (isRefresh) {
             homeWonderAdapter.clear();

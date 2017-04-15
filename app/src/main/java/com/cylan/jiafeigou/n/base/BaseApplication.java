@@ -89,6 +89,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult result) {
+        if (result.getErrorCode() == 1) {
+            AppLogger.d("未安装华为推送服务");
+        }
         AppLogger.d("华为推送连接失败" + result.getErrorCode());
     }
 
