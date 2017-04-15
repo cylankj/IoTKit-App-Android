@@ -355,7 +355,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
      * @return
      */
     private String getBeautifulAlias(JFGAccount account) {
-        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) return "";
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON)
+            return "";
         if (account == null) return "";
         String temp = TextUtils.isEmpty(account.getAlias()) ? account.getAccount() : account.getAlias();
         return "," + MiscUtils.getBeautifulString(temp, 8);
@@ -422,7 +423,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @Override
     public void clientUpdateDialog(String apkPath) {
         Fragment f = getFragmentManager().findFragmentByTag("update");
-        if (f == null){
+        if (f == null) {
             Bundle bundle = new Bundle();
             bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.UPGRADE));
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
@@ -488,7 +489,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
                         .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             } else if (JFGRules.isBell(device.pid)) {
                 startActivity(new Intent(getActivity(), DoorBellHomeActivity.class)
-                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid).putExtra("HasNewMsg", true));
+                        .putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             } else if (JFGRules.isVRCam(device.pid)) {
                 startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             }

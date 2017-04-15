@@ -70,8 +70,6 @@ import rx.subscriptions.CompositeSubscription;
 
 @RuntimePermissions
 public class BellRecordDetailActivity extends BaseFullScreenActivity {
-
-    private static final int REQ_DOWNLOAD = 20000;
     @BindView(R.id.act_bell_header_back)
     ImageView mBack;
     @BindView(R.id.act_bell_header_title)
