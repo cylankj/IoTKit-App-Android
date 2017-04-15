@@ -70,6 +70,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     HomeMineItemView homeMineItemHelp;
     @BindView(R.id.home_mine_item_settings)
     HomeMineItemView homeMineItemSettings;
+    private boolean viewInitFin;
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -88,6 +89,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
+        viewInitFin = true;
         return view;
     }
 
@@ -241,7 +243,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && getActivity() != null) {
+        if (isVisibleToUser && getActivity() != null && viewInitFin) {
             if (TextUtils.equals(tvHomeMineNick.getText(), getString(R.string.Tap3_LogIn))) {
                 //need to have a try
                 String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
