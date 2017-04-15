@@ -22,6 +22,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
 import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.util.Locale;
 
@@ -44,6 +45,7 @@ public class MineFriendScanAddPresenterImp extends AbstractPresenter<MineFriendS
 
     private CompositeSubscription compositeSubscription;
     private Network network;
+    private boolean isOpenLogin;
 
     public MineFriendScanAddPresenterImp(MineFriendScanAddContract.View view) {
         super(view);

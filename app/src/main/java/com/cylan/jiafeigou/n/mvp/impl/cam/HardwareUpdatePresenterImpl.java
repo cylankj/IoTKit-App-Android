@@ -11,6 +11,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.SimulatePercent;
@@ -233,20 +234,20 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .filter((Integer integer) -> (getView() != null))
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Integer integer) -> {
-                    AppLogger.d("updataing:" + integer);
                     getView().onUpdateing(integer);
                 }, AppLogger::e);
     }
 
 
     private class DownTemp {
+        public DownTemp(){}
         public DownTemp(double percent, long length) {
             this.percent = percent;
             this.length = length;
         }
 
-        private double percent;
-        private long length;
+        public double percent;
+        public long length;
 
     }
 
@@ -303,7 +304,6 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         }
     };
 
-
     /**
      * 开始升级
      */
@@ -323,8 +323,8 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         String localUrl = "http://"+ip+":8765/" + downLoadBean.fileName + ".bin";
 //                        String localUrl = downLoadBean.savePath+"/"+ downLoadBean.fileName + ".bin";
                         AppLogger.d("localUrl2:" + localUrl);
-                        updateTime = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new UpdatePing(localUrl,uuid).toBytes());
-                        AppLogger.d("beginUpdate:" + updateTime);
+                        updateTime = JfgCmdInsurance.getCmd().sendLocalMessage(UdpConstant.IP,UdpConstant.PORT,new UpdatePing(localUrl,uuid,ip,8765).toBytes());
+                        AppLogger.d("beginUpdate2:" + updateTime);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -350,7 +350,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         JfgUdpMsg.UdpHeader header = msgPack.read(localUdpMsg.data, JfgUdpMsg.UdpHeader.class);
                         final String headTag = header.cmd;
                         AppLogger.d("udp_cmd:" + headTag);
-                        if (TextUtils.equals(headTag, "f_upgrade")) {
+                        if (TextUtils.equals(headTag, "f_ack")) {
                             getView().handlerResult(2);
                             AppLogger.d("f_upgrade:succ");
                         } else {
@@ -376,13 +376,21 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
 
 
     @org.msgpack.annotation.Message
-    public static class UpdatePing extends JfgUdpMsg.UdpRecvHeard {
+    public static class UpdatePing extends JfgUdpMsg.UdpHeader {
+        @Index(1)
+        public String cid;
         @Index(2)
+        public String ip;
+        @Index(3)
+        public int port;
+        @Index(4)
         public String url;
 
-        public UpdatePing(String url, String cid) {
+        public UpdatePing(String url,String cid, String ip,int port) {
             this.url = url;
             this.cmd = "f_upgrade";
+            this.ip = ip;
+            this.port = port;
             this.cid = cid;
         }
     }
@@ -415,52 +423,82 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         return size;
     }
 
-
-
     @Override
-    public void myDownLoad(String url,String fileName) {
-        Observable.just(url)
-                .subscribeOn(Schedulers.newThread())
-                .map(new Func1<String, Object>() {
-                    @Override
-                    public Object call(String s) {
-                        try {
-                            String file = fileName;
-                            FileOutputStream fileOutputStream = getView().getContext().getApplicationContext().openFileOutput(file, Context.MODE_WORLD_WRITEABLE);
-                            URL url=new URL(s);
-                            HttpURLConnection conn=(HttpURLConnection)url.openConnection();
-                            InputStream input= null;
-                            input = conn.getInputStream();
-                            byte[] buffer = new byte[1024];
-                            int len = 0;
-                            while ((len = input.read(buffer)) != -1) {
-                                fileOutputStream.write(buffer,0,len);
-                                AppLogger.d("myDown:"+len);
-                            }
-                            fileOutputStream.close();
-                            input.close();
-                            AppLogger.d("myDown:下完了");
-                        } catch (IOException e) {
-                            AppLogger.d("myDown:"+e.getLocalizedMessage());
-                            e.printStackTrace();
-                        }
-                        return null;
+    public void myDownLoad(String fileUrl,String fileName) {
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // TODO 区别3g狗文件后缀
+                    String file = fileName+".bin";
+                    FileOutputStream fileOutputStream = getView().getContext().getApplicationContext().openFileOutput(file, Context.MODE_WORLD_WRITEABLE);
+                    URL url=new URL(fileUrl);
+                    HttpURLConnection conn=(HttpURLConnection)url.openConnection();
+                    //获取文件长度
+                    int fileLength =conn.getContentLength();
+
+                    AppLogger.d("binLength:"+fileLength+" fileUrl:"+fileUrl);
+
+                    InputStream input= null;
+                    input = conn.getInputStream();
+                    byte[] buffer = new byte[1024];
+                    int len = 0;
+                    int total = 0;
+                    while ((len = input.read(buffer)) != -1) {
+                        fileOutputStream.write(buffer,0,len);
+                        total += len;
+                        Message message = new Message();
+                        message.what = 1;
+                        DownTemp temp = new DownTemp();
+                        temp.length = fileLength;
+                        temp.percent = total*1.0/fileLength;
+                        message.obj = temp;
+                        myHandler.sendMessage(message);
+                        AppLogger.d("myDown:"+total*1.0/fileLength);
+                        AppLogger.d("myDownLen:"+total);
                     }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
+                    input.close();
+                    fileOutputStream.close();
+                    fileOutputStream.flush();
+                    AppLogger.d("myDown:下完了");
+                    myHandler.sendEmptyMessage(0);
+                } catch (IOException e) {
+                    myHandler.sendEmptyMessage(2);
+                    AppLogger.d("myDown:"+e.getLocalizedMessage());
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
+    }
+
+    private Handler myHandler = new Handler(){
+         @Override
+        public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what){
+                    case 1:         //下载中
+                        DownTemp obj = (DownTemp) msg.obj;
+                        getView().onDownloading(obj.percent, obj.length);
+                        AppLogger.d("progress"+obj.length);
+                        break;
+                    case 2:         //下载失败
+                        getView().onDownloadErr(1);
+                        break;
+                    case 0:         //下载成功
                         AppLogger.d("开始升级...");
-                        ToastUtil.showNegativeToast("开始升级了");
                         String[] strings = getView().getContext().getApplicationContext().fileList();
                         for (String s:strings){
                             AppLogger.d("file_name:"+s);
                         }
-                        startUpdate();
-                    }
-                });
-
-    }
+                        String filePath = getView().getContext().getApplicationContext().getFilesDir().getAbsolutePath()+"/2.4.6.28.bin";
+                        File file = new File(filePath);
+                        AppLogger.d("file exit:"+file.exists()+"file_size:"+getFileSize(file));
+                        getView().onDownloadFinish();
+                        break;
+                }
+            }
+        };
 
 }

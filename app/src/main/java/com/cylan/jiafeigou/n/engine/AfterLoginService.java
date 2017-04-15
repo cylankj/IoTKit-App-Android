@@ -5,11 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JfgCmdInsurance;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
@@ -84,6 +86,5 @@ public class AfterLoginService extends IntentService {
             }
         }
     }
-
 
 }

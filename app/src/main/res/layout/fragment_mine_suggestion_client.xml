@@ -35,13 +35,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
-            <ImageView
-                android:padding="@dimen/x10"
+            <FrameLayout
                 android:layout_gravity="center_vertical"
-                android:id="@+id/iv_send_pro"
-                android:background="@drawable/feekback_loading"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content">
+
+                <ProgressBar
+                    android:id="@+id/send_pro"
+                    android:visibility="invisible"
+                    android:layout_width="58px"
+                    android:layout_height="58px" />
+
+                <ImageView
+                    android:padding="@dimen/x10"
+                    android:id="@+id/iv_send_pro"
+                    android:src="@drawable/album_icon_caution"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+            </FrameLayout>
 
             <TextView
                 android:id="@+id/tv_mine_suggestion_client_speak"

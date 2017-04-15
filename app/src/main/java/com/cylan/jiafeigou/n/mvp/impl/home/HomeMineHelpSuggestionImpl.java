@@ -74,9 +74,9 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             compositeSubscription = new CompositeSubscription();
             compositeSubscription.add(isOpenLogin());
             compositeSubscription.add(getAccountInfo());
-            compositeSubscription.add(getSystemAutoReplyCallBack());
             compositeSubscription.add(sendFeedBackReq());
             compositeSubscription.add(sendLogBack());
+            compositeSubscription.add(getSystemAutoReplyCallBack());
         }
     }
 
@@ -258,7 +258,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
      */
     @Override
     public Subscription getSystemAutoReplyCallBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.GetFeedBackRsp.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetFeedBackRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.GetFeedBackRsp>() {
                     @Override

@@ -511,7 +511,7 @@ public class DataSourceService extends Service implements AppCallBack {
     public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :");
         if (RxBus.getCacheInstance().hasObservers()) {
-            RxBus.getCacheInstance().post(new RxEvent.GetFeedBackRsp(i, arrayList));
+            RxBus.getCacheInstance().postSticky(new RxEvent.GetFeedBackRsp(i, arrayList));
         }
     }
 
