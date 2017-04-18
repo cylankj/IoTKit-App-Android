@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import com.cylan.jiafeigou.support.db.annotation.Column;
 import com.cylan.jiafeigou.support.db.annotation.Table;
 
+import dagger.multibindings.ClassKey;
+
 /**
  * 作者：zsl
  * 创建时间：2016/10/27
@@ -30,6 +32,18 @@ public class RelAndFriendBean implements Parcelable {
 
     @Column(name = "isCheckFlag")
     public int isCheckFlag;
+
+    @Column(name = "sort_key")
+    public String sortkey;
+
+    public String getSortkey() {
+        return sortkey;
+    }
+
+    public void setSortkey(String sortkey) {
+        this.sortkey = sortkey;
+    }
+
 
     public int getId() {
         return id;

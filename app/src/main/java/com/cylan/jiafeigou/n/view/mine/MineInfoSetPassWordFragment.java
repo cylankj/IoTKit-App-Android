@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetPassWordContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetPassWordPresenterImp;
 import com.cylan.jiafeigou.utils.ToastUtil;
@@ -168,11 +169,6 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
      */
     private void saveNewPassword() {
 
-        if (presenter.checkNewPassword(getOldPassword(), getNewPassword())) {
-            ToastUtil.showNegativeToast(getString(R.string.RET_ECHANGEPASS_SAME));
-            return;
-        }
-
         if (presenter.checkNewPasswordLength(getNewPassword())) {
             ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
             return;
@@ -205,7 +201,7 @@ public class MineInfoSetPassWordFragment extends Fragment implements MineInfoSet
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_SAME));
         } else if (jfgResult.code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.PWD_OK_1));
-//            AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccountBack(),1,getNewPassword());
+            AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount(),1,getNewPassword());
             getFragmentManager().popBackStack();
         }
     }

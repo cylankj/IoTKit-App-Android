@@ -43,6 +43,10 @@ public interface HomeMineContract {
          * 设置新消息的数量
          */
         void setMesgNumber(int number);
+
+        void jump2SetPhoneFragment();
+
+        void jump2BindMailFragment();
     }
 
     interface Presenter extends BasePresenter {
@@ -104,6 +108,8 @@ public interface HomeMineContract {
         boolean hasUnReadMesg();
 
         Subscription getAccountBack();
+
+        void loginType();
 
     }
 }

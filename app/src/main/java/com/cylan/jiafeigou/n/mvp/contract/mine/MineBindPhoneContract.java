@@ -70,6 +70,8 @@ public interface MineBindPhoneContract {
          * 获取验证码的结果
          */
         void getSmsCodeResult(int code);
+
+        void startCountTime();
     }
 
     interface Presenter extends BasePresenter {

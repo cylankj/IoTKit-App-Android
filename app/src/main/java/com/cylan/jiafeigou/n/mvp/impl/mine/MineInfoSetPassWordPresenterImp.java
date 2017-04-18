@@ -101,7 +101,7 @@ public class MineInfoSetPassWordPresenterImp extends AbstractPresenter<MineInfoS
                 .subscribe(new Action1<RxEvent.ChangePwdBack>() {
                     @Override
                     public void call(RxEvent.ChangePwdBack changePwdBack) {
-                        if (changePwdBack != null && changePwdBack instanceof RxEvent.ChangePwdBack) {
+                        if (changePwdBack != null) {
                             if (getView() != null) {
                                 getView().changePwdResult(changePwdBack.jfgResult);
                             }

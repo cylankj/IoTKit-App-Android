@@ -37,6 +37,8 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_207_DEVICE_VERSION;
 public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoContract.View>
         implements CamInfoContract.Presenter {
 
+    private boolean isInitSd;
+
     public DeviceInfoDetailPresenterImpl(CamInfoContract.View view, String uuid) {
         super(view, uuid);
         view.setPresenter(this);
@@ -134,6 +136,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                         mesg.packValue = DpUtils.pack(0);
                         ipList.add(mesg);
                         BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
+                        isInitSd = true;
                     } catch (Exception e) {
                         AppLogger.e("format sd： " + e.getLocalizedMessage());
                     }
@@ -167,7 +170,11 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .subscribe(o -> {
                     if (o != null) {
                         //清空SD卡提示
-                        getView().clearSdResult(0);
+                        if (isInitSd){
+                            getView().clearSdResult(0);
+                            isInitSd = false;
+                        }
+
                     }
                 }, AppLogger::e);
     }
