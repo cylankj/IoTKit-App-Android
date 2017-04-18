@@ -163,7 +163,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         if (bean.id == 512 || bean.id == 505) {
                             bean.alarmMsg = (DpMsgDefine.DPAlarm) dataPoint;
                         }
-                        list.add(bean);
+                        if (!list.contains(bean))//防止重复
+                            list.add(bean);
                     }
                     return Observable.just(list);
                 })

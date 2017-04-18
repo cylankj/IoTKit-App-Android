@@ -7,6 +7,7 @@ import android.os.Looper;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -19,6 +20,16 @@ import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import rx.Observable;
 import rx.schedulers.Schedulers;
 
@@ -100,7 +111,6 @@ public class AfterLoginService extends IntentService {
                         }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
             } else if (TextUtils.equals(action, ACTION_CHECK_VERSION)) {
                 AppLogger.e("尝试检查版本");
-
                 Observable.just("check_version")
                         .subscribeOn(Schedulers.newThread())
                         .flatMap(s -> {
@@ -118,12 +128,40 @@ public class AfterLoginService extends IntentService {
                                 .flatMap(clientCheckVersion -> {
                                     AppLogger.d("check_version result: " + clientCheckVersion);
 //                                    JfgCmdInsurance.getCmd().che();
-//                                    String finalUrl = JConstant.assembleUrl()
+                                    clientCheckVersion.result = "VRJz6f";
+                                    if (TextUtils.isEmpty(clientCheckVersion.result))
+                                        return Observable.just(false);
+                                    String finalUrl = JConstant.assembleUrl(clientCheckVersion.result, getApplicationContext().getPackageName());
+                                    Request.Builder requestBuilder = new Request.Builder().url(finalUrl);
+                                    requestBuilder.method("GET", null);
+                                    OkHttpClient client = new OkHttpClient();
+                                    client.newCall(requestBuilder.build())
+                                            .enqueue(new Callback() {
+                                                @Override
+                                                public void onFailure(Call call, IOException e) {
+                                                    AppLogger.e("check_version what the hell?" + MiscUtils.getErr(e));
+                                                }
+
+                                                @Override
+                                                public void onResponse(Call call, Response response) throws IOException {
+                                                    String result = response.body().string();
+                                                    AppLogger.d("check_version result: " + result);
+                                                    try {
+                                                        JSONObject jsonObject = new JSONObject(result);
+                                                        final String url = jsonObject.getString("url");
+                                                        final String versionName = jsonObject.getString("version");
+                                                        final String shortVersion = jsonObject.getString("shortversion");
+                                                        final String desc = jsonObject.getString("desc");
+                                                        ClientUpdateManager.getInstance().enqueue(url, versionName, shortVersion, desc, clientCheckVersion.forceUpgrade);
+                                                    } catch (JSONException e) {
+                                                        AppLogger.e(MiscUtils.getErr(e));
+                                                    }
+                                                }
+                                            });
                                     return Observable.just(true);
                                 }))
                         .subscribe(ret -> {
                         }, AppLogger::e);
-
             }
         }
     }

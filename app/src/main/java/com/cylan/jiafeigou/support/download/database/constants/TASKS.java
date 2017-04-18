@@ -20,4 +20,6 @@ public class TASKS {
     public final static String COLUMN_EXTENSION = "extension";
     public final static String COLUMN_PRIORITY = "priority";
     public final static String COLUMN_NET = "net_type";
+    public final static String COLUMN_UPDATE_TIME = "last_update_time";
+    public final static String COLUMN_DESC = "update_desc";
 }

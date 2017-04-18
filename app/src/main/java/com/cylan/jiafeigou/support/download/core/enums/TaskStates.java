@@ -5,6 +5,7 @@ package com.cylan.jiafeigou.support.download.core.enums;
  */
 public class TaskStates {
 
+    public static final int NO = -1;
     public static final int INIT = 0;
     public static final int READY = 1;
     public static final int DOWNLOADING = 2;

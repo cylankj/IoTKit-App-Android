@@ -264,10 +264,6 @@
             android:launchMode="singleTask"
             android:theme="@style/dialog_activity_style" />
 
-        <service
-            android:name=".n.engine.CloudLiveService"
-            android:enabled="true"
-            android:exported="true" />
 
         <activity
             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"

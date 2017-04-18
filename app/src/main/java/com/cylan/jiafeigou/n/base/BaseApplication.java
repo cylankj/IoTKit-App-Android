@@ -21,7 +21,6 @@ import com.cylan.jiafeigou.DaemonService2;
 import com.cylan.jiafeigou.base.injector.component.AppComponent;
 import com.cylan.jiafeigou.base.injector.component.DaggerAppComponent;
 import com.cylan.jiafeigou.base.injector.module.AppModule;
-import com.cylan.jiafeigou.n.engine.DataSourceService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
@@ -244,9 +243,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
     public static class BootCompletedReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            if (!ProcessUtils.isServiceRunning(context, DataSourceService.class)) {
-                AppLogger.i("initSubscription DataSourceService");
-            }
+//            if (!ProcessUtils.isServiceRunning(context, DataSourceService.class)) {
+//                AppLogger.i("initSubscription DataSourceService");
+//            }
         }
     }
 

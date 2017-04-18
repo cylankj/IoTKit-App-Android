@@ -35,6 +35,7 @@ public class TasksDataSource {
     }
 
     public boolean update(Task task) {
+        task.lastUpdateTime = System.currentTimeMillis();
         int affectedRow = database
                 .update(TABLES.TASKS, task.convertToContentValues(), TASKS.COLUMN_ID + "=" + task.id, null);
 

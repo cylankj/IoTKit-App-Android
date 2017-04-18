@@ -38,7 +38,12 @@ public class Task {
     public boolean resumable;
     public String save_address;
     public String extension;
+    public String desc;
     public boolean priority;
+    /**
+     * 最后更新时间,可以根据时间来作为辅助判断.
+     */
+    public long lastUpdateTime;
 
     public Task() {
         this.id = 0;
@@ -53,11 +58,12 @@ public class Task {
         this.save_address = null;
         this.extension = null;
         this.priority = false;  // low priority
+        this.lastUpdateTime = System.currentTimeMillis();
     }
 
     public Task(long size, String name, String url,
                 int state, int chunks, String sdCardFolderAddress,
-                boolean priority) {
+                boolean priority, String desc) {
         this.id = 0;
         this.name = name;
         this.size = size;
@@ -70,6 +76,8 @@ public class Task {
         this.save_address = sdCardFolderAddress;
         this.extension = "";
         this.priority = priority;
+        this.lastUpdateTime = System.currentTimeMillis();
+        this.desc = desc;
     }
 
     public ContentValues convertToContentValues() {
@@ -89,7 +97,8 @@ public class Task {
         contentValues.put(TASKS.COLUMN_SAVE_ADDRESS, save_address);
         contentValues.put(TASKS.COLUMN_EXTENSION, extension);
         contentValues.put(TASKS.COLUMN_PRIORITY, priority);
-
+        contentValues.put(TASKS.COLUMN_UPDATE_TIME, lastUpdateTime);
+        contentValues.put(TASKS.COLUMN_DESC, desc);
         return contentValues;
     }
 
@@ -118,6 +127,8 @@ public class Task {
                 cr.getColumnIndex(TASKS.COLUMN_EXTENSION));
         priority = cr.getInt(
                 cr.getColumnIndex(TASKS.COLUMN_PRIORITY)) > 0;
+        lastUpdateTime = cr.getLong(cr.getColumnIndex(TASKS.COLUMN_UPDATE_TIME));
+        desc = cr.getString(cr.getColumnIndex(TASKS.COLUMN_DESC));
     }
 
     public JSONObject toJsonObject() {
@@ -134,7 +145,9 @@ public class Task {
                     .put("resumable", resumable)
                     .put("save_address", save_address)
                     .put("extension", extension)
-                    .put("priority", priority);
+                    .put("priority", priority)
+                    .put("last_update_time", lastUpdateTime)
+                    .put("desc", desc);
         } catch (JSONException e) {
             e.printStackTrace();
         }

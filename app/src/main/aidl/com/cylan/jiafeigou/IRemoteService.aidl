@@ -19,4 +19,7 @@ interface IRemoteService {
      * Remove a previously registered callback interface.
      */
     void unregisterCallback(IRemoteServiceCallback cb);
+
+
+    boolean getDownloadState(String fileName);
 }

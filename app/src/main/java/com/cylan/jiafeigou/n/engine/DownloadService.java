@@ -2,9 +2,7 @@ package com.cylan.jiafeigou.n.engine;
 
 import android.app.Service;
 import android.content.Intent;
-import android.os.Handler;
 import android.os.IBinder;
-import android.os.Message;
 import android.os.Parcelable;
 import android.os.RemoteCallbackList;
 import android.os.RemoteException;
@@ -41,7 +39,17 @@ public class DownloadService extends Service implements DownloadManagerListener 
             Log.d("DownloadService", "unregisterCallback:" + cb);
             if (cb != null) iRemoteServiceCallBackList.unregister(cb);
         }
+
+        @Override
+        public boolean getDownloadState(String fileName) throws RemoteException {
+            return getState(fileName);
+        }
     };
+
+    private boolean getState(String fileName) {
+        Log.d("DownloadService", "getState: " + fileName);
+        return DownloadManagerPro.getInstance().getDownloadState(fileName);
+    }
 
     public DownloadService() {
     }
@@ -59,7 +67,6 @@ public class DownloadService extends Service implements DownloadManagerListener 
             UpdateFileBean bean = (UpdateFileBean) parcelable;
             initSomething(bean);
         }
-        AppLogger.d("DownloadService: " + parcelable + " " + Thread.currentThread());
         return mBinder;
     }
 
@@ -79,21 +86,8 @@ public class DownloadService extends Service implements DownloadManagerListener 
     public void onDestroy() {
         super.onDestroy();
         iRemoteServiceCallBackList.kill();
+        DownloadManagerPro.getInstance().dispose();//关闭db
     }
-
-    private static final int MSG_START_DOWNLOAD = 1;
-    private Handler handler = new Handler(new Handler.Callback() {
-        @Override
-        public boolean handleMessage(Message msg) {
-            switch (msg.what) {
-                case MSG_START_DOWNLOAD:
-                    Log.d(this.getClass().getSimpleName(), "handler: " + msg.arg1);
-                    DownloadManagerPro.getInstance().startDownload(msg.arg1);
-                    break;
-            }
-            return true;
-        }
-    });
 
     private void initSomething(final UpdateFileBean bean) {
         new Thread(new Runnable() {
@@ -107,12 +101,13 @@ public class DownloadService extends Service implements DownloadManagerListener 
                         .setMaxChunks(1)
                         .setSaveName(bean.fileName)
                         .setOverwrite(true)
+                        .setDesc(bean.desc)
                         .setSdCardFolderAddress(bean.savePath)
                         .setDownloadManagerListener(DownloadService.this)
                         .setAllowNetType(NetConfig.TYPE_ALL);
                 try {
                     int token = DownloadManagerPro.getInstance().initTask(taskBuilder);
-                    handler.sendMessageDelayed(handler.obtainMessage(MSG_START_DOWNLOAD, token, 0), 1000);
+                    DownloadManagerPro.getInstance().startDownload(token);
                 } catch (JfgException e) {
                     AppLogger.d("err: " + e.getLocalizedMessage());
                 }

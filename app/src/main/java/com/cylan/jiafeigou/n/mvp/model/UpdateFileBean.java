@@ -12,8 +12,19 @@ public class UpdateFileBean implements Parcelable {
     public String savePath;
     public String version;
     public String fileName;
+    public String desc;
 
     public UpdateFileBean() {
+    }
+
+    @Override
+    public String toString() {
+        return "UpdateFileBean{" +
+                "url='" + url + '\'' +
+                ", savePath='" + savePath + '\'' +
+                ", version='" + version + '\'' +
+                ", fileName='" + fileName + '\'' +
+                '}';
     }
 
     @Override
@@ -27,6 +38,7 @@ public class UpdateFileBean implements Parcelable {
         dest.writeString(this.savePath);
         dest.writeString(this.version);
         dest.writeString(this.fileName);
+        dest.writeString(this.desc);
     }
 
     protected UpdateFileBean(Parcel in) {
@@ -34,6 +46,7 @@ public class UpdateFileBean implements Parcelable {
         this.savePath = in.readString();
         this.version = in.readString();
         this.fileName = in.readString();
+        this.desc = in.readString();
     }
 
     public static final Creator<UpdateFileBean> CREATOR = new Creator<UpdateFileBean>() {
@@ -47,14 +60,4 @@ public class UpdateFileBean implements Parcelable {
             return new UpdateFileBean[size];
         }
     };
-
-    @Override
-    public String toString() {
-        return "UpdateFileBean{" +
-                "url='" + url + '\'' +
-                ", savePath='" + savePath + '\'' +
-                ", version='" + version + '\'' +
-                ", fileName='" + fileName + '\'' +
-                '}';
-    }
 }

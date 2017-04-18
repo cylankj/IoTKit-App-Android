@@ -107,4 +107,12 @@ public class ReportStructure {
 
         return json;
     }
+
+    public int getState() {
+        return state;
+    }
+
+    public String getName() {
+        return name;
+    }
 }

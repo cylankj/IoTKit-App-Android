@@ -121,7 +121,7 @@ public class DownloadManagerPro {
         L.d("ma chunk");
         taskBuilder.sdCardFolderAddress = Environment.getExternalStorageDirectory().getAbsolutePath()
                 + File.separator + taskBuilder.sdCardFolderAddress;
-        return insertNewTask(saveName, taskBuilder.url, chunk, taskBuilder.sdCardFolderAddress, taskBuilder.priority);
+        return insertNewTask(saveName, taskBuilder.url, chunk, taskBuilder.sdCardFolderAddress, taskBuilder.priority, taskBuilder.desc);
     }
 
     public static class Config {
@@ -141,12 +141,19 @@ public class DownloadManagerPro {
         private String url;
         private String saveName;
         private String sdCardFolderAddress;
+        private String desc;
         private DownloadManagerListener downloadManagerListener;
 
         public TaskBuilder setAllowNetType(int allowNetType) {
             this.allowNetType = allowNetType;
             return this;
         }
+
+        public TaskBuilder setDesc(String desc) {
+            this.desc = desc;
+            return this;
+        }
+
 
         public TaskBuilder setSaveName(String saveName) {
             this.saveName = saveName;
@@ -413,6 +420,19 @@ public class DownloadManagerPro {
         return false;
     }
 
+    /**
+     * 清空下载
+     *
+     * @param fileName
+     */
+    public void deleteTask(String fileName) {
+        Task task = tasksDataSource.getTaskInfoWithName(fileName);
+        if (task != null && task.id >= 0) {
+            pauseDownload(task.id);
+            //
+            delete(task.id, true);
+        }
+    }
 
     /**
      * close db connection
@@ -428,8 +448,8 @@ public class DownloadManagerPro {
         return tasksDataSource.getUnCompletedTasks(QueueSort.oldestFirst);
     }
 
-    private int insertNewTask(String taskName, String url, int chunk, String save_address, boolean priority) {
-        Task task = new Task(0, taskName, url, TaskStates.INIT, chunk, save_address, priority);
+    private int insertNewTask(String taskName, String url, int chunk, String save_address, boolean priority, String desc) {
+        Task task = new Task(0, taskName, url, TaskStates.INIT, chunk, save_address, priority, desc);
         task.id = (int) tasksDataSource.insertTask(task);
         L.d("task msgId " + String.valueOf(task.id));
         return task.id;
@@ -472,10 +492,26 @@ public class DownloadManagerPro {
         so if his token was wrong return -1
      */
     private void deleteSameDownloadNameTask(String saveName) {
-        if (isDuplicatedName(saveName)) {
+        if (tasksDataSource.containsTask(saveName)) {
             Task task = tasksDataSource.getTaskInfoWithName(saveName);
-            tasksDataSource.delete(task.id);
-            FileUtils.delete(task.save_address, task.name + "." + task.extension);
+            if (task != null) {
+                pauseDownload(task.id);
+                tasksDataSource.delete(task.id);
+                FileUtils.delete(task.save_address, task.name + "." + task.extension);
+            }
         }
+    }
+
+    public boolean getDownloadState(String fileName) {
+        Task task = tasksDataSource.getTaskInfoWithName(fileName);
+        if (task != null) {
+            //最好的方式是检查当前连接中的任务.
+            boolean isTask = moderator.isDownloading(task.id);
+            //10s之内更都算
+            if (isTask && System.currentTimeMillis() - task.lastUpdateTime <= 10 * 1000L) {
+                return true;
+            }
+        }
+        return false;
     }
 }

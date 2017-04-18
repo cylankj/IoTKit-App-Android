@@ -777,17 +777,17 @@ public class RxEvent {
         }
     }
 
-    public static class SdcardClearReqRsp {
-        public long seq;
-
-        public SdcardClearReqRsp(long seq, ArrayList<JFGDPMsgRet> arrayList) {
-            this.seq = seq;
-            this.arrayList = arrayList;
-        }
-
-        public ArrayList<JFGDPMsgRet> arrayList;
-
-    }
+//    public static class SdcardClearReqRsp {
+//        public long seq;
+//
+//        public SdcardClearReqRsp(long seq, ArrayList<JFGDPMsgRet> arrayList) {
+//            this.seq = seq;
+//            this.arrayList = arrayList;
+//        }
+//
+//        public ArrayList<JFGDPMsgRet> arrayList;
+//
+//    }
 
 
     public static class CheckDevVersionRsp implements Serializable {
@@ -857,11 +857,17 @@ public class RxEvent {
 
     public static class SetDataRsp {
         public long seq;
+        public String uuid;
         public ArrayList<JFGDPMsgRet> rets;
 
         public SetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
             this.seq = l;
             this.rets = arrayList;
+        }
+
+        public SetDataRsp setUuid(String uuid) {
+            this.uuid = uuid;
+            return this;
         }
     }
 

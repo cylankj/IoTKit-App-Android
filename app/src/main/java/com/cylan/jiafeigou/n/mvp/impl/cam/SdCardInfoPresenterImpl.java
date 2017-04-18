@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.JFGDPMsgRet;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -112,19 +111,19 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     @Override
     public Subscription onClearSdReqBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.SdcardClearReqRsp.class)
+        return RxBus.getCacheInstance().toObservable(RxEvent.SetDataRsp.class)
+                .subscribeOn(Schedulers.newThread())
+                .filter(ret -> mView != null && TextUtils.equals(ret.uuid, uuid))
+                .map(ret -> ret.rets)
+                .flatMap(Observable::from)
+                .filter(msg -> msg.id == 218)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((RxEvent.SdcardClearReqRsp sdcardClearRsp) -> {
-                    if (sdcardClearRsp != null) {
-                        JFGDPMsgRet jfgdpMsgRet = sdcardClearRsp.arrayList.get(0);
-                        if (jfgdpMsgRet.id == 218) {
-                            if (jfgdpMsgRet.ret == 0) {
-                                isClearSucc = true;
-                                isClearFin = true;
-                            } else {
-                                getView().clearSdResult(1);
-                            }
-                        }
+                .subscribe(result -> {
+                    if (result.ret == 0) {
+                        isClearSucc = true;
+                        isClearFin = true;
+                    } else {
+                        getView().clearSdResult(1);
                     }
                 }, AppLogger::e);
     }

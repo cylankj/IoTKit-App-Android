@@ -1,7 +1,5 @@
 package com.cylan.jiafeigou.base.module;
 
-import android.text.TextUtils;
-
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
@@ -25,7 +23,6 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jfgapp.interfases.AppCallBack;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.dp.DpUtils;
-import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -37,8 +34,6 @@ import com.google.gson.Gson;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
-
-import static com.facebook.FacebookSdk.getApplicationContext;
 
 /**
  * Created by yanzhendong on 2017/4/14.
@@ -328,13 +323,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnCheckClientVersion(int i, String s, int i1) {
-        AppLogger.d(String.format(Locale.getDefault(), "check version:%d,%s,%d", i, s, i1));
-        // 客户端升级测试
-        if (!TextUtils.isEmpty(s)) {
-//            String url = "http://121.15.220.150/imtt.dd.qq.com/16891/AE6502757AE91F88EE91D985D5AAE5AD.apk?mkey=58eb4c2e30b4058c&f=2409&c=0&fsname=com.cylan.jiafeigou_2.4.9.5296_20170228.apk&csr=1bbd&p=.apk";
-            String url = "http://d.app8h.com/d1/966/5708/Clever%20Dog.apk";
-            ClientUpdateManager.getInstance().startDownload(getApplicationContext(), url, "3.2.0", 1);
-        }
+        RxBus.getCacheInstance().post(new RxEvent.ClientCheckVersion(i, s, i1));
     }
 
     @Override

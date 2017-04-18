@@ -71,9 +71,8 @@ public class Moderator {
 
             // get any chunk file size calculate
             for (Chunk chunk : taskChunks) {
-                downloaded = new Long(FileUtils
-                        .size(task.save_address, String.valueOf(chunk.id)));
-                totalSize = new Long(chunk.end - chunk.begin + 1);
+                downloaded = FileUtils.size(task.save_address, String.valueOf(chunk.id));
+                totalSize = chunk.end - chunk.begin + 1;
                 if (!task.resumable) {
                     chunk.begin = 0;
                     chunk.end = 0;
@@ -166,7 +165,7 @@ public class Moderator {
             if (report.isResumable()) {
                 percent = ((float) downloadLength / report.getTotalSize() * 100);
             }
-            AppLogger.d("AsyFileTotal:"+report.getTotalSize());
+            AppLogger.d("AsyFileTotal:" + report.getTotalSize());
             // notify to developer------------------------------------------------------------
 
             if (downloadManagerListener != null)
@@ -228,5 +227,10 @@ public class Moderator {
             finishedDownloadQueueObserver.wakeUp(taskID);
 
         }
+    }
+
+    public boolean isDownloading(int taskId) {
+        ReportStructure reportStructure = processReports.get(taskId);
+        return reportStructure != null && reportStructure.getState() == TaskStates.DOWNLOADING;
     }
 }
