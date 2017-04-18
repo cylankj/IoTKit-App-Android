@@ -162,6 +162,7 @@ public class AlbumSelectActivity extends HelperActivity {
         albums = null;
         if (adapter != null) {
             adapter.releaseResources();
+            adapter = null;
         }
         gridView.setOnItemClickListener(null);
     }
