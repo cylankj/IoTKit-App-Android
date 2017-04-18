@@ -8,6 +8,7 @@ import android.view.View;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
+import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -15,7 +16,7 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 /**
  * Created by cylan-hunt on 16-7-6.
  */
-public class NeedLoginActivity extends BaseFullScreenFragmentActivity {
+public class NeedLoginActivity<T extends BasePresenter> extends BaseFullScreenFragmentActivity<T> {
 
     private LoginFragment loginFragment;
 

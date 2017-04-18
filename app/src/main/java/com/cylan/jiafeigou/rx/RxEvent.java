@@ -1024,4 +1024,31 @@ public class RxEvent {
                     '}';
         }
     }
+
+    public static final class ClientUpdateEvent {
+        public long currentByte;
+        public long totalByte;
+        public int state;
+        public Throwable throwable;
+
+        public ClientUpdateEvent setCurrentByte(long currentByte) {
+            this.currentByte = currentByte;
+            return this;
+        }
+
+        public ClientUpdateEvent setTotalByte(long totalByte) {
+            this.totalByte = totalByte;
+            return this;
+        }
+
+        public ClientUpdateEvent setState(int state) {
+            this.state = state;
+            return this;
+        }
+
+        public ClientUpdateEvent setThrowable(Throwable throwable) {
+            this.throwable = throwable;
+            return this;
+        }
+    }
 }

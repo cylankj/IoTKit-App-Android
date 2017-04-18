@@ -5,33 +5,33 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v7.app.NotificationCompat;
-import android.text.TextUtils;
 import android.util.Log;
 import android.widget.RemoteViews;
 
 import com.cylan.jiafeigou.IRemoteService;
 import com.cylan.jiafeigou.IRemoteServiceCallback;
 import com.cylan.jiafeigou.R;
-import com.cylan.jiafeigou.n.engine.DownloadService;
-import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
-import com.cylan.jiafeigou.n.view.misc.UpdateActivity;
-import com.cylan.jiafeigou.support.download.core.DownloadManagerPro;
-import com.cylan.jiafeigou.support.download.report.ReportStructure;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.util.List;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import rx.Subscription;
 
 /**
@@ -40,7 +40,7 @@ import rx.Subscription;
  * 描述：
  */
 public class ClientUpdateManager {
-
+    private static final String TAG = "ClientUpdateManager";
     private static ClientUpdateManager instance;
     private IRemoteService mService = null;
 
@@ -212,10 +212,8 @@ public class ClientUpdateManager {
      * @param url
      * @param versionName
      * @param versionCode:
-     * @param desc:升级版本描述
-     * @param force:强制升级
      */
-    public void enqueue(String url, String versionName, String versionCode, String desc, int force) {
+    public void enqueue(String url, String versionName, String versionCode, DownloadListener downloadListener) {
         try {
             int currentVersionCode = PackageUtils.getAppVersionCode(ContextUtils.getContext());
             int remoteVersionCode = Integer.parseInt(versionCode);
@@ -226,46 +224,93 @@ public class ClientUpdateManager {
         } catch (Exception e) {
             AppLogger.e("err:" + MiscUtils.getErr(e));
         }
-        List<ReportStructure> list = DownloadManagerPro.getInstance().lastCompletedDownloads();
-        boolean get = false;
-        if (list != null) {
-            for (ReportStructure structure : list) {
-                if (TextUtils.equals(structure.getName(), versionName + ".apk")) {
-                    if (new File(structure.getSaveAddress()).exists()) {
-                        AppLogger.d("就这么简单地认为 文件下载好了...the file is downloaded: " + structure);
-                        get = true;
-                        break;
-                    }
-                    //文件不存在,删了.
-                    DownloadManagerPro.getInstance().deleteTask(structure.getName());
+        downLoadFile(url, versionName + ".apk", JConstant.MISC_PATH, downloadListener);
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param url         文件url
+     * @param destFileDir 存储目标目录
+     */
+    public void downLoadFile(String url, String fileName, final String destFileDir, DownloadListener downloadListener) {
+        final File file = new File(destFileDir, fileName);
+        if (file.exists()) {
+            try {
+                Request request = new Request.Builder()
+                        .url(url)
+                        .build();
+                Response response = new OkHttpClient().newCall(request).execute();
+                long fileSize = response.body().contentLength();
+                AppLogger.d("文件大小:" + fileSize);
+                if (fileSize == file.length()) {
+                    AppLogger.d("文件存在,完整");
+                    if (downloadListener != null) downloadListener.finished(file);
+                    return;
                 }
+                FileUtils.delete(JConstant.MISC_PATH, destFileDir + File.separator + fileName);
+            } catch (IOException e) {
+                AppLogger.e("err:" + MiscUtils.getErr(e));
             }
         }
-        if (get) {
+        final Request request = new Request.Builder().url(url).build();
+        final Call call = new OkHttpClient().newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.d(TAG, e.toString());
+            }
 
-        } else {
-            boolean isDownloading = DownloadManagerPro.getInstance().getDownloadState(versionName + ".apk");
-            AppLogger.d("正在下载?" + isDownloading + ",name:" + versionName);
-            if (!isDownloading)
-                startDownload(url, versionName, desc, 0);
-        }
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                InputStream is = null;
+                byte[] buf = new byte[2048];
+                int len = 0;
+                FileOutputStream fos = null;
+                if (downloadListener != null) downloadListener.start();
+                try {
+                    long total = response.body().contentLength();
+                    Log.d(TAG, "total------>" + total);
+                    long current = 0;
+                    is = response.body().byteStream();
+                    fos = new FileOutputStream(file);
+                    while ((len = is.read(buf)) != -1) {
+                        current += len;
+                        fos.write(buf, 0, len);
+                        Log.d(TAG, "current------>" + current);
+                        if (downloadListener != null) downloadListener.process(current, total);
+                    }
+                    fos.flush();
+                    if (downloadListener != null)
+                        downloadListener.finished(new File(destFileDir, fileName));
+                } catch (IOException e) {
+                    Log.d(TAG, e.toString());
+                    if (downloadListener != null)
+                        downloadListener.failed(e);
+                } finally {
+                    try {
+                        if (is != null) {
+                            is.close();
+                        }
+                        if (fos != null) {
+                            fos.close();
+                        }
+                    } catch (IOException e) {
+                        Log.d(TAG, e.toString());
+                    }
+                }
+            }
+        });
     }
 
-    private void startDownload(String url, String newVersion, String desc, int upgrade) {
-        //启动下载服务 test
-        UpdateFileBean updateFileBean = new UpdateFileBean();
-        updateFileBean.url = url;
-        updateFileBean.fileName = newVersion + ".apk";
-        updateFileBean.version = newVersion;
-        updateFileBean.desc = desc;
-        updateFileBean.savePath = JConstant.MISC_PATH;
-        //仅wifi环境下升级
-        if (NetUtils.getJfgNetType(ContextUtils.getContext()) == 1) {
-            Intent intent = new Intent(ContextUtils.getContext(), UpdateActivity.class);
-            intent.putExtra(DownloadService.KEY_PARCELABLE, updateFileBean);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            ContextUtils.getContext().startActivity(intent);
-        }
-    }
+    public interface DownloadListener {
 
+        void start();
+
+        void failed(Throwable throwable);
+
+        void finished(File file);
+
+        void process(long currentByte, long totalByte);
+    }
 }

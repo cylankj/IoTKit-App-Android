@@ -326,4 +326,8 @@ public class JConstant {
     public static String assembleUrl(String id, String packageName) {
         return String.format(Locale.getDefault(), VERSION_URL, id, packageName);
     }
+
+    public static final String KEY_CLIENT_UPDATE_DESC = "update_desc";
+
+    public static final String KEY_LAST_TIME_CHECK_VERSION = "last_check_version";
 }

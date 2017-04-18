@@ -26,4 +26,9 @@ public class TestHomePresenterImpl implements NewHomeActivityContract.Presenter 
     public void stop() {
 
     }
+
+    @Override
+    public void startUpdate() {
+
+    }
 }

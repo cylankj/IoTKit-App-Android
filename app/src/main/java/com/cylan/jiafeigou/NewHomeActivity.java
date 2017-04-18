@@ -2,6 +2,7 @@ package com.cylan.jiafeigou;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -11,6 +12,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioGroup;
@@ -33,6 +35,8 @@ import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
 
+import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +46,7 @@ import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
 
-public class NewHomeActivity extends NeedLoginActivity implements
+public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.Presenter> implements
         NewHomeActivityContract.View {
     @BindView(R.id.vp_home_content)
     CustomViewPager vpHomeContent;
@@ -54,6 +58,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
     private SharedElementCallBackListener sharedElementCallBackListener;
     private Subscription subscribe;
     private Subscription resetPwdSubscribe;
+    private WeakReference<AlertDialog> upgradeVersionDialogRef;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +73,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
         initBottomMenu();
         initMainContentAdapter();
         initShowWonderPageSub();
-        new NewHomeActivityPresenterImpl(this);
+        basePresenter = new NewHomeActivityPresenterImpl(this);
         AfterLoginService.resumeTryCheckVersion();
     }
 
@@ -76,7 +81,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
         subscribe = RxBus.getCacheInstance().toObservable(RxEvent.ShowWonderPageEvent.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(event -> vpHomeContent.setCurrentItem(1),e->AppLogger.d(e.getMessage()));
+                .subscribe(event -> vpHomeContent.setCurrentItem(1), e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -101,7 +106,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
                 .subscribe(event -> {
                     if (event.b)
                         finish();
-                },e-> AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d(e.getMessage()));
     }
 
     @Override
@@ -178,6 +183,51 @@ public class NewHomeActivity extends NeedLoginActivity implements
     @UiThread
     @Override
     public void initView() {
+    }
+
+    @Override
+    public void updateProcess(long currentByte, long totalByte) {
+
+    }
+
+    @Override
+    public void failed(Throwable throwable) {
+
+    }
+
+    @Override
+    public void finished(File file) {
+
+    }
+
+    @Override
+    public void start() {
+
+    }
+
+    @Override
+    public void needUpdate(String desc) {
+        if (upgradeVersionDialogRef != null && upgradeVersionDialogRef.get() != null && upgradeVersionDialogRef.get().isShowing())
+            return;
+        if (upgradeVersionDialogRef == null) {
+            if (desc == null) desc = "";
+            upgradeVersionDialogRef = new WeakReference<>(
+                    new AlertDialog.Builder(this)
+                            .setMessage(desc)
+                            .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            })
+                            .create());
+        }
     }
 
     @Override

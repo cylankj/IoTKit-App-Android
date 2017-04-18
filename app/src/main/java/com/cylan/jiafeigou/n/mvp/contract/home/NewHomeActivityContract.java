@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.n.mvp.contract.home;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 
+import java.io.File;
+
 /**
  * Created by hunt on 16-5-23.
  */
@@ -12,9 +14,15 @@ public interface NewHomeActivityContract {
     interface View extends BaseView<Presenter> {
         void initView();
 
-        //void ok();
+        void updateProcess(long currentByte, long totalByte);
 
-        //void onBackPress();
+        void failed(Throwable throwable);
+
+        void finished(File file);
+
+        void start();
+
+        void needUpdate(String desc);
     }
 
 
@@ -23,5 +31,6 @@ public interface NewHomeActivityContract {
 
         //void doSample();
 
+        void startUpdate();
     }
 }

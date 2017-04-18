@@ -8,7 +8,6 @@ import android.os.Process;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.misc.ClientUpdateManager;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -22,10 +21,8 @@ import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -112,10 +109,19 @@ public class AfterLoginService extends IntentService {
                             }
                         }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
             } else if (TextUtils.equals(action, ACTION_CHECK_VERSION)) {
+                //不需要那么频繁地检查.
+                long lastTime = PreferencesUtils.getLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, 0);
+                if (lastTime != 0 && System.currentTimeMillis() - lastTime < 24 * 3600 * 1000L) {//一天检查一次
+                    AppLogger.d("频繁检查?");
+//                    return;
+                }
+                //更新 检查版本的时间
+                PreferencesUtils.putLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, System.currentTimeMillis());
                 Process.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
                 AppLogger.d("尝试检查版本");
                 Observable.just("check_version")
                         .subscribeOn(Schedulers.newThread())
+                        .delay(3, TimeUnit.SECONDS)
                         .filter(s -> {
                             int netType = NetUtils.getJfgNetType(ContextUtils.getContext());
                             return netType > 0;
@@ -146,22 +152,15 @@ public class AfterLoginService extends IntentService {
                                                 @Override
                                                 public void onFailure(Call call, IOException e) {
                                                     AppLogger.e("check_version what the hell?" + MiscUtils.getErr(e));
+                                                    PreferencesUtils.remove(JConstant.KEY_CLIENT_UPDATE_DESC);
                                                 }
 
                                                 @Override
                                                 public void onResponse(Call call, Response response) throws IOException {
                                                     String result = response.body().string();
                                                     AppLogger.d("check_version result: " + result);
-                                                    try {
-                                                        JSONObject jsonObject = new JSONObject(result);
-                                                        final String url = jsonObject.getString("url");
-                                                        final String versionName = jsonObject.getString("version");
-                                                        final String shortVersion = jsonObject.getString("shortversion");
-                                                        final String desc = jsonObject.getString("desc");
-                                                        ClientUpdateManager.getInstance().enqueue(url, versionName, shortVersion, desc, clientCheckVersion.forceUpgrade);
-                                                    } catch (JSONException e) {
-                                                        AppLogger.e(MiscUtils.getErr(e));
-                                                    }
+                                                    PreferencesUtils.putString(JConstant.KEY_CLIENT_UPDATE_DESC, result);
+                                                    RxBus.getCacheInstance().postSticky(new RxEvent.ClientUpdateEvent());
                                                 }
                                             });
                                     return Observable.just(true);
