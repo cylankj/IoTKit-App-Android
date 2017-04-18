@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import com.cylan.jiafeigou.base.wrapper.BasePresenter;
-import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
@@ -9,14 +8,11 @@ import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
 import java.util.ArrayList;
@@ -46,17 +42,19 @@ public class DBellHomePresenterImpl extends BasePresenter<DoorBellHomeContract.V
     private void notifyBellLowBattery() {
         if (isFirst) {
             isFirst = false;
-            Account account = sourceManager.getAccount();
-            if (account != null) {
-                long lastTime = PreferencesUtils.getLong(account.getAccount() + ":" + mUUID + ":" + JConstant.LAST_ENTER_TIME, System.currentTimeMillis());
-                DpMsgDefine.DPPrimary<Integer> battery = sourceManager.getValue(mUUID, DpMsgMap.ID_206_BATTERY, null);
-                if (lastTime < todayInMidNight) {//新的一天
-                    PreferencesUtils.putLong(account.getAccount() + ":" + mUUID + ":" + JConstant.LAST_ENTER_TIME, System.currentTimeMillis());
-                    int b = MiscUtils.safeGet(battery, 0);
-                    if (b < 20) {
+            Device device = sourceManager.getDevice(mUUID);
+            if (device != null && device.available()) {
+                Integer battery = device.$(DpMsgMap.ID_206_BATTERY, 0);
+                if (battery < 20) {//电量低
+                    DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
+                    if (option != null && option.lastLowBatteryTime < todayInMidNight) {//新的一天
+                        option.lastLowBatteryTime = System.currentTimeMillis();
+                        device.setOption(option);
+                        sourceManager.updateDevice(device);
                         mView.onBellBatteryDrainOut();
                     }
                 }
+
             }
         }
     }

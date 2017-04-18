@@ -68,7 +68,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performServer() {
         if (entity.getVersion() == 0) {
-            dpHelper.clear(entity.getUuid(), entity.getMsgId());
+            dpHelper.clearMsg(entity.getUuid(), entity.getMsgId());
         }
         return Observable.create((Observable.OnSubscribe<Long>) subscriber -> {
             try {

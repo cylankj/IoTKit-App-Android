@@ -95,7 +95,7 @@
         <!-- 华为推送 Start -->
         <meta-data
             android:name="com.huawei.hms.client.appid"
-            android:value="10826402" />
+            android:value="10515998" />
         <meta-data
             android:name="BUGLY_APPID"
             android:value="900026046" />
@@ -178,13 +178,13 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <receiver android:name=".n.base.BaseApplication$BootCompletedReceiver">
-            <intent-filter android:priority="0x7fffffff">
-                <action android:name="android.intent.action.BOOT_COMPLETED" />
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE" />
-                <action android:name="android.intent.action.USER_PRESENT" />
-            </intent-filter>
-        </receiver>
+        <!--<receiver android:name=".n.base.BaseApplication$BootCompletedReceiver">-->
+            <!--<intent-filter android:priority="0x7fffffff">-->
+                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
+                <!--<action android:name="android.intent.action.USER_PRESENT" />-->
+            <!--</intent-filter>-->
+        <!--</receiver>-->
 
         <service
             android:name=".n.engine.DaemonService"
@@ -423,7 +423,7 @@
             <!-- </intent-filter> -->
         </activity>
 
-        <!--<service android:name=".n.engine.DataSourceService" />-->
+        <!-- <service android:name=".n.engine.DataSourceService" /> -->
 
         <activity
             android:name=".n.view.activity.BindCamActivity"
@@ -481,6 +481,16 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+
+        <service
+            android:name=".push.WakeupService"
+            android:enabled="true" />
+
+        <provider
+            android:name="com.facebook.FacebookContentProvider"
+            android:authorities="com.facebook.app.FacebookContentProvider1866682200216878"
+            android:exported="true" />
+
     </application>
 
 </manifest>

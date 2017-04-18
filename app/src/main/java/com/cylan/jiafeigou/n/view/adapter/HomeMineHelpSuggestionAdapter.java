@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -48,7 +49,6 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
     private static final int TYPE_Client = 1;//客户端类型
 
     private OnResendFeedBackListener resendFeedBack;
-    private AnimationDrawable animationDrawable;
 
     public interface OnResendFeedBackListener {
         void onResend(SuperViewHolder holder, MineHelpSuggestionBean item, int position);
@@ -88,26 +88,21 @@ public class HomeMineHelpSuggestionAdapter extends SuperAdapter<MineHelpSuggesti
             }
 
             ImageView iv_send_pro = holder.getView(R.id.iv_send_pro);
+            ProgressBar send_pro = holder.getView(R.id.send_pro);
 
             if (item.pro_falag == 0) {
                 //显示正在发送
-                iv_send_pro.setVisibility(View.VISIBLE);
-                iv_send_pro.setImageDrawable(null);
-                iv_send_pro.setBackgroundResource(R.drawable.feekback_loading);
-                animationDrawable = (AnimationDrawable) iv_send_pro.getBackground();
-                animationDrawable.start();
+                iv_send_pro.setVisibility(View.INVISIBLE);
+                send_pro.setVisibility(View.VISIBLE);
 
             } else if (item.pro_falag == 1) {
                 //显示发送失败
+                iv_send_pro.setVisibility(View.VISIBLE);
                 holder.setImageDrawable(R.id.iv_send_pro, getContext().getResources().getDrawable(R.drawable.album_icon_caution));
             } else {
                 //显示发送成功
                 holder.setVisibility(R.id.iv_send_pro, View.GONE);
-                if(animationDrawable != null){
-                    animationDrawable.stop();
-                    animationDrawable = null;
-                }
-                iv_send_pro.clearAnimation();
+                send_pro.setVisibility(View.GONE);
             }
 
             holder.setOnClickListener(R.id.iv_send_pro, new View.OnClickListener() {

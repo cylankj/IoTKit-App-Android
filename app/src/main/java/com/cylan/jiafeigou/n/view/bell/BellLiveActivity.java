@@ -229,17 +229,25 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         super.onNewIntent(intent);
 //        setIntent(intent);//直接無視新的呼叫
 //        newCall();
+        parse(intent);
+    }
+
+    private void parse(Intent intent) {
+        String uuid = intent.getStringExtra(JConstant.KEY_DEVICE_ITEM_UUID);
+        String url = intent.getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
+        if (TextUtils.equals(uuid, this.uuid) && url != null) {
+            presenter.loadPreview(url);
+        }
     }
 
     private void newCall() {
-        String extra = getIntent().getStringExtra(JConstant.VIEW_CALL_WAY_EXTRA);
+        onSpeaker(false);
         long time = getIntent().getLongExtra(JConstant.VIEW_CALL_WAY_TIME, System.currentTimeMillis());
         CallablePresenter.Caller caller = new CallablePresenter.Caller();
         caller.caller = uuid;
-        caller.picture = extra;
         caller.callTime = time;
         presenter.newCall(caller);
-        onSpeaker(false);
+        parse(getIntent());
     }
 
     @Override

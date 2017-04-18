@@ -241,7 +241,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && getActivity() != null) {
+        if (isVisibleToUser && getActivity() != null && getView() != null) {
             if (TextUtils.equals(tvHomeMineNick.getText(), getString(R.string.Tap3_LogIn))) {
                 //need to have a try
                 String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);

@@ -232,7 +232,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
             simpleDialogFragment.setAction((int id, Object value) -> {
                 //开始下载
                 if (id == R.id.tv_dialog_btn_left)
-                basePresenter.startDownload(basePresenter.creatDownLoadBean());
+//                basePresenter.startDownload(basePresenter.creatDownLoadBean());
+                basePresenter.myDownLoad(checkDevVersion.url,checkDevVersion.version);
             });
             simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
         }
@@ -248,12 +249,16 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_FirmwareUpdateSuc));
                 hardwareUpdatePoint.setVisibility(View.INVISIBLE);
                 tvDownloadSoftFile.setEnabled(true);
-                llDownloadPgContainer.setVisibility(View.VISIBLE);
+                tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
+                llDownloadPgContainer.setVisibility(View.INVISIBLE);
+                tvVersionDescribe.setVisibility(View.GONE);
+                tvHardwareNewVersion.setText(checkDevVersion.version);
                 break;
             case 3:
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_FirmwareUpdateFai));
                 tvDownloadSoftFile.setEnabled(true);
-                llDownloadPgContainer.setVisibility(View.VISIBLE);
+                tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
+                llDownloadPgContainer.setVisibility(View.INVISIBLE);
                 break;
         }
     }
@@ -289,6 +294,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void onDownloading(double percent, long downloadedLength) {
+        tvDownloadSoftFile.setEnabled(false);
+        llDownloadPgContainer.setVisibility(View.VISIBLE);
         tvLoadingShow.setText(String.format(getString(R.string.Tap1_FirmwareDownloading), MiscUtils.FormetSDcardSize(downloadedLength) + "/" + fileSize));
         downloadProgress.setProgress((int) (percent * 100));
     }

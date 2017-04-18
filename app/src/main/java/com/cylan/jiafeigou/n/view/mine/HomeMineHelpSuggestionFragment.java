@@ -23,6 +23,8 @@ import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineHelpSuggestionContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.HomeMineHelpSuggestionImpl;
 import com.cylan.jiafeigou.n.mvp.model.MineHelpSuggestionBean;
 import com.cylan.jiafeigou.n.view.adapter.HomeMineHelpSuggestionAdapter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.softkeyboard.util.KPSwitchConflictUtil;
 import com.cylan.jiafeigou.support.softkeyboard.util.KeyboardUtil;
@@ -255,6 +257,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         suggestionAdapter.notifyDataSetHasChanged();
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
         presenter.saveIntoDb(autoReplyBean);
+        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
     }
 
     public MineHelpSuggestionBean addSystemAutoReply() {

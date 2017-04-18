@@ -130,7 +130,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
 
 
     public void updateAlias(Device device) {
-        sourceManager.updateJFGDevice(device);
+        sourceManager.updateDevice(device);
         try {
             appCmd.setAliasByCid(device.uuid, device.alias);
             AppLogger.d("update alias suc");

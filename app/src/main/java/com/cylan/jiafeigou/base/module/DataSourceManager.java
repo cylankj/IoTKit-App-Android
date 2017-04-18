@@ -34,7 +34,7 @@ import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.activity.CameraLiveActivity;
-import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
+import com.cylan.jiafeigou.n.view.bell.DoorBellHomeActivity;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.OptionsImpl;
@@ -101,8 +101,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .flatMap(account -> dbHelper.getAccountDevice(account.getAccount()))
                 .flatMap(Observable::from)
                 .map(device -> {
-                    DBOption.RawDeviceOrderOption option = device.option(DBOption.RawDeviceOrderOption.class);
-                    device.setPropertyParser(propertyParser);
+                    DBOption.DeviceOption option = device.option(DBOption.DeviceOption.class);
                     mCachedDeviceMap.put(device.getUuid(), device);
                     rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
                     return device;
@@ -258,7 +257,6 @@ public class DataSourceManager implements JFGSourceManager {
                     if (devices == null) return null;
                     for (Device device : devices) {
                         mCachedDeviceMap.remove(device.getUuid());
-                        PreferencesUtils.remove(account.getAccount() + ":" + device.getUuid() + ":" + JConstant.LAST_ENTER_TIME);
                         getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(device.getUuid()));
                     }
                     return devices;
@@ -417,7 +415,7 @@ public class DataSourceManager implements JFGSourceManager {
     }
 
     @Override
-    public boolean updateJFGDevice(Device device) {
+    public boolean updateDevice(Device device) {
         dbHelper.updateDevice(device).subscribe(ret -> {
         }, AppLogger::e);
         return true;
@@ -528,6 +526,7 @@ public class DataSourceManager implements JFGSourceManager {
 //                            BaseDPTaskDispatcher.getInstance().perform();
                             return "";
                         }))
+                .retry((i, e) -> true)
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -537,8 +536,6 @@ public class DataSourceManager implements JFGSourceManager {
                     @Override
                     public void onError(Throwable e) {
                         AppLogger.d(e.getMessage());
-                        e.printStackTrace();
-                        makeCacheAccountSub();
                     }
 
                     @Override
@@ -572,10 +569,10 @@ public class DataSourceManager implements JFGSourceManager {
                 .map(devices -> {
                     try {
                         ArrayList<JFGDPMsg> parameters;
-                        DBOption.RawDeviceOrderOption option;
+                        DBOption.DeviceOption option;
                         ArrayList<String> uuidList = new ArrayList<>();
                         for (Device device : devices) {
-                            option = device.option(DBOption.RawDeviceOrderOption.class);
+                            option = device.option(DBOption.DeviceOption.class);
                             mCachedDeviceMap.put(device.getUuid(), device);
                             rawDeviceOrder.add(new Pair<>(option.rawDeviceOrder, device.getUuid()));
                             parameters = device.getQueryParams();
@@ -595,7 +592,7 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     return "多线程真心麻烦";
                 })
-                .doOnError(e -> makeCacheDeviceSub())
+                .retry((i, e) -> true)
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -605,8 +602,6 @@ public class DataSourceManager implements JFGSourceManager {
                     @Override
                     public void onError(Throwable e) {
                         AppLogger.d(e.getMessage());
-                        e.printStackTrace();
-                        makeCacheDeviceSub();
                     }
 
                     @Override
@@ -627,6 +622,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(event -> dbHelper.saveDPByteInTx(event.getDataRsp).map(dpEntities -> event))
+                .retry((i, e) -> true)
                 .subscribe(new Subscriber<RxEvent.SerializeCacheGetDataEvent>() {
                     @Override
                     public void onCompleted() {
@@ -636,7 +632,6 @@ public class DataSourceManager implements JFGSourceManager {
                     @Override
                     public void onError(Throwable e) {
                         AppLogger.e(e.getMessage());
-                        makeCacheGetDataSub();
                     }
 
                     @Override
@@ -668,6 +663,7 @@ public class DataSourceManager implements JFGSourceManager {
                             handleSystemNotification(event.arrayList, event.s);
                             return "多线程真是麻烦";
                         }))
+                .retry((i, e) -> true)
                 .subscribe(new Subscriber<String>() {
                     @Override
                     public void onCompleted() {
@@ -677,8 +673,6 @@ public class DataSourceManager implements JFGSourceManager {
                     @Override
                     public void onError(Throwable e) {
                         AppLogger.d(e.getMessage());
-                        e.printStackTrace();
-                        makeCacheSyncDataSub();
                     }
 
                     @Override
@@ -753,9 +747,7 @@ public class DataSourceManager implements JFGSourceManager {
                                     Device dd = getDevice(uuid);
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
                                     AppLogger.d("通知栏..." + entity);
-                                    Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
-                                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                                    intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_VIEWER);
+                                    Intent intent = new Intent(ContextUtils.getContext(), DoorBellHomeActivity.class);
                                     intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
                                     int count = entity.getValue(0);
                                     final String title = count == 0 ? ContextUtils.getContext().getString(R.string.app_name) :

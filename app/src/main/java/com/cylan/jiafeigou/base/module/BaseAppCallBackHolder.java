@@ -142,7 +142,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnRobotSetDataRsp(long l, String uuid, ArrayList<JFGDPMsgRet> arrayList) {
         AppLogger.d("OnRobotSetDataRsp :" + l + gson.toJson(arrayList));
-        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, arrayList));
+        RxBus.getCacheInstance().post(new RxEvent.SetDataRsp(l, uuid, arrayList));
     }
 
     @Override
@@ -165,7 +165,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnResult(JFGResult jfgResult) {
         RxBus.getCacheInstance().post(jfgResult);
-        AppLogger.i("jfgResult:");
+        AppLogger.i("jfgResult:"+jfgResult.code);
     }
 
     @Override
@@ -182,7 +182,6 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnRobotCountDataRsp(long l, String s, ArrayList<JFGDPMsgCount> arrayList) {
-//        BaseApplication.getAppComponent().getSourceManager().cacheUnreadCount(l, s, arrayList);
         AppLogger.d("OnRobotCountDataRsp :" + l + ":" + s + "");
     }
 

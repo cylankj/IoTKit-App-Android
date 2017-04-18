@@ -860,8 +860,9 @@ public class RxEvent {
         public String uuid;
         public ArrayList<JFGDPMsgRet> rets;
 
-        public SetDataRsp(long l, ArrayList<JFGDPMsgRet> arrayList) {
+        public SetDataRsp(long l, String uuid, ArrayList<JFGDPMsgRet> arrayList) {
             this.seq = l;
+            this.uuid = uuid;
             this.rets = arrayList;
         }
 

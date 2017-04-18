@@ -16,6 +16,8 @@ public interface CallablePresenter<V extends CallableView> extends ViewablePrese
      */
     void newCall(Caller caller);
 
+    void loadPreview(String url);
+
     class Caller {
         public String caller;//呼叫者
         public String picture;//呼叫者的图像
