@@ -579,9 +579,6 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onVideoDisconnect(int code) {
-//        imgvBellLiveCapture.setEnabled(false);
-//        imgvBellLiveSpeaker.setEnabled(false);
-//        imgvBellLiveSwitchToLand.setEnabled(false);
         switch (code) {
             case JError.ErrorVideoPeerInConnect://其他端在查看
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
@@ -602,7 +599,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;
             case BAD_FRAME_RATE:
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NO_NERWORK_CHEAKDEVICE));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NO_NETWORK_1));
                 break;
             default:
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
@@ -612,6 +609,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
             ((GLSurfaceView) mSurfaceView).onPause();
             mSurfaceView = null;
         }
+        imgvBellLiveCapture.setEnabled(false);
+        imgvBellLiveSpeaker.setEnabled(false);
+        imgvBellLiveSwitchToLand.setEnabled(false);
         mVideoViewContainer.removeAllViews();
     }
 
