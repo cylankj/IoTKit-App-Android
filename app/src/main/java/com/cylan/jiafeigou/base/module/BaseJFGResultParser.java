@@ -50,7 +50,6 @@ public class BaseJFGResultParser {
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
                 RxBus.getCacheInstance().post(new RxEvent.ResultUserLogin(jfgResult.code));
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultUpdateLogin(jfgResult.code));
-                AfterLoginService.resumeOfflineRequest();
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备
@@ -100,6 +99,7 @@ public class BaseJFGResultParser {
             AfterLoginService.startGetAccountAction(ContextUtils.getContext());
             AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
             AfterLoginService.resumeOfflineRequest();
+            AfterLoginService.resumeTryCheckVersion();
         }
     }
 }

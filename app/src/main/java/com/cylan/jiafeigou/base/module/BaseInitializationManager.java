@@ -87,6 +87,7 @@ public final class BaseInitializationManager {
     }
 
     public void initialization() {
+        System.loadLibrary("jfgsdk");
         enableDebugOptions();
         initSourceManager();
         initDBHelper();

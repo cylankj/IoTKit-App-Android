@@ -48,9 +48,9 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private HuaweiApiClient client;
     private static AppComponent appComponent;
 
-    static {
-        System.loadLibrary("jfgsdk");
-    }
+//    static {
+
+//    }
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -122,6 +122,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             try2init();
             PreferencesUtils.init(getApplicationContext());
             PerformanceUtils.startTrace("appStart");
+            PerformanceUtils.startTrace("FirstActivity");
             //Dagger2 依赖注入
             appComponent = DaggerAppComponent.builder().appModule(new AppModule(this)).build();
 

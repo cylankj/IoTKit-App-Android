@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -74,6 +75,7 @@ public class SmartcallActivity extends NeedLoginActivity
         initPresenter();
         fullScreen(true);
         from_log_out = getIntent().getBooleanExtra(JConstant.FROM_LOG_OUT, false);
+        PerformanceUtils.stopTrace("FirstActivity");
     }
 
     /**

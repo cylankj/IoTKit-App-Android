@@ -31,6 +31,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     + TASKS.COLUMN_PRIORITY + " BOOLEAN, "
                     + TASKS.COLUMN_SAVE_ADDRESS + " VARCHAR( 256 ),"
                     + TASKS.COLUMN_EXTENSION + " VARCHAR( 32 )"
+                    + TASKS.COLUMN_UPDATE_TIME + " INT( 32 )"
+                    + TASKS.COLUMN_DESC + " VARCHAR( 256 )"
                     + " ); ";
 
     private final static String CREATE_TABLE_CHUNKS =

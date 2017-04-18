@@ -93,9 +93,6 @@ public class DownloadService extends Service implements DownloadManagerListener 
         new Thread(new Runnable() {
             @Override
             public void run() {
-                DownloadManagerPro.Config config = new DownloadManagerPro.Config()
-                        .setContext(getApplicationContext());
-                DownloadManagerPro.getInstance().init(config);
                 taskBuilder = new DownloadManagerPro.TaskBuilder();
                 taskBuilder.setUrl(bean.url)
                         .setMaxChunks(1)

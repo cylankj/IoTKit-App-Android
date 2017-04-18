@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListe
 import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListenerModerator;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
 import com.cylan.jiafeigou.support.download.utils.L;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 
 import java.io.File;
@@ -53,7 +54,7 @@ public class DownloadManagerPro {
     private TaskBuilder taskBuilder;
 
     private NetConfig.Builder netConfigBuilder;
-    private Config config;
+    //    private Config config;
     private DownloadManagerListenerModerator downloadManagerListener;
 
     private static DownloadManagerPro downloadManagerPro;
@@ -68,16 +69,16 @@ public class DownloadManagerPro {
         return downloadManagerPro;
     }
 
-    public void init(Config config) {
-        this.config = config;
-        initDataBase();
-    }
+//    public void init(Config config) {
+//        this.config = config;
+//
+//    }
 
     public int initTask(TaskBuilder taskBuilder) throws JfgException {
         this.taskBuilder = taskBuilder;
-        if (config == null)
-            throw new JfgException("config is null,you may be forget to initialize");
-        if (taskBuilder == null || config.context == null)
+//        if (config == null)
+//            throw new JfgException("config is null,you may be forget to initialize");
+        if (taskBuilder == null)
             throw new JfgException("taskBuilder==null or context==null");
         if (TextUtils.isEmpty(taskBuilder.url))
             throw new JfgException("url==null");
@@ -89,9 +90,9 @@ public class DownloadManagerPro {
     }
 
     private void initDataBase() {
-        if (config == null)
-            throw new IllegalStateException("config is null,you may be forget to initialize");
-        dbHelper = new DatabaseHelper(config.context);
+//        if (config == null)
+//            throw new IllegalStateException("config is null,you may be forget to initialize");
+        dbHelper = new DatabaseHelper(ContextUtils.getContext());
         // ready database data source to access tables
         tasksDataSource = new TasksDataSource();
         tasksDataSource.openDatabase(dbHelper);
@@ -124,14 +125,14 @@ public class DownloadManagerPro {
         return insertNewTask(saveName, taskBuilder.url, chunk, taskBuilder.sdCardFolderAddress, taskBuilder.priority, taskBuilder.desc);
     }
 
-    public static class Config {
-        private Context context;
-
-        public Config setContext(Context context) {
-            this.context = context;
-            return this;
-        }
-    }
+//    public static class Config {
+//        private Context context;
+//
+//        public Config setContext(Context context) {
+//            this.context = context;
+//            return this;
+//        }
+//    }
 
     public static class TaskBuilder {
         private int maxChunks;
@@ -210,6 +211,7 @@ public class DownloadManagerPro {
      * </p>
      */
     private DownloadManagerPro() {
+        initDataBase();
     }
 
     /**
@@ -345,12 +347,8 @@ public class DownloadManagerPro {
      * @return
      */
     public List<ReportStructure> lastCompletedDownloads() {
-        List<ReportStructure> reportList = new ArrayList<ReportStructure>();
         List<Task> lastCompleted = tasksDataSource.getUnNotifiedCompleted();
-
-        reportList = readyTaskList(lastCompleted);
-
-        return reportList;
+        return readyTaskList(lastCompleted);
     }
 
 

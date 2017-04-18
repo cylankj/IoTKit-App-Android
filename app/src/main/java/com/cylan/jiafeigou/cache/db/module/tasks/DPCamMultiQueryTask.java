@@ -63,7 +63,8 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                 parse.version = item.getVersion();
                                 parse.msgId = item.getMsgId();
                             }
-                            result.add(parse);
+                            if (!result.contains(parse))
+                                result.add(parse);
                         }
                         return Observable.just(new BaseDPTaskResult()
                                 .setResultCode(0)

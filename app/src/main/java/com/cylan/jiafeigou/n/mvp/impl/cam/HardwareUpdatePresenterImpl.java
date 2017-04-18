@@ -61,7 +61,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     private UpdateFileBean downLoadBean;
 
     private SimulatePercent simulatePercent;
-    private DownloadManagerPro.Config config;
+//    private DownloadManagerPro.Config config;
     private String uuid;
     private int updateTime;
 
@@ -110,9 +110,6 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         new Thread(new Runnable() {
             @Override
             public void run() {
-                config = new DownloadManagerPro.Config()
-                        .setContext(getView().getContext());
-                DownloadManagerPro.getInstance().init(config);
                 taskBuilder = new DownloadManagerPro.TaskBuilder();
                 taskBuilder.setUrl(bean.url)
                         .setMaxChunks(4)
@@ -145,7 +142,6 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     getView().onDownloading(obj.percent, obj.length);
                     break;
                 case 3:
-                    config = null;
                     getView().onDownloadFinish();
                     break;
 

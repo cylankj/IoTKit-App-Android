@@ -4,6 +4,7 @@ import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Looper;
+import android.os.Process;
 import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
@@ -110,7 +111,8 @@ public class AfterLoginService extends IntentService {
                             }
                         }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
             } else if (TextUtils.equals(action, ACTION_CHECK_VERSION)) {
-                AppLogger.e("尝试检查版本");
+                Process.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
+                AppLogger.d("尝试检查版本");
                 Observable.just("check_version")
                         .subscribeOn(Schedulers.newThread())
                         .flatMap(s -> {
@@ -127,8 +129,7 @@ public class AfterLoginService extends IntentService {
                         .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.ClientCheckVersion.class)
                                 .flatMap(clientCheckVersion -> {
                                     AppLogger.d("check_version result: " + clientCheckVersion);
-//                                    JfgCmdInsurance.getCmd().che();
-                                    clientCheckVersion.result = "VRJz6f";
+//                                    clientCheckVersion.result = "VRJz6f";
                                     if (TextUtils.isEmpty(clientCheckVersion.result))
                                         return Observable.just(false);
                                     String finalUrl = JConstant.assembleUrl(clientCheckVersion.result, getApplicationContext().getPackageName());

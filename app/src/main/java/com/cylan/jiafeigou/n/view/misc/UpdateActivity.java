@@ -54,16 +54,13 @@ public class UpdateActivity extends FragmentActivity implements DownloadContract
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_update);
         findViewById(R.id.btn_update_cancel)
-                .setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        finish();
-                        if (presenter != null)
-                            presenter.stopDownload();
-                        if (presenter != null)
-                            presenter.stop();
-                        Process.killProcess(Process.myPid());
-                    }
+                .setOnClickListener(v -> {
+                    finish();
+                    if (presenter != null)
+                        presenter.stopDownload();
+                    if (presenter != null)
+                        presenter.stop();
+                    Process.killProcess(Process.myPid());
                 });
         updateDialog();
         presenter = new DownloadContractPresenterImpl(this);

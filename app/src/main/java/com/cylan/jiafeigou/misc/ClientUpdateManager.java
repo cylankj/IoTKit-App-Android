@@ -8,7 +8,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.os.Environment;
 import android.os.IBinder;
 import android.os.RemoteException;
 import android.support.v7.app.NotificationCompat;
@@ -21,22 +20,20 @@ import com.cylan.jiafeigou.IRemoteServiceCallback;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.engine.DownloadService;
 import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
+import com.cylan.jiafeigou.n.view.misc.UpdateActivity;
 import com.cylan.jiafeigou.support.download.core.DownloadManagerPro;
 import com.cylan.jiafeigou.support.download.report.ReportStructure;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.PackageUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.List;
 
-import rx.Observable;
 import rx.Subscription;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
  * 作者：zsl
@@ -137,68 +134,13 @@ public class ClientUpdateManager {
     };
 
     /**
-     * 检测本地是否已经下载了apk
-     *
-     * @return
-     */
-    public void checkLocal(String apkPath, String url, Context context) {
-        checkLocalSub = Observable.just(url)
-                .subscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<String, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(String urlPath) {
-                        long length = 0;
-                        try {
-                            if (TextUtils.isEmpty(urlPath)) return Observable.just(false);
-                            URL url = new URL(urlPath);
-                            URLConnection conn = url.openConnection();//建立连接
-                            String headerField = conn.getHeaderField(6);
-                            length = conn.getContentLength();
-                            AppLogger.d("file name:" + headerField);
-                            AppLogger.d("file_length:" + length);
-                            //先从本地获取看看是否已下载
-                            File file = new File(apkPath);
-                            AppLogger.d("local_url:" + file.getAbsolutePath());
-                            AppLogger.d("file_length:" + getFileSize(file));
-                            AppLogger.d("file_exit:" + file.exists());
-                            if (file.exists()) {
-                                //包是否完整
-                                if (getFileSize(file) == length) {
-                                    return Observable.just(true);
-                                } else {
-                                    boolean delete = file.delete();
-                                    AppLogger.d("update_file_del:" + delete);
-                                }
-                            }
-                            return Observable.just(false);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                            return Observable.just(false);
-                        }
-                    }
-                })
-                .subscribe(b -> {
-                    if (b) {
-                        AppLogger.d("已经瞎子?");
-                    } else {
-                        //仅wifi环境下升级
-                        if (NetUtils.getNetType(ContextUtils.getContext()) == 1) {
-                            Intent intent = new Intent(context, DownloadService.class);
-                            intent.putExtra(DownloadService.KEY_PARCELABLE, new UpdateFileBean());
-                            context.bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
-                        }
-                    }
-                }, AppLogger::e);
-    }
-
-
-    /**
      * 获取文件大小
      *
      * @param file
      * @return
      * @throws Exception
      */
+
     private long getFileSize(File file) {
         long size = 0;
         try {
@@ -275,33 +217,51 @@ public class ClientUpdateManager {
      * @param force:强制升级
      */
     public void enqueue(String url, String versionName, String versionCode, String desc, int force) {
-
+        try {
+            int currentVersionCode = PackageUtils.getAppVersionCode(ContextUtils.getContext());
+            int remoteVersionCode = Integer.parseInt(versionCode);
+            if (currentVersionCode >= remoteVersionCode) {
+                AppLogger.d("不需要升级");
+                return;
+            }
+        } catch (Exception e) {
+            AppLogger.e("err:" + MiscUtils.getErr(e));
+        }
         List<ReportStructure> list = DownloadManagerPro.getInstance().lastCompletedDownloads();
+        boolean get = false;
         if (list != null) {
             for (ReportStructure structure : list) {
                 if (TextUtils.equals(structure.getName(), versionName + ".apk")) {
-                    Log.d("good..", "the file is downloaded: " + versionName);
-                    return;
+                    AppLogger.d("就这么简单地认为 文件下载好了...the file is downloaded: " + versionName);
+                    get = true;
+                    break;
                 }
             }
         }
-        startDownload(ContextUtils.getContext(), url, versionName, desc, 0);
+        if (get) {
+
+        } else {
+            boolean isDownloading = DownloadManagerPro.getInstance().getDownloadState(versionName + ".apk");
+            AppLogger.d("正在下载?" + isDownloading + ",name:" + versionName);
+            if (!isDownloading)
+                startDownload(url, versionName, desc, 0);
+        }
     }
 
-    private void startDownload(Context context, String url, String newVersion, String desc, int upgrade) {
+    private void startDownload(String url, String newVersion, String desc, int upgrade) {
         //启动下载服务 test
         UpdateFileBean updateFileBean = new UpdateFileBean();
         updateFileBean.url = url;
         updateFileBean.fileName = newVersion + ".apk";
         updateFileBean.version = newVersion;
         updateFileBean.desc = desc;
-        if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
-            //没有sd卡
-            updateFileBean.savePath = context.getFilesDir().getAbsolutePath();
-        } else {
-            updateFileBean.savePath = JConstant.MISC_PATH;
+        updateFileBean.savePath = JConstant.MISC_PATH;
+        //仅wifi环境下升级
+        if (NetUtils.getJfgNetType(ContextUtils.getContext()) == 1) {
+            Intent intent = new Intent(ContextUtils.getContext(), UpdateActivity.class);
+            intent.putExtra(DownloadService.KEY_PARCELABLE, updateFileBean);
+            ContextUtils.getContext().bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
         }
-        checkLocal(updateFileBean.savePath + File.separator + updateFileBean.fileName, url, context);
     }
 
 }
