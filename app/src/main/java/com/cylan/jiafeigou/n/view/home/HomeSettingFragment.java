@@ -268,7 +268,9 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             if (appAdater == null)
             appAdater = new AppAdater(getContext());
             for (ResolveInfo info : list) {
-                appAdater.add(info);
+                if (!"com.cloudsync.android.netdisk.activity.NetDiskShareLinkActivity".equals(info.activityInfo.name)){
+                    appAdater.add(info);
+                }
             }
             gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override

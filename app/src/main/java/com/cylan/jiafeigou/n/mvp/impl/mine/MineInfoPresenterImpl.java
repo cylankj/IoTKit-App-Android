@@ -246,7 +246,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(i -> {
                     if (getView() != null) getView().setAccount(account, i);
-                });
+                }, AppLogger::e);
     }
 
     @Override

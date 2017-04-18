@@ -29,6 +29,7 @@ import com.cylan.jiafeigou.n.mvp.impl.home.HomeMinePresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
 import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.n.view.mine.HomeMineInfoFragment;
+import com.cylan.jiafeigou.n.view.mine.HomeMineInfoMailBoxFragment;
 import com.cylan.jiafeigou.n.view.mine.MineFriendsFragment;
 import com.cylan.jiafeigou.n.view.mine.MineInfoBindPhoneFragment;
 import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
@@ -463,7 +464,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     /**
      * 跳转到绑定手机
      */
-    private void jump2SetPhoneFragment() {
+    @Override
+    public void jump2SetPhoneFragment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
         MineInfoBindPhoneFragment bindPhoneFragment = MineInfoBindPhoneFragment.newInstance(bundle);
@@ -475,10 +477,26 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 .commit();
     }
 
+    /**
+     * 跳转到绑定邮箱界面
+     */
+    @Override
+    public void jump2BindMailFragment(){
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("userinfo", BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
+        HomeMineInfoMailBoxFragment bindMailFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, bindMailFragment, "bindMailFragment")
+                .addToBackStack("personalInformationFragment")
+                .commit();
+    }
+
     @Override
     public void onDialogAction(int id, Object value) {
         if (id == R.id.tv_dialog_btn_right) {
-            jump2SetPhoneFragment();
+            basePresenter.loginType();
         }
     }
 

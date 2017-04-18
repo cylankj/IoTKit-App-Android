@@ -28,6 +28,7 @@ import com.cylan.jiafeigou.n.view.mine.HomeMineHelpFragment;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
@@ -174,6 +175,10 @@ public class CamLiveController implements
 
             @Override
             public void clickHelp() {
+                if (NetUtils.isNetworkAvailable(ContextUtils.getContext())){
+                    ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
                 if (helpPageFragment == null || helpPageFragment.get() == null) {
                     helpPageFragment = new WeakReference<>(HomeMineHelpFragment.newInstance(null));
                 }

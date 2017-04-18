@@ -283,7 +283,11 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         //得到ContentResolver对象
         ContentResolver cr = getView().getContext().getContentResolver();
         //取得电话本中开始一项的光标
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        String sort = "sort_key";
+        if(android.os.Build.VERSION.SDK_INT>=19){
+            sort ="phonebook_label";
+        }
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null,sort);
         if (cursor == null) {
             return list;
         }
@@ -295,6 +299,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
             //取得电话号码
             String ContactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
             Cursor phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactId, null, null);
+            String sort_key = cursor.getString(cursor.getColumnIndex(sort));
             while (phone.moveToNext()) {
                 RelAndFriendBean friendBean = new RelAndFriendBean();
                 friendBean.alias = contact;
@@ -302,6 +307,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 PhoneNumber = PhoneNumber.replace("-", "");
                 PhoneNumber = PhoneNumber.replace(" ", "");
                 friendBean.account = PhoneNumber;
+                friendBean.sortkey = sort_key;
                 if (friendBean.account.startsWith("+86")) {
                     friendBean.account = friendBean.account.substring(3);
                 } else if (friendBean.account.startsWith("86")) {
@@ -325,6 +331,7 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
                 RelAndFriendBean friendBean = new RelAndFriendBean();
                 friendBean.alias = contact;
                 friendBean.account = email;
+                friendBean.sortkey = sort_key;
                 if (JConstant.EMAIL_REG.matcher(friendBean.account).find()) {
                     list.add(friendBean);
                 }
@@ -339,11 +346,11 @@ public class MineShareToContactPresenterImp extends AbstractPresenter<MineShareT
         @SuppressWarnings("unchecked")
         @Override
         public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
-            Collator ca = Collator.getInstance(Locale.CHINA);
+            Collator ca = Collator.getInstance(Locale.getDefault());
             int flags = 0;
-            if (ca.compare(lhs.alias.toLowerCase(), rhs.alias.toLowerCase()) < 0) {
+            if (ca.compare(lhs.sortkey, rhs.sortkey) < 0) {
                 flags = -1;
-            } else if (ca.compare(lhs.alias.toLowerCase(), rhs.alias.toLowerCase()) > 0) {
+            } else if (ca.compare(lhs.sortkey, rhs.sortkey) > 0) {
                 flags = 1;
             } else {
                 flags = 0;

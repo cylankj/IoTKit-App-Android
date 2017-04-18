@@ -34,6 +34,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import rx.Observable;
 import rx.Subscription;
@@ -111,7 +113,11 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         //得到ContentResolver对象
         ContentResolver cr = getView().getContext().getContentResolver();
         //取得电话本中开始一项的光标
-        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
+        String sort = "sort_key";
+        if(android.os.Build.VERSION.SDK_INT>=19){
+            sort ="phonebook_label";
+        }
+        Cursor cursor = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null,sort);
         if (cursor == null) return list;
         //向下移动光标
         while (cursor.moveToNext()) {
@@ -121,6 +127,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
             //取得电话号码
             String ContactId = cursor.getString(cursor.getColumnIndex(ContactsContract.Contacts._ID));
             Cursor phone = cr.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + "=" + ContactId, null, null);
+            String sort_key = cursor.getString(cursor.getColumnIndex(sort));
             while (phone.moveToNext()) {
                 RelAndFriendBean friendBean = new RelAndFriendBean();
                 friendBean.alias = contact;
@@ -128,6 +135,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 PhoneNumber = PhoneNumber.replace("-", "");
                 PhoneNumber = PhoneNumber.replace(" ", "");
                 friendBean.account = PhoneNumber;
+                friendBean.sortkey = sort_key;
                 if (friendBean.account.startsWith("+86")) {
                     friendBean.account = friendBean.account.substring(3);
                 } else if (friendBean.account.startsWith("86")) {
@@ -149,6 +157,7 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 String email = emails.getString(emailIndex);
                 friendBean.alias = contact;
                 friendBean.account = email;
+                friendBean.sortkey = sort_key;
                 if (JConstant.EMAIL_REG.matcher(email).find()) {
                     list.add(friendBean);
                 }
@@ -341,11 +350,11 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
         @SuppressWarnings("unchecked")
         @Override
         public int compare(RelAndFriendBean lhs, RelAndFriendBean rhs) {
-            Collator ca = Collator.getInstance(Locale.CHINA);
+            Collator ca = Collator.getInstance(Locale.getDefault());
             int flags = 0;
-            if (ca.compare(lhs.alias, rhs.alias) < 0) {
+            if (ca.compare(lhs.sortkey, rhs.sortkey) < 0) {
                 flags = -1;
-            } else if (ca.compare(lhs.alias, rhs.alias) > 0) {
+            } else if (ca.compare(lhs.sortkey, rhs.sortkey) > 0) {
                 flags = 1;
             } else {
                 flags = 0;

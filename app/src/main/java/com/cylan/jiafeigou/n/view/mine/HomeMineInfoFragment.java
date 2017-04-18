@@ -553,6 +553,12 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
                 .addToBackStack("personalInformationFragment")
                 .commit();
+        bindPhoneFragment.setOnChangePhoneListener(new MineInfoBindPhoneFragment.OnChangePhoneListener() {
+            @Override
+            public void onChange(String phone) {
+                tvHomeMinePersonalPhone.setText(phone);
+            }
+        });
     }
 
     /**

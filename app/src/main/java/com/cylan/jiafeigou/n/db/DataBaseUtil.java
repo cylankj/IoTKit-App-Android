@@ -38,7 +38,7 @@ public class DataBaseUtil {
         return new DbManager.DaoConfig()
                 .setAllowTransaction(true)
                 .setContext(ContextUtils.getContext())
-                .setDbDir(new File(Environment.getExternalStorageDirectory(), "smartFile"))
+                .setDbDir(new File(ContextUtils.getContext().getFilesDir(), "smartFile"))
                 .setDbName(dbName)
                 .setDbVersion(1)
                 .setDbOpenListener(new DbManager.DbOpenListener() {

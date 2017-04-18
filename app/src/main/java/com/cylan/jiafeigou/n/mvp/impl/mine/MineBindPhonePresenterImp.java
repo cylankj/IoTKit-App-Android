@@ -135,7 +135,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             }
                         }
                     }
-                }, e -> AppLogger.d(e.getMessage()));
+                }, e -> AppLogger.d("getCheckPhoneCallback"+e.getMessage()));
     }
 
     /**
@@ -175,7 +175,6 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
     @Override
     public Subscription getCheckCodeCallback() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SmsCodeResult.class)
-                .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Action1<RxEvent.SmsCodeResult>() {
                     @Override
@@ -184,6 +183,7 @@ public class MineBindPhonePresenterImp extends AbstractPresenter<MineBindPhoneCo
                             if (smsCodeResult.error == JError.ErrorOK) {
                                 AppLogger.d("getCheckCodeCallback" + smsCodeResult.token);
                                 PreferencesUtils.putString(JConstant.KEY_REGISTER_SMS_TOKEN, smsCodeResult.token);
+                                getView().startCountTime();
                             } else {
                                 getView().getSmsCodeResult(smsCodeResult.error);
                             }

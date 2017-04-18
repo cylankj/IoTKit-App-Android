@@ -11,6 +11,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
+import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
@@ -18,9 +19,12 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FastBlurUtil;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -96,7 +100,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                                 || getView().getContext() == null
                                 || getView().getContext().getResources() == null)
                             return null;
-                        return new BitmapDrawable(getView().getContext().getResources(), bitmap);
+                        return new BitmapDrawable(ContextUtils.getContext().getResources(), bitmap);
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -294,6 +298,40 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 .subscribe(getUserInfo -> {
                     if (getUserInfo != null)
                         userInfo = getUserInfo.jfgAccount;
+                }, AppLogger::e);
+    }
+
+    @Override
+    public void loginType() {
+         Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .flatMap(new Func1<Object, Observable<Integer>>() {
+                    @Override
+                    public Observable<Integer> call(Object o) {
+                        try {
+                            String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
+                            if (TextUtils.isEmpty(aesAccount)) {
+                                AppLogger.d("reShowAccount:aes account is null");
+                                return Observable.just(null);
+                            }
+                            String decryption = AESUtil.decrypt(aesAccount);
+                            AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
+                            return Observable.just(signType.type);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            return Observable.just(1);
+                        }
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(i -> {
+                    if (getView() != null){
+                        if (i == 3 || i == 4){
+                            getView().jump2SetPhoneFragment();
+                        }else if (i == 6 || i == 7){
+                            getView().jump2BindMailFragment();
+                        }
+                    }
                 }, AppLogger::e);
     }
 

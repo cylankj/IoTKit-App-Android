@@ -60,6 +60,16 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
     private MineBindPhoneContract.Presenter presenter;
     private CountDownTimer countDownTimer;
 
+    public OnChangePhoneListener changeAccListener;
+
+    public interface OnChangePhoneListener {
+        void onChange(String phone);
+    }
+
+    public void setOnChangePhoneListener(OnChangePhoneListener changeAccListener){
+        this.changeAccListener = changeAccListener;
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -287,10 +297,7 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         if (getInputPhone().equals(checkAccountCallback.s)) {
             ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
         } else {
-            //显示倒计时
-            fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
-            countDownTimer.start();
-            tvMeterGetCode.setEnabled(false);
+
             //发送验证码
             presenter.getCheckCode(getInputPhone());
         }
@@ -333,6 +340,9 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
                 }
                 ToastUtil.showPositiveToast(getString(R.string.SCENE_SAVED));
                 if (getView() != null) {
+                    if (changeAccListener != null){
+                        changeAccListener.onChange(getInputPhone());
+                    }
                     getFragmentManager().popBackStack();
                 }
             } else {
@@ -372,7 +382,19 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
 
     @Override
     public void getSmsCodeResult(int code) {
-        ToastUtil.showNegativeToast("error:" + code);
+        if (code == 192){
+            ToastUtil.showNegativeToast(getString(R.string.GetCode_FrequentlyTips));
+        }else {
+            ToastUtil.showNegativeToast("error:" + code);
+        }
+    }
+
+    @Override
+    public void startCountTime() {
+        //显示倒计时
+        fLayoutVerificationCodeInputBox.setVisibility(View.VISIBLE);
+        countDownTimer.start();
+        tvMeterGetCode.setEnabled(false);
     }
 
     @Override

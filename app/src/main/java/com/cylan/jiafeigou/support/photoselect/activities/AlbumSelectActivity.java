@@ -25,6 +25,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.photoselect.adapters.CustomAlbumSelectAdapter;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.support.photoselect.models.Album;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -34,12 +35,10 @@ public class AlbumSelectActivity extends HelperActivity {
     private ArrayList<Album> albums;
 
     private TextView errorDisplay;
-
+    private ActionBar actionBar;
     private ProgressBar progressBar;
     private GridView gridView;
     private CustomAlbumSelectAdapter adapter;
-
-    private ActionBar actionBar;
 
     private ContentObserver observer;
     private Handler handler;
@@ -49,6 +48,7 @@ public class AlbumSelectActivity extends HelperActivity {
             MediaStore.Images.Media.BUCKET_ID,
             MediaStore.Images.Media.BUCKET_DISPLAY_NAME,
             MediaStore.Images.Media.DATA};
+    private CustomToolbar customToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,6 +75,9 @@ public class AlbumSelectActivity extends HelperActivity {
                 startActivityForResult(intent, Constants.REQUEST_CODE);
             }
         });
+
+        customToolbar = (CustomToolbar) findViewById(R.id.custom_toolbar);
+        customToolbar.setBackAction(v->finish());
     }
 
     @Override

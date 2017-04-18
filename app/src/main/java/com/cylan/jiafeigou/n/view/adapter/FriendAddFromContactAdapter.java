@@ -46,6 +46,11 @@ public class FriendAddFromContactAdapter extends SuperAdapter<RelAndFriendBean> 
             addBtn.setEnabled(false);
             addBtn.setTextColor(Color.parseColor("#ADADAD"));
             addBtn.setBackground(null);
+        }else {
+            addBtn.setText(ContextUtils.getContext().getString(R.string.Button_Add));
+            addBtn.setEnabled(true);
+            addBtn.setTextColor(Color.parseColor("#4b9fd5"));
+            addBtn.setBackground(ContextUtils.getContext().getResources().getDrawable(R.drawable.btn_accept_add_request_shape));
         }
         holder.setOnClickListener(R.id.tv_contactadd, new View.OnClickListener() {
             @Override
