@@ -48,10 +48,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private HuaweiApiClient client;
     private static AppComponent appComponent;
 
-//    static {
-
-//    }
-
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);

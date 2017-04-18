@@ -17,7 +17,6 @@ import com.cylan.jiafeigou.misc.live.LiveFrameRateMonitor;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
 
 import java.util.concurrent.TimeUnit;
@@ -31,6 +30,7 @@ import rx.schedulers.Schedulers;
 import static com.cylan.jiafeigou.base.view.ViewableView.BAD_FRAME_RATE;
 import static com.cylan.jiafeigou.base.view.ViewableView.BAD_NET_WORK;
 import static com.cylan.jiafeigou.base.view.ViewableView.STOP_VIERER_BY_SYSTEM;
+import static com.cylan.jiafeigou.misc.JError.ErrorVideoPeerDisconnect;
 
 /**
  * Created by yzd on 16-12-30.
@@ -47,6 +47,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(getDeviceUnBindSub());
+        registerSubscription(watchLoginState());
     }
 
     private Subscription getDeviceUnBindSub() {
@@ -63,12 +64,10 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void startViewer() {
-        Subscription subscribe = Observable.just(NetUtils.isNetworkAvailable(mView.getAppContext()))
+        Subscription subscribe = Observable.just(sourceManager.getAccount())
                 .observeOn(AndroidSchedulers.mainThread())
-                .filter(hasNet -> {
-                    if (hasNet) {
-                        mIsSpeakerOn = false;
-                        mIsMicrophoneOn = false;
+                .filter(account -> {
+                    if (account != null && account.isOnline()) {
                         if (mView != null) {
                             mView.onViewer();
                         }
@@ -205,7 +204,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .filter(dis -> TextUtils.equals(dis.remote, resolution.peer))
                 .mergeWith(
                         RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
-                                .filter(event -> !event.available).map(event -> {
+                                .filter(event -> !event.isOnLine && event.mobile == null && event.wifi == null).map(event -> {
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.code = BAD_NET_WORK;//连接互联网不可用,
                             disconn.remote = getViewHandler();
@@ -216,16 +215,35 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .map(dis -> {
                     AppLogger.d("收到了断开视频的消息:" + dis.code);
                     switch (dis.code) {
+                        case STOP_VIERER_BY_SYSTEM:
+                            break;
+                        default:
                         case BAD_NET_WORK:
                             if (mView != null) {
                                 mView.onVideoDisconnect(dis.code);
                             }
-                            break;
-                        case STOP_VIERER_BY_SYSTEM:
-                            break;
                     }
                     return dis;
                 });
+    }
+
+    protected Subscription watchLoginState() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.ResultLogin.class)
+                .filter(ret -> sourceManager.getAccount() != null && sourceManager.getAccount().isOnline())
+                .observeOn(Schedulers.io())
+                .subscribe(ret -> {
+                    try {
+                        AppLogger.d("网络状态发生变化,正在发送断开视频消息");
+                        JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                        disconn.code = ErrorVideoPeerDisconnect;//连接互联网不可用,
+                        disconn.remote = getViewHandler();
+                        RxBus.getCacheInstance().post(disconn);
+                        appCmd.stopPlay(mUUID);
+                        hasLiveStream = false;
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                }, AppLogger::e);
     }
 
     @Override

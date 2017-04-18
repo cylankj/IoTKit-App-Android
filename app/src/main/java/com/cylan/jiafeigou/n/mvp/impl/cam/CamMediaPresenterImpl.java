@@ -30,7 +30,6 @@ import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.io.File;
-import java.util.concurrent.ExecutionException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -88,11 +87,16 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
     public void unCollect(int index, long v) {//1492151447 1492151447
         long finalVersion = v / 1000 + index + 1;
         Log.d("finalVersion", "unCollect finalVersion:" + finalVersion + ",index:" + index);
-        Observable.just(finalVersion)
-                .observeOn(Schedulers.io())
-                .map(ver -> new DPEntity()
+        check(finalVersion)
+                .filter(v602 -> {
+                    if (v602 <= 0) {
+                        throw new BaseDPTaskException(-1, "无法查找当前条目对应的 V602 Version");
+                    }
+                    return true;
+                })
+                .map(v602 -> new DPEntity()
                         .setUuid("")
-                        .setVersion(finalVersion)
+                        .setVersion(v602)//错了
                         .setAction(DBAction.DELETED)
                         .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG))
                 .flatMap(task -> BaseApplication.getAppComponent().getTaskDispatcher().perform(task))
@@ -102,7 +106,14 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                         .setAction(DBAction.DELETED)
                         .setMsgId(511))
                 .flatMap(task -> BaseApplication.getAppComponent().getTaskDispatcher().perform(task))
-                .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
+                .doOnError(throwable -> {
+                    if (throwable instanceof BaseDPTaskException) {
+                        int code = ((BaseDPTaskException) throwable).getErrorCode();
+                        if (code == -1) {
+                            mView.onItemCollectionCheckRsp(false);
+                        }
+                    }
+                })
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(ret -> mView != null)
                 .subscribe(result -> {
@@ -111,6 +122,25 @@ public class CamMediaPresenterImpl extends AbstractPresenter<CamMediaContract.Vi
                         mView.onItemCollectionCheckRsp(false);
                     }
                 }, AppLogger::e);
+    }
+
+
+    public Observable<Long> check(long v511) {
+        return Observable.just(new DPEntity()
+                .setMsgId(511)
+                .setUuid(uuid)
+                .setAction(DBAction.QUERY)
+                .setVersion(v511)
+                .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
+                .flatMap(entity -> BaseApplication.getAppComponent().getTaskDispatcher().perform(entity))
+                .map(ret -> {
+                    DpMsgDefine.DPPrimary<Long> version = ret.getResultResponse();
+                    if (version != null) {
+                        return version.value;
+                    } else {
+                        return -1L;
+                    }
+                });
     }
 
     @Override

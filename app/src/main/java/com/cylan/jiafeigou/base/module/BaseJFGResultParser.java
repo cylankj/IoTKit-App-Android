@@ -1,19 +1,25 @@
 package com.cylan.jiafeigou.base.module;
 
 import com.cylan.entity.jniCall.JFGResult;
+import com.cylan.jiafeigou.cache.LogState;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.engine.AfterLoginService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
 import rx.Subscription;
 import rx.schedulers.Schedulers;
+
+import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
 
 /**
  * Created by yanzhendong on 2017/4/14.
@@ -50,6 +56,11 @@ public class BaseJFGResultParser {
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
                 RxBus.getCacheInstance().post(new RxEvent.ResultUserLogin(jfgResult.code));
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultUpdateLogin(jfgResult.code));
+                PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
+                Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+                if (account != null) {
+                    account.setOnline(true);
+                }
                 break;
             case JResultEvent.JFG_RESULT_BINDDEV:
                 //绑定设备

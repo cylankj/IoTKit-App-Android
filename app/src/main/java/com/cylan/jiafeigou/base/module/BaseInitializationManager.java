@@ -87,7 +87,6 @@ public final class BaseInitializationManager {
     }
 
     public void initialization() {
-        System.loadLibrary("jfgsdk");
         enableDebugOptions();
         initSourceManager();
         initDBHelper();
@@ -152,6 +151,7 @@ public final class BaseInitializationManager {
 
     private void initAppCmd() {
         try {
+            System.loadLibrary("jfgsdk");
             appCmd.setCallBack(callBackHolder);
             appCmd.initNativeParam(vid, vkey, serverAddress);
             appCmd.enableLog(true, logPath);

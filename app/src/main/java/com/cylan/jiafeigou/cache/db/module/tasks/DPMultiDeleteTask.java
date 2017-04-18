@@ -48,8 +48,9 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
         })//1491922972000
                 .subscribeOn(Schedulers.io())
                 .flatMap(this::makeDeleteDataRspResponse)
-                .flatMap(rsp -> Observable.from(multiEntity)
-                        .flatMap(entity -> dpHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)
-                                .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(cache))));
+                .flatMap(rsp ->
+                        Observable.from(multiEntity)
+                                .flatMap(entity -> dpHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)).last()
+                                .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(multiEntity)));
     }
 }

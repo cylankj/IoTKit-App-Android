@@ -2,7 +2,10 @@ package com.cylan.jiafeigou.base.module;
 
 
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -93,7 +96,12 @@ public class DataSourceManager implements JFGSourceManager {
                 .filter(account -> account != null)
                 .map(dpAccount -> {
                     account = dpAccount;
-                    account.setOnline(false);
+                    int anInt = PreferencesUtils.getInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_NONE);
+                    if (anInt == LogState.STATE_ACCOUNT_ON) {
+                        account.setOnline(true);
+                    } else {
+                        account.setOnline(false);
+                    }
                     return account;
                 })
                 .map(dpAccount -> {
@@ -138,9 +146,20 @@ public class DataSourceManager implements JFGSourceManager {
     @Deprecated
     public void setOnline(boolean online) {
         isOnline = online;
-        if (account != null) {
-            account.setOnline(online);
+        if (account != null && !online) {
+            account.setOnline(false);
         }
+
+        ConnectivityManager connectivityManager = (ConnectivityManager) BaseApplication.getAppComponent().getAppContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mobNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+        NetworkInfo wifiNetInfo = connectivityManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        //改变背景或者 处理网络的全局变量
+        AppLogger.d("当前网络可用");
+        RxEvent.NetConnectionEvent connectionEvent = new RxEvent.NetConnectionEvent(true);
+        connectionEvent.mobile = mobNetInfo;
+        connectionEvent.wifi = wifiNetInfo;
+        connectionEvent.isOnLine = isOnline;
+        RxBus.getCacheInstance().post(connectionEvent);
     }
 
     @Override
@@ -743,6 +762,7 @@ public class DataSourceManager implements JFGSourceManager {
                         AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
                 } else if (msgId == 401) {
+
                     AppLogger.d("may fire a notification: " + msgId);
                     //for bell 1004 1005
                     INotify.NotifyBean bean = new INotify.NotifyBean();
