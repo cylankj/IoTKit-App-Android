@@ -15,7 +15,8 @@
         <FrameLayout
             android:id="@+id/act_bell_live_video_view_container"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="#000" />
 
         <ImageView
             android:id="@+id/act_bell_live_video_picture"
@@ -38,8 +39,8 @@
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/y10"
             android:padding="@dimen/y10"
-            android:visibility="invisible"
-            android:src="@drawable/icon_port_fullscreen_selector" />
+            android:src="@drawable/icon_port_fullscreen_selector"
+            android:visibility="invisible" />
 
         <FrameLayout
             android:layout_width="match_parent"

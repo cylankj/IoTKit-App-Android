@@ -115,7 +115,44 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
         if (item.isDone == 1) {
             switch (item.type) {
                 case 601:
-                    holder.setText(R.id.mesg_item_content, String.format(ContextUtils.getContext().getString(R.string.MSG_REBIND), item.getName()));
+                    String name = item.getName();
+                    if (name == null) return;
+                    String fName = null;
+                    if (name.matches("^\\d{11}$")) {//前三后四
+                        fName = name.replace(name.substring(3, name.length() - 4), "****");
+                    } else if (name.matches("[\\w!#$%&'*+/=?^_`{|}~-]+(?:\\.[\\w!#$%&'*+/=?^_`{|}~-]+)*@(?:[\\w](?:[\\w-]*[\\w])?\\.)+[\\w](?:[\\w-]*[\\w])?")) {
+                        String[] split = name.split("@");
+                        if (split[0].length() == 1) {
+                            fName = name;
+                        } else if (split[0].length() == 2) {
+                            fName = split[0].replace(split[0].substring(1, 2), "*") + split[1];
+                        } else if (split[0].length() == 3) {
+                            fName = split[0].replace(split[0].substring(1, 3), "**") + split[1];
+                        } else if (split[0].length() > 3 && split[0].length() <= 8) {
+                            fName = split[0].replace(split[0].substring(2, split[0].length() - 1), "****") + split[1];
+                        } else if (split[0].length() > 8) {
+                            fName = split[0].replace(split[0].substring(3, split[0].length() - 1), "****") + split[1];
+                        }
+                    } else {//第三方登录
+                        if (name.length() == 1) {
+                            fName = name;
+                        } else if (name.length() == 2) {
+                            fName = name.replace(name.substring(1), "*");
+                        } else if (name.length() == 3) {
+                            fName = name.replace(name.substring(1), "**");
+                        } else if (name.length() == 4) {
+                            fName = name.replace(name.substring(1, name.length() - 1), "***");
+                        } else if (name.length() > 4 && name.length() <= 8) {
+                            fName = name.replace(name.substring(2, name.length() - 1), "***");
+                        } else if (name.length() > 8 && name.length() <= 16) {
+                            fName = name.replace(name.substring(3, name.length() - 1), "***");
+                        } else if (name.length() > 16) {
+                            fName = name.replace(name.substring(4, name.length() - 4), "****");
+                        }
+                    }
+                    if (fName == null) fName = name;
+
+                    holder.setText(R.id.mesg_item_content, String.format(ContextUtils.getContext().getString(R.string.MSG_REBIND), fName));
                     break;
                 case 603:
                     holder.setText(R.id.mesg_item_content, "该设备已分享");

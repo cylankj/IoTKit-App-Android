@@ -37,9 +37,9 @@
                     android:layout_height="wrap_content"
                     android:background="@null"
                     android:hint="@string/DEViCE_NAME"
-                    android:lines="1"
                     android:maxLength="12"
                     android:maxLines="1"
+                    android:singleLine="true"
                     android:textColor="@color/color_666666"
                     android:textColorHint="@color/color_666666"
                     android:textSize="@dimen/sp14" />

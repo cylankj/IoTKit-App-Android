@@ -106,4 +106,11 @@ public class DP {
         }
     }
 
+    @Test
+    public void sub(){
+        String ss="eohgoewhgoewhgoewhgoehgoh";
+        String s = ss.substring(3, ss.length() - 3);
+        System.out.println(s);
+    }
+
 }

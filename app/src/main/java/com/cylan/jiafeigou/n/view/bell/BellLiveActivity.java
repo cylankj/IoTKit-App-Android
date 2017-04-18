@@ -503,6 +503,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @NeedsPermission(Manifest.permission.RECORD_AUDIO)
     void switchSpeakerWithPermission() {
         presenter.switchSpeaker();
+
     }
 
     @OnPermissionDenied(Manifest.permission.RECORD_AUDIO)
@@ -515,7 +516,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         dialogFragment.setAction((id, value) -> {
 
         });
-        dialogFragment.show(getSupportFragmentManager(), "audio_permission");
+        getSupportFragmentManager().beginTransaction().add(dialogFragment, "audio_permission").commitAllowingStateLoss();
     }
 
     @NeedsPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -592,7 +593,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case JError.ErrorVideoPeerDisconnect://对端断开
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.Device_Disconnected));
                 break;
             case JError.ErrorP2PSocket:
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
@@ -601,11 +602,17 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;
             case BAD_FRAME_RATE:
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NO_NERWORK_CHEAKDEVICE));
                 break;
             default:
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
+
         }
+        if (mSurfaceView != null) {
+            ((GLSurfaceView) mSurfaceView).onPause();
+            mSurfaceView = null;
+        }
+        mVideoViewContainer.removeAllViews();
     }
 
     @Override

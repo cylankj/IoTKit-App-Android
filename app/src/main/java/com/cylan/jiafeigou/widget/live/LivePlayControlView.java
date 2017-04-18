@@ -75,11 +75,13 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 if (!simpleProgressBar.isShown())
                     simpleProgressBar.setVisibility(VISIBLE);
                 simpleProgressBar.setVisibility(VISIBLE);
+                simpleProgressBar.bringToFront();
                 break;
             case STATE_PLAYING:
                 toDismiss(0);
                 if (!imageView.isShown())
                     imageView.setVisibility(VISIBLE);
+                imageView.bringToFront();
                 imageView.setImageResource(R.drawable.camera_icon_pause);
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);
@@ -89,6 +91,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 toDismiss(1);
                 if (!imageView.isShown())
                     imageView.setVisibility(VISIBLE);
+                imageView.bringToFront();
                 imageView.setImageResource(R.drawable.camera_icon_play);
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);
@@ -98,6 +101,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 toDismiss(1);
                 if (!imageView.isShown())
                     imageView.setVisibility(VISIBLE);
+                imageView.bringToFront();
                 imageView.setImageResource(R.drawable.btn_video_retry);
                 simpleProgressBar.setVisibility(GONE);
                 if (!textView.isShown())
