@@ -165,7 +165,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnResult(JFGResult jfgResult) {
         RxBus.getCacheInstance().post(jfgResult);
-        AppLogger.i("jfgResult:"+jfgResult.code);
+        AppLogger.i("jfgResult:" + jfgResult.code);
     }
 
     @Override

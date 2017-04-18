@@ -88,6 +88,8 @@ public class DataSourceManager implements JFGSourceManager {
     private boolean isOnline;
     private JFGAccount jfgAccount;
 
+    private HashMap<Long, Interceptors> dpSeqRspInterceptor = new HashMap<>();
+
     public void initFromDB() {//根据需要初始化
         dbHelper.getActiveAccount()
                 .observeOn(Schedulers.io())
@@ -640,7 +642,15 @@ public class DataSourceManager implements JFGSourceManager {
                 .onBackpressureBuffer()
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(event -> dbHelper.saveDPByteInTx(event.getDataRsp).map(dpEntities -> event))
+                .flatMap(event -> {
+                    long seq = event.getDataRsp == null ? -1 : event.getDataRsp.seq;
+                    if (dpSeqRspInterceptor.containsKey(seq)) {
+                        Interceptors interceptors = dpSeqRspInterceptor.get(seq);
+                        interceptors.handleInterception(event.getDataRsp);
+                        dpSeqRspInterceptor.remove(seq);
+                    }
+                    return dbHelper.saveDPByteInTx(event.getDataRsp).map(dpEntities -> event);
+                })
                 .retry((i, e) -> true)
                 .subscribe(new Subscriber<RxEvent.SerializeCacheGetDataEvent>() {
                     @Override
@@ -801,5 +811,20 @@ public class DataSourceManager implements JFGSourceManager {
         makeCacheSyncDataSub();
         makeCacheAccountSub();
         makeCacheDeviceSub();
+    }
+
+    @Override
+    public void addInterceptor(Long value, DataSourceManager.Interceptors interceptors) {
+        dpSeqRspInterceptor.put(value, interceptors);
+    }
+
+    public interface Interceptors<T> {
+        /**
+         * 这里必须是一个同步方法
+         *
+         * @param data
+         * @return
+         */
+        void handleInterception(T data);
     }
 }

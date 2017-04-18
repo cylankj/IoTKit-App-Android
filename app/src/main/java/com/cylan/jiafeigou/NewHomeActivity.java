@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.UiThread;
@@ -187,17 +188,22 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     @Override
     public void updateProcess(long currentByte, long totalByte) {
+        if (upgradeVersionDialogRef != null && upgradeVersionDialogRef.get() != null) {
 
+        }
     }
 
     @Override
     public void failed(Throwable throwable) {
-
+        ToastUtil.showNegativeToast(getString(R.string.Tap1_DownloadFirmwareFai));
     }
 
     @Override
     public void finished(File file) {
-
+        if (upgradeVersionDialogRef != null && upgradeVersionDialogRef.get() != null
+                && upgradeVersionDialogRef.get().isShowing()) {
+            upgradeVersionDialogRef.get().dismiss();
+        }
     }
 
     @Override
@@ -206,7 +212,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     @Override
-    public void needUpdate(String desc) {
+    public void needUpdate(String desc, String filePath) {
         if (upgradeVersionDialogRef != null && upgradeVersionDialogRef.get() != null && upgradeVersionDialogRef.get().isShowing())
             return;
         if (upgradeVersionDialogRef == null) {
@@ -214,20 +220,21 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             upgradeVersionDialogRef = new WeakReference<>(
                     new AlertDialog.Builder(this)
                             .setMessage(desc)
-                            .setPositiveButton(getString(R.string.OK), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
+                            .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                                /**
+                                 * 安装apk
+                                 */
+                                Intent i = new Intent(Intent.ACTION_VIEW);
+                                i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                i.setDataAndType(Uri.parse("file://" + filePath), "application/vnd.android.package-archive");
+                                startActivity(i);
                             })
-                            .setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
+                            .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                                upgradeVersionDialogRef.get().dismiss();
                             })
                             .create());
         }
+        upgradeVersionDialogRef.get().show();
     }
 
     @Override
@@ -246,7 +253,6 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
             onActivityReenterListener.onActivityReenter(requestCode, data);
     }
 
-//    private SharedElementCallback mCallback;
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void initSharedElementCallback() {

@@ -72,6 +72,8 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                 @Override
                 public void failed(Throwable throwable) {
                     AppLogger.d("下载失败: " + MiscUtils.getErr(throwable));
+                    PreferencesUtils.remove(JConstant.KEY_LAST_TIME_CHECK_VERSION);
+                    PreferencesUtils.remove(JConstant.KEY_CLIENT_UPDATE_DESC);
                 }
 
                 @Override
@@ -80,13 +82,14 @@ public class NewHomeActivityPresenterImpl extends AbstractPresenter<NewHomeActiv
                     Observable.just(file)
                             .observeOn(AndroidSchedulers.mainThread())
                             .filter(ret -> mView != null)
-                            .subscribe(f -> mView.finished(f),
+                            .subscribe(f -> {
+                                        mView.needUpdate(desc, f.getAbsolutePath());
+                                    },
                                     AppLogger::e);
                 }
 
                 @Override
                 public void process(long currentByte, long totalByte) {
-
                 }
             });
         } catch (Exception e) {

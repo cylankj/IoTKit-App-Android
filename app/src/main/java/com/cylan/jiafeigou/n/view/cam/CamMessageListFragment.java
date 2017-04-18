@@ -85,6 +85,10 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     LinearLayout lLayoutNoMessage;
     @BindView(R.id.rLayout_cam_message_list_top)
     FrameLayout rLayoutCamMessageListTop;
+    @BindView(R.id.tv_msg_full_select)
+    TextView tvMsgFullSelect;
+    @BindView(R.id.tv_msg_delete)
+    TextView tvMsgDelete;
 
 //    private SimpleDialogFragment simpleDialogFragment;
     /**
@@ -385,10 +389,12 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 camMessageListAdapter.markAllAsSelected(true, lPos);
                 break;
             case R.id.tv_msg_delete://删除
+                final ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
+                if (ListUtils.isEmpty(list)) return;
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.Tips_SureDelete))
                         .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                            ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
+//                            ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
                             camMessageListAdapter.removeAll(list);
                             if (basePresenter != null)
                                 basePresenter.removeItems(list);
@@ -430,6 +436,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
             case R.id.lLayout_cam_msg_container: {//点击item,选中
                 if (!camMessageListAdapter.isEditMode()) return;
                 camMessageListAdapter.markItemSelected(position);
+                tvMsgDelete.setEnabled(ListUtils.getSize(camMessageListAdapter.getSelectedItems()) > 0);
             }
             break;
             case R.id.imgV_cam_message_pic_0:
@@ -483,5 +490,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
 
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+    }
+
+    @OnClick(R.id.tv_msg_delete)
+    public void onClick() {
     }
 }

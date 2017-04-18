@@ -83,25 +83,25 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
 
-    private List<IDPEntity> buildEntity(long timeStart, long timeEnd, boolean asc) {
+    private List<IDPEntity> buildEntity(long timeStart, boolean asc, boolean isMaxTime) {
         List<IDPEntity> list = new ArrayList<>();
         list.add(new DPEntity()
                 .setMsgId(222)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
-                .setOption(new DBOption.MultiQueryOption(timeStart, timeEnd, asc))
+                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime))
                 .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
         list.add(new DPEntity()
                 .setMsgId(505)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
-                .setOption(new DBOption.MultiQueryOption(timeStart, timeEnd, asc))
+                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime))
                 .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
         list.add(new DPEntity()
                 .setMsgId(512)
                 .setUuid(uuid)
                 .setAction(DBAction.CAM_MULTI_QUERY)
-                .setOption(new DBOption.MultiQueryOption(timeStart, timeEnd, asc))
+                .setOption(new DBOption.MultiQueryOption(timeStart, asc, isMaxTime))
                 .setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount()));
         return list;
     }
@@ -116,13 +116,8 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     private Observable<IDPTaskResult> getMessageListQuery(long timeStart, boolean asc) {
         Log.d("getMessageListQuery", "getMessageListQuery:" + timeStart + ",asc: " + asc);
         try {
-            long timeEnd = asc ? System.currentTimeMillis() : TimeUtils.getSpecificDayStartTime(timeStart);
-            //需要注意这个timeEnd,他可以小于timeStart.可以大于timeStart.
-            //查询本地的时候，不用asc.只用timeStart,timeEnd
-            //查询服务器的时候，用timeStart中大的一个，加上asc.
-            //服务器查询不理会timeEnd
-            //本地查询不理会asc
-            return BaseApplication.getAppComponent().getTaskDispatcher().perform(buildEntity(timeStart, timeEnd, asc));
+            boolean isMax = TimeUtils.getSpecificDayEndTime(timeStart) == timeStart;
+            return BaseApplication.getAppComponent().getTaskDispatcher().perform(buildEntity(timeStart, asc, isMax));
         } catch (Exception e) {
             return Observable.just(BaseDPTaskResult.ERROR);
         }
