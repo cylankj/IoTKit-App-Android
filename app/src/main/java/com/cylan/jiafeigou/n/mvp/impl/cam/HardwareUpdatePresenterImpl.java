@@ -64,6 +64,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
 //    private DownloadManagerPro.Config config;
     private String uuid;
     private int updateTime;
+    private int updatePingTime;
 
     public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view, String uuid, RxEvent.CheckDevVersionRsp checkDevVersion) {
         super(view);
@@ -77,6 +78,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
+                upgradePingBack(),
                 updateBack()
         };
     }
@@ -300,7 +302,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
      * 开始升级
      */
     @Override
-    public void startUpdate() {
+    public void startUpdate(String Ip,short port,String cid) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
@@ -315,9 +317,10 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         String localUrl = "http://" + ip + ":8765/" + downLoadBean.fileName + ".bin";
 //                        String localUrl = downLoadBean.savePath+"/"+ downLoadBean.fileName + ".bin";
                         AppLogger.d("localUrl2:" + localUrl);
-
-                        updateTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,UdpConstant.PORT,new UpdatePing(localUrl,uuid,ip,8765).toBytes());
-                        AppLogger.d("beginUpdate2:" + updateTime);
+                        if (TextUtils.equals(cid,uuid)){
+                            updateTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(Ip,port,new UpdatePing(localUrl,uuid,ip,8765).toBytes());
+                            AppLogger.d("beginUpdate2:" + updateTime);
+                        }
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
@@ -497,5 +500,43 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 }
             }
         };
+
+    @Override
+    public void upgradePing() {
+        rx.Observable.just(null)
+                .subscribeOn(Schedulers.io())
+                .subscribe((Object o) -> {
+                    try {
+                        updatePingTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,UdpConstant.PORT,new JfgUdpMsg.Ping().toBytes());
+                        AppLogger.d("beginPing2:" + updatePingTime);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
+                    }
+                }, AppLogger::e);
+    }
+
+    @Override
+    public Subscription upgradePingBack() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe((RxEvent.LocalUdpMsg localUdpMsg) -> {
+                    //回调结果
+                    AppLogger.d("endPing:" + localUdpMsg.time);
+                    MessagePack msgPack = new MessagePack();
+                    try {
+                        JfgUdpMsg.PingAck pingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.PingAck.class);
+                        if (pingAck != null){
+                            final String headTag = pingAck.cmd;
+                            AppLogger.d("udp_cmd:" + headTag);
+                            if (TextUtils.equals(headTag, "ping_ack")) {
+                                startUpdate(localUdpMsg.ip,localUdpMsg.port,pingAck.cid);
+                                AppLogger.d("f_ping:succ:"+pingAck.cid);
+                            }
+                        }
+                    } catch (IOException e) {
+                        AppLogger.i("unpack msgpack failed:" + e.getLocalizedMessage());
+                    }
+                }, AppLogger::e);
+    }
 
 }

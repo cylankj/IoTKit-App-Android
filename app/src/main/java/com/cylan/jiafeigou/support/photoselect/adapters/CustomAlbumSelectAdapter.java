@@ -9,7 +9,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.photoselect.models.Album;
+import com.cylan.jiafeigou.support.photoselect.models.Image;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 /**
@@ -28,8 +30,8 @@ public class CustomAlbumSelectAdapter extends CustomGenericAdapter<Album> {
             convertView = layoutInflater.inflate(R.layout.grid_view_item_album_select, null);
 
             viewHolder = new ViewHolder();
-            viewHolder.imageView = (ImageView) convertView.findViewById(R.id.image_view_album_image);
-            viewHolder.textView = (TextView) convertView.findViewById(R.id.text_view_album_name);
+            viewHolder.imageView = new WeakReference<ImageView>((ImageView) convertView.findViewById(R.id.image_view_album_image));
+            viewHolder.textView = new WeakReference<TextView>((TextView) convertView.findViewById(R.id.text_view_album_name));
 
             convertView.setTag(viewHolder);
 
@@ -37,19 +39,19 @@ public class CustomAlbumSelectAdapter extends CustomGenericAdapter<Album> {
             viewHolder = (ViewHolder) convertView.getTag();
         }
 
-        viewHolder.imageView.getLayoutParams().width = size;
-        viewHolder.imageView.getLayoutParams().height = size;
+        viewHolder.imageView.get().getLayoutParams().width = size;
+        viewHolder.imageView.get().getLayoutParams().height = size;
 
-        viewHolder.textView.setText(arrayList.get(position).name);
+        viewHolder.textView.get().setText(arrayList.get(position).name);
         Glide.with(context)
                 .load(arrayList.get(position).cover)
-                .placeholder(R.drawable.image_placeholder).centerCrop().into(viewHolder.imageView);
+                .placeholder(R.drawable.image_placeholder).centerCrop().into(viewHolder.imageView.get());
 
         return convertView;
     }
 
     private static class ViewHolder {
-        public ImageView imageView;
-        public TextView textView;
+        public WeakReference<ImageView> imageView;
+        public WeakReference<TextView> textView;
     }
 }
