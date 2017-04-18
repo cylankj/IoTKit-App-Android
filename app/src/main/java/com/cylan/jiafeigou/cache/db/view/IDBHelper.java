@@ -112,4 +112,8 @@ public interface IDBHelper {
     void setDataSourceManager(JFGSourceManager manager);
 
     void setPropertyParser(IPropertyParser parser);
+
+    void deleteDpSync(String account, String uuid, int msdId);
+
+    void deleteDpSync(String account, String uuid, long versionMax, long versionMin);
 }

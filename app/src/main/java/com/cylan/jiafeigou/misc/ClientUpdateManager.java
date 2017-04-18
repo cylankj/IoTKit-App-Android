@@ -259,6 +259,7 @@ public class ClientUpdateManager {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.d(TAG, e.toString());
+                FileUtils.delete(JConstant.MISC_PATH, destFileDir + File.separator + fileName);
             }
 
             @Override
@@ -287,6 +288,7 @@ public class ClientUpdateManager {
                     Log.d(TAG, e.toString());
                     if (downloadListener != null)
                         downloadListener.failed(e);
+                    FileUtils.delete(JConstant.MISC_PATH, destFileDir + File.separator + fileName);
                 } finally {
                     try {
                         if (is != null) {

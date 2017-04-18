@@ -295,6 +295,31 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
+    public void deleteDpSync(String account, String uuid, int msdId) {
+        List<DPEntity> list = mEntityDao.queryBuilder()
+                .where(DPEntityDao.Properties.Account.eq(account))
+                .where(DPEntityDao.Properties.Uuid.eq(uuid))
+                .where(DPEntityDao.Properties.MsgId.eq(msdId))
+                .list();
+        if (list != null) {
+            mEntityDao.deleteInTx(list);
+        }
+    }
+
+    @Override
+    public void deleteDpSync(String account, String uuid, long versionMax, long versionMin) {
+        List<DPEntity> list = mEntityDao.queryBuilder()
+                .where(DPEntityDao.Properties.Account.eq(account))
+                .where(DPEntityDao.Properties.Uuid.eq(uuid))
+                .where(DPEntityDao.Properties.Version.le(versionMax))
+                .where(DPEntityDao.Properties.Version.ge(versionMin))
+                .list();
+        if (list != null) {
+            mEntityDao.deleteInTx(list);
+        }
+    }
+
+    @Override
     public Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option)

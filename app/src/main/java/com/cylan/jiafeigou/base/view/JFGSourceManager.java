@@ -5,6 +5,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGHistoryVideo;
 import com.cylan.entity.jniCall.JFGShareListInfo;
 import com.cylan.jfgapp.interfases.AppCmd;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
@@ -121,5 +122,7 @@ public interface JFGSourceManager {
     void initAccount();
 
     void initSubscription();
+
+    <T>void addInterceptor(Long integer, DataSourceManager.Interceptors interceptors);
 
 }

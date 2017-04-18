@@ -63,20 +63,21 @@ public interface DBOption {
 
     class MultiQueryOption extends BaseDBOption {
         public long timeStart;
-        public long timeEnd;
         public boolean asc;//请求服务器数据的时候使用，向前查，向后查。
+        public boolean isMaxTime;
 
-        public MultiQueryOption(long timeStart, long timeEnd, boolean asc) {
+        public MultiQueryOption(long timeStart, boolean asc, boolean isMaxTime) {
             this.timeStart = timeStart;
-            this.timeEnd = timeEnd;
             this.asc = asc;
+            this.isMaxTime = isMaxTime;
         }
 
         @Override
         public String toString() {
             return "MultiQueryOption{" +
                     "timeStart=" + timeStart +
-                    ", timeEnd=" + timeEnd +
+                    ", asc=" + asc +
+                    ", isMaxTime=" + isMaxTime +
                     '}';
         }
     }

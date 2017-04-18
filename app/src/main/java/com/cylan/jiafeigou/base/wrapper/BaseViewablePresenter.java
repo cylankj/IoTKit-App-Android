@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.base.wrapper;
 
 import android.media.MediaRecorder;
+import android.os.Build;
 import android.text.TextUtils;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -331,7 +332,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     protected boolean switchSpeakAndMicroPhone(boolean speaker, boolean microphone) {
         MediaRecorder mRecorder = null;
-        if (speaker) {//这是为了兼容魅族4.4的权限
+        if (speaker && Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {//这是为了兼容魅族4.4的权限
             try {
                 mRecorder = new MediaRecorder();
                 mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
