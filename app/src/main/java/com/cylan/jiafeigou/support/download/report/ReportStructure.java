@@ -115,4 +115,26 @@ public class ReportStructure {
     public String getName() {
         return name;
     }
+
+    public String getSaveAddress() {
+        return saveAddress;
+    }
+
+    @Override
+    public String toString() {
+        return "ReportStructure{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", state=" + state +
+                ", url='" + url + '\'' +
+                ", fileSize=" + fileSize +
+                ", resumable=" + resumable +
+                ", type='" + type + '\'' +
+                ", chunks=" + chunks +
+                ", percent=" + percent +
+                ", downloadLength=" + downloadLength +
+                ", saveAddress='" + saveAddress + '\'' +
+                ", priority=" + priority +
+                '}';
+    }
 }

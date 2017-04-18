@@ -1,15 +1,10 @@
 package com.cylan.jiafeigou.n.view.misc;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.os.Process;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -20,18 +15,9 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.engine.DownloadService;
 import com.cylan.jiafeigou.n.mvp.contract.DownloadContract;
 import com.cylan.jiafeigou.n.mvp.impl.DownloadContractPresenterImpl;
-import com.cylan.jiafeigou.n.mvp.model.UpdateFileBean;
-import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
-
-import java.io.File;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class UpdateActivity extends FragmentActivity implements DownloadContract.View {
 
@@ -53,6 +39,7 @@ public class UpdateActivity extends FragmentActivity implements DownloadContract
         super.onCreate(savedInstanceState);
         getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_update);
+        ButterKnife.bind(this);
         findViewById(R.id.btn_update_cancel)
                 .setOnClickListener(v -> {
                     finish();
@@ -60,7 +47,6 @@ public class UpdateActivity extends FragmentActivity implements DownloadContract
                         presenter.stopDownload();
                     if (presenter != null)
                         presenter.stop();
-                    Process.killProcess(Process.myPid());
                 });
         updateDialog();
         presenter = new DownloadContractPresenterImpl(this);
@@ -91,7 +77,9 @@ public class UpdateActivity extends FragmentActivity implements DownloadContract
 
     @Override
     public void onDownloading(double percent, long downloadedLength) {
-
+        runOnUiThread(() -> {
+            updateProgress.setProgress((int) percent);
+        });
     }
 
     @Override

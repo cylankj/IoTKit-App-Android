@@ -99,7 +99,6 @@ public class BaseJFGResultParser {
             AfterLoginService.startGetAccountAction(ContextUtils.getContext());
             AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
             AfterLoginService.resumeOfflineRequest();
-            AfterLoginService.resumeTryCheckVersion();
         }
     }
 }

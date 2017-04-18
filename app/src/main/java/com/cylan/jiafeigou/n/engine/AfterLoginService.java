@@ -17,6 +17,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
@@ -115,6 +116,10 @@ public class AfterLoginService extends IntentService {
                 AppLogger.d("尝试检查版本");
                 Observable.just("check_version")
                         .subscribeOn(Schedulers.newThread())
+                        .filter(s -> {
+                            int netType = NetUtils.getJfgNetType(ContextUtils.getContext());
+                            return netType > 0;
+                        })
                         .flatMap(s -> {
                             int req = -1;
                             try {
@@ -129,7 +134,7 @@ public class AfterLoginService extends IntentService {
                         .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.ClientCheckVersion.class)
                                 .flatMap(clientCheckVersion -> {
                                     AppLogger.d("check_version result: " + clientCheckVersion);
-//                                    clientCheckVersion.result = "VRJz6f";
+                                    clientCheckVersion.result = "VRJz6f";
                                     if (TextUtils.isEmpty(clientCheckVersion.result))
                                         return Observable.just(false);
                                     String finalUrl = JConstant.assembleUrl(clientCheckVersion.result, getApplicationContext().getPackageName());

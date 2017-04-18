@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.misc;
 import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
-import android.app.Service;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -232,9 +231,13 @@ public class ClientUpdateManager {
         if (list != null) {
             for (ReportStructure structure : list) {
                 if (TextUtils.equals(structure.getName(), versionName + ".apk")) {
-                    AppLogger.d("就这么简单地认为 文件下载好了...the file is downloaded: " + versionName);
-                    get = true;
-                    break;
+                    if (new File(structure.getSaveAddress()).exists()) {
+                        AppLogger.d("就这么简单地认为 文件下载好了...the file is downloaded: " + structure);
+                        get = true;
+                        break;
+                    }
+                    //文件不存在,删了.
+                    DownloadManagerPro.getInstance().deleteTask(structure.getName());
                 }
             }
         }
@@ -260,7 +263,8 @@ public class ClientUpdateManager {
         if (NetUtils.getJfgNetType(ContextUtils.getContext()) == 1) {
             Intent intent = new Intent(ContextUtils.getContext(), UpdateActivity.class);
             intent.putExtra(DownloadService.KEY_PARCELABLE, updateFileBean);
-            ContextUtils.getContext().bindService(intent, serviceConnection, Service.BIND_AUTO_CREATE);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            ContextUtils.getContext().startActivity(intent);
         }
     }
 

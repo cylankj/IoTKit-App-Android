@@ -103,7 +103,7 @@ public class DownloadManagerPro {
     }
 
     private void initFolder() {
-        File saveFolder = new File(Environment.getExternalStorageDirectory().getAbsolutePath(), taskBuilder.sdCardFolderAddress);
+        File saveFolder = new File(taskBuilder.sdCardFolderAddress);
         if (!saveFolder.exists())
             saveFolder.mkdirs();
         SAVE_FILE_FOLDER = saveFolder.getAbsolutePath();
@@ -120,9 +120,7 @@ public class DownloadManagerPro {
         L.d("overwrite");
         chunk = setMaxChunk(chunk);
         L.d("ma chunk");
-        taskBuilder.sdCardFolderAddress = Environment.getExternalStorageDirectory().getAbsolutePath()
-                + File.separator + taskBuilder.sdCardFolderAddress;
-        return insertNewTask(saveName, taskBuilder.url, chunk, taskBuilder.sdCardFolderAddress, taskBuilder.priority, taskBuilder.desc);
+        return insertNewTask(saveName, taskBuilder.url, chunk, taskBuilder.sdCardFolderAddress + File.separator + taskBuilder.saveName, taskBuilder.priority, taskBuilder.desc);
     }
 
 //    public static class Config {

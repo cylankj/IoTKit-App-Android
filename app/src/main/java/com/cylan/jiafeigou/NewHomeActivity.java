@@ -19,6 +19,7 @@ import android.widget.Toast;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
+import com.cylan.jiafeigou.n.engine.AfterLoginService;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
@@ -68,6 +69,7 @@ public class NewHomeActivity extends NeedLoginActivity implements
         initMainContentAdapter();
         initShowWonderPageSub();
         new NewHomeActivityPresenterImpl(this);
+        AfterLoginService.resumeTryCheckVersion();
     }
 
     private void initShowWonderPageSub() {
