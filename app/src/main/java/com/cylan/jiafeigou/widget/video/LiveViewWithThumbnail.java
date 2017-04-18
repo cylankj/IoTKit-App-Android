@@ -20,6 +20,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.signature.StringSignature;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
@@ -229,23 +230,23 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
         @Override
         public void onLoadFailed(Exception e, Drawable errorDrawable) {
-            AppLogger.e("set up thumbnail failed: " + e);
+            AppLogger.d("bitmap is onLoadFailed: "+ MiscUtils.getErr(e));
         }
 
         @Override
         public void onDestroy() {
-            Log.d(TAG, "bitmap is onDestroy");
+            AppLogger.d("bitmap is onDestroy");
         }
 
         @Override
         public void onStop() {
             super.onStop();
-            Log.d(TAG, "bitmap is onStop");
+            AppLogger.d("bitmap is onStop");
         }
 
         @Override
         public void onLoadCleared(Drawable placeholder) {
-            Log.d(TAG, "bitmap is onLoadCleared");
+            AppLogger.d("bitmap is onLoadCleared");
         }
     }
 }

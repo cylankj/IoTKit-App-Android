@@ -140,7 +140,7 @@ public class AfterLoginService extends IntentService {
                         .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.ClientCheckVersion.class)
                                 .flatMap(clientCheckVersion -> {
                                     AppLogger.d("check_version result: " + clientCheckVersion);
-                                    clientCheckVersion.result = "VRJz6f";
+//                                    clientCheckVersion.result = "VRJz6f";
                                     if (TextUtils.isEmpty(clientCheckVersion.result))
                                         return Observable.just(false);
                                     String finalUrl = JConstant.assembleUrl(clientCheckVersion.result, getApplicationContext().getPackageName());

@@ -45,7 +45,7 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
                 subscriber.onCompleted();
                 AppLogger.d("执行 task 出错了 ,错误信息为:" + e.getMessage());
             }
-        })
+        })//1491922972000
                 .subscribeOn(Schedulers.io())
                 .flatMap(this::makeDeleteDataRspResponse)
                 .flatMap(rsp -> Observable.from(multiEntity)
