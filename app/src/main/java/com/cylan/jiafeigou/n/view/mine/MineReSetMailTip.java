@@ -75,13 +75,11 @@ public class MineReSetMailTip extends Fragment {
 
     @OnClick(R.id.tv_mail_connect_submit)
     public void onClick() {
-//        jump2MineInfoFragment();
+        jump2MineInfoFragment();
     }
 
     public void jump2MineInfoFragment(){
-        Bundle bundle = new Bundle();
-        bundle.putString("useraccount", "");
-        MineReSetMailTip fragment = MineReSetMailTip.newInstance(bundle);
+        HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
