@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -128,7 +129,8 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
 
                 if (presenter.checkIsOverTime()){
                     ToastUtil.showNegativeToast(getString(R.string.Tips_Device_TimeoutRetry));
-                    // TODO 跳转到个人信息页
+                    //跳转到个人信息页
+                    jump2MineInfoFragment();
                     return;
                 }
 
@@ -161,20 +163,13 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
             }else {
                 //绑定手机
                 ToastUtil.showPositiveToast(getString(R.string.Added_successfully));
-                getFragmentManager().popBackStack();
+                jump2MineInfoFragment();
             }
         } else if (code == JError.ErrorSetPassTimeout){
             ToastUtil.showToast(getString(R.string.SUBMIT_FAIL));
         }else {
             ToastUtil.showToast(getString(R.string.Tips_Device_TimeoutRetry));
         }
-    }
-
-    /**
-     * 跳转到个人信息
-     */
-    private void jump2MineInfoFragment() {
-
     }
 
     @Override
@@ -185,10 +180,9 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, "mineInfoSetNewPwdFragment")
-                .addToBackStack("personalInformationFragment")
+                .add(android.R.id.content, fragment, "MineReSetMailTip")
+//                .addToBackStack("personalInformationFragment")
                 .commit();
-
     }
 
     public void backDialog(){
@@ -208,7 +202,35 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     @Override
     public void onDialogAction(int id, Object value) {
         if (id == R.id.tv_dialog_btn_right){
-            getFragmentManager().popBackStack();
+            jump2MineInfoFragment();
         }
+    }
+
+    public void jump2MineInfoFragment(){
+        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getFragmentManager().findFragmentByTag("personalInformationFragment");
+        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
+        MineInfoBindPhoneFragment bindPhoneFragment = (MineInfoBindPhoneFragment) getFragmentManager().findFragmentByTag("bindPhoneFragment");
+        HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getFragmentManager().findFragmentByTag("mailBoxFragment");
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if (personalInfoFragment != null){
+            AppLogger.d("infoFrag不为空");
+            if (setNewPwdFragment != null){ft.remove(setNewPwdFragment);}
+            if (mailBoxFragment != null){ft.remove(mailBoxFragment);mailBoxFragment.getFragmentManager().popBackStack();}
+            if (bindPhoneFragment != null){ft.remove(bindPhoneFragment);bindPhoneFragment.getFragmentManager().popBackStack();}
+            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                    , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .show(personalInfoFragment)
+                    .commit();
+        }else {
+            AppLogger.d("infoFrag为空");
+            HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
+            ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                    , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, fragment, "mineReSetMailTip")
+                    .addToBackStack("personalInformationFragment")
+                    .commit();
+        }
+        if (setNewPwdFragment != null){ft.remove(setNewPwdFragment);}
     }
 }

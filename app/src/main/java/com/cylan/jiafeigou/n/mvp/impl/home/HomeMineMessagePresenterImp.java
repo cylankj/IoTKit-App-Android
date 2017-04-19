@@ -196,9 +196,9 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                 .map(new Func1<RobotoGetDataRsp, ArrayList<MineMessageBean>>() {
                     @Override
                     public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        if (results.size() != 0)
-                            results.clear();
                         if (robotoGetDataRsp != null && robotoGetDataRsp.seq == seq) {
+                            if (results.size() != 0)
+                                results.clear();
                             results.addAll(convertData(robotoGetDataRsp));
 //                            markMesgHasRead();
                         }

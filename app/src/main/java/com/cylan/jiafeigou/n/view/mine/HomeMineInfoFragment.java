@@ -170,7 +170,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             mRlayout_setPersonPhone.setVisibility(View.VISIBLE);
         }
 
-
     }
 
     @Override
@@ -345,7 +344,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
             if (presenter.checkOpenLogin()) {
                 String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
-                tvUserName.setText(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias);
+                tvUserName.setText(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias.trim());
             } else {
                 tvUserName.setText(TextUtils.isEmpty(bean.getAlias()) ? getString(R.string.NO_SET) : bean.getAlias());
             }
@@ -464,7 +463,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     /**
      * popupwindow条目点击
-     *
      * @param view
      */
     private void setOnPopupViewClick(View view) {

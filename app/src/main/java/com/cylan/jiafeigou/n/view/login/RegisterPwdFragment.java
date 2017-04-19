@@ -102,10 +102,6 @@ public class RegisterPwdFragment extends SetupPwdFragment
         }
         if (id == R.id.tv_dialog_btn_left) {
             getActivity().getSupportFragmentManager().popBackStack();
-        } else {
-//            Toast.makeText(getContext(), "去登录", Toast.LENGTH_SHORT).show();
-            //dismiss the dialog
-            getActivity().getSupportFragmentManager().popBackStack();
         }
     }
 

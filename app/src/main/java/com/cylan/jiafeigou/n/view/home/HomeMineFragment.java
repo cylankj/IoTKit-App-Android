@@ -263,13 +263,14 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void setUserImageHeadByUrl(String url) {
+        AppLogger.d("user_img:"+url);
         if (getContext() == null) return;
         MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait, getResources().getDrawable(R.drawable.me_bg_top_image), rLayoutHomeMineTop, url, basePresenter);
         Glide.with(getContext()).load(url)
                 .asBitmap()
                 .error(R.drawable.icon_mine_head_normal)
                 .placeholder(R.drawable.icon_mine_head_normal)
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(mySimpleTarget);
     }
 

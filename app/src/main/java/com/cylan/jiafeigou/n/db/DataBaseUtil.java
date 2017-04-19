@@ -38,7 +38,8 @@ public class DataBaseUtil {
         return new DbManager.DaoConfig()
                 .setAllowTransaction(true)
                 .setContext(ContextUtils.getContext())
-                .setDbDir(new File(ContextUtils.getContext().getFilesDir(), "smartFile"))
+//                .setDbDir(new File(Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator,"smartFile"))
+                .setDbDir(new File(ContextUtils.getContext().getFilesDir().getAbsolutePath() + File.separator,"smartFile"))
                 .setDbName(dbName)
                 .setDbVersion(1)
                 .setDbOpenListener(new DbManager.DbOpenListener() {
@@ -54,6 +55,12 @@ public class DataBaseUtil {
         @Override
         public void onUpgrade(DbManager DbManager, int oldVersion, int newVersion) {
             //TODO 数据库的升级
+        }
+    }
+
+    public static void release(){
+        if (uniqueInstance != null){
+            uniqueInstance = null;
         }
     }
 

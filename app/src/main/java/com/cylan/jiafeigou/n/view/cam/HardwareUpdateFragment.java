@@ -248,7 +248,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
                 llDownloadPgContainer.setVisibility(View.INVISIBLE);
                 tvVersionDescribe.setVisibility(View.GONE);
-                tvHardwareNewVersion.setText(checkDevVersion.version);
+                tvHardwareNowVersion.setText(checkDevVersion.version);
                 break;
             case 3:
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_FirmwareUpdateFai));

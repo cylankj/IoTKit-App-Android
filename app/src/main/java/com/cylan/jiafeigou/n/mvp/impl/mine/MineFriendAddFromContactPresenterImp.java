@@ -237,6 +237,9 @@ public class MineFriendAddFromContactPresenterImp extends AbstractPresenter<Mine
                 .subscribe(new Action1<ArrayList<RelAndFriendBean>>() {
                     @Override
                     public void call(ArrayList<RelAndFriendBean> list) {
+                        if (allContactBean.size() >0){
+                            allContactBean.clear();
+                        }
                         allContactBean.addAll(list);
                         handlerDataResult(list);
                     }

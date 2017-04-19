@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,12 +80,29 @@ public class MineReSetMailTip extends Fragment {
     }
 
     public void jump2MineInfoFragment(){
-        HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
-        getFragmentManager().beginTransaction()
-                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
-                        , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, "mineReSetMailTip")
-                .addToBackStack("personalInformationFragment")
-                .commit();
+        HomeMineInfoFragment personalInfoFragment = (HomeMineInfoFragment) getFragmentManager().findFragmentByTag("personalInformationFragment");
+        MineReSetMailTip mailTip = (MineReSetMailTip) getFragmentManager().findFragmentByTag("MineReSetMailTip");
+        MineInfoSetNewPwdFragment setNewPwdFragment = (MineInfoSetNewPwdFragment) getFragmentManager().findFragmentByTag("MineInfoSetNewPwdFragment");
+        HomeMineInfoMailBoxFragment mailBoxFragment = (HomeMineInfoMailBoxFragment) getFragmentManager().findFragmentByTag("mailBoxFragment");
+
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        if (personalInfoFragment != null){
+            AppLogger.d("infoFrag不为空");
+                    if (setNewPwdFragment != null){ft.remove(setNewPwdFragment);}
+                    if (mailBoxFragment != null){ft.remove(mailBoxFragment);}
+                    ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .show(personalInfoFragment)
+                    .commit();
+        }else {
+            AppLogger.d("infoFrag为空");
+            HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
+                    ft.setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, fragment, "mineReSetMailTip")
+                    .addToBackStack("personalInformationFragment")
+                    .commit();
+        }
+        if (mailTip != null){ft.remove(mailTip);}
     }
 }
