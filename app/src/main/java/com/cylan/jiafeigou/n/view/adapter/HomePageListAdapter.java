@@ -164,19 +164,22 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
     }
 
     private String getLastWarnContent(DPEntity entity, int pid, String uuid) {
-        final int msgCount = entity == null ? 0 : entity.getValue(0);
-        long msgTime = msgCount == 0 ? 0 : (entity != null ? entity.getVersion() : 0);
-        if (msgCount == 0)
-            return getContext().getString(R.string.Tap1_NoMessages);
-        if (JFGRules.isCamera(pid)) {
-            return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.MSG_WARNING), msgCount > 99 ? "99+" : msgCount);
-        }
-        if (JFGRules.isBell(pid)) {
-            long localTime = PreferencesUtils.getLong(JConstant.KEY_BELL_LAST_ENTER_TIME_PREFIX + uuid, 0);
-            if (localTime > msgTime) {
+        try {
+            final int msgCount = entity == null ? 0 : entity.getValue(0);
+            long msgTime = msgCount == 0 ? 0 : (entity != null ? entity.getVersion() : 0);
+            if (msgCount == 0)
                 return getContext().getString(R.string.Tap1_NoMessages);
+            if (JFGRules.isCamera(pid)) {
+                return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.MSG_WARNING), msgCount > 99 ? "99+" : msgCount);
             }
-            return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.someone_call), msgCount > 99 ? "99+" : msgCount);
+            if (JFGRules.isBell(pid)) {
+                long localTime = PreferencesUtils.getLong(JConstant.KEY_BELL_LAST_ENTER_TIME_PREFIX + uuid, 0);
+                if (localTime > msgTime) {
+                    return getContext().getString(R.string.Tap1_NoMessages);
+                }
+                return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.someone_call), msgCount > 99 ? "99+" : msgCount);
+            }
+        } catch (Exception e) {
         }
         return "";
     }

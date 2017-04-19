@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.view.media;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -293,13 +297,28 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         } else ToastUtil.showNegativeToast(getString(R.string.set_failed));
     }
 
+    private AlertDialog over50ItemsDlg;
+
     @Override
     public void onCollectingRsp(int err) {
         imgVBigPicCollect.setEnabled(true);
         LoadingDialog.dismissLoading(getSupportFragmentManager());
         switch (err) {
             case 1050:
-                ToastUtil.showNegativeToast(getString(R.string.DailyGreatTips_Full));
+                if (over50ItemsDlg != null && over50ItemsDlg.isShowing()) return;
+                if (over50ItemsDlg == null) {
+                    over50ItemsDlg = new AlertDialog.Builder(this)
+                            .setMessage(getString(R.string.DailyGreatTips_Full))
+                            .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                                Intent intent = new Intent(CamMediaActivity.this, NewHomeActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.putExtra(JConstant.KEY_JUMP_TO_WONDER, JConstant.KEY_JUMP_TO_WONDER);
+                                startActivity(intent);
+                            })
+                            .setNegativeButton(getString(R.string.CANCEL), null)
+                            .create();
+                }
+                over50ItemsDlg.show();
                 break;
             case 0:
                 imgVBigPicCollect.setTag(true);
