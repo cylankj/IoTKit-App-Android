@@ -495,7 +495,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             }
         } else {
             homePageListAdapter.notifyDataSetChanged();
-            AppLogger.e("dis match pid pid: " + position);
+            AppLogger.e("dis match position : " + position);
         }
     }
 

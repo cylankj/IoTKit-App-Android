@@ -468,12 +468,12 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                     AppLogger.d("隐藏了，sd卡更新");
                     return;
                 }
-                if (basePresenter.getPlayType() == PLAY_STATE_PLAYING) {
-                    initSdcardStateDialog();
-                    sdcardPulloutDlg.get().show();
-                    if (basePresenter.getPlayType() == TYPE_HISTORY) {
-                        basePresenter.stopPlayVideo(TYPE_HISTORY);
-                    }
+//                if (basePresenter.getPlayType() == PLAY_STATE_PLAYING) {
+                initSdcardStateDialog();
+                sdcardPulloutDlg.get().show();
+                if (basePresenter.getPlayType() == TYPE_HISTORY) {
+                    basePresenter.stopPlayVideo(TYPE_HISTORY);
+//                    }
                 }
             }
             AppLogger.e("sdcard数据被清空，唐宽，还没实现");
@@ -731,6 +731,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         showFloatFlowView(false, null);
         initBottomBtn(false);
         camLiveController.setLiveTime(0);
+        camLiveController.onLiveStop();
         switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
                 Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
@@ -771,11 +772,13 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onTakeSnapShot(String filePath) {
+        PerformanceUtils.startTrace("takeSnapShot_pre");
         if (!TextUtils.isEmpty(filePath)) {
             showPopupWindow(filePath);
         } else {
             ToastUtil.showPositiveToast(getString(R.string.set_failed));
         }
+        PerformanceUtils.stopTrace("takeSnapShot_pre");
         PerformanceUtils.stopTrace("takeSnapShot");
     }
 

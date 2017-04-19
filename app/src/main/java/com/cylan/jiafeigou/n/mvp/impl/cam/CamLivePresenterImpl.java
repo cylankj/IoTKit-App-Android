@@ -599,7 +599,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     } else {
                         snapshotResult(bitmap);
                         filePath = getThumbnailKey() + ".png";
-//                        BitmapUtils.saveBitmap2file(bitmap, filePath);
                     }
                     AppLogger.i("save take shot performance: " + (System.currentTimeMillis() - time));
                 }, throwable -> AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage()));
@@ -614,7 +613,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     private void snapshotResult(Bitmap bitmap) {
-        Log.d("takeSnapShot", "takeSnapShot: " + (bitmap));
         Observable.just(bitmap)
                 .filter((Bitmap bit) -> (getView() != null))
                 .subscribeOn(Schedulers.io())
@@ -653,7 +651,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             .setAction(DBAction.SHARED)
                             .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
                             .setBytes(item.toBytes());
-                    BaseApplication.getAppComponent().getTaskDispatcher().perform(entity);
+                    BaseApplication.getAppComponent().getTaskDispatcher().perform(entity)
+                            .subscribeOn(Schedulers.io())
+                            .subscribe(ret -> {
+                            }, AppLogger::e);
                     AppLogger.d("take shot step collect ");
                 }, throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
     }

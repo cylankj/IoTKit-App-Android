@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 import com.google.gson.Gson;
@@ -309,7 +310,7 @@ public class SimpleBindFlow extends AFullBind {
                                 setWifi.toBytes());
                         AppLogger.d(TAG + new Gson().toJson(setWifi));
                     } catch (JfgException e) {
-                        e.printStackTrace();
+                        AppLogger.e("err:"+ MiscUtils.getErr(e));
                     }
                     return Observable.just(true);
                 });

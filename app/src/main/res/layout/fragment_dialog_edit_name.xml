@@ -35,6 +35,7 @@
                     android:id="@+id/et_input_box"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
                     android:layout_toStartOf="@+id/et_input_box_clear"
                     android:background="@null"
                     android:hint="@string/DEViCE_NAME"
@@ -53,9 +54,7 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
                     android:layout_centerVertical="true"
-                    android:layout_marginStart="@dimen/x10"
-                    android:paddingLeft="@dimen/x10"
-                    android:paddingRight="@dimen/x10"
+                    android:padding="@dimen/x10"
                     android:src="@drawable/icon_clear_text" />
             </RelativeLayout>
 

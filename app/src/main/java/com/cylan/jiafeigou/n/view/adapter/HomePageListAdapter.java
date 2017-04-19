@@ -81,7 +81,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         //4 安全防护
         DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
         boolean safe = device.$(501, false);
-        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid) && !TextUtils.isEmpty(device.shareAccount)) {
+        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid) && TextUtils.isEmpty(device.shareAccount)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {

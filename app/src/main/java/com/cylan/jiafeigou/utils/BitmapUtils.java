@@ -9,6 +9,8 @@ import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
 
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
@@ -235,6 +237,7 @@ public class BitmapUtils {
     }
 
     public static boolean saveBitmap2file(Bitmap bmp, String filename) {
+        PerformanceUtils.startTrace("saveBitmap2file:" + filename);
         CompressFormat format = CompressFormat.PNG;
         int quality = 50;
         boolean isSave;
@@ -247,10 +250,11 @@ public class BitmapUtils {
             isSave = bmp.compress(format, quality, stream);
             stream.flush();
             stream.close();
+            PerformanceUtils.stopTrace("saveBitmap2file:" + filename);
         } catch (Exception e) {
+            PerformanceUtils.stopTrace("saveBitmap2file:" + filename);
             return false;
         }
-
         return isSave;
     }
 

@@ -115,5 +115,5 @@ public interface IDBHelper {
 
     void deleteDpSync(String account, String uuid, int msdId);
 
-    void deleteDpSync(String account, String uuid, long versionMax, long versionMin);
+    void deleteDpSync(String account, String uuid, long msgId, long versionMax, long versionMin);
 }
