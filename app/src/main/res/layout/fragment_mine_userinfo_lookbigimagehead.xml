@@ -6,10 +6,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ImageView
+    <com.cylan.jiafeigou.support.photoview.PhotoView
         android:src="@drawable/icon_mine_head_normal"
         android:layout_gravity="center_vertical"
         android:id="@+id/iv_userinfo_big_image"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="match_parent" />
 </RelativeLayout>

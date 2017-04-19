@@ -189,7 +189,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         tvDeviceMac.setTvSubTitle(m);
         boolean charging = device.$(DpMsgMap.ID_205_CHARGING, false);
         int b = device.$(DpMsgMap.ID_206_BATTERY, 0);
-        tvDeviceBatteryLevel.setTvSubTitle(JFGRules.isDeviceOnline(net) ? (charging ? getString(R.string.CHARGING) : (b + "%")) : "");
+        tvDeviceBatteryLevel.setTvSubTitle(JFGRules.isDeviceOnline(net) ? (charging ? getString(R.string.CHARGING) + (b + "%") : (b + "%")) : "");
         String v = device.$(ID_208_DEVICE_SYS_VERSION, "");
         tvDeviceSystemVersion.setTvSubTitle(v);
         int u = device.$(ID_210_UP_TIME, 0);
@@ -285,7 +285,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
             //开始格式化
-            if (id == R.id.tv_dialog_btn_left){
+            if (id == R.id.tv_dialog_btn_left) {
                 basePresenter.clearSdcard();
                 showLoading();
             }
@@ -305,7 +305,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             if (!(o instanceof DpMsgDefine.DPTimeZone)) {
                 return;
             }
-            Device device =BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+            Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
             //更新ui
             DpMsgDefine.DPTimeZone zone = device.$(214, new DpMsgDefine.DPTimeZone());
             if (zone != null)
@@ -336,7 +336,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
             bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
             bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-            bundle.putString(KEY_INPUT_HINT,BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).alias);
+            bundle.putString(KEY_INPUT_HINT, BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).alias);
             bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
             editDialogFragment = EditFragmentDialog.newInstance(bundle);
         }
@@ -346,7 +346,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         editDialogFragment.setAction((int id, Object value) -> {
             if (value != null && value instanceof String) {
                 String content = (String) value;
-                Device device =BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                 if (!TextUtils.isEmpty(content) && device != null && !TextUtils.equals(content, device.alias)) {
                     device.alias = content;
                     tvDeviceAlias.setTvSubTitle((CharSequence) value);

@@ -59,10 +59,12 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
                 - getContext().getResources().getDimension(R.dimen.x34));
         this.uuid = uiid;
         DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
-        this.hasSdcard = status.hasSdcard && status.err != 0;
+        this.hasSdcard = status.hasSdcard && status.err == 0;
     }
 
     private boolean hasSdcard() {
+        DpMsgDefine.DPSdStatus status = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(204, new DpMsgDefine.DPSdStatus());
+        this.hasSdcard = status.hasSdcard && status.err == 0;
         return hasSdcard;
     }
 

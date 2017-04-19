@@ -27,6 +27,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.widget.RelativeLayout.BELOW;
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_NONE;
 
 /**
  * 摄像头直播页面
@@ -142,7 +143,7 @@ public class CamLiveLandControlLayer extends FrameLayout {
         return imgVCamLiveLandPlay;
     }
 
-    public void setOrientation(int bit, int orientation, boolean isShareDevice, boolean hasSdcard, boolean safe) {
+    public void setOrientation(int playType, int orientation, boolean isShareDevice, boolean hasSdcard, boolean safe) {
         if (orientation == Configuration.ORIENTATION_LANDSCAPE) setVisibility(VISIBLE);
 //        imgVCamLiveLandPlay.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
         fLayoutCamLiveLandTopBar.setVisibility(orientation == Configuration.ORIENTATION_LANDSCAPE ? VISIBLE : GONE);
@@ -162,9 +163,12 @@ public class CamLiveLandControlLayer extends FrameLayout {
         layout.setVisibility(isShareDevice ? GONE : VISIBLE);
         liveTimeLayout.setVisibility(isShareDevice ? GONE : VISIBLE);
         vLiveRect.setVisibility(!isShareDevice && hasSdcard ? VISIBLE : GONE);
-        flipLandLayout.setVisibility(!isShareDevice && hasSdcard ? VISIBLE : GONE);
         flipLandLayout.setFlipped(!safe);
+        setFlipVisibility(isShareDevice, hasSdcard, playType);
+    }
 
+    public void setFlipVisibility(boolean isShareDevice, boolean hasSdcard, int playType) {
+        flipLandLayout.setVisibility(!isShareDevice && hasSdcard ? (playType != TYPE_NONE ? VISIBLE : INVISIBLE) : GONE);
     }
 
     public void updateLiveButton(boolean show) {

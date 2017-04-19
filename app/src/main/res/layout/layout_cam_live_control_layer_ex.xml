@@ -1,0 +1,132 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fLayout_cam_live_control_layer"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#eee000"
+    tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
+
+    <FrameLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:background="#4C000000"
+        tools:layout_editor_absoluteX="0dp">
+
+        <TextView
+            android:id="@+id/imgV_cam_live_land_nav_back"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:drawableLeft="@drawable/nav_icon_back_white"
+            android:drawablePadding="@dimen/x15"
+            android:padding="@dimen/x15"
+            android:textColor="@color/color_white"
+            android:textSize="@dimen/sp15" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:layout_marginLeft="@dimen/x12"
+            android:layout_marginRight="@dimen/x12"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/imgV_land_cam_switch_speaker"
+                style="@style/ripple_background"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical"
+                android:paddingLeft="@dimen/x18"
+                android:paddingRight="@dimen/x18"
+                android:src="@drawable/icon_land_speaker_on_selector" />
+
+            <ImageView
+                android:id="@+id/imgV_land_cam_trigger_mic"
+                style="@style/ripple_background"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:paddingLeft="@dimen/x18"
+                android:paddingRight="@dimen/x18"
+                android:src="@drawable/icon_land_mic_on_selector" />
+
+            <ImageView
+                android:id="@+id/imgV_land_cam_trigger_capture"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end|center_vertical"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:paddingLeft="@dimen/x18"
+                android:paddingRight="@dimen/x18"
+                android:src="@drawable/icon_land_capture_selector" />
+        </LinearLayout>
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/tv_live_flow"
+        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_below="@+id/layout_top"
+        android:layout_gravity="end"
+        android:layout_marginTop="@dimen/x14"
+        android:background="@drawable/flow_bg"
+        android:gravity="center"
+        android:textColor="@color/color_white"
+        tools:layout_editor_absoluteX="310dp" />
+
+
+    <LinearLayout
+        android:id="@+id/layout_loading"
+        android:layout_width="@dimen/x60"
+        android:layout_height="@dimen/y60"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:orientation="vertical"
+        android:padding="@dimen/x10">
+
+        <FrameLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center">
+
+            <ImageView
+                android:id="@+id/img_state"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:visibility="gone" />
+
+            <com.cylan.jiafeigou.widget.SimpleProgressBar
+                android:id="@+id/sp_control_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/x5"
+                app:progress_point_radius="@dimen/x2"
+                app:progress_radius="@dimen/x20"
+                app:progress_stroke_color="@color/color_white"
+                app:progress_swipe_degree="310" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_control_content"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/y10"
+            android:textColor="@color/color_DDDDDD"
+            android:textSize="@dimen/sp14" />
+
+        <TextView
+            android:id="@+id/tv_control_help"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="@dimen/y10"
+            android:textColor="@color/color_4b9fd5"
+            android:textSize="@dimen/sp14"
+            android:visibility="gone" />
+    </LinearLayout>
+</RelativeLayout>

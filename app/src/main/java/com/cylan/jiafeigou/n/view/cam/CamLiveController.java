@@ -175,7 +175,7 @@ public class CamLiveController implements
 
             @Override
             public void clickHelp() {
-                if (NetUtils.isNetworkAvailable(ContextUtils.getContext())){
+                if (NetUtils.isNetworkAvailable(ContextUtils.getContext())) {
                     ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
@@ -275,6 +275,10 @@ public class CamLiveController implements
         camLiveControlLayer.getTvCamLivePortLive().setAlpha(liveType != TYPE_LIVE ? 1.f : 0.6f);
         boolean showPlayBtn = Configuration.ORIENTATION_LANDSCAPE == orientation && liveType == TYPE_HISTORY;
         camLiveControlLayer.getImgVCamLiveLandPlay().setVisibility(showPlayBtn ? View.VISIBLE : View.GONE);
+        //开始直播,根据条件,显示 安全防护.
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        if (iSafeStateSetterPort != null)
+            iSafeStateSetterPort.setVisibility(device != null && TextUtils.isEmpty(device.shareAccount));
     }
 
     /**
@@ -292,9 +296,9 @@ public class CamLiveController implements
             liveTimeSetterPort.setVisibility(!land && !isShareDevice);
         }
         if (iSafeStateSetterPort != null)
-            iSafeStateSetterPort.setVisibility(!land && !isShareDevice);
+            iSafeStateSetterPort.setVisibility(!land && !isShareDevice && presenterRef.get().getPlayState() == PLAY_STATE_PLAYING);
         //全屏底部区域
-        camLiveControlLayer.setOrientation(presenterRef.get().getLocalMicSpeakerBit(), orientation, isShareDevice, sdCardStatus, safe);
+        camLiveControlLayer.setOrientation(presenterRef.get().getPlayType(), orientation, isShareDevice, sdCardStatus, safe);
         //安全防护
         camLiveControlLayer.setLandSafeClickListener(this);
         AppLogger.i("orientation: " + orientation);
@@ -368,6 +372,10 @@ public class CamLiveController implements
         }
     }
 
+    public void onLiveStop() {
+        //开始直播,根据条件,显示 安全防护.
+        iSafeStateSetterPort.setVisibility(false);
+    }
 
     /**
      * @param time

@@ -99,6 +99,25 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                 //麻痹的.没有diff,很麻烦,这里肯定是  505,512,222消息了.
                                 AppLogger.d("开始处理 拦截器");
                                 if (data != null && data.map != null) {
+                                    String account = getAppComponent().getSourceManager().getAccount().getAccount() == null ? null :
+                                            getAppComponent().getSourceManager().getAccount().getAccount();
+                                    String uuid = data.identity;
+                                    if (data.map.size() == 0) {
+                                        AppLogger.d("没有数据");
+                                        //需要根据option,的逻辑来删除本地数据.
+                                        if (option.asc) {//向前查询.
+                                            long timeEnd = TimeUtils.getSpecificDayEndTime(option.timeStart);
+                                            dpHelper.deleteDpSync(account, uuid, 505, option.timeStart, timeEnd);
+                                            dpHelper.deleteDpSync(account, uuid, 512, option.timeStart, timeEnd);
+                                            dpHelper.deleteDpSync(account, uuid, 222, option.timeStart, timeEnd);
+                                        } else {
+                                            long timeStart = TimeUtils.getSpecificDayStartTime(option.timeStart);
+                                            dpHelper.deleteDpSync(account, uuid, 505, timeStart, option.timeStart);
+                                            dpHelper.deleteDpSync(account, uuid, 512, timeStart, option.timeStart);
+                                            dpHelper.deleteDpSync(account, uuid, 222, timeStart, option.timeStart);
+                                        }
+                                        return;
+                                    }
                                     ArrayList<JFGDPMsg> list = new ArrayList<>();
                                     for (Integer integer : data.map.keySet()) {
                                         if (data.map.get(integer) != null) {
@@ -109,9 +128,6 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                             (int) (lhs.version - rhs.version));
                                     long max = Math.max(list.get(0).version, list.get(list.size() - 1).version);
                                     long min = Math.min(list.get(0).version, list.get(list.size() - 1).version);
-                                    String account = getAppComponent().getSourceManager().getAccount().getAccount() == null ? null :
-                                            getAppComponent().getSourceManager().getAccount().getAccount();
-                                    String uuid = data.identity;
                                     PerformanceUtils.startTrace("deleteDpSync");
                                     try {
                                         if (max == min) {
@@ -121,7 +137,9 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                             dpHelper.deleteDpSync(account, uuid, 222);
                                             return;
                                         }
-                                        dpHelper.deleteDpSync(account, uuid, max, min);
+                                        dpHelper.deleteDpSync(account, uuid, 505, max, min);
+                                        dpHelper.deleteDpSync(account, uuid, 512, max, min);
+                                        dpHelper.deleteDpSync(account, uuid, 222, max, min);
                                         PerformanceUtils.stopTrace("deleteDpSync");
                                     } catch (Exception e) {
                                         AppLogger.e("err:" + MiscUtils.getErr(e));
