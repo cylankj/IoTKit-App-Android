@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -46,6 +47,9 @@ public class SimplePopupWindow extends RelativePopupWindow {
 
     @Override
     public void showOnAnchor(@NonNull View anchor, int vertPos, int horizPos, int x, int y) {
+        if (getContentView() != null) {
+            Log.d("showOnAnchor", "showOnAnchor:" + getContentView().getWidth());
+        }
         super.showOnAnchor(anchor, vertPos, horizPos, x, y);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             circularReveal(anchor);
