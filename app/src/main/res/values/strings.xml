@@ -890,4 +890,7 @@
     <string name="NO_MORE">no more</string>
     <string name="title_activity_config_wifi">ConfigWifiActivity</string>
     <string name="title_activity_bind_panorama_cam">BindPanoramaCamActivity</string>
+    <string name="Tap3_Share_NoBindTips">Using this function needs to bind email first.</string>
+    <string name="Phone">Phone</string>
+    <string name="SMS">Message</string>
 </resources>

@@ -272,7 +272,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
     @Override
     public void OnGetFeedbackRsp(int i, ArrayList<JFGFeedbackInfo> arrayList) {
         AppLogger.d("OnGetFeedbackRsp :" + i);
-        RxBus.getCacheInstance().post(new RxEvent.GetFeedBackRsp(i, arrayList));
+        RxBus.getCacheInstance().postSticky(new RxEvent.GetFeedBackRsp(i, arrayList));
     }
 
     @Override

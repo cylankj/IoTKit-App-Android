@@ -306,9 +306,10 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, "mineReSetMailTip")
-                .addToBackStack("personalInformationFragment")
+                .add(android.R.id.content, fragment, "MineReSetMailTip")
+//                .addToBackStack("personalInformationFragment")
                 .commit();
+
     }
 
     /**
@@ -322,9 +323,10 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, "mailBoxFragment")
-                .addToBackStack("personalInformationFragment")
+                .add(android.R.id.content, fragment, "MineInfoSetNewPwdFragment")
+//                .addToBackStack("personalInformationFragment")
                 .commit();
+
     }
 
 }

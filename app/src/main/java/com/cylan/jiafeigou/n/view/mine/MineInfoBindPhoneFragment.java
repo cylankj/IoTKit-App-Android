@@ -229,8 +229,8 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, fragment, "mailBoxFragment")
-                .addToBackStack("personalInformationFragment")
+                .add(android.R.id.content, fragment, "MineInfoSetNewPwdFragment")
+//                .addToBackStack("personalInformationFragment")
                 .commit();
 
     }
@@ -297,7 +297,6 @@ public class MineInfoBindPhoneFragment extends Fragment implements MineBindPhone
         if (getInputPhone().equals(checkAccountCallback.s)) {
             ToastUtil.showNegativeToast(getString(R.string.RET_EEDITUSERINFO_SMS_PHONE));
         } else {
-
             //发送验证码
             presenter.getCheckCode(getInputPhone());
         }

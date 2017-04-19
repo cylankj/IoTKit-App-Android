@@ -23,6 +23,8 @@
             android:layout_height="@dimen/y48"
             android:layout_marginLeft="@dimen/x48"
             android:textCursorDrawable="@drawable/search_friend_cursor_color"
+            android:maxLines="1"
+            android:inputType="text"
             android:hint="@string/Search"
             android:textColorHint="#60ffffff"
             android:background="@null"

@@ -50,6 +50,7 @@ import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_INPUT_HIN
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TITLE;
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_DEFAULT_EDIT_TEXT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TOUCH_OUT_SIDE_DISMISS;
 
 
@@ -332,11 +333,13 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      */
     private void toEditAlias() {
         if (editDialogFragment == null) {
+            String alias = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).alias;
             Bundle bundle = new Bundle();
-            bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
+            bundle.putString(KEY_TITLE,getString(R.string.EQUIPMENT_NAME));
             bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
             bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-            bundle.putString(KEY_INPUT_HINT,BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).alias);
+            bundle.putString(KEY_INPUT_HINT,getString(R.string.EQUIPMENT_NAME));
+            bundle.putString(KEY_DEFAULT_EDIT_TEXT,TextUtils.isEmpty(alias) ? getString(R.string.EQUIPMENT_NAME):alias);
             bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
             editDialogFragment = EditFragmentDialog.newInstance(bundle);
         }
