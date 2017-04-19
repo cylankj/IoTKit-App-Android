@@ -6,6 +6,7 @@ import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.injector.lifecycle.ContextLife;
+import com.cylan.jiafeigou.base.view.IDialogManager;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
@@ -47,6 +48,7 @@ public final class BaseInitializationManager {
     private BaseGlobalUdpParser udpParser;
     private BaseBellCallEventListener bellCallEventListener;
     private BaseMethodPermissionInterceptor permissionInterceptor;
+    private IDialogManager dialogManager;
 
     @Inject
     public BaseInitializationManager(JFGSourceManager manager,
@@ -65,7 +67,8 @@ public final class BaseInitializationManager {
                                      @Named("CrashPath") String crashPath,
                                      BaseGlobalUdpParser udpParser,
                                      BaseBellCallEventListener listener,
-                                     BaseMethodPermissionInterceptor permissionInterceptor
+                                     BaseMethodPermissionInterceptor permissionInterceptor,
+                                     IDialogManager dialogManager
     ) {
         compositeSubscription = new CompositeSubscription();
         this.manager = manager;
@@ -85,6 +88,7 @@ public final class BaseInitializationManager {
         this.udpParser = udpParser;
         this.bellCallEventListener = listener;
         this.permissionInterceptor = permissionInterceptor;
+        this.dialogManager = dialogManager;
     }
 
     public void initialization() {
@@ -97,8 +101,12 @@ public final class BaseInitializationManager {
         initBlockCanary();
         initLeakCanary();
         initGlobalSubscription();
-
+        initDialogManager();
         TryLogin.tryLogin();//只有等所有资源初始化完成之后才能走 login 流程
+    }
+
+    private void initDialogManager() {
+
     }
 
     private void initGlobalSubscription() {

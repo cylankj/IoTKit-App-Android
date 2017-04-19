@@ -3,9 +3,11 @@ package com.cylan.jiafeigou.base.injector.module;
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.BaseAppCallBackHolder;
+import com.cylan.jiafeigou.base.module.BaseDialogManager;
 import com.cylan.jiafeigou.base.module.BasePresenterInjector;
 import com.cylan.jiafeigou.base.module.BasePropertyParser;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
+import com.cylan.jiafeigou.base.view.IDialogManager;
 import com.cylan.jiafeigou.base.view.IPropertyParser;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDBHelper;
@@ -112,5 +114,11 @@ public class CommonModule {
     @Named("CrashPath")
     public static String provideCrashPath() {
         return PathGetter.createPath(JConstant.CRASH_PATH);
+    }
+
+    @Provides
+    @Singleton
+    public static IDialogManager provideDialogManager(BaseDialogManager manager) {
+        return manager;
     }
 }
