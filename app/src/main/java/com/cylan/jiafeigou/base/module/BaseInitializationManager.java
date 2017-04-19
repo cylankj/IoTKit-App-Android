@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.base.module;
 
-import android.app.Application;
 import android.content.Context;
 
 import com.cylan.jfgapp.interfases.AppCmd;
@@ -17,7 +16,6 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.squareup.leakcanary.LeakCanary;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import javax.inject.Inject;
@@ -48,6 +46,7 @@ public final class BaseInitializationManager {
     private BaseJFGResultParser resultParser;
     private BaseGlobalUdpParser udpParser;
     private BaseBellCallEventListener bellCallEventListener;
+    private BaseMethodPermissionInterceptor permissionInterceptor;
 
     @Inject
     public BaseInitializationManager(JFGSourceManager manager,
@@ -65,7 +64,8 @@ public final class BaseInitializationManager {
                                      @ContextLife Context context,
                                      @Named("CrashPath") String crashPath,
                                      BaseGlobalUdpParser udpParser,
-                                     BaseBellCallEventListener listener
+                                     BaseBellCallEventListener listener,
+                                     BaseMethodPermissionInterceptor permissionInterceptor
     ) {
         compositeSubscription = new CompositeSubscription();
         this.manager = manager;
@@ -84,6 +84,7 @@ public final class BaseInitializationManager {
         this.crashPath = crashPath;
         this.udpParser = udpParser;
         this.bellCallEventListener = listener;
+        this.permissionInterceptor = permissionInterceptor;
     }
 
     public void initialization() {
@@ -172,7 +173,7 @@ public final class BaseInitializationManager {
     }
 
     private void initLeakCanary() {
-        LeakCanary.install((Application) appContext);
+//        LeakCanary.install((Application) appContext);
     }
 
     private void enableDebugOptions() {

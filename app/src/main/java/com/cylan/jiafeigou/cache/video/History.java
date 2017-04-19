@@ -100,6 +100,7 @@ public class History {
         if (historyVideo == null || historyVideo.list == null || historyVideo.list.size() == 0)
             return;
         Observable.just(historyVideo)
+                .onBackpressureBuffer()
                 .filter(ret -> ListUtils.getSize(historyVideo.list) > 0)
                 .subscribeOn(Schedulers.computation())
                 .flatMap(historyVideo1 -> {

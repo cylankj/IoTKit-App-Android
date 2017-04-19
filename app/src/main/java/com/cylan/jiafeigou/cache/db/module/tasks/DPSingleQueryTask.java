@@ -15,6 +15,8 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import rx.Observable;
 
@@ -114,7 +116,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
             taskResult.setResultResponse(result);
             return Observable.just(taskResult);
         } else if (option.type == 0) {
-            List<DataPoint> result = new ArrayList<>();
+            Set<DataPoint> result = new TreeSet<>();
             if (rsp != null && rsp.map != null && rsp.map.size() > 0) {
                 for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
                     if ((int) entity.getMsgId() == entry.getKey()) {
@@ -131,7 +133,7 @@ public class DPSingleQueryTask extends BaseDPTask<BaseDPTaskResult> {
             }
             BaseDPTaskResult taskResult = new BaseDPTaskResult();
             taskResult.setResultCode(0);
-            taskResult.setResultResponse(result);
+            taskResult.setResultResponse(new ArrayList<>(result));
             return Observable.just(taskResult);
         }
         return Observable.just(BaseDPTaskResult.SUCCESS);

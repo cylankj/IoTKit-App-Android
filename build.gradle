@@ -6,18 +6,13 @@ buildscript {
 //        maven { url 'https://maven.fabric.io/public' }
     }
     dependencies {
-//        classpath 'com.android.tools.build:gradle:2.2.0-alpha1'
         //要对应java1.8，2.2.0才能使用unit测试。idea/misc.xml
-        //gradle 2.2.0+之后,已经官方支持annotationProcessor,所以不需要neenbedankt插件了
         classpath 'com.android.tools.build:gradle:2.2.3'
-//        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'me.tatarka:gradle-retrolambda:3.4.0'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
+//        classpath 'com.hujiang.aspectjx:gradle-android-plugin-aspectjx:1.0.8'
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-        classpath 'me.tatarka:gradle-retrolambda:3.4.0'
-        //多渠道包 没人愿意维护多渠道包，算了，删了吧。
-//        classpath 'com.mcxiaoke.gradle:packer-ng:1.0.8'
-        classpath 'org.greenrobot:greendao-gradle-plugin:3.2.1'
-//        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 

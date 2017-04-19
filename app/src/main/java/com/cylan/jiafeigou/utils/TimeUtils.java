@@ -304,11 +304,10 @@ public class TimeUtils {
             return format.format(provide);
         }
         if (today.getMonth() == provide.getMonth()) {
-            if (today.getDay() == provide.getDay()) {//说明是在同一天，则按照今天 时:分显示
-//                format.applyPattern("今天");
+            if (today.getDate() == provide.getDate()) {//说明是在同一天，则按照今天 时:分显示
                 return ContextUtils.getContext().getString(R.string.DOOR_TODAY);
             }
-            if (today.getDay() - provide.getDay() == 1) {//说明是在昨天，则按照昨天 时:分显示
+            if (today.getDate() - provide.getDate() == 1) {//说明是在昨天，则按照昨天 时:分显示
                 return ContextUtils.getContext().getString(R.string.Yesterday);
             }
         }

@@ -38,6 +38,8 @@ import com.cylan.jiafeigou.n.view.adapter.HomeWonderfulAdapter;
 import com.cylan.jiafeigou.n.view.record.DelayRecordActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
+import com.cylan.jiafeigou.utils.NetUtils;
+import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.utils.WonderGlideURL;
 import com.cylan.jiafeigou.widget.ShadowFrameLayout;
@@ -94,6 +96,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     private HomeWonderfulAdapter homeWonderAdapter;
     private LinearLayoutManager mLinearLayoutManager;
     private boolean mHasMore;
+    private boolean isLoading = false;
     private boolean isPrepaper = false;
 
     public static HomeWonderfulFragmentExt newInstance(Bundle bundle) {
@@ -225,7 +228,8 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 int visibleItemCount = mLinearLayoutManager.getChildCount();
                 int totalItemCount = mLinearLayoutManager.getItemCount();
                 if (dy > 0) { //check for scroll down
-                    if (pastVisibleItems + visibleItemCount >= totalItemCount && mHasMore && getUserVisibleHint()) {
+                    if (pastVisibleItems + visibleItemCount >= totalItemCount && mHasMore && getUserVisibleHint() && !isLoading) {
+                        isLoading = true;
                         presenter.startLoadMore();
                     }
                 }
@@ -248,6 +252,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @UiThread
     @Override
     public void onQueryTimeLineSuccess(List<DPWonderItem> resultList, boolean isRefresh) {
+        isLoading = false;
         if (!getUserVisibleHint()) return;
         srLayoutMainContentHolder.setRefreshing(false);
         mHasMore = resultList.size() == 15;
@@ -321,6 +326,7 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
     @Override
     public void onQueryTimeLineCompleted() {
         srLayoutMainContentHolder.setRefreshing(false);
+        isLoading = false;
     }
 
     @SuppressWarnings("deprecation")
@@ -468,8 +474,12 @@ public class HomeWonderfulFragmentExt extends BaseFragment<HomeWonderfulContract
                 }
                 break;
             case R.id.tv_wonderful_item_share:
-                DPWonderItem bean = homeWonderAdapter.getItem(position);
-                onShareWonderfulContent(bean);
+                if (NetUtils.isNetworkAvailable(getContext())) {
+                    DPWonderItem bean = homeWonderAdapter.getItem(position);
+                    onShareWonderfulContent(bean);
+                }else{
+                    ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+                }
                 break;
             case R.id.tv_wonderful_item_delete:
                 onDeleteWonderfulContent(null, position);

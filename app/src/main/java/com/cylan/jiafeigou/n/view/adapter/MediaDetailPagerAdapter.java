@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.model.GlideUrl;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
@@ -66,6 +67,7 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
             ViewCompat.setTransitionName(photoView, position + JConstant.KEY_SHARED_ELEMENT_TRANSITION_NAME_SUFFIX);
             Glide.with(container.getContext())
                     .load(new WonderGlideVideoThumbURL(bean))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)
                     .into(photoView);
@@ -76,6 +78,7 @@ public class MediaDetailPagerAdapter extends PagerAdapter {
             ((PhotoView) photoView).setOnPhotoTapListener(mPhotoTapListener);
             Glide.with(container.getContext())
                     .load(new WonderGlideURL(bean))
+                    .diskCacheStrategy(DiskCacheStrategy.ALL)
                     .placeholder(R.drawable.wonderful_pic_place_holder)
                     .error(R.drawable.broken_image)
                     .listener((mFirstLoad && position == mStartPosition) ? mListener : null)

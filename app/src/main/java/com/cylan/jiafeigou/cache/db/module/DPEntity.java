@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module;
 
+import android.support.annotation.NonNull;
+
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
@@ -14,6 +16,7 @@ import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Created by yanzhendong on 2017/2/27.
@@ -51,7 +54,8 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
         } else if (defaultValue == null || defaultValue instanceof DataPoint) {
             return this.dataPointValue.getClass().isInstance(defaultValue) ? (V) this.dataPointValue : defaultValue;
         } else if (this.dataPointValue instanceof DpMsgDefine.DPPrimary) {
-            return (V) ((DpMsgDefine.DPPrimary) this.dataPointValue).value;
+            DpMsgDefine.DPPrimary<V> ret = ((DpMsgDefine.DPPrimary<V>) this.dataPointValue);
+            return ret.value == null ? defaultValue : ret.value;
         } else {
             return defaultValue;
         }
@@ -222,20 +226,20 @@ public class DPEntity extends BaseDPEntity implements Comparable<DPEntity> {
     public boolean equals(Object o) {
         if (this == o) return true;
         DPEntity value = (DPEntity) o;
-        return version == value.version && msgId == value.msgId;
+        return Objects.equals(version, value.version) && Objects.equals(msgId, value.msgId);
 
     }
 
     @Override
     public int hashCode() {
-        int result = (int) (msgId ^ (msgId >>> 0));
+        int result = 0;
         result = 31 * result + (int) (version ^ (version >>> 32));
         return result;
     }
 
     @Override
-    public int compareTo(DPEntity another) {
-        return version == another.version ? 0 : version > another.version ? -1 : 1;//降序
+    public int compareTo(@NonNull DPEntity another) {
+        return Objects.equals(version, another.version) ? 0 : version > another.version ? -1 : 1;//降序
     }
 
 

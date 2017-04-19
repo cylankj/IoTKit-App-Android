@@ -125,13 +125,13 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
                         if (split[0].length() == 1) {
                             fName = name;
                         } else if (split[0].length() == 2) {
-                            fName = split[0].replace(split[0].substring(1, 2), "*") + split[1];
+                            fName = split[0].replace(split[0].substring(1, 2), "*") + "@" + split[1];
                         } else if (split[0].length() == 3) {
-                            fName = split[0].replace(split[0].substring(1, 3), "**") + split[1];
+                            fName = split[0].replace(split[0].substring(1, 3), "**") + "@" + split[1];
                         } else if (split[0].length() > 3 && split[0].length() <= 8) {
-                            fName = split[0].replace(split[0].substring(2, split[0].length() - 1), "****") + split[1];
+                            fName = split[0].replace(split[0].substring(2, split[0].length() - 1), "****") + "@" + split[1];
                         } else if (split[0].length() > 8) {
-                            fName = split[0].replace(split[0].substring(3, split[0].length() - 1), "****") + split[1];
+                            fName = split[0].replace(split[0].substring(3, split[0].length() - 1), "****") + "@" + split[1];
                         }
                     } else {//第三方登录
                         if (name.length() == 1) {

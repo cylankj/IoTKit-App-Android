@@ -60,7 +60,6 @@ import java.util.TreeSet;
 import rx.Observable;
 import rx.Subscriber;
 import rx.Subscription;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
@@ -117,19 +116,16 @@ public class DataSourceManager implements JFGSourceManager {
                     return device;
                 })
                 .flatMap(device -> dbHelper.queryDPMsgByUuid(device.uuid)
-                        .flatMap(new Func1<List<DPEntity>, Observable<List<DPEntity>>>() {
-                            @Override
-                            public Observable<List<DPEntity>> call(List<DPEntity> ret) {
-                                if (ret != null) {
-                                    DataPoint dataPoint;
-                                    for (DPEntity dpEntity : ret) {
-                                        dataPoint = propertyParser.parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
-                                        dpEntity.setValue(dataPoint, dpEntity.getBytes(), dpEntity.getVersion());
-                                        device.updateProperty(dpEntity.getMsgId(), dpEntity);
-                                    }
+                        .map(ret -> {
+                            if (ret != null) {
+                                DataPoint dataPoint;
+                                for (DPEntity dpEntity : ret) {
+                                    dataPoint = propertyParser.parser(dpEntity.getMsgId(), dpEntity.getBytes(), dpEntity.getVersion());
+                                    dpEntity.setValue(dataPoint, dpEntity.getBytes(), dpEntity.getVersion());
+                                    device.updateProperty(dpEntity.getMsgId(), dpEntity);
                                 }
-                                return Observable.just(ret);
                             }
+                            return ret;
                         }))
                 .doOnCompleted(() -> {
                     Collections.sort(rawDeviceOrder, (lhs, rhs) -> lhs.first - rhs.first);
@@ -275,10 +271,10 @@ public class DataSourceManager implements JFGSourceManager {
     private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
         return dbHelper.unBindDeviceWithConfirm(uuids)
                 .map(devices -> {
-                    if (devices == null) return null;
-                    for (Device device : devices) {
-                        mCachedDeviceMap.remove(device.getUuid());
-                        getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(device.getUuid()));
+                    for (String uuid : uuids) {
+                        AppLogger.d("设备已解绑:" + uuid);
+                        mCachedDeviceMap.remove(uuid);
+                        getCacheInstance().post(new RxEvent.DeviceUnBindedEvent(uuid));
                     }
                     return devices;
                 });

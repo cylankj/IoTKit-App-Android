@@ -217,6 +217,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
                         .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
+                        .throttleFirst(3, TimeUnit.SECONDS)//背压处理
                         .subscribeOn(Schedulers.computation())
                         .map(rsp -> {
                             //只需要初始化一天的就可以啦.

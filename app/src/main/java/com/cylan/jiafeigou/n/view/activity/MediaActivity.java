@@ -8,9 +8,9 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.Drawable;
+import android.media.MediaScannerConnection;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.v4.app.SharedElementCallback;
 import android.support.v4.view.ViewPager;
@@ -43,6 +43,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -53,7 +54,6 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.dialog.VideoMoreDialog;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Formatter;
@@ -632,18 +632,16 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
             return;
         }
 
-        Glide.with(this).load(new WonderGlideURL(mCurrentMediaBean)).
-                downloadOnly(new SimpleTarget<File>() {
+        Glide.with(this).load(new WonderGlideURL(mCurrentMediaBean))
+                .downloadOnly(new SimpleTarget<File>() {
                     @Override
                     public void onResourceReady(File resource, GlideAnimation<? super File> glideAnimation) {
                         ToastUtil.showPositiveToast(getString(R.string.SAVED_PHOTOS));
                         FileUtils.copyFile(resource, mDownloadFile);
-                        try {
-                            MediaStore.Images.Media.insertImage(MediaActivity.this.getContentResolver(),
-                                    resource.getAbsolutePath(), resource.getName(), null);
-                        } catch (FileNotFoundException e) {
-                            e.printStackTrace();
-                        }
+                        MediaScannerConnection.scanFile(MediaActivity.this, new String[]{mDownloadFile.getAbsolutePath()}, null, (path, uri) -> {
+                                    AppLogger.d("保存到相册成功了:" + path + ":" + uri.toString());
+                                }
+                        );
                         mDownloadFile = null;
                     }
 
@@ -660,11 +658,15 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
 
     @OnClick({R.id.act_media_header_opt_share, R.id.act_media_picture_opt_share})
     public void share() {
-        if (mShareDialog == null || mShareDialog.get() == null) {
-            mShareDialog = new WeakReference<>(ShareDialogFragment.newInstance());
+        if (NetUtils.isNetworkAvailable(this)) {
+            if (mShareDialog == null || mShareDialog.get() == null) {
+                mShareDialog = new WeakReference<>(ShareDialogFragment.newInstance());
+            }
+            mShareDialog.get().setPictureURL(new WonderGlideURL(mCurrentMediaBean));
+            mShareDialog.get().show(getSupportFragmentManager(), ShareDialogFragment.class.getName());
+        } else {
+            ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
         }
-        mShareDialog.get().setPictureURL(new WonderGlideURL(mCurrentMediaBean));
-        mShareDialog.get().show(getSupportFragmentManager(), ShareDialogFragment.class.getName());
     }
 
     @OnClick(R.id.act_media_video_opt_more)

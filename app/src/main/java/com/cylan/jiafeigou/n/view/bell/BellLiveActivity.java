@@ -613,6 +613,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         imgvBellLiveSpeaker.setEnabled(false);
         imgvBellLiveSwitchToLand.setEnabled(false);
         mVideoViewContainer.removeAllViews();
+        mBellLiveVideoPicture.setVisibility(View.GONE);
     }
 
     @Override

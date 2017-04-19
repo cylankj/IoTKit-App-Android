@@ -108,15 +108,18 @@ public class BaseDBHelper implements IDBHelper {
                 if (device != null && device.available()) {
                     dpEntity = device.getProperty((int) msg.id);
                 }
-                if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
-                    continue;
+                if (dpEntity == null) {
+                    QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, null, null, null);
+                    dpEntity = unique(builder);
                 }
-                if (dpEntity != null && dpEntity.getVersion() >= msg.version) {
+                if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                     continue;
                 }
                 if (dpEntity == null) {
                     dpEntity = new DPEntity(null, account.getAccount(), getServer(), uuid, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                 }
+                dpEntity.setAction(DBAction.SAVED);
+                dpEntity.setState(DBState.SUCCESS);
                 if (propertyParser.isProperty((int) msg.id)) {
                     DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
                     dpEntity.setValue(dataPoint, msg.packValue, msg.version);
@@ -125,6 +128,7 @@ public class BaseDBHelper implements IDBHelper {
                     }
                 }
                 result.add(dpEntity);
+                dpEntity = null;
             }
             mEntityDao.insertOrReplaceInTx(result);
             return result;
@@ -144,15 +148,18 @@ public class BaseDBHelper implements IDBHelper {
                     if (device != null && device.available()) {
                         dpEntity = device.getProperty((int) msg.id);
                     }
-                    if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
-                        continue;
+                    if (dpEntity == null) {
+                        QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, null, null, null);
+                        dpEntity = unique(builder);
                     }
-                    if (dpEntity != null && dpEntity.getVersion() >= msg.version) {
+                    if (dpEntity != null && DBAction.DELETED.action().equals(dpEntity.getAction())) {
                         continue;
                     }
                     if (dpEntity == null) {
                         dpEntity = new DPEntity(null, account.getAccount(), getServer(), dataRsp.identity, msg.version, (int) msg.id, msg.packValue, DBAction.SAVED.action(), DBState.SUCCESS.state(), null);
                     }
+                    dpEntity.setAction(DBAction.SAVED);
+                    dpEntity.setState(DBState.SUCCESS);
                     if (propertyParser.isProperty((int) msg.id)) {
                         DataPoint dataPoint = propertyParser.parser((int) msg.id, msg.packValue, msg.version);
                         dpEntity.setValue(dataPoint, msg.packValue, msg.version);
@@ -161,6 +168,7 @@ public class BaseDBHelper implements IDBHelper {
                         }
                     }
                     result.add(dpEntity);
+                    dpEntity = null;
                 }
             }
             mEntityDao.insertOrReplaceInTx(result);

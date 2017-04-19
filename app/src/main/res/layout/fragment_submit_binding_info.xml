@@ -1,13 +1,11 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/fLayout_submit_bind_info"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
     android:clickable="true"
-    android:orientation="vertical"
-    tools:context=".n.view.bind.ConfigApFragment">
+    android:orientation="vertical">
 
 
     <com.cylan.jiafeigou.widget.CustomToolbar

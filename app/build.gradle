@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'me.tatarka.retrolambda'
 apply plugin: 'org.greenrobot.greendao'
+//apply plugin: 'android-aspectjx'
 
 //apply plugin: 'io.fabric'
 
@@ -310,5 +311,6 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-design:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.1'
+//    compile 'org.aspectj:aspectjrt:1.8.9'
 }
 
