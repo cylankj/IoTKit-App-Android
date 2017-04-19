@@ -6,6 +6,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -117,7 +118,7 @@ public class PanoramicViewFragment extends IBaseFragment {
         else LoadingDialog.dismissLoading(getFragmentManager());
     }
 
-    public void loadBitmap(int index) {
+    public void loadBitmap(int index, String mode) {
         Log.d("panoramicView", "null? " + (panoramicView == null) + " " + (getContext() == null));
         if (panoramicView == null) {
             panoramicView = new PanoramicView360_Ext(getContext());
@@ -133,7 +134,8 @@ public class PanoramicViewFragment extends IBaseFragment {
 
                 }
             });
-            panoramicView.configV360(CameraParam.getTopPreset());
+            panoramicView.setMode(TextUtils.equals(mode, "0") ? 0 : 1);
+            panoramicView.config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
             ViewGroup.LayoutParams layoutParams = new ViewGroup.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             mPanoramicContainer.addView(panoramicView, layoutParams);
@@ -169,5 +171,11 @@ public class PanoramicViewFragment extends IBaseFragment {
                         showLoading(false);
                     }
                 });
+    }
+
+    public void loadBitmap(int index) {
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        String mode = device.$(509, "0");
+        loadBitmap(index, mode);
     }
 }
