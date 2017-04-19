@@ -80,7 +80,8 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
                 holder.setSelected(R.id.wonder_indicator_item, item.selected);
                 holder.setText(R.id.wonder_indicator_item, TimeUtils.getDayInMonth(item.time));
                 holder.setTag(R.id.wonder_indicator_item, item);
-                mTitle.setText(TimeUtils.getMonthInYear(item.time));
+                if (item.selected)
+                    mTitle.setText(TimeUtils.getMonthInYear(item.time));
                 Log.d("onBind", "onBind: " + layoutPosition);
             }
         };
@@ -91,16 +92,22 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
         WheelItem c = mAdapter.getItem(position);
-        if (mLastPosition != position) {
+        if (mLastPosition != position || mLastPosition == -1) {
             c.selected = true;
             itemView.findViewById(R.id.wonder_indicator_item).setSelected(true);
-            mIndicatorList.smoothScrollToPosition(position);
             if (mLastPosition != -1) {
                 mAdapter.getItem(mLastPosition).selected = false;
                 mAdapter.notifyItemChanged(mLastPosition);
             }
             mLastPosition = position;
-            if (mListener != null) mListener.onChanged(c.time);
+            mAdapter.notifyItemChanged(position);
+            mIndicatorList.post(() -> {
+                mIndicatorList.smoothScrollToPosition(position);
+            });
+            mIndicatorList.post(() -> {
+                if (mListener != null) mListener.onChanged(c.time);
+            });
+
         }
     }
 
@@ -152,6 +159,13 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
             WheelItem item = new WheelItem();
             item.time = startTime + j * 24 * 3600 * 1000L;
             items.add(item);
+        }
+        int finalCount = ListUtils.getSize(items);
+        for (int i = 0; i < finalCount; i++) {
+            if (items.get(i).selected) {
+                mLastPosition = i;
+                break;
+            }
         }
         mAdapter.clear();
         mAdapter.addAll(items);
