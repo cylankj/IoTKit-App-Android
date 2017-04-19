@@ -40,11 +40,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, Device item) {
         holder.setTag(R.id.rLayout_device_item, layoutPosition);
-        try {
-            handleState(holder, item);
-        } catch (Exception e) {
-            AppLogger.e("err:" + MiscUtils.getErr(e));
-        }
+        handleState(holder, item);
     }
 
 
@@ -133,7 +129,6 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         else holder.setVisibility(R.id.tv_device_share_tag, GONE);
         //图标
         holder.setImageResource(R.id.img_device_icon, iconRes);
-//        if (TextUtils.isEmpty(shareAccount) || JFGRules.isBell(device.pid))
         handleMsgCountTime(holder, uuid, device);
         //右下角状态
         setItemState(holder, uuid, net, device);
