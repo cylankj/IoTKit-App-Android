@@ -78,6 +78,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     LinearLayout lLayoutPreview;
     @BindView(R.id.imgV_big_pic_collect)
     ImageView imgVBigPicCollect;
+    @BindView(R.id.imgV_big_pic_share)
+    ImageView imgVBigPicShare;
+    @BindView(R.id.imgV_big_pic_download)
+    ImageView imgVBigPicDownload;
 
     private int currentIndex = -1;
     private DpMsgDefine.DPAlarm alarmMsg;
@@ -118,16 +122,17 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     private void showCollectCase() {
-        boolean needShow = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, true);
-        if (needShow) {
-            PreferencesUtils.putBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, false);
-            imgVBigPicCollect.post(() -> {
-                SimplePopupWindow popupWindow = new SimplePopupWindow(this, R.drawable.collect_tips, R.string.Tap1_BigPic_FavoriteTips);
-                popupWindow.showOnAnchor(imgVBigPicCollect, RelativePopupWindow.VerticalPosition.ABOVE,
-                        RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, (int) getResources().getDimension(R.dimen.x25), 0);
-            });
-
-        }
+        runOnUiThread(() -> {
+            boolean needShow = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, true);
+            if (needShow) {
+                PreferencesUtils.putBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, false);
+                imgVBigPicCollect.post(() -> {
+                    SimplePopupWindow popupWindow = new SimplePopupWindow(this, R.drawable.collect_tips, R.string.Tap1_BigPic_FavoriteTips);
+                    popupWindow.showOnAnchor(imgVBigPicShare, RelativePopupWindow.VerticalPosition.ABOVE,
+                            RelativePopupWindow.HorizontalPosition.LEFT, (int) getResources().getDimension(R.dimen.x20), 0);
+                });
+            }
+        });
     }
 
     private void decideWhichView() {
@@ -302,7 +307,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     @Override
     public void onCollectingRsp(int err) {
         imgVBigPicCollect.setEnabled(true);
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        runOnUiThread(() -> {
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+        });
         switch (err) {
             case 1050:
                 if (over50ItemsDlg != null && over50ItemsDlg.isShowing()) return;
@@ -337,7 +344,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         imgVBigPicCollect.post(() -> {
             imgVBigPicCollect.setImageResource(state ? R.drawable.icon_collected : R.drawable.icon_collection);
             imgVBigPicCollect.setTag(state);
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            runOnUiThread(() -> {
+                LoadingDialog.dismissLoading(getSupportFragmentManager());
+            });
         });
     }
 

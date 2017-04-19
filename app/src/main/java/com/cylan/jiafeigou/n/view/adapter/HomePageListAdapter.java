@@ -40,7 +40,11 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
     @Override
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, Device item) {
         holder.setTag(R.id.rLayout_device_item, layoutPosition);
-        handleState(holder, item);
+        try {
+            handleState(holder, item);
+        } catch (Exception e) {
+            AppLogger.e("err:" + MiscUtils.getErr(e));
+        }
     }
 
 

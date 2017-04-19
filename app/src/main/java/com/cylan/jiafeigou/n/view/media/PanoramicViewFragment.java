@@ -112,10 +112,20 @@ public class PanoramicViewFragment extends IBaseFragment {
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        showLoading(false);
+    }
+
     private void showLoading(boolean show) {
-        if (show)
-            LoadingDialog.showLoading(getFragmentManager(), "", true);
-        else LoadingDialog.dismissLoading(getFragmentManager());
+//        if (getView() != null) {
+//            getView().post(() -> {
+//                if (show)
+//                    LoadingDialog.showLoading(getFragmentManager(), "", true);
+//                else LoadingDialog.dismissLoading(getFragmentManager());
+//            });
+//        }
     }
 
     public void loadBitmap(int index, String mode) {
