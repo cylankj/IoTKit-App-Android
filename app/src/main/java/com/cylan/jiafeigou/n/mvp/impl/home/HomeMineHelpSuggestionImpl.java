@@ -75,12 +75,15 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
             compositeSubscription.add(sendLogBack());
             compositeSubscription.add(getSystemAutoReplyCallBack());
         }
+        getSystemAutoReply();
     }
 
     @Override
     public void stop() {
         super.stop();
         unSubscribe(compositeSubscription);
+        DataBaseUtil.release();
+        RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
     }
 
     /**
@@ -114,6 +117,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     public void call(ArrayList<MineHelpSuggestionBean> list) {
                         if (getView() != null) {
                             getView().initRecycleView(list);
+                            AppLogger.d("database_size:"+list.size());
                         }
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));

@@ -24,7 +24,9 @@ import com.cylan.jiafeigou.n.mvp.contract.login.SetupPwdContract;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -159,6 +161,12 @@ public class SetupPwdFragment extends Fragment implements SetupPwdContract.View 
                     ToastUtil.showToast(getString(R.string.PASSWORD_LESSTHAN_SIX));
                     return;
                 }
+
+                if(NetUtils.isNetworkAvailable(ContextUtils.getContext())){
+                    ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
+                    return;
+                }
+
                 Bundle bundle = getArguments();
                 if (bundle == null) {
                     AppLogger.e("bundle is null");

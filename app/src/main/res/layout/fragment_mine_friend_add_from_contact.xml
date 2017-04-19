@@ -42,7 +42,7 @@
 
             <TextView
                 android:layout_marginTop="@dimen/y16"
-                android:text="@string/Tap3_FriendsAdd_NoContacts"
+                android:text="@string/Tap3_FriendsAdd_NoContent"
                 android:textColor="#aaaaaa"
                 android:textSize="@dimen/sp15"
                 android:layout_width="wrap_content"

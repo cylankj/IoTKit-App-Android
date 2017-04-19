@@ -214,7 +214,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
     }
 
     private void sendEmail() {
-        Uri uri = Uri.parse("mailto:3802**92@qq.com");
+        Uri uri = Uri.parse("");
         Intent intent = new Intent(Intent.ACTION_SENDTO, uri);
         intent.putExtra(Intent.EXTRA_EMAIL,
                 new String[] {friendAccount});
@@ -262,7 +262,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 sendSms();
             } else {
-                setPermissionDialog("短信");
+                setPermissionDialog(getString(R.string.SMS));
             }
         }
     }

@@ -164,7 +164,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
         } else {
             switch (item.type) {
                 case 601:
-                    holder.setText(R.id.mesg_item_content, "该设备已被解绑");
+                    holder.setText(R.id.mesg_item_content, ContextUtils.getContext().getString(R.string.MSG_UNBIND));
                     break;
                 case 603:
                     holder.setText(R.id.mesg_item_content, ContextUtils.getContext().getString(R.string.Tap1_shareDevice_canceledshare));

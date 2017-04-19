@@ -252,7 +252,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
         autoReplyBean.setType(0);
         autoReplyBean.setText(content);
-        autoReplyBean.setDate(time*1000 + "");
+        autoReplyBean.setDate(System.currentTimeMillis()+"");
         suggestionAdapter.add(autoReplyBean);
         suggestionAdapter.notifyDataSetHasChanged();
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
