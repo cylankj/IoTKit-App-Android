@@ -46,6 +46,7 @@ import static com.cylan.jiafeigou.dp.DpMsgMap.ID_202_MAC;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_208_DEVICE_SYS_VERSION;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_210_UP_TIME;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
+import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_INPUT_HINT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_LEFT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_RIGHT_CONTENT;
 import static com.cylan.jiafeigou.widget.dialog.EditFragmentDialog.KEY_TITLE;
@@ -284,8 +285,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
             //开始格式化
-            basePresenter.clearSdcard();
-            showLoading();
+            if (id == R.id.tv_dialog_btn_left){
+                basePresenter.clearSdcard();
+                showLoading();
+            }
         });
         simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
     }
@@ -315,6 +318,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                                 int index = list.indexOf(bean);
                                 if (index >= 0 && index < list.size()) {
                                     tvDeviceTimeZone.setTvSubTitle(list.get(index).getName());
+                                    ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                                 }
                             }
                         }, AppLogger::e);
@@ -332,6 +336,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
             bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
             bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
             bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+            bundle.putString(KEY_INPUT_HINT,BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).alias);
             bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
             editDialogFragment = EditFragmentDialog.newInstance(bundle);
         }

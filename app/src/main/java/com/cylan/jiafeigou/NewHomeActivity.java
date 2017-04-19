@@ -91,6 +91,12 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
         if (intent != null && intent.hasExtra("NewHomeActivity_intent")) {
             ToastUtil.showToast(intent.getStringExtra("NewHomeActivity_intent"));
         }
+        if (intent != null && intent.hasExtra(JConstant.KEY_JUMP_TO_WONDER)) {
+            int cIndex = vpHomeContent.getCurrentItem();
+            if (cIndex != 1) {
+                vpHomeContent.setCurrentItem(1);
+            }
+        }
     }
 
     /**

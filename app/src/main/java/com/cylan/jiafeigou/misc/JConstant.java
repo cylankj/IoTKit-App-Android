@@ -331,4 +331,6 @@ public class JConstant {
     public static final String KEY_CLIENT_UPDATE_DESC = "update_desc";
 
     public static final String KEY_LAST_TIME_CHECK_VERSION = "last_check_version";
+
+    public static final String KEY_JUMP_TO_WONDER = "key_jump_to_home_wonder";
 }

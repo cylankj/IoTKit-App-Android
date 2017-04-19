@@ -718,6 +718,8 @@ public class DataSourceManager implements JFGSourceManager {
      * @param arrayList
      */
     private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
+        if (getAccount() == null || !getJFGAccount().isEnablePush())
+            return;
         Device device = getDevice(uuid);
         //需要考虑,app进入后台.
         if (device != null && !TextUtils.isEmpty(device.account)) {
@@ -734,8 +736,6 @@ public class DataSourceManager implements JFGSourceManager {
                         BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
                                 .subscribeOn(Schedulers.newThread())
                                 .subscribe(baseDPTaskResult -> {
-                                    if (getAccount() == null || !getJFGAccount().isEnablePush())
-                                        return;
                                     Device dd = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                                     String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
                                     DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
@@ -758,7 +758,6 @@ public class DataSourceManager implements JFGSourceManager {
                         AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
                 } else if (msgId == 401) {
-
                     AppLogger.d("may fire a notification: " + msgId);
                     //for bell 1004 1005
                     INotify.NotifyBean bean = new INotify.NotifyBean();

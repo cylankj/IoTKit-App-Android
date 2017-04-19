@@ -1,6 +1,8 @@
 package com.cylan.jiafeigou.n.view.media;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -8,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +26,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.target.Target;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
@@ -74,6 +78,10 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     LinearLayout lLayoutPreview;
     @BindView(R.id.imgV_big_pic_collect)
     ImageView imgVBigPicCollect;
+    @BindView(R.id.imgV_big_pic_share)
+    ImageView imgVBigPicShare;
+    @BindView(R.id.imgV_big_pic_download)
+    ImageView imgVBigPicDownload;
 
     private int currentIndex = -1;
     private DpMsgDefine.DPAlarm alarmMsg;
@@ -114,16 +122,17 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
     }
 
     private void showCollectCase() {
-        boolean needShow = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, true);
-        if (needShow) {
-            PreferencesUtils.putBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, false);
-            imgVBigPicCollect.post(() -> {
-                SimplePopupWindow popupWindow = new SimplePopupWindow(this, R.drawable.collect_tips, R.string.Tap1_BigPic_FavoriteTips);
-                popupWindow.showOnAnchor(imgVBigPicCollect, RelativePopupWindow.VerticalPosition.ABOVE,
-                        RelativePopupWindow.HorizontalPosition.ALIGN_RIGHT, (int) getResources().getDimension(R.dimen.x25), 0);
-            });
-
-        }
+        runOnUiThread(() -> {
+            boolean needShow = PreferencesUtils.getBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, true);
+            if (needShow) {
+                PreferencesUtils.putBoolean(JConstant.NEED_SHOW_COLLECT_USE_CASE, false);
+                imgVBigPicCollect.post(() -> {
+                    SimplePopupWindow popupWindow = new SimplePopupWindow(this, R.drawable.collect_tips, R.string.Tap1_BigPic_FavoriteTips);
+                    popupWindow.showOnAnchor(imgVBigPicShare, RelativePopupWindow.VerticalPosition.ABOVE,
+                            RelativePopupWindow.HorizontalPosition.LEFT, (int) getResources().getDimension(R.dimen.x20), 0);
+                });
+            }
+        });
     }
 
     private void decideWhichView() {
@@ -293,13 +302,30 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         } else ToastUtil.showNegativeToast(getString(R.string.set_failed));
     }
 
+    private AlertDialog over50ItemsDlg;
+
     @Override
     public void onCollectingRsp(int err) {
         imgVBigPicCollect.setEnabled(true);
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        runOnUiThread(() -> {
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+        });
         switch (err) {
             case 1050:
-                ToastUtil.showNegativeToast(getString(R.string.DailyGreatTips_Full));
+                if (over50ItemsDlg != null && over50ItemsDlg.isShowing()) return;
+                if (over50ItemsDlg == null) {
+                    over50ItemsDlg = new AlertDialog.Builder(this)
+                            .setMessage(getString(R.string.DailyGreatTips_Full))
+                            .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                                Intent intent = new Intent(CamMediaActivity.this, NewHomeActivity.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                intent.putExtra(JConstant.KEY_JUMP_TO_WONDER, JConstant.KEY_JUMP_TO_WONDER);
+                                startActivity(intent);
+                            })
+                            .setNegativeButton(getString(R.string.CANCEL), null)
+                            .create();
+                }
+                over50ItemsDlg.show();
                 break;
             case 0:
                 imgVBigPicCollect.setTag(true);
@@ -318,7 +344,9 @@ public class CamMediaActivity extends BaseFullScreenFragmentActivity<CamMediaCon
         imgVBigPicCollect.post(() -> {
             imgVBigPicCollect.setImageResource(state ? R.drawable.icon_collected : R.drawable.icon_collection);
             imgVBigPicCollect.setTag(state);
-            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            runOnUiThread(() -> {
+                LoadingDialog.dismissLoading(getSupportFragmentManager());
+            });
         });
     }
 

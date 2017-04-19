@@ -138,7 +138,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        srLayoutCamListRefresh.setColorSchemeColors(R.color.COLOR_CACACA);
+        srLayoutCamListRefresh.setColorSchemeColors(getResources().getColor(R.color.COLOR_CACACA));
         srLayoutCamListRefresh.setOnRefreshListener(this);
         camMessageListAdapter = new CamMessageListAdapter(this.uuid, getContext(), null, null);
         rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
@@ -416,7 +416,6 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 R.id.lLayout_cam_msg_container);
         switch (v.getId()) {
             case R.id.tv_cam_message_item_delete: {//删除选中
-                if (ListUtils.isEmpty(camMessageListAdapter.getSelectedItems())) return;
                 new AlertDialog.Builder(getActivity())
                         .setMessage(getString(R.string.Tips_SureDelete))
                         .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {

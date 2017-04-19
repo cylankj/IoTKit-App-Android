@@ -69,19 +69,22 @@ public class MineReSetMailTip extends Fragment {
 
     private void initTopBar() {
         customToolbar.setBackAction((View v) -> {
-//            getFragmentManager().popBackStack();
-            getActivity().getSupportFragmentManager().popBackStackImmediate(HomeMineInfoMailBoxFragment.class.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            jump2MineInfoFragment();
         });
     }
 
     @OnClick(R.id.tv_mail_connect_submit)
     public void onClick() {
-//        getFragmentManager().popBackStack();
-        int num = getActivity().getSupportFragmentManager().getBackStackEntryCount();
-        for (int i = 0; i < num; i++) {
-            FragmentManager.BackStackEntry backstatck = getActivity().getSupportFragmentManager().getBackStackEntryAt(i);
-            AppLogger.d("Fragment:"+backstatck.getName());
-        }
-        getActivity().getSupportFragmentManager().popBackStackImmediate(HomeMineInfoMailBoxFragment.class.getName(), FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        jump2MineInfoFragment();
+    }
+
+    public void jump2MineInfoFragment(){
+        HomeMineInfoFragment fragment = HomeMineInfoFragment.newInstance();
+        getFragmentManager().beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                        , R.anim.slide_in_left, R.anim.slide_out_right)
+                .add(android.R.id.content, fragment, "mineReSetMailTip")
+                .addToBackStack("personalInformationFragment")
+                .commit();
     }
 }

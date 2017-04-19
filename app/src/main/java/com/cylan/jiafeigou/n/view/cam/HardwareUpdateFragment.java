@@ -92,14 +92,9 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
+        getActivity().getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         initView();
     }
 
@@ -204,7 +199,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                     })
                     .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
                         //开始升级
-                        basePresenter.startUpdate();
+//                        basePresenter.startUpdate();
+                        basePresenter.upgradePing();
                         basePresenter.startCounting();
                         tvDownloadSoftFile.setEnabled(false);
                     })
@@ -281,7 +277,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         String remoteSSid = net.ssid;
         if (TextUtils.equals(localSSid, remoteSSid)) {
-            basePresenter.startUpdate();
+//            basePresenter.startUpdate();
+            basePresenter.upgradePing();
             basePresenter.startCounting();
             tvDownloadSoftFile.setEnabled(false);
             AppLogger.d("same_net");
