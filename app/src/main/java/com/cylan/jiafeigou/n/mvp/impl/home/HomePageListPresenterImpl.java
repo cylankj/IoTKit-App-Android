@@ -158,7 +158,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribeOn(Schedulers.newThread())
                 .filter(jfgRobotSyncData -> (ListUtils.getSize(jfgRobotSyncData.dpList) > 0 && getView() != null))
                 .flatMap(ret -> Observable.from(ret.dpList))
-                .observeOn(AndroidSchedulers.mainThread())
+//                .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                 .subscribe(msg -> {
                     try {
@@ -210,8 +210,8 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
                 .subscribeOn(Schedulers.newThread())
                 .delay(1, TimeUnit.SECONDS)
                 .map((Boolean aBoolean) -> {
-                    if (manually)
-                        BaseApplication.getAppComponent().getSourceManager().syncAllDevicePropertyManually();
+//                    if (manually)
+                    BaseApplication.getAppComponent().getSourceManager().syncAllDevicePropertyManually();
                     AppLogger.i("fetchDeviceList: " + aBoolean);
                     return aBoolean;
                 })

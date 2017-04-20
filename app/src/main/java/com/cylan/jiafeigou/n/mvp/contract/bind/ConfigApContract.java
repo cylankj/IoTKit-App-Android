@@ -33,6 +33,8 @@ public interface ConfigApContract {
 
         void onSetWifiFinished(UdpConstant.UdpDevicePortrait udpDevicePortrait);
 
+        void sendWifiInfoFailed();
+
         /**
          *
          */

@@ -561,23 +561,26 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .map(o -> {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                     long time = System.currentTimeMillis();
-                    BaseApplication.getAppComponent().getCmd().screenshot(false, new CallBack<Bitmap>() {
-                        @Override
-                        public void onSucceed(Bitmap resource) {
-                            AppLogger.d("take shot step assemble by sdk");
-                            SimpleCache.getInstance().addCache(getThumbnailKey(), resource);
-                            _2saveBitmap(forPreview, resource);
-                        }
+                    return BaseApplication.getAppComponent().getCmd().screenshot(false);
 
-                        @Override
-                        public void onFailure(String s) {
-                            AppLogger.e("直播黑屏，没有数据: " + forPreview);
-                        }
-                    });
-                    AppLogger.i("capture take shot performance: " + (System.currentTimeMillis() - time));
-                    return null;
+//                    BaseApplication.getAppComponent().getCmd().screenshot(false, new CallBack<Bitmap>() {
+//                        @Override
+//                        public void onSucceed(Bitmap resource) {
+//                            AppLogger.d("take shot step assemble by sdk");
+//                            SimpleCache.getInstance().addCache(getThumbnailKey(), resource);
+//                            _2saveBitmap(forPreview, resource);
+//                        }
+//
+//                        @Override
+//                        public void onFailure(String s) {
+//                            AppLogger.e("直播黑屏，没有数据: " + forPreview);
+//                        }
+//                    });
+//                    AppLogger.i("capture take shot performance: " + (System.currentTimeMillis() - time));
+//                    return null;
                 })
                 .subscribe(b -> {
+                    getView().onTakeSnapShot(b);
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));
     }
 
@@ -615,6 +618,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private void snapshotResult(Bitmap bitmap) {
         Observable.just(bitmap)
                 .filter((Bitmap bit) -> (getView() != null))
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(map -> {
+                    getView().onTakeSnapShot(map);
+                    return map;
+                })
                 .subscribeOn(Schedulers.io())
                 .map(result -> {
                     long time = System.currentTimeMillis();
@@ -622,15 +630,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     BitmapUtils.saveBitmap2file(result, filePath);
                     return filePath;
                 })
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(path -> {
-                    getView().onTakeSnapShot(path);
-                    AppLogger.d("take shot step show pop window");
-                    return path;
-                })
-                .filter(ret -> {
-                    AppLogger.d("to collect bitmap is null? " + (TextUtils.isEmpty(ret)));
-                    return ret != null;
+                .filter(path -> {
+                    AppLogger.d("to collect bitmap is null? " + (TextUtils.isEmpty(path)));
+                    return path != null;
                 })
                 .subscribeOn(Schedulers.io())
                 .subscribe(filePath -> {

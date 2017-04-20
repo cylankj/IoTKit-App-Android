@@ -158,9 +158,16 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                     return;
                 }
                 //判断当前
-                if (basePresenter != null)
-                    basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
-                            ViewUtils.getTextViewContent(etWifiPwd), type);
+                if (getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
+                    if (basePresenter != null)
+                        basePresenter.sendWifiInfo(getIntent().getStringExtra(JConstant.JUST_SEND_INFO),
+                                ViewUtils.getTextViewContent(tvConfigApName),
+                                ViewUtils.getTextViewContent(etWifiPwd), type);
+                } else {
+                    if (basePresenter != null)
+                        basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
+                                ViewUtils.getTextViewContent(etWifiPwd), type);
+                }
                 tvWifiPwdSubmit.viewZoomSmall();
                 IMEUtils.hide(this);
                 break;
@@ -277,7 +284,6 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             if (basePresenter != null) {
                 basePresenter.finish();
             }
-            return;
         } else {
             Intent intent = new Intent(this, SubmitBindingInfoActivity.class);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, o.uuid);
@@ -288,6 +294,13 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
             }
             finishExt();
         }
+    }
+
+    @Override
+    public void sendWifiInfoFailed() {
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
+        tvWifiPwdSubmit.viewZoomBig();
     }
 
     @Override
