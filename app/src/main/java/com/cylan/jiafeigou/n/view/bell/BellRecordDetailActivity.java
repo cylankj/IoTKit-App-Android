@@ -263,6 +263,7 @@ public class BellRecordDetailActivity extends BaseFullScreenActivity {
                 .subscribe(result -> {
                     if (result.getResultCode() == 0) {
                         ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Success));
+                        AppLogger.d("分享成功!");
                         mCollect.setImageResource(R.drawable.icon_collected);
                         isCollect = true;
                     }

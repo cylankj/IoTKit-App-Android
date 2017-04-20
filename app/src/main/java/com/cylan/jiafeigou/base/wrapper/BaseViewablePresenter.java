@@ -47,7 +47,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(getDeviceUnBindSub());
-        registerSubscription(watchLoginState());
+//        registerSubscription(watchLoginState());
     }
 
     private Subscription getDeviceUnBindSub() {
@@ -67,9 +67,9 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         Subscription subscribe = Observable.just(sourceManager.getAccount())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(account -> {
+                    mView.onViewer();
                     if (account != null && account.isOnline()) {
                         if (mView != null) {
-                            mView.onViewer();
                         }
                         return true;
                     } else {
@@ -214,6 +214,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(dis -> {
                     AppLogger.d("收到了断开视频的消息:" + dis.code);
+                    feedRtcp.stop();
                     switch (dis.code) {
                         case STOP_VIERER_BY_SYSTEM:
                             break;
@@ -391,7 +392,17 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void onFrameFailed() {
-        mView.onVideoDisconnect(BAD_FRAME_RATE);
+        Schedulers.io().createWorker().schedule(() -> {
+            try {
+                AppLogger.d("AAAAAAAAAAAA");
+                appCmd.stopPlay(mUUID);
+                hasLiveStream = false;
+                feedRtcp.stop();
+            } catch (JfgException e) {
+                e.printStackTrace();
+            }
+        });
+        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onVideoDisconnect(BAD_FRAME_RATE));
     }
 
     @Override

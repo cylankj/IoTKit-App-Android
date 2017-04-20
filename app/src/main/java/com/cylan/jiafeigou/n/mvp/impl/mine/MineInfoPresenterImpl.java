@@ -222,7 +222,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
     }
 
     @Override
-    public Subscription loginType(String account) {
+    public Subscription loginType(String account,String phone,String email) {
         return Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<Object, Observable<Integer>>() {
@@ -245,7 +245,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(i -> {
-                    if (getView() != null) getView().setAccount(account, i);
+                    if (getView() != null) getView().setAccount(account,phone,email,i);
                 }, AppLogger::e);
     }
 

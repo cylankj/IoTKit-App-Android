@@ -7,8 +7,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.jiafeigou.misc.JFGRules;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PackageUtils;
 import com.google.gson.Gson;
@@ -75,10 +73,13 @@ public class WXEntryActivity extends Activity implements IWXAPIEventHandler {
         int result = 0;
         switch (resp.errCode) {
             case BaseResp.ErrCode.ERR_OK:
+//                ToastUtil.showPositiveToast(getString(R.string.Tap3_ShareDevice_SuccessTips));
                 break;
             case BaseResp.ErrCode.ERR_USER_CANCEL:
+//                ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_CanceldeTips));
                 break;
             case BaseResp.ErrCode.ERR_AUTH_DENIED:
+//                ToastUtil.showNegativeToast(getString(R.string.Tap3_ShareDevice_FailTips));
                 break;
             default:
                 break;

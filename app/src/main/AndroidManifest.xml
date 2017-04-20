@@ -179,11 +179,11 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
         <!--<receiver android:name=".n.base.BaseApplication$BootCompletedReceiver">-->
-            <!--<intent-filter android:priority="0x7fffffff">-->
-                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
-                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
-                <!--<action android:name="android.intent.action.USER_PRESENT" />-->
-            <!--</intent-filter>-->
+        <!--<intent-filter android:priority="0x7fffffff">-->
+        <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
+        <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
+        <!--<action android:name="android.intent.action.USER_PRESENT" />-->
+        <!--</intent-filter>-->
         <!--</receiver>-->
 
         <service
@@ -490,6 +490,15 @@
             android:name="com.facebook.FacebookContentProvider"
             android:authorities="com.facebook.app.FacebookContentProvider${FACEBOOK_APP_ID}"
             android:exported="true" />
+
+        <receiver
+            android:name=".utils.ShareUtils$MyResultReceiver"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.twitter.sdk.android.tweetcomposer.UPLOAD_SUCCESS" />
+                <action android:name="com.twitter.sdk.android.tweetcomposer.UPLOAD_FAILURE" />
+            </intent-filter>
+        </receiver>
 
     </application>
 

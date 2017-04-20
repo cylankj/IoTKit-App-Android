@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.lang.ref.SoftReference;
 
@@ -67,6 +68,7 @@ public class ToastUtil {
             tv.setText(content);
             toast.show();
         } catch (Exception e) {
+            AppLogger.e(e.getMessage()+"AAAAAAAAAAAAAAAAAAAAAAAAA");
         }
     }
 

@@ -893,4 +893,6 @@
     <string name="Tap3_Share_NoBindTips">Using this function needs to bind email first.</string>
     <string name="Phone">Phone</string>
     <string name="SMS">Message</string>
+    <string name="Choose_Album">Select an album</string>
+    <string name="Mail_Class_Application">Please select the mail class application</string>
 </resources>

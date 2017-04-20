@@ -27,6 +27,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
+import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.base.BaseFullScreenActivity;
 import com.cylan.jiafeigou.base.injector.component.ActivityComponent;
@@ -273,8 +274,10 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onBellBatteryDrainOut() {
+
         initBatteryDialog();
         LBatteryWarnDialog dialog = lBatteryWarnDialog.get();
+
         dialog.show(getSupportFragmentManager(), "lBattery");
     }
 
@@ -327,7 +330,15 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onDeviceUnBind() {
-        finish();
+        AppLogger.d("当前设备已解绑");
+        new AlertDialog.Builder(this).setCancelable(false)
+                .setPositiveButton(getString(R.string.OK), (dialog, which) -> {
+                    finish();
+                    Intent intent = new Intent(this, NewHomeActivity.class);
+                    startActivity(intent);
+                })
+                .setMessage(getString(R.string.Tap1_device_deleted))
+                .show();
     }
 
     @Override

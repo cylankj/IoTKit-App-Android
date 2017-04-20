@@ -2,9 +2,12 @@ package com.cylan.jiafeigou.n.mvp.impl.bind;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bind.SetDeviceAliasContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.util.concurrent.TimeUnit;
@@ -41,16 +44,19 @@ public class SetDeviceAliasPresenterImpl extends AbstractPresenter<SetDeviceAlia
                 .map(s -> alias)
                 .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
-                    if (s != null && s.trim().length() == 0) return 0;//如果是空格则跳过,显示默认名称
-                    //不要再改了,昵称可能为空,这种情况下不会发送任何消息,所以不会收到 setAlias 的响应
+                    if (s != null && s.trim().length() == 0) return -1;//如果是空格则跳过,显示默认名称
                     try {
-                        int ret = BaseApplication.getAppComponent().getCmd().setAliasByCid(uuid, s);
+                        int ret =BaseApplication.getAppComponent().getCmd().setAliasByCid(uuid, s);
                         AppLogger.i("setup alias: " + s + ",ret:" + ret);
                         return ret;
                     } catch (JfgException e) {
                         return -1;
                     }
                 })
+                .flatMap(result -> RxBus.getCacheInstance().toObservable(RxEvent.SetAlias.class)
+                        .flatMap(setAlias -> Observable.just(setAlias != null
+                                && setAlias.result != null
+                                && setAlias.result.code == JError.ErrorOK ? JError.ErrorOK : -1)))
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Integer result) -> {

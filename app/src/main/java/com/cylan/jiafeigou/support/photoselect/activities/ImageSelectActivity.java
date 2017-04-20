@@ -24,6 +24,7 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.photoselect.adapters.CustomImageSelectAdapter;
 import com.cylan.jiafeigou.support.photoselect.helpers.Constants;
 import com.cylan.jiafeigou.support.photoselect.models.Image;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class ImageSelectActivity extends HelperActivity {
     private ContentObserver observer;
     private Handler handler;
     private Thread thread;
+    private CustomToolbar customToolbar;
 
     private final String[] projection = new String[]{MediaStore.Images.Media._ID, MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.DATA};
 
@@ -75,6 +77,9 @@ public class ImageSelectActivity extends HelperActivity {
                 finish();
             }
         });
+
+        customToolbar = (CustomToolbar) findViewById(R.id.custom_toolbar);
+        customToolbar.setBackAction(v->finish());
     }
 
     @Override

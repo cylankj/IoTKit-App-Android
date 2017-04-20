@@ -1,12 +1,9 @@
 package com.cylan.jiafeigou.cache.db.module;
 
 import com.cylan.entity.jniCall.JFGAccount;
-import com.cylan.ext.annotations.DPType;
-import com.cylan.jiafeigou.base.module.DProperty;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -46,12 +43,6 @@ public class Account extends BasePropertyHolder<Account> {
     public boolean isOnline() {
         return this.isOnline;
     }
-
-    @DProperty(type = String.class, dpType = DPType.TYPE_PRIMARY)
-    public transient static final int ACCOUNT_STATE = 601;
-
-    @DProperty(type = DpMsgDefine.DPWonderItem.class, dpType = DPType.TYPE_SET)
-    public transient static final int ACCOUNT_WONDERFUL_MSG = 602;
 
     public Account(JFGAccount account) {
         setAccount(account);
