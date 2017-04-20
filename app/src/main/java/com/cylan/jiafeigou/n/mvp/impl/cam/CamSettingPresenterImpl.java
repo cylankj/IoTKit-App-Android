@@ -203,8 +203,8 @@ public class CamSettingPresenterImpl extends AbstractPresenter<CamSettingContrac
         if (deviceAutoVideoRecord > 2 || deviceAutoVideoRecord < 0) {
             deviceAutoVideoRecord = 0;
         }
-        int auto = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
-        if (auto < 0)
+        boolean alarmFlag = device.$(DpMsgMap.ID_501_CAMERA_ALARM_FLAG, false);
+        if (!alarmFlag)//不开启,默认不选择
             return "";
         return context.getString(autoRecordMode[deviceAutoVideoRecord]);
     }

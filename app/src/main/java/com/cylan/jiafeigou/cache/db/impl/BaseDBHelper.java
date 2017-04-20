@@ -315,10 +315,11 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
-    public void deleteDpSync(String account, String uuid, long versionMax, long versionMin) {
+    public void deleteDpSync(String account, String uuid, long msgId, long versionMax, long versionMin) {
         List<DPEntity> list = mEntityDao.queryBuilder()
                 .where(DPEntityDao.Properties.Account.eq(account))
                 .where(DPEntityDao.Properties.Uuid.eq(uuid))
+                .where(DPEntityDao.Properties.MsgId.eq(msgId))
                 .where(DPEntityDao.Properties.Version.le(versionMax))
                 .where(DPEntityDao.Properties.Version.ge(versionMin))
                 .list();

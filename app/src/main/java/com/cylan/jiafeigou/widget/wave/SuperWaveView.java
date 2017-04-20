@@ -138,8 +138,9 @@ public class SuperWaveView extends View {
         path.moveTo(0, getMeasuredHeight());
         path.lineTo(0, waterLevel);
         for (int xNext = 0; xNext <= getMeasuredWidth(); xNext++) {
-            final float yNext = (float) (getMeasuredHeight() - waterLevel
+            float yNext = (float) (getMeasuredHeight() - waterLevel
                     + amplitude * (float) Math.sin(xNext * phase + phase / 5) + Math.sin(xNext * phase));
+            if (yNext < 0) yNext = 0;
             path.lineTo(xNext, yNext);
         }
         path.lineTo(getMeasuredWidth(), getMeasuredHeight());

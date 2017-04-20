@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,6 +21,8 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineUserInfoLookBigHeadContract;
+import com.cylan.jiafeigou.support.photoview.PhotoView;
+import com.cylan.jiafeigou.support.photoview.PhotoViewAttacher;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -37,7 +40,7 @@ import butterknife.OnClick;
 public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUserInfoLookBigHeadContract.View {
 
     @BindView(R.id.iv_userinfo_big_image)
-    ImageView ivUserinfoBigImage;
+    PhotoView ivUserinfoBigImage;
     @BindView(R.id.rl_root_view)
     RelativeLayout rlRootView;
 
@@ -66,13 +69,22 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
      * 初始化大图大小
      */
     private void initImageViewSize() {
-        WindowManager wm = (WindowManager) getActivity()
-                .getSystemService(Context.WINDOW_SERVICE);
-        int height = wm.getDefaultDisplay().getHeight();
-        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ivUserinfoBigImage.getLayoutParams());
-        lp.height = (int) (height * 0.47);
-        lp.setMargins(0, (int) (height * 0.23), 0, 0);
-        ivUserinfoBigImage.setLayoutParams(lp);
+//        int height = Resources.getSystem().getDisplayMetrics().heightPixels;
+//        RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(ivUserinfoBigImage.getLayoutParams());
+//        lp.height = (int) (height * 0.47);
+//        lp.setMargins(0, (int) (height * 0.23), 0, 0);
+//        ivUserinfoBigImage.setLayoutParams(lp);
+        ivUserinfoBigImage.setOnPhotoTapListener(new PhotoViewAttacher.OnPhotoTapListener() {
+            @Override
+            public void onPhotoTap(View view, float x, float y) {
+                getFragmentManager().popBackStack();
+            }
+
+            @Override
+            public void onOutsidePhotoTap() {
+
+            }
+        });
     }
 
     /**
@@ -92,8 +104,8 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
         Glide.with(getContext())
                 .load(url)
                 .asBitmap()
-                .centerCrop()
-                .skipMemoryCache(true)
+                .fitCenter()
+                .placeholder(R.drawable.icon_mine_head_normal)
                 .error(R.drawable.icon_mine_head_normal)
                 .listener(listener)
                 .into(ivUserinfoBigImage);
@@ -106,11 +118,12 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
         public MyReqListener(String totas, FragmentManager manager) {
             this.totas = totas;
-            this.managerWeakReference = new WeakReference<FragmentManager>(manager);
+            this.managerWeakReference = new WeakReference<>(manager);
         }
 
         @Override
         public boolean onException(Exception e, String model, Target<Bitmap> target, boolean isFirstResource) {
+            if (managerWeakReference.get() == null) return false;
             LoadingDialog.dismissLoading(managerWeakReference.get());
             loadResult = false;
             ToastUtil.showNegativeToast(totas);
@@ -119,6 +132,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
 
         @Override
         public boolean onResourceReady(Bitmap resource, String model, Target<Bitmap> target, boolean isFromMemoryCache, boolean isFirstResource) {
+            if (managerWeakReference.get() == null) return false;
             loadResult = true;
             LoadingDialog.dismissLoading(managerWeakReference.get());
             return false;
@@ -126,9 +140,9 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
     }
 
 
-    @OnClick({R.id.rl_root_view,R.id.iv_userinfo_big_image})
+    @OnClick({R.id.rl_root_view, R.id.iv_userinfo_big_image})
     public void onClick(View view) {
-        switch (view.getId()){
+        switch (view.getId()) {
             case R.id.rl_root_view:
                 if (loadResult) {
                     getFragmentManager().popBackStack();
@@ -137,7 +151,7 @@ public class MineUserInfoLookBigHeadFragment extends Fragment implements MineUse
             case R.id.iv_userinfo_big_image:
                 if (!loadResult) {
                     loadBigImage(iamgeUrl);
-                }else {
+                } else {
                     getFragmentManager().popBackStack();
                 }
                 break;
