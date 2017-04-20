@@ -283,7 +283,7 @@ dependencies {
     //aar通用依赖，不需要指定名字
     //    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
     //先用本地依赖的方式，打包平台还部支持 没人愿意维护多渠道包，算了，删了吧。
-    compile(name: 'constraint-layout-1.0.1', ext: 'aar')
+//    compile(name: 'constraint-layout-1.0.1', ext: 'aar')
     //aar通用依赖，不需要指定名字
     compile files('libs/open_sdk_r5781.jar')
     testCompile files('libs/javassist.jar')
