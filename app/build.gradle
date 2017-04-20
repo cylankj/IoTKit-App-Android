@@ -320,6 +320,6 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-design:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.1'
-//    compile 'org.aspectj:aspectjrt:1.8.9'
+    //    compile 'org.aspectj:aspectjrt:1.8.9'
 }
 

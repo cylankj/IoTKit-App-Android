@@ -1,6 +1,9 @@
 package com.cylan.jiafeigou.utils;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
@@ -14,13 +17,19 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.wechat.WechatShare;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
+import com.facebook.internal.CallbackManagerImpl;
+import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.model.SharePhoto;
 import com.facebook.share.model.SharePhotoContent;
 import com.facebook.share.widget.ShareDialog;
 import com.twitter.sdk.android.tweetcomposer.TweetComposer;
+import com.twitter.sdk.android.tweetcomposer.TweetUploadService;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -75,6 +84,7 @@ public class ShareUtils {
                         FileUtils.copyFile(resource, file);
                         TweetComposer.Builder builder = new TweetComposer.Builder(activity)
                                 .image(Uri.fromFile(file));
+
                         builder.show();
                     }
                 });
@@ -132,6 +142,25 @@ public class ShareUtils {
                                 .addPhoto(new SharePhoto.Builder().setBitmap(resource).build())
                                 .build();
                         ShareDialog dialog = new ShareDialog(activity);
+                        dialog.registerCallback(new CallbackManagerImpl(), new FacebookCallback<Sharer.Result>() {
+                            @Override
+                            public void onSuccess(Sharer.Result result) {
+                                ToastUtil.showPositiveToast(activity.getString(R.string.Tap3_ShareDevice_SuccessTips));
+                                AppLogger.d("shareToFacebook:success");
+                            }
+
+                            @Override
+                            public void onCancel() {
+                                ToastUtil.showPositiveToast(activity.getString(R.string.Tap3_ShareDevice_CanceldeTips));
+                                AppLogger.d("shareToFacebook:canceled");
+                            }
+
+                            @Override
+                            public void onError(FacebookException e) {
+                                ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
+                                AppLogger.d("shareToFacebook:failed");
+                            }
+                        });
                         dialog.show(content, ShareDialog.Mode.AUTOMATIC);
                     }
 
@@ -213,10 +242,45 @@ public class ShareUtils {
                 .setContentUrl(Uri.parse(videoURL))
                 .build();
         ShareDialog dialog = new ShareDialog(activity);
+        dialog.registerCallback(new CallbackManagerImpl(), new FacebookCallback<Sharer.Result>() {
+            @Override
+            public void onSuccess(Sharer.Result result) {
+                ToastUtil.showPositiveToast(activity.getString(R.string.Tap3_ShareDevice_SuccessTips));
+                AppLogger.d("shareToFacebook:success");
+            }
+
+            @Override
+            public void onCancel() {
+                ToastUtil.showPositiveToast(activity.getString(R.string.Tap3_ShareDevice_CanceldeTips));
+                AppLogger.d("shareToFacebook:canceled");
+            }
+
+            @Override
+            public void onError(FacebookException e) {
+                ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
+                AppLogger.d("shareToFacebook:failed");
+            }
+        });
         if (dialog.canShow(content)) {
             dialog.show(content, ShareDialog.Mode.AUTOMATIC);
         } else {
             ToastUtil.showNegativeToast(activity.getString(R.string.Tap3_ShareDevice_FailTips));
+        }
+    }
+
+
+    public static class MyResultReceiver extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (TweetUploadService.UPLOAD_SUCCESS.equals(intent.getAction())) {
+                // success
+                ToastUtil.showPositiveToast(context.getString(R.string.Tap3_ShareDevice_SuccessTips));
+                AppLogger.d("shareToTweeter:success");
+            } else {
+                // failure
+                ToastUtil.showNegativeToast(context.getString(R.string.Tap3_ShareDevice_FailTips));
+                AppLogger.d("shareToTweeter:failed");
+            }
         }
     }
 }

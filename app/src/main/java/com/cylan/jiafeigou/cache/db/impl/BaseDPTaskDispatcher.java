@@ -24,8 +24,7 @@ import rx.Subscriber;
 import rx.schedulers.Schedulers;
 
 /**
- * 用于客户端和服务器之间的数据交互,query task 在无网络时将被丢弃
- * 其他 task
+ * 用于客户端和服务器之间的数据交互
  */
 public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
     private IDPTaskFactory taskFactory;

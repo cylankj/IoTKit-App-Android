@@ -106,8 +106,8 @@ public class SetDeviceAliasFragment extends IBaseFragment<SetDeviceAliasContract
                 break;
             case R.id.btn_bind_done:
                 if (basePresenter != null) {
-                    CharSequence alias = TextUtils.isEmpty(etInputBox.getText())
-                            ? etInputBox.getHint() : etInputBox.getText();
+                    CharSequence alias = TextUtils.isEmpty(etInputBox.getText().toString().trim())
+                            ? etInputBox.getHint() : etInputBox.getText().toString().trim();
                     basePresenter.setupAlias(alias.toString());
                 }
                 btnBindDone.viewZoomSmall();
