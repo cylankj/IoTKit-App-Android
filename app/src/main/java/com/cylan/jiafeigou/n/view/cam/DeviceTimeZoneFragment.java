@@ -118,7 +118,7 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
 //        if (simpleDialog == null) {
 //            simpleDialog = new SimpleDialogFragment();
 //            Bundle bundle = new Bundle();
-//            bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.TIMEZONE_CHOOSE));
+//            bundle.putString(BaseFragmentDialog.KEY_TITLE, getString(R.string.TIMEZONE_CHOOSE));
 //            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
 //            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
 //            bundle.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.TIMEZONE_INFO));

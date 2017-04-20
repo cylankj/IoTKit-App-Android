@@ -1,41 +1,46 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.support.v4.app.DialogFragment;
 import android.view.View;
 
 import com.cylan.jiafeigou.base.view.IDialogManager;
 
 /**
- * Created by yanzhendong on 2017/4/19.
+ * Created by yanzhendong on 2017/4/20.
  */
 
-public class BaseDialogBuilder implements IDialogManager.IDialogBuilder {
+public class BaseFragmentDialog extends DialogFragment implements IDialogManager.IDialogBuilder {
     @Override
     public IDialogManager.IDialogBuilder setTitle(String title) {
-        return null;
+        return this;
     }
+
+
 
     @Override
     public IDialogManager.IDialogBuilder setContent(String content) {
-        return null;
+        return this;
     }
+
+
 
     @Override
     public IDialogManager.IDialogBuilder setCustomContentView(View contentView) {
-        return null;
+        return this;
     }
 
     @Override
     public IDialogManager.IDialogBuilder setCustomContentView(int resId) {
-        return null;
+        return this;
     }
 
     @Override
     public IDialogManager.IDialogBuilder setClickListener(int resId, View.OnClickListener listener) {
-        return null;
+        return this;
     }
 
     @Override
     public IDialogManager.IDialogBuilder addParam(String key, Object value) {
-        return null;
+        return this;
     }
 }

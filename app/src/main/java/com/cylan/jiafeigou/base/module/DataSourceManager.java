@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
 import com.cylan.jiafeigou.cache.video.History;
 import com.cylan.jiafeigou.dp.DataPoint;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.INotify;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -726,6 +727,7 @@ public class DataSourceManager implements JFGSourceManager {
             ArrayList<JFGDPMsg> list = new ArrayList<>(arrayList);
             for (int i = 0; i < ListUtils.getSize(list); i++) {
                 long msgId = list.get(i).id;
+                JFGDPMsg msg = list.get(i);
                 if (msgId == 505 || msgId == 512 || msgId == 222) {
                     AppLogger.d("may fire a notification: " + msgId);
                     //cam 1001 1002  1003
@@ -758,6 +760,8 @@ public class DataSourceManager implements JFGSourceManager {
                         AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
                 } else if (msgId == 401) {
+                    DpMsgDefine.DPBellCallRecord dataPoint = propertyParser.parser((int) msgId, msg.packValue, msg.version);
+                    if (dataPoint.isOK == 1) return; //已接听了,不需要发送通知了
                     AppLogger.d("may fire a notification: " + msgId);
                     //for bell 1004 1005
                     INotify.NotifyBean bean = new INotify.NotifyBean();

@@ -145,7 +145,8 @@ android {
                                     "mtaAppKey"          : "Aqc1103156296",
                                     "weChatAppKey"       : "wx3081bcdae8a842cf",
                                     "sinaAppKey"         : "\\ 1315129656",
-                                    "SERVER"             : "yun.jfgou.com:443"]
+                                    "SERVER"             : "yun.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "1866682200216878"]
         }
         _test1 {
             applicationIdSuffix ".test1"
@@ -158,7 +159,9 @@ android {
                                     "mtaAppKey"          : "Aqc1103156296",
                                     "weChatAppKey"       : "wx1b350d7d8d8920ed",
                                     "sinaAppKey"         : "\\ 1315129656",
-                                    "SERVER"             : "test1.jfgou.com:443"]
+                                    "SERVER"             : "test1.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "1866682200216878"
+            ]
         }
         _doby {
             applicationIdSuffix ".zhongxing"
@@ -171,7 +174,9 @@ android {
                                     "mtaAppKey"          : "ATQ1JV694AKT",
                                     "weChatAppKey"       : "",
                                     "sinaAppKey"         : "\\ 1315129656",
-                                    "SERVER"             : "yun.jfgou.com:443"]
+                                    "SERVER"             : "yun.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "1866682200216878"
+            ]
         }
         _cell_c {
             applicationIdSuffix ".cell_c"
@@ -184,7 +189,9 @@ android {
                                     "mtaAppKey"          : "Aqc1103156296",
                                     "weChatAppKey"       : "",
                                     "sinaAppKey"         : "",
-                                    "SERVER"             : "yun.jfgou.com:443"]
+                                    "SERVER"             : "yun.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "1866682200216878"
+            ]
         }
         _yf {
             applicationIdSuffix ".yf"
@@ -197,7 +204,9 @@ android {
                                     "mtaAppKey"          : "Aqc1103156296",
                                     "weChatAppKey"       : "wx82878b30fc6c0a6d",
                                     "sinaAppKey"         : "\\ 1315129656",
-                                    "SERVER"             : "yf.jfgou.com:443"]
+                                    "SERVER"             : "yf.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "1866682200216878"
+            ]
         }
     }
 }

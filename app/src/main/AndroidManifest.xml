@@ -488,7 +488,7 @@
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="com.facebook.app.FacebookContentProvider1866682200216878"
+            android:authorities="com.facebook.app.FacebookContentProvider${FACEBOOK_APP_ID}"
             android:exported="true" />
 
     </application>

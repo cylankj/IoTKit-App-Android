@@ -13,6 +13,8 @@ import android.view.View;
 
 import com.cylan.jiafeigou.NewHomeActivity;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -65,6 +67,7 @@ public class NotifyManager implements INotify {
 
     @Override
     public void sendNotify(Notification notification) {
+        if (!enablePush())return;//用户设置中不允许推送通知,则不发送消息了
         NotificationManager mNotificationManager = (NotificationManager) ContextUtils.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFY_ID, notification);
     }
@@ -85,8 +88,14 @@ public class NotifyManager implements INotify {
         return useWhiteIcon ? R.mipmap.notify_empty : R.mipmap.ic_launcher;
     }
 
+    private boolean enablePush() {
+        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        return account != null && account.getEnablePush();
+    }
+
     @Override
     public void sendNotify(NotifyBean notifyBean) {
+        if (!enablePush())return;//用户设置中不允许推送通知,则不发送消息了
         if (notifyBean == null || notifyBean.notificationId == -1)
             throw new IllegalArgumentException("notifyBean.notificationId cannot be  -1");
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());

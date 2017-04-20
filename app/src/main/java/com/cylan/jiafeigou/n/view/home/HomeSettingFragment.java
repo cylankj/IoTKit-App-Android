@@ -9,6 +9,8 @@ import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.NotificationManagerCompat;
+import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -160,7 +162,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     @Override
     public void hideClearingCacheProgress() {
         if (LoadingDialog.isShowing(getFragmentManager()))
-        LoadingDialog.dismissLoading(getFragmentManager());
+            LoadingDialog.dismissLoading(getFragmentManager());
     }
 
     @Override
@@ -201,7 +203,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             mShareDlg.dismiss();
             mShareDlg = null;
         }
-        if (appAdater != null){
+        if (appAdater != null) {
             appAdater = null;
         }
     }
@@ -223,13 +225,23 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
         switch (buttonView.getId()) {
             case R.id.btn_item_switch_accessMes:
-                presenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
-                if (!isChecked) {
-                    rlSoundContainer.setVisibility(View.GONE);
-                    rlVibrateContainer.setVisibility(View.GONE);
+                boolean notificationsEnabled = NotificationManagerCompat.from(getContext()).areNotificationsEnabled();
+                if (!notificationsEnabled && isChecked) {
+                    btnItemSwitchAccessMes.setChecked(false);
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+                    builder.setMessage(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG, getString(R.string.SYSTEM)))
+                            .setPositiveButton(R.string.WELL_OK, null)
+                            .setTitle(R.string.PUSH_MSG);
+                    builder.show();
                 } else {
-                    rlSoundContainer.setVisibility(View.VISIBLE);
-                    rlVibrateContainer.setVisibility(View.VISIBLE);
+                    presenter.savaSwitchState(isChecked, JConstant.RECEIVE_MESSAGE_NOTIFICATION);
+                    if (!isChecked) {
+                        rlSoundContainer.setVisibility(View.GONE);
+                        rlVibrateContainer.setVisibility(View.GONE);
+                    } else {
+                        rlSoundContainer.setVisibility(View.VISIBLE);
+                        rlVibrateContainer.setVisibility(View.VISIBLE);
+                    }
                 }
                 break;
 
@@ -266,9 +278,9 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
             List<ResolveInfo> list = getContext().getPackageManager().queryIntentActivities(intent, 0);
             if (appAdater == null)
-            appAdater = new AppAdater(getContext());
+                appAdater = new AppAdater(getContext());
             for (ResolveInfo info : list) {
-                if (!"com.cloudsync.android.netdisk.activity.NetDiskShareLinkActivity".equals(info.activityInfo.name)){
+                if (!"com.cloudsync.android.netdisk.activity.NetDiskShareLinkActivity".equals(info.activityInfo.name)) {
                     appAdater.add(info);
                 }
             }
@@ -285,7 +297,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
             mShareDlg.setCanceledOnTouchOutside(true);
         }
         try {
-            if(mShareDlg.isShowing())return;
+            if (mShareDlg.isShowing()) return;
             mShareDlg.show();
         } catch (Exception e) {
             AppLogger.e(e.toString());

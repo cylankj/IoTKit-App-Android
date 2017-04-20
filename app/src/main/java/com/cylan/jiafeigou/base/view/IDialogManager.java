@@ -28,11 +28,16 @@ public interface IDialogManager {
 
     //Dialog 参数设置的建造者,具体展现成什么样需要对应 type 的 dialog 来解析
     interface IDialogBuilder {
+
         IDialogBuilder setTitle(String title);
+
 
         IDialogBuilder setContent(String content);
 
+
         IDialogBuilder setCustomContentView(View contentView);
+
+        IDialogBuilder setCustomContentView(int resId);
 
         IDialogBuilder setClickListener(int resId, View.OnClickListener listener);
 
