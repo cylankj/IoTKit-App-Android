@@ -91,7 +91,6 @@ public class RegisterPwdFragment extends SetupPwdFragment
         PreferencesUtils.putString(JConstant.AUTO_LOGIN_PWD, pwd);
     }
 
-
     @Override
     public void onDialogAction(int id, Object value) {
         Fragment f = getActivity()

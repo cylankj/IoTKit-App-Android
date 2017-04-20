@@ -48,7 +48,6 @@
                         android:textSize="@dimen/sp12"
                         android:textColor="@color/color_8c8c8c"
                         android:text="我是小姨"
-                        android:maxLength="20"
                         android:singleLine="true"
                         android:ellipsize="end"
                         android:layout_width="wrap_content"

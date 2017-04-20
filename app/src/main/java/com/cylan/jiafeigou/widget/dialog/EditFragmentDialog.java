@@ -29,7 +29,6 @@ import butterknife.OnClick;
  */
 public class EditFragmentDialog extends BaseDialog {
 
-
     @BindView(R.id.tv_confirm)
     TextView tvConfirm;
     @BindView(R.id.tv_cancel)
@@ -40,7 +39,6 @@ public class EditFragmentDialog extends BaseDialog {
     EditText etInputBox;
     @BindView(R.id.et_input_box_clear)
     ImageView ivClear;
-
 
     public static final String KEY_LEFT_CONTENT = "key_left";
     public static final String KEY_RIGHT_CONTENT = "key_right";
@@ -138,7 +136,6 @@ public class EditFragmentDialog extends BaseDialog {
             etInputBox.setSelection(etInputBox.getText().length());
         }
         getDialog().setCanceledOnTouchOutside(bundle.getBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false));
-
     }
 
     /**

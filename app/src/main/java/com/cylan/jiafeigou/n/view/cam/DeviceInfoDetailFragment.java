@@ -110,12 +110,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         basePresenter = new DeviceInfoDetailPresenterImpl(this, uuid);
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -261,13 +255,17 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 hardwareUpdateFragment, android.R.id.content);
+        hardwareUpdateFragment.setOnUpdateListener(lis->{
+            if (lis){
+                onStart();
+            }
+        });
     }
 
     /**
      * 显示Sd卡的详情
      */
     private void jump2SdcardDetailFragment() {
-
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
@@ -293,7 +291,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         });
         simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
     }
-
 
     /**
      * 编辑时区
@@ -332,19 +329,18 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      * 编辑昵称
      */
     private void toEditAlias() {
-        if (editDialogFragment == null) {
-            String alias = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).alias;
+//        if (editDialogFragment == null) {
             Bundle bundle = new Bundle();
             bundle.putString(KEY_TITLE,getString(R.string.EQUIPMENT_NAME));
             bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
             bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
             bundle.putString(KEY_INPUT_HINT,getString(R.string.EQUIPMENT_NAME));
-            bundle.putString(KEY_DEFAULT_EDIT_TEXT,TextUtils.isEmpty(alias) ? getString(R.string.EQUIPMENT_NAME):alias);
+            bundle.putString(KEY_DEFAULT_EDIT_TEXT,TextUtils.isEmpty(tvDeviceAlias.getSubTitle().toString()) ? getString(R.string.EQUIPMENT_NAME):tvDeviceAlias.getSubTitle().toString());
             bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
             editDialogFragment = EditFragmentDialog.newInstance(bundle);
-        }
-        if (editDialogFragment.isVisible())
-            return;
+//        }
+//        if (editDialogFragment.isVisible())
+//            return;
         editDialogFragment.show(getChildFragmentManager(), "editDialogFragment");
         editDialogFragment.setAction((int id, Object value) -> {
             if (value != null && value instanceof String) {
@@ -354,7 +350,6 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                     device.alias = content;
                     tvDeviceAlias.setTvSubTitle((CharSequence) value);
                     if (basePresenter != null) basePresenter.updateAlias(device);
-                    ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                 }
             }
         });

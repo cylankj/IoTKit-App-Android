@@ -144,6 +144,7 @@ public class HomeMineInfoMailBoxFragment extends Fragment implements MineInfoBin
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
+        IMEUtils.hide(getActivity());
     }
 
     @Override
