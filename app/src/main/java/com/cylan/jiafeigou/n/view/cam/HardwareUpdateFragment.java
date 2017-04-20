@@ -32,6 +32,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import butterknife.BindView;
@@ -69,6 +70,15 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     private RxEvent.CheckDevVersionRsp checkDevVersion;
     private String fileSize;
 
+    private OnUpdateListener listener;
+    public interface OnUpdateListener{
+        void onUpdateResult(boolean hasNew);
+    }
+
+    public void setOnUpdateListener(OnUpdateListener listener){
+        this.listener = listener;
+    }
+
     public static HardwareUpdateFragment newInstance(Bundle bundle) {
         HardwareUpdateFragment fragment = new HardwareUpdateFragment();
         fragment.setArguments(bundle);
@@ -102,6 +112,9 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     public void onStop() {
         super.onStop();
         getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        if (listener != null){
+            listener.onUpdateResult(checkDevVersion.hasNew);
+        }
     }
 
     private void initView() {
@@ -181,6 +194,24 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         String remoteSSid = net.ssid;
+        if (localSSid.equals("DOG-"+uuid.substring(6))){
+            AppLogger.d("走直连");
+            //直连AP
+            new AlertDialog.Builder(getContext())
+                    .setMessage(getString(R.string.Tap1_UpdateFirmwareTips))
+                    .setNegativeButton(getString(R.string.CANCEL), (DialogInterface dialog, int which) -> {
+                        dialog.dismiss();
+                    })
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        //开始升级
+//                        basePresenter.startUpdate();
+                        basePresenter.upgradePing();
+//                        basePresenter.startCounting();
+                        tvDownloadSoftFile.setEnabled(false);
+                    })
+                    .show();
+            return;
+        }
         if (!TextUtils.equals(localSSid, remoteSSid)) {
             new AlertDialog.Builder(getContext())
                     .setMessage(getString(R.string.setwifi_check, remoteSSid))
@@ -201,7 +232,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                         //开始升级
 //                        basePresenter.startUpdate();
                         basePresenter.upgradePing();
-                        basePresenter.startCounting();
+//                        basePresenter.startCounting();
                         tvDownloadSoftFile.setEnabled(false);
                     })
                     .show();
@@ -246,7 +277,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 hardwareUpdatePoint.setVisibility(View.INVISIBLE);
                 tvDownloadSoftFile.setEnabled(true);
                 tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
-                llDownloadPgContainer.setVisibility(View.INVISIBLE);
+                llDownloadPgContainer.setVisibility(View.GONE);
                 tvVersionDescribe.setVisibility(View.GONE);
                 tvHardwareNowVersion.setText(checkDevVersion.version);
                 break;
@@ -254,7 +285,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 ToastUtil.showPositiveToast(getString(R.string.Tap1_FirmwareUpdateFai));
                 tvDownloadSoftFile.setEnabled(true);
                 tvDownloadSoftFile.setText(getString(R.string.Tap1_Update));
-                llDownloadPgContainer.setVisibility(View.INVISIBLE);
+                llDownloadPgContainer.setVisibility(View.GONE);
                 break;
         }
     }
@@ -279,7 +310,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         if (TextUtils.equals(localSSid, remoteSSid)) {
 //            basePresenter.startUpdate();
             basePresenter.upgradePing();
-            basePresenter.startCounting();
+//            basePresenter.startCounting();
             tvDownloadSoftFile.setEnabled(false);
             AppLogger.d("same_net");
         } else {
@@ -325,6 +356,21 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         if (TextUtils.isEmpty(size)) return;
         fileSize = size;
         tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), size));
+    }
+
+    @Override
+    public void showPingLoading() {
+        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+    }
+
+    @Override
+    public void hidePingLoading() {
+        LoadingDialog.dismissLoading(getFragmentManager());
+    }
+
+    @Override
+    public void deviceNoRsp() {
+        ToastUtil.showNegativeToast(getString(R.string.UPDATE_DISCONNECT));
     }
 
 }

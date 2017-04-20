@@ -360,7 +360,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             } else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
-            presenter.loginType(bean.getAccount());
+            presenter.loginType(bean.getAccount(),bean.getPhone(),bean.getEmail());
         }
     }
 
@@ -414,15 +414,15 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     }
 
     @Override
-    public void setAccount(String account,int type) {
+    public void setAccount(String account,String phone,String email,int type) {
         if (type == 3){
-            tvUserAccount.setText(getString(R.string.LOGIN_QQ));
+            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?getString(R.string.LOGIN_QQ):email):phone);
         }else if (type == 4){
-            tvUserAccount.setText(getString(R.string.LOGIN_WEIBO));
+            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?getString(R.string.LOGIN_WEIBO):email):phone);
         }else if (type == 6){
-            tvUserAccount.setText("FaceBook LOGIN");
+            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?"FaceBook LOGIN":email):phone);
         }else if (type == 7){
-            tvUserAccount.setText("Twitter_LOGIN");
+            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?"Twitter_LOGIN":email):phone);
         }else {
             tvUserAccount.setText(account);
         }

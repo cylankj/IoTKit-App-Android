@@ -33,6 +33,11 @@ public interface HardwareUpdateContract {
 
         void initFileSize(String size);
 
+        void showPingLoading();
+
+        void hidePingLoading();
+
+        void deviceNoRsp();
     }
 
     interface Presenter extends BasePresenter {
