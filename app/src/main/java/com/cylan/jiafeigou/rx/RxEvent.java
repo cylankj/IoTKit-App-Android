@@ -17,6 +17,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -542,15 +543,6 @@ public class RxEvent {
         }
     }
 
-    public static final class BellPreviewEvent {
-        public long time;
-        public String cid;
-        public String url;
-
-        public BellPreviewEvent(String url, long time, String cid) {
-            this.url = url;
-        }
-    }
 
     public static final class BellCallEvent {
 
@@ -571,13 +563,6 @@ public class RxEvent {
         }
     }
 
-    public static class BellLiveEvent {
-        public boolean hold;
-
-        public BellLiveEvent(boolean hold) {
-            this.hold = hold;
-        }
-    }
 
     /**
      * 修改密码的返回
@@ -1049,6 +1034,14 @@ public class RxEvent {
         public ClientUpdateEvent setThrowable(Throwable throwable) {
             this.throwable = throwable;
             return this;
+        }
+    }
+
+    public static final class SetWifiAck {
+        public JfgUdpMsg.DoSetWifiAck data;
+
+        public SetWifiAck(JfgUdpMsg.DoSetWifiAck data) {
+            this.data = data;
         }
     }
 }

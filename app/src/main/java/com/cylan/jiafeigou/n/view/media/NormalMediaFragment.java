@@ -1,11 +1,11 @@
 package com.cylan.jiafeigou.n.view.media;
 
 
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +18,6 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
@@ -87,12 +86,8 @@ public class NormalMediaFragment extends IBaseFragment {
         if (dpAlarm != null) {
             loadBitmap(dpAlarm, index, uuid);
         } else {
-            String filePath = getArguments().getString(KEY_SHARE_ELEMENT_BYTE);
-            if (TextUtils.isEmpty(filePath)) {
-                AppLogger.e("filePath is null");
-            } else {
-                loadBitmap(filePath);
-            }
+            Bitmap bitmap = getArguments().getParcelable(KEY_SHARE_ELEMENT_BYTE);
+            loadBitmap(bitmap);
         }
         imgVShowPic.setOnViewTapListener((View v, float x, float y) -> {
             if (callBack != null) callBack.callBack(null);
@@ -111,6 +106,15 @@ public class NormalMediaFragment extends IBaseFragment {
     private void loadBitmap(String filePath) {
         Glide.with(this)
                 .load(filePath)
+                .asBitmap()
+                .placeholder(R.drawable.wonderful_pic_place_holder)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(imgVShowPic);
+    }
+
+    private void loadBitmap(Bitmap bitmap) {
+        Glide.with(this)
+                .load(bitmap)
                 .asBitmap()
                 .placeholder(R.drawable.wonderful_pic_place_holder)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

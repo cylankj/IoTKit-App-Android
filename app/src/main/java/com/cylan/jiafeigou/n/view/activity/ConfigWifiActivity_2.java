@@ -31,6 +31,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
+import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.EditFragmentDialog;
 
 import java.util.List;
@@ -110,6 +111,12 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     @Override
     public void onSetWifiFinished(UdpConstant.UdpDevicePortrait udpDevicePortrait) {
 
+    }
+
+    @Override
+    public void sendWifiInfoFailed() {
+        LoadingDialog.dismissLoading(getSupportFragmentManager());
+        ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
     }
 
     @Override

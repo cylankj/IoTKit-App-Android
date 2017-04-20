@@ -167,7 +167,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
             return;
         }
         Intent intent = new Intent(getActivity(), BindBellActivity.class);
-        intent.putExtra(JUST_SEND_INFO, true);
+        intent.putExtra(JUST_SEND_INFO, uuid);
         startActivity(intent);
     }
 

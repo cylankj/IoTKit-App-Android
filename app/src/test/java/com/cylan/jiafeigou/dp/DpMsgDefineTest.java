@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.dp;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.utils.RandomUtils;
+import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import org.apache.tools.ant.taskdefs.Sleep;
 import org.junit.Test;
@@ -30,25 +31,27 @@ public class DpMsgDefineTest {
     @Test
     public void testObject() throws IOException {
         System.out.println(unpackData(new byte[]{-62}, boolean.class));
-        DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
-        byte[] data = new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50};
-        System.out.println(unpackData(data, DpMsgDefine.DPNet.class));
-        System.out.println(unpackData(new byte[]{-108, 0, 0, 0, -62}, DpMsgDefine.DPSdStatus.class));
-        System.out.println(unpackData(new byte[]{-108, -49, 0, 0, 0, 1, -51, -64, 0, 0, 0, -22, -61}, DpMsgDefine.DPSdStatus.class));
-        System.out.println(unpackData(new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50}, DpMsgDefine.DPNet.class));
-
-        data = new byte[]{-107, -50, 88, -44, -46, 55, 0, 0, 1, -95, 48};
-        System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
-        data = new byte[]{-107, -50, 88, -42, 98, 115, 0, 0, 1, -95, 48};
-        System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
-
-        data = new byte[]{-49, 0, 0, 1, 91, 14, 80, -82, -98};
-        System.out.println(unpackData(data, Long.class));
-
-        data = new byte[]{-107, -51, 2, -119, -51, 1, -20, -51, 1, -49, -51, 5, 0, -51, 3, -64};
-        System.out.println(unpackData(data, Long.class));
-        data = new byte[]{-65, 59};
-        System.out.println(unpackData(data, int.class));
+//        DpMsgDefine.DPNet net = new DpMsgDefine.DPNet();
+//        byte[] data = new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50};
+//        System.out.println(unpackData(data, DpMsgDefine.DPNet.class));
+//        System.out.println(unpackData(new byte[]{-108, 0, 0, 0, -62}, DpMsgDefine.DPSdStatus.class));
+//        System.out.println(unpackData(new byte[]{-108, -49, 0, 0, 0, 1, -51, -64, 0, 0, 0, -22, -61}, DpMsgDefine.DPSdStatus.class));
+//        System.out.println(unpackData(new byte[]{-110, 1, -85, 88, 105, 97, 111, 109, 105, 95, 65, 67, 70, 50}, DpMsgDefine.DPNet.class));
+//
+//        data = new byte[]{-107, -50, 88, -44, -46, 55, 0, 0, 1, -95, 48};
+//        System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
+//        data = new byte[]{-107, -50, 88, -42, 98, 115, 0, 0, 1, -95, 48};
+//        System.out.println(unpackData(data, DpMsgDefine.DPAlarm.class));
+//
+//        data = new byte[]{-49, 0, 0, 1, 91, 14, 80, -82, -98};
+//        System.out.println(unpackData(data, Long.class));
+//
+//        data = new byte[]{-107, -51, 2, -119, -51, 1, -20, -51, 1, -49, -51, 5, 0, -51, 3, -64};
+//        System.out.println(unpackData(data, Long.class));
+//        data = new byte[]{-65, 59};
+//        System.out.println(unpackData(data, int.class));
+        System.out.println(unpackData(new byte[]{-108, -81, 100, 111, 95, 115, 101, 116, 95, 119, 105, 102, 105, 95, 97, 99, 107, -84, 50, 56, 48, 48, 48, 48, 48, 48, 48, 48, 48, 57, -96, 0},
+                JfgUdpMsg.UdpRecvHeard.class));
     }
 
     private void setData(long version) {

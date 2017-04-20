@@ -255,7 +255,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (!JFGRules.isDeviceOnline(net)) {
                 //设备离线
                 Intent intent = new Intent(this, BindCamActivity.class);
-                intent.putExtra(JConstant.JUST_SEND_INFO, JConstant.JUST_SEND_INFO);
+                intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
                 startActivity(intent);
             } else {
                 //设备在线
