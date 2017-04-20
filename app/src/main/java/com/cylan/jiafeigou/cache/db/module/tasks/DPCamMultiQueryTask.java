@@ -7,6 +7,7 @@ import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.db.impl.BaseDPTaskResult;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
 import com.cylan.jiafeigou.cache.db.view.IDPEntity;
@@ -61,7 +62,7 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         AppLogger.d("let's go for local versionMin:" + versionMin);
         AppLogger.d("let's go for local versionMax:" + versionMax);
         return dpHelper.queryMultiDpMsg(one.getAccount(), null, one.getUuid(),
-                versionMin, versionMax, list, 1000, null, DBState.SUCCESS, null)
+                versionMin, versionMax, list, 1000, DBAction.SAVED, DBState.SUCCESS, null)
                 .flatMap(new Func1<List<DPEntity>, Observable<BaseDPTaskResult>>() {
                     @Override
                     public Observable<BaseDPTaskResult> call(List<DPEntity> items) {

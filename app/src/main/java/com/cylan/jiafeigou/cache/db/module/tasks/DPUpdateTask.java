@@ -52,10 +52,10 @@ public class DPUpdateTask extends BaseDPTask<BaseDPTaskResult> {
                     return Observable.just(result);
                 })
                 .flatMap(baseDPTaskResult -> {
-                    if (sourceManager.isOnline()) {
-                        performServer().doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage())).subscribe(ret -> {
-                        }, AppLogger::e);
-                    }
+//                    if (sourceManager.isOnline()) {
+//                        ,().doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage())).subscribe(ret -> {
+//                        }, AppLogger::e);
+//                    }
                     return Observable.just(baseDPTaskResult);
                 })
                 .doOnError(throwable -> AppLogger.e("err:" + throwable.getLocalizedMessage()));
