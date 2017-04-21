@@ -8,6 +8,7 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -66,6 +67,11 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                             .subscribe(ret -> {
                             }, throwable -> AppLogger.e("err:" + throwable));
                     //emit failed event.
+                    //是三方登录获取绑定的手机或者邮箱用于登录页回显
+                    if (isOpenLogin){
+                        JFGAccount temAcc = new Gson().fromJson(PreferencesUtils.getString(KEY_ACCOUNT), JFGAccount.class);
+                        PreferencesUtils.putString(JConstant.THIRD_RE_SHOW,TextUtils.isEmpty(temAcc.getPhone())?(TextUtils.isEmpty(temAcc.getEmail())? "":temAcc.getEmail()):temAcc.getPhone());
+                    }
                     PreferencesUtils.putString(KEY_ACCOUNT, "");
                     PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
                     RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));

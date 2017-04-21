@@ -67,7 +67,7 @@ public interface MineFriendsContract {
          *
          * @param bean
          */
-        void addReqDeleteItem(MineAddReqBean bean);
+        void addReqDeleteItem(int position,MineAddReqBean bean);
 
         /**
          * desc：长按删除添加请求条目
