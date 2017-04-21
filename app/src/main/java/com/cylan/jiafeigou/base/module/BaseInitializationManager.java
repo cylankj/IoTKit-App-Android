@@ -16,14 +16,12 @@ import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 
-import rx.android.schedulers.AndroidSchedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -98,7 +96,6 @@ public final class BaseInitializationManager {
         initGlobalSubscription();
         initDialogManager();
         TryLogin.tryLogin();//只有等所有资源初始化完成之后才能走 login 流程
-        AndroidSchedulers.mainThread().createWorker().schedule(()-> ToastUtil.showPositiveToast("AAAAAAAAA"));
     }
 
     private void initDialogManager() {

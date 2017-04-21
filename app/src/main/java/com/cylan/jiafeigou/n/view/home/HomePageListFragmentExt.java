@@ -385,8 +385,8 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onLoginState(boolean state) {
+        onRefreshFinish();
         if (!state) {
-            onRefreshFinish();
 //            Toast.makeText(getContext(), getString(R.string.UNLOGIN), Toast.LENGTH_SHORT).show();
         } else {
             //setDevice online view

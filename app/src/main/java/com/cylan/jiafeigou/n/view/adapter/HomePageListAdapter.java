@@ -148,10 +148,11 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + entity);
         boolean isPrimaryAccount = isPrimaryAccount(device.shareAccount);
         //消息数
-        holder.setText(R.id.tv_device_msg_count, !isPrimaryAccount ? "" : getLastWarnContent(entity, device.pid, uuid));
+        String warnContent = getLastWarnContent(entity, device.pid, uuid);
+        holder.setText(R.id.tv_device_msg_count, !isPrimaryAccount ? "" : warnContent);
         //时间
         holder.setText(R.id.tv_device_msg_time, !isPrimaryAccount ? "" : TimeUtils.getHomeItemTime(getContext(), entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
-        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(isPrimaryAccount && entity != null && entity.getValue(0) > 0);
+        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(isPrimaryAccount && !TextUtils.equals(warnContent, getContext().getString(R.string.Tap1_NoMessages)));
     }
 
     private boolean isPrimaryAccount(String share) {
@@ -178,10 +179,18 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             }
             if (JFGRules.isBell(pid)) {
                 long localTime = PreferencesUtils.getLong(JConstant.KEY_BELL_LAST_ENTER_TIME_PREFIX + uuid, 0);
-                if (localTime > msgTime) {
+                List<DPEntity> entities = BaseApplication.getAppComponent().getDBHelper().queryDPMsg(uuid, 401, Long.MAX_VALUE, Integer.MAX_VALUE);
+                int unreadCount = 0;
+                DpMsgDefine.DPBellCallRecord record = new DpMsgDefine.DPBellCallRecord();
+                record.isOK = -1;
+                for (DPEntity dpEntity : entities) {
+                    DpMsgDefine.DPBellCallRecord value = dpEntity.getValue(record);
+                    if (value.isOK == 0 && value.time * 1000L > localTime) ++unreadCount;
+                }
+                if (unreadCount == 0) {
                     return getContext().getString(R.string.Tap1_NoMessages);
                 }
-                return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.someone_call), msgCount > 99 ? "99+" : msgCount);
+                return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.someone_call), unreadCount > 99 ? "99+" : unreadCount);
             }
         } catch (Exception e) {
         }

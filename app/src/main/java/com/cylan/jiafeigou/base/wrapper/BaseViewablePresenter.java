@@ -61,17 +61,18 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     }
                 }, e -> AppLogger.d(e.getMessage()));
     }
+//    #104321  #106065 #106553 #107075 #107095
 
     @Override
     public void startViewer() {
-        Subscription subscribe = Observable.just(sourceManager.getAccount())
+        Subscription subscribe = Observable.just(sourceManager.isOnline())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(account -> {
+                    mView.onViewer();
                     if (sourceManager.isOnline()) {
-                        mView.onViewer();
                         return true;
                     }
-                    return false;
+                    return true;
                 }).observeOn(Schedulers.io())
                 .map(hasNet -> {
                     String handle = getViewHandler();
@@ -198,6 +199,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                 .filter(dis -> TextUtils.equals(dis.remote, resolution.peer))
                 .mergeWith(
                         RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
+                                .throttleLast(2, TimeUnit.SECONDS)
                                 .filter(event -> !event.isOnLine && event.mobile == null && event.wifi == null).map(event -> {
                             JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
                             disconn.code = BAD_NET_WORK;//连接互联网不可用,

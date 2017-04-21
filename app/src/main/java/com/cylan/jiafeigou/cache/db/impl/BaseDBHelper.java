@@ -329,6 +329,18 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
+    public List<DPEntity> queryDPMsg(String uuid, Integer msgId, Long version, Integer limit) {
+        QueryBuilder<DPEntity> builder = buildDPMsgQueryBuilder(dpAccount.getAccount(), getServer(), uuid, null, msgId, null, null, null);
+//        builder.orderDesc(DPEntityDao.Properties.Version);
+        builder.limit(limit);
+        List<DPEntity> list = builder.list();
+        for (DPEntity entity : list) {
+            entity.setValue(propertyParser.parser(entity.getMsgId(), entity.getBytes(), entity.getVersion()), entity.getBytes(), entity.getVersion());
+        }
+        return list;
+    }
+
+    @Override
     public Observable<DPEntity> deleteDPMsgNotConfirm(String uuid, Long version, Integer msgId, DBOption option) {
         AppLogger.d("正在将本地数据标记为未确认的删除状态,deleteDPMsgNotConfirm,uuid:" + uuid + ",version:" + version + ",msgId:" + msgId);
         return getActiveAccount().flatMap(account -> markDPMsg(account.getAccount(), getServer(), uuid, version, msgId, DBAction.DELETED, DBState.NOT_CONFIRM, option)

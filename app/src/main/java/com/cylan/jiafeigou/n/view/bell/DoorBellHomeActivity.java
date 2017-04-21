@@ -112,7 +112,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
     protected void onStart() {
         super.onStart();
         registerNetWorkObserver();
-        mLastEnterTime = PreferencesUtils.getLong(JConstant.BELL_HOME_LAST_ENTER_TIME);
+        mLastEnterTime = PreferencesUtils.getLong(JConstant.KEY_BELL_LAST_ENTER_TIME_PREFIX + uuid, 0);
+
         try {
             sourceManager.clearValue(uuid, 1004, 1005);
         } catch (IllegalAccessException e) {
@@ -133,7 +134,7 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         if (myReceiver != null) {
             unregisterReceiver(myReceiver);
         }
-        PreferencesUtils.putLong("BELL_HOME_LAST_ENTER_TIME", System.currentTimeMillis());
+        PreferencesUtils.putLong(JConstant.KEY_BELL_LAST_ENTER_TIME_PREFIX + uuid, System.currentTimeMillis());
     }
 
     @Override
