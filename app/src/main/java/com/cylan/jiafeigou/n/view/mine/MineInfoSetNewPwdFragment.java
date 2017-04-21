@@ -20,6 +20,7 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoSetNewPwdContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoSetNewPwdPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -157,6 +158,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     public void registerResult(int code) {
         AppLogger.d("open_bind:"+code);
         if (code == JError.ErrorOK) {
+            IMEUtils.hide(getActivity());
             if (TextUtils.isEmpty(token)){
                 //增加邮箱验证界面
                 jump2MailConnectFragment();

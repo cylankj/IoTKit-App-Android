@@ -87,6 +87,7 @@ public class JConstant {
     public static final String IS_lOGINED = "is_logined";   //是否登录过
     public static final String AUTO_lOGIN_PWD_ERR = "auto_login_pwd_err";
     public static final String REG_SWITCH_BOX = "reg_switch_box";
+    public static final String THIRD_RE_SHOW = "third_re_show";
     /**
      * verification code
      */

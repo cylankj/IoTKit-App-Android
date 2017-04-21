@@ -116,7 +116,13 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         addReqDetailFragment.setOnAcceptAddListener(new MineFriendAddReqDetailFragment.OnAcceptAddListener() {
             @Override
             public void onAccept(MineAddReqBean backbean) {
-                addReqDeleteItem(backbean);
+                addReqDeleteItem(position,backbean);
+                RelAndFriendBean rBean = new RelAndFriendBean();
+                rBean.account = backbean.account;
+                rBean.alias = backbean.alias;
+                rBean.iconUrl = backbean.iconUrl;
+                rBean.markName = "";
+                friendlistAddItem(position,rBean);
             }
         });
     }
@@ -153,12 +159,11 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     /**
      * 添加请求列表删除一个条目
-     *
      * @param bean
      */
     @Override
-    public void addReqDeleteItem(MineAddReqBean bean) {
-        addReqListAdater.remove(bean);
+    public void addReqDeleteItem(int position,MineAddReqBean bean) {
+        addReqListAdater.remove(position);
         addReqListAdater.notifyDataSetHasChanged();
         if (addReqListAdater.getItemCount() == 0) {
             hideAddReqListTitle();
@@ -423,7 +428,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             account.iconUrl = item.iconUrl;
             account.markName = "";
             friendlistAddItem(layoutPosition, account);
-            addReqDeleteItem(item);
+            addReqDeleteItem(layoutPosition,item);
         }
     }
 

@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.AutoSignIn;
@@ -33,6 +34,8 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
+
 
 /**
  * Created by lxh on 16-6-24.
@@ -51,7 +54,6 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录
-     *
      * @param o
      * @return
      */
@@ -354,7 +356,9 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
                             AppLogger.d("Login:"+signType.toString());
                             if (signType.type != 1) {
-                                return Observable.just("");
+                                //显示绑定的手机和邮箱
+                                String re_show = PreferencesUtils.getString(JConstant.THIRD_RE_SHOW,"");
+                                return Observable.just(TextUtils.isEmpty(re_show) ? "":re_show);
                             } else {
                                 return Observable.just(signType.account);
                             }

@@ -39,7 +39,7 @@
                         android:focusable="true"
                         android:focusableInTouchMode="true"
                         android:gravity="center"
-                        android:hint="@string/Tap0_enterphoneoremail"
+                        android:hint="@string/PHONE_EMAIL"
                         android:maxLength="65"
                         android:singleLine="true"
                         android:paddingLeft="2dp"

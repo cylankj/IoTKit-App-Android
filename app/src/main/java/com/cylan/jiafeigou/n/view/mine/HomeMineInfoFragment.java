@@ -112,7 +112,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     private File tempFile;
     private PopupWindow popupWindow;
     private int navigationHeight;
-    private boolean resetPhoto;
     private WeakReference<MyQRCodeDialog> myQrcodeDialog;
 
     public static HomeMineInfoFragment newInstance() {
@@ -186,11 +185,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
-        if (resetPhoto) {
-            //我的界面刷新显示头像
-            RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
-            resetPhoto = false;
-        }
     }
 
     @OnClick({R.id.tv_toolbar_icon, R.id.btn_home_mine_personal_information,
@@ -420,9 +414,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         }else if (type == 4){
             tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?getString(R.string.LOGIN_WEIBO):email):phone);
         }else if (type == 6){
-            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?"FaceBook LOGIN":email):phone);
+            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?"Twitter LOGIN":email):phone);
         }else if (type == 7){
-            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?"Twitter_LOGIN":email):phone);
+            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?"FaceBook LOGIN":email):phone);
         }else {
             tvUserAccount.setText(account);
         }
@@ -568,7 +562,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         intent.putExtra(JConstant.FROM_LOG_OUT, true);
         getActivity().startActivity(intent);
         getActivity().finish();
-
     }
 
     @Override
@@ -640,7 +633,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 popupWindow.dismiss();
             }
         });
-
     }
 
 
@@ -664,7 +656,6 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 }
                 String cropImagePath = getRealFilePathFromUri(getContext(), uri);
                 PreferencesUtils.putString("UserImageUrl", cropImagePath);
-                resetPhoto = true;
                 AppLogger.d("upload_succ");
             } else if (requestCode == OPEN_CAMERA) {
                 if (resultCode == getActivity().RESULT_OK) {

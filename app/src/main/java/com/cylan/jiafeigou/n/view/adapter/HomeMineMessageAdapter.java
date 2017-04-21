@@ -146,7 +146,7 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
                         } else if (name.length() > 8 && name.length() <= 16) {
                             fName = name.replace(name.substring(3, name.length() - 1), "***");
                         } else if (name.length() > 16) {
-                            fName = name.replace(name.substring(4, name.length() - 4), "****");
+                            fName = name.replace(name.substring(3, name.length() - 4), "****");
                         }
                     }
                     if (fName == null) fName = name;
