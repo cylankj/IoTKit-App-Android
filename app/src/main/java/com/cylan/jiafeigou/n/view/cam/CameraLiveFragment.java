@@ -9,6 +9,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,11 +29,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
@@ -69,7 +65,6 @@ import com.cylan.jiafeigou.widget.LiveTimeLayout;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
-import com.cylan.jiafeigou.widget.glide.RoundedCornersTransformation;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
@@ -779,84 +774,18 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     @Override
-    public void onTakeSnapShot(String filePath) {
-        PerformanceUtils.startTrace("takeSnapShot_pre");
-        if (!TextUtils.isEmpty(filePath)) {
-            showPopupWindow(filePath);
-        } else {
-            ToastUtil.showPositiveToast(getString(R.string.set_failed));
-        }
-        PerformanceUtils.stopTrace("takeSnapShot_pre");
-        PerformanceUtils.stopTrace("takeSnapShot");
-    }
-
-    @Override
     public void onTakeSnapShot(Bitmap bitmap) {
         PerformanceUtils.startTrace("takeSnapShot_pre");
-        showPopupWindow(bitmap);
+        if (getView() != null) getView().post(() -> showPopupWindow(bitmap));
         PerformanceUtils.stopTrace("takeSnapShot_pre");
         PerformanceUtils.stopTrace("takeSnapShot");
     }
 
-    @Override
-    public void onTakeSnapShot(byte[] bytes) {
-        try {
-            roundCardPopup = new RoundCardPopup(getContext(), Glide.with(getContext())
-                    .load(bytes)
-                    .placeholder(R.drawable.wonderful_pic_place_holder)
-                    .override((int) getResources().getDimension(R.dimen.x44), (int) getResources().getDimension(R.dimen.x30))
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 2))
-                    ::into, v -> {
-                roundCardPopup.dismiss();
-                Bundle bundle = new Bundle();
-                bundle.putByteArray(JConstant.KEY_SHARE_ELEMENT_BYTE, bytes);
-                NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
-                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment,
-                        android.R.id.content);
-                fragment.setCallBack(t -> getActivity().getSupportFragmentManager().popBackStack());
-            });
-            getView().post(() -> {
-                roundCardPopup.showOnAnchor(imgVCamTriggerCapture, RelativePopupWindow.VerticalPosition.ABOVE, RelativePopupWindow.HorizontalPosition.CENTER);
-                basePresenter.startCountForDismissPop();
-            });
-        } catch (Exception e) {
-            AppLogger.e("showPopupWindow: " + e.getLocalizedMessage());
-        }
-    }
 
     @Override
     public void onPreviewResourceReady(Bitmap bitmap) {
         if (isVisible()) {
-//            vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), bitmap);
-        }
-    }
-
-    private void showPopupWindow(String filePath) {
-        try {
-            roundCardPopup = new RoundCardPopup(getContext(), view -> {
-                if (!TextUtils.isEmpty(filePath)) {
-                    Glide.with(getContext())
-                            .load(filePath)
-                            .placeholder(R.drawable.wonderful_pic_place_holder)
-                            .override((int) getResources().getDimension(R.dimen.x44), (int) getResources().getDimension(R.dimen.x30))
-                            .diskCacheStrategy(DiskCacheStrategy.ALL)
-                            .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 2))
-                            .into(view);
-                }
-            }, v -> {
-                roundCardPopup.dismiss();
-                Bundle bundle = new Bundle();
-                bundle.putString(JConstant.KEY_SHARE_ELEMENT_BYTE, filePath);
-                NormalMediaFragment fragment = NormalMediaFragment.newInstance(bundle);
-                ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(), fragment,
-                        android.R.id.content);
-                fragment.setCallBack(t -> getActivity().getSupportFragmentManager().popBackStack());
-            });
-            roundCardPopup.showOnAnchor(imgVCamTriggerCapture, RelativePopupWindow.VerticalPosition.ABOVE, RelativePopupWindow.HorizontalPosition.CENTER);
-            basePresenter.startCountForDismissPop();
-        } catch (Exception e) {
-            AppLogger.e("showPopupWindow: " + e.getLocalizedMessage());
+            vLive.post(() -> vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), bitmap));
         }
     }
 
@@ -864,19 +793,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         try {
             PerformanceUtils.startTrace("showPopupWindow");
             roundCardPopup = new RoundCardPopup(getContext(), view -> {
-                Glide.with(getContext())
-                        .load(bitmap)
-                        .placeholder(R.drawable.wonderful_pic_place_holder)
-                        .override((int) getResources().getDimension(R.dimen.x44), (int) getResources().getDimension(R.dimen.x30))
-                        .diskCacheStrategy(DiskCacheStrategy.ALL)
-                        .bitmapTransform(new RoundedCornersTransformation(getContext(), 10, 2))
-                        .into(new SimpleTarget<GlideDrawable>() {
-                            @Override
-                            public void onResourceReady(GlideDrawable resource, GlideAnimation<? super GlideDrawable> glideAnimation) {
-                                view.setImageDrawable(resource);
-                                PerformanceUtils.stopTrace("showPopupWindow");
-                            }
-                        });
+                view.setImageDrawable(new BitmapDrawable(getResources(), bitmap));
             }, v -> {
                 roundCardPopup.dismiss();
                 Bundle bundle = new Bundle();
