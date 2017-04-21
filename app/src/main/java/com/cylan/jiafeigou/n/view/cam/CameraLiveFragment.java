@@ -775,6 +775,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
 
     @Override
     public void onTakeSnapShot(Bitmap bitmap) {
+        if (bitmap == null) {
+            if (getView() != null)
+                getView().post(() -> ToastUtil.showNegativeToast(getString(R.string.set_failed)));
+            return;
+        }
         PerformanceUtils.startTrace("takeSnapShot_pre");
         if (getView() != null) getView().post(() -> showPopupWindow(bitmap));
         PerformanceUtils.stopTrace("takeSnapShot_pre");

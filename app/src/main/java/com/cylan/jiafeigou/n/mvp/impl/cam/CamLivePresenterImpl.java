@@ -565,6 +565,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                     PerformanceUtils.startTrace("takeCapture");
                     byte[] data = BaseApplication.getAppComponent().getCmd().screenshot(false);
+                    if (data == null) {
+                        if (!forPreview) getView().onTakeSnapShot(null);//弹窗
+                        return null;
+                    }
                     Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
                     data = null;
                     PerformanceUtils.stopTrace("takeCapture");
@@ -572,6 +576,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     return bitmap;
                 })
                 .observeOn(Schedulers.io())
+                .filter(bitmap -> bitmap != null)
                 .subscribe(bitmap -> {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                     if (forPreview) {//预览图,和弹窗是互斥的.
@@ -769,7 +774,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
         /**
          * 保存和分享,这是一个后台任务,用一个静态类,避免持有引用
-         *
          *
          * @param needShare
          * @param bitmap
