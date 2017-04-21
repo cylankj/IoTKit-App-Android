@@ -98,7 +98,6 @@ public final class BaseInitializationManager {
         initGlobalSubscription();
         initDialogManager();
         TryLogin.tryLogin();//只有等所有资源初始化完成之后才能走 login 流程
-        AndroidSchedulers.mainThread().createWorker().schedule(()-> ToastUtil.showPositiveToast("AAAAAAAAA"));
     }
 
     private void initDialogManager() {

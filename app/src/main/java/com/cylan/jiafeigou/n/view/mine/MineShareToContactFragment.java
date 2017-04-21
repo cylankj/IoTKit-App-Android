@@ -181,6 +181,8 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     @Override
     public void showSearchInputEdit() {
         etSearchContact.setVisibility(View.VISIBLE);
+        etSearchContact.requestFocus();
+        //TODO 弹出键盘
     }
 
     @Override

@@ -25,7 +25,7 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
     private OnCheckClickListener listener;
 
     public interface OnCheckClickListener {
-        void onCheckClick(DeviceBean item);
+        void onCheckClick(DeviceBean item,boolean over);
     }
 
     public void setOnCheckClickListener(OnCheckClickListener listener) {
@@ -54,12 +54,18 @@ public class ChooseShareDeviceAdapter extends SuperAdapter<DeviceBean> {
         checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (item.hasShareCount == 5 && isChecked){
+                    if (listener != null) {
+                        listener.onCheckClick(item,true);
+                    }
+                    checkBox.setChecked(false);
+                    return;
+                }
                 item.isChooseFlag = isChecked ? 1 : 0;
                 item.hasShareCount = isChecked ? item.hasShareCount + 1 : item.hasShareCount - 1;
                 hasShareNum.setText(item.hasShareCount + "/5");
-
                 if (listener != null) {
-                    listener.onCheckClick(item);
+                    listener.onCheckClick(item,false);
                 }
             }
         });

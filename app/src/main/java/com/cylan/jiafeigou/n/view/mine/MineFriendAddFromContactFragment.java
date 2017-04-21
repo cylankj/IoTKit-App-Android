@@ -133,7 +133,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
         contactListAdapter.setOnItemClickListener(new OnItemClickListener() {
             @Override
             public void onItemClick(View itemView, int viewType, int position) {
-                //跳转到联系人的详情界面去
+                //跳转到联系人的详情界面去(不用)
             }
         });
     }

@@ -265,6 +265,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                                         if (value.size() != 0) {
                                             JFGDPMsg jfgdpMsg = value.get(0);
                                             DpMsgDefine.DPUnreadCount unReadCount = DpUtils.unpackData(jfgdpMsg.packValue, DpMsgDefine.DPUnreadCount.class);
+                                            AppLogger.d("unReadCount:"+unReadCount.count);
                                             if (unReadCount != null)
                                                 count += unReadCount.count;
                                         }
@@ -299,6 +300,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     if (getUserInfo != null){
                         userInfo = getUserInfo.jfgAccount;
                         if (getView() != null && !TextUtils.isEmpty(userInfo.getAlias()))getView().setAliasName(userInfo.getAlias());
+                        if (getView() != null && !TextUtils.isEmpty(userInfo.getPhotoUrl()))getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
                     }
                 }, AppLogger::e);
     }

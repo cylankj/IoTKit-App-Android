@@ -448,6 +448,7 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 OpenLoginHelper.getInstance(getActivity()).loginAuthorize(4);
                 break;
             case R.id.tv_toolbar_icon:
+                IMEUtils.hide(getActivity());
                 if (getActivity() != null && getActivity() instanceof SmartcallActivity) {
                     getActivity().finish();
                 } else if (getActivity() != null && getActivity() instanceof NewHomeActivity) {

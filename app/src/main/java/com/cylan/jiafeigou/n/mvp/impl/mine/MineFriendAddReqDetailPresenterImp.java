@@ -200,7 +200,7 @@ public class MineFriendAddReqDetailPresenterImp extends AbstractPresenter<MineFr
                 .subscribe(new Action1<RxEvent.ConsentAddFriendBack>() {
                     @Override
                     public void call(RxEvent.ConsentAddFriendBack consentAddFriendBack) {
-                        if (consentAddFriendBack != null && consentAddFriendBack instanceof RxEvent.ConsentAddFriendBack) {
+                        if (consentAddFriendBack != null) {
                             getView().showAddedReult(consentAddFriendBack.jfgResult.code == 0 ? true : false);
                         }
                     }
