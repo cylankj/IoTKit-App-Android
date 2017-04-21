@@ -65,12 +65,16 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         //2 电量
         if (device != null && JFGRules.isBell(device.pid)) {
             int battery = device.$(206, 0);
-            if (battery < 20 && (net != null && net.net >= 1)) {//在线显示
+            if (battery < 20 && (net != null && net.net == 1)) {//WiFi 电量低于20%在线显示
+                holder.setVisibility(R.id.img_device_state_2, VISIBLE);
+                holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
+            } else if (battery <= 50 && (net != null && net.net > 1)) {//移动网络电量低于50%在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else {
                 holder.setVisibility(R.id.img_device_state_2, GONE);
                 holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
+
             }
         } else {
             holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
@@ -152,7 +156,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         holder.setText(R.id.tv_device_msg_count, !isPrimaryAccount ? "" : warnContent);
         //时间
         holder.setText(R.id.tv_device_msg_time, !isPrimaryAccount ? "" : TimeUtils.getHomeItemTime(getContext(), entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
-        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(isPrimaryAccount && !TextUtils.equals(warnContent, getContext().getString(R.string.Tap1_NoMessages)));
+        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(isPrimaryAccount && entity.getValue(0) > 0);
     }
 
     private boolean isPrimaryAccount(String share) {
@@ -179,18 +183,21 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             }
             if (JFGRules.isBell(pid)) {
                 long localTime = PreferencesUtils.getLong(JConstant.KEY_BELL_LAST_ENTER_TIME_PREFIX + uuid, 0);
-                List<DPEntity> entities = BaseApplication.getAppComponent().getDBHelper().queryDPMsg(uuid, 401, Long.MAX_VALUE, Integer.MAX_VALUE);
-                int unreadCount = 0;
-                DpMsgDefine.DPBellCallRecord record = new DpMsgDefine.DPBellCallRecord();
-                record.isOK = -1;
-                for (DPEntity dpEntity : entities) {
-                    DpMsgDefine.DPBellCallRecord value = dpEntity.getValue(record);
-                    if (value.isOK == 0 && value.time * 1000L > localTime) ++unreadCount;
-                }
-                if (unreadCount == 0) {
+//                List<DPEntity> entities = BaseApplication.getAppComponent().getDBHelper().queryDPMsg(uuid, 401, Long.MAX_VALUE, Integer.MAX_VALUE);
+//                int unreadCount = 0;
+//                DpMsgDefine.DPBellCallRecord record = new DpMsgDefine.DPBellCallRecord();
+//                record.isOK = -1;
+//                for (DPEntity dpEntity : entities) {
+//                    DpMsgDefine.DPBellCallRecord value = dpEntity.getValue(record);
+//                    if (value.isOK == 0 && value.time * 1000L > localTime) ++unreadCount;
+//                }
+//                if (unreadCount == 0) {
+//                    return getContext().getString(R.string.Tap1_NoMessages);
+//                }
+                if (localTime > msgTime) {
                     return getContext().getString(R.string.Tap1_NoMessages);
                 }
-                return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.someone_call), unreadCount > 99 ? "99+" : unreadCount);
+                return String.format(Locale.getDefault(), "[%s]" + getContext().getString(R.string.someone_call), msgCount > 99 ? "99+" : msgCount);
             }
         } catch (Exception e) {
         }

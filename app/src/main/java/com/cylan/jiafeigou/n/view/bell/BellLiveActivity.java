@@ -602,7 +602,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
                 mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NETWORK_TIMEOUT));
                 break;
             default:
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, "");
+                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NETWORK_TIMEOUT));
 
         }
         if (mSurfaceView != null) {

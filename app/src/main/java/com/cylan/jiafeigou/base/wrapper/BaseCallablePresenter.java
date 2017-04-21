@@ -72,7 +72,7 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                                     switch (mView.onResolveViewLaunchType()) {
                                         case JConstant.VIEW_CALL_WAY_LISTEN:
                                             if (mCaller != null && mHolderCaller != null) {//直播中的门铃呼叫
-                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
+//                                                mView.onNewCallWhenInLive(mHolderCaller.caller);
                                             } else if (mHolderCaller != null) {
                                                 mView.onListen();
                                                 AppLogger.d("收到门铃呼叫");
