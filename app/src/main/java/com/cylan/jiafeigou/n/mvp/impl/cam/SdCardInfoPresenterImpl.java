@@ -101,8 +101,8 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     @Override
     public void clearCountTime() {
         addSubscription(Observable.just(null)
-                .delay(2, TimeUnit.MINUTES)
                 .subscribeOn(Schedulers.newThread())
+                .delay(2, TimeUnit.MINUTES)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
                     if (getView() != null && !isClearSucc) getView().clearSdResult(2);

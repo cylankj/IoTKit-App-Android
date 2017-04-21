@@ -156,7 +156,7 @@ public class HomeMineHelpFragment extends Fragment {
                     WebSettings.MIXED_CONTENT_COMPATIBILITY_MODE);
         }
         // 设置 缓存模式
-        if (NetUtils.isNetworkAvailable(ContextUtils.getContext())) {
+        if (!NetUtils.isNetworkAvailable(ContextUtils.getContext())) {
             mWvHelp.getSettings().setCacheMode(WebSettings.LOAD_DEFAULT);
         } else {
             mWvHelp.getSettings().setCacheMode(

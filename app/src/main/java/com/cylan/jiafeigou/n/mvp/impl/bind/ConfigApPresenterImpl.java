@@ -20,6 +20,8 @@ import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.bind.ConfigApContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.ConnectivityStatus;
@@ -31,6 +33,7 @@ import com.google.gson.Gson;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
@@ -98,14 +101,31 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     public void sendWifiInfo(String uuid, String ssid, String pwd, int type) {
         Observable.just("just send wifi info")
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(s -> {
+                .map(s -> {
                     Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     String mac = device.$(202, "");
                     aFullBind.sendWifiInfo(uuid, mac, ssid, pwd, type)
                             .subscribe(ret -> {
                                 AppLogger.d("already send info");
+                                getView().onSetWifiFinished(aFullBind.getDevicePortrait());
                             }, throwable -> AppLogger.e("err" + throwable.getLocalizedMessage()));
-                }, throwable -> AppLogger.d("err:" + throwable.getLocalizedMessage()));
+                    return s;
+                })
+                .flatMap(s -> RxBus.getCacheInstance().toObservable(RxEvent.SetWifiAck.class)
+                        .filter(ret -> ret != null && ret.data != null)
+                        .filter(ret -> TextUtils.equals(uuid, ret.data.cid))
+                        .timeout(2, TimeUnit.SECONDS))
+                .subscribeOn(AndroidSchedulers.mainThread())
+                .subscribe(s -> {
+                    getView().onSetWifiFinished(null);
+                    AppLogger.d("发送配置成功");
+                }, throwable -> {
+                    AppLogger.d("err:" + throwable.getLocalizedMessage());
+                    if (throwable instanceof TimeoutException) {
+                        getView().sendWifiInfoFailed();
+                        AppLogger.d("发送配置失败");
+                    }
+                });
     }
 
     @Override

@@ -64,7 +64,8 @@ public class BindCamActivity extends BaseBindActivity {
     @OnClick(R.id.tv_bind_camera_tip)
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
-        Intent intent = new Intent(this, BindGuideActivity.class);
+        Intent intent = getIntent();
+        intent.setClass(this, BindGuideActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.DOG_CAMERA_NAME));
         startActivity(intent);
         cancelAnimation();

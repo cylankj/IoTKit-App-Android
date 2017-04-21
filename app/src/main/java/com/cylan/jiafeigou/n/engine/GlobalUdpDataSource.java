@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDoorBellCaller;
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.bind.UdpConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -39,17 +40,12 @@ public class GlobalUdpDataSource {
         unregister();
         subscription = RxBus.getCacheInstance().toObservable(RxEvent.LocalUdpMsg.class)
                 .subscribeOn(Schedulers.immediate())
-                .filter(new Func1<RxEvent.LocalUdpMsg, Boolean>() {
-                    @Override
-                    public Boolean call(RxEvent.LocalUdpMsg localUdpMsg) {
-                        if (localUdpMsg == null
-                                || localUdpMsg.ip == null
-                                || localUdpMsg.data == null) {
-                            AppLogger.i("err happened: " + localUdpMsg);
-                            return false;
-                        }
-                        return true;
+                .filter(localUdpMsg -> {
+                    if (localUdpMsg == null || localUdpMsg.ip == null || localUdpMsg.data == null) {
+                        AppLogger.i("err happened: " + localUdpMsg);
+                        return false;
                     }
+                    return true;
                 })
                 .map(localUdpMsg -> {
                     final long time = System.currentTimeMillis();
@@ -83,6 +79,8 @@ public class GlobalUdpDataSource {
                                 RxBus.getCacheInstance().post(callEvent);
                             }
                             AppLogger.i(new Gson().toJson(recvHeard));
+                        } else if (TextUtils.equals(headTag, "do_set_wifi_ack")) {
+                            RxBus.getCacheInstance().post(new RxEvent.SetWifiAck(DpUtils.unpackData(localUdpMsg.data, JfgUdpMsg.DoSetWifiAck.class)));
                         }
                     } catch (IOException e) {
                         AppLogger.i("unpack msgpack failed:" + e.getLocalizedMessage());

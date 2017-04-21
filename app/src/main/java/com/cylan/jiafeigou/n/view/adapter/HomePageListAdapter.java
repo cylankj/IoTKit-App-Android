@@ -52,7 +52,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             holder.setImageResource(R.id.img_device_state_0, resIdNet);
         } else holder.setVisibility(R.id.img_device_state_0, GONE);
         //1 已分享的设备,此设备分享给别的账号.
-        if (device != null && !TextUtils.isEmpty(device.shareAccount)) {
+        if (device != null && !isPrimaryAccount(device.shareAccount)) {
             holder.setVisibility(R.id.img_device_state_1, GONE);
         } else {
             if (BaseApplication.getAppComponent().getSourceManager().isDeviceSharedTo(uuid)) {
@@ -81,7 +81,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         //4 安全防护
         DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
         boolean safe = device.$(501, false);
-        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid) && TextUtils.isEmpty(device.shareAccount)) {
+        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid) && isPrimaryAccount(device.shareAccount)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {
@@ -124,7 +124,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         int iconRes = (onLineState != 0 && onLineState != -1) ? online : offline;
         //昵称
         holder.setText(R.id.tv_device_alias, getAlias(uuid, alias));
-        if (!TextUtils.isEmpty(shareAccount))
+        if (!isPrimaryAccount(shareAccount))
             holder.setVisibility(R.id.tv_device_share_tag, VISIBLE);
         else holder.setVisibility(R.id.tv_device_share_tag, GONE);
         //图标
@@ -146,11 +146,16 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         //被分享用户,不显示 消息数
         DPEntity entity = handleUnreadCount(device);
         Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + entity);
+        boolean isPrimaryAccount = isPrimaryAccount(device.shareAccount);
         //消息数
-        holder.setText(R.id.tv_device_msg_count, getLastWarnContent(entity, device.pid, uuid));
+        holder.setText(R.id.tv_device_msg_count, !isPrimaryAccount ? "" : getLastWarnContent(entity, device.pid, uuid));
         //时间
-        holder.setText(R.id.tv_device_msg_time, TimeUtils.getHomeItemTime(getContext(), entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
-        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(entity != null && entity.getValue(0) > 0);
+        holder.setText(R.id.tv_device_msg_time, !isPrimaryAccount ? "" : TimeUtils.getHomeItemTime(getContext(), entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
+        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(isPrimaryAccount && entity != null && entity.getValue(0) > 0);
+    }
+
+    private boolean isPrimaryAccount(String share) {
+        return TextUtils.isEmpty(share);
     }
 
     private DPEntity handleUnreadCount(Device device) {

@@ -334,4 +334,9 @@ public class BaseAppCallBackHolder implements AppCallBack {
     public void OnRobotGetMultiDataRsp(long l, Object o) {
         AppLogger.d("OnRobotGetMultiDataRsp:" + l + ":" + o);
     }
+
+    @Override
+    public void OnGetAdPolicyRsp(int i, long l, String s, String s1) {
+        AppLogger.d(String.format("OnGetAdPolicyRsp:ret:%s,time:%s,picUrl:%s,tagUrl:%s", i, l, s, s1));
+    }
 }

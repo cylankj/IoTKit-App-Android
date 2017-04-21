@@ -1,6 +1,10 @@
 package com.cylan.jiafeigou.n.mvp.impl.cam;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.ConnectivityManager;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Handler;
@@ -25,8 +29,11 @@ import com.cylan.jiafeigou.support.download.net.NetConfig;
 import com.cylan.jiafeigou.support.download.report.listener.DownloadManagerListener;
 import com.cylan.jiafeigou.support.download.report.listener.FailReason;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.support.network.ConnectivityStatus;
+import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
@@ -65,6 +72,8 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     private String uuid;
     private int updateTime;
     private int updatePingTime;
+    private Network network;
+    private boolean updataSucc;
 
     public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view, String uuid, RxEvent.CheckDevVersionRsp checkDevVersion) {
         super(view);
@@ -81,6 +90,12 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 upgradePingBack(),
                 updateBack()
         };
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        registerNetworkMonitor();
     }
 
     @Override
@@ -189,6 +204,9 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                             AppLogger.d("file_length:" + getFileSize(file));
                             AppLogger.d("file_exit:" + file.exists());
                             if (file.exists()) {
+                                if (!NetUtils.isNetworkAvailable(ContextUtils.getContext())){
+                                    return Observable.just("");
+                                }
                                 //包是否完整
                                 if (getFileSize(file) == length) {
                                     return Observable.just("");
@@ -347,6 +365,8 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         final String headTag = header.cmd;
                         AppLogger.d("udp_cmd:" + headTag);
                         if (TextUtils.equals(headTag, "f_ack")) {
+                            updataSucc = true;
+                            endCounting();
                             getView().handlerResult(2);
                             AppLogger.d("f_upgrade:succ");
                         } else {
@@ -395,6 +415,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     public void stop() {
         super.stop();
         endCounting();
+        unregisterNetworkMonitor();
     }
 
     /**
@@ -503,11 +524,12 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
 
     @Override
     public void upgradePing() {
+        getView().showPingLoading();
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        updatePingTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,UdpConstant.PORT,new JfgUdpMsg.Ping().toBytes());
+                        updatePingTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,UdpConstant.PORT,new JfgUdpMsg.FPing().toBytes());
                         AppLogger.d("beginPing2:" + updatePingTime);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -524,17 +546,83 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     AppLogger.d("endPing:" + localUdpMsg.time);
                     MessagePack msgPack = new MessagePack();
                     try {
-                        JfgUdpMsg.PingAck pingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.PingAck.class);
-                        if (pingAck != null){
-                            final String headTag = pingAck.cmd;
-                            AppLogger.d("udp_cmd:" + headTag);
-                            if (TextUtils.equals(headTag, "ping_ack")) {
-                                startUpdate(localUdpMsg.ip,localUdpMsg.port,pingAck.cid);
-                                AppLogger.d("f_ping:succ:"+pingAck.cid);
+                        JfgUdpMsg.FPingAck fPingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.FPingAck.class);
+                        if (fPingAck != null){
+                            final String headTag = fPingAck.cmd;
+                            AppLogger.d("udp_cmd:" + headTag+":"+fPingAck.version);
+                            if (TextUtils.equals(headTag, "f_ping_ack")) {
+                                getView().hidePingLoading();
+                                startUpdate(localUdpMsg.ip,localUdpMsg.port,fPingAck.cid);
+                                startCounting();
+                                AppLogger.d("f_ping:succ:"+fPingAck.cid);
+                            }else {
+                                //设备无响应
+                                getView().deviceNoRsp();
                             }
                         }
                     } catch (IOException e) {
                         AppLogger.i("unpack msgpack failed:" + e.getLocalizedMessage());
+                    }
+                }, AppLogger::e);
+    }
+
+
+    public void registerNetworkMonitor() {
+        try {
+            if (network == null) {
+                network = new Network();
+                final IntentFilter filter = new IntentFilter();
+                filter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
+                filter.addAction(WifiManager.NETWORK_STATE_CHANGED_ACTION);
+                ContextUtils.getContext().registerReceiver(network, filter);
+            }
+        } catch (Exception e) {
+            AppLogger.e("registerNetworkMonitor" + e.getLocalizedMessage());
+        }
+    }
+
+    public void unregisterNetworkMonitor() {
+        if (network != null) {
+            ContextUtils.getContext().unregisterReceiver(network);
+            network = null;
+        }
+    }
+
+    /**
+     * 监听网络状态
+     */
+    private class Network extends BroadcastReceiver {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            final String action = intent.getAction();
+            if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
+                ConnectivityStatus status = ReactiveNetwork.getConnectivityStatus(context);
+                updateConnectivityStatus(status.state);
+            }
+        }
+    }
+
+    /**
+     * 连接状态变化
+     */
+    private void updateConnectivityStatus(int network) {
+        Observable.just(network)
+                .filter(new Func1<Integer, Boolean>() {
+                    @Override
+                    public Boolean call(Integer integer) {
+                        return getView() != null;
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Action1<Integer>() {
+                    @Override
+                    public void call(Integer integer) {
+                        if (integer == -1){
+                            if (!updataSucc){
+                                endCounting();
+                                getView().handlerResult(3);
+                            }
+                        }
                     }
                 }, AppLogger::e);
     }

@@ -296,8 +296,10 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getUserInfo -> {
-                    if (getUserInfo != null)
+                    if (getUserInfo != null){
                         userInfo = getUserInfo.jfgAccount;
+                        if (getView() != null && !TextUtils.isEmpty(userInfo.getAlias()))getView().setAliasName(userInfo.getAlias());
+                    }
                 }, AppLogger::e);
     }
 

@@ -890,4 +890,6 @@
     <string name="Tap3_Share_NoBindTips">使用分享设备需要绑定手机/邮箱</string>
     <string name="Phone">电话</string>
     <string name="SMS">短信</string>
+    <string name="Choose_Album">选择相册</string>
+    <string name="Mail_Class_Application">请选择邮件类应用</string>
 </resources>

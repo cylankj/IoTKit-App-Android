@@ -255,7 +255,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (!JFGRules.isDeviceOnline(net)) {
                 //设备离线
                 Intent intent = new Intent(this, BindCamActivity.class);
-                intent.putExtra(JConstant.JUST_SEND_INFO, JConstant.JUST_SEND_INFO);
+                intent.putExtra(JConstant.JUST_SEND_INFO, uuid);
                 startActivity(intent);
             } else {
                 //设备在线
@@ -374,7 +374,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             if (!dpStandby.standby) {
                 boolean ledTrigger = device.$(209, false);
                 svSettingDeviceLedIndicator.setChecked(ledTrigger);
-            }
+            } else svSettingDeviceLedIndicator.setChecked(false);
             svSettingDeviceLedIndicator.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
                 DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
                 if (standby != null && standby.standby) return;//开启待机模式引起的
@@ -401,7 +401,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? "" : net.ssid) : getString(R.string.OFF_LINE));
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
-        svSettingDeviceMobileNetwork.setVisibility(simCard > 1 ? View.VISIBLE : View.GONE);
+        svSettingDeviceMobileNetwork.setVisibility(JFGRules.showMobileLayout(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);
         svSettingDeviceWifi.showDivider(simCard > 1);
         if (JFGRules.is3GCam(device.pid)) {
             boolean s = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);

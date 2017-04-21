@@ -157,11 +157,9 @@ public class BindBellActivity extends BaseBindActivity {
 
     @OnClick(R.id.tv_bind_doorbell_tip)
     public void onClick() {
-        Intent intent = new Intent(this, BindGuideActivity.class);
+        Intent intent = getIntent();
+        intent.setClass(this, BindGuideActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.CALL_CAMERA_NAME));
-        if (getIntent().hasExtra(JUST_SEND_INFO)) {
-            intent.putExtra(JUST_SEND_INFO, true);
-        }
         startActivity(intent);
         cancelAnimation();
     }

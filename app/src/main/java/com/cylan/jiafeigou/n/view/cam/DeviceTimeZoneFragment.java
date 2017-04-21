@@ -30,6 +30,7 @@ import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.DeviceTimeZoneAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
+import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import java.util.List;
@@ -178,6 +179,12 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
                 }
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        IMEUtils.hide(getActivity());
     }
 
     @Override

@@ -38,12 +38,6 @@ public class DPSimpleMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
             sourceManager = BaseApplication.getAppComponent().getSourceManager();
     }
 
-    public Observable<BaseDPTaskResult> run() {
-        if (sourceManager.isOnline())
-            return performServer();
-        else return performLocal();
-    }
-
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
         List<Integer> list = new ArrayList<>();
