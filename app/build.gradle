@@ -199,6 +199,21 @@ android {
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yf.jfgou.com:443"]
         }
+//        _ps {
+//            applicationId "com.panoview"
+//            versionName vName
+//            versionCode vCode
+//            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.panoview.hms.update.provider",
+//                                    "VID"                : "\\ 0015",
+//                                    "VKEY"               : "yzL5ygkRzNkOiUT2a07IxjOJ109AhKF0",
+//                                    "qqAppKey"           : "",
+//                                    "mtaAppKey"          : "Aqc1103156296",
+//                                    "weChatAppKey"       : "",
+//                                    "sinaAppKey"         : "",
+//                                    "SERVER"             : "yf.jfgou.com:443",
+//                                    "FACEBOOK_APP_ID"    : "1866682200216878"
+//            ]
+//        }
     }
 }
 
@@ -271,18 +286,6 @@ dependencies {
     compile(name: rootProject.ext.facebookSDK, ext: 'aar') {
         transitive = true
     }
-    fileTree(dir: 'libs', include: '**/*.aar')
-            .each { File file ->
-        dependencies.add("compile", [
-                name: file.name.lastIndexOf('.').with {
-                    it != -1 ? file.name[0..<it] : file.name
-                },
-                ext : 'aar'
-        ])
-    }
-    //aar通用依赖，不需要指定名字
-    //    compile 'com.mcxiaoke.gradle:packer-helper:1.0.8'
-    //先用本地依赖的方式，打包平台还部支持 没人愿意维护多渠道包，算了，删了吧。
     compile(name: 'constraint-layout-1.0.2', ext: 'aar')
     //aar通用依赖，不需要指定名字
     compile files('libs/open_sdk_r5781.jar')
@@ -311,6 +314,6 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-design:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.1'
-//    compile 'org.aspectj:aspectjrt:1.8.9'
+    compile 'com.cylan.iot.sdk:sdkLib:212'
 }
 
