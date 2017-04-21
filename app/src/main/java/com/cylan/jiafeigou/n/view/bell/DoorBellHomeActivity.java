@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.misc.NotifyManager;
 import com.cylan.jiafeigou.misc.SpacesItemDecoration;
 import com.cylan.jiafeigou.n.mvp.contract.bell.DoorBellHomeContract;
 import com.cylan.jiafeigou.n.mvp.model.BellCallRecordBean;
@@ -113,6 +114,8 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
         super.onStart();
         registerNetWorkObserver();
         mLastEnterTime = PreferencesUtils.getLong(JConstant.KEY_BELL_LAST_ENTER_TIME_PREFIX + uuid, 0);
+        int notifyId = (uuid + "bell").hashCode();
+        NotifyManager.getNotifyManager().clearNotify(notifyId);
 
         try {
             sourceManager.clearValue(uuid, 1004, 1005);

@@ -130,4 +130,12 @@ public class NotifyManager implements INotify {
         mNotificationManager.notify(NOTIFY_ID + notifyBean.notificationId, notification);
     }
 
+    public void clearNotify(int notifyId) {
+        try {
+            NotificationManager mNotificationManager = (NotificationManager) ContextUtils.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
+            mNotificationManager.cancel(notifyId);
+        } catch (Exception e) {
+            AppLogger.e("err:" + MiscUtils.getErr(e));
+        }
+    }
 }
