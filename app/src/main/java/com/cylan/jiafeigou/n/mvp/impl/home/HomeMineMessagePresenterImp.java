@@ -28,7 +28,6 @@ import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -193,27 +192,21 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     public Subscription getMesgDpDataCallBack() {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .subscribeOn(Schedulers.io())
-                .map(new Func1<RobotoGetDataRsp, ArrayList<MineMessageBean>>() {
-                    @Override
-                    public ArrayList<MineMessageBean> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        if (robotoGetDataRsp != null && robotoGetDataRsp.seq == seq) {
-                            if (results.size() != 0)
-                                results.clear();
-                            results.addAll(convertData(robotoGetDataRsp));
+                .filter(rsp -> rsp != null && rsp.seq == seq)
+                .first()
+                .map(robotoGetDataRsp -> {
+                    if (results.size() != 0)
+                        results.clear();
+                    results.addAll(convertData(robotoGetDataRsp));
 //                            markMesgHasRead();
-                        }
-                        return results;
-                    }
+                    return results;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<ArrayList<MineMessageBean>>() {
-                    @Override
-                    public void call(ArrayList<MineMessageBean> list) {
-                        if (list.size() != 0) {
-                            handlerDataResult(list);
-                        } else {
-                            getView().showNoMesgView();
-                        }
+                .subscribe(list -> {
+                    if (list.size() != 0) {
+                        handlerDataResult(list);
+                    } else {
+                        getView().showNoMesgView();
                     }
                 }, AppLogger::e);
     }

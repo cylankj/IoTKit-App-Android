@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.engine;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Intent;
+import android.os.Process;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
@@ -50,7 +51,11 @@ public class GlobalResetPwdSource {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pwdHasResetEvent -> {
-                    pwdResetedDialog(pwdHasResetEvent.code);
+                    if (BaseApplication.getActiveActivityCount() > 0) {
+                        pwdResetedDialog(pwdHasResetEvent.code);//待优化
+                    } else {
+                        Process.killProcess(Process.myPid());//密码已被修改了,则进程没有在后台继续运行的必要了,只会空占资源
+                    }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         mSubscription.add(subscribe);
     }

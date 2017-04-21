@@ -50,10 +50,9 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 checkNewSoftVersionBack(),
                 robotDeviceDataSync(),
                 clearSdcardReqBack(),
-                onClearSdReqBack()
+                onClearSdReqBack(),
         };
     }
-
     private void loadParameters() {
         AppLogger.e("未实现");
     }
@@ -170,7 +169,7 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 .subscribe(o -> {
                     if (o != null) {
                         //清空SD卡提示
-                        if (isInitSd){
+                        if (isInitSd) {
                             getView().clearSdResult(0);
                             isInitSd = false;
                         }

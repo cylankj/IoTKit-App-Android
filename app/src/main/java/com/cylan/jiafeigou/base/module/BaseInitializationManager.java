@@ -11,7 +11,6 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
-import com.cylan.jiafeigou.n.engine.TryLogin;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
@@ -46,6 +45,8 @@ public final class BaseInitializationManager {
     private BaseJFGResultParser resultParser;
     private BaseGlobalUdpParser udpParser;
     private BaseBellCallEventListener bellCallEventListener;
+
+    private boolean hasInitFinished=false;
 
     @Inject
     public BaseInitializationManager(JFGSourceManager manager,
@@ -95,11 +96,15 @@ public final class BaseInitializationManager {
         initLeakCanary();
         initGlobalSubscription();
         initDialogManager();
-        TryLogin.tryLogin();//只有等所有资源初始化完成之后才能走 login 流程
+        hasInitFinished=true;
     }
 
     private void initDialogManager() {
 
+    }
+
+    public boolean isHasInitFinished() {
+        return hasInitFinished;
     }
 
     private void initGlobalSubscription() {

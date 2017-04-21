@@ -246,6 +246,7 @@ public class SafeProtectionFragment extends IBaseFragment<SafeInfoContract.Prese
                         basePresenter.updateInfoReq(wFlag, ID_503_CAMERA_ALARM_SENSITIVITY);
                         fLayoutProtectionSensitivity.setTvSubTitle(level == 0 ? getString(R.string.SENSITIVI_LOW)
                                 : (level == 1 ? getString(R.string.SENSITIVI_STANDARD) : getString(R.string.SENSITIVI_HIGHT)));
+                        ToastUtil.showToast(getString(R.string.SCENE_SAVED));
                     }
                 });
                 fragment.setArguments(getArguments());

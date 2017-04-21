@@ -418,7 +418,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                         if (basePresenter.getPlayType() != PLAY_STATE_PLAYING)
                             basePresenter.startPlayVideo(TYPE_LIVE);
                     })
-                    .setNegativeButton(getString(R.string.CANCEL), null)
                     .create();
             sdcardPulloutDlg = new SoftReference<>(dialog);
         }

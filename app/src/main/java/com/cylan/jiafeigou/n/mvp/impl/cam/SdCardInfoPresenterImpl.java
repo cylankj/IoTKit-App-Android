@@ -33,8 +33,8 @@ import rx.schedulers.Schedulers;
  */
 public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContract.View> implements SdCardInfoContract.Presenter {
 
-    private boolean isClearSucc;
-    private boolean isClearFin;
+    private boolean isClearSucc = false;
+    private boolean isClearFin = false;
     private long req;
 
     public SdCardInfoPresenterImpl(SdCardInfoContract.View view, String uuid) {
@@ -84,6 +84,8 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
+                        isClearSucc = false;
+                        isClearFin = false;
                         ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
                         JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
                         mesg.packValue = DpUtils.pack(0);
@@ -105,7 +107,8 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .delay(2, TimeUnit.MINUTES)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
-                    if (getView() != null && !isClearSucc) getView().clearSdResult(2);
+                    AppLogger.d("两分钟超时时间到了!!!");
+                    if (getView() != null && isClearFin) getView().clearSdResult(2);
                 }, AppLogger::e));
     }
 
