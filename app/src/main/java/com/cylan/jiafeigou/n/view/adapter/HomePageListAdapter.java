@@ -156,7 +156,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         holder.setText(R.id.tv_device_msg_count, !isPrimaryAccount ? "" : warnContent);
         //时间
         holder.setText(R.id.tv_device_msg_time, !isPrimaryAccount ? "" : TimeUtils.getHomeItemTime(getContext(), entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
-        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(isPrimaryAccount && entity.getValue(0) > 0);
+        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(isPrimaryAccount && entity != null && entity.getValue(0) > 0);
     }
 
     private boolean isPrimaryAccount(String share) {

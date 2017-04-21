@@ -58,6 +58,7 @@ public class HuaweiPushReceiver extends PushReceiver {
             AppLogger.d("门铃截图地址:" + url);
         } catch (MalformedURLException e) {
             e.printStackTrace();
+
         }
         if (System.currentTimeMillis() / 1000L - PreferencesUtils.getInt(JConstant.KEY_NTP_INTERVAL) - time < 30) {
             launchBellLive(cid, url, time);
