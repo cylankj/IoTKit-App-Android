@@ -67,17 +67,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         Subscription subscribe = Observable.just(sourceManager.getAccount())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(account -> {
-                    mView.onViewer();
-                    if (account != null && account.isOnline()) {
-                        if (mView != null) {
-                        }
+                    if (sourceManager.isOnline()) {
+                        mView.onViewer();
                         return true;
-                    } else {
-                        if (mView != null) {
-                            mView.onVideoDisconnect(BAD_NET_WORK);
-                        }
-                        return false;
                     }
+                    return false;
                 }).observeOn(Schedulers.io())
                 .map(hasNet -> {
                     String handle = getViewHandler();
