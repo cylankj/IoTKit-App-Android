@@ -74,6 +74,16 @@
     <!-- 用于密码修改后其他终端提示 -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
+    <!-- //谷歌推送 -->
+    <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <permission
+        android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE"
+        android:protectionLevel="signature" />
+
+    <uses-permission android:name="com.google.android.gcm.demo.permission.C2D_MESSAGE" />
+
     <uses-feature
         android:name="android.hardware.location.gps"
         android:required="false" />
@@ -178,13 +188,13 @@
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
 
-        <!--<receiver android:name=".n.base.BaseApplication$BootCompletedReceiver">-->
-            <!--<intent-filter android:priority="0x7fffffff">-->
-                <!--<action android:name="android.intent.action.BOOT_COMPLETED" />-->
-                <!--<action android:name="android.net.conn.CONNECTIVITY_CHANGE" />-->
-                <!--<action android:name="android.intent.action.USER_PRESENT" />-->
-            <!--</intent-filter>-->
-        <!--</receiver>-->
+        <!-- <receiver android:name=".n.base.BaseApplication$BootCompletedReceiver"> -->
+        <!-- <intent-filter android:priority="0x7fffffff"> -->
+        <!-- <action android:name="android.intent.action.BOOT_COMPLETED" /> -->
+        <!-- <action android:name="android.net.conn.CONNECTIVITY_CHANGE" /> -->
+        <!-- <action android:name="android.intent.action.USER_PRESENT" /> -->
+        <!-- </intent-filter> -->
+        <!-- </receiver> -->
 
         <service
             android:name=".n.engine.DaemonService"
@@ -263,8 +273,6 @@
             android:name=".n.view.misc.UpdateActivity"
             android:launchMode="singleTask"
             android:theme="@style/dialog_activity_style" />
-
-
         <activity
             android:name="com.sina.weibo.sdk.component.WeiboSdkBrowser"
             android:configChanges="keyboardHidden|orientation"
@@ -491,6 +499,49 @@
             android:authorities="com.facebook.app.FacebookContentProvider1866682200216878"
             android:exported="true" />
 
+        <!-- //谷歌服务 -->
+        <!-- [START gcm_receiver] -->
+        <receiver
+            android:name="com.google.android.gms.gcm.GcmReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+
+                <category android:name="gcm.play.android.samples.com.gcmquickstart" />
+            </intent-filter>
+        </receiver>
+        <!-- [END gcm_receiver] -->
+
+        <service
+            android:name=".push.google.GcmService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".push.google.MyInstanceIDListenerService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.android.gms.iid.InstanceID" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".push.google.RegistrationIntentService"
+            android:exported="false" />
+
+        <!--<activity android:name=".push.google.MainTestActivity">-->
+            <!--<intent-filter>-->
+                <!--<action android:name="android.intent.action.MAIN" />-->
+
+                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--</intent-filter>-->
+        <!--</activity>-->
+        <!--一个简单的任务-->
+        <service
+            android:name=".push.PushPickerIntentService"
+            android:exported="false" />
     </application>
 
 </manifest>

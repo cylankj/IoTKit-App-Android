@@ -40,7 +40,8 @@ import rx.schedulers.Schedulers;
 /**
  * Created by hunt on 16-5-14.
  */
-public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks, HuaweiApiClient.ConnectionCallbacks, HuaweiApiClient.OnConnectionFailedListener {
+public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks, HuaweiApiClient.ConnectionCallbacks,
+        HuaweiApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "BaseApplication";
 
@@ -75,6 +76,10 @@ public class BaseApplication extends MultiDexApplication implements Application.
         AppLogger.d("华为推送连接成功");
         HuaweiPush.HuaweiPushApi.getToken(client).setResultCallback(result -> {
         });
+    }
+
+    private void pushServicePicker() {
+
     }
 
     @Override

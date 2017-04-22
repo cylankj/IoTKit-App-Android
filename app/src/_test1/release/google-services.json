@@ -1,0 +1,113 @@
+{
+  "project_info": {
+    "project_number": "208964865997",
+    "project_id": "gcmkey-165308"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208964865997:android:b3e0d7268c55e9da",
+        "android_client_info": {
+          "package_name": "com.cylan.jiafeigou"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUlLaxq_4s7mAhpRK88b23hBLFPteuGJg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208964865997:android:20e58401f342e513",
+        "android_client_info": {
+          "package_name": "com.cylan.jiafeigou.cell_c"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUlLaxq_4s7mAhpRK88b23hBLFPteuGJg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208964865997:android:b356de17a6ecdd82",
+        "android_client_info": {
+          "package_name": "com.cylan.jiafeigou.test1"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUlLaxq_4s7mAhpRK88b23hBLFPteuGJg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:208964865997:android:334006ebd872562e",
+        "android_client_info": {
+          "package_name": "com.cylan.jiafeigou.zhongxing"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCUlLaxq_4s7mAhpRK88b23hBLFPteuGJg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
