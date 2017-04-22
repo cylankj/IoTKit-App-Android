@@ -9,6 +9,10 @@ import android.support.annotation.Nullable;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.huawei.hms.api.ConnectionResult;
 import com.huawei.hms.api.HuaweiApiClient;
+import com.huawei.hms.support.api.client.PendingResult;
+import com.huawei.hms.support.api.client.ResultCallback;
+import com.huawei.hms.support.api.hwid.HuaweiId;
+import com.huawei.hms.support.api.hwid.SignOutResult;
 import com.huawei.hms.support.api.push.HuaweiPush;
 
 import static com.cylan.jiafeigou.push.PushConstant.PUSH_TAG;
@@ -34,7 +38,8 @@ public class HMSRegister extends IntentService implements HuaweiApiClient.OnConn
     public void onConnected() {
         AppLogger.d(PUSH_TAG + "华为推送连接成功");
         HuaweiPush.HuaweiPushApi.getToken(client).setResultCallback(result -> {
-            AppLogger.d(PUSH_TAG + "token:" + result.getTokenRes().getToken());
+//此处不需要handle  token,token会在 HuaweiPushReceiver#onToken回调
+//            AppLogger.d(PUSH_TAG + "token:" + result.getTokenRes().getToken());
         });
     }
 
@@ -60,6 +65,14 @@ public class HMSRegister extends IntentService implements HuaweiApiClient.OnConn
     public void releasePMS() {
         if (client != null && client.isConnected()) {
             client.disconnect();
+            HuaweiId.HuaweiIdApi.signOut(client);
+            PendingResult<SignOutResult> signOutResult = HuaweiId.HuaweiIdApi.signOut(client);
+            signOutResult.setResultCallback(new ResultCallback<SignOutResult>() {
+                @Override
+                public void onResult(SignOutResult result) {
+                // TODO: 登出结果,处理result.getStatus()
+                }
+            });
         }
     }
 

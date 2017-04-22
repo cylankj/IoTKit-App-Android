@@ -63,23 +63,27 @@ public class PushPickerIntentService extends IntentService {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
         AppLogger.d(PUSH_TAG + "resultCode:" + resultCode);
-        if (resultCode == ConnectionResult.SERVICE_INVALID
-                || resultCode == ConnectionResult.SERVICE_MISSING) {
-            AppLogger.d(PUSH_TAG + "没有 谷歌服务");
-            return false;
-        }
-        if (resultCode != ConnectionResult.SUCCESS) {
-            if (apiAvailability.isUserResolvableError(resultCode)) {
-                long lastTime = PreferencesUtils.getLong("gcm_check");
-                if (System.currentTimeMillis() - lastTime >= 24 * 3600 * 1000) {
-                    PreferencesUtils.putLong("gcm_check", System.currentTimeMillis());
-                    RxBus.getCacheInstance().postSticky(new RxEvent.NeedUpdateGooglePlayService());
+        switch (resultCode) {
+            case ConnectionResult.SUCCESS:
+                return true;
+            case ConnectionResult.SERVICE_DISABLED:
+            case ConnectionResult.SERVICE_INVALID:
+            case ConnectionResult.SERVICE_MISSING:
+                AppLogger.d(PUSH_TAG + " 谷歌服务异常:" + resultCode);
+                return false;
+            case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
+                AppLogger.d(PUSH_TAG + " 谷歌服务需要升级");
+                if (apiAvailability.isUserResolvableError(resultCode)) {
+                    long lastTime = PreferencesUtils.getLong("gcm_check");
+                    if (System.currentTimeMillis() - lastTime >= 24 * 3600 * 1000) {
+                        PreferencesUtils.putLong("gcm_check", System.currentTimeMillis());
+                        RxBus.getCacheInstance().postSticky(new RxEvent.NeedUpdateGooglePlayService());
+                    }
+                    AppLogger.d(PUSH_TAG + " This device support gcm but get err");
+                } else {
+                    AppLogger.d(PUSH_TAG + " This device is not supported");
                 }
-                AppLogger.d(PUSH_TAG + " This device support gcm but get err");
-            } else {
-                AppLogger.d(PUSH_TAG + " This device is not supported");
-            }
-            return false;
+                return false;
         }
         return true;
     }

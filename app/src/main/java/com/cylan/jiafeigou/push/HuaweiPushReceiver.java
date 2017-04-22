@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
@@ -45,11 +46,21 @@ public class HuaweiPushReceiver extends PushReceiver {
     }
 
     @Override
+    public void onPushMsg(Context context, byte[] bytes, String s) {
+        AppLogger.d(PUSH_TAG + "onPushMsg?" + s + "," + new String(bytes));
+    }
+
+    @Override
+    public void onPushState(Context context, boolean b) {
+        AppLogger.d(PUSH_TAG + "onPushState?" + b);
+    }
+
+    @Override
     public boolean onPushMsg(Context context, byte[] bytes, Bundle bundle) {
         AppLogger.e("收到华为推送消息:" + new String(bytes) + bundle);
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        AppLogger.d("push 当前为非登录?" + (sourceManager.getAccount() == null));
         if (sourceManager.getAccount() == null) {
-            AppLogger.d("当前为登录");
             return true;
         }
 
@@ -89,11 +100,16 @@ public class HuaweiPushReceiver extends PushReceiver {
 
     private void launchBellLive(String cid, String url, long time) {
         Intent intent = new Intent(ContextUtils.getContext(), BellLiveActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, cid);
         intent.putExtra(JConstant.VIEW_CALL_WAY, JConstant.VIEW_CALL_WAY_LISTEN);
         intent.putExtra(JConstant.VIEW_CALL_WAY_EXTRA, url);
         intent.putExtra(JConstant.VIEW_CALL_WAY_TIME, time);
+        intent.addFlags(Intent.FLAG_INCLUDE_STOPPED_PACKAGES);//华为服务使用.
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                .addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)
+                .addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         ContextUtils.getContext().startActivity(intent);
+        AppLogger.e("收到华为推送 拉起呼叫界面:");
     }
 }

@@ -44,6 +44,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     private static AppComponent appComponent;
 
+    public static int onTrimMemoryLevel;
+
     @Override
     protected void attachBaseContext(Context base) {
         super.attachBaseContext(base);
@@ -133,6 +135,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
+        onTrimMemoryLevel = level;
         switch (level) {
             case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
                 //should release some resource
