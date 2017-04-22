@@ -1,13 +1,20 @@
 package com.cylan.jiafeigou.push;
 
 import android.app.IntentService;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import com.cylan.jiafeigou.push.google.RegistrationIntentService;
+import com.cylan.jiafeigou.push.google.GCMRegister;
+import com.cylan.jiafeigou.rx.RxBus;
+import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
+
+import static com.cylan.jiafeigou.push.PushConstant.PUSH_TAG;
 
 /**
  * An {@link IntentService} subclass for handling asynchronous task requests in
@@ -18,12 +25,16 @@ import com.google.android.gms.common.GoogleApiAvailability;
  */
 public class PushPickerIntentService extends IntentService {
     private static final String TAG = "PushPickerIntentService";
-    private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 
     public PushPickerIntentService() {
         super("PushPickerIntentService");
     }
 
+    public static void start() {
+        Context ctx = ContextUtils.getContext();
+        Intent intent = new Intent(ctx, PushPickerIntentService.class);
+        ctx.startService(intent);
+    }
 
     @Override
     protected void onHandleIntent(Intent intent) {
@@ -31,13 +42,15 @@ public class PushPickerIntentService extends IntentService {
             //首选谷歌服务
             if (checkPlayServices()) {
                 // Start IntentService to register this application with GCM.
-                intent = new Intent(this, RegistrationIntentService.class);
+                intent = new Intent(this, GCMRegister.class);
                 startService(intent);
-                AppLogger.d("yes pick gcm");
+                AppLogger.d(PUSH_TAG + "yes pick gcm");
                 return;
             }
             //接入华为推送
-
+            intent = new Intent(this, HMSRegister.class);
+            startService(intent);
+            AppLogger.d(PUSH_TAG + "yes pick hms");
         }
     }
 
@@ -49,18 +62,27 @@ public class PushPickerIntentService extends IntentService {
     private boolean checkPlayServices() {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+        AppLogger.d(PUSH_TAG + "resultCode:" + resultCode);
+        if (resultCode == ConnectionResult.SERVICE_INVALID
+                || resultCode == ConnectionResult.SERVICE_MISSING) {
+            AppLogger.d(PUSH_TAG + "没有 谷歌服务");
+            return false;
+        }
         if (resultCode != ConnectionResult.SUCCESS) {
             if (apiAvailability.isUserResolvableError(resultCode)) {
-//                apiAvailability.getErrorDialog(this,
-//                        resultCode,
-//                        PLAY_SERVICES_RESOLUTION_REQUEST)
-//                        .show();
-                Log.i(TAG, "This device is not .");
+                long lastTime = PreferencesUtils.getLong("gcm_check");
+                if (System.currentTimeMillis() - lastTime >= 24 * 3600 * 1000) {
+                    PreferencesUtils.putLong("gcm_check", System.currentTimeMillis());
+                    RxBus.getCacheInstance().postSticky(new RxEvent.NeedUpdateGooglePlayService());
+                }
+                AppLogger.d(PUSH_TAG + " This device support gcm but get err");
             } else {
-                Log.i(TAG, "This device is not supported.");
+                AppLogger.d(PUSH_TAG + " This device is not supported");
             }
             return false;
         }
         return true;
     }
+
+
 }

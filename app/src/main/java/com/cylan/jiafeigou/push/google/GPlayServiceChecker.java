@@ -7,6 +7,8 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GoogleApiAvailability;
 
+import static com.cylan.jiafeigou.push.PushConstant.PUSH_TAG;
+
 /**
  * Created by hds on 17-4-21.
  */
@@ -23,6 +25,7 @@ public class GPlayServiceChecker {
     public static boolean checkPlayServices(Context context) {
         GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
         int resultCode = apiAvailability.isGooglePlayServicesAvailable(context);
+        AppLogger.d(PUSH_TAG + "resultCode:" + resultCode);
         if (resultCode != ConnectionResult.SUCCESS) {
             if (apiAvailability.isUserResolvableError(resultCode)) {
 //                apiAvailability.getErrorDialog(this, resultCode, PLAY_SERVICES_RESOLUTION_REQUEST)

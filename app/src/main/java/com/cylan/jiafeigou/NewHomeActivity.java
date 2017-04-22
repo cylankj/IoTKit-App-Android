@@ -35,6 +35,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomViewPager;
+import com.google.android.gms.common.GoogleApiAvailability;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -114,6 +115,14 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                     if (event.b)
                         finish();
                 }, e -> AppLogger.d(e.getMessage()));
+        RxBus.getCacheInstance().toObservableSticky(RxEvent.NeedUpdateGooglePlayService.class)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    GoogleApiAvailability apiAvailability = GoogleApiAvailability.getInstance();
+                    int resultCode = apiAvailability.isGooglePlayServicesAvailable(this);
+                    apiAvailability.getErrorDialog(this, resultCode, 9000).show();
+                    RxBus.getCacheInstance().removeStickyEvent(RxEvent.NeedUpdateGooglePlayService.class);
+                }, AppLogger::e);
     }
 
     @Override

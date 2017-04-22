@@ -3,8 +3,10 @@ package com.cylan.jiafeigou.push;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 
+import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -13,16 +15,35 @@ import com.cylan.jiafeigou.n.view.bell.BellLiveActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.huawei.hms.support.api.push.PushReceiver;
 
 import java.net.MalformedURLException;
+
+import static com.cylan.jiafeigou.push.PushConstant.PUSH_TAG;
+import static com.cylan.jiafeigou.push.google.QuickstartPreferences.PUSH_MS_NAME;
+import static com.cylan.jiafeigou.push.google.QuickstartPreferences.PUSH_TOKEN;
 
 /**
  * Created by yanzhendong on 2017/2/24.
  */
 
 public class HuaweiPushReceiver extends PushReceiver {
+
+    @Override
+    public void onToken(Context context, String token, Bundle extras) {
+        String belongId = extras.getString("belongId");
+        String content = "获取token和belongId成功，token = " + token + ",belongId = " + belongId;
+        AppLogger.d(PUSH_TAG + "HwPush Token success:" + content);
+        Intent intent = new Intent();
+        intent.setAction(PUSH_TOKEN);
+        intent.putExtra(PUSH_TOKEN, token);
+        intent.putExtra(PUSH_MS_NAME, "HMS");
+        LocalBroadcastManager.getInstance(context)
+                .sendBroadcast(intent);
+    }
+
     @Override
     public boolean onPushMsg(Context context, byte[] bytes, Bundle bundle) {
         AppLogger.e("收到华为推送消息:" + new String(bytes) + bundle);

@@ -1,6 +1,11 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 
 import com.cylan.jfgapp.interfases.AppCmd;
 import com.cylan.jfgapp.jni.JfgAppCmd;
@@ -12,10 +17,14 @@ import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
 import com.cylan.jiafeigou.n.engine.TryLogin;
+import com.cylan.jiafeigou.push.PushResultReceiver;
+import com.cylan.jiafeigou.push.google.QuickstartPreferences;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 import com.tencent.bugly.crashreport.CrashReport;
 
 import javax.inject.Inject;
@@ -46,6 +55,7 @@ public final class BaseInitializationManager {
     private BaseJFGResultParser resultParser;
     private BaseGlobalUdpParser udpParser;
     private BaseBellCallEventListener bellCallEventListener;
+    private PushResultReceiver pushReceiver;
 
     @Inject
     public BaseInitializationManager(JFGSourceManager manager,
@@ -96,6 +106,24 @@ public final class BaseInitializationManager {
         initGlobalSubscription();
         initDialogManager();
         TryLogin.tryLogin();//只有等所有资源初始化完成之后才能走 login 流程
+        initPushResult();
+    }
+
+    private void initPushResult() {
+        IntentFilter intentFilter = new IntentFilter(QuickstartPreferences.SENT_TOKEN_TO_SERVER);
+        intentFilter.addAction(QuickstartPreferences.SENT_TOKEN_TO_SERVER);
+        intentFilter.addAction(QuickstartPreferences.PUSH_MESSAGE_RESULT);
+        intentFilter.addAction(QuickstartPreferences.REGISTRATION_COMPLETE);
+        intentFilter.addAction(QuickstartPreferences.PUSH_TOKEN);
+        if (pushReceiver == null) {
+            pushReceiver = new PushResultReceiver();
+        }
+        try {
+            LocalBroadcastManager.getInstance(ContextUtils.getContext())
+                    .registerReceiver(pushReceiver, intentFilter);
+        } catch (Exception e) {
+            Log.d("BaseInitialization", "initPushResultFailed:" + MiscUtils.getErr(e));
+        }
     }
 
     private void initDialogManager() {

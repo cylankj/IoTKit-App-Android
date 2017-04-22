@@ -1044,4 +1044,8 @@ public class RxEvent {
             this.data = data;
         }
     }
+
+    public static class NeedUpdateGooglePlayService {
+
+    }
 }

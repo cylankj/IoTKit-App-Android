@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.engine.AfterLoginService;
+import com.cylan.jiafeigou.push.PushPickerIntentService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -110,6 +111,7 @@ public class BaseJFGResultParser {
             AfterLoginService.startGetAccountAction(ContextUtils.getContext());
             AfterLoginService.startSaveAccountAction(ContextUtils.getContext());
             AfterLoginService.resumeOfflineRequest();
+            PushPickerIntentService.start();
         }
     }
 }

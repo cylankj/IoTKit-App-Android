@@ -28,7 +28,6 @@
     <!-- 该应用程序使用设备上的麦克风。 -->
     <uses-feature android:name="android.hardware.microphone" />
 
-    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <!-- 读取系统底层日志 -->
     <!-- <uses-permission android:name="android.permission.READ_LOGS" /> -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -130,6 +129,9 @@
         <meta-data
             android:name="server"
             android:value="${SERVER}" />
+        <meta-data
+            android:name="GCM_APP_ID"
+            android:value="${GCM_APP_ID}" />
 
         <provider
             android:name="com.huawei.hms.update.provider.UpdateProvider"
@@ -529,21 +531,23 @@
             </intent-filter>
         </service>
         <service
-            android:name=".push.google.RegistrationIntentService"
+            android:name=".push.google.GCMRegister"
+            android:exported="false" />
+        <service
+            android:name=".push.HMSRegister"
             android:exported="false" />
 
         <!--<activity android:name=".push.google.MainTestActivity">-->
-            <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
-            <!--</intent-filter>-->
+        <!--<category android:name="android.intent.category.LAUNCHER" />-->
+        <!--</intent-filter>-->
         <!--</activity>-->
         <!--一个简单的任务-->
         <service
             android:name=".push.PushPickerIntentService"
             android:exported="false" />
->>>>>>> dev-3.0.0-hunt
     </application>
 
 </manifest>
