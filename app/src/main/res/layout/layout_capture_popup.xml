@@ -1,12 +1,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:padding="@dimen/x2"
     tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
 
-    <ImageView
+    <com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView
         android:id="@+id/imv_capture_popup"
         android:layout_width="@dimen/x44"
-        android:layout_height="@dimen/y30" />
+        android:layout_height="@dimen/y30"
+        android:scaleType="centerCrop"
+        app:riv_border_color="@color/color_4b9fd5"
+        app:riv_border_width="@dimen/x1"
+        app:riv_corner_radius="5dp" />
 </FrameLayout>

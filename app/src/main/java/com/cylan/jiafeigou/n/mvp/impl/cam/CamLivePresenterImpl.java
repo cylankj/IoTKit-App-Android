@@ -13,10 +13,8 @@ import com.cylan.entity.jniCall.JFGMsgVideoDisconn;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.ex.JfgException;
-import com.cylan.jfgapp.interfases.CallBack;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.base.module.Base;
-import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
@@ -38,6 +36,7 @@ import com.cylan.jiafeigou.n.view.misc.MapSubscription;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.rx.RxHelper;
+import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
@@ -48,6 +47,7 @@ import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.widget.wheel.ex.DataExt;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
+import com.cylan.utils.JfgUtils;
 import com.google.gson.Gson;
 
 import java.io.File;
@@ -553,112 +553,39 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         unSubscribe(liveSubscription);
     }
 
+    //截图:预览,弹窗,保存每日精彩
     @Override
     public void takeSnapShot(boolean forPreview) {
         AppLogger.d("take shot initSubscription");
+        int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
+        int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
         Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
                 .map(o -> {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-                    long time = System.currentTimeMillis();
-                    return BaseApplication.getAppComponent().getCmd().screenshot(false);
-
-//                    BaseApplication.getAppComponent().getCmd().screenshot(false, new CallBack<Bitmap>() {
-//                        @Override
-//                        public void onSucceed(Bitmap resource) {
-//                            AppLogger.d("take shot step assemble by sdk");
-//                            SimpleCache.getInstance().addCache(getThumbnailKey(), resource);
-//                            _2saveBitmap(forPreview, resource);
-//                        }
-//
-//                        @Override
-//                        public void onFailure(String s) {
-//                            AppLogger.e("直播黑屏，没有数据: " + forPreview);
-//                        }
-//                    });
-//                    AppLogger.i("capture take shot performance: " + (System.currentTimeMillis() - time));
-//                    return null;
+                    PerformanceUtils.startTrace("takeCapture");
+                    byte[] data = BaseApplication.getAppComponent().getCmd().screenshot(false);
+                    if (data == null) {
+                        if (!forPreview) getView().onTakeSnapShot(null);//弹窗
+                        return null;
+                    }
+                    Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
+                    data = null;
+                    PerformanceUtils.stopTrace("takeCapture");
+                    if (!forPreview) getView().onTakeSnapShot(bitmap);//弹窗
+                    return bitmap;
                 })
-                .subscribe(b -> {
-                    getView().onTakeSnapShot(b);
-                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));
-    }
-
-    private void _2saveBitmap(boolean forPreview, Bitmap resource) {
-        Observable.just(resource)
-                .filter(bitmap1 -> bitmap1 != null)
-                .subscribeOn(Schedulers.io())
-                .subscribe((Bitmap bitmap) -> {
+                .observeOn(Schedulers.io())
+                .filter(bitmap -> bitmap != null)
+                .subscribe(bitmap -> {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-                    String filePath;
-                    long time = System.currentTimeMillis();
-                    if (forPreview) {
-                        filePath = getThumbnailKey();
-                        BitmapUtils.saveBitmap2file(bitmap, filePath);
-                        AppLogger.d("take shot step save into disk for preview");
+                    if (forPreview) {//预览图,和弹窗是互斥的.
                         //因为同一个url,在glide上，不会更新bitmap，等待解决，用一个token来维持
                         PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
-                        showPreviewThumbnail(bitmap);
-                    } else {
-                        snapshotResult(bitmap);
-                        filePath = getThumbnailKey() + ".png";
+                        getView().onPreviewResourceReady(bitmap);
                     }
-                    AppLogger.i("save take shot performance: " + (System.currentTimeMillis() - time));
-                }, throwable -> AppLogger.e("takeSnapshot: " + throwable.getLocalizedMessage()));
-    }
-
-    private void showPreviewThumbnail(Bitmap bitmap) {
-        Observable.just(bitmap)
-                .filter((Bitmap bit) -> (getView() != null))
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe((Bitmap b) -> getView().onPreviewResourceReady(bitmap),
-                        throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
-    }
-
-    private void snapshotResult(Bitmap bitmap) {
-        Observable.just(bitmap)
-                .filter((Bitmap bit) -> (getView() != null))
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(map -> {
-                    getView().onTakeSnapShot(map);
-                    return map;
-                })
-                .subscribeOn(Schedulers.io())
-                .map(result -> {
-                    long time = System.currentTimeMillis();
-                    String filePath = JConstant.MEDIA_PATH + File.separator + time + ".jpg";
-                    BitmapUtils.saveBitmap2file(result, filePath);
-                    return filePath;
-                })
-                .filter(path -> {
-                    AppLogger.d("to collect bitmap is null? " + (TextUtils.isEmpty(path)));
-                    return path != null;
-                })
-                .subscribeOn(Schedulers.io())
-                .subscribe(filePath -> {
-                    long time = System.currentTimeMillis();
-                    AppLogger.d("save bitmap to disk performance:" + (System.currentTimeMillis() - time));
-                    DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
-                    item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
-                    item.cid = uuid;
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                    item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
-                    item.fileName = time / 1000 + ".jpg";
-                    item.time = (int) (time / 1000);
-                    IDPEntity entity = new DPEntity()
-                            .setUuid(uuid)
-                            .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
-                            .setVersion(System.currentTimeMillis())
-                            .setAccount(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount())
-                            .setAction(DBAction.SHARED)
-                            .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
-                            .setBytes(item.toBytes());
-                    BaseApplication.getAppComponent().getTaskDispatcher().perform(entity)
-                            .subscribeOn(Schedulers.io())
-                            .subscribe(ret -> {
-                            }, AppLogger::e);
-                    AppLogger.d("take shot step collect ");
-                }, throwable -> AppLogger.e("snapshotResult:" + throwable.getLocalizedMessage()));
+                    new SaveAndShare(uuid, bitmap, !forPreview).start();
+                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));
     }
 
 
@@ -823,5 +750,71 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         PreferencesUtils.putLong(JConstant.CHECK_HARDWARE_TIME, System.currentTimeMillis());
                     }
                 }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
+    }
+
+    private static class SaveAndShare extends Thread {
+        private String uuid;
+        private Bitmap bitmap;
+        private boolean needShare;
+
+        public SaveAndShare(String uuid, Bitmap bitmap, boolean needShare) {
+            this.uuid = uuid;
+            this.bitmap = bitmap;
+            this.needShare = needShare;
+        }
+
+        @Override
+        public void run() {
+            shareSnapshot(this.needShare, this.bitmap);
+        }
+
+        private String getThumbnailKey() {
+            return JConstant.MEDIA_PATH + File.separator + "." + MD5Util.lowerCaseMD5(uuid);
+        }
+
+        /**
+         * 保存和分享,这是一个后台任务,用一个静态类,避免持有引用
+         *
+         * @param needShare
+         * @param bitmap
+         */
+        private void shareSnapshot(boolean needShare, Bitmap bitmap) {
+            Observable.just(bitmap)
+                    .subscribeOn(Schedulers.io())
+                    .map(result -> {
+                        String filePath = needShare ? getThumbnailKey() : JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".jpg";
+                        BitmapUtils.saveBitmap2file(result, filePath);
+                        return filePath;
+                    })
+                    .filter(path -> {
+                        AppLogger.d("to collect bitmap is null? " + (TextUtils.isEmpty(path)));
+                        return path != null && needShare;
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(filePath -> {
+                        long time = System.currentTimeMillis();
+                        AppLogger.d("save bitmap to disk performance:" + (System.currentTimeMillis() - time));
+                        DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
+                        item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
+                        item.cid = uuid;
+                        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                        item.place = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
+                        item.fileName = time / 1000 + ".jpg";
+                        item.time = (int) (time / 1000);
+                        IDPEntity entity = new DPEntity()
+                                .setUuid(uuid)
+                                .setMsgId(DpMsgMap.ID_602_ACCOUNT_WONDERFUL_MSG)
+                                .setVersion(System.currentTimeMillis())
+                                .setAccount(BaseApplication.getAppComponent().getSourceManager().getAccount().getAccount())
+                                .setAction(DBAction.SHARED)
+                                .setOption(new DBOption.SingleSharedOption(1, 1, filePath))
+                                .setBytes(item.toBytes());
+                        BaseApplication.getAppComponent().getTaskDispatcher().perform(entity)
+                                .subscribeOn(Schedulers.io())
+                                .subscribe(ret -> {
+                                }, AppLogger::e);
+                        AppLogger.d("take shot step collect ");
+                    }, throwable -> AppLogger.e("shareSnapshot:" + throwable.getLocalizedMessage()));
+        }
     }
 }
