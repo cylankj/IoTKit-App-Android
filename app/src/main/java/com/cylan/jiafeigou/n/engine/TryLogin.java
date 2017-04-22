@@ -56,10 +56,14 @@ public class TryLogin {
                                                 } else {
                                                     if (!PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false)) {
                                                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
+                                                    } else {
+                                                        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                                                     }
-                                                    PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                                                 }
-                                                BaseApplication.getAppComponent().getSourceManager().initFromDB();
+                                                if (!PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false)) {
+                                                    RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class);
+                                                    BaseApplication.getAppComponent().getSourceManager().initFromDB();
+                                                }
                                                 return null;
                                             }))
                                     .subscribe(ret -> {

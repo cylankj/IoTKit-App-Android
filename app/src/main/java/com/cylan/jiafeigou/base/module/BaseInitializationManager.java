@@ -11,6 +11,7 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.cache.db.view.IDBHelper;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskDispatcher;
 import com.cylan.jiafeigou.cache.db.view.IDPTaskFactory;
+import com.cylan.jiafeigou.n.engine.TryLogin;
 import com.cylan.jiafeigou.support.OptionsImpl;
 import com.cylan.jiafeigou.support.block.impl.BlockCanary;
 import com.cylan.jiafeigou.support.block.impl.BlockCanaryContext;
@@ -46,7 +47,7 @@ public final class BaseInitializationManager {
     private BaseGlobalUdpParser udpParser;
     private BaseBellCallEventListener bellCallEventListener;
 
-    private boolean hasInitFinished=false;
+    private boolean hasInitFinished = false;
 
     @Inject
     public BaseInitializationManager(JFGSourceManager manager,
@@ -96,7 +97,8 @@ public final class BaseInitializationManager {
         initLeakCanary();
         initGlobalSubscription();
         initDialogManager();
-        hasInitFinished=true;
+        hasInitFinished = true;
+        TryLogin.tryLogin();
     }
 
     private void initDialogManager() {

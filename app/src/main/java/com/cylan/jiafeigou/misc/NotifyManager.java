@@ -66,8 +66,9 @@ public class NotifyManager implements INotify {
     }
 
     @Override
+    @Deprecated //无法根据用户设置开启关闭声音振动
     public void sendNotify(Notification notification) {
-        if (!enablePush())return;//用户设置中不允许推送通知,则不发送消息了
+        if (!enablePush()) return;//用户设置中不允许推送通知,则不发送消息了
         NotificationManager mNotificationManager = (NotificationManager) ContextUtils.getContext().getSystemService(Context.NOTIFICATION_SERVICE);
         mNotificationManager.notify(NOTIFY_ID, notification);
     }
@@ -93,9 +94,19 @@ public class NotifyManager implements INotify {
         return account != null && account.getEnablePush();
     }
 
+    private boolean enableSound() {
+        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        return account != null && account.getEnableSound();
+    }
+
+    private boolean enableVibrate() {
+        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        return account != null && account.getEnableVibrate();
+    }
+
     @Override
     public void sendNotify(NotifyBean notifyBean) {
-        if (!enablePush())return;//用户设置中不允许推送通知,则不发送消息了
+        if (!enablePush()) return;//用户设置中不允许推送通知,则不发送消息了
         if (notifyBean == null || notifyBean.notificationId == -1)
             throw new IllegalArgumentException("notifyBean.notificationId cannot be  -1");
         final NotificationCompat.Builder builder = new NotificationCompat.Builder(getContext());
@@ -106,10 +117,10 @@ public class NotifyManager implements INotify {
         builder.setContentText(notifyBean.subContent);
         if (notifyBean.pendingIntent != null)
             builder.setContentIntent(notifyBean.pendingIntent);
-        if (notifyBean.sound) {
+        if (notifyBean.sound && enableSound()) {
             builder.setSound(Uri.parse("android.resource://" + ContextUtils.getContext().getPackageName() + "/" + R.raw.tips));
         }
-        if (notifyBean.vibrate) {
+        if (notifyBean.vibrate && enableVibrate()) {
             long[] vibrate = {0, 100, 200, 300};
             builder.setVibrate(vibrate);
         }
@@ -120,8 +131,6 @@ public class NotifyManager implements INotify {
             notification.contentView.setViewVisibility(smallIconId, View.INVISIBLE);
 //            notification.bigContentView.setViewVisibility(smallIconId, View.INVISIBLE);
         }
-        notification.sound = Uri.parse("android.resource://" + ContextUtils.getContext().getPackageName() + "/" + R.raw.tips);
-        notification.vibrate = new long[]{0, 100, 200, 300};
 //        notification.flags |= Notification.FLAG_FOREGROUND_SERVICE;
 //        notification.flags |= Notification.FLAG_NO_CLEAR;
 //        notification.flags |= Notification.FLAG_ONGOING_EVENT;

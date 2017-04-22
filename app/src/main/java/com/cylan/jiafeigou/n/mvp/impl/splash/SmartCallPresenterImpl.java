@@ -7,6 +7,7 @@ import android.content.Context;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
+import com.cylan.jiafeigou.push.WakeupService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -47,7 +48,6 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
             AppLogger.d("has sticky");
             subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
                     .subscribeOn(Schedulers.newThread())
-//                    .delay(200, TimeUnit.MILLISECONDS)
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                     .map(resultLogin -> {
@@ -96,7 +96,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                         }
 
                         for (int i = 0; i < serviceList.size(); i++) {
-                            if (serviceList.get(i).service.getClassName().equals("DataSourceService")) {
+                            if (serviceList.get(i).service.getClassName().equals(WakeupService.class.getName())) {
                                 isRunning = true;
                                 break;
                             }

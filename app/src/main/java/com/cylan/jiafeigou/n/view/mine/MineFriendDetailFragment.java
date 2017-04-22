@@ -11,18 +11,16 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
@@ -38,6 +36,7 @@ import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -205,7 +204,18 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
                 if (getView() != null)
                     ViewUtils.deBounceClick(getView().findViewById(R.id.tv_share_device));
                 AppLogger.e("tv_share_device");
-                jump2ShareDeviceFragment();
+                List<Device> devices = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+                int deviceCount = 0;
+                if (devices != null) {
+                    for (Device device : devices) {
+                        if (TextUtils.isEmpty(device.shareAccount)) deviceCount++;
+                    }
+                }
+                if (deviceCount == 0) {//当前账号没有任何设备
+                    ToastUtil.showNegativeToast(getString(R.string.Tap1_Index_NoDevice));
+                } else {
+                    jump2ShareDeviceFragment();
+                }
                 break;
             case R.id.iv_detail_user_head:
                 if (getView() != null)
@@ -228,7 +238,7 @@ public class MineFriendDetailFragment extends Fragment implements MineFriendDeta
         bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
         SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
         simpleDialogFragment.setAction((int id, Object value) -> {
-            if (id == R.id.tv_dialog_btn_left){
+            if (id == R.id.tv_dialog_btn_left) {
                 if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
                     ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
                     return;

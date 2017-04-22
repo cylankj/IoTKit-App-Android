@@ -97,23 +97,20 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
         etAddByNumber.requestFocus();
         InputMethodManager imm = (InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_IMPLICIT, InputMethodManager.HIDE_NOT_ALWAYS);
-        etAddByNumber.setOnKeyListener(new View.OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
-                    String account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
-                    if (TextUtils.isEmpty(getInputNum())) {
-                        ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
-                    } else if (getInputNum().equals(account)) {
-                        ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
-                    } else {
-                        showFindLoading();
-                        presenter.checkFriendAccount(getInputNum());
-                    }
-                    return true;
+        etAddByNumber.setOnKeyListener((v, keyCode, event) -> {
+            if (KeyEvent.KEYCODE_ENTER == keyCode && KeyEvent.ACTION_DOWN == event.getAction()) {
+                String account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount();
+                if (TextUtils.isEmpty(getInputNum())) {
+                    ToastUtil.showNegativeToast(getString(R.string.ACCOUNT_ERR));
+                } else if (getInputNum().equals(account)) {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
+                } else {
+                    showFindLoading();
+                    presenter.checkFriendAccount(getInputNum());
                 }
-                return false;
+                return true;
             }
+            return false;
         });
 
         etAddByNumber.addTextChangedListener(new TextWatcher() {
@@ -216,8 +213,8 @@ public class MineFriendAddByNumFragment extends Fragment implements MineFriendAd
             getFragmentManager().beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                             , R.anim.slide_in_left, R.anim.slide_out_right)
-                    .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
-                    .addToBackStack("mineHelpFragment")
+                    .add(android.R.id.content, addReqDetailFragment, addReqDetailFragment.getClass().getName())
+                    .addToBackStack("AddFlowStack")
                     .commit();
         } else {
             //已是亲友的跳转到分享

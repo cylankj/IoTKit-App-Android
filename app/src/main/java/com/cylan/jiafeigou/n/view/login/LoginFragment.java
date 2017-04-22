@@ -40,7 +40,6 @@ import com.cylan.jiafeigou.n.mvp.impl.ForgetPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.LoginPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.impl.SetupPwdPresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.LoginAccountBean;
-import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.facebook.FacebookInstance;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -54,6 +53,7 @@ import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.LocaleUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.cylan.jiafeigou.utils.ShareUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -75,7 +75,6 @@ import butterknife.OnCheckedChanged;
 import butterknife.OnClick;
 import butterknife.OnFocusChange;
 import butterknife.OnTextChanged;
-import rx.Observable;
 
 
 /**
@@ -466,11 +465,19 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             }
             break;
             case R.id.tv_twitterLogin_commit:
-                OpenLoginHelper.getInstance(getActivity()).loginAuthorize(6);
+                if (ShareUtils.isTwitterInstalled()) {
+                    OpenLoginHelper.getInstance(getActivity()).loginAuthorize(6);
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap0_Login_NoInstalled, "twitter"));
+                }
                 break;
 
             case R.id.tv_facebookLogin_commit:
-                OpenLoginHelper.getInstance(getActivity()).loginAuthorize(7);
+                if (ShareUtils.isFacebookInstalled()) {
+                    OpenLoginHelper.getInstance(getActivity()).loginAuthorize(7);
+                } else {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap0_Login_NoInstalled, "facebook"));
+                }
                 break;
         }
     }
@@ -610,7 +617,8 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
                 getActivity().finish();
             else {
                 getActivity().getSupportFragmentManager().popBackStack();
-                RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
+                ((NewHomeActivity) getActivity()).showHomeListFragment();
+//                RxBus.getCacheInstance().post(new RxEvent.LoginMeTab(true));
                 return;
             }
             getContext().startActivity(new Intent(getContext(), NewHomeActivity.class));

@@ -13,27 +13,22 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGFriendRequest;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendAddReqDetailContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendAddReqDetailPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.MineAddReqBean;
-import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.photoselect.models.Image;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
-import com.cylan.jiafeigou.widget.roundedimageview.RoundedImageView;
 
 import java.lang.ref.WeakReference;
 
@@ -109,7 +104,6 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         isFrom = arguments.getBoolean("isFrom");
         addRequestItems = (MineAddReqBean) arguments.getSerializable("addRequestItems");
         if (TextUtils.isEmpty(addRequestItems.alias)) {
-            tvRelativeAndFriendName.setText("sjd172");
         } else {
             tvRelativeAndFriendName.setText(addRequestItems.alias);
         }
@@ -197,7 +191,7 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, lookBigImageFragment, "lookBigImageFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("AddFlowStack")
                 .commit();
     }
 
@@ -264,13 +258,14 @@ public class MineFriendAddReqDetailFragment extends Fragment implements MineFrie
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, addReqFragment, "addFromContactFragment")
-                .addToBackStack("mineHelpFragment")
+                .add(android.R.id.content, addReqFragment, addReqFragment.getClass().getName())
+                .addToBackStack("AddFlowStack")
                 .commit();
     }
 
     /**
      * 是否存在该账号的结果
+     *
      * @param getAddReqList
      */
     @Override

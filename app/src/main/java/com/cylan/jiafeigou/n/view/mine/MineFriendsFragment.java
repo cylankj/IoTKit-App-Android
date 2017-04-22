@@ -10,8 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -116,13 +114,13 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         addReqDetailFragment.setOnAcceptAddListener(new MineFriendAddReqDetailFragment.OnAcceptAddListener() {
             @Override
             public void onAccept(MineAddReqBean backbean) {
-                addReqDeleteItem(position,backbean);
+                addReqDeleteItem(position, backbean);
                 RelAndFriendBean rBean = new RelAndFriendBean();
                 rBean.account = backbean.account;
                 rBean.alias = backbean.alias;
                 rBean.iconUrl = backbean.iconUrl;
                 rBean.markName = "";
-                friendlistAddItem(position,rBean);
+                friendlistAddItem(position, rBean);
             }
         });
     }
@@ -159,10 +157,11 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
 
     /**
      * 添加请求列表删除一个条目
+     *
      * @param bean
      */
     @Override
-    public void addReqDeleteItem(int position,MineAddReqBean bean) {
+    public void addReqDeleteItem(int position, MineAddReqBean bean) {
         addReqListAdater.remove(position);
         addReqListAdater.notifyDataSetHasChanged();
         if (addReqListAdater.getItemCount() == 0) {
@@ -279,7 +278,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, friendsFragment, "friendsFragment")
+                .add(android.R.id.content, friendsFragment, friendsFragment.getClass().getName())
                 .addToBackStack("mineHelpFragment")
                 .commit();
     }
@@ -392,7 +391,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
                     hideFriendListTitle();
                     if (addReqListAdater == null) {
                         showNullView();
-                    }else if (addReqListAdater.getItemCount() == 0){
+                    } else if (addReqListAdater.getItemCount() == 0) {
                         showNullView();
                     }
                 }
@@ -428,7 +427,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             account.iconUrl = item.iconUrl;
             account.markName = "";
             friendlistAddItem(layoutPosition, account);
-            addReqDeleteItem(layoutPosition,item);
+            addReqDeleteItem(layoutPosition, item);
         }
     }
 
