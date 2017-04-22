@@ -306,17 +306,17 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
-    //    compile 'com.cylan.iot.sdk:sdkLib:212'
-    fileTree(dir: 'libs', include: '**/*.aar')
-            .each { File file ->
-        dependencies.add("compile", [
-                name: file.name.lastIndexOf('.').with {
-                    it != -1 ? file.name[0..<it] : file.name
-                },
-                ext : 'aar'
-        ])
-    }
-    //谷歌推送
+    compile 'com.cylan.iot.sdk:sdkLib:212'
+//    fileTree(dir: 'libs', include: '**/*.aar')
+//            .each { File file ->
+//        dependencies.add("compile", [
+//                name: file.name.lastIndexOf('.').with {
+//                    it != -1 ? file.name[0..<it] : file.name
+//                },
+//                ext : 'aar'
+//        ])
+//    }
+
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
@@ -332,6 +332,7 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-design:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.1'
+    //谷歌推送
     compile 'com.google.android.gms:play-services-gcm:10.2.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
 }
