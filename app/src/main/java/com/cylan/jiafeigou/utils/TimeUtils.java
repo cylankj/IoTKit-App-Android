@@ -328,12 +328,11 @@ public class TimeUtils {
         Date provide = new Date(time);
         SimpleDateFormat format = (SimpleDateFormat) SimpleDateFormat.getInstance();
         if (today.getTime() - provide.getTime() < DAY_TIME) {//今天或者昨天
+            format.applyPattern(" HH:mm");
             if (today.getDay() == provide.getDay()) {//今天
-                format.applyPattern(ContextUtils.getContext().getString(R.string.WONDER_TODAY_H_M));
-                return format.format(provide);
+                return ContextUtils.getContext().getString(R.string.DOOR_TODAY) + format.format(provide);
             } else {//昨天
-                format.applyPattern(ContextUtils.getContext().getString(R.string.WONDER_YESTERDAY_H_M));
-                return format.format(provide);
+                return ContextUtils.getContext().getString(R.string.Yesterday) + format.format(provide);
             }
         }
 

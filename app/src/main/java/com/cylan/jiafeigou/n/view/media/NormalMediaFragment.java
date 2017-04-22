@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.n.view.media;
 
 
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,15 +19,18 @@ import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_LIST;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARE_ELEMENT_BYTE;
+import static com.cylan.jiafeigou.misc.JConstant.MISC_PATH;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -103,21 +107,30 @@ public class NormalMediaFragment extends IBaseFragment {
                 .into(imgVShowPic);
     }
 
-    private void loadBitmap(String filePath) {
-        Glide.with(this)
-                .load(filePath)
-                .asBitmap()
-                .placeholder(R.drawable.wonderful_pic_place_holder)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imgVShowPic);
+    private void loadBitmap(Bitmap bitmap) {
+        if (getView() != null) {
+            getView().post(() -> imgVShowPic.setImageDrawable(new BitmapDrawable(getResources(), bitmap)));
+        }
+//        Glide.with(this)
+//                .load(bitmap)
+//                .asBitmap()
+//                .placeholder(R.drawable.wonderful_pic_place_holder)
+//                .diskCacheStrategy(DiskCacheStrategy.ALL)
+//                .into(imgVShowPic);
     }
 
-    private void loadBitmap(Bitmap bitmap) {
-        Glide.with(this)
-                .load(bitmap)
-                .asBitmap()
-                .placeholder(R.drawable.wonderful_pic_place_holder)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(imgVShowPic);
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        try {
+            if (imgVShowPic != null) {
+                Bitmap bitmap = imgVShowPic.getVisibleRectangleBitmap();
+                if (bitmap != null && !bitmap.isRecycled()) bitmap.recycle();
+                bitmap = imgVShowPic.getDrawingCache();
+                if (bitmap != null && !bitmap.isRecycled()) bitmap.recycle();
+            }
+        } catch (Exception e) {
+            AppLogger.e("err:" + MiscUtils.getErr(e));
+        }
     }
 }

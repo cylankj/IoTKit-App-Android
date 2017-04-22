@@ -298,9 +298,11 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
 
     @Override
     public void sendWifiInfoFailed() {
-        LoadingDialog.dismissLoading(getSupportFragmentManager());
-        ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
-        tvWifiPwdSubmit.viewZoomBig();
+        runOnUiThread(()->{
+            LoadingDialog.dismissLoading(getSupportFragmentManager());
+            ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
+            tvWifiPwdSubmit.viewZoomBig();
+        });
     }
 
     @Override
