@@ -7,7 +7,6 @@ import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.multidex.MultiDexApplication;
 import android.text.TextUtils;
 import android.util.Log;
@@ -28,9 +27,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ProcessUtils;
 import com.danikula.videocache.HttpProxyCacheServer;
-import com.huawei.hms.api.ConnectionResult;
-import com.huawei.hms.api.HuaweiApiClient;
-import com.huawei.hms.support.api.push.HuaweiPush;
 import com.marswin89.marsdaemon.DaemonClient;
 import com.marswin89.marsdaemon.DaemonConfigurations;
 
@@ -40,15 +36,15 @@ import rx.schedulers.Schedulers;
 /**
  * Created by hunt on 16-5-14.
  */
-public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks, HuaweiApiClient.ConnectionCallbacks,
-        HuaweiApiClient.OnConnectionFailedListener {
+public class BaseApplication extends MultiDexApplication implements Application.ActivityLifecycleCallbacks {
 
     private static final String TAG = "BaseApplication";
 
     private DaemonClient mDaemonClient;
-    private HuaweiApiClient client;
     private static int ActiveActivityCount = 0;
     private static AppComponent appComponent;
+
+    public static int onTrimMemoryLevel;
 
     @Override
     protected void attachBaseContext(Context base) {
@@ -70,30 +66,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
         DaemonConfigurations.DaemonListener listener = new MyDaemonListener();
         //return new DaemonConfigurations(configuration1, configuration2);//listener can be null
         return new DaemonConfigurations(configuration1, configuration2, listener);
-    }
-
-    @Override
-    public void onConnected() {
-        AppLogger.d("华为推送连接成功");
-        HuaweiPush.HuaweiPushApi.getToken(client).setResultCallback(result -> {
-        });
-    }
-
-    private void pushServicePicker() {
-
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        AppLogger.d("onConnectionSuspended" + i);
-    }
-
-    @Override
-    public void onConnectionFailed(@NonNull ConnectionResult result) {
-        if (result.getErrorCode() == 1) {
-            AppLogger.d("未安装华为推送服务");
-        }
-        AppLogger.d("华为推送连接失败" + result.getErrorCode());
     }
 
 
@@ -131,7 +103,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
             //每一个新的进程启动时，都会调用onCreate方法。
             //Dagger2 依赖注入,初始化全局资源
             registerActivityLifecycleCallbacks(this);
-            initHuaweiPushSDK();
 //            startService(new Intent(this, DataSourceService.class));
             GlobalResetPwdSource.getInstance().register();
             Schedulers.io().createWorker().schedule(() -> appComponent.getInitializationManager().initialization());
@@ -151,15 +122,6 @@ public class BaseApplication extends MultiDexApplication implements Application.
         }
     }
 
-    private void initHuaweiPushSDK() {
-        AppLogger.d("正在初始化华为推送SDK");
-        client = new HuaweiApiClient.Builder(this)
-                .addApi(HuaweiPush.PUSH_API)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .build();
-        client.connect();
-    }
 
     @Override
     public void onTerminate() {
@@ -167,14 +129,13 @@ public class BaseApplication extends MultiDexApplication implements Application.
         AppLogger.d("进程已被销毁!!!!");
         appComponent.getInitializationManager().clean();
         GlobalResetPwdSource.getInstance().unRegister();
-        if (client != null && client.isConnected()) {
-            client.disconnect();
-        }
+
     }
 
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
+        onTrimMemoryLevel = level;
         switch (level) {
             case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
                 //should release some resource

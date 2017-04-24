@@ -135,23 +135,27 @@ android {
         _yun {
             //vid vkey已经搬到Security.java
             //官方运营
+            applicationId "com.cylan.jiafeigou"
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
+                                    "HW_APP_ID"          : "10515998",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
                                     "qqAppKey"           : "\\ 1103156296",
                                     "mtaAppKey"          : "Aqc1103156296",
                                     "weChatAppKey"       : "wx3081bcdae8a842cf",
                                     "sinaAppKey"         : "\\ 1315129656",
-                                    "SERVER"             : "yun.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "1866682200216878"]
+                                    "SERVER"             : "yf.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 208964865997"]
         }
         _test1 {
             applicationIdSuffix ".test1"
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.test1.hms.update.provider",
+                                    "HW_APP_ID"          : "10865640",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
                                     "qqAppKey"           : "\\ 1106028314",
@@ -159,7 +163,8 @@ android {
                                     "weChatAppKey"       : "wx1b350d7d8d8920ed",
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "test1.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "1866682200216878"
+                                    "FACEBOOK_APP_ID"    : "1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 208964865997"
             ]
         }
         _doby {
@@ -167,6 +172,7 @@ android {
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.zhongxing.hms.update.provider",
+                                    "HW_APP_ID"          : "xxx",
                                     "VID"                : "\\ 0002",
                                     "VKEY"               : "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1",
                                     "qqAppKey"           : "",
@@ -174,7 +180,8 @@ android {
                                     "weChatAppKey"       : "",
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yun.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "1866682200216878"
+                                    "FACEBOOK_APP_ID"    : "1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 208964865997"
             ]
         }
         _cell_c {
@@ -182,6 +189,7 @@ android {
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.cell_c.hms.update.provider",
+                                    "HW_APP_ID"          : "xxx",
                                     "VID"                : "\\  0060",
                                     "VKEY"               : "doLUb8CEObqCKQpA05ytKKHPu5Q3SvYX",
                                     "qqAppKey"           : "",
@@ -189,7 +197,8 @@ android {
                                     "weChatAppKey"       : "",
                                     "sinaAppKey"         : "",
                                     "SERVER"             : "yun.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "1866682200216878"
+                                    "FACEBOOK_APP_ID"    : "1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 208964865997"
             ]
         }
         _yf {
@@ -197,6 +206,7 @@ android {
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.yf.hms.update.provider",
+                                    "HW_APP_ID"          : "10826402",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
                                     "qqAppKey"           : "\\ 1106028314",
@@ -204,24 +214,27 @@ android {
                                     "weChatAppKey"       : "wx82878b30fc6c0a6d",
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yf.jfgou.com:443",
-                                    "FACEBOOK_APP_ID"    : "1866682200216878"
+                                    "FACEBOOK_APP_ID"    : "1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 208964865997"
             ]
         }
-//        _ps {
-//            applicationId "com.panoview"
-//            versionName vName
-//            versionCode vCode
-//            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.panoview.hms.update.provider",
-//                                    "VID"                : "\\ 0015",
-//                                    "VKEY"               : "yzL5ygkRzNkOiUT2a07IxjOJ109AhKF0",
-//                                    "qqAppKey"           : "",
-//                                    "mtaAppKey"          : "Aqc1103156296",
-//                                    "weChatAppKey"       : "",
-//                                    "sinaAppKey"         : "",
-//                                    "SERVER"             : "yf.jfgou.com:443",
-//                                    "FACEBOOK_APP_ID"    : "1866682200216878"
-//            ]
-//        }
+        _ps {
+            applicationId "com.panoview"
+            versionName vName
+            versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.panoview.hms.update.provider",
+                                    "HW_APP_ID"          : "10863475",
+                                    "VID"                : "\\ 0015",
+                                    "VKEY"               : "yzL5ygkRzNkOiUT2a07IxjOJ109AhKF0",
+                                    "qqAppKey"           : "",
+                                    "mtaAppKey"          : "Aqc1103156296",
+                                    "weChatAppKey"       : "",
+                                    "sinaAppKey"         : "",
+                                    "SERVER"             : "yf.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 208964865997"
+            ]
+        }
     }
 }
 
@@ -306,7 +319,7 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
-    //    compile 'com.cylan.iot.sdk:sdkLib:212'
+//    compile 'com.cylan.iot.sdk:sdkLib:212'
     fileTree(dir: 'libs', include: '**/*.aar')
             .each { File file ->
         dependencies.add("compile", [
@@ -316,7 +329,7 @@ dependencies {
                 ext : 'aar'
         ])
     }
-    //谷歌推送
+
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
@@ -332,6 +345,7 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-design:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.1'
+    //谷歌推送
     compile 'com.google.android.gms:play-services-gcm:10.2.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
 }

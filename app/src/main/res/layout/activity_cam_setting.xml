@@ -109,6 +109,7 @@
                 android:id="@+id/sv_setting_device_delay_capture"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y72"
+                android:visibility="gone"
                 hunt:sv_image_src="@drawable/setting_icon_filming"
                 hunt:sv_sub_title="@string/Tap1_CameraFun_Timelapse_NotStart"
                 hunt:sv_title="@string/Tap2_Timelapse_title"
