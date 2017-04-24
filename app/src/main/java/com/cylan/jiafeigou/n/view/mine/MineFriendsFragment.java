@@ -238,8 +238,9 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         builder.setPositiveButton(getString(R.string.DELETE), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                tempReqBean = bean;
-                presenter.deleteAddReq(bean.account);
+//                tempReqBean = bean;
+//                presenter.deleteAddReq(bean.account);
+                jump2AddReqDetailFragment(position, addReqListAdater.getList().get(position));
                 dialog.dismiss();
             }
         }).setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {

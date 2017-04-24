@@ -125,7 +125,8 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     @Override
     public boolean checkAddRequestOutTime(MineAddReqBean bean) {
         long oneMount = 30 * 24 * 60 * 60 * 1000L;
-        return (oneMount - bean.time) < 0;
+        long current = System.currentTimeMillis();
+        return (current - bean.time) > oneMount;
     }
 
     /**

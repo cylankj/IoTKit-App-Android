@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -219,6 +221,21 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
         btnItemSwitchAccessMes.setOnCheckedChangeListener(this);
         btnItemSwitchVoide.setOnCheckedChangeListener(this);
         btnItemSwitchShake.setOnCheckedChangeListener(this);
+
+    }
+
+    private void openSetting() {
+        Intent localIntent = new Intent();
+        localIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (Build.VERSION.SDK_INT >= 9) {
+            localIntent.setAction("android.settings.APPLICATION_DETAILS_SETTINGS");
+            localIntent.setData(Uri.fromParts("package", getContext().getPackageName(), null));
+        } else if (Build.VERSION.SDK_INT <= 8) {
+            localIntent.setAction(Intent.ACTION_VIEW);
+            localIntent.setClassName("com.android.settings", "com.android.settings.InstalledAppDetails");
+            localIntent.putExtra("com.android.settings.ApplicationPkgName", getContext().getPackageName());
+        }
+        startActivity(localIntent);
     }
 
     @Override
@@ -230,7 +247,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                     btnItemSwitchAccessMes.setChecked(false);
                     AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
                     builder.setMessage(getString(R.string.LOCAL_NOTIFICATION_AndroidMSG, getString(R.string.SYSTEM)))
-                            .setPositiveButton(R.string.WELL_OK, null)
+                            .setPositiveButton(R.string.WELL_OK, (dialog, which) -> openSetting())
                             .setTitle(R.string.PUSH_MSG);
                     builder.show();
                 } else {

@@ -45,8 +45,6 @@ import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineInfoPresenterImpl;
-import com.cylan.jiafeigou.rx.RxBus;
-import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.photoselect.ClipImageActivity;
 import com.cylan.jiafeigou.support.photoselect.activities.AlbumSelectActivity;
@@ -288,12 +286,9 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 .commit();
 
         if (getActivity() != null && getActivity().getFragmentManager() != null) {
-            setUserNameFragment.setOnSetUsernameListener(new MineSetUserAliasFragment.OnSetUsernameListener() {
-                @Override
-                public void userNameChange(String name) {
-                    tvUserName.setText(name);
-                    argumentData.setAlias(name);
-                }
+            setUserNameFragment.setOnSetUsernameListener(name -> {
+                tvUserName.setText(name);
+                argumentData.setAlias(name);
             });
         }
     }
@@ -303,7 +298,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void lookBigImageHead() {
         Bundle bundle = new Bundle();
-        bundle.putString("imageUrl", presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON):argumentData.getPhotoUrl());
+        bundle.putString("imageUrl", presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : argumentData.getPhotoUrl());
         MineUserInfoLookBigHeadFragment bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -354,7 +349,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             } else {
                 tvHomeMinePersonalPhone.setText(bean.getPhone());
             }
-            presenter.loginType(bean.getAccount(),bean.getPhone(),bean.getEmail());
+            presenter.loginType(bean.getAccount(), bean.getPhone(), bean.getEmail());
         }
     }
 
@@ -364,8 +359,8 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
         public MyViewTarget(ImageView view, Resources resource) {
             super(view);
-            image = new WeakReference<ImageView>(view);
-            resources = new WeakReference<Resources>(resource);
+            image = new WeakReference<>(view);
+            resources = new WeakReference<>(resource);
         }
 
         @Override
@@ -391,12 +386,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 .addToBackStack("personalInformationFragment")
                 .commit();
         if (getActivity() != null && getActivity().getFragmentManager() != null) {
-            mailBoxFragment.setListener(new HomeMineInfoMailBoxFragment.OnBindMailBoxListener() {
-                @Override
-                public void mailBoxChange(String content) {
-                    mTvMailBox.setText(content);
-                }
-            });
+            mailBoxFragment.setListener(content -> mTvMailBox.setText(content));
         }
     }
 
@@ -408,16 +398,16 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     }
 
     @Override
-    public void setAccount(String account,String phone,String email,int type) {
-        if (type == 3){
-            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?getString(R.string.LOGIN_QQ):email):phone);
-        }else if (type == 4){
-            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?getString(R.string.LOGIN_WEIBO):email):phone);
-        }else if (type == 6){
-            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?"Twitter LOGIN":email):phone);
-        }else if (type == 7){
-            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email)?"FaceBook LOGIN":email):phone);
-        }else {
+    public void setAccount(String account, String phone, String email, int type) {
+        if (type == 3) {
+            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? getString(R.string.LOGIN_QQ) : email) : phone);
+        } else if (type == 4) {
+            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? getString(R.string.LOGIN_WEIBO) : email) : phone);
+        } else if (type == 6) {
+            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? "Twitter LOGIN" : email) : phone);
+        } else if (type == 7) {
+            tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? "FaceBook LOGIN" : email) : phone);
+        } else {
             tvUserAccount.setText(account);
         }
     }
@@ -443,12 +433,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         //设置位置
         popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
         //设置消失监听
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                setBackgroundAlpha(1);
-            }
-        });
+        popupWindow.setOnDismissListener(() -> setBackgroundAlpha(1));
         //设置PopupWindow的View点击事件
         setOnPopupViewClick(view);
         //设置背景色
@@ -457,6 +442,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     /**
      * popupwindow条目点击
+     *
      * @param view
      */
     private void setOnPopupViewClick(View view) {
@@ -464,54 +450,38 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         tv_pick_phone = (TextView) view.findViewById(R.id.tv_pick_gallery);
         tv_pick_zone = (TextView) view.findViewById(R.id.tv_pick_camera);
         tv_cancel = (TextView) view.findViewById(R.id.tv_cancel);
-        tv_pick_phone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (presenter.checkExternalStorePermission()) {
-                    openGallery();
+        tv_pick_phone.setOnClickListener(v -> {
+            if (presenter.checkExternalStorePermission()) {
+                openGallery();
+            } else {
+                //申请权限
+                HomeMineInfoFragment.this.requestPermissions(
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        2);
+            }
+            popupWindow.dismiss();
+        });
+
+        tv_pick_zone.setOnClickListener(v -> {
+            //打开相机
+            if (presenter.checkHasCamera()) {
+
+                if (presenter.checkCameraPermission() && presenter.cameraIsCanUse()) {
+                    openCamera();
                 } else {
                     //申请权限
                     HomeMineInfoFragment.this.requestPermissions(
-                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
-                            2);
+                            new String[]{Manifest.permission.CAMERA},
+                            1);
                 }
-                popupWindow.dismiss();
+
+            } else {
+                ToastUtil.showToast(getString(R.string.Tap3_Userinfo_NoCamera));
             }
+            popupWindow.dismiss();
         });
 
-        tv_pick_zone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //打开相机
-                if (presenter.checkHasCamera()) {
-
-                    if (presenter.checkCameraPermission()) {
-                        if (presenter.cameraIsCanUse()) {
-                            openCamera();
-                        } else {
-                            ToastUtil.showToast(getString(R.string.Tap3_Userinfo_NoCamera));
-                        }
-
-                    } else {
-                        //申请权限
-                        HomeMineInfoFragment.this.requestPermissions(
-                                new String[]{Manifest.permission.CAMERA},
-                                1);
-                    }
-
-                } else {
-                    ToastUtil.showToast(getString(R.string.Tap3_Userinfo_NoCamera));
-                }
-                popupWindow.dismiss();
-            }
-        });
-
-        tv_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
+        tv_cancel.setOnClickListener(v -> popupWindow.dismiss());
     }
 
     /**
@@ -545,12 +515,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 .add(android.R.id.content, bindPhoneFragment, "bindPhoneFragment")
                 .addToBackStack("personalInformationFragment")
                 .commit();
-        bindPhoneFragment.setOnChangePhoneListener(new MineInfoBindPhoneFragment.OnChangePhoneListener() {
-            @Override
-            public void onChange(String phone) {
-                tvHomeMinePersonalPhone.setText(phone);
-            }
-        });
+        bindPhoneFragment.setOnChangePhoneListener(phone -> tvHomeMinePersonalPhone.setText(phone));
     }
 
     /**
@@ -590,12 +555,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
         //设置位置
         popupWindow.showAtLocation(v, Gravity.BOTTOM, 0, navigationHeight - 50);
         //设置消失监听
-        popupWindow.setOnDismissListener(new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                setBackgroundAlpha(1);
-            }
-        });
+        popupWindow.setOnDismissListener(() -> setBackgroundAlpha(1));
         //设置PopupWindow的View点击事件
         setOnLogoutClick(view);
         //设置背景色
@@ -613,26 +573,18 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
         tv_pick_zone.setText(getString(R.string.LOGOUT));
 
-        tv_pick_zone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-                if (getView() != null && argumentData != null) {
-                    presenter.logOut(argumentData.getAccount());
-                    jump2LoginFragment();
-                    if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
-                        ((NewHomeActivity) getActivity()).finishExt();
-                    }
+        tv_pick_zone.setOnClickListener(v -> {
+            popupWindow.dismiss();
+            if (getView() != null && argumentData != null) {
+                presenter.logOut(argumentData.getAccount());
+                jump2LoginFragment();
+                if (getActivity() != null && getActivity() instanceof NewHomeActivity) {
+                    ((NewHomeActivity) getActivity()).finishExt();
                 }
             }
         });
 
-        tv_cancel.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                popupWindow.dismiss();
-            }
-        });
+        tv_cancel.setOnClickListener(v -> popupWindow.dismiss());
     }
 
 
