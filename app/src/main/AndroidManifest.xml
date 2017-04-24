@@ -104,7 +104,7 @@
         <!-- 华为推送 Start -->
         <meta-data
             android:name="com.huawei.hms.client.appid"
-            android:value="10515998" />
+            android:value="${HW_APP_ID}" />
         <meta-data
             android:name="BUGLY_APPID"
             android:value="900026046" />

@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.base.module;
 
 
 import android.app.PendingIntent;
+import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -721,6 +722,10 @@ public class DataSourceManager implements JFGSourceManager {
     private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
         if (getAccount() == null || !getJFGAccount().isEnablePush())
             return;
+        if (BaseApplication.onTrimMemoryLevel == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
+            AppLogger.d("app is in background state");
+            return;
+        }
         Device device = getDevice(uuid);
         //需要考虑,app进入后台.
         if (device != null && !TextUtils.isEmpty(device.account)) {

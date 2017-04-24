@@ -25,9 +25,9 @@ allprojects {
 //              审核通过之后,可以注释掉
             url 'https://dl.bintray.com/cylan/maven/'
         }
-        maven {
-            url 'https://dl.bintray.com/cylan/Iot'
-        }
+//        maven {
+//            url 'https://dl.bintray.com/cylan/Iot'
+//        }
     }
 }
 

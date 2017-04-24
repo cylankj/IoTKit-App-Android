@@ -135,24 +135,27 @@ android {
         _yun {
             //vid vkey已经搬到Security.java
             //官方运营
+            applicationId "com.cylan.jiafeigou"
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.hms.update.provider",
+                                    "HW_APP_ID"          : "10515998",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
                                     "qqAppKey"           : "\\ 1103156296",
                                     "mtaAppKey"          : "Aqc1103156296",
                                     "weChatAppKey"       : "wx3081bcdae8a842cf",
                                     "sinaAppKey"         : "\\ 1315129656",
-                                    "SERVER"             : "yun.jfgou.com:443",
+                                    "SERVER"             : "yf.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
-                                    "GCM_APP_ID"         : "208964865997"]
+                                    "GCM_APP_ID"         : "\\ 208964865997"]
         }
         _test1 {
             applicationIdSuffix ".test1"
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.test1.hms.update.provider",
+                                    "HW_APP_ID"          : "10865640",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
                                     "qqAppKey"           : "\\ 1106028314",
@@ -161,7 +164,7 @@ android {
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "test1.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
-                                    "GCM_APP_ID"         : "208964865997"
+                                    "GCM_APP_ID"         : "\\ 208964865997"
             ]
         }
         _doby {
@@ -169,6 +172,7 @@ android {
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.zhongxing.hms.update.provider",
+                                    "HW_APP_ID"          : "xxx",
                                     "VID"                : "\\ 0002",
                                     "VKEY"               : "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1",
                                     "qqAppKey"           : "",
@@ -177,7 +181,7 @@ android {
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yun.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
-                                    "GCM_APP_ID"         : "208964865997"
+                                    "GCM_APP_ID"         : "\\ 208964865997"
             ]
         }
         _cell_c {
@@ -185,6 +189,7 @@ android {
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.cell_c.hms.update.provider",
+                                    "HW_APP_ID"          : "xxx",
                                     "VID"                : "\\  0060",
                                     "VKEY"               : "doLUb8CEObqCKQpA05ytKKHPu5Q3SvYX",
                                     "qqAppKey"           : "",
@@ -193,7 +198,7 @@ android {
                                     "sinaAppKey"         : "",
                                     "SERVER"             : "yun.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
-                                    "GCM_APP_ID"         : "208964865997"
+                                    "GCM_APP_ID"         : "\\ 208964865997"
             ]
         }
         _yf {
@@ -201,6 +206,7 @@ android {
             versionName vName
             versionCode vCode
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.yf.hms.update.provider",
+                                    "HW_APP_ID"          : "10826402",
                                     "VID"                : "\\ 0001",
                                     "VKEY"               : "Z5SYDbLV44zfFGRdAgFQhH62fAnIqf3G",
                                     "qqAppKey"           : "\\ 1106028314",
@@ -209,24 +215,26 @@ android {
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yf.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
-                                    "GCM_APP_ID"         : "208964865997"
+                                    "GCM_APP_ID"         : "\\ 208964865997"
             ]
         }
-//        _ps {
-//            applicationId "com.panoview"
-//            versionName vName
-//            versionCode vCode
-//            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.panoview.hms.update.provider",
-//                                    "VID"                : "\\ 0015",
-//                                    "VKEY"               : "yzL5ygkRzNkOiUT2a07IxjOJ109AhKF0",
-//                                    "qqAppKey"           : "",
-//                                    "mtaAppKey"          : "Aqc1103156296",
-//                                    "weChatAppKey"       : "",
-//                                    "sinaAppKey"         : "",
-//                                    "SERVER"             : "yf.jfgou.com:443",
-//                                    "FACEBOOK_APP_ID"    : "1866682200216878"
-//            ]
-//        }
+        _ps {
+            applicationId "com.panoview"
+            versionName vName
+            versionCode vCode
+            manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.panoview.hms.update.provider",
+                                    "HW_APP_ID"          : "10863475",
+                                    "VID"                : "\\ 0015",
+                                    "VKEY"               : "yzL5ygkRzNkOiUT2a07IxjOJ109AhKF0",
+                                    "qqAppKey"           : "",
+                                    "mtaAppKey"          : "Aqc1103156296",
+                                    "weChatAppKey"       : "",
+                                    "sinaAppKey"         : "",
+                                    "SERVER"             : "yf.jfgou.com:443",
+                                    "FACEBOOK_APP_ID"    : "1866682200216878",
+                                    "GCM_APP_ID"         : "\\ 208964865997"
+            ]
+        }
     }
 }
 

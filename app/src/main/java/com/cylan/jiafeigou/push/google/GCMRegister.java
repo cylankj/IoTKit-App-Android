@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -46,8 +47,10 @@ public class GCMRegister extends IntentService implements IPushRegister {
             // See https://developers.google.com/cloud-messaging/android/start for details on this file.
             // [START get_token]
             InstanceID instanceID = InstanceID.getInstance(this);
-            String token = instanceID.getToken(PackageUtils.getMetaString(getApplicationContext(), "GCM_APP_ID"),
-                    GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
+            String id = PackageUtils.getMetaString(getApplicationContext(), "GCM_APP_ID");
+            AppLogger.d("gcm appId: " + id);
+            if (TextUtils.isEmpty(id)) throw new IllegalArgumentException("gcm appId is null");
+            String token = instanceID.getToken(id, GoogleCloudMessaging.INSTANCE_ID_SCOPE, null);
             // [END get_token]
             AppLogger.d(PUSH_TAG + "GCM Registration Token: " + token);
 

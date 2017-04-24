@@ -5,7 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.TextUtils;
 
+import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
+
+import rx.Observable;
+import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.push.PushConstant.PUSH_TAG;
 import static com.cylan.jiafeigou.push.google.QuickstartPreferences.PUSH_MESSAGE_RESULT;
@@ -34,6 +40,15 @@ public class PushResultReceiver extends BroadcastReceiver {
             String from = intent.getStringExtra(PUSH_MS_NAME);
             AppLogger.d(PUSH_TAG + ":token:" + token + ",from:" + from);
             //send to server
+            Observable.just(token)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(ret -> {
+                        try {
+                            BaseApplication.getAppComponent().getCmd().setPushToken(ret, context.getPackageName());
+                        } catch (JfgException e) {
+                            AppLogger.e("err:" + MiscUtils.getErr(e));
+                        }
+                    }, AppLogger::e);
         }
     }
 }
