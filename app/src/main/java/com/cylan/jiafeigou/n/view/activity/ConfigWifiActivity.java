@@ -243,8 +243,8 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
 
     @Override
     public void onNetStateChanged(int state) {
-        if (state != ConnectivityManager.TYPE_WIFI)
-            ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
+        if (state != ConnectivityManager.TYPE_WIFI){}
+//            ToastUtil.showNegativeToast(getString(R.string.NoNetworkTips));
         else {
             dismissDialog();
         }
@@ -277,7 +277,9 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     public void onSetWifiFinished(UdpConstant.UdpDevicePortrait o) {
         LoadingDialog.dismissLoading(getSupportFragmentManager());
         if (getIntent().hasExtra(JUST_SEND_INFO)) {
-            ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG));
+            runOnUiThread(() -> {
+                ToastUtil.showPositiveToast(getString(R.string.DOOR_SET_WIFI_MSG));
+            });
             Intent intent = new Intent(this, NewHomeActivity.class);
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             startActivity(intent);
@@ -298,7 +300,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
 
     @Override
     public void sendWifiInfoFailed() {
-        runOnUiThread(()->{
+        runOnUiThread(() -> {
             LoadingDialog.dismissLoading(getSupportFragmentManager());
             ToastUtil.showNegativeToast(getString(R.string.NO_NETWORK_4));
             tvWifiPwdSubmit.viewZoomBig();
