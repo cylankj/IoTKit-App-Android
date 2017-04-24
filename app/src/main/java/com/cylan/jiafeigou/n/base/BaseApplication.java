@@ -41,9 +41,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private static final String TAG = "BaseApplication";
 
     private DaemonClient mDaemonClient;
-    private static int ActiveActivityCount = 0;
     private static AppComponent appComponent;
-
+    private static boolean isBackground = false;
     public static int onTrimMemoryLevel;
 
     @Override
@@ -92,6 +91,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         super.onCreate();
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
+            isBackground=false;
             startService(new Intent(this, WakeupService.class));
             try2init();
             PreferencesUtils.init(getApplicationContext());
@@ -141,6 +141,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
                 //should release some resource
                 Log.d(TAG, "onTrimMemory: " + level);
 //                shouldKillBellCallProcess();
+                isBackground=true;
                 RxBus.getCacheInstance().post(new RxEvent.AppHideEvent());
 //                JfgCmdInsurance.getCmd().closeDataBase();
                 break;
@@ -161,9 +162,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     @Override
     public void onActivityStarted(Activity activity) {
-
-        ActiveActivityCount++;
         AppLogger.i("life:onActivityStarted " + activity.getClass().getSimpleName());
+        GlobalResetPwdSource.getInstance().currentActivity(activity);
     }
 
     @Override
@@ -178,12 +178,11 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     @Override
     public void onActivityStopped(Activity activity) {
-        ActiveActivityCount--;
         AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
     }
 
-    public static int getActiveActivityCount() {
-        return ActiveActivityCount;
+    public static boolean isBackground() {
+        return isBackground;
     }
 
     @Override

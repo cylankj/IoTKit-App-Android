@@ -47,7 +47,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(getDeviceUnBindSub());
-//        registerSubscription(watchLoginState());
     }
 
     private Subscription getDeviceUnBindSub() {

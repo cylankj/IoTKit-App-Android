@@ -236,12 +236,7 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
     public Subscription getAddRequest() {
         return rx.Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        BaseApplication.getAppComponent().getCmd().getFriendRequestList();
-                    }
-                }, throwable -> {
+                .subscribe(o -> BaseApplication.getAppComponent().getCmd().getFriendRequestList(), throwable -> {
                     AppLogger.e("getAddRequest: " + throwable.getLocalizedMessage());
                 });
     }

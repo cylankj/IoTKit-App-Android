@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.base.view.JFGSourceManager;
 import com.cylan.jiafeigou.base.view.JFGView;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.n.engine.GlobalResetPwdSource;
 import com.cylan.jiafeigou.n.mvp.contract.record.DelayRecordContract;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
@@ -43,6 +44,7 @@ public abstract class BaseActivity<P extends JFGPresenter> extends AppCompatActi
     protected JFGSourceManager sourceManager;
     @Inject
     protected AppCmd appCmd;
+
     protected String uuid;
     protected AlertDialog alertDialog;
     protected Toast mToast;

@@ -173,6 +173,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
                 userInfo.setEnablePush(aBoolean);
                 try {
                     BaseApplication.getAppComponent().getCmd().setAccount(userInfo);
+                    BaseApplication.getAppComponent().getSourceManager().setJfgAccount(userInfo);
                 } catch (JfgException e) {
                     e.printStackTrace();
                 }

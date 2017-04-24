@@ -133,20 +133,27 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         //请求过期
         android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getView().getContext());
         builder.setMessage(getString(R.string.Tap3_FriendsAdd_ExpiredTips));
-        builder.setPositiveButton(getString(R.string.Tap3_FriendsAdd_Send), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                ToastUtil.showPositiveToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
-                //向对方发送请求
-                presenter.sendAddReq(item.account);
-            }
+        builder.setPositiveButton(getString(R.string.Tap3_FriendsAdd_Send), (dialog, which) -> {
+            tempReqBean = item;
+            dialog.dismiss();
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("isFrom", false);
+            bundle.putSerializable("addRequestItems", item);
+            MineFriendAddReqDetailFragment addReqDetailFragment = MineFriendAddReqDetailFragment.newInstance(bundle);
+            getFragmentManager().beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
+                            , R.anim.slide_in_left, R.anim.slide_out_right)
+                    .add(android.R.id.content, addReqDetailFragment, addReqDetailFragment.getClass().getName())
+                    .addToBackStack("AddFlowStack")
+                    .commit();
+            presenter.deleteAddReq(item.account);
+            //向对方发送请求
         });
-        builder.setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
+        builder.setNegativeButton(getString(R.string.CANCEL), (dialog, which) -> {
+            presenter.deleteAddReq(item.account);
+            addReqListAdater.remove(item);
+            addReqListAdater.notifyDataSetHasChanged();
+            dialog.dismiss();
         }).show();
     }
 
@@ -238,8 +245,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
         builder.setPositiveButton(getString(R.string.DELETE), new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-//                tempReqBean = bean;
-//                presenter.deleteAddReq(bean.account);
+                tempReqBean = bean;
                 jump2AddReqDetailFragment(position, addReqListAdater.getList().get(position));
                 dialog.dismiss();
             }
@@ -412,6 +418,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     public void onAccept(SuperViewHolder holder, int viewType, int layoutPosition, MineAddReqBean item) {
         if (presenter.checkAddRequestOutTime(item)) {
             showReqOutTimeDialog(item);
+
         } else {
             //调用添加成功
             if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {

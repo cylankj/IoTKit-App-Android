@@ -1,12 +1,8 @@
 package com.cylan.jiafeigou.n.engine;
 
-import android.app.AlertDialog;
-import android.app.Dialog;
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.WindowManager;
+import android.support.v7.app.AlertDialog;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
@@ -33,8 +29,9 @@ import rx.subscriptions.CompositeSubscription;
 public class GlobalResetPwdSource {
     private static GlobalResetPwdSource instance;
     private CompositeSubscription mSubscription;
-    private Dialog dialog;
     private Subscription clearSub;
+
+    private Activity appCompatActivity;
 
     public static GlobalResetPwdSource getInstance() {
         if (instance == null) {
@@ -51,15 +48,13 @@ public class GlobalResetPwdSource {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pwdHasResetEvent -> {
+                    AppLogger.d("收到密码已被修改通知" + BaseApplication.isBackground());
                     clearPwd();
-                    if (!isBackground(ContextUtils.getContext()))
+                    if (!BaseApplication.isBackground()) {
                         pwdResetedDialog(pwdHasResetEvent.code);
+                    }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         mSubscription.add(subscribe);
-    }
-
-    public static boolean isBackground(Context context) {
-        return BaseApplication.getActiveActivityCount() == 0;
     }
 
     public void unRegister() {
@@ -72,28 +67,26 @@ public class GlobalResetPwdSource {
             clearSub.unsubscribe();
             clearSub = null;
         }
+    }
 
-        if (dialog != null) {
-            dialog.dismiss();
-            dialog = null;
-        }
+    public void currentActivity(Activity appCompatActivity) {
+        this.appCompatActivity = appCompatActivity;
     }
 
     public void pwdResetedDialog(int code) {
-        if (code == 16008 || code == 1007) {
+        if (code == 16008 || code == 1007 || code == 16006) {
             AppLogger.d("pwdResetedDialog:" + code);
-            AlertDialog.Builder builder = new AlertDialog.Builder(ContextUtils.getContext().getApplicationContext());
-            LayoutInflater mLayoutInflater = LayoutInflater.from(ContextUtils.getContext().getApplicationContext());
-            View view = mLayoutInflater.inflate(R.layout.dialog_reset_pwd_tab_view, null);
-            builder.setView(view);
-            dialog = builder.create();
-            dialog.getWindow().setType(WindowManager.LayoutParams.TYPE_TOAST);
-            dialog.show();
-            view.findViewById(R.id.tv_dialog_btn_left).setOnClickListener(v -> {
-                //跳转到SmartcallActivity
-                jump2LoginFragment();
-                dialog.dismiss();
-            });
+            if (appCompatActivity != null) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(appCompatActivity);
+                builder.setTitle(R.string.RET_ELOGIN_ERROR)
+                        .setMessage(R.string.PWD_CHANGED)
+                        .setCancelable(false)
+                        .setPositiveButton(R.string.OK, (dialog1, which) -> {
+                            dialog1.dismiss();
+                            jump2LoginFragment();
+                        })
+                        .show();
+            }
         }
     }
 
