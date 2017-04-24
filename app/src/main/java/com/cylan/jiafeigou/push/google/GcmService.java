@@ -3,6 +3,9 @@ package com.cylan.jiafeigou.push.google;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.cylan.jiafeigou.base.view.JFGSourceManager;
+import com.cylan.jiafeigou.n.base.BaseApplication;
+import com.cylan.jiafeigou.push.BellPuller;
 import com.google.android.gms.gcm.GcmListenerService;
 
 /**
@@ -23,7 +26,8 @@ public class GcmService extends GcmListenerService {
     @Override
     public void onMessageReceived(String from, Bundle data) {
         String message = data.getString("message");
-        Log.d(TAG, "From: " + from);
+        JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
+        Log.d(TAG, "From: " + from + ",login?" + (sourceManager == null));
         Log.d(TAG, "Message: " + message);
         if (from.startsWith("/topics/")) {
             // message received from some topic.
@@ -43,6 +47,7 @@ public class GcmService extends GcmListenerService {
          * that a message was received.
          */
         sendNotification(message);
+        BellPuller.getInstance().fireBellCalling(message, data);
         // [END_EXCLUDE]
     }
     // [END receive_message]

@@ -239,6 +239,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 basePresenter.fetchMessageList(TimeUtils.getSpecificDayEndTime(time), false);
             camMessageListAdapter.clear();
             LoadingDialog.showLoading(getFragmentManager());
+            boolean isToday = TimeUtils.isToday(time);
+            String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
+            tvCamMessageListDate.setText(content);
         });
         LoadingDialog.dismissLoading(getFragmentManager());
     }
@@ -386,7 +389,15 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         : R.string.EDIT_THEME));
                 break;
             case R.id.tv_msg_full_select://全选
-                camMessageListAdapter.markAllAsSelected(true, lPos);
+                boolean selectAll = TextUtils.equals(tvMsgFullSelect.getText(), getString(R.string.SELECT_ALL));
+                if (selectAll) {
+                    camMessageListAdapter.markAllAsSelected(true, lPos);
+                    tvMsgFullSelect.setText(getString(R.string.CANCEL));
+                } else {
+                    camMessageListAdapter.markAllAsSelected(false, lPos);
+                    tvMsgFullSelect.setText(getString(R.string.SELECT_ALL));
+                }
+                tvMsgDelete.setEnabled(camMessageListAdapter.getSelectedItems().size() > 0);
                 break;
             case R.id.tv_msg_delete://删除
                 final ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
