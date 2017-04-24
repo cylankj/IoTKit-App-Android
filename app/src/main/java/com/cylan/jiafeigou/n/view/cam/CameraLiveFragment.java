@@ -355,11 +355,15 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             if (type.type == TYPE_LIVE) {
                 basePresenter.startPlayVideo(TYPE_LIVE);
             } else {
-                startLiveHistory(type.time);
+                startLiveHistory(type.time * 1000L);
             }
         }
     }
 
+    /**
+     *
+     * @param time :毫秒
+     */
     private void startLiveHistory(long time) {
         View old = fLayoutCamLiveView.findViewById(R.id.fLayout_cam_sight_setting);
         AppLogger.d("startPlay: old == null: " + (old == null));
