@@ -107,7 +107,6 @@ public abstract class BaseCallablePresenter<V extends CallableView> extends Base
                         mView.onNewCallTimeOut();
                     }
                     AppLogger.e(e.getMessage());
-                    e.printStackTrace();
                 });
         registerSubscription(subscribe);
     }

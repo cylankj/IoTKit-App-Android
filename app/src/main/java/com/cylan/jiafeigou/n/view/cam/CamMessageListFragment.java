@@ -379,6 +379,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 if (camMessageListAdapter.getCount() == 0) return;
                 String content = ((TextView) view).getText().toString();
                 boolean toEdit = TextUtils.equals(content, getString(R.string.EDIT_THEME));
+                if (toEdit) tvMsgFullSelect.setText(getString(R.string.SELECT_ALL));
                 camMessageListAdapter.reverseMode(toEdit, lPos);
                 if (camMessageListAdapter.isEditMode())
                     AnimatorUtils.slideIn(fLayoutCamMsgEditBar, false);
