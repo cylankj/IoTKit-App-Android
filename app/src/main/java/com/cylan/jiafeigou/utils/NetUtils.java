@@ -11,10 +11,7 @@ import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 
-import com.cylan.jiafeigou.BuildConfig;
-import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.support.OptionsImpl;
-import com.cylan.jiafeigou.support.Security;
 import com.cylan.jiafeigou.support.log.AppLogger;
 
 import java.io.BufferedReader;
@@ -358,7 +355,7 @@ public class NetUtils {
                 // 当前网络是连接的
                 if (info.getState() == NetworkInfo.State.CONNECTED) {
                     // 当前所连接的网络可用
-                    return true;
+                    return ping();
                 }
             }
         }
