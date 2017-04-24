@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.widget;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.databinding.repacked.google.common.util.concurrent.ExecutionError;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.ViewDragHelper;
@@ -57,24 +58,28 @@ public class GreatDragView extends FrameLayout {
             @Override
             public int clampViewPositionHorizontal(View child, int left, int dx) {
                 //根据原型，第一张不能向右滑动。
-                if (dx > 0 && getChildCount() == 3) return left;
-                float rotationX = (float) dx / (getWidth() - child.getWidth() / 2);
-                if (preDx != dx) {
-                    if (dx >= 0 && preDx < dx) {
-                        preDx = dx;
+                try {
+                    if (dx > 0 && getChildCount() == 3) return left;
+                    float rotationX = (float) dx / (getWidth() - child.getWidth() / 2);
+                    if (preDx != dx) {
+                        if (dx >= 0 && preDx < dx) {
+                            preDx = dx;
 //                        Log.d(TAG, "rationX right: " + dx + "  " + rotationX);
-                        if (draggedView.getRotation() != rotationX)
-                            draggedView.setRotation(-rotationX * 360);
-                    } else if (dx < 0 && preDx > dx) {
-                        Log.d(TAG, "rationX left: " + dx + "  " + rotationX);
-                        preDx = dx;
-                        if (draggedView.getRotation() != rotationX)
-                            draggedView.setRotation(-rotationX * 360);
+                            if (draggedView.getRotation() != rotationX)
+                                draggedView.setRotation(-rotationX * 360);
+                        } else if (dx < 0 && preDx > dx) {
+                            Log.d(TAG, "rationX left: " + dx + "  " + rotationX);
+                            preDx = dx;
+                            if (draggedView.getRotation() != rotationX)
+                                draggedView.setRotation(-rotationX * 360);
+                        }
                     }
+                    final int leftBound = -draggedView.getWidth();
+                    final int rightBound = getWidth() + draggedView.getWidth();
+                    return Math.min(Math.max(left, leftBound), rightBound);
+                } catch (Exception e) {
+                    return 0;
                 }
-                final int leftBound = -draggedView.getWidth();
-                final int rightBound = getWidth() + draggedView.getWidth();
-                return Math.min(Math.max(left, leftBound), rightBound);
             }
 
             @Override
