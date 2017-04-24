@@ -218,6 +218,13 @@ public interface CamLiveContract {
          * @return
          */
         Observable<IData> assembleTheDay(long timeStartInSecond);
+
+        PrePlayType getPrePlayType();
+    }
+
+    class PrePlayType {
+        public int type;
+        public long time;
     }
 }
 

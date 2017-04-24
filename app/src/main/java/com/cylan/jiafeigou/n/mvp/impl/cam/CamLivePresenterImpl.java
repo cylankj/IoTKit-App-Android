@@ -68,19 +68,22 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NERWORK;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 
 /**
  * Created by cylan-hunt on 16-7-27.
  */
 public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View>
         implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener {
-    private int playType = CamLiveContract.TYPE_LIVE;
-    private int[] videoResolution = {0, 0};
+    private int playType = TYPE_LIVE;
     private int playState = PLAY_STATE_IDLE;
     private IData historyDataProvider;
     private int stopReason = STOP_MAUNALLY;//手动断开
     private MapSubscription liveSubscription = new MapSubscription();
-
+    /**
+     * 保存当前播放的方式,eg:从播放历史视频切换到设置页面,回来之后,需要继续播放历史视频.
+     */
+    private CamLiveContract.PrePlayType prePlayType;
     /**
      * 帧率记录
      */
@@ -155,6 +158,16 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     historyDataProvider.flattenData(new ArrayList<>(historyFiles));
                     return Observable.just(historyDataProvider);
                 });
+    }
+
+    @Override
+    public CamLiveContract.PrePlayType getPrePlayType() {
+        if (prePlayType == null) {
+            prePlayType = new CamLiveContract.PrePlayType();
+            prePlayType.type = TYPE_LIVE;
+        }
+        Log.d("updatePrePlayType", "getPrePlayType:" + prePlayType.time);
+        return this.prePlayType;
     }
 
     public void assembleTheDay(ArrayList<HistoryFile> files) {
@@ -258,7 +271,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     public void startPlayVideo(int type) {
         getView().onLivePrepare(type);
         playState = PLAY_STATE_PREPARE;
-        playType = CamLiveContract.TYPE_LIVE;
+        playType = TYPE_LIVE;
         reset();
         //加入管理,如果播放失败,收到disconnect
         liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
@@ -319,6 +332,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribeOn(Schedulers.newThread())
                 .map(rtcp -> {
                     feedRtcp.feed(rtcp);
+                    updatePrePlayType(playType, rtcp.timestamp);
                     return rtcp;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -355,8 +369,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         .observeOn(AndroidSchedulers.mainThread())
                         .map(resolution -> {
                             AppLogger.i("ResolutionNotifySub: " + new Gson().toJson(resolution) + "," + Thread.currentThread().getName());
-                            videoResolution[0] = resolution.width;
-                            videoResolution[1] = resolution.height;
                             try {
                                 getView().onResolution(resolution);
                             } catch (JfgException e) {
@@ -392,11 +404,19 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .map(func1);
     }
 
+    private void updatePrePlayType(int type, long time) {
+        if (prePlayType == null) prePlayType = new CamLiveContract.PrePlayType();
+        prePlayType.type = type;
+        prePlayType.time = time;
+        Log.d("updatePrePlayType", "updatePrePlayType:" + time);
+    }
+
     @Override
     public void startPlayHistory(long time) {
         getView().onLivePrepare(CamLiveContract.TYPE_HISTORY);
         playType = CamLiveContract.TYPE_HISTORY;
         playState = PLAY_STATE_PREPARE;
+        updatePrePlayType(playType, time);
         reset();
         //加入管理,如果播放失败,收到disconnect
         liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
@@ -670,6 +690,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .map(msg -> {
                     try {
                         getView().onDeviceInfoChanged(msg);
+                        if (msg.id == 222) {
+                            DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
+                            if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdcardSummary();
+                            if (!sdStatus.hasSdcard) updatePrePlayType(TYPE_LIVE, 0);
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }

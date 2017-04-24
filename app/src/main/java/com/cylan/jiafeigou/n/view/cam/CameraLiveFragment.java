@@ -153,6 +153,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     private String uuid;
     private boolean isNormalView;
     private static final String DIALOG_KEY = "dialogFragment";
+    private boolean need2ReloadHistory;
 
     public CameraLiveFragment() {
         // Required empty public constructor
@@ -230,6 +231,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onStop() {
         super.onStop();
+        if (basePresenter != null)
+            basePresenter.stopPlayVideo(basePresenter.getPlayType());
+        if (vLive != null && vLive.getVideoView() != null)
+            vLive.getVideoView().onPause();
     }
 
     private void initLiveView() {
@@ -270,16 +275,18 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     @Override
     public void onPause() {
         super.onPause();
-        if (basePresenter != null)
-            basePresenter.stopPlayVideo(basePresenter.getPlayType());
-        if (vLive != null && vLive.getVideoView() != null)
-            vLive.getVideoView().onPause();
+
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
+        if (basePresenter != null && !need2ReloadHistory) {
+            basePresenter.fetchHistoryDataList();
+            //每天检测一次新固件
+            basePresenter.checkNewHardWare();
+        }
+        need2ReloadHistory = true;
     }
 
     @Override
@@ -309,12 +316,11 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onResume() {
         super.onResume();
         if (basePresenter != null) {
-            basePresenter.fetchHistoryDataList();
+//            basePresenter.fetchHistoryDataList();
+//            //每天检测一次新固件
+//            basePresenter.checkNewHardWare();
             //非待机模式
             onDeviceInfoChanged(-1);
-
-            //每天检测一次新固件
-            basePresenter.checkNewHardWare();
         }
         camLiveController.setPortSafeSetter(portFlipLayout);
         //更新
@@ -344,7 +350,14 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         DpMsgDefine.DPStandby isStandBY = device.$(DpMsgMap.ID_508_CAMERA_STANDBY_FLAG, new DpMsgDefine.DPStandby());
         if (isStandBY != null && isStandBY.standby) return;
         if (!getUserVisibleHint()) return;//看不见，就不需要播放了。
-        basePresenter.startPlayVideo(TYPE_LIVE);
+        if (basePresenter.getPlayState() != PLAY_STATE_PLAYING) {
+            CamLiveContract.PrePlayType type = basePresenter.getPrePlayType();
+            if (type.type == TYPE_LIVE) {
+                basePresenter.startPlayVideo(TYPE_LIVE);
+            } else {
+                startLiveHistory(type.time);
+            }
+        }
     }
 
     private void startLiveHistory(long time) {
@@ -410,7 +423,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             AlertDialog dialog = new AlertDialog.Builder(getActivity())
                     .setMessage(getString(R.string.MSG_SD_OFF))
                     .setPositiveButton(getString(R.string.OK), (DialogInterface d, int which) -> {
-                        if (basePresenter.getPlayType() != PLAY_STATE_PLAYING)
+                        if (basePresenter.getPlayState() != PLAY_STATE_PLAYING)
                             basePresenter.startPlayVideo(TYPE_LIVE);
                     })
                     .create();
@@ -470,12 +483,10 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
                     AppLogger.d("隐藏了，sd卡更新");
                     return;
                 }
-//                if (basePresenter.getPlayType() == PLAY_STATE_PLAYING) {
                 initSdcardStateDialog();
                 sdcardPulloutDlg.get().show();
                 if (basePresenter.getPlayType() == TYPE_HISTORY) {
                     basePresenter.stopPlayVideo(TYPE_HISTORY);
-//                    }
                 }
             }
             AppLogger.e("sdcard数据被清空，唐宽，还没实现");
