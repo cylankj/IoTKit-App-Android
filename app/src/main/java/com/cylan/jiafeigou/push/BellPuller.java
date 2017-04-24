@@ -16,6 +16,7 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.JFGGlideURL;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
+import com.google.gson.Gson;
 
 import java.net.MalformedURLException;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +47,11 @@ public class BellPuller {
         return instance;
     }
 
+    /**
+     * 现在从收到 push小到拉起门铃页面可能有15s,这么久.
+     * @param response
+     * @param bundle
+     */
     public void fireBellCalling(String response, Bundle bundle) {
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
         AppLogger.d(PUSH_TAG + "push 当前为非登录?" + (sourceManager.getAccount() == null) + "," + response);
@@ -54,8 +60,9 @@ public class BellPuller {
             Observable.just(response)
                     .subscribeOn(Schedulers.newThread())
                     .timeout(3, TimeUnit.SECONDS)
-                    .flatMap(s -> RxBus.getCacheInstance().toObservable(RxEvent.AccountArrived.class))
+                    .flatMap(s -> RxBus.getCacheInstance().toObservable(RxEvent.DevicesArrived.class))
                     .subscribe(ret -> {
+                        AppLogger.d("push,登录成功:" + new Gson().toJson(ret.devices));
                         prepareForBelling(response);
                     }, throwable -> {
                         AppLogger.e("收到门铃呼叫推送,但是登录超时?" + MiscUtils.getErr(throwable));

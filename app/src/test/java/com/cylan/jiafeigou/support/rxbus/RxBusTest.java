@@ -465,7 +465,14 @@ public class RxBusTest {
 
         Subscription subscription = RxBus.getCacheInstance().toObservable(String.class)
 //                .takeLast(1, 100, TimeUnit.MILLISECONDS)
-                .sample(20, TimeUnit.MILLISECONDS)
+                .map(new Func1<String, String>() {
+                    @Override
+                    public String call(String s) {
+                        System.out.println("get?" + s);
+                        return s;
+                    }
+                })
+                .takeLast(1)
                 .map(new Func1<String, Object>() {
                     @Override
                     public Object call(String s) {
@@ -483,11 +490,11 @@ public class RxBusTest {
                     System.out.println("ret");
                 });
         RxBus.getCacheInstance().post("finish0");
-        Thread.sleep(10);
+//        Thread.sleep(10);
         RxBus.getCacheInstance().post("finish1");
-        Thread.sleep(10);
+//        Thread.sleep(10);
         RxBus.getCacheInstance().post("finish2");
-        Thread.sleep(10);
+//        Thread.sleep(10);
         RxBus.getCacheInstance().post("finish3");
         Thread.sleep(10);
         RxBus.getCacheInstance().post("finish4");
