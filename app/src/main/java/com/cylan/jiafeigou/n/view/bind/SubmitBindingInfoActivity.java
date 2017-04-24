@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
 import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
 import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
@@ -128,8 +129,11 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
             if (basePresenter != null)
                 basePresenter.stop();
         } else {
-            vsLayoutSwitch.showNext();
-            customToolbar.setVisibility(View.INVISIBLE);
+            AppLogger.d("绑定失败了!!!!!!!!!!!!!");
+            if (vsLayoutSwitch.getDisplayedChild() == 0) {
+                vsLayoutSwitch.showNext();
+                customToolbar.setVisibility(View.INVISIBLE);
+            }
         }
     }
 

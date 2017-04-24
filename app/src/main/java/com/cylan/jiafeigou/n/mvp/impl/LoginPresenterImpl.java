@@ -4,7 +4,6 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.cylan.entity.JfgEnum;
-import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.cache.JCache;
 import com.cylan.jiafeigou.misc.AutoSignIn;
@@ -34,8 +33,6 @@ import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
-
 
 /**
  * Created by lxh on 16-6-24.
@@ -54,6 +51,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录
+     *
      * @param o
      * @return
      */
@@ -70,11 +68,13 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             //账号和密码
                         }
                         PreferencesUtils.putInt(JConstant.IS_lOGINED, 1);
+                        PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
                         AutoSignIn.getInstance().autoSave(o.userName, o.openLoginType, o.pwd)
                                 .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                                 .subscribe(ret -> {
+                                    PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
                                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
-                        AppLogger.d("logresult:"+o.toString());
+                        AppLogger.d("logresult:" + o.toString());
                     } catch (Exception e) {
                         AppLogger.e("err: " + e.getLocalizedMessage());
                     }
@@ -87,6 +87,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
 
     /**
      * 登录结果
+     *
      * @return
      */
     private Observable<RxEvent.ResultUserLogin> loginResultObservable() {
@@ -354,11 +355,11 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                             }
                             String decryption = AESUtil.decrypt(aesAccount);
                             AutoSignIn.SignType signType = new Gson().fromJson(decryption, AutoSignIn.SignType.class);
-                            AppLogger.d("Login:"+signType.toString());
+                            AppLogger.d("Login:" + signType.toString());
                             if (signType.type != 1) {
                                 //显示绑定的手机和邮箱
-                                String re_show = PreferencesUtils.getString(JConstant.THIRD_RE_SHOW,"");
-                                return Observable.just(TextUtils.isEmpty(re_show) ? "":re_show);
+                                String re_show = PreferencesUtils.getString(JConstant.THIRD_RE_SHOW, "");
+                                return Observable.just(TextUtils.isEmpty(re_show) ? "" : re_show);
                             } else {
                                 return Observable.just(signType.account);
                             }

@@ -11,7 +11,7 @@ public class BaseDPTaskResult implements IDPTaskResult {
     public static final BaseDPTaskResult SUCCESS = new BaseDPTaskResult().setResultCode(0);
     public static final BaseDPTaskResult ERROR = new BaseDPTaskResult().setResultCode(-1);
 
-    private int resultCode;
+    private int resultCode = -1;
     private Object response;
 
     @Override

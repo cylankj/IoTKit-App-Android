@@ -67,6 +67,7 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
         Subscription subscribe = Observable.just(sourceManager.isOnline())
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(account -> {
+                    feedRtcp.stop();//清空之前的状态
                     mView.onViewer();
                     if (sourceManager.isOnline()) {
                         return true;
@@ -76,7 +77,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     return true;
                 }).observeOn(Schedulers.io())
                 .map(hasNet -> {
-                    feedRtcp.stop();//清空之前的状态
                     String handle = getViewHandler();
                     try {
                         AppLogger.d("正在准备开始直播,对端 cid 为:" + handle);
@@ -122,12 +122,13 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     }
                 }, e -> {
                     AppLogger.e(e.getMessage());
+                    feedRtcp.stop();
                     e.printStackTrace();
                     if (e instanceof TimeoutException) {
                         AppLogger.d("连接设备超时,即将退出!");
                         if (hasLiveStream) {
                             if (mView != null) {
-                                mView.onVideoDisconnect(BAD_NET_WORK);
+                                mView.onVideoDisconnect(BAD_FRAME_RATE);
                             }
                         } else {
                             if (mView != null) {

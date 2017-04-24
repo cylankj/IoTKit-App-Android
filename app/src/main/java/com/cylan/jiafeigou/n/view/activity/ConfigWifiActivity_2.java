@@ -135,6 +135,11 @@ public class ConfigWifiActivity_2 extends BaseBindActivity<ConfigApContract.Pres
     }
 
     @Override
+    public void onDeviceAlreadyExist() {
+
+    }
+
+    @Override
     public void onDismiss(ScanResult scanResult) {
 
     }

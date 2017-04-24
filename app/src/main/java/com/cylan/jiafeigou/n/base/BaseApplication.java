@@ -42,7 +42,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     private DaemonClient mDaemonClient;
     private static AppComponent appComponent;
-    private static boolean isBackground = false;
+    private static int viewCount = 0;
     public static int onTrimMemoryLevel;
 
     @Override
@@ -91,7 +91,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
         super.onCreate();
         //这是主进程
         if (TextUtils.equals(ProcessUtils.myProcessName(this), getApplicationContext().getPackageName())) {
-            isBackground=false;
+            viewCount = 0;
             startService(new Intent(this, WakeupService.class));
             try2init();
             PreferencesUtils.init(getApplicationContext());
@@ -140,10 +140,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
             case ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN:
                 //should release some resource
                 Log.d(TAG, "onTrimMemory: " + level);
-//                shouldKillBellCallProcess();
-                isBackground=true;
                 RxBus.getCacheInstance().post(new RxEvent.AppHideEvent());
-//                JfgCmdInsurance.getCmd().closeDataBase();
                 break;
         }
     }
@@ -163,6 +160,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onActivityStarted(Activity activity) {
         AppLogger.i("life:onActivityStarted " + activity.getClass().getSimpleName());
+        viewCount++;
         GlobalResetPwdSource.getInstance().currentActivity(activity);
     }
 
@@ -179,10 +177,11 @@ public class BaseApplication extends MultiDexApplication implements Application.
     @Override
     public void onActivityStopped(Activity activity) {
         AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
+        viewCount--;
     }
 
     public static boolean isBackground() {
-        return isBackground;
+        return viewCount == 0;
     }
 
     @Override

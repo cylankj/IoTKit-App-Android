@@ -86,7 +86,10 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net != 3)
                 .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
                     AppLogger.d(BIND_TAG + "last state");
-                    if (aFullBind != null) {
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(udpDevicePortrait.uuid);
+                    if (device.available()) {
+                        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onDeviceAlreadyExist());
+                    } else if (aFullBind != null) {
                         aFullBind.setServerLanguage(udpDevicePortrait);
                         aFullBind.sendWifiInfo(ssid, pwd, type);
                     }
@@ -138,7 +141,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .subscribeOn(Schedulers.newThread())
 //                .delay(500, TimeUnit.MILLISECONDS)
                 .subscribe(ret -> {
-                    WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+                    WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                     wifiManager.startScan();
                 }, AppLogger::e);
     }
@@ -183,7 +186,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
     }
 
     private String getCurrentBindCidInShort() {
-        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
         if (wifiInfo != null && JFGRules.isCylanDevice(wifiInfo.getSSID()))
             return BindUtils.filterCylanDeviceShortCid(wifiInfo.getSSID());
@@ -206,7 +209,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
      * wifi列表
      */
     private void updateWifiResults() {
-        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         List<ScanResult> scanResults = wifiManager.getScanResults();
         Subscription subscription = Observable.just(scanResults)
                 //别那么频繁
@@ -316,7 +319,7 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .observeOn(Schedulers.io())
                 .map((Object o) -> {
                     onLocalFlowFinish = true;
-                    WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getSystemService(Context.WIFI_SERVICE);
+                    WifiManager wifiManager = (WifiManager) ContextUtils.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
                     List<WifiConfiguration> list =
                             wifiManager.getConfiguredNetworks();
                     WifiInfo info = wifiManager.getConnectionInfo();

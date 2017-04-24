@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.base.module;
 
 
 import android.app.PendingIntent;
-import android.content.ComponentCallbacks2;
 import android.content.Context;
 import android.content.Intent;
 import android.net.ConnectivityManager;
@@ -722,88 +721,92 @@ public class DataSourceManager implements JFGSourceManager {
     private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
         if (getAccount() == null || !getJFGAccount().isEnablePush())
             return;
-        if (BaseApplication.onTrimMemoryLevel == ComponentCallbacks2.TRIM_MEMORY_UI_HIDDEN) {
 
-            Device device = getDevice(uuid);
-            //需要考虑,app进入后台.
-            if (device != null && !TextUtils.isEmpty(device.account)) {
-                ArrayList<JFGDPMsg> list = new ArrayList<>(arrayList);
-                for (int i = 0; i < ListUtils.getSize(list); i++) {
-                    long msgId = list.get(i).id;
-                    JFGDPMsg msg = list.get(i);
-                    if (msgId == 505 || msgId == 512 || msgId == 222) {
-                        AppLogger.d("may fire a notification: " + msgId);
-                        //cam 1001 1002  1003
-                        try {
-                            AppLogger.d("通知栏..." + list.get(i));
-                            List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
-                                    .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1001, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1002, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1003, 0, true).build();
-                            BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
-                                    .subscribeOn(Schedulers.newThread())
-                                    .subscribe(baseDPTaskResult -> {
-                                        Device dd = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                                        String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
-                                        DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
-                                        INotify.NotifyBean bean = new INotify.NotifyBean();
-                                        bean.sound = getAccount() != null && getAccount().getEnableSound();
-                                        bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
-                                        bean.time = System.currentTimeMillis();
-                                        bean.resId = R.mipmap.ic_launcher;
-                                        bean.notificationId = (uuid + "cam").hashCode();
-                                        bean.content = alias;
-                                        int count = entity.getValue(0);
-                                        bean.subContent = ContextUtils.getContext().getString(R.string.receive_new_news, count > 99 ? "99+" : count);
-                                        final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
-                                        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                                        intent.putExtra("jump_to_message", "jump_to_message");
-                                        bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
-                                        NotifyManager.getNotifyManager().sendNotify(bean);
-                                    }, AppLogger::e);
-                        } catch (Exception e) {
-                            AppLogger.e("err:" + MiscUtils.getErr(e));
-                        }
-                    } else if (msgId == 401) {
-                        DpMsgDefine.DPBellCallRecord dataPoint = propertyParser.parser((int) msgId, msg.packValue, msg.version);
-                        if (dataPoint.isOK == 1) return; //已接听了,不需要发送通知了
-                        AppLogger.d("may fire a notification: " + msgId);
-                        //for bell 1004 1005
-                        INotify.NotifyBean bean = new INotify.NotifyBean();
-                        try {
-                            AppLogger.d("通知栏..." + list.get(i));
-                            List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
-                                    .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1004, 0, true)
-                                    .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1005, 0, true).build();
-                            BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
-                                    .subscribeOn(Schedulers.newThread())
-                                    .subscribe(baseDPTaskResult -> {
-                                        Device dd = getDevice(uuid);
-                                        DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
-                                        AppLogger.d("通知栏..." + entity);
-                                        Intent intent = new Intent(ContextUtils.getContext(), DoorBellHomeActivity.class);
-                                        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-                                        int count = entity.getValue(0);
-                                        final String title = count == 0 ? ContextUtils.getContext().getString(R.string.app_name) :
-                                                String.format(ContextUtils.getContext().getString(R.string.app_name) + "(%s%s)", count, ContextUtils.getContext().getString(R.string.DOOR_NOT_CONNECT));
-                                        final String subTitle = count == 0 ?
-                                                ContextUtils.getContext().getString(R.string.Slogan) : ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL);
-                                        bean.time = System.currentTimeMillis();
-                                        bean.resId = R.mipmap.ic_launcher;
-                                        bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
-                                        bean.time = entity.getVersion();
-                                        bean.notificationId = (uuid + "bell").hashCode();
-                                        bean.content = title;
-                                        bean.subContent = subTitle;
-                                        bean.sound = getAccount() != null && getAccount().getEnableSound();
-                                        bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
-                                        NotifyManager.getNotifyManager().sendNotify(bean);
-                                    }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
-                        } catch (Exception e) {
-                            AppLogger.e("err:" + MiscUtils.getErr(e));
-                        }
+        if (!BaseApplication.isBackground()) {
+            AppLogger.d("当前在前台不需要推送消息");
+            return;
+        }
+
+        Device device = getDevice(uuid);
+        //需要考虑,app进入后台.
+        if (device != null && !TextUtils.isEmpty(device.account)) {
+            ArrayList<JFGDPMsg> list = new ArrayList<>(arrayList);
+            for (int i = 0; i < ListUtils.getSize(list); i++) {
+                long msgId = list.get(i).id;
+                JFGDPMsg msg = list.get(i);
+                if (msgId == 505 || msgId == 512 || msgId == 222) {
+                    AppLogger.d("may fire a notification: " + msgId);
+                    //cam 1001 1002  1003
+                    try {
+                        AppLogger.d("通知栏..." + list.get(i));
+                        List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
+                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1001, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1002, 0, true).add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1003, 0, true).build();
+                        BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
+                                .subscribeOn(Schedulers.newThread())
+                                .subscribe(baseDPTaskResult -> {
+                                    Device dd = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                                    String alias = TextUtils.isEmpty(dd.alias) ? dd.uuid : dd.alias;
+                                    DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1001), dd.getProperty(1002), dd.getProperty(1003));
+                                    INotify.NotifyBean bean = new INotify.NotifyBean();
+                                    bean.sound = getAccount() != null && getAccount().getEnableSound();
+                                    bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
+                                    bean.time = System.currentTimeMillis();
+                                    bean.resId = R.mipmap.ic_launcher;
+                                    bean.notificationId = (uuid + "cam").hashCode();
+                                    bean.content = alias;
+                                    int count = entity.getValue(0);
+                                    bean.subContent = ContextUtils.getContext().getString(R.string.receive_new_news, count > 99 ? "99+" : count);
+                                    final Intent intent = new Intent(ContextUtils.getContext(), CameraLiveActivity.class);
+                                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                                    intent.putExtra("jump_to_message", "jump_to_message");
+                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                                    NotifyManager.getNotifyManager().sendNotify(bean);
+                                }, AppLogger::e);
+                    } catch (Exception e) {
+                        AppLogger.e("err:" + MiscUtils.getErr(e));
+                    }
+                } else if (msgId == 401) {
+                    DpMsgDefine.DPBellCallRecord dataPoint = propertyParser.parser((int) msgId, msg.packValue, msg.version);
+                    if (dataPoint.isOK == 1) return; //已接听了,不需要发送通知了
+                    AppLogger.d("may fire a notification: " + msgId);
+                    //for bell 1004 1005
+                    INotify.NotifyBean bean = new INotify.NotifyBean();
+                    try {
+                        AppLogger.d("通知栏..." + list.get(i));
+                        List<IDPEntity> idpEntities = new MiscUtils.DPEntityBuilder()
+                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1004, 0, true)
+                                .add(DBAction.SIMPLE_MULTI_QUERY, uuid, 1005, 0, true).build();
+                        BaseApplication.getAppComponent().getTaskDispatcher().perform(idpEntities)
+                                .subscribeOn(Schedulers.newThread())
+                                .subscribe(baseDPTaskResult -> {
+                                    Device dd = getDevice(uuid);
+                                    DPEntity entity = MiscUtils.getMaxVersionEntity(dd.getProperty(1004), dd.getProperty(1005));
+                                    AppLogger.d("通知栏..." + entity);
+                                    Intent intent = new Intent(ContextUtils.getContext(), DoorBellHomeActivity.class);
+                                    intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                                    int count = entity.getValue(0);
+                                    final String title = count == 0 ? ContextUtils.getContext().getString(R.string.app_name) :
+                                            String.format(ContextUtils.getContext().getString(R.string.app_name) + "(%s%s)", count, ContextUtils.getContext().getString(R.string.DOOR_NOT_CONNECT));
+                                    final String subTitle = count == 0 ?
+                                            ContextUtils.getContext().getString(R.string.Slogan) : ContextUtils.getContext().getString(R.string.EFAMILY_MISSED_CALL);
+                                    bean.time = System.currentTimeMillis();
+                                    bean.resId = R.mipmap.ic_launcher;
+                                    bean.pendingIntent = PendingIntent.getActivity(ContextUtils.getContext(), 0, intent, PendingIntent.FLAG_ONE_SHOT);
+                                    bean.time = entity.getVersion();
+                                    bean.notificationId = (uuid + "bell").hashCode();
+                                    bean.content = title;
+                                    bean.subContent = subTitle;
+                                    bean.sound = getAccount() != null && getAccount().getEnableSound();
+                                    bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
+                                    NotifyManager.getNotifyManager().sendNotify(bean);
+                                }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
+                    } catch (Exception e) {
+                        AppLogger.e("err:" + MiscUtils.getErr(e));
                     }
                 }
             }
         }
+
     }
 
     public void initAccount() {

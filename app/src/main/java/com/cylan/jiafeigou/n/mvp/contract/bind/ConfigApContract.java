@@ -48,6 +48,8 @@ public interface ConfigApContract {
         void upgradeDogState(int state);
 
         void pingFailed();
+
+        void onDeviceAlreadyExist();
     }
 
     interface Presenter extends BasePresenter {

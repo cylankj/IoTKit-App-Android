@@ -626,7 +626,6 @@ public class LoginFragment extends IBaseFragment<LoginContract.Presenter>
             if (code == JError.ErrorAccountNotExist) {
                 //账号未注册
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ACCOUNT_NOT_EXIST));
-//                showSimpleDialog(getString(R.string.RET_EFORGETPASS_ACCOUNT_NOT_EXIST), " ", getString(R.string.OK), false);
             } else if (code == JError.ErrorLoginInvalidPass) {
                 ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
             } else if (code == 162) {

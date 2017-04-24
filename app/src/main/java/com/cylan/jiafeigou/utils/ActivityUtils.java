@@ -93,7 +93,7 @@ public class ActivityUtils {
                         R.anim.slide_out_right)
                 .add(containerId, fragment, tag)
                 .addToBackStack(tag)
-                .commit();
+                .commitAllowingStateLoss();
         return true;
     }
 

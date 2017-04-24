@@ -157,6 +157,7 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                     ToastUtil.showNegativeToast(getString(R.string.ENTER_PWD_1));
                     return;
                 }
+                tvWifiPwdSubmit.viewZoomSmall();
                 //判断当前
                 if (getIntent().hasExtra(JConstant.JUST_SEND_INFO)) {
                     if (basePresenter != null)
@@ -168,7 +169,6 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                         basePresenter.sendWifiInfo(ViewUtils.getTextViewContent(tvConfigApName),
                                 ViewUtils.getTextViewContent(etWifiPwd), type);
                 }
-                tvWifiPwdSubmit.viewZoomSmall();
                 IMEUtils.hide(this);
                 break;
             case R.id.tv_config_ap_name:
@@ -287,13 +287,13 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
                 basePresenter.finish();
             }
         } else {
+            if (basePresenter != null) {
+                basePresenter.finish();
+            }
             Intent intent = new Intent(this, SubmitBindingInfoActivity.class);
             intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, o.uuid);
             intent.putExtra(KEY_BIND_DEVICE, getIntent().getStringExtra(KEY_BIND_DEVICE));
             startActivity(intent);
-            if (basePresenter != null) {
-                basePresenter.finish();
-            }
             finishExt();
         }
     }
@@ -324,6 +324,31 @@ public class ConfigWifiActivity extends BaseBindActivity<ConfigApContract.Presen
     public void pingFailed() {
 //        ToastUtil.showNegativeToast(getString(R.string.ADD_FAILED));
         tvWifiPwdSubmit.viewZoomBig();
+    }
+
+    @Override
+    public void onDeviceAlreadyExist() {
+        tvWifiPwdSubmit.cancelAnim();
+        tvWifiPwdSubmit.viewZoomBig();
+        tvWifiPwdSubmit.setText(R.string.NEXT);
+
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(this);
+        builder.setTitle(R.string.RET_EISBIND_BYSELF)
+                .setMessage(R.string.RET_ESCENE_DELETE_EXIST_CID)
+                .setCancelable(false)
+                .setPositiveButton(R.string.TRY_AGAIN, (dialog, which) -> {
+                    if (getIntent() != null && TextUtils.equals(getIntent().getStringExtra(KEY_BIND_DEVICE),
+                            getString(R.string.DOG_CAMERA_NAME))) {
+                        //is cam
+                        Intent intent = new Intent(this, BindCamActivity.class);
+                        startActivity(intent);
+                    } else {
+                        //default bell
+                        Intent intent = new Intent(this, BindBellActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .show();
     }
 
 

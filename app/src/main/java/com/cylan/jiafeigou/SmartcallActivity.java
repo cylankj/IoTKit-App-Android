@@ -250,8 +250,7 @@ public class SmartcallActivity extends NeedLoginActivity
                     }
                     ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                             loginFragment, android.R.id.content, 0);
-                })
-                .setNegativeButton(R.string.CANCEL, null);
+                });
         builder.show();
         Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
         if (account != null && !TextUtils.isEmpty(account.getAccount()))

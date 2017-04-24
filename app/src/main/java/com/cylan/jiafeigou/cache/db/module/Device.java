@@ -11,6 +11,7 @@ import com.google.gson.Gson;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Keep;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -40,7 +41,7 @@ public class Device extends BasePropertyHolder<Device> {
 
     private transient boolean available = false;
 
-    @Generated(hash = 182677992)
+    @Keep()
     public Device(Long _id, String uuid, String sn, String alias, String shareAccount,
                   int pid, String vid, String account, int regionType, String server, String action,
                   String state, String option) {
@@ -57,6 +58,7 @@ public class Device extends BasePropertyHolder<Device> {
         this.action = action;
         this.state = state;
         this.option = option;
+        this.available = true;
     }
 
     public Device setDevice(JFGDevice device) {

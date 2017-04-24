@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.media.MediaRecorder;
+import android.media.MediaScannerConnection;
 import android.net.ConnectivityManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -592,6 +593,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
                     data = null;
                     PerformanceUtils.stopTrace("takeCapture");
+                    String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
+                    BitmapUtils.saveBitmap2file(bitmap, filePath);
+                    MediaScannerConnection.scanFile(mView.getContext(), new String[]{filePath}, null, null);
                     if (!forPreview) getView().onTakeSnapShot(bitmap);//弹窗
                     return bitmap;
                 })

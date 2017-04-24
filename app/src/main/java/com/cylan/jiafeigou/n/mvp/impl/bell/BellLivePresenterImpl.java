@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.bell;
 
 import android.graphics.Bitmap;
+import android.media.MediaScannerConnection;
 import android.text.TextUtils;
 
 import com.cylan.jfgapp.interfases.CallBack;
@@ -44,6 +45,7 @@ public class BellLivePresenterImpl extends BaseCallablePresenter<BellLiveContrac
                 mView.onTakeSnapShotSuccess(bitmap);
                 Observable.create((Observable.OnSubscribe<IDPEntity>) subscriber -> {
                     BitmapUtils.saveBitmap2file(bitmap, filePath);
+                    MediaScannerConnection.scanFile(mView.getActivityContext(), new String[]{filePath}, null, null);
                     DpMsgDefine.DPWonderItem item = new DpMsgDefine.DPWonderItem();
                     item.msgType = DpMsgDefine.DPWonderItem.TYPE_PIC;
                     item.cid = mUUID;

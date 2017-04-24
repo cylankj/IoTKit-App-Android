@@ -85,6 +85,7 @@ public class SubmitBindingInfoContractImpl extends AbstractPresenter<SubmitBindi
         if (System.currentTimeMillis() - startTick > 60 * 1000) {
             //timeout
             mView.bindState(this.bindResult = BIND_TIME_OUT);
+
             return;
         }
         //3.重新获取,
