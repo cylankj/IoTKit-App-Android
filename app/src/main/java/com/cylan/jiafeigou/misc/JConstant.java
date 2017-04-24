@@ -335,4 +335,6 @@ public class JConstant {
     public static final String KEY_LAST_TIME_CHECK_VERSION = "last_check_version";
 
     public static final String KEY_JUMP_TO_WONDER = "key_jump_to_home_wonder";
+
+    public static final String SHOW_GCM_DIALOG = "gcm_check";
 }

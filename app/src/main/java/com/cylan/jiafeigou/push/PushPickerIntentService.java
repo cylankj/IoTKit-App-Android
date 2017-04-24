@@ -3,9 +3,12 @@ package com.cylan.jiafeigou.push;
 import android.app.IntentService;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.push.google.GCMRegister;
+import com.cylan.jiafeigou.push.mi.XiaoMiHMSRegister;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
@@ -36,6 +39,11 @@ public class PushPickerIntentService extends IntentService {
         ctx.startService(intent);
     }
 
+    private boolean shouldInit() {
+        Log.d("shouldInit", "shouldInit:" + Build.MANUFACTURER);
+        return false;
+    }
+
     @Override
     protected void onHandleIntent(Intent intent) {
         if (intent != null) {
@@ -47,10 +55,23 @@ public class PushPickerIntentService extends IntentService {
                 AppLogger.d(PUSH_TAG + "yes pick gcm");
                 return;
             }
-            //接入华为推送
-            intent = new Intent(this, HMSRegister.class);
-            startService(intent);
-            AppLogger.d(PUSH_TAG + "yes pick hms");
+            boolean isEMUI_HW_MODEL = BuildProperties.EMUIUtils.isEMUI();
+            if (isEMUI_HW_MODEL) {
+                //接入华为推送
+                intent = new Intent(this, HMSRegister.class);
+                startService(intent);
+                AppLogger.d(PUSH_TAG + "yes pick hms");
+                return;
+            }
+            boolean isMIUI_XIAOMI_MODEL = BuildProperties.MIUIUtils.isMIUI();
+            if (isMIUI_XIAOMI_MODEL) {
+                //接入小米推送
+                intent = new Intent(this, XiaoMiHMSRegister.class);
+                startService(intent);
+                AppLogger.d(PUSH_TAG + "yes pick xiaomi");
+                return;
+            }
+            boolean is_Flyme = BuildProperties.FlymeUtils.isFlyme();
         }
     }
 
@@ -74,9 +95,9 @@ public class PushPickerIntentService extends IntentService {
             case ConnectionResult.SERVICE_VERSION_UPDATE_REQUIRED:
                 AppLogger.d(PUSH_TAG + " 谷歌服务需要升级");
                 if (apiAvailability.isUserResolvableError(resultCode)) {
-                    long lastTime = PreferencesUtils.getLong("gcm_check");
+                    long lastTime = PreferencesUtils.getLong(JConstant.SHOW_GCM_DIALOG);
                     if (System.currentTimeMillis() - lastTime >= 24 * 3600 * 1000) {
-                        PreferencesUtils.putLong("gcm_check", System.currentTimeMillis());
+                        PreferencesUtils.putLong(JConstant.SHOW_GCM_DIALOG, System.currentTimeMillis());
                         RxBus.getCacheInstance().postSticky(new RxEvent.NeedUpdateGooglePlayService());
                     }
                     AppLogger.d(PUSH_TAG + " This device support gcm but get err");
