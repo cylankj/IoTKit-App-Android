@@ -152,12 +152,7 @@ public class HomeSettingPresenterImp extends AbstractPresenter<HomeSettingContra
     public void savaSwitchState(boolean isChick, final String key) {
         rx.Observable.just(isChick)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Boolean>() {
-                    @Override
-                    public void call(Boolean aBoolean) {
-                        chooseWhichSet(aBoolean, key);
-                    }
-                }, new Action1<Throwable>() {
+                .subscribe(aBoolean -> chooseWhichSet(aBoolean, key), new Action1<Throwable>() {
                     @Override
                     public void call(Throwable throwable) {
                         AppLogger.e("savaSwitchState" + throwable.getLocalizedMessage());

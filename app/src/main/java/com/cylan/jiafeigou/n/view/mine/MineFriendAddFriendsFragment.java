@@ -10,13 +10,11 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
@@ -24,7 +22,6 @@ import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineFriendsAddFriendContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineFriendsAddFriendPresenterImp;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
@@ -132,8 +129,8 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
-                .add(android.R.id.content, addByNumFragment, "addByNumFragment")
-                .addToBackStack("mineHelpFragment")
+                .add(android.R.id.content, addByNumFragment, addByNumFragment.getClass().getName())
+                .addToBackStack("AddFlowStack")
                 .commit();
     }
 
@@ -143,7 +140,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, addFromContactFragment, "addFromContactFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("AddFlowStack")
                 .commitAllowingStateLoss();
     }
 
@@ -153,7 +150,7 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
                 .setCustomAnimations(0, 0
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .replace(R.id.fragment_container, scanAddFragment, "scanAddFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("AddFlowStack")
                 .commitAllowingStateLoss();
     }
 

@@ -63,7 +63,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             }
         }
         //2 电量
-        if (device != null && JFGRules.isBell(device.pid)) {
+        if (device != null && net != null && net.net > 0) {//设备在线才显示电量
             int battery = device.$(206, 0);
             if (battery < 20 && (net != null && net.net == 1)) {//WiFi 电量低于20%在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
@@ -85,7 +85,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         //4 安全防护
         DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
         boolean safe = device.$(501, false);
-        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid) && isPrimaryAccount(device.shareAccount)) {
+        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid) && isPrimaryAccount(device.shareAccount) && net != null && net.net > 0) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {
@@ -93,7 +93,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         }
         //5 安全待机
         holder.setVisibility(R.id.img_device_state_4, isStandBY.standby ? VISIBLE : GONE);
-        if (isStandBY.standby) {
+        if (isStandBY.standby && net != null && net.net > 0) {
             holder.setImageResource(R.id.img_device_state_4, R.drawable.home_icon_net_standby);
         }
 

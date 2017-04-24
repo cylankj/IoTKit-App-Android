@@ -8,13 +8,11 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.sina.AccessTokenKeeper;
 import com.cylan.jiafeigou.utils.AESUtil;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
-import com.sina.weibo.sdk.auth.Oauth2AccessToken;
 
 import java.io.File;
 
@@ -63,8 +61,7 @@ public class AutoSignIn {
                     public Observable<Integer> call(String s) {
                         try {
                             String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
-                            if (aesAccount != null)
-                                BaseApplication.getAppComponent().getSourceManager().initAccount();
+//
                             AppLogger.d("autoLogin");
                             if (TextUtils.isEmpty(aesAccount)) {
                                 AppLogger.d("account is null");
@@ -103,7 +100,8 @@ public class AutoSignIn {
                             AppLogger.d("signType is :" + signType);
                             return Observable.just(-1);
                         } catch (Exception e) {
-                            AppLogger.e("no sign type"+e.getLocalizedMessage());
+                            AppLogger.e("no sign type" + e.getLocalizedMessage());
+                            PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
                             return Observable.just(-1);
                         }
                     }
@@ -149,6 +147,9 @@ public class AutoSignIn {
                         Log.d(TAG, "account aes: " + aes.length());
                         //2.保存密码
                         FileUtils.writeFile(ContextUtils.getContext().getFilesDir() + File.separator + aes + ".dat", AESUtil.encrypt(pwd));
+                        if (TextUtils.isEmpty(pwd)) {
+                            PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
+                        }
                         return 0;
                     } catch (Exception e) {
                         AppLogger.e("e:" + e.getLocalizedMessage());

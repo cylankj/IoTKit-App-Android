@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,8 +17,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -30,9 +31,7 @@ import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareToContactPresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.ShareToContactAdapter;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -144,6 +143,8 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         if (presenter != null) {
             presenter.stop();
         }
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(etSearchContact.getWindowToken(), 0);
     }
 
     @Override
@@ -182,6 +183,10 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
     public void showSearchInputEdit() {
         etSearchContact.setVisibility(View.VISIBLE);
         etSearchContact.requestFocus();
+        etSearchContact.setFocusable(true);
+        etSearchContact.setFocusableInTouchMode(true);
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(etSearchContact, InputMethodManager.SHOW_FORCED);
         //TODO 弹出键盘
     }
 
@@ -270,7 +275,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
                 }
                 break;
             case JError.ErrorShareInvalidAccount:                             //未注册
-                if (JConstant.EMAIL_REG.matcher(contractPhone).find()){
+                if (JConstant.EMAIL_REG.matcher(contractPhone).find()) {
                     sendEmail();
                     return;
                 }
@@ -293,7 +298,7 @@ public class MineShareToContactFragment extends Fragment implements MineShareToC
         Intent intent = new Intent(Intent.ACTION_SEND);
         intent.setType("message/rfc822");
         intent.putExtra(Intent.EXTRA_EMAIL,
-                new String[] {contractPhone});
+                new String[]{contractPhone});
         intent.putExtra(Intent.EXTRA_CC, contractPhone); // 抄送人
         intent.putExtra(Intent.EXTRA_TEXT, String.format(getString(R.string.Tap1_share_tips), JConstant.EFAMILY_URL_PREFIX)); // 正文
         startActivity(Intent.createChooser(intent, getString(R.string.Mail_Class_Application)));

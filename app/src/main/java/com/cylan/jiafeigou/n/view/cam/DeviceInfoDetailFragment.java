@@ -391,7 +391,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         hideLoading();
         if (code == 0) {
             ToastUtil.showPositiveToast(getString(R.string.SD_INFO_3));
-        } else {
+        } else if (code==-1){
+            ToastUtil.showNegativeToast(getString(R.string.NETWORK_TIMEOUT));
+        }else{
             ToastUtil.showNegativeToast(getString(R.string.SD_ERR_3));
         }
     }

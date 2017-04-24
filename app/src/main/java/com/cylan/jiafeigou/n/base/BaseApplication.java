@@ -41,7 +41,7 @@ public class BaseApplication extends MultiDexApplication implements Application.
     private static final String TAG = "BaseApplication";
 
     private DaemonClient mDaemonClient;
-
+    private static int ActiveActivityCount = 0;
     private static AppComponent appComponent;
 
     @Override
@@ -158,6 +158,8 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     @Override
     public void onActivityStarted(Activity activity) {
+
+        ActiveActivityCount++;
         AppLogger.i("life:onActivityStarted " + activity.getClass().getSimpleName());
     }
 
@@ -173,7 +175,12 @@ public class BaseApplication extends MultiDexApplication implements Application.
 
     @Override
     public void onActivityStopped(Activity activity) {
+        ActiveActivityCount--;
         AppLogger.i("life:onActivityStopped " + activity.getClass().getSimpleName());
+    }
+
+    public static int getActiveActivityCount() {
+        return ActiveActivityCount;
     }
 
     @Override

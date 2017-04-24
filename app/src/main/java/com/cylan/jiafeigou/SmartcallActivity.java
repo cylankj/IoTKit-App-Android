@@ -27,15 +27,16 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.splash.SmartCallPresenterImpl;
 import com.cylan.jiafeigou.n.view.activity.NeedLoginActivity;
+import com.cylan.jiafeigou.n.view.login.LoginFragment;
 import com.cylan.jiafeigou.n.view.splash.BeforeLoginFragment;
 import com.cylan.jiafeigou.n.view.splash.GuideFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Locale;
@@ -105,6 +106,7 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onStart() {
         super.onStart();
+
         if (!isPermissionDialogShowing)
             SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
         if (!from_log_out) {
@@ -113,6 +115,9 @@ public class SmartcallActivity extends NeedLoginActivity
             splashOver();
             from_log_out = false;
             firstSignIn = true;
+            if (getIntent().getBooleanExtra("PSWC", false)) {
+                pswChanged();
+            }
         }
     }
 
@@ -218,13 +223,41 @@ public class SmartcallActivity extends NeedLoginActivity
         } else if ((code == JError.ErrorLoginInvalidPass || code == JError.ErrorAccountNotExist || code == 162) && PreferencesUtils.getBoolean(JConstant.AUTO_SIGNIN_TAB, false)) {
 //          密码错误且是自动登录才走此
             splashOver();
-            ToastUtil.showNegativeToast(getString(R.string.RET_ELOGIN_ERROR));
-            Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
-            if (account != null && !TextUtils.isEmpty(account.getAccount()))
-                AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount(), 1, "");
-            PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
-            PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
+            pswChanged();
         }
+    }
+
+    private void pswChanged() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                .setMessage(R.string.PWD_CHANGED)
+                .setTitle(R.string.LOGIN_ERR)
+                .setPositiveButton(R.string.OK, (dialog, which) -> {
+                    Bundle bundle = new Bundle();
+                    bundle.putBoolean(JConstant.KEY_SHOW_LOGIN_FRAGMENT_EXTRA, true);
+                    LoginFragment loginFragment = LoginFragment.newInstance(bundle);
+                    loginFragment.setArguments(bundle);
+                    if (getSupportFragmentManager().findFragmentByTag(loginFragment.getClass().getSimpleName()) != null)
+                        return;
+                    View v = findViewById(R.id.rLayout_login);
+                    if (v != null) {
+                        try {
+                            AppLogger.e("loginFragment already added");
+                            getSupportFragmentManager().beginTransaction().show(loginFragment)
+                                    .commitAllowingStateLoss();
+                            return;
+                        } catch (Exception e) {
+                        }
+                    }
+                    ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
+                            loginFragment, android.R.id.content, 0);
+                })
+                .setNegativeButton(R.string.CANCEL, null);
+        builder.show();
+        Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+        if (account != null && !TextUtils.isEmpty(account.getAccount()))
+            AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount(), 1, "");
+        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
+        PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.base.module;
 import com.cylan.entity.jniCall.JFGResult;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Account;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.misc.JResultEvent;
 import com.cylan.jiafeigou.n.base.BaseApplication;
@@ -54,6 +55,7 @@ public class BaseJFGResultParser {
                 break;
             case 2:
                 login = jfgResult.code == JError.ErrorOK;//登陆成功
+
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(jfgResult.code));
                 RxBus.getCacheInstance().post(new RxEvent.ResultUserLogin(jfgResult.code));
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultUpdateLogin(jfgResult.code));

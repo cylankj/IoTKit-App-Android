@@ -57,6 +57,8 @@ public final class BaseInitializationManager {
     private BaseBellCallEventListener bellCallEventListener;
     private PushResultReceiver pushReceiver;
 
+    private boolean hasInitFinished = false;
+
     @Inject
     public BaseInitializationManager(JFGSourceManager manager,
                                      IDBHelper helper,
@@ -124,10 +126,16 @@ public final class BaseInitializationManager {
         } catch (Exception e) {
             Log.d("BaseInitialization", "initPushResultFailed:" + MiscUtils.getErr(e));
         }
+        hasInitFinished = true;
+        TryLogin.tryLogin();
     }
 
     private void initDialogManager() {
 
+    }
+
+    public boolean isHasInitFinished() {
+        return hasInitFinished;
     }
 
     private void initGlobalSubscription() {

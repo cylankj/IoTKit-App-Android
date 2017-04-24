@@ -28,7 +28,6 @@ import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
 import com.cylan.jiafeigou.n.view.adapter.FriendAddFromContactAdapter;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 
 import java.util.ArrayList;
@@ -147,7 +146,7 @@ public class MineFriendAddFromContactFragment extends Fragment implements MineFr
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                         , R.anim.slide_in_left, R.anim.slide_out_right)
                 .add(android.R.id.content, mineAddFromContactFragment, "mineAddFromContactFragment")
-                .addToBackStack("mineHelpFragment")
+                .addToBackStack("AddFlowStack")
                 .commit();
     }
 

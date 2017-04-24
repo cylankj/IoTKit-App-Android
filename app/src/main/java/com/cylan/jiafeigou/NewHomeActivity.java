@@ -19,9 +19,11 @@ import android.view.ViewGroup;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
+import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.OnActivityReenterListener;
 import com.cylan.jiafeigou.misc.SharedElementCallBackListener;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.engine.AfterLoginService;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 import com.cylan.jiafeigou.n.mvp.impl.home.NewHomeActivityPresenterImpl;
@@ -108,6 +110,14 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     @Override
     protected void onStart() {
         super.onStart();
+        if (BaseApplication.getAppComponent().getSourceManager().getLoginState() == LogState.STATE_ACCOUNT_OFF) {
+            Intent intent = new Intent(this, SmartcallActivity.class);
+            intent.putExtra(JConstant.FROM_LOG_OUT, true);
+            intent.putExtra("PSWC", true);
+            startActivity(intent);
+            finish();
+            return;
+        }
         resetPwdSubscribe = RxBus.getCacheInstance().toObservable(RxEvent.LogOutByResetPwdTab.class)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -123,6 +133,11 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
                     apiAvailability.getErrorDialog(this, resultCode, 9000).show();
                     RxBus.getCacheInstance().removeStickyEvent(RxEvent.NeedUpdateGooglePlayService.class);
                 }, AppLogger::e);
+    }
+
+    public void showHomeListFragment() {
+        if (vpHomeContent != null )
+            vpHomeContent.setCurrentItem(0);
     }
 
     @Override
@@ -148,6 +163,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
 
     private void initMainContentAdapter() {
         HomeViewAdapter viewAdapter = new HomeViewAdapter(getSupportFragmentManager());
+
         vpHomeContent.setPagingEnabled(true);
         vpHomeContent.setAdapter(viewAdapter);
         vpHomeContent.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {

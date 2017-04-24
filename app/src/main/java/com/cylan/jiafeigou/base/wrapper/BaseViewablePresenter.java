@@ -71,10 +71,13 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     mView.onViewer();
                     if (sourceManager.isOnline()) {
                         return true;
+                    } else {
+                        mView.onVideoDisconnect(BAD_NET_WORK);
                     }
                     return true;
                 }).observeOn(Schedulers.io())
                 .map(hasNet -> {
+                    feedRtcp.stop();//清空之前的状态
                     String handle = getViewHandler();
                     try {
                         AppLogger.d("正在准备开始直播,对端 cid 为:" + handle);
@@ -197,15 +200,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected Observable<JFGMsgVideoDisconn> handlerVideoDisconnect(JFGMsgVideoResolution resolution) {
         return RxBus.getCacheInstance().toObservable(JFGMsgVideoDisconn.class)
                 .filter(dis -> TextUtils.equals(dis.remote, resolution.peer))
-                .mergeWith(
-                        RxBus.getCacheInstance().toObservable(RxEvent.NetConnectionEvent.class)
-                                .throttleLast(2, TimeUnit.SECONDS)
-                                .filter(event -> !event.isOnLine && event.mobile == null && event.wifi == null).map(event -> {
-                            JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-                            disconn.code = BAD_NET_WORK;//连接互联网不可用,
-                            disconn.remote = getViewHandler();
-                            return disconn;
-                        }))
                 .first()
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(dis -> {
@@ -390,19 +384,39 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     public void onFrameFailed() {
         Schedulers.io().createWorker().schedule(() -> {
             try {
-                AppLogger.d("AAAAAAAAAAAA");
                 appCmd.stopPlay(mUUID);
                 hasLiveStream = false;
                 feedRtcp.stop();
+                AppLogger.d("加载失败了..........");
+                JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                disconn.code = BAD_FRAME_RATE;
+                disconn.remote = getViewHandler();
+                RxBus.getCacheInstance().post(disconn);
             } catch (JfgException e) {
                 e.printStackTrace();
             }
+
         });
-        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onVideoDisconnect(BAD_FRAME_RATE));
     }
 
     @Override
     public void onFrameRate(boolean slow) {
-        mView.onLoading(slow);
+        Observable.just(slow)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(ret -> {
+                    AppLogger.d("正在缓冲中.........");
+                    mView.onLoading(ret);
+                    return ret;
+                })
+                .delay(4, TimeUnit.SECONDS)
+                .subscribe(ret -> {
+                    if (!sourceManager.isOnline()) {
+                        AppLogger.d("无网络连接");
+                        JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                        disconn.code = BAD_NET_WORK;
+                        disconn.remote = getViewHandler();
+                        RxBus.getCacheInstance().post(disconn);
+                    }
+                }, AppLogger::e);
     }
 }

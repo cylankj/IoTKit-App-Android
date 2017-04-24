@@ -128,14 +128,15 @@ public class VideoAutoRecordFragment extends IBaseFragment<VideoAutoRecordContra
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.lLayout_mode_motion: {
+                if (!hasSdcard()) {//先提示没有 sd卡再提示关闭移动侦测
+                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
+                    return;
+                }
                 if (!alarmDisable()) {
                     openAlarm(0);
                     return;
                 }
-                if (!hasSdcard()) {
-                    ToastUtil.showToast(getString(R.string.has_not_sdcard));
-                    return;
-                }
+
                 rbMotion.setChecked(true);
                 DpMsgDefine.DPPrimary<Integer> flag = new DpMsgDefine.DPPrimary<>();
                 flag.value = 0;

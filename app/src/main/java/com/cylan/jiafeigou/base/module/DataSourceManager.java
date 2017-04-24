@@ -790,6 +790,8 @@ public class DataSourceManager implements JFGSourceManager {
                                     bean.notificationId = (uuid + "bell").hashCode();
                                     bean.content = title;
                                     bean.subContent = subTitle;
+                                    bean.sound = getAccount() != null && getAccount().getEnableSound();
+                                    bean.vibrate = getAccount() != null && getJFGAccount().isEnableVibrate();
                                     NotifyManager.getNotifyManager().sendNotify(bean);
                                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()));
                     } catch (Exception e) {

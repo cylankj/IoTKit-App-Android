@@ -126,7 +126,7 @@ public class MineFriendScanAddFragment extends Fragment implements ZXingScannerV
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
                             , R.anim.slide_in_left, R.anim.slide_out_right)
                     .add(android.R.id.content, addReqDetailFragment, "addReqDetailFragment")
-                    .addToBackStack("mineHelpFragment")
+                    .addToBackStack("AddFlowStack")
                     .commit();
         } else {
             //已是亲友的跳转到分享

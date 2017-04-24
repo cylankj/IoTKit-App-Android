@@ -13,9 +13,8 @@ import com.cylan.jiafeigou.support.superadapter.IMulItemViewType;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.TimeUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -203,10 +202,8 @@ public class HomeMineMessageAdapter extends SuperAdapter<MineMessageBean> {
 
     public String parseTime(String times) {
         long timem = Long.parseLong(times);
-        Date time = new Date(timem);
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
-        String dateString = formatter.format(time);
-        return dateString;
+        String wonderTime = TimeUtils.getWonderTime(timem);
+        return wonderTime;
     }
 
     public boolean compareTime(String preStrTime, String nowStrTime) {

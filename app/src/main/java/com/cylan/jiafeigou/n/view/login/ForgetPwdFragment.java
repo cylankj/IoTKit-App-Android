@@ -548,6 +548,8 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
             ToastUtil.showToast(getString(R.string.RET_ECHANGEPASS_OLDPASS_ERROR));
         } else if (code == JError.ErrorSamePass) {
             ToastUtil.showNegativeToast(getString(R.string.RET_ECHANGEPASS_SAME));
+        } else if (code == JError.ErrorSMSCodeTimeout) {
+            ToastUtil.showToast(getString(R.string.RET_ESMS_CODE_TIMEOUT));
         } else {
             ToastUtil.showToast(getString(R.string.PWD_OK));
             if (getView() != null) {
@@ -656,7 +658,7 @@ public class ForgetPwdFragment extends IBaseFragment implements ForgetPwdContrac
 
     @Override
     public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right){
+        if (id == R.id.tv_dialog_btn_right) {
             rLayoutForgetPwdToolbar.setToolbarTitle(R.string.FORGOT_PWD);
             vsSetAccountPwd.setInAnimation(getContext(), R.anim.slide_in_left_overshoot);
             vsSetAccountPwd.setOutAnimation(getContext(), R.anim.slide_out_right);

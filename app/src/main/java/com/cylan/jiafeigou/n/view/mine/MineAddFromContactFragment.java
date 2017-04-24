@@ -64,11 +64,11 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @OnTextChanged(R.id.et_mine_add_contact_mesg)
     public void onEditChange(CharSequence s, int start, int before, int count) {
-         if (TextUtils.isEmpty(s)){
-             ivMineAddContactClearText.setVisibility(View.GONE);
-         } else {
-             ivMineAddContactClearText.setVisibility(View.VISIBLE);
-         }
+        if (TextUtils.isEmpty(s)) {
+            ivMineAddContactClearText.setVisibility(View.GONE);
+        } else {
+            ivMineAddContactClearText.setVisibility(View.VISIBLE);
+        }
     }
 
     /**
@@ -90,7 +90,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     @Override
     public void initEditText(String alids) {
-        if (!TextUtils.isEmpty(alids)){
+        if (!TextUtils.isEmpty(alids)) {
             ivMineAddContactClearText.setVisibility(View.VISIBLE);
         }
         etMineAddContactMesg.setText(String.format(getString(R.string.Tap3_FriendsAdd_StuffContents), alids));
@@ -143,13 +143,14 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
 
     /**
      * 发送添加请求的结果
+     *
      * @param code
      */
     @Override
     public void sendReqBack(int code) {
         if (code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
-            getFragmentManager().popBackStack();
+            getFragmentManager().popBackStack("mineHelpFragment", 0);
         } else if (code == JError.ErrorFriendToSelf) {
             ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
         } else {

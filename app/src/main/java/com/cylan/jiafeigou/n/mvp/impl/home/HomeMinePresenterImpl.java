@@ -257,7 +257,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     @Override
                     public Observable<Integer> call(RobotoGetDataRsp rsp) {
                         int count = 0;
-                        if (rsp != null && requstId == rsp.seq && rsp.map != null && rsp.map.size() != 0) {
+                        if (rsp != null && rsp.map != null && rsp.map.size() != 0) {
                             for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
                                 try {
                                     if (entry.getKey() == 1101 || entry.getKey() == 1103 || entry.getKey() == 1104) {
