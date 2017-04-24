@@ -387,6 +387,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 break;
             case R.id.tv_msg_full_select://全选
                 camMessageListAdapter.markAllAsSelected(true, lPos);
+                tvMsgDelete.setEnabled(ListUtils.getSize(camMessageListAdapter.getSelectedItems()) > 0);
                 break;
             case R.id.tv_msg_delete://删除
                 final ArrayList<CamMessageBean> list = new ArrayList<>(camMessageListAdapter.getSelectedItems());
