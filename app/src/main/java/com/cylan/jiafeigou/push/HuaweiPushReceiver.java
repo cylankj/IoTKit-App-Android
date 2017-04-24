@@ -57,7 +57,7 @@ public class HuaweiPushReceiver extends PushReceiver {
 
     @Override
     public boolean onPushMsg(Context context, byte[] bytes, Bundle bundle) {
-        AppLogger.e("收到华为推送消息:" + new String(bytes) + bundle);
+        AppLogger.e("收到华为推送消息:" + new String(bytes) + bundle + ",context:" + context.getApplicationContext().getPackageName());
         JFGSourceManager sourceManager = BaseApplication.getAppComponent().getSourceManager();
         AppLogger.d("push 当前为非登录?" + (sourceManager.getAccount() == null));
         if (sourceManager.getAccount() == null) {
