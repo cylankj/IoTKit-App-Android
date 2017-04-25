@@ -122,6 +122,15 @@ public class JFGRules {
                 pid == JConstant.OS_CAMERA_PANORAMA_GUOKE;
     }
 
+    public static boolean show110VLayout(int pid) {
+        return isPanoramicCam(pid) || isWifiCam(pid) ||
+                pid == 21 || pid == 1089;
+    }
+
+    public static boolean showHomeBatterIcon(int pid) {
+        return isFreeCam(pid) || is3GCam(pid) || isBell(pid);
+    }
+
     public static boolean showBatteryItem(int pid) {
         return is3GCam(pid) || isFreeCam(pid)
                 || pid == 1089

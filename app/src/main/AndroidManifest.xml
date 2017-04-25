@@ -537,19 +537,20 @@
             android:name=".push.HMSRegister"
             android:exported="false" />
 
-        <!--<activity android:name=".push.google.MainTestActivity">-->
-        <!--<intent-filter>-->
-        <!--<action android:name="android.intent.action.MAIN" />-->
+        <!-- <activity android:name=".push.google.MainTestActivity"> -->
+        <!-- <intent-filter> -->
+        <!-- <action android:name="android.intent.action.MAIN" /> -->
 
-        <!--<category android:name="android.intent.category.LAUNCHER" />-->
-        <!--</intent-filter>-->
-        <!--</activity>-->
-        <!--一个简单的任务-->
+
+        <!-- <category android:name="android.intent.category.LAUNCHER" /> -->
+        <!-- </intent-filter> -->
+        <!-- </activity> -->
+        <!-- 一个简单的任务 -->
         <service
             android:name=".push.PushPickerIntentService"
             android:exported="false" />
 
-        <!--小米推送-->
+        <!-- 小米推送 -->
         <!-- the following 2 ${ApplicationId} should be changed to your package name -->
         <permission
             android:name="${ApplicationId}.permission.MIPUSH_RECEIVE"
@@ -567,12 +568,10 @@
         <service
             android:name=".push.mi.XiaoMiHMSRegister"
             android:exported="true" />
-
         <service
             android:name="com.xiaomi.push.service.XMPushService"
             android:enabled="true"
             android:process=":pushservice" />
-
         <service
             android:name="com.xiaomi.mipush.sdk.PushMessageHandler"
             android:enabled="true"
@@ -580,7 +579,7 @@
         <service
             android:name="com.xiaomi.mipush.sdk.MessageHandleService"
             android:enabled="true" />
-        <!--红色这段没有错,不需要更改-->
+        <!-- 红色这段没有错,不需要更改 -->
         <receiver
             android:name="${ApplicationId}.MiMessageReceiver"
             android:exported="true">
@@ -611,6 +610,15 @@
                 <action android:name="com.xiaomi.push.PING_TIMER" />
             </intent-filter>
         </receiver>
+
+        <activity
+            android:name=".n.view.cam.SdcardDetailActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:label="@string/title_activity_bind_cam"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
     </application>
 
 </manifest>

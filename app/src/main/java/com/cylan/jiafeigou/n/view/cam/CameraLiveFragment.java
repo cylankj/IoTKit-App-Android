@@ -282,7 +282,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onStart() {
         super.onStart();
         if (basePresenter != null && !need2ReloadHistory) {
-            basePresenter.fetchHistoryDataList();
+//            basePresenter.fetchHistoryDataList();
             //每天检测一次新固件
             basePresenter.checkNewHardWare();
         }
@@ -361,7 +361,6 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     }
 
     /**
-     *
      * @param time :毫秒
      */
     private void startLiveHistory(long time) {
@@ -382,7 +381,8 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     private void initBottomBtn(final boolean enable) {
         imgVCamSwitchSpeaker.post(() -> {
             imgVCamSwitchSpeaker.setEnabled(enable);
-            imgVCamTriggerMic.setEnabled(enable);
+            //历史录像,不需要Mic
+            imgVCamTriggerMic.setEnabled(enable && basePresenter.getPlayType() == TYPE_LIVE);
             imgVCamTriggerCapture.setEnabled(enable);
             Log.d("initBottomBtn", "setClickable: " + enable);
         });
@@ -946,7 +946,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
             Bundle bundle = new Bundle();
             bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
             bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp) value);
-            HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
+            FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
             ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                     hardwareUpdateFragment, android.R.id.content);
         }

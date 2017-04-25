@@ -47,7 +47,7 @@ import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
  * 创建时间：2017/2/13
  * 描述：
  */
-public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract.Presenter> implements HardwareUpdateContract.View {
+public class FirmwareFragment extends IBaseFragment<HardwareUpdateContract.Presenter> implements HardwareUpdateContract.View {
 
     @BindView(R.id.tv_hardware_now_version)
     TextView tvHardwareNowVersion;
@@ -71,16 +71,17 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     private String fileSize;
 
     private OnUpdateListener listener;
-    public interface OnUpdateListener{
+
+    public interface OnUpdateListener {
         void onUpdateResult(boolean hasNew);
     }
 
-    public void setOnUpdateListener(OnUpdateListener listener){
+    public void setOnUpdateListener(OnUpdateListener listener) {
         this.listener = listener;
     }
 
-    public static HardwareUpdateFragment newInstance(Bundle bundle) {
-        HardwareUpdateFragment fragment = new HardwareUpdateFragment();
+    public static FirmwareFragment newInstance(Bundle bundle) {
+        FirmwareFragment fragment = new FirmwareFragment();
         fragment.setArguments(bundle);
         return fragment;
     }
@@ -112,7 +113,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
     public void onStop() {
         super.onStop();
         getActivity().getWindow().clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-        if (listener != null){
+        if (listener != null) {
             listener.onUpdateResult(checkDevVersion.hasNew);
         }
     }
@@ -158,14 +159,14 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 }
 
 //                DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_201_NET);
-                DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
+                DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
                 boolean show = net != null && JFGRules.isDeviceOnline(net);
                 if (!show) {
                     ToastUtil.showNegativeToast(getString(R.string.NOT_ONLINE));
                     return;
                 }
 
-                if (!checkDevVersion.hasNew) {
+                if (checkDevVersion != null && !checkDevVersion.hasNew) {
                     ToastUtil.showPositiveToast(getString(R.string.NEW_VERSION));
                     return;
                 }
@@ -191,10 +192,10 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
         //设备在线
 //        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_201_NET);
-        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
+        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         String remoteSSid = net.ssid;
-        if (localSSid.equals("DOG-"+uuid.substring(6))){
+        if (localSSid.equals("DOG-" + uuid.substring(6))) {
             AppLogger.d("走直连");
             //直连AP
             new AlertDialog.Builder(getContext())
@@ -248,8 +249,8 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         if (netType == 1) {
             //开始下载
 //            basePresenter.startDownload(basePresenter.creatDownLoadBean());
-            basePresenter.myDownLoad(checkDevVersion.url,checkDevVersion.version);
-            AppLogger.d("url:"+checkDevVersion.url+":name:"+checkDevVersion.version);
+            basePresenter.myDownLoad(checkDevVersion.url, checkDevVersion.version);
+            AppLogger.d("url:" + checkDevVersion.url + ":name:" + checkDevVersion.version);
         } else if (netType == 0 || netType == 2 || netType == 3 || netType == 4) {
             Bundle bundle = new Bundle();
             bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
@@ -260,7 +261,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
                 //开始下载
                 if (id == R.id.tv_dialog_btn_left)
 //                basePresenter.startDownload(basePresenter.creatDownLoadBean());
-                basePresenter.myDownLoad(checkDevVersion.url,checkDevVersion.version);
+                    basePresenter.myDownLoad(checkDevVersion.url, checkDevVersion.version);
             });
             simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
         }
@@ -304,7 +305,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
         llDownloadPgContainer.setVisibility(View.GONE);
         //设备在线
 //        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getValue(uuid, DpMsgMap.ID_201_NET);
-        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(DpMsgMap.ID_201_NET,new DpMsgDefine.DPNet());
+        DpMsgDefine.DPNet net = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(DpMsgMap.ID_201_NET, new DpMsgDefine.DPNet());
         String localSSid = NetUtils.getNetName(ContextUtils.getContext());
         String remoteSSid = net.ssid;
         if (TextUtils.equals(localSSid, remoteSSid)) {
@@ -349,7 +350,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void initFileSize(String size) {
-        if (NetUtils.getNetType(getContext()) == -1){
+        if (NetUtils.getNetType(getContext()) == -1) {
             tvDownloadSoftFile.setText(String.format(getString(R.string.Tap1a_DownloadInstall), fileSize));
             return;
         }
@@ -360,7 +361,7 @@ public class HardwareUpdateFragment extends IBaseFragment<HardwareUpdateContract
 
     @Override
     public void showPingLoading() {
-        LoadingDialog.showLoading(getFragmentManager(),getString(R.string.LOADING));
+        LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
     }
 
     @Override

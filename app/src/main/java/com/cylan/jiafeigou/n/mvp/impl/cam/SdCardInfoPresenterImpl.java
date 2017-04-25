@@ -3,8 +3,9 @@ package com.cylan.jiafeigou.n.mvp.impl.cam;
 import android.text.TextUtils;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
-import com.cylan.entity.jniCall.RobotoGetDataRsp;
-import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.module.DPEntity;
+import com.cylan.jiafeigou.cache.db.view.DBAction;
+import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -14,16 +15,15 @@ import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.MiscUtils;
 
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -33,9 +33,7 @@ import rx.schedulers.Schedulers;
  */
 public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContract.View> implements SdCardInfoContract.Presenter {
 
-    private boolean isClearSucc = false;
-    private boolean isClearFin = false;
-    private long req;
+    private long clearTimeFlag;//格式化sd卡,开始时间.
 
     public SdCardInfoPresenterImpl(SdCardInfoContract.View view, String uuid) {
         super(view, uuid);
@@ -44,11 +42,12 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     @Override
     protected Subscription[] register() {
+        if (needRegisterTimeout()) {
+            addSubscription(clearCountTime(), "clearCountTime");
+        }
         return new Subscription[]{
                 onClearSdReqBack(),
-                onClearSdResult(),
-                getSdCapacityBack(),
-        };
+                onClearSdResult()};
     }
 
     @Override
@@ -80,18 +79,18 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     @Override
     public void updateInfoReq() {
+        addSubscription(clearCountTime(), "clearCountTime");
+        clearTimeFlag = System.currentTimeMillis();
         Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        isClearSucc = false;
-                        isClearFin = false;
                         ArrayList<JFGDPMsg> ipList = new ArrayList<JFGDPMsg>();
                         JFGDPMsg mesg = new JFGDPMsg(DpMsgMap.ID_218_DEVICE_FORMAT_SDCARD, 0);
                         mesg.packValue = DpUtils.pack(0);
                         ipList.add(mesg);
                         BaseApplication.getAppComponent().getCmd().robotSetData(uuid, ipList);
-                        AppLogger.d("clear_excute:");
+                        AppLogger.d("clear_execute:");
                     } catch (Exception e) {
                         AppLogger.e("err_sd: " + e.getLocalizedMessage());
                     }
@@ -100,16 +99,22 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 });
     }
 
-    @Override
-    public void clearCountTime() {
-        addSubscription(Observable.just(null)
+    public boolean needRegisterTimeout() {
+        return System.currentTimeMillis() - clearTimeFlag < 2 * 60 * 1000;
+    }
+
+    public Subscription clearCountTime() {
+        return Observable.just(null)
                 .subscribeOn(Schedulers.newThread())
-                .delay(2, TimeUnit.MINUTES)
+                .timeout(2 * 60 * 1000L - System.currentTimeMillis() + clearTimeFlag, TimeUnit.MILLISECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe((Object o) -> {
-                    AppLogger.d("两分钟超时时间到了!!!");
-                    if (getView() != null && isClearFin) getView().clearSdResult(2);
-                }, AppLogger::e));
+                }, throwable -> {
+                    if (throwable instanceof TimeoutException) {
+                        AppLogger.d("两分钟超时时间到了!!!");
+                        if (getView() != null) getView().clearSdResult(2);
+                    }
+                });
     }
 
     @Override
@@ -123,8 +128,7 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(result -> {
                     if (result.ret == 0) {
-                        isClearSucc = true;
-                        isClearFin = true;
+                        getView().clearSdResult(0);
                     } else {
                         getView().clearSdResult(1);
                     }
@@ -135,48 +139,27 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
     public Subscription onClearSdResult() {
         return RxBus.getCacheInstance().toObservable(RxEvent.DeviceSyncRsp.class)
                 .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<RxEvent.DeviceSyncRsp, Observable<Object>>() {
-                    @Override
-                    public Observable<Object> call(RxEvent.DeviceSyncRsp rsp) {
-                        if (rsp != null && rsp.dpList.size() > 0) {
-                            for (JFGDPMsg dp : rsp.dpList) {
-                                try {
-                                    if (dp.id == 203 && TextUtils.equals(uuid, rsp.uuid)) {
-                                        DpMsgDefine.DPSdStatus sdStatus = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdStatus.class);
-                                        return Observable.just(sdStatus);
-                                    } else if (dp.id == 222 && TextUtils.equals(uuid, rsp.uuid)) {
-                                        DpMsgDefine.DPSdcardSummary isPopSd = DpUtils.unpackData(dp.packValue, DpMsgDefine.DPSdcardSummary.class);
-                                        return Observable.just(isPopSd);
-                                    }
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                    return Observable.just(null);
-                                }
-                            }
-                        }
-                        return Observable.just(null);
-                    }
-                })
+                .filter(ret -> TextUtils.equals(ret.uuid, uuid))
+                .flatMap(deviceSyncRsp -> Observable.from(deviceSyncRsp.dpList))
+                .filter(ret -> ret.id == 204 || ret.id == 222)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o -> {
-                    if (o != null) {
-                        if (o instanceof DpMsgDefine.DPSdStatus) {
-                            //清空SD卡提示
-                            if (isClearFin) {
-                                getView().clearSdResult(0);
-                                DpMsgDefine.DPSdStatus sdStatus = (DpMsgDefine.DPSdStatus) o;
-                                sdStatus.used = 0L;
-                                getView().initSdUseDetail(sdStatus);
-                                isClearFin = false;
-                            }
-
-                        } else if (o instanceof DpMsgDefine.DPSdcardSummary) {
-                            //SD卡已被拔出提示
-                            DpMsgDefine.DPSdcardSummary sdcardSummary = (DpMsgDefine.DPSdcardSummary) o;
-                            if (!sdcardSummary.hasSdcard)
-                                getView().showSdPopDialog();
-                        }
+                .map(jfgDpMsg -> {
+                    if (jfgDpMsg.id == 204) {
+                        getView().clearSdResult(0);
+                        getView().initSdUseDetailRsp(null);
+                    } else if (jfgDpMsg.id == 222) {
+//                        DpMsgDefine.DPSdcardSummary sdcardSummary = null;
+//                        try {
+//                            sdcardSummary = DpUtils.unpackData(jfgDpMsg.packValue, DpMsgDefine.DPSdcardSummary.class);
+//                            if (sdcardSummary == null || !sdcardSummary.hasSdcard)
+//                                getView().showSdPopDialog();
+//                        } catch (Exception e) {
+//                            AppLogger.e("err: " + MiscUtils.getErr(e));
+//                        }
                     }
+                    return null;
+                })
+                .subscribe(o -> {
                 }, e -> AppLogger.d(e.getMessage()));
     }
 
@@ -187,57 +170,16 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
      */
     @Override
     public void getSdCapacity(String uuid) {
-        Observable.just(uuid)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(s -> {
-                    if (!TextUtils.isEmpty(s)) {
-                        try {
-                            ArrayList<JFGDPMsg> dpID = new ArrayList<JFGDPMsg>();
-                            JFGDPMsg msg = new JFGDPMsg(DpMsgMap.ID_204_SDCARD_STORAGE, System.currentTimeMillis());
-                            dpID.add(msg);
-                            req = BaseApplication.getAppComponent().getCmd().robotGetData(uuid, dpID, 1, false, 0);
-                            AppLogger.d("getSdCapacity:" + req);
-                        } catch (JfgException e) {
-                            AppLogger.e("getSdCapacity_err:" + e.getLocalizedMessage());
-                            e.printStackTrace();
-                        }
-                    }
-                }, AppLogger::e);
-    }
-
-    @Override
-    public Subscription getSdCapacityBack() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
-                .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<RobotoGetDataRsp, Observable<DpMsgDefine.DPSdStatus>>() {
-                    @Override
-                    public Observable<DpMsgDefine.DPSdStatus> call(RobotoGetDataRsp robotoGetDataRsp) {
-                        AppLogger.d("sd_version:" + robotoGetDataRsp.seq + "identify:" + robotoGetDataRsp.identity);
-                        if (robotoGetDataRsp.map.size() != 0) {
-                            if (req != robotoGetDataRsp.seq || !uuid.equals(robotoGetDataRsp.identity)) {
-                                return Observable.just(null);
-                            }
-                            for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : robotoGetDataRsp.map.entrySet()) {
-                                try {
-                                    if (entry.getKey() == 204) {
-                                        ArrayList<JFGDPMsg> value = entry.getValue();
-                                        JFGDPMsg jfgdpMsg = value.get(0);
-                                        DpMsgDefine.DPSdStatus sysMesg = DpUtils.unpackData(jfgdpMsg.packValue, DpMsgDefine.DPSdStatus.class);
-                                        return Observable.just(sysMesg);
-                                    }
-                                } catch (Exception e) {
-                                    AppLogger.e("getSdCapacityBack:" + e.getLocalizedMessage());
-                                    return Observable.just(null);
-                                }
-                            }
-                        }
-                        return Observable.just(null);
-                    }
-                })
+        addSubscription(Observable.just(new DPEntity()
+                .setMsgId(204)
+                .setUuid(uuid)
+                .setAction(DBAction.QUERY)
+                .setOption(DBOption.SingleQueryOption.ONE_BY_TIME))
+                .flatMap(entity -> BaseApplication.getAppComponent().getTaskDispatcher().perform(entity))
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(sdStatus -> {
-                    if (sdStatus != null && getView() != null) getView().initSdUseDetail(sdStatus);
-                }, AppLogger::e);
+                .subscribe(ret -> getView().initSdUseDetailRsp(null), throwable -> {
+                    AppLogger.e("err:" + MiscUtils.getErr(throwable));
+                    getView().initSdUseDetailRsp(null);
+                }), "getSdCapacity");
     }
-
 }

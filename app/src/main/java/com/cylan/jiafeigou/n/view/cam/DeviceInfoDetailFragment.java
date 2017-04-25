@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -252,11 +253,11 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         bundle.putSerializable("version_content", checkDevVersion);
-        HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
+        FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
         ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                 hardwareUpdateFragment, android.R.id.content);
-        hardwareUpdateFragment.setOnUpdateListener(lis->{
-            if (lis){
+        hardwareUpdateFragment.setOnUpdateListener(lis -> {
+            if (lis) {
                 onStart();
             }
         });
@@ -266,11 +267,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      * 显示Sd卡的详情
      */
     private void jump2SdcardDetailFragment() {
-        Bundle bundle = new Bundle();
-        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-        SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
-        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                sdcardDetailFragment, android.R.id.content);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+//        SDcardDetailFragment sdcardDetailFragment = SDcardDetailFragment.newInstance(bundle);
+//        ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+//                sdcardDetailFragment, android.R.id.content);
+        Intent intent = new Intent(getActivity(), SdcardDetailActivity.class);
+        intent.putExtra(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+        getActivity().startActivity(intent);
     }
 
     /**
@@ -330,14 +334,14 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
      */
     private void toEditAlias() {
 //        if (editDialogFragment == null) {
-            Bundle bundle = new Bundle();
-            bundle.putString(KEY_TITLE,getString(R.string.EQUIPMENT_NAME));
-            bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
-            bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-            bundle.putString(KEY_INPUT_HINT,getString(R.string.EQUIPMENT_NAME));
-            bundle.putString(KEY_DEFAULT_EDIT_TEXT,TextUtils.isEmpty(tvDeviceAlias.getSubTitle().toString()) ? getString(R.string.EQUIPMENT_NAME):tvDeviceAlias.getSubTitle().toString());
-            bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
-            editDialogFragment = EditFragmentDialog.newInstance(bundle);
+        Bundle bundle = new Bundle();
+        bundle.putString(KEY_TITLE, getString(R.string.EQUIPMENT_NAME));
+        bundle.putString(KEY_LEFT_CONTENT, getString(R.string.OK));
+        bundle.putString(KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
+        bundle.putString(KEY_INPUT_HINT, getString(R.string.EQUIPMENT_NAME));
+        bundle.putString(KEY_DEFAULT_EDIT_TEXT, TextUtils.isEmpty(tvDeviceAlias.getSubTitle().toString()) ? getString(R.string.EQUIPMENT_NAME) : tvDeviceAlias.getSubTitle().toString());
+        bundle.putBoolean(KEY_TOUCH_OUT_SIDE_DISMISS, false);
+        editDialogFragment = EditFragmentDialog.newInstance(bundle);
 //        }
 //        if (editDialogFragment.isVisible())
 //            return;
@@ -391,9 +395,9 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
         hideLoading();
         if (code == 0) {
             ToastUtil.showPositiveToast(getString(R.string.SD_INFO_3));
-        } else if (code==-1){
+        } else if (code == -1) {
             ToastUtil.showNegativeToast(getString(R.string.NETWORK_TIMEOUT));
-        }else{
+        } else {
             ToastUtil.showNegativeToast(getString(R.string.SD_ERR_3));
         }
     }

@@ -148,10 +148,10 @@ android {
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yun.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
-                                    "GCM_APP_ID"         : "\\ 208964865997",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "5241757040488",
+                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw=="
             ]
         }
         _test1 {
@@ -168,10 +168,10 @@ android {
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "test1.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
-                                    "GCM_APP_ID"         : "\\ 208964865997",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "xxx",
+                                    "XiaoMiAppKey"       : "xxx"
             ]
         }
         _doby {
@@ -188,10 +188,10 @@ android {
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yun.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
-                                    "GCM_APP_ID"         : "\\ 208964865997",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "5361757031486",
+                                    "XiaoMiAppKey"       : "4+2ItISwz/qBNBIJwaXFQQ=="
             ]
         }
         _cell_c {
@@ -208,10 +208,10 @@ android {
                                     "sinaAppKey"         : "",
                                     "SERVER"             : "yun.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
-                                    "GCM_APP_ID"         : "\\ 208964865997",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "xxx",
+                                    "XiaoMiAppKey"       : "xxx"
             ]
         }
         _yf {
@@ -228,10 +228,10 @@ android {
                                     "sinaAppKey"         : "\\ 1315129656",
                                     "SERVER"             : "yf.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
-                                    "GCM_APP_ID"         : "\\ 208964865997",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "xxx",
+                                    "XiaoMiAppKey"       : "xxx"
             ]
         }
         _ps {
@@ -248,10 +248,10 @@ android {
                                     "sinaAppKey"         : "",
                                     "SERVER"             : "yf.jfgou.com:443",
                                     "FACEBOOK_APP_ID"    : "",
-                                    "GCM_APP_ID"         : "\\ 208964865997",
+                                    "GCM_APP_ID"         : "\\ 985304692675",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "xxx",
+                                    "XiaoMiAppKey"       : "xxx"
             ]
         }
     }
@@ -338,10 +338,6 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
-    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
-    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
-    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
-    compile 'com.cylan.ext:annotations:0.1.0'
 //    compile 'com.cylan.iot.sdk:sdkLib:213'
     fileTree(dir: 'libs', include: '**/*.aar')
             .each { File file ->
@@ -352,6 +348,12 @@ dependencies {
                 ext : 'aar'
         ])
     }
+    compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
+    compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
+    compile 'com.cylan.ext:annotations:0.1.0'
+    //谷歌推送
+    compile files('libs/MiPush_SDK_Client_3_2_2.jar')
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
@@ -367,10 +369,8 @@ dependencies {
     compile 'com.jakewharton.rxbinding:rxbinding-recyclerview-v7:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-design:1.0.1'
     compile 'com.jakewharton.rxbinding:rxbinding-appcompat-v7:1.0.1'
-    //谷歌推送
     compile 'com.google.android.gms:play-services-gcm:10.2.1'
     annotationProcessor 'com.google.dagger:dagger-compiler:2.10'
-    compile files('libs/MiPush_SDK_Client_3_2_2.jar')
 }
 
 //谷歌推送

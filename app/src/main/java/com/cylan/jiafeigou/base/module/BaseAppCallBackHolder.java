@@ -309,8 +309,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
             PanoramaEvent.RawRspMsg rawRspMsg = DpUtils.unpackData(bytes, PanoramaEvent.RawRspMsg.class);
             RxBus.getCacheInstance().post(rawRspMsg);
             AppLogger.d("OnForwardData:" + gson.toJson(rawRspMsg));
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
             AppLogger.e("OnForwardData:解析局域网消息失败!!!");
         }
     }

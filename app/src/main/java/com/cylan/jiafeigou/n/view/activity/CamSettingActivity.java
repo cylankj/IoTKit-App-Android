@@ -402,7 +402,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         svSettingDeviceWifi.setTvSubTitle(!TextUtils.isEmpty(net.ssid) ? (isMobileNet ? "" : net.ssid) : getString(R.string.OFF_LINE));
         //是否有sim卡
         int simCard = device.$(DpMsgMap.ID_223_MOBILE_NET, 0);
-        svSettingDeviceMobileNetwork.setVisibility(JFGRules.showMobileLayout(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);
+        svSettingDeviceMobileNetwork.setVisibility(JFGRules.isDeviceOnline(net) && JFGRules.showMobileLayout(device.pid) && simCard > 1 ? View.VISIBLE : View.GONE);
         svSettingDeviceWifi.showDivider(simCard > 1);
         if (JFGRules.is3GCam(device.pid)) {
             boolean s = device.$(DpMsgMap.ID_217_DEVICE_MOBILE_NET_PRIORITY, false);
@@ -415,7 +415,7 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             });
         }
         /////////////////////////////////110v//////////////////////////////////
-        if ((JFGRules.isWifiCam(device.pid) || JFGRules.isPanoramicCam(device.pid))) {
+        if (JFGRules.show110VLayout(device.pid)) {
             boolean state = device.$(216, false);
             sbtnSetting110v.setChecked(state);
             sbtnSetting110v.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {

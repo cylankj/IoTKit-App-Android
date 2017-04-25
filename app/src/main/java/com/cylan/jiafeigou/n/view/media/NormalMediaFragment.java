@@ -10,6 +10,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -24,13 +25,13 @@ import com.cylan.jiafeigou.support.photoview.PhotoView;
 import com.cylan.jiafeigou.utils.CamWarnGlideURL;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.ViewUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARED_ELEMENT_LIST;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_SHARE_ELEMENT_BYTE;
-import static com.cylan.jiafeigou.misc.JConstant.MISC_PATH;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -42,6 +43,8 @@ public class NormalMediaFragment extends IBaseFragment {
     public static final String KEY_INDEX = "key_index";
     @BindView(R.id.imgV_show_pic)
     PhotoView imgVShowPic;
+    @BindView(R.id.imv_back)
+    ImageView imgBack;
     private Device device;
 
 
@@ -108,15 +111,12 @@ public class NormalMediaFragment extends IBaseFragment {
     }
 
     private void loadBitmap(Bitmap bitmap) {
+        imgBack.setVisibility(View.VISIBLE);
+        ViewUtils.setViewMarginStatusBar(imgBack);
+        imgBack.setOnClickListener(v -> getActivity().getSupportFragmentManager().popBackStack());
         if (getView() != null) {
             getView().post(() -> imgVShowPic.setImageDrawable(new BitmapDrawable(getResources(), bitmap)));
         }
-//        Glide.with(this)
-//                .load(bitmap)
-//                .asBitmap()
-//                .placeholder(R.drawable.wonderful_pic_place_holder)
-//                .diskCacheStrategy(DiskCacheStrategy.ALL)
-//                .into(imgVShowPic);
     }
 
     @Override

@@ -1,10 +1,10 @@
 package com.cylan.jiafeigou.n.view.cam;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
-import android.view.LayoutInflater;
+import android.support.v7.app.AlertDialog;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -17,16 +17,14 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
+import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
-import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.cam.SdCardInfoContract;
 import com.cylan.jiafeigou.n.mvp.impl.cam.SdCardInfoPresenterImpl;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.CustomToolbar;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -34,13 +32,8 @@ import butterknife.OnClick;
 
 import static com.cylan.jiafeigou.misc.JConstant.KEY_DEVICE_ITEM_UUID;
 
-/**
- * 作者：zsl
- * 创建时间：2017/2/13
- * 描述：
- */
-public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Presenter> implements SdCardInfoContract.View, BaseDialog.BaseDialogAction {
-
+public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardInfoContract.Presenter>
+        implements SdCardInfoContract.View {
     @BindView(R.id.tv_sdcard_volume)
     TextView tvSdcardVolume;
     @BindView(R.id.view_has_use_volume)
@@ -55,46 +48,38 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     TextView tvClearRestart;
     @BindView(R.id.custom_toolbar)
     CustomToolbar customToolbar;
-
-    private static final String DIALOG_KEY = "dialogFragment";
+    private AlertDialog alertDialog;
+    private AlertDialog formatSdcardDialog;
+    private AlertDialog noSdcardDialog;
     private String uuid;
 
-    public static SDcardDetailFragment newInstance(Bundle bundle) {
-        SDcardDetailFragment fragment = new SDcardDetailFragment();
-        fragment.setArguments(bundle);
-        return fragment;
-    }
-
-    @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragement_sdcard_detail_info, null);
-        ButterKnife.bind(this, view);
-        return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        this.uuid = getArguments().getString(KEY_DEVICE_ITEM_UUID);
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.fragement_sdcard_detail_info);
+        ButterKnife.bind(this);
+        this.uuid = getIntent().getStringExtra(KEY_DEVICE_ITEM_UUID);
         basePresenter = new SdCardInfoPresenterImpl(this, uuid);
+        customToolbar.setBackAction(o -> onBackPressed());
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        customToolbar.setBackAction(o -> getFragmentManager().popBackStack());
+    public void onBackPressed() {
+        finishExt();
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
         initDetailData();
     }
 
-    @Override
-    public void setPresenter(SdCardInfoContract.Presenter presenter) {
-
+    private void dismissDilaog(AlertDialog... dialog) {
+        if (dialog != null) {
+            for (AlertDialog dialog1 : dialog) {
+                if (dialog1.isShowing()) dialog1.dismiss();
+            }
+        }
     }
 
     @OnClick({R.id.tv_clear_sdcard})
@@ -115,19 +100,19 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
         if ("0.0MB".equals(split[0])) {
             ToastUtil.showPositiveToast(getString(R.string.Clear_Sdcard_tips3));
         } else {
-            Bundle bundle = new Bundle();
-            bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CARRY_ON));
-            bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.CANCEL));
-            bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Clear_Sdcard_tips));
-            SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
-            simpleDialogFragment.setAction((int id, Object value) -> {
-                if (id == R.id.tv_dialog_btn_left ){
-                    basePresenter.updateInfoReq();
-                    basePresenter.clearCountTime();
-                    showLoading();
-                }
-            });
-            simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
+            if (formatSdcardDialog != null && formatSdcardDialog.isShowing()) return;
+            if (formatSdcardDialog == null) {
+                formatSdcardDialog = new AlertDialog.Builder(this)
+                        .setMessage(getString(R.string.Clear_Sdcard_tips))
+                        .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
+                            basePresenter.updateInfoReq();
+                            showLoading();
+                        })
+                        .setNegativeButton(getString(R.string.CANCEL), null)
+                        .create();
+                formatSdcardDialog.show();
+                dismissDilaog(noSdcardDialog, alertDialog);
+            }
         }
 
     }
@@ -181,25 +166,30 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
     }
 
     @Override
-    public void initSdUseDetail(DpMsgDefine.DPSdStatus sdStatus) {
-        if (sdStatus != null) {
+    public void initSdUseDetailRsp(DpMsgDefine.DPSdStatus sdStatus) {
+        sdStatus = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid)
+                .$(204, new DpMsgDefine.DPSdStatus());
+        if (sdStatus.err == 0 && sdStatus.hasSdcard) {
             long sdcardTotalCapacity = sdStatus.total;
             long sdcardUsedCapacity = sdStatus.used;
             float v = (float) ((sdcardUsedCapacity * 1.0) / sdcardTotalCapacity);
             sdUseDetail(MiscUtils.FormetSDcardSize(sdcardUsedCapacity) + "/" + MiscUtils.FormetSDcardSize(sdcardTotalCapacity), v);
+        } else {
+            showSdPopDialog();
         }
     }
 
     @Override
     public void showSdPopDialog() {
-        Bundle bundle = new Bundle();
-        bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.MSG_SD_OFF));
-        bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
-        bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, "");
-        bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
-        SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
-        dialogFragment.setAction(this);
-        dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
+        if (alertDialog != null && alertDialog.isShowing()) return;
+        if (alertDialog == null)
+            alertDialog = new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.MSG_SD_OFF))
+                    .setNegativeButton(getString(R.string.CANCEL), null)
+                    .setPositiveButton(getString(R.string.OK), null)
+                    .create();
+        alertDialog.show();
+        dismissDilaog(noSdcardDialog, alertDialog);
     }
 
     private void initDetailData() {
@@ -221,25 +211,28 @@ public class SDcardDetailFragment extends IBaseFragment<SdCardInfoContract.Prese
         }
     }
 
+
     private void showHasNoSdDialog() {
-        Bundle bundle = new Bundle();
-        bundle.putBoolean("ishow_cancle_btn", true);
-        bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.MSG_SD_OFF));
-        bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.I_KNOW));
-        SimpleDialogFragment simpleDialogFragment = SimpleDialogFragment.newInstance(bundle);
-        simpleDialogFragment.setAction((int id, Object value) -> {
-            getFragmentManager().popBackStack();
-        });
-        simpleDialogFragment.show(getFragmentManager(), "simpleDialogFragment");
+        if (noSdcardDialog != null && noSdcardDialog.isShowing()) return;
+        if (noSdcardDialog == null) {
+            noSdcardDialog = new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.MSG_SD_OFF))
+                    .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                        finishExt();
+                    })
+                    .create();
+        }
+        noSdcardDialog.show();
+        dismissDilaog(formatSdcardDialog, alertDialog);
     }
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void setPresenter(SdCardInfoContract.Presenter presenter) {
+
     }
 
     @Override
-    public void onDialogAction(int id, Object value) {
-        getFragmentManager().popBackStack();
+    public Context getContext() {
+        return getApplicationContext();
     }
 }

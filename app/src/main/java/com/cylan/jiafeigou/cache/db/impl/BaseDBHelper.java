@@ -247,6 +247,7 @@ public class BaseDBHelper implements IDBHelper {
                 .where(HistoryFileDao.Properties.Uuid.eq(uuid))
                 .where(HistoryFileDao.Properties.Time.ge(timeStart))//>=
                 .where(HistoryFileDao.Properties.Time.le(timeEnd))//<=
+                .orderDesc(HistoryFileDao.Properties.Time)
                 .rx()
                 .list().subscribeOn(Schedulers.io());
     }
@@ -257,13 +258,16 @@ public class BaseDBHelper implements IDBHelper {
     }
 
     @Override
+    public Observable<Iterable<HistoryFile>> saveHistoryFile(Iterable<HistoryFile> historyFile) {
+        return historyFileDao.rx().insertOrReplaceInTx(historyFile);
+    }
+
+    @Override
     public Observable<Boolean> deleteHistoryFile(String uuid, long timeStart, long timeEnd) {
         return loadHistoryFile(uuid, timeStart, timeEnd)
                 .flatMap(historyFiles -> {
                     if (historyFiles != null) {
-                        for (HistoryFile file : historyFiles) {
-                            historyFileDao.deleteByKey(file.getId());
-                        }
+                        historyFileDao.deleteInTx(historyFiles);
                     }
                     return Observable.just(true);
                 });
