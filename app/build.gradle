@@ -150,8 +150,8 @@ android {
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
                                     "GCM_APP_ID"         : "\\ 208964865997",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "5241757040488",
+                                    "XiaoMiAppKey"       : "geNCiqvDm6AohEZ6B+HzJw=="
             ]
         }
         _test1 {
@@ -170,8 +170,8 @@ android {
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
                                     "GCM_APP_ID"         : "\\ 208964865997",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "xxx",
+                                    "XiaoMiAppKey"       : "xxx"
             ]
         }
         _doby {
@@ -190,8 +190,8 @@ android {
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
                                     "GCM_APP_ID"         : "\\ 208964865997",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "5361757031486",
+                                    "XiaoMiAppKey"       : "4+2ItISwz/qBNBIJwaXFQQ=="
             ]
         }
         _cell_c {
@@ -210,8 +210,8 @@ android {
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
                                     "GCM_APP_ID"         : "\\ 208964865997",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "xxx",
+                                    "XiaoMiAppKey"       : "xxx"
             ]
         }
         _yf {
@@ -230,8 +230,8 @@ android {
                                     "FACEBOOK_APP_ID"    : "1866682200216878",
                                     "GCM_APP_ID"         : "\\ 208964865997",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "xxx",
+                                    "XiaoMiAppKey"       : "xxx"
             ]
         }
         _ps {
@@ -250,8 +250,8 @@ android {
                                     "FACEBOOK_APP_ID"    : "",
                                     "GCM_APP_ID"         : "\\ 208964865997",
                                     "ApplicationId"      : applicationId,
-                                    "XiaoMiAppId"        : "",
-                                    "XiaoMiAppKey"       : ""
+                                    "XiaoMiAppId"        : "xxx",
+                                    "XiaoMiAppKey"       : "xxx"
             ]
         }
     }
