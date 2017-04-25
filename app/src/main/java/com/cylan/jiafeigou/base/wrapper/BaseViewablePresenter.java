@@ -52,7 +52,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     protected Subscription getLoadSub() {
         return RxBus.getCacheInstance().toObservable(RxEvent.VideoLoadingEvent.class)
-                .throttleFirst(3, TimeUnit.SECONDS)
                 .observeOn(AndroidSchedulers.mainThread())
                 .map(load -> {
                     AppLogger.d("正在加载中" + load.slow);
@@ -149,6 +148,11 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                     e.printStackTrace();
                     if (e instanceof TimeoutException) {
                         AppLogger.d("连接设备超时,即将退出!");
+                        try {
+                            appCmd.stopPlay(getViewHandler());
+                        } catch (JfgException e1) {
+                            e1.printStackTrace();
+                        }
                         if (hasLiveStream) {
                             if (mView != null) {
                                 mView.onVideoDisconnect(BAD_FRAME_RATE);
