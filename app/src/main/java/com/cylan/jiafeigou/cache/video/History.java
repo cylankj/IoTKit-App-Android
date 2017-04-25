@@ -96,7 +96,6 @@ public class History {
      */
 
     public void cacheHistoryDataList(JFGHistoryVideo historyVideo) {
-        AppLogger.d("cacheHistoryDataList0:" + PerformanceUtils.getFreeMemory());
         if (historyVideo == null || historyVideo.list == null || historyVideo.list.size() == 0)
             return;
         Observable.just(historyVideo)
@@ -125,7 +124,6 @@ public class History {
                     list.clear();//需要清空
                     Collections.reverse(historyFiles);//来个降序
                     Collections.reverse(timeList);
-                    AppLogger.d("cacheHistoryDataList1:" + PerformanceUtils.getFreeMemory());
                     try {
                         long timeStart = timeList.get(0), timeEnd = timeList.get(ListUtils.getSize(timeList) - 1);
                         AppLogger.d(String.format(Locale.getDefault(), "before insert uuid:%s,timeStart:%s,timeEnd:%s,performance:%s",
@@ -139,35 +137,23 @@ public class History {
                 .subscribeOn(Schedulers.io())
                 .filter(helper -> !TextUtils.isEmpty(helper.uuid) && ListUtils.getSize(helper.files) > 0)
                 .map(helper -> {
-                    AppLogger.d("cacheHistoryDataList2:" + PerformanceUtils.getFreeMemory());
                     long timeStart = helper.timeList.get(0);
                     long timeEnd = helper.timeList.get(ListUtils.getSize(helper.timeList) - 1);
                     BaseApplication.getAppComponent().getDBHelper().deleteHistoryFile(helper.uuid, Math.min(timeStart, timeEnd),
                             Math.max(timeStart, timeEnd))
                             .subscribeOn(Schedulers.io())
-                            .flatMap(aBoolean -> {
-                                AppLogger.d("cacheHistoryDataList3:" + PerformanceUtils.getFreeMemory());
+                            .map(aBoolean -> {
                                 AppLogger.d("delete hisFile:" + aBoolean + ",hisFile:" + ListUtils.getSize(helper.files));
-                                return Observable.from(helper.files);
-                            })
-                            .map(historyFile -> {
-                                BaseApplication.getAppComponent().getDBHelper().saveHistoryFile(historyFile)
-                                        .subscribeOn(Schedulers.io())
+                                BaseApplication.getAppComponent().getDBHelper().saveHistoryFile(helper.files)
                                         .subscribe(ret -> {
-                                        }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
-//                                AppLogger.d("cacheHistoryDataList4:" + PerformanceUtils.getFreeMemory());
-                                return historyFile;
+                                            AppLogger.d("save hisFile tx");
+                                            RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(helper.uuid)
+                                                    .setFileList(helper.files).setTimeList(helper.timeList));
+                                        }, AppLogger::e);
+                                return null;
                             })
-                            .buffer(ListUtils.getSize(helper.files))
-                            .onBackpressureBuffer()
-                            .doOnCompleted(() -> {
-                                AppLogger.d("cacheHistoryDataList5:" + PerformanceUtils.getFreeMemory());
-                                RxBus.getCacheInstance().post(new RxEvent.JFGHistoryVideoParseRsp(helper.uuid)
-                                        .setFileList(helper.files).setTimeList(helper.timeList));
-                            })
-                            .subscribe(ret -> {
-                                AppLogger.d("save history good?" + ListUtils.getSize(ret));
-                            }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+                            .subscribe(ret -> AppLogger.d("save history good?"),
+                                    throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
                     return null;
                 })
                 .subscribe(ret -> {

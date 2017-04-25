@@ -123,7 +123,7 @@ public interface CamLiveContract {
         /**
          * 抓取历史录像列表
          */
-        void fetchHistoryDataList();
+//        void fetchHistoryDataList();
 
         boolean isShareDevice();
 

@@ -13,6 +13,7 @@ import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.Iterator;
 import java.util.List;
 
 import rx.Observable;
@@ -100,6 +101,8 @@ public interface IDBHelper {
     Observable<List<HistoryFile>> loadHistoryFile(String uuid, long timeStart, long timeEnd);
 
     Observable<HistoryFile> saveHistoryFile(HistoryFile historyFile);
+
+    Observable<Iterable<HistoryFile>> saveHistoryFile(Iterable<HistoryFile> historyFile);
 
     Observable<Boolean> deleteHistoryFile(String uuid, long timeStart, long timeEnd);
 

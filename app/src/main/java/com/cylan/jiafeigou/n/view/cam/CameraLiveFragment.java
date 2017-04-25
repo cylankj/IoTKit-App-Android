@@ -282,7 +282,7 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
     public void onStart() {
         super.onStart();
         if (basePresenter != null && !need2ReloadHistory) {
-            basePresenter.fetchHistoryDataList();
+//            basePresenter.fetchHistoryDataList();
             //每天检测一次新固件
             basePresenter.checkNewHardWare();
         }

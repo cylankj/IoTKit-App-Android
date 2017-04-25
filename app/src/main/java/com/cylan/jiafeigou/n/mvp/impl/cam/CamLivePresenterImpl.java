@@ -217,7 +217,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 });
     }
 
-    @Override
+    //    @Override
     public void fetchHistoryDataList() {
 //        test();
         Subscription subscription = BaseApplication.getAppComponent().getSourceManager().queryHistory(uuid)
@@ -226,12 +226,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.d("get history?" + ret);
                     return ret;
                 })
-                .timeout(10, TimeUnit.SECONDS)
+                .timeout(30, TimeUnit.SECONDS)
                 .flatMap(integer -> RxBus.getCacheInstance().toObservable(RxEvent.JFGHistoryVideoParseRsp.class)
                         .filter(rsp -> TextUtils.equals(rsp.uuid, uuid))
                         .filter(rsp -> ListUtils.getSize(rsp.historyFiles) > 0)//>0
-                        .throttleFirst(3, TimeUnit.SECONDS)//背压处理
-                        .subscribeOn(Schedulers.computation())
                         .map(rsp -> {
                             //只需要初始化一天的就可以啦.
                             assembleTheDay(rsp.historyFiles);
@@ -304,7 +302,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     .subscribe(ret -> {
                     }, AppLogger::e), "rtcpNotifySub");
             return null;
-        }).subscribe(objectObservable -> AppLogger.d("播放流程走通 done"),
+        }).subscribe(objectObservable -> {
+                    AppLogger.d("播放流程走通 done");
+                    if (historyDataProvider == null || historyDataProvider.getDataCount() == 0) {
+                        fetchHistoryDataList();//播放成功后,才拉取历史录像
+                    }
+                },
                 throwable -> AppLogger.e("flow done: " + throwable.getLocalizedMessage())), "prePlay");
     }
 
@@ -683,7 +686,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                                 getView() != null && TextUtils.equals(uuid, jfgRobotSyncData.uuid)
                 ))
                 .flatMap(deviceSyncRsp -> {
-                    AppLogger.d("updateList: " + ListUtils.getSize(deviceSyncRsp.dpList));
+                    AppLogger.d("update dp List: " + ListUtils.getSize(deviceSyncRsp.dpList));
                     return Observable.from(deviceSyncRsp.dpList);
                 })
                 .observeOn(AndroidSchedulers.mainThread())
