@@ -29,7 +29,6 @@ import com.cylan.jiafeigou.n.mvp.impl.setting.TimezonePresenterImpl;
 import com.cylan.jiafeigou.n.mvp.model.TimeZoneBean;
 import com.cylan.jiafeigou.n.view.adapter.DeviceTimeZoneAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
-import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 
@@ -140,36 +139,37 @@ public class DeviceTimeZoneFragment extends IBaseFragment<TimezoneContract.Prese
         adapter.setChooseId(timeZoneId);
         Log.d("onViewCreated", "offset: " + timeZoneId);
         lvTimezoneDetail.setAdapter(adapter);
-        adapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int viewType, final int position) {
-                if (simpleDialog != null && simpleDialog.isShowing()) return;
-                if (simpleDialog == null)
-                    simpleDialog = new AlertDialog.Builder(getActivity())
-                            .setTitle(getString(R.string.TIMEZONE_CHOOSE))
-                            .setMessage(getString(R.string.TIMEZONE_INFO))
-                            .setNegativeButton(getString(R.string.CANCEL), null)
-                            .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
-                                Device aDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                                DpMsgDefine.DPTimeZone timeZone = aDevice.$(214, new DpMsgDefine.DPTimeZone());
-                                TimeZoneBean bean = adapter.getItem(position);
-                                if (!TextUtils.equals(timeZone.timezone, bean.getId())) {
-                                    timeZone.timezone = bean.getId();
-                                    timeZone.offset = bean.getOffset();
-                                    try {
-                                        BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, timeZone, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
-                                    } catch (Exception e) {
-                                        AppLogger.e("err: " + e.getLocalizedMessage());
-                                    }
-                                    if (callBack != null)
-                                        callBack.callBack(timeZone);
-                                    getActivity().onBackPressed();
-                                    //没必要设置
-                                }
-                            })
-                            .create();
-                simpleDialog.show();
+        adapter.setOnItemClickListener((itemView, viewType, position) -> {
+            if (simpleDialog != null && simpleDialog.isShowing()) return;
+            TimeZoneBean zoneBean = adapter.getItem(position);
+            if (TextUtils.equals(adapter.getChooseId(), zoneBean.getId())) {
+                return;
             }
+            if (simpleDialog == null)
+                simpleDialog = new AlertDialog.Builder(getActivity())
+                        .setTitle(getString(R.string.TIMEZONE_CHOOSE))
+                        .setMessage(getString(R.string.TIMEZONE_INFO))
+                        .setNegativeButton(getString(R.string.CANCEL), null)
+                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            Device aDevice = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+                            DpMsgDefine.DPTimeZone timeZone = aDevice.$(214, new DpMsgDefine.DPTimeZone());
+                            TimeZoneBean bean = adapter.getItem(position);
+                            if (bean == null) return;
+                            timeZone.timezone = bean.getId();
+                            timeZone.offset = bean.getOffset();
+                            try {
+                                BaseApplication.getAppComponent().getSourceManager().updateValue(uuid, timeZone, DpMsgMap.ID_214_DEVICE_TIME_ZONE);
+                            } catch (Exception e) {
+                                AppLogger.e("err: " + e.getLocalizedMessage());
+                            }
+                            if (callBack != null)
+                                callBack.callBack(timeZone);
+                            getActivity().onBackPressed();
+                            //没必要设置
+
+                        })
+                        .create();
+            simpleDialog.show();
         });
         lvTimezoneDetail.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override

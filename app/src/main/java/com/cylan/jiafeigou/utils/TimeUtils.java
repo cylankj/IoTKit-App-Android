@@ -265,8 +265,8 @@ public class TimeUtils {
 
     public static String getHomeItemTime(Context context, long time) {
         if (time == 0) return "";
-        if (System.currentTimeMillis() - time <= 5 * 60 * 1000L)//五分钟内是刚刚
-            return context.getString(R.string.JUST_NOW);
+//        if (System.currentTimeMillis() - time <= 5 * 60 * 1000L)//五分钟内是刚刚
+//            return context.getString(R.string.JUST_NOW);
         if (startOfDay(System.currentTimeMillis()) < time)//今天的早些时候
             return getSimpleDateFormatHHMM.get().format(new Date(time));
         return getSimpleDateFormatYYYYHHMM.get().format(new Date(time));

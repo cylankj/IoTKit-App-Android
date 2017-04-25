@@ -50,7 +50,6 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     @BindView(R.id.ll_bell_net_work_container)
     LinearLayout mNetWorkContainer;
 
-    //    private SimpleDialogFragment mClearRecordFragment;
     private SimpleDialogFragment mClearRecordFragment;
 
     public static BellSettingFragment newInstance(String uuid) {
@@ -77,7 +76,6 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
     }
 
     private void initTopBar() {
-//        ViewUtils.setViewPaddingStatusBar(fLayoutTopBarContainer);
     }
 
 
@@ -129,8 +127,7 @@ public class BellSettingFragment extends BaseFragment<BellSettingContract.Presen
                 break;
             case R.id.tv_setting_unbind:
                 ViewUtils.deBounceClick(view);
-                boolean available = NetUtils.isNetworkAvailable(getActivity());
-                if (!available) {
+                if (!sourceManager.isOnline()) {
                     ToastUtil.showToast(getString(R.string.OFFLINE_ERR_1));
                     return;
                 }

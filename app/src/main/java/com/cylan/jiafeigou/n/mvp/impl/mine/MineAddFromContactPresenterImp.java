@@ -94,14 +94,11 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     public Subscription getAccountAlids() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null) {
-                            if (getView() != null)
-                                getView().initEditText(getUserInfo.jfgAccount.getAlias());
-                            userAlids = getUserInfo.jfgAccount.getAlias();
-                        }
+                .subscribe(getUserInfo -> {
+                    if (getUserInfo != null) {
+                        if (getView() != null)
+                            getView().initEditText(getUserInfo.jfgAccount.getAlias());
+                        userAlids = getUserInfo.jfgAccount.getAlias();
                     }
                 }, AppLogger::e);
     }

@@ -9,7 +9,6 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
-import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -50,7 +49,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     private boolean isOpenLogin = false;
     private boolean hasUnRead;
-    private long requstId;
 
     public HomeMinePresenterImpl(HomeMineContract.View view) {
         super(view);
@@ -68,7 +66,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         subscription.add(getAccountBack());
         subscription.add(unReadMesgBack());
         subscription.add(loginInMe());
-        getUnReadMesg();
     }
 
     @Override
@@ -189,30 +186,28 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                     }
                 })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<JFGAccount>() {
-                    @Override
-                    public void call(JFGAccount account) {
-                        AppLogger.d("mine_account:" + account);
-                        if (account != null && getView() != null) {
-                            if (TextUtils.isEmpty(account.getAccount()) && account.isEnablePush()) {
-                                isOpenLogin = true;
-                                getView().setUserImageHeadByUrl(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON));
-                                String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
-                                getView().setAliasName(TextUtils.isEmpty(userAlias) ? createRandomName() : userAlias);
-                            } else {
-                                isOpenLogin = false;
-                                getView().setUserImageHeadByUrl(account.getPhotoUrl());
-                                if (account.getAlias() == null | TextUtils.isEmpty(account.getAlias())) {
-                                    boolean isEmail = JConstant.EMAIL_REG.matcher(account.getAccount()).find();
-                                    if (isEmail) {
-                                        String[] split = account.getAccount().split("@");
-                                        account.setAlias(split[0]);
-                                    } else {
-                                        account.setAlias(account.getAccount());
-                                    }
+                .subscribe(account -> {
+                    AppLogger.d("mine_account:" + account);
+                    if (account != null && getView() != null) {
+                        userInfo = account;
+                        if (TextUtils.isEmpty(account.getAccount()) && account.isEnablePush()) {
+                            isOpenLogin = true;
+                            getView().setUserImageHeadByUrl(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON));
+                            String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
+                            getView().setAliasName(TextUtils.isEmpty(userAlias) ? createRandomName() : userAlias);
+                        } else {
+                            isOpenLogin = false;
+                            getView().setUserImageHeadByUrl(account.getPhotoUrl());
+                            if (account.getAlias() == null | TextUtils.isEmpty(account.getAlias())) {
+                                boolean isEmail = JConstant.EMAIL_REG.matcher(account.getAccount()).find();
+                                if (isEmail) {
+                                    String[] split = account.getAccount().split("@");
+                                    account.setAlias(split[0]);
+                                } else {
+                                    account.setAlias(account.getAccount());
                                 }
-                                getView().setAliasName(account.getAlias());
                             }
+                            getView().setAliasName(account.getAlias());
                         }
                     }
                 }, AppLogger::e);
@@ -223,8 +218,9 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
      */
     @Override
     public void getUnReadMesg() {
-        Observable.just(null)
-                .subscribeOn(Schedulers.io())
+
+        Observable.just("Now Get UnReadMsg")
+                .observeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
                         ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
@@ -234,56 +230,49 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         list.add(msg1);
                         list.add(msg2);
                         list.add(msg3);
-                        requstId = BaseApplication.getAppComponent().getCmd().robotGetData("", list, 10, false, 0);
-                        AppLogger.d("getUnReadMesg:" + requstId);
-
-                        //新接口
-//                        HashMap<String,long[]> map = new HashMap<>();
-//                        long[] ip = new long[]{1101L,1103L,1104L};
-//                        map.put("",ip);
-//                        long reqNew = JfgCmdInsurance.getCmd().robotCountMultiData(map, false, 0);
-//                        AppLogger.d("newCount:"+reqNew);
+                        BaseApplication.getAppComponent().getCmd().robotGetData("", list, 10, false, 0);
+                        AppLogger.d("getUnReadMesg:");
                     } catch (JfgException e) {
                         AppLogger.e("getUnReadMesg" + e.getLocalizedMessage());
                     }
                 }, AppLogger::e);
+
     }
 
     public Subscription unReadMesgBack() {
         return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .onBackpressureBuffer()
                 .filter(rsp -> rsp.map != null)
-                .flatMap(new Func1<RobotoGetDataRsp, Observable<Integer>>() {
-                    @Override
-                    public Observable<Integer> call(RobotoGetDataRsp rsp) {
-                        int count = 0;
-                        if (rsp != null && rsp.map != null && rsp.map.size() != 0) {
-                            for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
-                                try {
-                                    if (entry.getKey() == 1101 || entry.getKey() == 1103 || entry.getKey() == 1104) {
-                                        ArrayList<JFGDPMsg> value = entry.getValue();
-                                        if (value.size() != 0) {
-                                            JFGDPMsg jfgdpMsg = value.get(0);
-                                            DpMsgDefine.DPUnreadCount unReadCount = DpUtils.unpackData(jfgdpMsg.packValue, DpMsgDefine.DPUnreadCount.class);
-                                            AppLogger.d("unReadCount:"+unReadCount.count);
-                                            if (unReadCount != null)
-                                                count += unReadCount.count;
-                                        }
+                .observeOn(Schedulers.io())
+                .subscribe(rsp -> {
+                    int count = -1;
+                    if (rsp != null && rsp.map != null && rsp.map.size() != 0) {
+                        for (Map.Entry<Integer, ArrayList<JFGDPMsg>> entry : rsp.map.entrySet()) {
+                            try {
+                                if (entry.getKey() == 1101 || entry.getKey() == 1103 || entry.getKey() == 1104) {
+                                    count = 0;
+                                    ArrayList<JFGDPMsg> value = entry.getValue();
+                                    if (value.size() != 0) {
+                                        JFGDPMsg jfgdpMsg = value.get(0);
+                                        Integer unReadCount = DpUtils.unpackData(jfgdpMsg.packValue, Integer.class);
+                                        if (unReadCount == null) unReadCount = 0;
+                                        AppLogger.d("unReadCount:" + unReadCount);
+                                        count += unReadCount;
                                     }
-                                } catch (Exception e) {
-                                    AppLogger.e("getUnreadBack:" + e.getLocalizedMessage());
-                                    return Observable.just(count);
                                 }
+                            } catch (Exception e) {
+                                AppLogger.e("getUnreadBack:" + e.getLocalizedMessage());
                             }
                         }
-                        return Observable.just(count);
+                        if (count >= 0) {
+                            AppLogger.d("unrecount:" + count);
+                            hasUnRead = count != 0;
+                            int finalCount = count;
+                            AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+                                if (getView() != null) getView().setMesgNumber(finalCount);
+                            });
+                        }
                     }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(integer -> {
-                    AppLogger.d("unrecount:" + integer);
-                    if (getView() != null) getView().setMesgNumber(integer);
-                    hasUnRead = integer != 0;
                 }, AppLogger::e);
     }
 
@@ -294,20 +283,22 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     @Override
     public Subscription getAccountBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getUserInfo -> {
-                    if (getUserInfo != null){
+                    if (userInfo == null && getUserInfo != null) {
                         userInfo = getUserInfo.jfgAccount;
-                        if (getView() != null && !TextUtils.isEmpty(userInfo.getAlias()))getView().setAliasName(userInfo.getAlias());
-                        if (getView() != null && !TextUtils.isEmpty(userInfo.getPhotoUrl()))getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
+                        if (getView() != null && !TextUtils.isEmpty(userInfo.getAlias()))
+                            getView().setAliasName(userInfo.getAlias());
+                        if (getView() != null && !TextUtils.isEmpty(userInfo.getPhotoUrl()))
+                            getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
                     }
                 }, AppLogger::e);
     }
 
     @Override
     public void loginType() {
-         Observable.just(null)
+        Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<Object, Observable<Integer>>() {
                     @Override
@@ -329,10 +320,10 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(i -> {
-                    if (getView() != null){
-                        if (i == 3 || i == 4){
+                    if (getView() != null) {
+                        if (i == 3 || i == 4) {
                             getView().jump2SetPhoneFragment();
-                        }else if (i == 6 || i == 7){
+                        } else if (i == 6 || i == 7) {
                             getView().jump2BindMailFragment();
                         }
                     }

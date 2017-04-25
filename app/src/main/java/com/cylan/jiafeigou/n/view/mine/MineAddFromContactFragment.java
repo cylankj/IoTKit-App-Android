@@ -11,7 +11,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JError;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.contract.mine.MineAddFromContactContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineAddFromContactPresenterImp;
 import com.cylan.jiafeigou.rx.RxEvent;
@@ -100,7 +102,10 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public String getSendMesg() {
         String mesg = etMineAddContactMesg.getText().toString();
         if (TextUtils.isEmpty(mesg)) {
-            return String.format(getString(R.string.Tap3_FriendsAdd_StuffContents), presenter.getUserAlias());
+            Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+            String alias = account.getAlias();
+            String acc = account.getAccount();
+            return TextUtils.isEmpty(alias) ? acc : alias;
         } else {
             return mesg;
         }

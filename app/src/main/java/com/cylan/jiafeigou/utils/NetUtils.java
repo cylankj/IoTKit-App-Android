@@ -355,7 +355,7 @@ public class NetUtils {
                 // 当前网络是连接的
                 if (info.getState() == NetworkInfo.State.CONNECTED) {
                     // 当前所连接的网络可用
-                    return ping();
+                    return true;
                 }
             }
         }

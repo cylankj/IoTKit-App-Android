@@ -38,6 +38,10 @@ public class DeviceTimeZoneAdapter extends SuperAdapter<TimeZoneBean> {
         holder.setVisibility(R.id.imv_item_check, TextUtils.equals(item.getId(), chooseId) ? View.VISIBLE : View.INVISIBLE);
     }
 
+    public String getChooseId() {
+        return this.chooseId;
+    }
+
     @Override
     protected IMulItemViewType<TimeZoneBean> offerMultiItemViewType() {
         return new IMulItemViewType<TimeZoneBean>() {

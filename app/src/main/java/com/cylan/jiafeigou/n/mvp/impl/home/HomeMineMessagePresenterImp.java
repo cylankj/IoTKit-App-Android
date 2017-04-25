@@ -54,6 +54,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
         return new Subscription[]{
                 getAccount(),
                 getMesgDpDataCallBack()
+
         };
     }
 
@@ -102,6 +103,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                             // 加载数据库数据
                             dbManager = DataBaseUtil.getInstance(account.jfgAccount.getAccount()).dbManager;
                             initMesgData(account.jfgAccount.getAccount());
+                            markMesgHasRead();
                         }
                     }
                 }, AppLogger::e);
@@ -317,15 +319,17 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     @Override
     public void markMesgHasRead() {
-        rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+        Observable.just(null)
+                .observeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-//                        long req = JfgCmdInsurance.getCmd().robotCountDataClear("", new long[]{601L, 701L}, 0);
                         ArrayList<JFGDPMsg> list = new ArrayList<JFGDPMsg>();
-                        JFGDPMsg msg1 = new JFGDPMsg(1101L, System.currentTimeMillis());
-                        JFGDPMsg msg2 = new JFGDPMsg(1103L, System.currentTimeMillis());
-                        JFGDPMsg msg3 = new JFGDPMsg(1104L, System.currentTimeMillis());
+                        JFGDPMsg msg1 = new JFGDPMsg(1101L, 0);
+                        JFGDPMsg msg2 = new JFGDPMsg(1103L, 0);
+                        JFGDPMsg msg3 = new JFGDPMsg(1104L, 0);
+                        msg1.packValue = DpUtils.pack(0);
+                        msg2.packValue = DpUtils.pack(0);
+                        msg3.packValue = DpUtils.pack(0);
                         list.add(msg1);
                         list.add(msg2);
                         list.add(msg3);
@@ -337,5 +341,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
                     }
                 }, AppLogger::e);
     }
+
 
 }

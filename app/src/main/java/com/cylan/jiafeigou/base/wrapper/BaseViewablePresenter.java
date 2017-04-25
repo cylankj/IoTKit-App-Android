@@ -97,7 +97,8 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
                         mView.onVideoDisconnect(BAD_NET_WORK);
                     }
                     return true;
-                }).observeOn(Schedulers.io())
+                })
+                .observeOn(Schedulers.io())
                 .map(hasNet -> {
                     String handle = getViewHandler();
                     try {

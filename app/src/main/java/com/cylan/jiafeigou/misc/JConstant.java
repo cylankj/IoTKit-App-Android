@@ -135,6 +135,7 @@ public class JConstant {
     public static final String KEY_DEVICE_ITEM_BUNDLE = "key_bundle_item";
 
     public static final String KEY_DEVICE_ITEM_UUID = "key_device_uuid";
+    public static final String KEY_DEVICE_TIME_ZONE = "key_device_time_zone";
 
     /**
      * 保存了 {@link BellLiveActivity}的进程id

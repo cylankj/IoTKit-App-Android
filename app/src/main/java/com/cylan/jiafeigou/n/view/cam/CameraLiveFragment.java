@@ -853,6 +853,9 @@ public class CameraLiveFragment extends IBaseFragment<CamLiveContract.Presenter>
         showFloatFlowView(true, content);
         if (!basePresenter.isShareDevice())
             camLiveController.setLiveTime(rtcp.timestamp == 0 ? System.currentTimeMillis() : rtcp.timestamp * 1000L);
+        if (rtcp.frameRate > 0) {
+            camLiveController.setLoadingState( ILiveControl.STATE_IDLE, null);
+        }
         Log.d("onRtcp", "onRtcp: " + new Gson().toJson(rtcp));
     }
 

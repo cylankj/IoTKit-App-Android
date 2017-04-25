@@ -21,7 +21,6 @@ import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.LogState;
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
 import com.cylan.jiafeigou.n.mvp.contract.home.HomeMineContract;
@@ -36,7 +35,6 @@ import com.cylan.jiafeigou.n.view.mine.MineShareDeviceFragment;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.HomeMineItemView;
@@ -71,6 +69,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     HomeMineItemView homeMineItemHelp;
     @BindView(R.id.home_mine_item_settings)
     HomeMineItemView homeMineItemSettings;
+    private boolean isPrepared = false;
+    private boolean isVisible = false;
 
     public static HomeMineFragment newInstance(Bundle bundle) {
         HomeMineFragment fragment = new HomeMineFragment();
@@ -89,7 +89,14 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine, container, false);
         ButterKnife.bind(this, view);
+        isPrepared = true;
+        lazyLoad();
         return view;
+    }
+
+    private void lazyLoad() {
+        if (isPrepared)
+            basePresenter.getUnReadMesg();
     }
 
     @Override
@@ -110,6 +117,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
         }
         super.onStart();
     }
+
 
     /**
      * 点击个人头像
@@ -242,12 +250,15 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
     @Override
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
-        if (isVisibleToUser && getActivity() != null && getView() != null) {
-            if (TextUtils.equals(tvHomeMineNick.getText(), getString(R.string.Tap3_LogIn))) {
-                //need to have a try
-                String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
-                setAliasName(TextUtils.isEmpty(userAlias) ? basePresenter.createRandomName() : userAlias);
+        if (isVisibleToUser && isAdded()) {
+            if (BaseApplication.getAppComponent().getSourceManager().getLoginState() != LogState.STATE_ACCOUNT_ON) {
+                //访客状态
+                Bitmap bm = BitmapFactory.decodeResource(getResources(), R.drawable.me_bg_top_image);
+                basePresenter.portraitBlur(bm);
+                setAliasName(getString(R.string.Tap3_LogIn));
             }
+            lazyLoad();
+
         }
     }
 
@@ -263,7 +274,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
 
     @Override
     public void setUserImageHeadByUrl(String url) {
-        AppLogger.d("user_img:"+url);
+        AppLogger.d("user_img:" + url);
         if (getContext() == null) return;
         MySimpleTarget mySimpleTarget = new MySimpleTarget(ivHomeMinePortrait, getResources().getDrawable(R.drawable.me_bg_top_image), rLayoutHomeMineTop, url, basePresenter);
         Glide.with(getContext()).load(url)
@@ -317,15 +328,8 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      */
     @Override
     public void setMesgNumber(final int number) {
-        if (number == 0) {
-            return;
-        }
-        tvHomeMineMsgCount.post(new Runnable() {
-            @Override
-            public void run() {
-                tvHomeMineMsgCount.setText(number + "+");
-            }
-        });
+        AppLogger.d("ssss" + number);
+        tvHomeMineMsgCount.setText(number == 0 ? null : number > 99 ? "99+" : String.valueOf(number));
     }
 
     private boolean needStartLoginFragment() {
@@ -482,7 +486,7 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
      * 跳转到绑定邮箱界面
      */
     @Override
-    public void jump2BindMailFragment(){
+    public void jump2BindMailFragment() {
         Bundle bundle = new Bundle();
         bundle.putSerializable("userinfo", BaseApplication.getAppComponent().getSourceManager().getJFGAccount());
         HomeMineInfoMailBoxFragment bindMailFragment = HomeMineInfoMailBoxFragment.newInstance(bundle);

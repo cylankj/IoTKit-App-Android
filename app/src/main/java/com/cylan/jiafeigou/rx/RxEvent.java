@@ -889,6 +889,7 @@ public class RxEvent {
 
     public static class AccountArrived {
         public Account account;
+        public JFGAccount jfgAccount;
 
         public AccountArrived(Account account) {
             this.account = account;
@@ -1053,7 +1054,7 @@ public class RxEvent {
         public final boolean slow;
 
         public VideoLoadingEvent(boolean slow) {
-            this.slow=slow;
+            this.slow = slow;
         }
     }
 }

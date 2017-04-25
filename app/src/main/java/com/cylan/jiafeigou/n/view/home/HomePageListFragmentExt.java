@@ -338,14 +338,16 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onAccountUpdate(JFGAccount greetBean) {
-        tvHeaderNickName.postDelayed(() -> {
-            tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
-            tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
-                    : getString(R.string.Tap1_Index_NightGreetings));
-            tvHeaderNickName.requestLayout();
-        }, 100);
-        onNetworkChanged(NetUtils.getJfgNetType(ContextUtils.getContext()) != 0);
-        AppLogger.d("JFGAccount: " + new Gson().toJson(greetBean));
+        if (isAdded()) {
+            tvHeaderNickName.postDelayed(() -> {
+                tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
+                tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
+                        : getString(R.string.Tap1_Index_NightGreetings));
+                tvHeaderNickName.requestLayout();
+            }, 100);
+            onNetworkChanged(NetUtils.getJfgNetType(ContextUtils.getContext()) != 0);
+            AppLogger.d("JFGAccount: " + new Gson().toJson(greetBean));
+        }
     }
 
     /**

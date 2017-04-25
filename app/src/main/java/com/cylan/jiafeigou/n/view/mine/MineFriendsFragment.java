@@ -1,6 +1,5 @@
 package com.cylan.jiafeigou.n.view.mine;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -23,13 +22,12 @@ import com.cylan.jiafeigou.n.view.adapter.AddRelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.n.view.adapter.RelativesAndFriendsAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
-import com.cylan.jiafeigou.support.superadapter.OnItemLongClickListener;
 import com.cylan.jiafeigou.support.superadapter.internal.SuperViewHolder;
-import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.utils.ContextUtils;
 
 import java.util.ArrayList;
 
@@ -242,19 +240,15 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void showLongClickDialog(final int position, final MineAddReqBean bean) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        builder.setPositiveButton(getString(R.string.DELETE), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                tempReqBean = bean;
-                jump2AddReqDetailFragment(position, addReqListAdater.getList().get(position));
-                dialog.dismiss();
-            }
-        }).setNegativeButton(getString(R.string.CANCEL), new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        }).show();
+        builder.setTitle(R.string.Tips_SureDelete)
+                .setPositiveButton(getString(R.string.DELETE), (dialog, which) -> {
+                    tempReqBean = bean;
+                    presenter.deleteAddReq(bean.account);
+                    dialog.dismiss();
+                })
+                .setNegativeButton(getString(R.string.CANCEL), null)
+                .show();
+
     }
 
     private void initPresenter() {
@@ -303,12 +297,9 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      * desc:设置好友列表的监听
      */
     private void initFriendAdaListener() {
-        friendsListAdapter.setOnItemClickListener(new OnItemClickListener() {
-            @Override
-            public void onItemClick(View itemView, int viewType, int position) {
-                if (getView() != null) {
-                    jump2FriendDetailFragment(position, friendsListAdapter.getList().get(position));
-                }
+        friendsListAdapter.setOnItemClickListener((itemView, viewType, position) -> {
+            if (getView() != null) {
+                jump2FriendDetailFragment(position, friendsListAdapter.getList().get(position));
             }
         });
     }
@@ -336,12 +327,9 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
             }
         });
 
-        addReqListAdater.setOnItemLongClickListener(new OnItemLongClickListener() {
-            @Override
-            public void onItemLongClick(View itemView, int viewType, int position) {
-                if (getView() != null) {
-                    showLongClickDialog(position, addReqListAdater.getList().get(position));
-                }
+        addReqListAdater.setOnItemLongClickListener((itemView, viewType, position) -> {
+            if (getView() != null) {
+                showLongClickDialog(position, addReqListAdater.getList().get(position));
             }
         });
     }

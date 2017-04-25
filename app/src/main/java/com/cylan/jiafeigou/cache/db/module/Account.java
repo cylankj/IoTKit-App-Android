@@ -4,6 +4,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.cache.db.view.DBAction;
 import com.cylan.jiafeigou.cache.db.view.DBOption;
 import com.cylan.jiafeigou.cache.db.view.DBState;
+import com.google.gson.Gson;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
@@ -34,6 +35,7 @@ public class Account extends BasePropertyHolder<Account> {
     private String action;
     private String state;
     private String option;
+    private String accountJson;
     private transient boolean isOnline;
 
     public void setOnline(boolean isOnline) {
@@ -49,6 +51,7 @@ public class Account extends BasePropertyHolder<Account> {
     }
 
     public Account setAccount(JFGAccount account) {
+        this.accountJson = new Gson().toJson(account);
         this.account = account.getAccount();
         this.phone = account.getPhone();
         this.token = account.getToken();
@@ -67,10 +70,11 @@ public class Account extends BasePropertyHolder<Account> {
     public Account() {
     }
 
-    @Generated(hash = 1390423401)
+    @Generated(hash = 1864618567)
     public Account(Long _id, String account, String server, String password, int loginType, String phone,
-                   String token, String alias, boolean enablePush, boolean enableSound, String email,
-                   boolean enableVibrate, String photoUrl, String action, String state, String option) {
+            String token, String alias, boolean enablePush, boolean enableSound, String email,
+            boolean enableVibrate, String photoUrl, String action, String state, String option,
+            String accountJson) {
         this._id = _id;
         this.account = account;
         this.server = server;
@@ -87,6 +91,7 @@ public class Account extends BasePropertyHolder<Account> {
         this.action = action;
         this.state = state;
         this.option = option;
+        this.accountJson = accountJson;
     }
 
     public String getAccount() {
@@ -270,5 +275,13 @@ public class Account extends BasePropertyHolder<Account> {
     @Override
     protected String uuid() {
         return null;
+    }
+
+    public String getAccountJson() {
+        return this.accountJson;
+    }
+
+    public void setAccountJson(String accountJson) {
+        this.accountJson = accountJson;
     }
 }

@@ -6,6 +6,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
@@ -23,7 +24,7 @@ public class MsgBoxView extends ImageView {
     private static final String[] PLACE_HOLDER = {"0", "00", "000"};
     private Paint circlePaint = new Paint();
     private Paint textPaint = new Paint();
-
+    private int number = 0;
     private Rect textRect = new Rect();
 
     public MsgBoxView(Context context) {
@@ -70,7 +71,7 @@ public class MsgBoxView extends ImageView {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         final float radius = calculateTextWidth() / 2.0f;
-        if (radius == 0 || text == null || textRect == null)
+        if (radius == 0 || TextUtils.isEmpty(text) || textRect == null)
             return;
         final int p = getPaddingBottom();
         float x = 0, y = 0;
@@ -98,5 +99,12 @@ public class MsgBoxView extends ImageView {
     public void setText(String text) {
         this.text = text;
         invalidate();
+    }
+
+    public void setNumber(int number) {
+        if (this.number == 0 && number == 0) {
+            setText(null);
+        }
+
     }
 }

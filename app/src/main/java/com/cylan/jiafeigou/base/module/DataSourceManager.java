@@ -105,7 +105,12 @@ public class DataSourceManager implements JFGSourceManager {
                     return account;
                 })
                 .map(dpAccount -> {
-                    getCacheInstance().postSticky(new RxEvent.AccountArrived(dpAccount));
+                    if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.AccountArrived.class)) {
+                        RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(dpAccount);
+                        this.jfgAccount = new Gson().fromJson(dpAccount.getAccountJson(), JFGAccount.class);
+                        accountArrived.jfgAccount = this.jfgAccount;
+                        getCacheInstance().postSticky(accountArrived);
+                    }
                     return dpAccount;
                 })
                 .flatMap(account -> dbHelper.getAccountDevice(account.getAccount()))
@@ -356,7 +361,7 @@ public class DataSourceManager implements JFGSourceManager {
     @Override
     public JFGAccount getJFGAccount() {
         if (jfgAccount == null) {
-            return new Gson().fromJson(PreferencesUtils.getString(KEY_ACCOUNT), JFGAccount.class);
+            return new Gson().fromJson("", JFGAccount.class);
         }
         return jfgAccount;
     }
@@ -430,7 +435,7 @@ public class DataSourceManager implements JFGSourceManager {
         if (jfgAccount != null) {
             PreferencesUtils.putString(KEY_ACCOUNT, new Gson().toJson(jfgAccount));
             getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
-        } else PreferencesUtils.putString(KEY_ACCOUNT, "");
+        }
     }
 
     @Override
@@ -534,13 +539,18 @@ public class DataSourceManager implements JFGSourceManager {
                             this.account = dpAccount;
                             this.account.setOnline(true);
                             setJfgAccount(event.account);
-                            if (jfgAccount != null)
+                            if (jfgAccount != null) {
                                 setLoginState(new LogState(LogState.STATE_ACCOUNT_ON));
-                            else {
+                            } else {
                                 AppLogger.e("jfgAccount is null");
                             }
                             getCacheInstance().post(account);
-                            getCacheInstance().postSticky(new RxEvent.AccountArrived(this.account));
+                            if (getCacheInstance().hasStickyEvent(RxEvent.AccountArrived.class)) {
+                                getCacheInstance().removeStickyEvent(RxEvent.AccountArrived.class);
+                                RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(this.account);
+                                accountArrived.jfgAccount = event.account;
+                                getCacheInstance().postSticky(accountArrived);
+                            }
 //                            BaseDPTaskDispatcher.getInstance().perform();
                             return "";
                         }))

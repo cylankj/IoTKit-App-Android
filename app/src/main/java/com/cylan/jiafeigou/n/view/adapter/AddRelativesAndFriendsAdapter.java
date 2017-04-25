@@ -7,7 +7,6 @@ import android.support.v4.graphics.drawable.RoundedBitmapDrawable;
 import android.support.v4.graphics.drawable.RoundedBitmapDrawableFactory;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -43,9 +42,9 @@ public class AddRelativesAndFriendsAdapter extends SuperAdapter<MineAddReqBean> 
 
     @Override
     public void onBind(final SuperViewHolder holder, final int viewType, final int layoutPosition, final MineAddReqBean item) {
-        holder.setText(R.id.tv_username, TextUtils.isEmpty(item.alias)?item.account:item.alias);
-        if (item.sayHi == null || TextUtils.isEmpty(item.sayHi)) {
-            holder.setText(R.id.tv_add_message, String.format(ContextUtils.getContext().getString(R.string.Tap3_FriendsAdd_RequestContents),TextUtils.isEmpty(item.alias)?item.account:item.alias));
+        holder.setText(R.id.tv_username, TextUtils.isEmpty(item.alias) ? item.account : item.alias);
+        if (TextUtils.isEmpty(item.sayHi)) {
+            holder.setText(R.id.tv_add_message, String.format(ContextUtils.getContext().getString(R.string.Tap3_FriendsAdd_RequestContents), TextUtils.isEmpty(item.alias) ? item.account : item.alias));
         } else {
             holder.setText(R.id.tv_add_message, item.sayHi);
         }
