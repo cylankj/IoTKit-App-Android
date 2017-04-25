@@ -47,6 +47,29 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
     protected void onRegisterSubscription() {
         super.onRegisterSubscription();
         registerSubscription(getDeviceUnBindSub());
+        registerSubscription(getLoadSub());
+    }
+
+    protected Subscription getLoadSub() {
+        return RxBus.getCacheInstance().toObservable(RxEvent.VideoLoadingEvent.class)
+                .throttleFirst(3, TimeUnit.SECONDS)
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(load -> {
+                    AppLogger.d("正在加载中" + load.slow);
+                    mView.onLoading(load.slow);
+                    return load;
+                })
+                .filter(load -> load.slow)
+                .delay(4, TimeUnit.SECONDS)
+                .subscribe(ret -> {
+                    if (!sourceManager.isOnline()) {
+                        AppLogger.d("无网络连接");
+                        JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
+                        disconn.code = BAD_NET_WORK;
+                        disconn.remote = getViewHandler();
+                        RxBus.getCacheInstance().post(disconn);
+                    }
+                }, AppLogger::e);
     }
 
     private Subscription getDeviceUnBindSub() {
@@ -401,22 +424,6 @@ public abstract class BaseViewablePresenter<V extends ViewableView> extends Base
 
     @Override
     public void onFrameRate(boolean slow) {
-        Observable.just(slow)
-                .observeOn(AndroidSchedulers.mainThread())
-                .map(ret -> {
-                    AppLogger.d("正在缓冲中.........");
-                    mView.onLoading(ret);
-                    return ret;
-                })
-                .delay(4, TimeUnit.SECONDS)
-                .subscribe(ret -> {
-                    if (!sourceManager.isOnline()) {
-                        AppLogger.d("无网络连接");
-                        JFGMsgVideoDisconn disconn = new JFGMsgVideoDisconn();
-                        disconn.code = BAD_NET_WORK;
-                        disconn.remote = getViewHandler();
-                        RxBus.getCacheInstance().post(disconn);
-                    }
-                }, AppLogger::e);
+        RxBus.getCacheInstance().post(new RxEvent.VideoLoadingEvent(slow));
     }
 }

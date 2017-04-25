@@ -1048,4 +1048,12 @@ public class RxEvent {
     public static class NeedUpdateGooglePlayService {
 
     }
+
+    public static class VideoLoadingEvent {
+        public final boolean slow;
+
+        public VideoLoadingEvent(boolean slow) {
+            this.slow=slow;
+        }
+    }
 }
