@@ -131,7 +131,7 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
     @Override
     public void showReqOutTimeDialog(final MineAddReqBean item) {
         //请求过期
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(getView().getContext());
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(getString(R.string.Tap3_FriendsAdd_ExpiredTips));
         builder.setPositiveButton(getString(R.string.Tap3_FriendsAdd_Send), (dialog, which) -> {
             tempReqBean = item;

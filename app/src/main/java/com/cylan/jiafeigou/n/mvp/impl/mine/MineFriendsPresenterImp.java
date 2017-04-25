@@ -124,9 +124,11 @@ public class MineFriendsPresenterImp extends AbstractPresenter<MineFriendsContra
 
     @Override
     public boolean checkAddRequestOutTime(MineAddReqBean bean) {
-        long oneMount = 30 * 24 * 60 * 60 * 1000L;
+        long oneMonth = 30 * 24 * 60 * 60 * 1000L;
         long current = System.currentTimeMillis();
-        return (current - bean.time) > oneMount;
+        //怀疑 bean.time是秒
+        boolean isLongTime = String.valueOf(bean.time).length() == String.valueOf(current).length();
+        return (current - (isLongTime ? bean.time : bean.time * 1000L)) > oneMonth;
     }
 
     /**

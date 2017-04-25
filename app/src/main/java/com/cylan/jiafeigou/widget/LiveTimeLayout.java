@@ -33,10 +33,10 @@ public class LiveTimeLayout extends FrameLayout implements LiveTimeSetter {
     }
 
     @Override
-    public void setContent(int state, long time) {
+    public void setContent(int type, long time) {
         String content = String.format(getContext().getString(
-                state == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                + "|%s", state == 1 ? TimeUtils.getHistoryTime(time) :
+                type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
+                + "|%s", type == 1 ? TimeUtils.getHistoryTime1(time) :
                 TimeUtils.getHistoryTime1(time));
         if (!textView.isShown()) textView.setVisibility(View.VISIBLE);
         textView.setText(content);

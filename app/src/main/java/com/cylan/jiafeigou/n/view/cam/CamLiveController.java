@@ -529,7 +529,7 @@ public class CamLiveController implements
                 }
                 break;
         }
-        AppLogger.i(String.format("onClick land play: %s", (presenterRef != null && presenterRef.get() != null)));
+        AppLogger.i(String.format("onClick play: %s", (presenterRef != null && presenterRef.get() != null)));
     }
 
 

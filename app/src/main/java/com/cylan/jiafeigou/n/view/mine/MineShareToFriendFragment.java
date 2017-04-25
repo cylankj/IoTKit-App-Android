@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -183,7 +182,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
     @Override
     public void showShareSomeFail(int some) {
         //TODO 完善
-        showShareResultDialog(String.format(getString(R.string.Tap3_ShareDevice_Friends_FailTips),some));
+        showShareResultDialog(String.format(getString(R.string.Tap3_ShareDevice_Friends_FailTips), some));
     }
 
     @Override
@@ -211,6 +210,7 @@ public class MineShareToFriendFragment extends Fragment implements MineShareToFr
 
     /**
      * 处理分享后的结果
+     *
      * @param callbackList
      */
     @Override

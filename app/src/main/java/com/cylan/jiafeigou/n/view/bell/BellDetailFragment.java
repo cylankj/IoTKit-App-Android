@@ -17,7 +17,7 @@ import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.bell.BellDetailContract;
-import com.cylan.jiafeigou.n.view.cam.HardwareUpdateFragment;
+import com.cylan.jiafeigou.n.view.cam.FirmwareFragment;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
@@ -198,7 +198,7 @@ public class BellDetailFragment extends BaseFragment<BellDetailContract.Presente
                     Bundle bundle = new Bundle();
                     bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, mUUID);
                     bundle.putSerializable("version_content", checkDevVersion);
-                    HardwareUpdateFragment hardwareUpdateFragment = HardwareUpdateFragment.newInstance(bundle);
+                    FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
                     ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
                             hardwareUpdateFragment, android.R.id.content);
                 }

@@ -4,6 +4,7 @@ import android.util.Log;
 
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
+import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -11,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -37,16 +39,21 @@ public class DataExt implements IData {
         flattenDataList.clear();
         int size = list.size();
         if (size > 0) {
-            long timeMax = getTenMinuteByTimeRight((list.get(0).time + list.get(0).duration) * 1000L);
-            long timeMin = getTenMinuteByTimeLeft((list.get(size - 1).time) * 1000L);
+            //需要判断顺序.....
+            AppLogger.e("需要判断顺序");
+            int maxIndex = list.get(0).time >= list.get(list.size() - 1).time ? 0 : list.size() - 1;
+            int minIndex = maxIndex == 0 ? list.size() - 1 : 0;
+            long timeMax = getTenMinuteByTimeRight((list.get(maxIndex).time + list.get(maxIndex).duration) * 1000L);
+            long timeMin = getTenMinuteByTimeLeft((list.get(minIndex).time) * 1000L);
             size = 0;
-            for (long i = timeMax; i >= timeMin; ) {
-                flattenDataList.add(i);
-                fillMap(i);
+            Log.d(TAG, String.format(Locale.getDefault(), "timeMax:%s,timeMin:%s", timeMax, timeMin));
+            for (long time = timeMax; time >= timeMin; ) {
+                flattenDataList.add(time);
+                fillMap(time);
                 if (DEBUG)
-                    Log.d(TAG, "i:" + size + " " + TimeUtils.getHistoryTime(i));
+                    Log.d(TAG, "i:" + size + " " + TimeUtils.getHistoryTime(time));
                 size++;
-                i -= 10 * 60 * 1000L;
+                time -= 10 * 60 * 1000L;
             }
         }
     }

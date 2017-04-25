@@ -63,18 +63,17 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             }
         }
         //2 电量
-        if (device != null && net != null && net.net > 0) {//设备在线才显示电量
+        if (device != null && net != null && net.net > 0 && JFGRules.showHomeBatterIcon(device.pid)) {//设备在线才显示电量
             int battery = device.$(206, 0);
-            if (battery < 20 && (net != null && net.net == 1)) {//WiFi 电量低于20%在线显示
+            if (battery < 20 && (JFGRules.isBell(device.pid) || JFGRules.isFreeCam(device.pid))) {//门铃和freeCam 电量低于20%在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
-            } else if (battery <= 50 && (net != null && net.net > 1)) {//移动网络电量低于50%在线显示
+            } else if (battery <= 50 && JFGRules.is3GCam(device.pid)) {//3G狗 低于50%在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);
                 holder.setImageResource(R.id.img_device_state_2, R.drawable.home_icon_net_battery);
             } else {
                 holder.setVisibility(R.id.img_device_state_2, GONE);
                 holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
-
             }
         } else {
             holder.setImageResource(R.id.img_device_state_2, android.R.color.transparent);
@@ -85,7 +84,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         //4 安全防护
         DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
         boolean safe = device.$(501, false);
-        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid) && isPrimaryAccount(device.shareAccount) && net != null && net.net > 0) {
+        if (!isStandBY.standby && safe && JFGRules.isCamera(device.pid) && isPrimaryAccount(device.shareAccount) && JFGRules.isDeviceOnline(net)) {
             holder.setVisibility(R.id.img_device_state_3, VISIBLE);
             holder.setImageResource(R.id.img_device_state_3, R.drawable.home_icon_net_security);
         } else {

@@ -39,6 +39,8 @@ public interface JFGSourceManager {
 
     void syncDeviceProperty(String uuid);
 
+//    void getDevicePropertyByIds(String uuid, long... id);
+
     /**
      * 刷新设备属性，首页需要
      * ,手动刷
@@ -123,6 +125,6 @@ public interface JFGSourceManager {
 
     void initSubscription();
 
-    <T>void addInterceptor(Long integer, DataSourceManager.Interceptors interceptors);
+    <T> void addInterceptor(Long integer, DataSourceManager.Interceptors interceptors);
 
 }

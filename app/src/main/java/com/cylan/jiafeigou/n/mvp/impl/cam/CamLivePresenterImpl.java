@@ -149,7 +149,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public Observable<IData> assembleTheDay(long timeStart) {
-        long timeEnd = timeStart + 24 * 3600 - 1;
+        long timeEnd = TimeUtils.getSpecificDayEndTime(timeStart * 1000) - 1;
         AppLogger.d("historyFile:timeEnd?" + timeStart);
         return BaseApplication.getAppComponent().getDBHelper().loadHistoryFile(uuid, timeStart, timeEnd)
                 .subscribeOn(Schedulers.io())
@@ -759,11 +759,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     }
                     Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
                     try {
-                        String version = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "");
+                        String version = device.$(DpMsgMap.ID_207_DEVICE_VERSION, "0");
                         BaseApplication.getAppComponent().getCmd().checkDevVersion(device.pid, uuid, version);
                     } catch (Exception e) {
                         AppLogger.e("checkNewHardWare:" + e.getLocalizedMessage());
-                        e.printStackTrace();
                     }
                 }, throwable -> AppLogger.e(MiscUtils.getErr(throwable)));
     }

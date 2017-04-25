@@ -34,7 +34,6 @@ import com.cylan.jiafeigou.support.network.ReactiveNetwork;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.udpMsgPack.JfgUdpMsg;
 
 import org.msgpack.MessagePack;
@@ -68,12 +67,12 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     private UpdateFileBean downLoadBean;
 
     private SimulatePercent simulatePercent;
-//    private DownloadManagerPro.Config config;
+    //    private DownloadManagerPro.Config config;
     private String uuid;
     private int updateTime;
     private int updatePingTime;
     private Network network;
-    private boolean updataSucc;
+    private int firmwareUpdateState = 0;//-1失败,0初始,1.升级中,2.升级成功
 
     public HardwareUpdatePresenterImpl(HardwareUpdateContract.View view, String uuid, RxEvent.CheckDevVersionRsp checkDevVersion) {
         super(view);
@@ -204,7 +203,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                             AppLogger.d("file_length:" + getFileSize(file));
                             AppLogger.d("file_exit:" + file.exists());
                             if (file.exists()) {
-                                if (!NetUtils.isNetworkAvailable(ContextUtils.getContext())){
+                                if (!NetUtils.isNetworkAvailable(ContextUtils.getContext())) {
                                     return Observable.just("");
                                 }
                                 //包是否完整
@@ -252,7 +251,9 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
 
 
     private class DownTemp {
-        public DownTemp(){}
+        public DownTemp() {
+        }
+
         public DownTemp(double percent, long length) {
             this.percent = percent;
             this.length = length;
@@ -320,7 +321,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
      * 开始升级
      */
     @Override
-    public void startUpdate(String Ip,short port,String cid) {
+    public void startUpdate(String Ip, short port, String cid) {
         rx.Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
@@ -335,8 +336,9 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         String localUrl = "http://" + ip + ":8765/" + downLoadBean.fileName + ".bin";
 //                        String localUrl = downLoadBean.savePath+"/"+ downLoadBean.fileName + ".bin";
                         AppLogger.d("localUrl2:" + localUrl);
-                        if (TextUtils.equals(cid,uuid)){
-                            updateTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(Ip,port,new UpdatePing(localUrl,uuid,ip,8765).toBytes());
+                        firmwareUpdateState = 1;
+                        if (TextUtils.equals(cid, uuid)) {
+                            updateTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(Ip, port, new UpdatePing(localUrl, uuid, ip, 8765).toBytes());
                             AppLogger.d("beginUpdate2:" + updateTime);
                         }
                     } catch (JfgException e) {
@@ -365,12 +367,13 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                         final String headTag = header.cmd;
                         AppLogger.d("udp_cmd:" + headTag);
                         if (TextUtils.equals(headTag, "f_ack")) {
-                            updataSucc = true;
+                            firmwareUpdateState = 2;
                             endCounting();
                             getView().handlerResult(2);
                             AppLogger.d("f_upgrade:succ");
                         } else {
 //                          getView().handlerResult(3);
+                            firmwareUpdateState = -1;
                         }
                     } catch (IOException e) {
                         AppLogger.i("unpack msgpack failed:" + e.getLocalizedMessage());
@@ -402,7 +405,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
         @Index(4)
         public String url;
 
-        public UpdatePing(String url,String cid, String ip,int port) {
+        public UpdatePing(String url, String cid, String ip, int port) {
             this.url = url;
             this.cmd = "f_upgrade";
             this.ip = ip;
@@ -441,46 +444,46 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
     }
 
     @Override
-    public void myDownLoad(String fileUrl,String fileName) {
+    public void myDownLoad(String fileUrl, String fileName) {
 
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     // 区别3g狗文件后缀
-                    String file = fileName+".bin";
+                    String file = fileName + ".bin";
                     Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                    if (device != null){
-                        if (JFGRules.is3GCam(device.pid)){
-                            file = fileName+".apk";
+                    if (device != null) {
+                        if (JFGRules.is3GCam(device.pid)) {
+                            file = fileName + ".apk";
                         }
                     }
 
                     FileOutputStream fileOutputStream = getView().getContext().getApplicationContext().openFileOutput(file, Context.MODE_WORLD_WRITEABLE);
-                    URL url=new URL(fileUrl);
-                    HttpURLConnection conn=(HttpURLConnection)url.openConnection();
+                    URL url = new URL(fileUrl);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                     //获取文件长度
-                    int fileLength =conn.getContentLength();
+                    int fileLength = conn.getContentLength();
 
-                    AppLogger.d("binLength:"+fileLength+" fileUrl:"+fileUrl);
+                    AppLogger.d("binLength:" + fileLength + " fileUrl:" + fileUrl);
 
-                    InputStream input= null;
+                    InputStream input = null;
                     input = conn.getInputStream();
                     byte[] buffer = new byte[1024];
                     int len = 0;
                     int total = 0;
                     while ((len = input.read(buffer)) != -1) {
-                        fileOutputStream.write(buffer,0,len);
+                        fileOutputStream.write(buffer, 0, len);
                         total += len;
                         Message message = new Message();
                         message.what = 1;
                         DownTemp temp = new DownTemp();
                         temp.length = fileLength;
-                        temp.percent = total*1.0/fileLength;
+                        temp.percent = total * 1.0 / fileLength;
                         message.obj = temp;
                         myHandler.sendMessage(message);
-                        AppLogger.d("myDown:"+total*1.0/fileLength);
-                        AppLogger.d("myDownLen:"+total);
+                        AppLogger.d("myDown:" + total * 1.0 / fileLength);
+                        AppLogger.d("myDownLen:" + total);
                     }
                     input.close();
                     fileOutputStream.close();
@@ -489,7 +492,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     myHandler.sendEmptyMessage(0);
                 } catch (IOException e) {
                     myHandler.sendEmptyMessage(2);
-                    AppLogger.d("myDown:"+e.getLocalizedMessage());
+                    AppLogger.d("myDown:" + e.getLocalizedMessage());
                     e.printStackTrace();
                 }
             }
@@ -497,30 +500,30 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
 
     }
 
-    private Handler myHandler = new Handler(){
-         @Override
+    private Handler myHandler = new Handler() {
+        @Override
         public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what){
-                    case 1:         //下载中
-                        DownTemp obj = (DownTemp) msg.obj;
-                        getView().onDownloading(obj.percent, obj.length);
-                        AppLogger.d("progress"+obj.length);
-                        break;
-                    case 2:         //下载失败
-                        getView().onDownloadErr(1);
-                        break;
-                    case 0:         //下载成功
-                        AppLogger.d("开始升级...");
-                        String[] strings = getView().getContext().getApplicationContext().fileList();
-                        for (String s : strings) {
-                            AppLogger.d("file_name:" + s);
-                        }
-                        getView().onDownloadFinish();
-                        break;
-                }
+            super.handleMessage(msg);
+            switch (msg.what) {
+                case 1:         //下载中
+                    DownTemp obj = (DownTemp) msg.obj;
+                    getView().onDownloading(obj.percent, obj.length);
+                    AppLogger.d("progress" + obj.length);
+                    break;
+                case 2:         //下载失败
+                    getView().onDownloadErr(1);
+                    break;
+                case 0:         //下载成功
+                    AppLogger.d("开始升级...");
+                    String[] strings = getView().getContext().getApplicationContext().fileList();
+                    for (String s : strings) {
+                        AppLogger.d("file_name:" + s);
+                    }
+                    getView().onDownloadFinish();
+                    break;
             }
-        };
+        }
+    };
 
     @Override
     public void upgradePing() {
@@ -529,7 +532,7 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {
                     try {
-                        updatePingTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP,UdpConstant.PORT,new JfgUdpMsg.FPing().toBytes());
+                        updatePingTime = BaseApplication.getAppComponent().getCmd().sendLocalMessage(UdpConstant.IP, UdpConstant.PORT, new JfgUdpMsg.FPing().toBytes());
                         AppLogger.d("beginPing2:" + updatePingTime);
                     } catch (JfgException e) {
                         e.printStackTrace();
@@ -547,15 +550,15 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                     MessagePack msgPack = new MessagePack();
                     try {
                         JfgUdpMsg.FPingAck fPingAck = msgPack.read(localUdpMsg.data, JfgUdpMsg.FPingAck.class);
-                        if (fPingAck != null){
+                        if (fPingAck != null) {
                             final String headTag = fPingAck.cmd;
-                            AppLogger.d("udp_cmd:" + headTag+":"+fPingAck.version);
+                            AppLogger.d("udp_cmd:" + headTag + ":" + fPingAck.version);
                             if (TextUtils.equals(headTag, "f_ping_ack")) {
                                 getView().hidePingLoading();
-                                startUpdate(localUdpMsg.ip,localUdpMsg.port,fPingAck.cid);
+                                startUpdate(localUdpMsg.ip, localUdpMsg.port, fPingAck.cid);
                                 startCounting();
-                                AppLogger.d("f_ping:succ:"+fPingAck.cid);
-                            }else {
+                                AppLogger.d("f_ping:succ:" + fPingAck.cid);
+                            } else {
                                 //设备无响应
                                 getView().deviceNoRsp();
                             }
@@ -617,11 +620,9 @@ public class HardwareUpdatePresenterImpl extends AbstractPresenter<HardwareUpdat
                 .subscribe(new Action1<Integer>() {
                     @Override
                     public void call(Integer integer) {
-                        if (integer == -1){
-                            if (!updataSucc){
-                                endCounting();
-                                getView().handlerResult(3);
-                            }
+                        if (integer == -1 && firmwareUpdateState == 1) {
+                            endCounting();
+                            getView().handlerResult(3);
                         }
                     }
                 }, AppLogger::e);
