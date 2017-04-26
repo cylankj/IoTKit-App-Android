@@ -1,5 +1,8 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
+import android.support.annotation.NonNull;
+
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.mvp.contract.home.NewHomeActivityContract;
 
 import java.lang.ref.WeakReference;
@@ -15,6 +18,12 @@ public class TestHomePresenterImpl implements NewHomeActivityContract.Presenter 
     public TestHomePresenterImpl(NewHomeActivityContract.View view) {
         viewWeakReference = new WeakReference<>(view);
         view.setPresenter(this);
+    }
+
+    @NonNull
+    @Override
+    public Device getDevice() {
+        return null;
     }
 
     @Override

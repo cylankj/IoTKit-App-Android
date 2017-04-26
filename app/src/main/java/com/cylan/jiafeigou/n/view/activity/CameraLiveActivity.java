@@ -22,7 +22,7 @@ import com.cylan.jiafeigou.misc.SettingTip;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
-import com.cylan.jiafeigou.n.view.cam.CameraLiveFragment;
+import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -36,7 +36,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
 
 
@@ -52,7 +51,7 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
 
     private String uuid;
 
-    private Bundle currentBundle;
+//    private Bundle currentBundle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +84,11 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         super.onConfigurationChanged(newConfig);
         final boolean isLandScape = this.getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
         getWindow().getDecorView().post(() -> {
-            handleSystemBar(!isLandScape, 1000);
+            if (isLandScape) {
+                handleSystemBar(false, 1);
+            } else {
+                showSystemUI();
+            }
             customToolbar.setVisibility(isLandScape ? View.GONE : View.VISIBLE);
             vpCameraLive.setPagingEnabled(!isLandScape);
         });
@@ -123,16 +126,18 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         super.onStop();
     }
 
-    public void setCurrentBundle(Bundle currentBundle) {
-        this.currentBundle = currentBundle;
-        if (vpCameraLive.getCurrentItem() == 0) return;
-        if (currentBundle.getInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE, TYPE_HISTORY) == TYPE_HISTORY) {
+    /**
+     * 夸fragment传值
+     *
+     * @param bundle
+     */
+    public void addPutBundle(Bundle bundle) {
+        final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
+        Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
+        if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
+            fragment.getArguments().putAll(bundle);
             vpCameraLive.setCurrentItem(0);
         }
-    }
-
-    public Bundle getCurrentBundle() {
-        return currentBundle;
     }
 
     private void initAdapter() {
@@ -143,8 +148,8 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
         final String tag = MiscUtils.makeFragmentName(vpCameraLive.getId(), 0);
         vpCameraLive.setPagingScrollListener(event -> {
             Fragment fragment = getSupportFragmentManager().findFragmentByTag(tag);
-            if (fragment != null && fragment instanceof CameraLiveFragment) {
-                Rect rect = ((CameraLiveFragment) fragment).mLiveViewRectInWindow;
+            if (fragment != null && fragment instanceof CameraLiveFragmentEx) {
+                Rect rect = ((CameraLiveFragmentEx) fragment).mLiveViewRectInWindow;
                 //true:不在区域内，
                 boolean contains = !rect.contains((int) event.getRawX(), (int) event.getY());
                 Log.d("contains", "contains:" + contains);
@@ -261,7 +266,7 @@ class SimpleAdapterPager extends FragmentPagerAdapter {
         Bundle bundle = new Bundle();
         bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
         if (position == 0) {
-            return CameraLiveFragment.newInstance(bundle);
+            return CameraLiveFragmentEx.newInstance(bundle);
         } else {
             return CamMessageListFragment.newInstance(bundle);
         }

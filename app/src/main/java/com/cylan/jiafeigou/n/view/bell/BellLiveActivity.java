@@ -20,7 +20,6 @@ import android.view.LayoutInflater;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -67,6 +66,10 @@ import butterknife.OnClick;
 import permissions.dispatcher.NeedsPermission;
 import permissions.dispatcher.OnPermissionDenied;
 import permissions.dispatcher.RuntimePermissions;
+
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 
 @RuntimePermissions
 public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Presenter>
@@ -411,7 +414,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         initVideoView();
         appCmd.enableRenderSingleRemoteView(true, mSurfaceView);
         mBellLiveVideoPicture.setVisibility(View.GONE);
-        mVideoPlayController.setState(ILiveControl.STATE_IDLE, null);
+        mVideoPlayController.setState(JConstant.PLAY_STATE_IDLE, null);
         imgvBellLiveCapture.setEnabled(true);
         imgvBellLiveSpeaker.setEnabled(true);
         imgvBellLiveSwitchToLand.setEnabled(true);
@@ -504,9 +507,9 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onLoading(boolean loading) {
         if (loading) {
-            mVideoPlayController.setState(ILiveControl.STATE_LOADING, null);
+            mVideoPlayController.setState(PLAY_STATE_PREPARE, null);
         } else {
-            mVideoPlayController.setState(ILiveControl.STATE_IDLE, null);
+            mVideoPlayController.setState(PLAY_STATE_IDLE, null);
         }
     }
 
@@ -568,7 +571,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     @Override
     public void onNewCallTimeOut() {
 //        dismissAlert();
-        mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
+        mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.Item_ConnectionFail));
 //        INotify.NotifyBean notify = new INotify.NotifyBean();
 //        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
 //        int count = 0;
@@ -591,28 +594,28 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     public void onVideoDisconnect(int code) {
         switch (code) {
             case JError.ErrorVideoPeerInConnect://其他端在查看
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.CONNECTING));
+                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.CONNECTING));
                 break;
             case JError.ErrorVideoPeerNotExist://对端不在线
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
+                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case JError.ErrorVideoNotLogin://本端未登录
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
+                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case JError.ErrorVideoPeerDisconnect://对端断开
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.Device_Disconnected));
+                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.Device_Disconnected));
                 break;
             case JError.ErrorP2PSocket:
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
+                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR));
                 break;
             case BAD_NET_WORK:
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
+                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.OFFLINE_ERR_1));
                 break;
             case BAD_FRAME_RATE:
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NETWORK_TIMEOUT));
+                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.NETWORK_TIMEOUT));
                 break;
             default:
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING_FAILED, getString(R.string.NETWORK_TIMEOUT));
+                mVideoPlayController.setState(PLAY_STATE_LOADING_FAILED, getString(R.string.NETWORK_TIMEOUT));
 
         }
         if (mSurfaceView != null) {
@@ -634,7 +637,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
 
     @Override
     public void onPreviewPicture(String URL) {
-        mVideoPlayController.setState(ILiveControl.STATE_IDLE, null);
+        mVideoPlayController.setState(PLAY_STATE_IDLE, null);
         mBellLiveVideoPicture.setVisibility(View.VISIBLE);
         Glide.with(this).load(URL).
                 placeholder(R.drawable.default_diagram_mask)
@@ -648,7 +651,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         if (mode != AudioManager.MODE_NORMAL) {
             handleHeadsetConnected();
         }
-        mVideoPlayController.setState(ILiveControl.STATE_LOADING, null);
+        mVideoPlayController.setState(PLAY_STATE_PREPARE, null);
         imgvBellLiveCapture.setEnabled(false);
         imgvBellLiveSpeaker.setEnabled(false);
         imgvBellLiveSwitchToLand.setEnabled(false);
@@ -744,21 +747,21 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
     }
 
     @Override
-    public void clickImage(int state) {
+    public void clickImage(View view, int state) {
         switch (state) {
-            case ILiveControl.STATE_LOADING_FAILED:
+            case PLAY_STATE_LOADING_FAILED:
                 presenter.startViewer();
-                mVideoPlayController.setState(ILiveControl.STATE_LOADING, "");
+                mVideoPlayController.setState(PLAY_STATE_PREPARE, "");
                 break;
         }
     }
 
     @Override
-    public void clickText() {
+    public void clickText(View view) {
     }
 
     @Override
-    public void clickHelp() {
+    public void clickHelp(View view) {
 
     }
 

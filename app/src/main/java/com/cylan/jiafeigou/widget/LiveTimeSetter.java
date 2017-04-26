@@ -8,10 +8,8 @@ public interface LiveTimeSetter {
     /**
      * 直播的时间
      *
-     * @param state :直播或者历史录像
-     * @param time
+     * @param content :直播或者历史录像
      */
-    void setContent(int state, long time);
+    void setContent(String content);
 
-    void setVisibility(boolean show);
 }

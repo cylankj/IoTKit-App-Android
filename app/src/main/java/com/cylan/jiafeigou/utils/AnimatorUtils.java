@@ -562,4 +562,8 @@ public class AnimatorUtils {
     public static boolean isReset(View view) {
         return view.getTop() == view.getY();
     }
+
+    public static int getSlideOutDistance(View view) {
+        return -view.getBottom();
+    }
 }

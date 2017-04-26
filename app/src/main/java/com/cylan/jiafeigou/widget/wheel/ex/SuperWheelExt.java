@@ -71,6 +71,10 @@ public class SuperWheelExt extends View {
 
     private IData iDataProvider;
 
+    public IData getDataProvider() {
+        return iDataProvider;
+    }
+
     public void setDataProvider(IData iDataProvider) {
         this.iDataProvider = iDataProvider;
         if (DEBUG)

@@ -43,7 +43,7 @@ public interface CamLiveContract {
 
         void onResolution(JFGMsgVideoResolution resolution) throws JfgException;
 
-        void onDeviceInfoChanged(long id);
+//        void onDeviceInfoChanged(long id);
 
         void onDeviceInfoChanged(JFGDPMsg msg) throws IOException;
 
@@ -95,6 +95,8 @@ public interface CamLiveContract {
         void onHistoryDateListUpdate(ArrayList<Long> dateList);
 
         void audioRecordPermissionDenied();
+
+        void onNetworkChanged(boolean connected);
     }
 
     interface Presenter extends BasePresenter {
@@ -132,7 +134,7 @@ public interface CamLiveContract {
         /**
          * 开始播放历史录像或者开始直播
          */
-        void startPlayVideo(int type);
+        void startPlayLive();
 
         /**
          * 开始播放历史录像
@@ -148,6 +150,12 @@ public interface CamLiveContract {
          */
         void stopPlayVideo(int type);
 
+        /**
+         * 退出页面
+         *
+         * @param detach
+         */
+        void stopPlayVideo(boolean detach);
 
         String getUuid();
 
@@ -220,6 +228,8 @@ public interface CamLiveContract {
         Observable<IData> assembleTheDay(long timeStartInSecond);
 
         PrePlayType getPrePlayType();
+
+        float getVideoPortHeightRatio();
     }
 
     class PrePlayType {

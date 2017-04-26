@@ -81,7 +81,7 @@ public class VideoViewFactory {
 
         void setLiveView(IVideoView iVideoView);
 
-        void updateLayoutParameters(int height, int width);
+        void updateLayoutParameters(int height);
 
         void onLiveStart();
 

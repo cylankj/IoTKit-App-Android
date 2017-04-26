@@ -3,36 +3,26 @@ package com.cylan.jiafeigou.n.view.mine;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.graphics.Bitmap;
-
 import android.net.http.SslError;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-
-import android.support.v4.app.FragmentManager;
-import android.support.v7.view.menu.MenuView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.SslErrorHandler;
-
-import android.webkit.WebChromeClient;
-import android.webkit.WebResourceError;
-import android.webkit.WebResourceRequest;
-
 import android.webkit.WebSettings;
-import android.webkit.WebStorage;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
+import com.cylan.jiafeigou.widget.CustomToolbar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,6 +41,8 @@ public class HomeMineHelpFragment extends Fragment {
 
     @BindView(R.id.wv_mine_help)
     WebView mWvHelp;
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
     private HomeMineHelpSuggestionFragment homeMineHelpSuggestionFragment;
 
@@ -72,6 +64,15 @@ public class HomeMineHelpFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_mine_help, container, false);
         ButterKnife.bind(this, view);
         return view;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle bundle = getArguments();
+        if (bundle.containsKey(JConstant.KEY_SHOW_SUGGESTION)) {
+            customToolbar.setToolbarRightTitle("");
+        }
     }
 
     @Override
@@ -171,7 +172,7 @@ public class HomeMineHelpFragment extends Fragment {
         // 开启 Application Caches 功能
         String cacheDirPath = getContext().getApplicationContext().getDir("cache", Context.MODE_PRIVATE).getPath();
         mWvHelp.getSettings().setAppCachePath(cacheDirPath);
-        mWvHelp.getSettings().setAppCacheMaxSize(1024*1024*8);
+        mWvHelp.getSettings().setAppCacheMaxSize(1024 * 1024 * 8);
         mWvHelp.getSettings().setDatabaseEnabled(true);
         mWvHelp.getSettings().setAppCacheEnabled(true);
         onLoad(url);
@@ -221,5 +222,10 @@ public class HomeMineHelpFragment extends Fragment {
         super.onDestroy();
         mWvHelp.removeAllViews();
         mWvHelp.destroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
     }
 }

@@ -53,6 +53,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
@@ -171,6 +172,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         return this.prePlayType;
     }
 
+    @Override
+    public float getVideoPortHeightRatio() {
+        AppLogger.d("获取分辨率?");
+        float cache = PreferencesUtils.getFloat(JConstant.KEY_UUID_RESOLUTION + uuid, 0.0f);
+        if (cache == 0.0f) cache = JFGRules.getDefaultPortHeightRatio(0);
+        return PreferencesUtils.getFloat(JConstant.KEY_UUID_RESOLUTION + uuid, cache);
+    }
+
     public void assembleTheDay(ArrayList<HistoryFile> files) {
         if (historyDataProvider == null) {
             historyDataProvider = new DataExt();
@@ -267,8 +276,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public void startPlayVideo(int type) {
-        getView().onLivePrepare(type);
+    public void startPlayLive() {
+        getView().onLivePrepare(TYPE_LIVE);
         playState = PLAY_STATE_PREPARE;
         playType = TYPE_LIVE;
         reset();
@@ -368,6 +377,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         .observeOn(Schedulers.newThread())
                         .map(resolution -> {
                             setupAudio(false, false, false, false);
+                            PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
                             return resolution;
                         })
                         .observeOn(AndroidSchedulers.mainThread())
@@ -492,6 +502,13 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()))
                 .subscribe(ret -> {
                 }, AppLogger::e);
+    }
+
+    @Override
+    public void stopPlayVideo(boolean detach) {
+        if (detach) {
+
+        } else stopPlayVideo(getPlayType());
     }
 
     @Override
@@ -740,12 +757,43 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public void onNetworkChanged(Context context, Intent intent) {
         String action = intent.getAction();
+        if (mView == null) return;
+        if (networkAction == null) networkAction = new NetworkAction(this);
         if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
-            int type = NetUtils.getNetType(context);
-            if (type == -1) {
-                AppLogger.i("there is no network ");
-                setStopReason(ERR_NERWORK);
-                stopPlayVideo(getPlayType());
+            int type = NetUtils.getJfgNetType();
+            if (type == 0) {
+                networkAction.run();
+            } else {
+                networkAction.run();
+                AppLogger.e("还需要恢复播放");
+            }
+        }
+    }
+
+    private NetworkAction networkAction;
+
+    private static class NetworkAction {
+        private WeakReference<CamLivePresenterImpl> presenterWeakReference;
+
+        public NetworkAction(CamLivePresenterImpl camLivePresenter) {
+            this.presenterWeakReference = new WeakReference<>(camLivePresenter);
+        }
+
+        public void run() {
+            if (presenterWeakReference != null && presenterWeakReference.get() != null) {
+                Observable.just("")
+                        .subscribeOn(Schedulers.newThread())
+                        .filter(ret -> presenterWeakReference.get().mView != null)
+                        .subscribe(ret -> {
+                            int net = NetUtils.getJfgNetType();
+                            if (net == 0) {
+                                int playType = presenterWeakReference.get().getPlayType();
+                                AppLogger.i("there is no network ");
+                                presenterWeakReference.get().setStopReason(ERR_NERWORK);
+                                presenterWeakReference.get().stopPlayVideo(playType);
+                                presenterWeakReference.get().mView.onNetworkChanged(false);
+                            } else presenterWeakReference.get().mView.onNetworkChanged(true);
+                        }, AppLogger::e);
             }
         }
     }
