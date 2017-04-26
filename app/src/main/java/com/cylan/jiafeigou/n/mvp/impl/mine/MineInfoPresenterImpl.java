@@ -34,8 +34,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
-
 /**
  * 作者：zsl
  * 创建时间：2016/9/1
@@ -68,11 +66,10 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                             }, throwable -> AppLogger.e("err:" + throwable));
                     //emit failed event.
                     //是三方登录获取绑定的手机或者邮箱用于登录页回显
-                    if (isOpenLogin){
-                        JFGAccount temAcc = new Gson().fromJson(PreferencesUtils.getString(KEY_ACCOUNT), JFGAccount.class);
-                        PreferencesUtils.putString(JConstant.THIRD_RE_SHOW,TextUtils.isEmpty(temAcc.getPhone())?(TextUtils.isEmpty(temAcc.getEmail())? "":temAcc.getEmail()):temAcc.getPhone());
+                    if (isOpenLogin) {
+                        JFGAccount temAcc = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+                        PreferencesUtils.putString(JConstant.THIRD_RE_SHOW, TextUtils.isEmpty(temAcc.getPhone()) ? (TextUtils.isEmpty(temAcc.getEmail()) ? "" : temAcc.getEmail()) : temAcc.getPhone());
                     }
-                    PreferencesUtils.putString(KEY_ACCOUNT, "");
                     PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
                     RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
                 }, AppLogger::e);
@@ -228,7 +225,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
     }
 
     @Override
-    public Subscription loginType(String account,String phone,String email) {
+    public Subscription loginType(String account, String phone, String email) {
         return Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .flatMap(new Func1<Object, Observable<Integer>>() {
@@ -251,7 +248,7 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(i -> {
-                    if (getView() != null) getView().setAccount(account,phone,email,i);
+                    if (getView() != null) getView().setAccount(account, phone, email, i);
                 }, AppLogger::e);
     }
 

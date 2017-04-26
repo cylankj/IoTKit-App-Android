@@ -63,7 +63,6 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.schedulers.Schedulers;
 
-import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT;
 import static com.cylan.jiafeigou.misc.JConstant.KEY_ACCOUNT_LOG_STATE;
 import static com.cylan.jiafeigou.rx.RxBus.getCacheInstance;
 
@@ -360,8 +359,8 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public JFGAccount getJFGAccount() {
-        if (jfgAccount == null) {
-            return new Gson().fromJson("", JFGAccount.class);
+        if (jfgAccount == null && account != null) {
+            return new Gson().fromJson(account.getAccountJson(), JFGAccount.class);
         }
         return jfgAccount;
     }
@@ -433,7 +432,6 @@ public class DataSourceManager implements JFGSourceManager {
         if (this.account != null) this.account.setAccount(jfgAccount);
         AppLogger.i("setJfgAccount:" + (jfgAccount == null));
         if (jfgAccount != null) {
-            PreferencesUtils.putString(KEY_ACCOUNT, new Gson().toJson(jfgAccount));
             getCacheInstance().postSticky(new RxEvent.GetUserInfo(jfgAccount));
         }
     }
