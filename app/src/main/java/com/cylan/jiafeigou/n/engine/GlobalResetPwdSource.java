@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.SmartcallActivity;
 import com.cylan.jiafeigou.misc.AutoSignIn;
+import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.rx.RxBus;
@@ -14,6 +15,7 @@ import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import rx.Observable;
 import rx.Subscription;
@@ -49,6 +51,10 @@ public class GlobalResetPwdSource {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pwdHasResetEvent -> {
                     AppLogger.d("收到密码已被修改通知" + BaseApplication.isBackground());
+                    PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
+                    PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
+                    PreferencesUtils.putBoolean(JConstant.SHOW_PASSWORD_CHANGED, true);
+                    RxBus.getCacheInstance().removeAllStickyEvents();
                     clearPwd();
                     if (!BaseApplication.isBackground()) {
                         pwdResetedDialog(pwdHasResetEvent.code);
@@ -92,7 +98,7 @@ public class GlobalResetPwdSource {
 
     private void jump2LoginFragment() {
         clearPwd();
-        RxBus.getCacheInstance().removeAllStickyEvents();
+
         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
         RxBus.getCacheInstance().post(new RxEvent.LogOutByResetPwdTab(true));
 

@@ -80,14 +80,6 @@ public interface HomeMineContract {
          */
         boolean checkOpenLogIn();
 
-
-        /**
-         * 获取是否三方登录的回调
-         *
-         * @return
-         */
-        Subscription checkIsOpenLoginCallBack();
-
         /**
          * 获取到未读的消息数
          */

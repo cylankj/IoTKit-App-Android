@@ -308,6 +308,11 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                 .commit();
     }
 
+
+    private boolean isDefaultPhoto(String photoUrl) {
+        return TextUtils.isEmpty(photoUrl) || photoUrl.contains("image/default.jpg");
+    }
+
     @Override
     public void initPersonalInformation(JFGAccount bean) {
         MyViewTarget myViewTarget = new MyViewTarget(userImageHead, getContext().getResources());
@@ -316,9 +321,10 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
             argumentData = bean;
             //头像的回显
             photoUrl = bean.getPhotoUrl();
-
-            if (presenter.checkOpenLogin()) {
-                photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
+            if (isDefaultPhoto(photoUrl)) {
+                if (presenter.checkOpenLogin()) {
+                    photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
+                }
             }
 
             if (!TextUtils.isEmpty(photoUrl) && getContext() != null) {

@@ -86,10 +86,11 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net != 3)
                 .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
                     AppLogger.d(BIND_TAG + "last state");
-                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(udpDevicePortrait.uuid);
-                    if (device.available()) {
-                        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onDeviceAlreadyExist());
-                    } else if (aFullBind != null) {
+//                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(udpDevicePortrait.uuid);
+//                    if (device.available()) {
+//                        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onDeviceAlreadyExist());
+//                    } else
+                    if (aFullBind != null) {
                         aFullBind.setServerLanguage(udpDevicePortrait);
                         aFullBind.sendWifiInfo(ssid, pwd, type);
                     }

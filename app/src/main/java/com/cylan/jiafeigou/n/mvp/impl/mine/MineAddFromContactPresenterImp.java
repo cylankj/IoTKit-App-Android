@@ -22,8 +22,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
@@ -46,6 +44,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     @Override
     public void start() {
+        super.start();
         if (compositeSubscription != null && !compositeSubscription.isUnsubscribed()) {
             compositeSubscription.unsubscribe();
         } else {
@@ -59,6 +58,7 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
 
     @Override
     public void stop() {
+        super.stop();
         unSubscribe(compositeSubscription);
         unregisterNetworkMonitor();
     }
@@ -67,22 +67,14 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     public void sendRequest(final String account, final String mesg) {
         rx.Observable.just(account, mesg)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().addFriend(account, mesg);
-                            isSendReq = true;
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(s -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().addFriend(account, mesg);
+                        isSendReq = true;
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("sendRequest" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, throwable -> AppLogger.e("sendRequest" + throwable.getLocalizedMessage()));
     }
 
     /**
@@ -122,21 +114,13 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     public void checkAccount(String account) {
         rx.Observable.just(account)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String s) {
-                        try {
-                            BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(s -> {
+                    try {
+                        BaseApplication.getAppComponent().getCmd().checkFriendAccount(s);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("checkoutAccount" + throwable.getLocalizedMessage());
-                    }
-                });
+                }, throwable -> AppLogger.e("checkoutAccount" + throwable.getLocalizedMessage()));
     }
 
     /**
@@ -148,13 +132,10 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
     public Subscription checkAccountCallBack() {
         return RxBus.getCacheInstance().toObservable(RxEvent.CheckAccountCallback.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.CheckAccountCallback>() {
-                    @Override
-                    public void call(RxEvent.CheckAccountCallback checkAccountCallback) {
-                        if (checkAccountCallback != null) {
-                            if (getView() != null) {
-                                getView().showResultDialog(checkAccountCallback);
-                            }
+                .subscribe(checkAccountCallback -> {
+                    if (checkAccountCallback != null) {
+                        if (getView() != null) {
+                            getView().showResultDialog(checkAccountCallback);
                         }
                     }
                 }, AppLogger::e);
@@ -193,13 +174,10 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
         return RxBus.getCacheInstance().toObservable(RxEvent.AddFriendBack.class)
                 .subscribeOn(Schedulers.newThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.AddFriendBack>() {
-                    @Override
-                    public void call(RxEvent.AddFriendBack addFriendBack) {
-                        if (addFriendBack != null && isSendReq) {
-                            getView().sendReqBack(addFriendBack.jfgResult.code);
-                            isSendReq = false;
-                        }
+                .subscribe(addFriendBack -> {
+                    if (addFriendBack != null && isSendReq) {
+                        getView().sendReqBack(addFriendBack.jfgResult.code);
+                        isSendReq = false;
                     }
                 }, AppLogger::e);
     }
@@ -223,19 +201,9 @@ public class MineAddFromContactPresenterImp extends AbstractPresenter<MineAddFro
      */
     private void updateConnectivityStatus(int network) {
         Observable.just(network)
-                .filter(new Func1<Integer, Boolean>() {
-                    @Override
-                    public Boolean call(Integer integer) {
-                        return getView() != null;
-                    }
-                })
+                .filter(integer -> getView() != null)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<Integer>() {
-                    @Override
-                    public void call(Integer integer) {
-                        getView().onNetStateChanged(integer);
-                    }
-                }, AppLogger::e);
+                .subscribe(integer -> getView().onNetStateChanged(integer), AppLogger::e);
     }
 
 }

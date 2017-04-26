@@ -44,7 +44,7 @@
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/sp16" />
 
-                <com.kyleduo.switchbutton.SwitchButton
+                <com.cylan.jiafeigou.widget.SafeSwitchButton
                     android:id="@+id/btn_item_switch_accessMes"
                     style="@style/SwitchButtonStyleMD"
                     android:layout_width="wrap_content"
@@ -78,7 +78,7 @@
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/sp16" />
 
-                <com.kyleduo.switchbutton.SwitchButton
+                <com.cylan.jiafeigou.widget.SafeSwitchButton
                     android:id="@+id/btn_item_switch_voide"
                     style="@style/SwitchButtonStyleMD"
                     android:layout_width="wrap_content"
@@ -112,7 +112,7 @@
                     android:textColor="@color/color_black"
                     android:textSize="@dimen/sp16" />
 
-                <com.kyleduo.switchbutton.SwitchButton
+                <com.cylan.jiafeigou.widget.SafeSwitchButton
                     android:id="@+id/btn_item_switch_shake"
                     style="@style/SwitchButtonStyleMD"
                     android:layout_width="wrap_content"

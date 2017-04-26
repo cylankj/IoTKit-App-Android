@@ -187,6 +187,7 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     @Override
     public void initSwitchState(final RxEvent.GetUserInfo userInfo) {
         btnItemSwitchAccessMes.setChecked(userInfo.jfgAccount.isEnablePush());
+
         btnItemSwitchVoide.setChecked(userInfo.jfgAccount.isEnableSound());
         btnItemSwitchShake.setChecked(userInfo.jfgAccount.isEnableVibrate());
         if (!userInfo.jfgAccount.isEnablePush()) {

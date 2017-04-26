@@ -104,12 +104,12 @@ public class DataSourceManager implements JFGSourceManager {
                     return account;
                 })
                 .map(dpAccount -> {
-                    if (!RxBus.getCacheInstance().hasStickyEvent(RxEvent.AccountArrived.class)) {
-                        RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(dpAccount);
-                        this.jfgAccount = new Gson().fromJson(dpAccount.getAccountJson(), JFGAccount.class);
-                        accountArrived.jfgAccount = this.jfgAccount;
+                    RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(dpAccount);
+                    accountArrived.jfgAccount = new Gson().fromJson(dpAccount.getAccountJson(), JFGAccount.class);
+                    if (accountArrived.jfgAccount != null) {
                         getCacheInstance().postSticky(accountArrived);
                     }
+                    getCacheInstance().post(accountArrived);
                     return dpAccount;
                 })
                 .flatMap(account -> dbHelper.getAccountDevice(account.getAccount()))
@@ -237,12 +237,9 @@ public class DataSourceManager implements JFGSourceManager {
 
     @Override
     public Observable<Account> logout() {
-        return dbHelper.logout()
-                .map(ret -> {
-                    setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
-                    clear();
-                    return ret;
-                });
+        clear();
+        setLoginState(new LogState(LogState.STATE_ACCOUNT_OFF));
+        return dbHelper.logout();
     }
 
     @Override
@@ -276,6 +273,7 @@ public class DataSourceManager implements JFGSourceManager {
     private Observable<Iterable<Device>> unBindDevices(Iterable<String> uuids) {
         return dbHelper.unBindDeviceWithConfirm(uuids)
                 .map(devices -> {
+
                     for (String uuid : uuids) {
                         AppLogger.d("设备已解绑:" + uuid);
                         mCachedDeviceMap.remove(uuid);
@@ -543,12 +541,11 @@ public class DataSourceManager implements JFGSourceManager {
                                 AppLogger.e("jfgAccount is null");
                             }
                             getCacheInstance().post(account);
-                            if (getCacheInstance().hasStickyEvent(RxEvent.AccountArrived.class)) {
-                                getCacheInstance().removeStickyEvent(RxEvent.AccountArrived.class);
-                                RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(this.account);
-                                accountArrived.jfgAccount = event.account;
-                                getCacheInstance().postSticky(accountArrived);
-                            }
+                            RxEvent.AccountArrived accountArrived = new RxEvent.AccountArrived(this.account);
+                            accountArrived.jfgAccount = event.account;
+                            getCacheInstance().postSticky(accountArrived);
+                            getCacheInstance().post(accountArrived);
+
 //                            BaseDPTaskDispatcher.getInstance().perform();
                             return "";
                         }))
@@ -582,6 +579,7 @@ public class DataSourceManager implements JFGSourceManager {
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
                 .flatMap(event -> {
+                    AppLogger.d("正在解析是否有已删除的设备");
                     Set<String> result = new TreeSet<>(mCachedDeviceMap.keySet());
                     JFGDevice device;
                     for (int i = 0; i < event.devices.length; i++) {
@@ -590,9 +588,11 @@ public class DataSourceManager implements JFGSourceManager {
                     }
                     mCachedDeviceMap.clear();
                     rawDeviceOrder.clear();
-                    return unBindDevices(result).flatMap(ret -> dbHelper.updateDevice(event.devices));
+                    AppLogger.d("已删除的设备数:" + result.size());
+                    return dbHelper.updateDevice(event.devices).flatMap(dpDevice -> unBindDevices(result).map(ret -> dpDevice));
                 })
                 .map(devices -> {
+                    AppLogger.d("GGGGGGGGGGGGGGGGGGGGG");
                     try {
                         ArrayList<JFGDPMsg> parameters;
                         DBOption.DeviceOption option;

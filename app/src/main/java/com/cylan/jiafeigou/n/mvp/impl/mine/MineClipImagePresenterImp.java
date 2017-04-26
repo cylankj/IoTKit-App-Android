@@ -58,22 +58,14 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
     public void upLoadUserHeadImag(String path) {
         rx.Observable.just(path)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<String>() {
-                    @Override
-                    public void call(String path) {
-                        try {
-                            req = BaseApplication.getAppComponent().getCmd().updateAccountPortrait(path);
-                            AppLogger.d("upLoadUserHeadImag:" + req);
-                        } catch (JfgException e) {
-                            e.printStackTrace();
-                        }
+                .subscribe(path1 -> {
+                    try {
+                        req = BaseApplication.getAppComponent().getCmd().updateAccountPortrait(path1);
+                        AppLogger.d("upLoadUserHeadImag:" + req);
+                    } catch (JfgException e) {
+                        e.printStackTrace();
                     }
-                }, new Action1<Throwable>() {
-                    @Override
-                    public void call(Throwable throwable) {
-                        AppLogger.e("upLoadUserHeadImag: " + throwable.getLocalizedMessage());
-                    }
-                });
+                }, throwable -> AppLogger.e("upLoadUserHeadImag: " + throwable.getLocalizedMessage()));
     }
 
     /**

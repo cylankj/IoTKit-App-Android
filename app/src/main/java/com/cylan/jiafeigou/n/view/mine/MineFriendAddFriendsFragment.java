@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -27,6 +26,7 @@ import com.cylan.jiafeigou.utils.ViewUtils;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import permissions.dispatcher.PermissionUtils;
 
 /**
  * 作者：zsl
@@ -87,9 +87,18 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
                 if (presenter.checkCameraPermission()) {
                     jump2ScanAddFragment();
                 } else {
-                    MineFriendAddFriendsFragment.this.requestPermissions(
-                            new String[]{Manifest.permission.CAMERA},
-                            2);
+                    if (MineFriendAddFriendsFragment.this.shouldShowRequestPermissionRationale(Manifest.permission.CAMERA)) {
+                        AppLogger.d("request_Y");
+//                        MineFriendAddFriendsFragment.this.requestPermissions(
+//                                new String[]{Manifest.permission.READ_CONTACTS},
+//                                1);
+                        setPermissionDialog(getString(R.string.camera_auth));
+                    } else {
+                        AppLogger.d("request_N");
+                        MineFriendAddFriendsFragment.this.requestPermissions(
+                                new String[]{Manifest.permission.CAMERA},
+                                2);
+                    }
                 }
                 break;
 
@@ -158,13 +167,13 @@ public class MineFriendAddFriendsFragment extends IBaseFragment<MineFriendsAddFr
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 1) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (PermissionUtils.hasSelfPermissions(getContext(), permissions[0])) {
                 jump2AddFromContactFragment();
             } else {
                 setPermissionDialog(getString(R.string.Tap3_ShareDevice_Contacts));
             }
         } else if (requestCode == 2) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (PermissionUtils.hasSelfPermissions(getContext(), permissions[0])) {
                 jump2ScanAddFragment();
             } else {
                 setPermissionDialog(getString(R.string.camera_auth));

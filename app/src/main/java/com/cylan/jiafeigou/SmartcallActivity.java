@@ -106,7 +106,13 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onStart() {
         super.onStart();
-
+        View v = findViewById(android.R.id.content);
+        if (v != null) {
+            View splashView = v.findViewById(R.id.fLayout_splash);
+            if (splashView != null) {
+                splashView.setVisibility(View.VISIBLE);
+            }
+        }
         if (!isPermissionDialogShowing)
             SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
         if (!from_log_out) {
@@ -115,7 +121,9 @@ public class SmartcallActivity extends NeedLoginActivity
             splashOver();
             from_log_out = false;
             firstSignIn = true;
-            if (getIntent().getBooleanExtra("PSWC", false)) {
+            if (PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false)
+                    && PreferencesUtils.getBoolean(JConstant.SHOW_PASSWORD_CHANGED, false)
+                    && getIntent().getBooleanExtra("PSWC", false)) {
                 pswChanged();
             }
         }
@@ -171,7 +179,7 @@ public class SmartcallActivity extends NeedLoginActivity
     private void initLoginPage() {
         //进入登陆页 login page
         getSupportFragmentManager().beginTransaction()
-                .add(android.R.id.content, BeforeLoginFragment.newInstance(null))
+                .replace(android.R.id.content, BeforeLoginFragment.newInstance(null))
                 .addToBackStack(BeforeLoginFragment.class.getSimpleName())
                 .commitAllowingStateLoss();
     }
@@ -191,7 +199,7 @@ public class SmartcallActivity extends NeedLoginActivity
         if (v != null) {
             View splashView = v.findViewById(R.id.fLayout_splash);
             if (splashView != null) {
-                ((ViewGroup) v).removeView(splashView);
+                splashView.setVisibility(View.GONE);
             }
         }
     }
@@ -257,6 +265,7 @@ public class SmartcallActivity extends NeedLoginActivity
             AutoSignIn.getInstance().autoSave(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount(), 1, "");
         PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
         PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
+        PreferencesUtils.putBoolean(JConstant.SHOW_PASSWORD_CHANGED, false);
     }
 
     /**
@@ -264,6 +273,7 @@ public class SmartcallActivity extends NeedLoginActivity
      *
      * @return
      */
+
     private boolean isFirstUseApp() {
         return PreferencesUtils.getBoolean(JConstant.KEY_FRESH, true);
         // return true;

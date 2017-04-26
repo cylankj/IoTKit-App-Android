@@ -60,6 +60,8 @@ public class BaseJFGResultParser {
                 RxBus.getCacheInstance().post(new RxEvent.ResultUserLogin(jfgResult.code));
                 RxBus.getCacheInstance().postSticky(new RxEvent.ResultUpdateLogin(jfgResult.code));
                 PreferencesUtils.putInt(KEY_ACCOUNT_LOG_STATE, LogState.STATE_ACCOUNT_ON);
+                PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, true);
+                PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
                 Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
                 if (account != null) {
                     account.setOnline(true);

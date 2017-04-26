@@ -1,26 +1,20 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
-import android.app.ActivityManager;
-import android.content.Context;
-
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
-import com.cylan.jiafeigou.push.WakeupService;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -30,8 +24,6 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
         implements SplashContract.Presenter {
 
     private Subscription subscription;
-    private Subscription delaySub;
-    private Subscription isServiceStartSub;
 
     public SmartCallPresenterImpl(SplashContract.View splashView) {
         super(splashView);
@@ -39,8 +31,8 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
 
     @Override
     public void start() {
-        serviceIsStart();
         super.start();
+        selectNext();
     }
 
     private void selectNext() {
@@ -60,7 +52,7 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                     }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         } else {
             AppLogger.d("has no sticky");
-            getView().splashOver();
+            Observable.just("delay").delay(2, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(ret -> getView().splashOver(), AppLogger::e);
         }
     }
 
@@ -68,8 +60,6 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     public void stop() {
         super.stop();
         unSubscribe(subscription);
-        unSubscribe(delaySub);
-        unSubscribe(isServiceStartSub);
     }
 
     @Override
@@ -78,52 +68,5 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
         android.os.Process.killProcess(android.os.Process.myPid());
         System.exit(0);
     }
-
-    public void serviceIsStart() {
-        isServiceStartSub = Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .flatMap(new Func1<Object, Observable<Boolean>>() {
-                    @Override
-                    public Observable<Boolean> call(Object o) {
-                        boolean isRunning = false;
-                        ActivityManager activityManager = (ActivityManager) getView().getContext()
-                                .getSystemService(Context.ACTIVITY_SERVICE);
-                        List<ActivityManager.RunningServiceInfo> serviceList = activityManager
-                                .getRunningServices(50);
-
-                        if (!(serviceList.size() > 0)) {
-                            return Observable.just(false);
-                        }
-
-                        for (int i = 0; i < serviceList.size(); i++) {
-                            if (serviceList.get(i).service.getClassName().equals(WakeupService.class.getName())) {
-                                isRunning = true;
-                                break;
-                            }
-                        }
-                        return Observable.just(isRunning);
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(b -> {
-                    if (b) {
-                        selectNext();
-                    } else {
-                        delay1s();
-                    }
-                }, AppLogger::e);
-    }
-
-    public void delay1s() {
-        delaySub = Observable.just(null)
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .delay(1000, TimeUnit.MILLISECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(o -> {
-                    selectNext();
-                }, AppLogger::e);
-    }
-
-
 }
 

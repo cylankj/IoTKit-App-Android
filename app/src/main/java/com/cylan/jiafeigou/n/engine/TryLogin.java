@@ -57,12 +57,16 @@ public class TryLogin {
                                                     if (!PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false)) {
                                                         RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.LoginTimeOut));
                                                     } else {
-                                                        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false);
+                                                        PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
                                                     }
                                                 }
                                                 if (!PreferencesUtils.getBoolean(JConstant.AUTO_lOGIN_PWD_ERR, false)) {
                                                     RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class);
-                                                    BaseApplication.getAppComponent().getSourceManager().initFromDB();
+                                                    if (!BaseApplication.getAppComponent().getSourceManager().isOnline()) {
+                                                        BaseApplication.getAppComponent().getSourceManager().initFromDB();
+                                                    }
+                                                } else {
+                                                    PreferencesUtils.putBoolean(JConstant.AUTO_SIGNIN_TAB, false);
                                                 }
                                                 return null;
                                             }))

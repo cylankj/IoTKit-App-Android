@@ -31,7 +31,6 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.google.gson.Gson;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
@@ -59,7 +58,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnUpdateAccount(JFGAccount jfgAccount) {
-        AppLogger.d("OnUpdateAccount :" + jfgAccount.getEmail());
+        AppLogger.d("OnUpdateAccount :" + gson.toJson(jfgAccount));
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheAccountEvent(jfgAccount));
     }
 

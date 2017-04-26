@@ -512,6 +512,7 @@ public class BaseDBHelper implements IDBHelper {
     public Observable<Iterable<Device>> updateDevice(JFGDevice[] device) {
         return getActiveAccount()
                 .map(account -> {
+                    AppLogger.d("正在写入 device");
                     List<Device> result = new ArrayList<>(device.length);
                     QueryBuilder<Device> queryBuilder = null;
                     Device dpDevice = null;
@@ -543,6 +544,7 @@ public class BaseDBHelper implements IDBHelper {
                     remove.removeAll(result);
                     deviceDao.deleteInTx(remove);
                     deviceDao.insertOrReplaceInTx(result);
+                    AppLogger.d("当前设备数量:" + result.size());
                     return result;
                 });
     }

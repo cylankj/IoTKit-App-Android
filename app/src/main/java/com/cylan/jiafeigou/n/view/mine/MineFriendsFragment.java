@@ -109,17 +109,14 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
                 .addToBackStack("mineHelpFragment")
                 .commit();
 
-        addReqDetailFragment.setOnAcceptAddListener(new MineFriendAddReqDetailFragment.OnAcceptAddListener() {
-            @Override
-            public void onAccept(MineAddReqBean backbean) {
-                addReqDeleteItem(position, backbean);
-                RelAndFriendBean rBean = new RelAndFriendBean();
-                rBean.account = backbean.account;
-                rBean.alias = backbean.alias;
-                rBean.iconUrl = backbean.iconUrl;
-                rBean.markName = "";
-                friendlistAddItem(position, rBean);
-            }
+        addReqDetailFragment.setOnAcceptAddListener(backbean -> {
+            addReqDeleteItem(position, backbean);
+            RelAndFriendBean rBean = new RelAndFriendBean();
+            rBean.account = backbean.account;
+            rBean.alias = backbean.alias;
+            rBean.iconUrl = backbean.iconUrl;
+            rBean.markName = "";
+            friendlistAddItem(position, rBean);
         });
     }
 
@@ -167,8 +164,10 @@ public class MineFriendsFragment extends Fragment implements MineFriendsContract
      */
     @Override
     public void addReqDeleteItem(int position, MineAddReqBean bean) {
-        addReqListAdater.remove(position);
-        addReqListAdater.notifyDataSetHasChanged();
+        if (position < addReqListAdater.getCount()) {
+            addReqListAdater.remove(position);
+            addReqListAdater.notifyDataSetHasChanged();
+        }
         if (addReqListAdater.getItemCount() == 0) {
             hideAddReqListTitle();
         }

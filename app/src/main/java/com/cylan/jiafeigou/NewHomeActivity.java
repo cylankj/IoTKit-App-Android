@@ -112,11 +112,11 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     protected void onStart() {
         super.onStart();
         if (BaseApplication.getAppComponent().getSourceManager().getLoginState() == LogState.STATE_ACCOUNT_OFF) {
+            finish();
             Intent intent = new Intent(this, SmartcallActivity.class);
             intent.putExtra(JConstant.FROM_LOG_OUT, true);
             intent.putExtra("PSWC", true);
             startActivity(intent);
-            finish();
             return;
         }
         resetPwdSubscribe = RxBus.getCacheInstance().toObservable(RxEvent.LogOutByResetPwdTab.class)
@@ -138,7 +138,7 @@ public class NewHomeActivity extends NeedLoginActivity<NewHomeActivityContract.P
     }
 
     public void showHomeListFragment() {
-        if (vpHomeContent != null )
+        if (vpHomeContent != null)
             vpHomeContent.setCurrentItem(0);
     }
 

@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.n.mvp.impl.home;
 
+import android.util.Log;
+
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
@@ -30,6 +32,8 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Action1;
 import rx.schedulers.Schedulers;
 
+import static com.cylan.jiafeigou.rx.RxBus.getCacheInstance;
+
 /**
  * 作者：zsl
  * 创建时间：2016/9/5
@@ -40,7 +44,6 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     private boolean hasNewMesg;
     private DbManager dbManager;
     private ArrayList<MineMessageBean> results = new ArrayList<MineMessageBean>();
-    private long seq;
 
     public HomeMineMessagePresenterImp(HomeMineMessageContract.View view, boolean hasNewMesg) {
         super(view);
@@ -52,10 +55,8 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
     @Override
     protected Subscription[] register() {
         return new Subscription[]{
-                getAccount(),
-                getMesgDpDataCallBack()
-
-        };
+//                getMesgDpDataCallBack(),
+                getAccount()};
     }
 
     /**
@@ -63,11 +64,11 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      */
     @Override
     public void initMesgData(String account) {
-        if (hasNewMesg) {
-            getMesgDpData(account);
-        } else {
-            handlerDataResult(findAllFromDb());
-        }
+//        if (hasNewMesg) {
+        getMesgDpData(account);
+//        } else {
+//            handlerDataResult(findAllFromDb());
+//        }
     }
 
     /**
@@ -94,17 +95,14 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      */
     @Override
     public Subscription getAccount() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
+        return getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo account) {
-                        if (account != null) {
-                            // 加载数据库数据
-                            dbManager = DataBaseUtil.getInstance(account.jfgAccount.getAccount()).dbManager;
-                            initMesgData(account.jfgAccount.getAccount());
-                            markMesgHasRead();
-                        }
+                .subscribe(account -> {
+                    if (account != null) {
+                        // 加载数据库数据
+                        dbManager = DataBaseUtil.getInstance(account.jfgAccount.getAccount()).dbManager;
+                        initMesgData(account.jfgAccount.getAccount());
+                        markMesgHasRead();
                     }
                 }, AppLogger::e);
     }
@@ -162,27 +160,51 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      */
     @Override
     public void getMesgDpData(String account) {
-        rx.Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
-                .subscribe(new Action1<Object>() {
-                    @Override
-                    public void call(Object o) {
-                        try {
-                            JFGDPMsg msg1 = new JFGDPMsg(601, System.currentTimeMillis());
-                            JFGDPMsg msg4 = new JFGDPMsg(701, System.currentTimeMillis());
-                            ArrayList<JFGDPMsg> params = new ArrayList<>();
-                            params.add(msg1);
-                            params.add(msg4);
-                            seq = BaseApplication.getAppComponent().getCmd().robotGetData("", params, 100, false, 0);
-                            AppLogger.d("getMesgDpData:" + seq);
-                        } catch (Exception e) {
-                            AppLogger.e("getMesgDpData:" + e.getLocalizedMessage());
-                            e.printStackTrace();
-                        }
+        Observable.just(null)
+                .observeOn(Schedulers.io())
+                .map(o -> {
+                    long seq = -1;
+                    try {
+                        JFGDPMsg msg1 = new JFGDPMsg(601, 0);
+                        JFGDPMsg msg4 = new JFGDPMsg(701, 0);
+                        ArrayList<JFGDPMsg> params = new ArrayList<>();
+                        params.add(msg1);
+                        params.add(msg4);
+                        seq = BaseApplication.getAppComponent().getCmd().robotGetData("", params, 100, false, 0);
+                        Log.d(TAG,"getMesgDpData:" + seq);
+                    } catch (Exception e) {
+                        AppLogger.e("getMesgDpData:" + e.getLocalizedMessage());
+                        e.printStackTrace();
                     }
-                }, throwable -> {
-                    AppLogger.e("getMesgDpData" + throwable.getLocalizedMessage());
-                });
+                    return seq;
+                })
+                .flatMap(seq -> {
+                    Log.d(TAG,System.currentTimeMillis() + "");
+                    Observable<RobotoGetDataRsp> filter = RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class).filter(rsp -> {
+                        Log.d(TAG,"seq:"+rsp.seq+",before seq:"+seq);
+                        return rsp.seq == seq;
+
+                    });
+                    Log.d(TAG,"" + System.currentTimeMillis());
+                    return filter;
+                })
+                .first()
+                .map(robotoGetDataRsp -> {
+                    Log.e(TAG,"getMesgDpData: robotoGetDataRsp");
+                    if (results.size() != 0)
+                        results.clear();
+                    results.addAll(convertData(robotoGetDataRsp));
+//                            markMesgHasRead();
+                    return results;
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(list -> {
+                    if (list.size() != 0) {
+                        handlerDataResult(list);
+                    } else {
+                        getView().showNoMesgView();
+                    }
+                }, AppLogger::e);
     }
 
     /**
@@ -192,9 +214,8 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
      */
     @Override
     public Subscription getMesgDpDataCallBack() {
-        return RxBus.getCacheInstance().toObservable(RobotoGetDataRsp.class)
+        return getCacheInstance().toObservable(RobotoGetDataRsp.class)
                 .subscribeOn(Schedulers.io())
-                .filter(rsp -> rsp != null && rsp.seq == seq)
                 .first()
                 .map(robotoGetDataRsp -> {
                     if (results.size() != 0)
@@ -297,7 +318,7 @@ public class HomeMineMessagePresenterImp extends AbstractPresenter<HomeMineMessa
 
     @Override
     public Subscription deleteMsgBack() {
-        return RxBus.getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
+        return getCacheInstance().toObservable(RxEvent.DeleteDataRsp.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(deleteDataRspClass -> {
                     if (getView() != null) getView().deleteMesgReuslt(deleteDataRspClass);

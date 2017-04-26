@@ -3,14 +3,11 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.view.View;
 
-import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.view.login.LoginFragment;
-import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 
 /**
@@ -38,18 +35,6 @@ public class NeedLoginActivity<T extends BasePresenter> extends BaseFullScreenFr
         extra.putInt(JConstant.KEY_SHOW_LOGIN_FRAGMENT, 1);
         loginFragment = LoginFragment.newInstance(extra);
         loginFragment.setArguments(extra);
-        if (getSupportFragmentManager().findFragmentByTag(loginFragment.getClass().getSimpleName()) != null)
-            return;
-        View v = findViewById(R.id.rLayout_login);
-        if (v != null) {
-            try {
-                AppLogger.e("loginFragment already added");
-                getSupportFragmentManager().beginTransaction().show(loginFragment)
-                        .commitAllowingStateLoss();
-                return;
-            } catch (Exception e) {
-            }
-        }
         ActivityUtils.addFragmentToActivity(getSupportFragmentManager(),
                 loginFragment, android.R.id.content, 0);
     }

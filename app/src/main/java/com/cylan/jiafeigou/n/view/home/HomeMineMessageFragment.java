@@ -56,11 +56,11 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
 
     private OnClearMsgCountListener listener;
 
-    public interface OnClearMsgCountListener{
+    public interface OnClearMsgCountListener {
         void OnClear();
     }
 
-    public void setOnClearMsgCountListener(OnClearMsgCountListener listener){
+    public void setOnClearMsgCountListener(OnClearMsgCountListener listener) {
         this.listener = listener;
     }
 
@@ -82,6 +82,9 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_home_mine_message, container, false);
         ButterKnife.bind(this, view);
+        rclHomeMineMessageRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
+        messageAdapter = new HomeMineMessageAdapter(getContext(), null, null);
+        rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
         initPresenter();
         return view;
     }
@@ -106,8 +109,8 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
     public void onStop() {
         super.onStop();
         if (presenter != null) presenter.stop();
-        if (hasNewMesg){
-            if (listener != null)listener.OnClear();
+        if (hasNewMesg) {
+            if (listener != null) listener.OnClear();
         }
     }
 
@@ -118,9 +121,7 @@ public class HomeMineMessageFragment extends Fragment implements HomeMineMessage
      */
     @Override
     public void initRecycleView(ArrayList<MineMessageBean> list) {
-        rclHomeMineMessageRecyclerview.setLayoutManager(new LinearLayoutManager(getContext()));
-        messageAdapter = new HomeMineMessageAdapter(getContext(), list, null);
-        rclHomeMineMessageRecyclerview.setAdapter(messageAdapter);
+        messageAdapter.addAll(list);
     }
 
     /**

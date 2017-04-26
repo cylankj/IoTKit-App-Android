@@ -17,7 +17,6 @@ import com.google.gson.Gson;
 import java.io.File;
 
 import rx.Observable;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 /**
@@ -54,56 +53,54 @@ public class AutoSignIn {
 
 
     public Observable<Integer> autoLogin() {
-        return Observable.just("run")
+        RxBus.getCacheInstance().removeAllStickyEvents();
+        return Observable.just(PreferencesUtils.getBoolean(JConstant.AUTO_SIGNIN_TAB, false))
+                .filter(s -> s)
                 .subscribeOn(Schedulers.io())
-                .flatMap(new Func1<String, Observable<Integer>>() {
-                    @Override
-                    public Observable<Integer> call(String s) {
-                        try {
-                            String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
-//
-                            AppLogger.d("autoLogin");
-                            if (TextUtils.isEmpty(aesAccount)) {
-                                AppLogger.d("account is null");
-                                return Observable.just(-1);
-                            }
-                            String decryption = AESUtil.decrypt(aesAccount);
-                            SignType signType = new Gson().fromJson(decryption, SignType.class);
-                            if (signType != null) {
-                                StringBuilder pwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + aesAccount + ".dat", "UTF-8");
-                                if (!TextUtils.isEmpty(pwd)) {
-                                    AppLogger.d("log pwd: " + pwd.length());
-                                    String finalPwd = AESUtil.decrypt(pwd.toString());
-                                    if (signType.type == 1) {
-                                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                                        BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd);
-                                        RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
-                                    } else if (signType.type >= 3) {
-                                        //效验本地token是否过期
-                                        if (checkTokenOut(signType.type)) {
-                                            AppLogger.d("isout:ee");
-                                            autoSave(signType.account, 1, "");
-                                            return Observable.just(-1);
-                                        } else {
-                                            AppLogger.d("isout:no");
-                                            RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
-                                            BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd, signType.type);
-                                            RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
-                                        }
-                                    }
-                                    AppLogger.d("log type: " + signType);
-                                    return Observable.just(0);
-                                } else {
-                                    return Observable.just(-1);
-                                }
-                            }
-                            AppLogger.d("signType is :" + signType);
-                            return Observable.just(-1);
-                        } catch (Exception e) {
-                            AppLogger.e("no sign type" + e.getLocalizedMessage());
-                            PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
+                .flatMap(s -> {
+                    try {
+                        String aesAccount = PreferencesUtils.getString(JConstant.AUTO_SIGNIN_KEY);
+                        AppLogger.d("autoLogin");
+                        if (TextUtils.isEmpty(aesAccount)) {
+                            AppLogger.d("account is null");
                             return Observable.just(-1);
                         }
+                        String decryption = AESUtil.decrypt(aesAccount);
+                        SignType signType = new Gson().fromJson(decryption, SignType.class);
+                        if (signType != null) {
+                            StringBuilder pwd = FileUtils.readFile(ContextUtils.getContext().getFilesDir() + File.separator + aesAccount + ".dat", "UTF-8");
+                            if (!TextUtils.isEmpty(pwd)) {
+                                AppLogger.d("log pwd: " + pwd.length());
+                                String finalPwd = AESUtil.decrypt(pwd.toString());
+                                if (signType.type == 1) {
+                                    RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
+                                    BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd);
+                                    RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(false));
+                                } else if (signType.type >= 3) {
+                                    //效验本地token是否过期
+                                    if (checkTokenOut(signType.type)) {
+                                        AppLogger.d("isout:ee");
+                                        autoSave(signType.account, 1, "");
+                                        return Observable.just(-1);
+                                    } else {
+                                        AppLogger.d("isout:no");
+                                        RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(-1));
+                                        BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), signType.account, finalPwd, signType.type);
+                                        RxBus.getCacheInstance().postSticky(new RxEvent.ThirdLoginTab(true));
+                                    }
+                                }
+                                AppLogger.d("log type: " + signType);
+                                return Observable.just(0);
+                            } else {
+                                return Observable.just(-1);
+                            }
+                        }
+                        AppLogger.d("signType is :" + signType);
+                        return Observable.just(-1);
+                    } catch (Exception e) {
+                        AppLogger.e("no sign type" + e.getLocalizedMessage());
+                        PreferencesUtils.putBoolean(JConstant.AUTO_lOGIN_PWD_ERR, true);
+                        return Observable.just(-1);
                     }
                 });
     }

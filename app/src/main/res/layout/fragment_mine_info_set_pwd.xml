@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:clickable="true"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/color_white">
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:orientation="vertical">
 
     <com.cylan.jiafeigou.widget.CustomToolbar
-        layout="@layout/layout_default_custom_tool_bar"
         android:id="@+id/custom_toolbar"
+        layout="@layout/layout_default_custom_tool_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         hunt:ct_background_color="@color/color_0ba8cf"
         hunt:ct_enable_shadow="false"
-        hunt:ct_fit_system_window="true"
         hunt:ct_enable_theme="true"
+        hunt:ct_fit_system_window="true"
         hunt:ct_icon="@drawable/nav_icon_back_white"
         hunt:ct_icon_right="@drawable/icon_finish_disable"
         hunt:ct_left_title="@string/SET_PWD"
@@ -26,49 +26,51 @@
         android:layout_height="wrap_content">
 
         <RelativeLayout
-            android:layout_marginTop="@dimen/y8"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y54">
+            android:layout_height="@dimen/y54"
+            android:layout_marginTop="@dimen/y8">
 
             <EditText
                 android:id="@+id/et_mine_set_newpwd"
-                android:textColor="@color/color_333333"
-                android:textSize="@dimen/sp16"
-                android:layout_centerVertical="true"
-                android:hint="@string/ENTER_PWD_2"
-                android:maxLength="65"
-                android:inputType="textPassword"
-                android:background="@null"
-                android:layout_marginRight="@dimen/x20"
-                android:layout_marginLeft="@dimen/x20"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
+                android:background="@null"
+                android:hint="@string/ENTER_PWD_2"
+                android:inputType="textPassword"
+                android:maxLength="12"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:textColor="@color/color_333333"
+                android:textSize="@dimen/sp16" />
 
             <View
                 android:id="@+id/view_mine_set_newpwd_line"
-                android:layout_marginBottom="@dimen/y8"
-                android:layout_alignParentBottom="true"
-                android:layout_marginRight="@dimen/x20"
-                android:layout_marginLeft="@dimen/x20"
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/y1"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="@dimen/y8"
+                android:layout_marginLeft="@dimen/x20"
+                android:layout_marginRight="@dimen/x20"
                 android:background="@color/color_f2f2f2" />
 
             <LinearLayout
-                android:layout_marginRight="@dimen/x20"
-                android:layout_alignParentRight="true"
-                android:orientation="horizontal"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/x20"
+                android:orientation="horizontal">
 
                 <ImageView
-                    android:visibility="gone"
                     android:id="@+id/iv_mine_new_pwd_clear"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:padding="@dimen/x10"
                     android:layout_gravity="center_vertical"
-                    android:src="@drawable/icon_clear_text" />
+                    android:padding="@dimen/x10"
+                    android:src="@drawable/icon_clear_text"
+                    android:visibility="gone" />
 
                 <CheckBox
                     android:id="@+id/cb_new_pwd_show"

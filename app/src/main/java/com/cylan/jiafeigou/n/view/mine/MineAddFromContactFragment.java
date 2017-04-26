@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -105,7 +106,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
             Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
             String alias = account.getAlias();
             String acc = account.getAccount();
-            return TextUtils.isEmpty(alias) ? acc : alias;
+            return String.format(getString(R.string.Tap3_FriendsAdd_RequestContents), TextUtils.isEmpty(alias) ? acc : alias);
         } else {
             return mesg;
         }
@@ -155,7 +156,7 @@ public class MineAddFromContactFragment extends Fragment implements MineAddFromC
     public void sendReqBack(int code) {
         if (code == JError.ErrorOK) {
             ToastUtil.showToast(getString(R.string.Tap3_FriendsAdd_Contacts_InvitedTips));
-            getFragmentManager().popBackStack("mineHelpFragment", 0);
+            getFragmentManager().popBackStack("AddFlowStack", FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } else if (code == JError.ErrorFriendToSelf) {
             ToastUtil.showNegativeToast(getString(R.string.Tap3_FriendsAdd_NotYourself));
         } else {

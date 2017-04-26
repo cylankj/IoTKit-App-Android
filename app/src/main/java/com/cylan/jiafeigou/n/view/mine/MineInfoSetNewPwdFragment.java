@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.mine;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -78,7 +77,7 @@ public class MineInfoSetNewPwdFragment extends IBaseFragment implements MineInfo
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ViewUtils.setChineseExclude(etMineSetNewpwd, 65);
+        ViewUtils.setChineseExclude(etMineSetNewpwd, 12);
     }
 
     @Override

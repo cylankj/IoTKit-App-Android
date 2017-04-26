@@ -28,7 +28,6 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
 import rx.Subscription;
@@ -62,7 +61,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
             subscription.unsubscribe();
         }
         subscription = new CompositeSubscription();
-        subscription.add(checkIsOpenLoginCallBack());
+//        subscription.add(checkIsOpenLoginCallBack());
         subscription.add(getAccountBack());
         subscription.add(unReadMesgBack());
         subscription.add(loginInMe());
@@ -164,56 +163,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
     }
 
     /**
-     * 是否三方登录的回调
-     *
-     * @return
-     */
-    @Override
-    public Subscription checkIsOpenLoginCallBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.ThirdLoginTab.class)
-                .flatMap(new Func1<RxEvent.ThirdLoginTab, Observable<JFGAccount>>() {
-                    @Override
-                    public Observable<JFGAccount> call(RxEvent.ThirdLoginTab thirdLoginTab) {
-                        if (thirdLoginTab.isThird) {
-                            JFGAccount account = new JFGAccount();
-                            account.setEnablePush(true);
-                            return Observable.just(account);
-                        } else {
-                            return Observable.interval(0, 2, TimeUnit.SECONDS)
-                                    .map(s -> BaseApplication.getAppComponent().getSourceManager().getJFGAccount())
-                                    .filter(account -> account != null).first();
-                        }
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(account -> {
-                    AppLogger.d("mine_account:" + account);
-                    if (account != null && getView() != null) {
-                        userInfo = account;
-                        if (TextUtils.isEmpty(account.getAccount()) && account.isEnablePush()) {
-                            isOpenLogin = true;
-                            getView().setUserImageHeadByUrl(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON));
-                            String userAlias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
-                            getView().setAliasName(TextUtils.isEmpty(userAlias) ? createRandomName() : userAlias);
-                        } else {
-                            isOpenLogin = false;
-                            getView().setUserImageHeadByUrl(account.getPhotoUrl());
-                            if (account.getAlias() == null | TextUtils.isEmpty(account.getAlias())) {
-                                boolean isEmail = JConstant.EMAIL_REG.matcher(account.getAccount()).find();
-                                if (isEmail) {
-                                    String[] split = account.getAccount().split("@");
-                                    account.setAlias(split[0]);
-                                } else {
-                                    account.setAlias(account.getAccount());
-                                }
-                            }
-                            getView().setAliasName(account.getAlias());
-                        }
-                    }
-                }, AppLogger::e);
-    }
-
-    /**
      * 获取到未读消息数
      */
     @Override
@@ -281,17 +230,41 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
         return hasUnRead;
     }
 
+
+    private boolean isDefaultPhoto(String photoUrl) {
+        return TextUtils.isEmpty(photoUrl) || photoUrl.contains("image/default.jpg");
+    }
+
     @Override
     public Subscription getAccountBack() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getUserInfo -> {
-                    if (userInfo == null && getUserInfo != null) {
+                    if (getUserInfo != null) {
                         userInfo = getUserInfo.jfgAccount;
-                        if (getView() != null && !TextUtils.isEmpty(userInfo.getAlias()))
-                            getView().setAliasName(userInfo.getAlias());
-                        if (getView() != null && !TextUtils.isEmpty(userInfo.getPhotoUrl()))
-                            getView().setUserImageHeadByUrl(userInfo.getPhotoUrl());
+                        String photoUrl = userInfo.getPhotoUrl();
+                        String alias = null;
+                        RxEvent.ThirdLoginTab event = RxBus.getCacheInstance().getStickyEvent(RxEvent.ThirdLoginTab.class);
+                        isOpenLogin = event != null && event.isThird;
+                        if (isOpenLogin && isDefaultPhoto(photoUrl)) {
+                            photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
+                        }
+                        if (isOpenLogin)
+                            userInfo.setAlias(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
+                        if (userInfo.getAlias() == null || TextUtils.isEmpty(userInfo.getAlias())) {
+                            boolean isEmail = JConstant.EMAIL_REG.matcher(userInfo.getAccount()).find();
+                            if (isEmail) {
+                                String[] split = userInfo.getAccount().split("@");
+                                userInfo.setAlias(split[0]);
+                            } else {
+                                userInfo.setAlias(userInfo.getAccount());
+                            }
+                        }
+                        alias = userInfo.getAlias();
+                        if (getView() != null && !TextUtils.isEmpty(photoUrl))
+                            getView().setUserImageHeadByUrl(photoUrl);
+                        if (getView() != null && !TextUtils.isEmpty(alias))
+                            getView().setAliasName(alias);
                     }
                 }, AppLogger::e);
     }
