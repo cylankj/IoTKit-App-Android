@@ -678,16 +678,16 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
 
-    @Override
-    public void startCountForDismissPop() {
-        addSubscription(Observable.just("count_5_s")
-                .subscribeOn(Schedulers.newThread())
-                .delay(5, TimeUnit.SECONDS)
-                .observeOn(AndroidSchedulers.mainThread())
-                .filter(s -> getView() != null)
-                .subscribe(s -> getView().countdownFinish(),
-                        throwable -> AppLogger.e("countdown finish")));
-    }
+//    @Override
+//    public void startCountForDismissPop() {
+//        addSubscription(Observable.just("count_5_s")
+//                .subscribeOn(Schedulers.newThread())
+//                .delay(5, TimeUnit.SECONDS)
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .filter(s -> getView() != null)
+//                .subscribe(s -> getView().countdownFinish(),
+//                        throwable -> AppLogger.e("countdown finish")));
+//    }
 
 
     @Override

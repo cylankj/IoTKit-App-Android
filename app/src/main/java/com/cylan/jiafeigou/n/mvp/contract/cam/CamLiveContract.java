@@ -83,7 +83,7 @@ public interface CamLiveContract {
          */
         void shouldWaitFor(boolean start);
 
-        void countdownFinish();
+//        void countdownFinish();
 
         void hardwareResult(RxEvent.CheckDevVersionRsp rsp);
 
@@ -210,7 +210,7 @@ public interface CamLiveContract {
          */
         public <T extends DataPoint> void updateInfoReq(T value, long id);
 
-        void startCountForDismissPop();
+//        void startCountForDismissPop();
 
         /**
          * 每天检测一次新固件

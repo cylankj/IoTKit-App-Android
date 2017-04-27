@@ -16,10 +16,10 @@ import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 
 /**
  * Created by cylan-hunt on 16-12-8.
@@ -83,9 +83,8 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
                 simpleProgressBar.bringToFront();
                 break;
             case PLAY_STATE_PLAYING:
-                toDismiss(0);
-                if (!imageView.isShown())
-                    imageView.setVisibility(VISIBLE);
+                handler.removeCallbacksAndMessages(null);
+                setVisibility(INVISIBLE);
                 imageView.bringToFront();
                 imageView.setImageResource(R.drawable.camera_icon_pause);
                 textView.setVisibility(GONE);

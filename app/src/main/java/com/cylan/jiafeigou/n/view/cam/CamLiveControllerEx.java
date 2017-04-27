@@ -14,6 +14,7 @@ import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -48,10 +49,11 @@ import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
 import com.cylan.jiafeigou.widget.video.VideoViewFactory;
-import com.cylan.jiafeigou.widget.wheel.ex.IData;
 import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
 
+import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -64,7 +66,7 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTOR
  */
 
 public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer,
-        View.OnClickListener, FlipImageView.OnFlipListener {
+        View.OnClickListener {
     private String uuid;
     private static final String TAG = "CamLiveControllerEx";
     private ILiveControl.Action action;
@@ -82,9 +84,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private View layoutF;
     //横屏 侧滑日历
     private View layoutG;
-    private SuperWheelExt superWheelExt;
+
     private boolean isNormalView;
+
+    private SuperWheelExt superWheelExt;
+    private OnClickListener liveTimeRectClick;
+    private OnClickListener liveTimeRectListener;
+    private RoundCardPopup roundCardPopup;
     private LiveViewWithThumbnail liveViewWithThumbnail;
+
+    private HistoryWheelHandler historyWheelHandler;
 
     public CamLiveControllerEx(Context context) {
         this(context, null);
@@ -130,15 +139,15 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //c.loading
         (layoutC).setAction(this.action);
         //d.time
-        ((FlipLayout) layoutD.findViewById(R.id.layout_port_flip))
-                .setFlipListener(this);
+//        ((FlipLayout) layoutD.findViewById(R.id.layout_port_flip))
+//                .setFlipListener(this);
         layoutD.findViewById(R.id.live_time_layout).setOnClickListener(this);
         layoutD.findViewById(R.id.imgV_cam_zoom_to_full_screen)
                 .setOnClickListener(this);
         //e.
         layoutE.findViewById(R.id.imgV_cam_live_land_play).setOnClickListener(this);
         layoutE.findViewById(R.id.tv_live).setOnClickListener(this);
-        ((FlipLayout) layoutE.findViewById(R.id.layout_land_flip)).setFlipListener(this);
+//        ((FlipLayout) layoutE.findViewById(R.id.layout_land_flip)).setFlipListener(this);
         //f
         layoutF.findViewById(R.id.imgV_cam_switch_speaker).setOnClickListener(this);
         layoutF.findViewById(R.id.imgV_cam_trigger_mic).setOnClickListener(this);
@@ -215,6 +224,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 layoutA.post(landHideRunnable);
             }
         } else {
+            if (isStandBy()) {
+                post(portHideRunnable);
+                return;
+            }
             layoutA.setTranslationY(0);
             layoutD.setTranslationY(0);
             layoutE.setTranslationY(0);
@@ -433,6 +446,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 findViewById(R.id.layout_port_flip).setVisibility(VISIBLE);
             layoutD.setBackgroundResource(R.drawable.camera_sahdow);
             layoutE.setBackgroundResource(android.R.color.transparent);
+            if (historyWheelHandler != null) historyWheelHandler.onBackPress();
         }
         findViewById(R.id.v_divider).setVisibility(isLand ? VISIBLE : GONE);
         findViewById(R.id.layout_e).setLayoutParams(lp);
@@ -485,17 +499,23 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     ToastUtil.showNegativeToast(getContext().getString(R.string.has_not_sdcard));
                     return;
                 }
-                showDatePicker();
+                if (historyWheelHandler != null)
+                    historyWheelHandler.showDatePicker(MiscUtils.isLand());
             };
             (layoutD.findViewById(R.id.live_time_layout)).setOnClickListener(liveTimeRectListener);
         }
     }
 
-    private void showDatePicker() {
-        ToastUtil.showToast("时间选择器");
+    public void setFlipListener(FlipImageView.OnFlipListener flipListener) {
+        ((FlipLayout) findViewById(R.id.layout_land_flip)).setFlipListener(flipListener);
+        ((FlipLayout) findViewById(R.id.layout_port_flip)).setFlipListener(flipListener);
     }
 
-    private OnClickListener liveTimeRectListener;
+    public void setFlipped(boolean flip) {
+        ((FlipLayout) findViewById(R.id.layout_land_flip)).setFlipped(flip);
+        ((FlipLayout) findViewById(R.id.layout_port_flip)).setFlipped(flip);
+    }
+
 
     @Override
     public void onResolutionRsp(JFGMsgVideoResolution resolution) {
@@ -513,10 +533,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void onHistoryDataRsp(IData data, SuperWheelExt.WheelRollListener wheelRollListener) {
-        superWheelExt.setDataProvider(data);
-        superWheelExt.setWheelRollListener(wheelRollListener);
+    public void onHistoryDataRsp(CamLiveContract.Presenter presenter) {
         showHistoryWheel(true);
+        if (historyWheelHandler == null) {
+            historyWheelHandler = new HistoryWheelHandler((ViewGroup) layoutG, superWheelExt, presenter);
+        }
+        historyWheelHandler.dateUpdate();
     }
 
     @Override
@@ -534,6 +556,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //设置 standby view相关点击事件
         DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
         liveViewWithThumbnail.enableStandbyMode(standby.standby, clickListener, !TextUtils.isEmpty(device.shareAccount));
+        if (standby.standby && !isLand()) {
+            post(portHideRunnable);
+            layoutC.setState(PLAY_STATE_IDLE, null);
+        }
+    }
+
+    private boolean isStandBy() {
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
+        return standby.standby;
     }
 
     @Override
@@ -542,8 +574,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 //            vLive.post(() -> vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), bitmap));
 //        }
     }
-
-    private RoundCardPopup roundCardPopup;
 
     @Override
     public void onCaptureRsp(FragmentActivity activity, Bitmap bitmap) {
@@ -578,6 +608,26 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         if (!connected) {
             post(() -> showHistoryWheel(false));
         }
+    }
+
+    @Override
+    public void onActivityStart(Device device) {
+        boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
+        setFlipped(!safeIsOpen);
+        updateLiveViewMode(device.$(509, "0"));
+    }
+
+    @Override
+    public void setCaptureListener(OnClickListener captureListener) {
+        findViewById(R.id.imgV_cam_trigger_capture).setOnClickListener(captureListener);
+        findViewById(R.id.imgV_land_cam_trigger_capture).setOnClickListener(captureListener);
+    }
+
+    @Override
+    public void updateLiveViewMode(String mode) {
+        liveViewWithThumbnail.getVideoView().config360(TextUtils.equals(mode, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
+        liveViewWithThumbnail.getVideoView().setMode(TextUtils.equals("0", mode) ? 0 : 1);
+        liveViewWithThumbnail.getVideoView().detectOrientationChanged();
     }
 
     @Override
@@ -618,21 +668,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         } else {
             //右边侧滑进来
         }
-    }
-
-    @Override
-    public void onClick(FlipImageView view) {
-
-    }
-
-    @Override
-    public void onFlipStart(FlipImageView view) {
-
-    }
-
-    @Override
-    public void onFlipEnd(FlipImageView view) {
-
     }
 
 

@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.adapter;
 import android.content.Context;
 import android.os.SystemClock;
 import android.util.Log;
-import android.view.View;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.support.superadapter.SuperAdapter;
@@ -19,12 +18,7 @@ import java.util.List;
 
 public class CamLandHistoryDateAdapter extends SuperAdapter<Long> {
 
-    private View.OnClickListener itemClickListener;
     private int preIndex = -1;
-
-    public void setItemClickListener(View.OnClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
 
     public void setCurrentFocusTime(long time) {
         preIndex = getIndexByTime(time);
@@ -56,10 +50,7 @@ public class CamLandHistoryDateAdapter extends SuperAdapter<Long> {
     public void onBind(SuperViewHolder holder, int viewType, int layoutPosition, Long item) {
         holder.setText(R.id.tv_item_content, TimeUtils.getSpecifiedDate(item));
         holder.setTextColor(R.id.tv_item_content, getContext().getResources().getColor(layoutPosition == preIndex ? R.color.color_4b9fd5 : R.color.color_white));
-        if (itemClickListener != null) {
-            holder.setTag(R.id.tv_item_content, item);
-            holder.setOnClickListener(R.id.tv_item_content, itemClickListener);
-        }
+        holder.setTag(R.id.tv_item_content, item);
     }
 
 }

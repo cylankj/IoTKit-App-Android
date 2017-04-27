@@ -10,8 +10,6 @@ import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
-import com.cylan.jiafeigou.widget.wheel.ex.IData;
-import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 
 /**
  * 内容非常多的一个layout
@@ -65,7 +63,7 @@ public interface ICamLiveLayer {
 
     void onResolutionRsp(JFGMsgVideoResolution resolution);
 
-    void onHistoryDataRsp(IData data, SuperWheelExt.WheelRollListener wheelRollListener);
+    void onHistoryDataRsp(CamLiveContract.Presenter presenter);
 
     void onLiveDestroy();
 
@@ -79,4 +77,9 @@ public interface ICamLiveLayer {
 
     void onNetworkChanged(boolean connected);
 
+    void onActivityStart(Device device);
+
+    void setCaptureListener(View.OnClickListener captureListener);
+
+    void updateLiveViewMode(String mode);
 }

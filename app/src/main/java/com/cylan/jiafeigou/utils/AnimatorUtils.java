@@ -563,7 +563,11 @@ public class AnimatorUtils {
         return view.getTop() == view.getY();
     }
 
-    public static int getSlideOutDistance(View view) {
+    public static int getSlideOutYDistance(View view) {
+        return -view.getBottom();
+    }
+
+    public static int getSlideOutXDistance(View view) {
         return -view.getBottom();
     }
 }
