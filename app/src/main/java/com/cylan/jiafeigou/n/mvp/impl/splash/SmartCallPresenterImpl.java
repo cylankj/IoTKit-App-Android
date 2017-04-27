@@ -52,7 +52,10 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
                     }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
         } else {
             AppLogger.d("has no sticky");
-            Observable.just("delay").delay(2, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(ret -> getView().splashOver(), AppLogger::e);
+            if (getView().hasSplashView())
+                Observable.just("delay").delay(2, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(ret -> getView().splashOver(), AppLogger::e);
+            else
+                getView().splashOver();
         }
     }
 

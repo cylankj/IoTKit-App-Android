@@ -106,13 +106,6 @@ public class SmartcallActivity extends NeedLoginActivity
     @Override
     protected void onStart() {
         super.onStart();
-        View v = findViewById(android.R.id.content);
-        if (v != null) {
-            View splashView = v.findViewById(R.id.fLayout_splash);
-            if (splashView != null) {
-                splashView.setVisibility(View.VISIBLE);
-            }
-        }
         if (!isPermissionDialogShowing)
             SmartcallActivityPermissionsDispatcher.showWriteStoragePermissionsWithCheck(this);
         if (!from_log_out) {
@@ -199,9 +192,18 @@ public class SmartcallActivity extends NeedLoginActivity
         if (v != null) {
             View splashView = v.findViewById(R.id.fLayout_splash);
             if (splashView != null) {
-                splashView.setVisibility(View.GONE);
+                ((ViewGroup) v).removeView(splashView);
             }
         }
+    }
+
+    public boolean hasSplashView() {
+        View v = findViewById(android.R.id.content);
+        View splashView = null;
+        if (v != null) {
+            splashView = v.findViewById(R.id.fLayout_splash);
+        }
+        return splashView != null;
     }
 
     @Override
