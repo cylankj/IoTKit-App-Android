@@ -515,7 +515,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //分享账号不显示啊.
         if (JFGRules.isShareDevice(uuid) || rtcp.timestamp == 0) return;
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
-                + "|%s", TimeUtils.getHistoryTime1(rtcp.timestamp * 1000L));
+                        + "|%s",
+                type == 1 ? TimeUtils.getHistoryTime1(rtcp.timestamp * 1000L) :
+                        TimeUtils.getLiveTime(rtcp.timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
         //点击事件
@@ -580,7 +582,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             //选择时间,更新时间区域
             post(() -> {
                 String content = String.format(getContext().getString(R.string.Tap1_Camera_Playback)
-                        + "|%s", TimeUtils.getHistoryTime1(time));
+                        + "|%s",
+                        livePlayType == 1 ? TimeUtils.getHistoryTime1(time) :
+                        TimeUtils.getLiveTime(time));
                 ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                         .setContent(content);
                 prepareLayoutDAnimation();

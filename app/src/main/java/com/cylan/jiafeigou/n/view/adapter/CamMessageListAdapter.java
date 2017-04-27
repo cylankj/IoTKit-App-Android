@@ -113,7 +113,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     public ArrayList<CamMessageBean> getSelectedItems() {
         ArrayList<CamMessageBean> list = new ArrayList<>();
         for (int index : selectedMap.keySet()) {
-            list.add(getList().get(index));
+            list.add(getItem(index));
         }
         return list;
     }
@@ -135,11 +135,11 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
     public void markItemSelected(int position) {
         if (!editMode)
             return;
-        if (selectedMap.containsKey(position)) {
-            selectedMap.remove(position);
-        } else {
-            selectedMap.put(position, position);
-        }
+//        if (selectedMap.containsKey(position)) {
+//            selectedMap.remove(position);
+//        } else {
+        selectedMap.put(position, position);
+//        }
         notifyItemChanged(position);
     }
 
@@ -281,7 +281,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
      */
     private String getFinalTimeContent(CamMessageBean bean) {
         long id = bean.id;
-        String tContent = TimeUtils.getHH_MM(bean.version);
+        String tContent = TimeUtils.getLiveTime(bean.version);
         if (id == DpMsgMap.ID_505_CAMERA_ALARM_MSG) {
             return tContent + getContext().getString(R.string.MSG_WARNING);
         }

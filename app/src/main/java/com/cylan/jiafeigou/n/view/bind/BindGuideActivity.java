@@ -89,7 +89,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
 
     private void tryLoadConfigApFragment() {
         final WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
-        if (info == null || !JFGRules.isCylanDevice(info.getSSID()) || !NetUtils.isNetworkAvailable(this)) {
+        if (info == null || !JFGRules.isCylanDevice(info.getSSID())) {
             AppLogger.i("bind: " + info);
             return;
         }

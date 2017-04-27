@@ -47,7 +47,6 @@ import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
@@ -83,7 +82,7 @@ import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_
  */
 @RuntimePermissions()
 public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presenter>
-        implements CamLiveContract.View, BaseDialog.BaseDialogAction {
+        implements CamLiveContract.View {
 
     public Rect mLiveViewRectInWindow = new Rect();
     @BindView(R.id.cam_live_control_layer)
@@ -606,21 +605,31 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth), ""));
     }
 
+    private AlertDialog firmwareDialog;
+
     @Override
     public void hardwareResult(RxEvent.CheckDevVersionRsp rsp) {
         if (rsp.hasNew) {
-//            Fragment f = getActivity().getSupportFragmentManager().findFragmentByTag(DIALOG_KEY);
-//            if (f == null) {
-//                Bundle bundle = new Bundle();
-//                bundle.putString(BaseDialog.KEY_TITLE, getString(R.string.Tap1_Device_UpgradeTips));
-//                bundle.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.CANCEL));
-//                bundle.putString(SimpleDialogFragment.KEY_RIGHT_CONTENT, getString(R.string.OK));
-//                bundle.putBoolean(SimpleDialogFragment.KEY_TOUCH_OUT_SIDE_DISMISS, false);
-//                SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(bundle);
-//                dialogFragment.setValue(rsp);
-//                dialogFragment.setAction(this);
-//                dialogFragment.show(getActivity().getSupportFragmentManager(), DIALOG_KEY);
-//            }
+            Device device = basePresenter.getDevice();
+            DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
+            if (!JFGRules.isDeviceOnline(net)) return;//离线不显示
+            if (firmwareDialog != null && firmwareDialog.isShowing()) return;
+            if (firmwareDialog == null) {
+                firmwareDialog = new AlertDialog.Builder(getActivity())
+                        .setMessage(getString(R.string.Tap1_Device_UpgradeTips))
+                        .setPositiveButton(getString(R.string.OK), (DialogInterface dialog, int which) -> {
+                            Bundle bundle = new Bundle();
+                            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
+                            bundle.putSerializable("version_content", rsp);
+                            AppLogger.d("使用activity");
+                            FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
+                            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
+                                    hardwareUpdateFragment, android.R.id.content);
+                        })
+                        .setNegativeButton(getString(R.string.CANCEL), null)
+                        .create();
+            }
+            firmwareDialog.show();
             AppLogger.e("新固件");
         }
     }
@@ -628,17 +637,5 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onHistoryDateListUpdate(ArrayList<Long> dateList) {
 
-    }
-
-    @Override
-    public void onDialogAction(int id, Object value) {
-        if (id == R.id.tv_dialog_btn_right) {
-            Bundle bundle = new Bundle();
-            bundle.putString(JConstant.KEY_DEVICE_ITEM_UUID, uuid);
-            bundle.putSerializable("version_content", (RxEvent.CheckDevVersionRsp) value);
-            FirmwareFragment hardwareUpdateFragment = FirmwareFragment.newInstance(bundle);
-            ActivityUtils.addFragmentSlideInFromRight(getActivity().getSupportFragmentManager(),
-                    hardwareUpdateFragment, android.R.id.content);
-        }
     }
 }

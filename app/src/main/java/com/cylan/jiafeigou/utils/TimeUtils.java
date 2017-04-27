@@ -73,6 +73,7 @@ public class TimeUtils {
             return new SimpleDateFormat("HH:mm", Locale.UK);
         }
     };
+
     private static final ThreadLocal<SimpleDateFormat> historyDateFormat0 = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
@@ -82,12 +83,23 @@ public class TimeUtils {
         }
     };
 
+    private static final ThreadLocal<SimpleDateFormat> liveDateFormat = new ThreadLocal<SimpleDateFormat>() {
+        @Override
+        protected SimpleDateFormat initialValue() {
+            return new SimpleDateFormat("MM/dd HH:mm", Locale.getDefault());
+        }
+    };
+
     public static String getHistoryTime(long timeInLong) {
         return historyDateFormat.get().format(new Date(timeInLong));
     }
 
     public static String getHistoryTime1(long timeInLong) {
         return historyDateFormat0.get().format(new Date(timeInLong));
+    }
+
+    public static String getLiveTime(long timeInLong) {
+        return liveDateFormat.get().format(new Date(timeInLong));
     }
 
     /**

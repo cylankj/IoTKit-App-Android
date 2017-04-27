@@ -481,6 +481,9 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
                     } else {
                         svSettingDeviceDetail.setTvSubTitle(statusContent, R.color.color_8c8c8c);
                     }
+                    //自动录像显示.
+                    DpMsgDefine.DPStandby standby = basePresenter.getDevice().$(508, new DpMsgDefine.DPStandby());
+                    svSettingDeviceAutoRecord.setTvSubTitle(standby.standby ? "" : basePresenter.getAutoRecordTitle(getContext()));
                 }
                 break;
             case DpMsgMap.ID_223_MOBILE_NET:

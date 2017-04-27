@@ -887,8 +887,6 @@
     <string name="NO_MORE">已经全部加载完毕</string>
     <string name="PERMISSION_AUDIO">麦克风</string>
     <string name="PERMISSION_STORAGE">存储空间</string>
-    <string name="Tap3_Share_NoBindTips">使用分享设备需要绑定手机/邮箱</string>
-    <string name="Phone">电话</string>
     <string name="SMS">短信</string>
     <string name="Choose_Album">选择相册</string>
     <string name="Mail_Class_Application">请选择邮件类应用</string>

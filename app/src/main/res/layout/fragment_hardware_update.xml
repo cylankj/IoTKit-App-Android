@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
-    android:clickable="true"
-    android:background="@color/color_white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/color_white"
+    android:clickable="true"
+    android:keepScreenOn="true">
 
     <LinearLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <!-- 顶部栏 -->
         <com.cylan.jiafeigou.widget.CustomToolbar
@@ -45,11 +46,11 @@
         </FrameLayout>
 
         <TextView
-            android:text="@string/Tap1_CurrentVersion"
             style="@style/information_item"
-            android:layout_marginTop="@dimen/y12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/y12"
+            android:text="@string/Tap1_CurrentVersion"
             android:textSize="@dimen/sp16" />
 
         <TextView
@@ -63,18 +64,18 @@
             android:textSize="@dimen/sp14" />
 
         <View
-            android:layout_marginTop="@dimen/y10"
-            android:background="@color/color_f2f2f2"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
             android:layout_marginLeft="@dimen/x16"
             android:layout_marginRight="@dimen/x16"
-            android:layout_width="match_parent"
-            android:layout_height="1dip" />
+            android:layout_marginTop="@dimen/y10"
+            android:background="@color/color_f2f2f2" />
 
 
         <LinearLayout
-            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <RelativeLayout
                 android:id="@+id/rl_new_version_describe_container"
@@ -83,43 +84,43 @@
 
                 <TextView
                     android:id="@+id/tv_hardware_update_title"
-                    android:text="@string/Tap1_LatestVersion"
                     style="@style/information_item"
-                    android:layout_marginTop="@dimen/y12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/y12"
+                    android:text="@string/Tap1_LatestVersion"
                     android:textSize="@dimen/sp16" />
 
                 <TextView
                     android:id="@+id/tv_hardware_new_version"
-                    android:layout_below="@id/tv_hardware_update_title"
                     style="@style/information_item"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_below="@id/tv_hardware_update_title"
                     android:layout_marginTop="@dimen/y6"
                     android:text="3.0.0.1"
                     android:textColor="#8c8c8c"
                     android:textSize="@dimen/sp14" />
 
                 <View
-                    android:visibility="invisible"
-                    android:layout_marginRight="@dimen/x20"
                     android:id="@+id/hardware_update_point"
+                    android:layout_width="@dimen/x7"
+                    android:layout_height="@dimen/y7"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginRight="@dimen/x20"
                     android:background="@drawable/hardware_update_point"
-                    android:layout_width="@dimen/x7"
-                    android:layout_height="@dimen/y7" />
+                    android:visibility="invisible" />
             </RelativeLayout>
 
             <TextView
-                android:visibility="gone"
-                android:textColor="#8c8c8c"
-                style="@style/information_item"
-                android:layout_below="@id/tv_hardware_new_version"
                 android:id="@+id/tv_version_describe"
+                style="@style/information_item"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:layout_below="@id/tv_hardware_new_version"
+                android:textColor="#8c8c8c"
+                android:visibility="gone" />
 
         </LinearLayout>
 
@@ -127,50 +128,50 @@
             android:id="@+id/tv_download_soft_file"
             android:layout_width="match_parent"
             android:layout_height="@dimen/y42"
-            android:gravity="center"
-            android:padding="@dimen/x10"
-            android:layout_marginTop="@dimen/y69"
             android:layout_marginEnd="@dimen/x30"
             android:layout_marginStart="@dimen/x30"
+            android:layout_marginTop="@dimen/y69"
             android:background="@drawable/long_btn_bg_shape_white"
+            android:gravity="center"
+            android:padding="@dimen/x10"
             android:textColor="#4B9FD5"
             android:textSize="@dimen/sp16" />
     </LinearLayout>
 
     <LinearLayout
-        android:visibility="gone"
         android:id="@+id/ll_download_pg_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/y64"
         android:layout_alignParentBottom="true"
         android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y64">
+        android:visibility="gone">
 
         <View
-            android:background="@color/color_e1e1e1"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/y1" />
+            android:layout_height="@dimen/y1"
+            android:background="@color/color_e1e1e1" />
 
         <TextView
             android:id="@+id/tv_loading_show"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/y19"
             android:text="3.5MB/34MB"
-            android:textSize="@dimen/sp13"
             android:textColor="@color/color_8c8c8c"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
+            android:textSize="@dimen/sp13" />
 
         <ProgressBar
-            android:layout_marginBottom="@dimen/y19"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="@dimen/y9"
             android:id="@+id/download_progress"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="@dimen/x319"
             android:layout_height="5dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="@dimen/y19"
+            android:layout_marginTop="@dimen/y9"
             android:indeterminateOnly="false"
-            android:progress="0"
             android:max="100"
+            android:progress="0"
             android:progressDrawable="@drawable/download_drawable_color" />
     </LinearLayout>
 

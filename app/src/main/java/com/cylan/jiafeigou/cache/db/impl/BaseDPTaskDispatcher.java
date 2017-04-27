@@ -109,7 +109,7 @@ public class BaseDPTaskDispatcher implements IDPTaskDispatcher {
                     return task != null;
                 })
                 .flatMap(task -> sourceManager.isOnline()
-                        ? task.performLocal().observeOn(Schedulers.io()).flatMap(ret -> task.performServer())
+                        ? task.performServer()
                         : task.performLocal().observeOn(Schedulers.io())
                 );
     }
