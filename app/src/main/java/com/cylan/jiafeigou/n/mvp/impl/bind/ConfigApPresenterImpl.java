@@ -11,6 +11,7 @@ import android.net.wifi.WifiManager;
 import android.text.TextUtils;
 
 import com.cylan.jiafeigou.cache.db.module.Device;
+import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.ScanResultListFilter;
 import com.cylan.jiafeigou.misc.bind.AFullBind;
@@ -86,10 +87,11 @@ public class ConfigApPresenterImpl extends AbstractPresenter<ConfigApContract.Vi
                 .filter(udpDevicePortrait -> udpDevicePortrait != null && udpDevicePortrait.net != 3)
                 .subscribe((UdpConstant.UdpDevicePortrait udpDevicePortrait) -> {
                     AppLogger.d(BIND_TAG + "last state");
-//                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(udpDevicePortrait.uuid);
-//                    if (device.available()) {
+                    Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(udpDevicePortrait.uuid);
+                    if (device.available()) {
 //                        AndroidSchedulers.mainThread().createWorker().schedule(() -> mView.onDeviceAlreadyExist());
-//                    } else
+                        device.setValue(201, new DpMsgDefine.DPNet());//先清空防止过早绑定成功
+                    }
                     if (aFullBind != null) {
                         aFullBind.setServerLanguage(udpDevicePortrait);
                         aFullBind.sendWifiInfo(ssid, pwd, type);

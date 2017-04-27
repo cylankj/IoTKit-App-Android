@@ -185,7 +185,7 @@ public class SmartcallActivity extends NeedLoginActivity
             //第一次打开app
             setFirstUseApp();
             initGuidePage();
-        } else {
+        } else if (hasSplashView()) {
             initLoginPage();
         }
         View v = findViewById(android.R.id.content);
@@ -230,7 +230,7 @@ public class SmartcallActivity extends NeedLoginActivity
         } else if (code == JError.StartLoginPage && !firstSignIn) {
             splashOver();
             firstSignIn = true;
-        } else if ((code == JError.ErrorLoginInvalidPass || code == JError.ErrorAccountNotExist || code == 162) && PreferencesUtils.getBoolean(JConstant.AUTO_SIGNIN_TAB, false)) {
+        } else if ((code == JError.ErrorLoginInvalidPass || code == JError.ErrorAccountNotExist || code == 162) && PreferencesUtils.getBoolean(JConstant.SHOW_PASSWORD_CHANGED, false)) {
 //          密码错误且是自动登录才走此
             splashOver();
             pswChanged();

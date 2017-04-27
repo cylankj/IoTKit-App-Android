@@ -6,34 +6,35 @@
     android:orientation="vertical"
     tools:context=".n.view.cam.SetSensitivityDialogFragment">
 
+
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
-        app:cardCornerRadius="@dimen/y9">
+        app:cardCornerRadius="@dimen/y9"
+        app:cardPreventCornerOverlap="false">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/color_white"
+            android:background="@drawable/battery_bg"
             android:orientation="vertical">
-
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@drawable/low_battery_popup_top" />
+                android:layout_height="@dimen/y195"
+                android:background="@drawable/battery_blue_bg">
 
                 <ImageView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:background="@drawable/doorbell_pic_popup" />
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="@dimen/y30"
+                    android:scaleType="center"
+                    android:src="@drawable/doorbell_pic_popup" />
+
             </FrameLayout>
+
 
             <TextView
                 android:layout_width="wrap_content"

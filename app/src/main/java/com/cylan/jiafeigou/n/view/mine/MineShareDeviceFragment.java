@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,12 +12,9 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.cylan.jiafeigou.R;
@@ -27,7 +23,6 @@ import com.cylan.jiafeigou.n.mvp.contract.mine.MineShareDeviceContract;
 import com.cylan.jiafeigou.n.mvp.impl.mine.MineShareDevicePresenterImp;
 import com.cylan.jiafeigou.n.mvp.model.DeviceBean;
 import com.cylan.jiafeigou.n.mvp.model.RelAndFriendBean;
-import com.cylan.jiafeigou.n.view.activity.BindDeviceActivity;
 import com.cylan.jiafeigou.n.view.adapter.MineShareDeviceAdapter;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.superadapter.OnItemClickListener;
@@ -291,11 +286,6 @@ public class MineShareDeviceFragment extends Fragment implements MineShareDevice
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         MineShareDeviceFragmentPermissionsDispatcher.onRequestPermissionsResult(this, requestCode, grantResults);
-        if (permissions.length == 1) {
-            if (TextUtils.equals(permissions[0], Manifest.permission.READ_CONTACTS) && grantResults[0] > -1) {
-//                MineShareDeviceFragmentPermissionsDispatcher.onReadContactsPermissionWithCheck(this);
-            }
-        }
     }
 
     @OnPermissionDenied(Manifest.permission.READ_CONTACTS)

@@ -316,7 +316,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
     @Override
     public void initPersonalInformation(JFGAccount bean) {
         MyViewTarget myViewTarget = new MyViewTarget(userImageHead, getContext().getResources());
-        String photoUrl = "";
+        String photoUrl;
         if (bean != null) {
             argumentData = bean;
             //头像的回显
@@ -405,7 +405,11 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
 
     @Override
     public void setAccount(String account, String phone, String email, int type) {
-        if (type == 3) {
+        if (!TextUtils.isEmpty(phone)) {
+            tvUserAccount.setText(phone);
+        } else if (!TextUtils.isEmpty(email)) {
+            tvUserAccount.setText(email);
+        } else if (type == 3) {
             tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? getString(R.string.LOGIN_QQ) : email) : phone);
         } else if (type == 4) {
             tvUserAccount.setText(TextUtils.isEmpty(phone) ? (TextUtils.isEmpty(email) ? getString(R.string.LOGIN_WEIBO) : email) : phone);

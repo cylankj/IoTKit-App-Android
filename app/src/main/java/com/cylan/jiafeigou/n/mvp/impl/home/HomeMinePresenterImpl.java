@@ -9,6 +9,7 @@ import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
 import com.cylan.ex.JfgException;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.dp.DpUtils;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -61,7 +62,6 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
             subscription.unsubscribe();
         }
         subscription = new CompositeSubscription();
-//        subscription.add(checkIsOpenLoginCallBack());
         subscription.add(getAccountBack());
         subscription.add(unReadMesgBack());
         subscription.add(loginInMe());
@@ -237,7 +237,18 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
 
     @Override
     public Subscription getAccountBack() {
-        return RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class)
+        return Observable.just(BaseApplication.getAppComponent().getSourceManager()).map(s -> {
+            Account account = s.getAccount();
+            JFGAccount jfgAccount = s.getJFGAccount();
+            RxEvent.AccountArrived arrived = null;
+            if (account != null && jfgAccount != null) {
+                arrived = new RxEvent.AccountArrived(account);
+                arrived.jfgAccount = jfgAccount;
+            }
+            return arrived;
+        }).filter(accountArrived -> accountArrived != null)
+                .mergeWith(RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class))
+                .first()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getUserInfo -> {
                     if (getUserInfo != null) {

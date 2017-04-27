@@ -1,14 +1,12 @@
 package com.cylan.jiafeigou.n.mvp.impl.splash;
 
 
-import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.n.mvp.contract.splash.SplashContract;
 import com.cylan.jiafeigou.n.mvp.impl.AbstractPresenter;
 import com.cylan.jiafeigou.rx.RxBus;
 import com.cylan.jiafeigou.rx.RxEvent;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MiscUtils;
-import com.cylan.jiafeigou.utils.PreferencesUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -36,28 +34,26 @@ public class SmartCallPresenterImpl extends AbstractPresenter<SplashContract.Vie
     }
 
     private void selectNext() {
-        if (RxBus.getCacheInstance().hasStickyEvent(RxEvent.ResultLogin.class) && !PreferencesUtils.getBoolean(JConstant.UPDATAE_AUTO_LOGIN, false)) {
-            AppLogger.d("has sticky");
-            subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
-                    .subscribeOn(Schedulers.newThread())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
-                    .map(resultLogin -> {
-                        if (resultLogin != null && getView() != null)
-                            getView().loginResult(resultLogin.code);
-                        AppLogger.d("login result: " + resultLogin);
-                        return null;
-                    })
-                    .subscribe(ret -> {
-                    }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
+        if (getView().hasSplashView()) {
+            Observable.just("delay").delay(2, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(ret -> {
+                if (getView().hasSplashView()) getView().splashOver();
+            }, AppLogger::e);
         } else {
-            AppLogger.d("has no sticky");
-            if (getView().hasSplashView())
-                Observable.just("delay").delay(2, TimeUnit.SECONDS).observeOn(AndroidSchedulers.mainThread()).subscribe(ret -> getView().splashOver(), AppLogger::e);
-            else
-                getView().splashOver();
+            getView().splashOver();
         }
+        subscription = RxBus.getCacheInstance().toObservableSticky(RxEvent.ResultLogin.class)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .map(resultLogin -> {
+                    if (resultLogin != null && getView() != null)
+                        getView().loginResult(resultLogin.code);
+                    AppLogger.d("login result: " + resultLogin);
+                    return null;
+                })
+                .subscribe(ret -> {
+                }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }
+
 
     @Override
     public void stop() {

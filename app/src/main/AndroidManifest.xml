@@ -490,7 +490,7 @@
 
         <provider
             android:name="com.facebook.FacebookContentProvider"
-            android:authorities="${ApplicationId}.FacebookContentProvider${FACEBOOK_APP_ID}"
+            android:authorities="com.facebook.app.FacebookContentProvider${FACEBOOK_APP_ID}"
             android:exported="true" />
 
         <receiver

@@ -17,7 +17,6 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
@@ -35,8 +34,8 @@ import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.cylan.jiafeigou.widget.LoadingDialog;
+import com.cylan.jiafeigou.widget.SafeSwitchButton;
 import com.cylan.jiafeigou.widget.ShareGridView;
-import com.kyleduo.switchbutton.SwitchButton;
 
 import java.util.List;
 
@@ -60,11 +59,11 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
     @BindView(R.id.tv_cache_size)
     TextView tvCacheSize;
     @BindView(R.id.btn_item_switch_accessMes)
-    SwitchButton btnItemSwitchAccessMes;
+    SafeSwitchButton btnItemSwitchAccessMes;
     @BindView(R.id.btn_item_switch_voide)
-    SwitchButton btnItemSwitchVoide;
+    SafeSwitchButton btnItemSwitchVoide;
     @BindView(R.id.btn_item_switch_shake)
-    SwitchButton btnItemSwitchShake;
+    SafeSwitchButton btnItemSwitchShake;
     @BindView(R.id.rl_sound_container)
     RelativeLayout rlSoundContainer;
     @BindView(R.id.rl_vibrate_container)
@@ -186,11 +185,10 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
 
     @Override
     public void initSwitchState(final RxEvent.GetUserInfo userInfo) {
-        btnItemSwitchAccessMes.setChecked(userInfo.jfgAccount.isEnablePush());
-
-        btnItemSwitchVoide.setChecked(userInfo.jfgAccount.isEnableSound());
-        btnItemSwitchShake.setChecked(userInfo.jfgAccount.isEnableVibrate());
-        if (!userInfo.jfgAccount.isEnablePush()) {
+        btnItemSwitchAccessMes.setChecked(userInfo.jfgAccount.isEnablePush() && NotificationManagerCompat.from(getContext()).areNotificationsEnabled(), false);
+        btnItemSwitchVoide.setChecked(userInfo.jfgAccount.isEnableSound(), false);
+        btnItemSwitchShake.setChecked(userInfo.jfgAccount.isEnableVibrate(), false);
+        if (!btnItemSwitchAccessMes.isChecked()) {
             rlSoundContainer.setVisibility(View.GONE);
             rlVibrateContainer.setVisibility(View.GONE);
         }
@@ -302,13 +300,10 @@ public class HomeSettingFragment extends Fragment implements HomeSettingContract
                     appAdater.add(info);
                 }
             }
-            gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    ResolveInfo info = appAdater.getItem(position);
-                    intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
-                    startActivity(intent);
-                }
+            gridView.setOnItemClickListener((parent, view, position, id) -> {
+                ResolveInfo info = appAdater.getItem(position);
+                intent.setComponent(new ComponentName(info.activityInfo.packageName, info.activityInfo.name));
+                startActivity(intent);
             });
             gridView.setAdapter(appAdater);
             mShareDlg.setContentView(content);

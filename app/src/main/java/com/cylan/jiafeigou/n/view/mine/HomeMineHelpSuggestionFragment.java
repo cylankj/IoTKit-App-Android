@@ -1,11 +1,11 @@
 package com.cylan.jiafeigou.n.view.mine;
 
 
-import android.support.v7.app.AlertDialog;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -34,7 +34,6 @@ import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.IMEUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
-import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.LoadingDialog;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
 import com.cylan.jiafeigou.widget.dialog.SimpleDialogFragment;
@@ -252,7 +251,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         MineHelpSuggestionBean autoReplyBean = new MineHelpSuggestionBean();
         autoReplyBean.setType(0);
         autoReplyBean.setText(content);
-        autoReplyBean.setDate(System.currentTimeMillis()+"");
+        autoReplyBean.setDate(System.currentTimeMillis() + "");
         suggestionAdapter.add(autoReplyBean);
         suggestionAdapter.notifyDataSetHasChanged();
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
@@ -329,19 +328,15 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         mRvMineSuggestion.setLayoutManager(layoutManager);
         suggestionAdapter = new HomeMineHelpSuggestionAdapter(getContext(), list, null);
         mRvMineSuggestion.setAdapter(suggestionAdapter);
-
         //从最后一行显示
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
 
-        suggestionAdapter.setOnResendFeedBack(new HomeMineHelpSuggestionAdapter.OnResendFeedBackListener() {
-            @Override
-            public void onResend(SuperViewHolder holder, MineHelpSuggestionBean item, int position) {
-                if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
-                    ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
-                    return;
-                }
-                showResendFeedBackDialog(holder, item, position);
+        suggestionAdapter.setOnResendFeedBack((holder, item, position) -> {
+            if (NetUtils.getNetType(ContextUtils.getContext()) == -1) {
+                ToastUtil.showToast(getString(R.string.NO_NETWORK_4));
+                return;
             }
+            showResendFeedBackDialog(holder, item, position);
         });
     }
 
@@ -356,6 +351,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
             resendFlag = true;
             ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);
             send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
+
             presenter.sendFeedBack(item);
             presenter.deleteOnItemFromDb(item);
             dialog.dismiss();

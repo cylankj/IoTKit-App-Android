@@ -117,7 +117,7 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
                     public void call(ArrayList<MineHelpSuggestionBean> list) {
                         if (getView() != null) {
                             getView().initRecycleView(list);
-                            AppLogger.d("database_size:"+list.size());
+                            AppLogger.d("database_size:" + list.size());
                         }
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
@@ -285,12 +285,9 @@ public class HomeMineHelpSuggestionImpl extends AbstractPresenter<HomeMineHelpSu
     public Subscription sendFeedBackReq() {
         return RxBus.getCacheInstance().toObservable(RxEvent.SendFeekBack.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.SendFeekBack>() {
-                    @Override
-                    public void call(RxEvent.SendFeekBack sendFeekBack) {
-                        if (sendFeekBack != null && hasSendLog) {
-                            getView().refrshRecycleView(sendFeekBack.jfgResult.code);
-                        }
+                .subscribe(sendFeekBack -> {
+                    if (sendFeekBack != null && hasSendLog) {
+                        getView().refrshRecycleView(sendFeekBack.jfgResult.code);
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }

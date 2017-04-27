@@ -278,11 +278,10 @@ public class DoorBellHomeActivity extends BaseFullScreenActivity<DoorBellHomeCon
 
     @Override
     public void onBellBatteryDrainOut() {
-
         initBatteryDialog();
         LBatteryWarnDialog dialog = lBatteryWarnDialog.get();
-
-        dialog.show(getSupportFragmentManager(), "lBattery");
+        if (!dialog.isAdded())
+            dialog.show(getSupportFragmentManager(), "lBattery");
     }
 
     private void initBatteryDialog() {
