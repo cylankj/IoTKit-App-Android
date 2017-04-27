@@ -77,6 +77,23 @@ public class NetUtils {
         }
     }
 
+    /**
+     * 返回jfg定义的网络类型。
+     *
+     * @return
+     */
+    public static int getJfgNetType() {
+        Context c = ContextUtils.getContext();
+        switch (getNetType(c)) {
+            case ConnectivityManager.TYPE_WIFI:
+                return 1;
+            case ConnectivityManager.TYPE_MOBILE:
+                return 2;
+            default:
+                return 0;
+        }
+    }
+
 
     /**
      * 获取网络名，没有网络为 offLine，
@@ -347,6 +364,7 @@ public class NetUtils {
      * @return true 表示网络可用
      */
     public static boolean isNetworkAvailable(Context context) {
+        context = ContextUtils.getContext();
         ConnectivityManager connectivity = (ConnectivityManager) context
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {

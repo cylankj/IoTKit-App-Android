@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -143,9 +144,16 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     }
 
     @Override
-    public void updateLayoutParameters(int height, int width) {
+    public void updateLayoutParameters(int height) {
+        AppLogger.e("这是bug?: " + height);
+        if (videoView == null) {
+            AppLogger.e("这是bug");
+            return;
+        }
+        RelativeLayout.LayoutParams parentLp = (RelativeLayout.LayoutParams) getLayoutParams();
+        parentLp.height = height;
+        setLayoutParams(parentLp);
         ViewGroup.LayoutParams lp = ((View) videoView).getLayoutParams();
-        lp.width = width;
         lp.height = height;
         ((View) videoView).setLayoutParams(lp);
         post(() -> {
@@ -178,6 +186,10 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void detectOrientationChanged(boolean port) {
+        if (videoView == null) {
+            AppLogger.e("这是个bug");
+            return;
+        }
         FrameLayout.LayoutParams lp = (LayoutParams) tvLiveFlow.getLayoutParams();
         if (port) {
             lp.rightMargin = (int) getResources().getDimension(R.dimen.x14);
@@ -230,7 +242,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
         @Override
         public void onLoadFailed(Exception e, Drawable errorDrawable) {
-            AppLogger.d("bitmap is onLoadFailed: "+ MiscUtils.getErr(e));
+            AppLogger.d("bitmap is onLoadFailed: " + MiscUtils.getErr(e));
         }
 
         @Override

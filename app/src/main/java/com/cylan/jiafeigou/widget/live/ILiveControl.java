@@ -1,16 +1,13 @@
 package com.cylan.jiafeigou.widget.live;
 
+import android.view.View;
+
 /**
  * Created by cylan-hunt on 16-12-8.
  */
 
 public interface ILiveControl {
 
-    int STATE_LOADING_FAILED = -1;
-    int STATE_IDLE = 1;
-    int STATE_LOADING = 2;
-    int STATE_PLAYING = 3;
-    int STATE_STOP = 4;
 
     /**
      * 播放
@@ -30,10 +27,10 @@ public interface ILiveControl {
     void setAction(Action action);
 
     interface Action {
-        void clickImage(int state);
+        void clickImage(View view, int state);
 
-        void clickText();
+        void clickText(View view);
 
-        void clickHelp();
+        void clickHelp(View view);
     }
 }

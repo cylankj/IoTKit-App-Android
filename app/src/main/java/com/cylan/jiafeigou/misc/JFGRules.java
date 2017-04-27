@@ -357,6 +357,13 @@ public class JFGRules {
     public static void main(String[] args) {
         String t = "com.cylan.jiafeigou.xx";
         System.out.println(t.substring(19, t.length()));
+        System.out.println(1 & 255);
 
+    }
+
+    public static float getDefaultPortHeightRatio(int pid) {
+        if (isWifiCam(pid)) return 0.75f;
+        if (isPanoramicCam(pid)) return 1.0f;
+        return 0.75f;
     }
 }

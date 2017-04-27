@@ -619,6 +619,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
             android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".n.view.cam.FirmwareUpdateActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
+            android:label="@string/title_activity_bind_cam"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
     </application>
 
 </manifest>

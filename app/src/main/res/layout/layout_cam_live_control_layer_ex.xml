@@ -1,11 +1,21 @@
 <com.cylan.jiafeigou.n.view.cam.CamLiveControllerEx xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fLayout_cam_live_control_layer"
+    android:id="@+id/cam_live_control_layer"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eee000"
-    tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
+    tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx">
+
+    <com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail
+        android:id="@+id/v_live"
+        android:layout_width="match_parent"
+        android:layout_height="300dp" />
+
+    <View
+        android:id="@+id/v_guide"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_below="@+id/v_live" />
 
     <FrameLayout
         android:id="@+id/layout_a"
@@ -76,31 +86,31 @@
         android:background="@drawable/flow_bg"
         android:gravity="center"
         android:textColor="@color/color_white"
-        android:visibility="gone"
-        tools:layout_editor_absoluteX="310dp" />
+        android:visibility="gone" />
 
 
-    <com.cylan.jiafeigou.widget.live.LivePlayControlView
+    <com.cylan.jiafeigou.widget.live.LiveControlView
         android:id="@+id/layout_c"
-        android:layout_width="@dimen/x60"
-        android:layout_height="@dimen/y60"
-        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/v_guide"
         android:padding="@dimen/x10" />
+
 
     <FrameLayout
         android:id="@+id/layout_d"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y39"
         android:layout_above="@+id/layout_e"
-        android:background="@drawable/camera_sahdow">
+        android:background="@drawable/camera_sahdow"
+        android:visibility="invisible">
 
         <com.cylan.jiafeigou.widget.flip.FlipLayout
             android:id="@+id/layout_port_flip"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/x15"
-            android:paddingRight="@dimen/x15"
-            android:visibility="gone" />
+            android:paddingRight="@dimen/x15" />
 
         <com.cylan.jiafeigou.widget.LiveTimeLayout
             android:id="@+id/live_time_layout"
@@ -140,7 +150,8 @@
         android:id="@+id/layout_e"
         android:layout_width="match_parent"
         android:layout_height="@dimen/y52"
-        android:layout_above="@+id/layout_f">
+        android:layout_below="@+id/v_guide"
+        android:visibility="invisible">
 
         <ImageView
             android:id="@+id/imgV_cam_live_land_play"
@@ -148,7 +159,8 @@
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/x38"
             android:paddingRight="@dimen/x38"
-            android:src="@drawable/icon_landscape_stop" />
+            android:src="@drawable/icon_landscape_stop"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/rLayout_cam_live_land_bottom_second"
@@ -175,8 +187,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toStartOf="@+id/layout_land_flip"
-                android:orientation="horizontal"
-                android:visibility="invisible">
+                android:orientation="horizontal">
 
                 <View
                     android:id="@+id/v_flag"
@@ -194,7 +205,7 @@
                     android:paddingLeft="@dimen/x10"
                     android:paddingRight="@dimen/x10"
                     android:text="@string/Tap1_Camera_VideoLive"
-                    android:textColor="@color/color_4b9fd5" />
+                    android:textColor="@color/common_btn_color_state" />
 
                 <View
                     android:id="@+id/v_divider"
@@ -228,7 +239,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_below="@+id/fLayout_cam_live_view"
+        android:layout_below="@+id/v_guide"
         android:layout_gravity="bottom">
 
         <ImageView

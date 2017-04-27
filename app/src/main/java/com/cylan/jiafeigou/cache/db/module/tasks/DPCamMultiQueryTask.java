@@ -1,6 +1,7 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;

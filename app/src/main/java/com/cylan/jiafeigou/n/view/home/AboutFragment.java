@@ -134,7 +134,7 @@ public class AboutFragment extends Fragment {
                     // 已经获取对应权限
                     getContext().startActivity(intent);
                 } else {
-                    setPermissionDialog(getString(R.string.Phone));
+                    setPermissionDialog(getString(R.string.callto));
                 }
                 break;
         }

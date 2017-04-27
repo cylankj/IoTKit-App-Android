@@ -805,7 +805,7 @@ public class MediaActivity extends AppCompatActivity implements IMediaPlayer.OnP
     }
 
     private void startPlayVideo() {
-        AppLogger.e("startPlayVideo");
+        AppLogger.e("startPlayLive");
         mVideoView.setVisibility(View.VISIBLE);
         mVideoLoadingBar.setVisibility(View.VISIBLE);
 //        String url = mCurrentMediaBean.fileName;

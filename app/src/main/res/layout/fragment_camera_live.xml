@@ -3,72 +3,7 @@
     android:id="@+id/rLayout_camera_live_parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragment">
+    tools:context="com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx">
 
-    <FrameLayout
-        android:id="@+id/fLayout_cam_live_view"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y300">
-
-        <com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail
-            android:id="@+id/v_live"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-
-        <ViewStub
-            android:id="@+id/vs_progress"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout="@layout/live_play_control_layout" />
-
-        <include layout="@layout/cam_live_port_handle_bar" />
-
-    </FrameLayout>
-
-    <com.cylan.jiafeigou.n.view.cam.CamLiveLandControlLayer
-        android:id="@+id/cam_live_control_layout"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/y52"
-        android:layout_below="@+id/fLayout_cam_live_view"
-        android:visibility="invisible" />
-
-    <FrameLayout
-        android:id="@+id/fLayout_cam_live_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/fLayout_cam_live_view"
-        android:layout_gravity="bottom">
-
-        <ImageView
-            android:id="@+id/imgV_cam_switch_speaker"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_vertical"
-            android:layout_marginLeft="@dimen/x30"
-            android:layout_marginRight="@dimen/x30"
-            android:clickable="true"
-            android:padding="@dimen/x20"
-            android:src="@drawable/icon_port_speaker_off_selector" />
-
-        <ImageView
-            android:id="@+id/imgV_cam_trigger_mic"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:clickable="true"
-            android:padding="@dimen/x10"
-            android:src="@drawable/icon_port_mic_off_selector" />
-
-        <ImageView
-            android:id="@+id/imgV_cam_trigger_capture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginLeft="@dimen/x30"
-            android:layout_marginRight="@dimen/x30"
-            android:clickable="true"
-            android:padding="@dimen/x20"
-            android:src="@drawable/icon_port_capture_selector" />
-    </FrameLayout>
+    <include layout="@layout/layout_cam_live_control_layer_ex" />
 </RelativeLayout>

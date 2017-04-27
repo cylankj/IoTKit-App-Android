@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:hunt="http://schemas.android.com/apk/res-auto"
     android:id="@+id/progress_bar"
     android:layout_width="match_parent"
@@ -6,8 +6,10 @@
     android:orientation="vertical">
 
     <FrameLayout
+        android:id="@+id/layout_loading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:layout_gravity="center">
 
         <ImageView
@@ -32,6 +34,8 @@
         android:id="@+id/tv_control_content"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/layout_loading"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/y10"
         android:textColor="@color/color_DDDDDD"
@@ -41,9 +45,11 @@
         android:id="@+id/tv_control_help"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_control_content"
+        android:layout_centerHorizontal="true"
         android:layout_gravity="center"
         android:layout_marginTop="@dimen/y10"
         android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp14"
         android:visibility="gone" />
-</LinearLayout>
+</RelativeLayout>

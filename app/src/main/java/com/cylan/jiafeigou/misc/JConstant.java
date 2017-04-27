@@ -288,9 +288,11 @@ public class JConstant {
 
     public final static String KEY_NTP_INTERVAL = "ntp_key";
 
+    public static final int PLAY_STATE_LOADING_FAILED = -1;
     public static final int PLAY_STATE_IDLE = 1;
-    public static final int PLAY_STATE_PREPARE = 2;
+    public static final int PLAY_STATE_PREPARE = 2;//loading
     public static final int PLAY_STATE_PLAYING = 3;
+    public static final int PLAY_STATE_STOP = 4;
 
     public static final int CLOUD_OUT_CONNECT_TIME_OUT = 0;
     public static final int CLOUD_IN_CONNECT_TIME_OUT = 2531;
@@ -302,7 +304,6 @@ public class JConstant {
     public static final String JUST_SEND_INFO = "just_send_info";
 
 
-    public static final String KEY_CAM_LIVE_PAGE_PLAY_TYPE = "page_play_type";
     public static final String KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME = "page_play_history_time";
     public static final String KEY_JUMP_TO_CAM_DETAIL = "jump_to_cam_detail";
 
@@ -340,4 +341,6 @@ public class JConstant {
     public static final String KEY_JUMP_TO_WONDER = "key_jump_to_home_wonder";
 
     public static final String SHOW_GCM_DIALOG = "gcm_check";
+
+    public static final String KEY_SHOW_SUGGESTION = "key_show_suggestion";
 }

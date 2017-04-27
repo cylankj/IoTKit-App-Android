@@ -21,7 +21,7 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
         return Observable.from(multiEntity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())
-                .flatMap(entity -> dpHelper.deleteDPMsgNotConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null))
+                .flatMap(entity -> dpHelper.deleteDPMsgForce(entity.getAccount(), null, entity.getUuid(), entity.getVersion(), entity.getMsgId()))
                 .buffer(multiEntity.size())
                 .map(items -> new BaseDPTaskResult().setResultCode(0).setResultResponse(items));
     }
@@ -48,9 +48,10 @@ public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
         })//1491922972000
                 .subscribeOn(Schedulers.io())
                 .flatMap(this::makeDeleteDataRspResponse)
-                .flatMap(rsp ->
-                        Observable.from(multiEntity)
-                                .flatMap(entity -> dpHelper.deleteDPMsgWithConfirm(entity.getUuid(), entity.getVersion(), entity.getMsgId(), null)).last()
-                                .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(multiEntity)));
+                .flatMap(rsp -> performLocal());
+
+//                        Observable.from(multiEntity)
+//                                .flatMap(entity -> dpHelper.deleteDPMsgForce(entity.getUuid(), null, entity.getUuid(), entity.getVersion(), entity.getMsgId())).last()
+//                                .map(cache -> new BaseDPTaskResult().setResultCode(rsp.resultCode).setResultResponse(multiEntity)));
     }
 }
