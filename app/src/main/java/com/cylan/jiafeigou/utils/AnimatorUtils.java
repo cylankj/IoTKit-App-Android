@@ -515,9 +515,11 @@ public class AnimatorUtils {
         if (!fromTop) {
             ViewGroup parent = (ViewGroup) view.getParent();
             start = parent.getHeight() - view.getTop();
+            view.setTranslationY(-view.getTop());
         } else {
             start = -(view.getTop() + view.getHeight());
         }
+        view.clearAnimation();
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
         objectAnimator.setDuration(250);
         objectAnimator.addListener(new SimpleAnimationListener() {

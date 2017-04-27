@@ -1,8 +1,6 @@
 package com.cylan.jiafeigou.widget.live;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -25,7 +23,7 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
  * Created by cylan-hunt on 16-12-8.
  */
 
-public class LivePlayControlView extends RelativeLayout implements ILiveControl, View.OnClickListener {
+public class LiveControlView extends RelativeLayout implements ILiveControl, View.OnClickListener {
     /**
      * 开始默认是loading状态
      */
@@ -36,17 +34,16 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
     private SimpleProgressBar simpleProgressBar;
     private ImageView imageView;
     private Action action;
-    private Handler handler;
 
-    public LivePlayControlView(Context context) {
+    public LiveControlView(Context context) {
         this(context, null);
     }
 
-    public LivePlayControlView(Context context, AttributeSet attrs) {
+    public LiveControlView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public LivePlayControlView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public LiveControlView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.live_play_control_layout_content, this, true);
         textView = (TextView) view.findViewById(R.id.tv_control_content);
@@ -72,19 +69,14 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
         this.state = state;
         switch (state) {
             case PLAY_STATE_PREPARE:
-                toDismiss(3);
-                toDismiss(1);
+                setVisibility(VISIBLE);
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);
                 imageView.setVisibility(GONE);
-                if (!simpleProgressBar.isShown())
-                    simpleProgressBar.setVisibility(VISIBLE);
                 simpleProgressBar.setVisibility(VISIBLE);
                 simpleProgressBar.bringToFront();
                 break;
             case PLAY_STATE_PLAYING:
-                handler.removeCallbacksAndMessages(null);
-                setVisibility(INVISIBLE);
                 imageView.bringToFront();
                 imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.camera_icon_pause);
@@ -93,7 +85,7 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
                 simpleProgressBar.setVisibility(GONE);
                 break;
             case PLAY_STATE_STOP:
-                toDismiss(1);
+                setVisibility(VISIBLE);
                 imageView.bringToFront();
                 imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.camera_icon_play);
@@ -102,13 +94,11 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
                 simpleProgressBar.setVisibility(GONE);
                 break;
             case PLAY_STATE_LOADING_FAILED:
-                toDismiss(1);
                 imageView.setVisibility(VISIBLE);
                 imageView.bringToFront();
                 imageView.setImageResource(R.drawable.btn_video_retry);
                 simpleProgressBar.setVisibility(GONE);
-                if (!textView.isShown())
-                    textView.setVisibility(VISIBLE);
+                textView.setVisibility(VISIBLE);
                 if (!TextUtils.isEmpty(content))
                     textView.setText(content);
                 if (!TextUtils.isEmpty(help)) {
@@ -117,53 +107,9 @@ public class LivePlayControlView extends RelativeLayout implements ILiveControl,
                 }
                 break;
             case PLAY_STATE_IDLE:
-                setVisibility(GONE);
                 break;
         }
         Log.d("setState", "setState: " + state);
-    }
-
-    /**
-     * 0:3s后准备隐藏
-     * 1:一直显示
-     * 2:马上隐藏
-     * 3:马上显示
-     *
-     * @param show
-     */
-    private void toDismiss(int show) {
-        if (handler == null) {
-            handler = new Handler((Message msg) -> {
-                switch (msg.what) {
-                    case 0:
-                        handler.removeMessages(0);
-                        handler.removeMessages(2);
-                        if (!LivePlayControlView.this.isShown()) {
-                            handler.sendEmptyMessage(3);//马上显示
-                            handler.sendEmptyMessageDelayed(2, 3000);
-                        } else {
-                            handler.sendEmptyMessage(2);//马上隐藏
-                        }
-                        break;
-                    case 1:
-                        handler.removeMessages(0);
-                        handler.removeMessages(2);
-                        handler.sendEmptyMessage(3);//马上显示
-                        break;
-                    case 2:
-                        //隐藏
-                        if (LivePlayControlView.this.isShown())
-                            LivePlayControlView.this.setVisibility(INVISIBLE);
-                        break;
-                    case 3:
-                        if (!LivePlayControlView.this.isShown())
-                            LivePlayControlView.this.setVisibility(VISIBLE);
-                        break;
-                }
-                return true;
-            });
-        }
-        handler.sendEmptyMessage(show);
     }
 
     @Override

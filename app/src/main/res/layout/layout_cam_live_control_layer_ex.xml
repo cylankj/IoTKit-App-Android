@@ -89,7 +89,7 @@
         android:visibility="gone" />
 
 
-    <com.cylan.jiafeigou.widget.live.LivePlayControlView
+    <com.cylan.jiafeigou.widget.live.LiveControlView
         android:id="@+id/layout_c"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -159,7 +159,8 @@
             android:layout_height="match_parent"
             android:paddingLeft="@dimen/x38"
             android:paddingRight="@dimen/x38"
-            android:src="@drawable/icon_landscape_stop" />
+            android:src="@drawable/icon_landscape_stop"
+            android:visibility="gone" />
 
         <RelativeLayout
             android:id="@+id/rLayout_cam_live_land_bottom_second"

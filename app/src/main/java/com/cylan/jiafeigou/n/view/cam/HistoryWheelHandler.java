@@ -114,6 +114,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             datePickerRef.get().setAction((int id, Object value) -> {
                 if (value != null && value instanceof Long) {
                     AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate((Long) value));
+                    if (datePickerListener != null) datePickerListener.onPickDate((Long) value);
                     loadSelectedDay(TimeUtils.getSpecificDayStartTime((Long) value));
                 }
             });
@@ -129,6 +130,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     }
 
     private void loadSelectedDay(long timeStart) {
+        timeStart = TimeUtils.getSpecificDayStartTime(timeStart);
         presenter.assembleTheDay(timeStart / 1000L)
                 .subscribeOn(Schedulers.io())
                 .filter(iData -> iData != null)
@@ -163,6 +165,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         switch (state) {
             case STATE_DRAGGING:
                 Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time));
+                if (datePickerListener != null) datePickerListener.onPickDate(time);
                 break;
             case STATE_ADSORB:
                 Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
@@ -170,7 +173,22 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             case STATE_FINISH:
                 Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time));
                 presenter.startPlayHistory(time);
+                if (datePickerListener != null) datePickerListener.onPickDate(time);
                 break;
         }
     }
+
+    public void setDatePickerListener(DatePickerListener datePickerListener) {
+        this.datePickerListener = datePickerListener;
+    }
+
+    private DatePickerListener datePickerListener;
+
+    /**
+     * 选择日期,滚动条变化.都要通知.
+     */
+    public interface DatePickerListener {
+        void onPickDate(long time);
+    }
+
 }

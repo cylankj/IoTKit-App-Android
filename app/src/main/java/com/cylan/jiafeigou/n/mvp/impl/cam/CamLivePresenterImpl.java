@@ -146,14 +146,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     /**
      * 一天一天地查询
      *
-     * @param timeStart:可以用来查询数据库
+     * @param timeStartInDay:可以用来查询数据库
      */
 
     @Override
-    public Observable<IData> assembleTheDay(long timeStart) {
-        long timeEnd = TimeUtils.getSpecificDayEndTime(timeStart * 1000) - 1;
-        AppLogger.d("historyFile:timeEnd?" + timeStart);
-        return BaseApplication.getAppComponent().getDBHelper().loadHistoryFile(uuid, timeStart, timeEnd)
+    public Observable<IData> assembleTheDay(long timeStartInDay) {
+        long timeEnd = timeStartInDay + 24 * 3600 - 1;
+        AppLogger.d("historyFile:timeEnd?" + timeStartInDay);
+        return BaseApplication.getAppComponent().getDBHelper().loadHistoryFile(uuid, timeStartInDay, timeEnd)
                 .subscribeOn(Schedulers.io())
                 .flatMap(historyFiles -> {
                     AppLogger.d("load hisFile List: " + ListUtils.getSize(historyFiles));
@@ -230,6 +230,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     //    @Override
     public void fetchHistoryDataList() {
 //        test();
+        if (historyDataProvider != null && historyDataProvider.getDataCount() > 0) {
+            AppLogger.d("有历史录像了.");
+            return;
+        }
         Subscription subscription = BaseApplication.getAppComponent().getSourceManager().queryHistory(uuid)
                 .subscribeOn(Schedulers.newThread())
                 .filter(ret -> {
@@ -286,7 +290,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         liveSubscription.add(prePlay(s -> {
             try {
                 int ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
-                AppLogger.i("play video: " + uuid + " " + ret);
+                if (ret != 0) {
+                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                    ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
+                    AppLogger.i("play video: " + uuid + " " + ret);
+                }
             } catch (JfgException e) {
                 e.printStackTrace();
             }
@@ -388,8 +396,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
-                            getView().onLiveStarted(playType);
                             playState = PLAY_STATE_PLAYING;
+                            getView().onLiveStarted(playType);
                             return "JFGMsgVideoResolution";
                         }))
                 .first();
@@ -442,6 +450,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.i("stop play history");
                 }
                 int ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time / 1000L);
+                if (ret != 0) {
+                    BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                    ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time / 1000L);
+                }
                 AppLogger.i(String.format("play history video:%s,%s ", uuid, time / 1000L) + " " + ret);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
@@ -484,6 +496,9 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
                     try {
+                        if (playState == PLAY_STATE_PLAYING) {
+                            setupAudio(false, false, false, false);
+                        }
                         BaseApplication.getAppComponent().getCmd().stopPlay(s);
                         playType = CamLiveContract.TYPE_NONE;
                         playState = PLAY_STATE_IDLE;
@@ -517,27 +532,32 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public void switchSpeaker() {
-        Observable.just(true)
+    public Observable<Boolean> switchSpeaker() {
+        return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe((Boolean aBoolean) -> {
+                .flatMap(ret -> {
+                    //这些都表示当前状态
                     boolean localMic = getView().isLocalMicOn();
                     boolean localSpeaker = getView().isLocalSpeakerOn();
                     boolean remoteMic = getView().isLocalSpeakerOn();
                     boolean remoteSpeaker = getView().isLocalMicOn();//imageview 图标状态已经更新了。
                     if (localSpeaker) {
-
+                        //下一步,
+                        localSpeaker = false;
                     } else {
                         remoteMic = false;
                         remoteSpeaker = false;
-                        localSpeaker = false;
+                        localSpeaker = true;
                         localMic = false;
                     }
-                    setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
-                }, AppLogger::e);
+                    boolean result = setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
+                    return Observable.just(result);
+                });
     }
 
-    private void setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
+    private boolean setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
+        AppLogger.d(String.format(Locale.getDefault(), "localMic:%s,localSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic,
+                localSpeaker, remoteMic, remoteSpeaker));
         BaseApplication.getAppComponent().getCmd().setAudio(false, remoteSpeaker, remoteMic);
         if (localSpeaker) {
             MediaRecorder mRecorder = null;
@@ -546,6 +566,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 mRecorder.release();
                 BaseApplication.getAppComponent().getCmd().setAudio(true, true, localMic);
+                return true;
             } catch (Exception e) {
                 AppLogger.d(e.getMessage());
                 if (mRecorder != null) {
@@ -555,29 +576,35 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             if (mView != null) mView.audioRecordPermissionDenied();
                         }
                 );
+                return false;
             }
         }
         AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
+        return true;
     }
 
     @Override
-    public void switchMic() {
-        Observable.just(true)
+    public Observable<Boolean> switchMic() {
+        return Observable.just(true)
                 .subscribeOn(Schedulers.newThread())
-                .subscribe((Boolean aBoolean) -> {
+                .flatMap(ret -> {
+                    //当前状态
                     boolean localMic = getView().isLocalMicOn();
                     boolean localSpeaker = getView().isLocalSpeakerOn();
                     boolean remoteMic = localSpeaker;
                     boolean remoteSpeaker = localMic;//imageview 图标状态已经更新了。
-                    if (localMic) {
+                    if (!localMic) {//打开mic,全部打开
+                        localMic = true;
                         localSpeaker = true;
                         remoteMic = true;
                         remoteSpeaker = true;
-                    } else {
+                    } else {//关闭mic,只需关闭远程speaker,和本地mic
                         remoteSpeaker = false;
+                        localMic = false;
                     }
-                    setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
-                }, AppLogger::e);
+                    boolean result = setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
+                    return Observable.just(result);
+                });
     }
 
     @Override
@@ -676,18 +703,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.e(throwable.getLocalizedMessage());
                 });
     }
-
-
-//    @Override
-//    public void startCountForDismissPop() {
-//        addSubscription(Observable.just("count_5_s")
-//                .subscribeOn(Schedulers.newThread())
-//                .delay(5, TimeUnit.SECONDS)
-//                .observeOn(AndroidSchedulers.mainThread())
-//                .filter(s -> getView() != null)
-//                .subscribe(s -> getView().countdownFinish(),
-//                        throwable -> AppLogger.e("countdown finish")));
-//    }
 
 
     @Override

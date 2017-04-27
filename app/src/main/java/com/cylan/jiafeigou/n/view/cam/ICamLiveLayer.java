@@ -82,4 +82,16 @@ public interface ICamLiveLayer {
     void setCaptureListener(View.OnClickListener captureListener);
 
     void updateLiveViewMode(String mode);
+
+    /**
+     * @param micState     0:off-disable,1.on-disable,2.off-enable,3.on-enable
+     * @param speakerState
+     */
+    void setMicSpeakerState(int micState, int speakerState);
+
+    void setMicSpeakerListener(View.OnClickListener micListener, View.OnClickListener speakerListener);
+
+    int getMicState();
+
+    int getSpeakerState();
 }

@@ -44,7 +44,7 @@ import com.cylan.jiafeigou.widget.LiveTimeLayout;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.flip.FlipLayout;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
-import com.cylan.jiafeigou.widget.live.LivePlayControlView;
+import com.cylan.jiafeigou.widget.live.LiveControlView;
 import com.cylan.jiafeigou.widget.pop.RelativePopupWindow;
 import com.cylan.jiafeigou.widget.pop.RoundCardPopup;
 import com.cylan.jiafeigou.widget.video.LiveViewWithThumbnail;
@@ -60,6 +60,7 @@ import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 
 /**
  * Created by hds on 17-4-19.
@@ -75,7 +76,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     //流量
     private View layoutB;
     //loading
-    private LivePlayControlView layoutC;
+    private LiveControlView layoutC;
     //防护  |直播|时间|   |全屏|
     private View layoutD;
     //历史录像条
@@ -86,10 +87,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private View layoutG;
 
     private boolean isNormalView;
-
+    private int livePlayState;
+    private int livePlayType;
     private SuperWheelExt superWheelExt;
-    private OnClickListener liveTimeRectClick;
+    private OnClickListener liveTextClick;//直播按钮
     private OnClickListener liveTimeRectListener;
+    private OnClickListener playClickListener;
     private RoundCardPopup roundCardPopup;
     private LiveViewWithThumbnail liveViewWithThumbnail;
 
@@ -113,7 +116,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //竖屏 隐藏
         layoutA = findViewById(R.id.layout_a);
         layoutB = findViewById(R.id.layout_b);
-        layoutC = (LivePlayControlView) findViewById(R.id.layout_c);
+        layoutC = (LiveControlView) findViewById(R.id.layout_c);
         layoutD = findViewById(R.id.layout_d);
         layoutE = findViewById(R.id.layout_e);
         layoutF = findViewById(R.id.layout_f);
@@ -165,11 +168,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     public void initView(String uuid) {
         this.uuid = uuid;
         //disable 6个view
-        findViewById(R.id.imgV_land_cam_switch_speaker).setEnabled(false);
-        findViewById(R.id.imgV_land_cam_trigger_mic).setEnabled(false);
-        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
-        findViewById(R.id.imgV_cam_switch_speaker).setEnabled(false);
-        findViewById(R.id.imgV_cam_trigger_mic).setEnabled(false);
+        setMicSpeakerState(0, 0);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.tv_live).setEnabled(false);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
@@ -205,7 +204,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * 视频区域
      */
     private void onLiveRectTap() {
-        AppLogger.e("点击");
+        AppLogger.e("点击,需要播放状态");
         if (isLand()) {
             float t = layoutA.getTranslationY();
             Log.d("xxxxxxxxxxx", "t: " + t);
@@ -215,7 +214,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     layoutA.removeCallbacks(landShowRunnable);
                     layoutA.removeCallbacks(landHideRunnable);
                     layoutA.post(landShowRunnable);
-                    layoutA.postDelayed(landHideRunnable, 3000);
                 }
             } else {
                 //横屏,隐藏
@@ -232,9 +230,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutD.setTranslationY(0);
             layoutE.setTranslationY(0);
             boolean toHide = layoutD.isShown();
-            layoutD.setVisibility(toHide ? INVISIBLE : VISIBLE);
-            showHistoryWheel(!toHide);
-            if (!toHide) prepareLayoutDAnimation();
+            if (toHide) {
+                removeCallbacks(portShowRunnable);
+                post(portHideRunnable);
+            } else {
+                removeCallbacks(portHideRunnable);
+                post(portShowRunnable);
+            }
+//            if (!toHide) prepareLayoutDAnimation();
         }
     }
 
@@ -288,7 +291,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onLivePrepared() {
+        livePlayState = PLAY_STATE_PREPARE;
         layoutC.setState(PLAY_STATE_PREPARE, null);
+        findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
     }
 
     private boolean isLand() {
@@ -299,8 +304,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      * 3s隐藏
      */
     private void prepareLayoutDAnimation() {
-        layoutD.removeCallbacks(portHideRunnable);
-        layoutD.postDelayed(portHideRunnable, 3000);
+        if (MiscUtils.isLand()) {
+            layoutD.post(landShowRunnable);
+        } else {
+            layoutD.post(portShowRunnable);
+        }
     }
 
     private Runnable portHideRunnable = new Runnable() {
@@ -308,14 +316,31 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         public void run() {
             layoutD.setVisibility(INVISIBLE);
             showHistoryWheel(false);
+            if (layoutC.getState() == PLAY_STATE_PLAYING)//只有播放的时候才能 显示与隐藏,其余状态都显示
+                layoutC.setVisibility(INVISIBLE);
         }
     };
+    private Runnable portShowRunnable = new Runnable() {
+        @Override
+        public void run() {
+            layoutD.setVisibility(VISIBLE);
+            showHistoryWheel(true);
+            layoutD.removeCallbacks(portHideRunnable);
+            layoutD.postDelayed(portHideRunnable, 3000);
+            if (livePlayType == TYPE_LIVE) return;
+            if (livePlayState == PLAY_STATE_PLAYING)
+                layoutC.setVisibility(VISIBLE);
+        }
+    };
+
     private Runnable landHideRunnable = new Runnable() {
         @Override
         public void run() {
             AnimatorUtils.slideOut(layoutA, true);
             AnimatorUtils.slideOut(layoutD, false);
             AnimatorUtils.slideOut(layoutE, false);
+            if (layoutC.getState() == PLAY_STATE_PLAYING)//只有播放的时候才能 显示与隐藏,其余状态都显示
+                layoutC.setVisibility(INVISIBLE);
         }
     };
     private Runnable landShowRunnable = new Runnable() {
@@ -324,6 +349,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             AnimatorUtils.slideIn(layoutA, true);
             AnimatorUtils.slideIn(layoutD, false);
             AnimatorUtils.slideIn(layoutE, false);
+            layoutA.postDelayed(landHideRunnable, 3000);
+            //还应该隐藏system ui
+            if (livePlayType == TYPE_LIVE) return;
+            if (livePlayState == PLAY_STATE_PLAYING)
+                layoutC.setVisibility(VISIBLE);
         }
     };
 
@@ -333,39 +363,33 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onLiveStart(CamLiveContract.Presenter presenter, Device device) {
-        int playState = presenter.getPlayState();
-        int playType = presenter.getPlayType();
-        boolean isPlayHistory = playType == TYPE_HISTORY;
+        livePlayType = presenter.getPlayType();
+        livePlayState = PLAY_STATE_PLAYING;
+        boolean isPlayHistory = livePlayType == TYPE_HISTORY;
         //左下角直播
         ((ImageView) layoutE.findViewById(R.id.imgV_cam_live_land_play))
-                .setImageResource(R.drawable.icon_landscape_stop);
+                .setImageResource(R.drawable.icon_landscape_playing);
         //|直播| 按钮
         layoutE.findViewById(R.id.tv_live).setEnabled(isPlayHistory);
-        findViewById(R.id.imgV_land_cam_switch_speaker).setEnabled(true);
-        findViewById(R.id.imgV_land_cam_trigger_mic).setEnabled(!isPlayHistory);//历史录像,disable
-        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
-        findViewById(R.id.imgV_cam_switch_speaker).setEnabled(true);
-        findViewById(R.id.imgV_cam_trigger_mic).setEnabled(!isPlayHistory);
+        setMicSpeakerState(isPlayHistory ? 0 : 2, 2);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
         //直播
-        findViewById(R.id.tv_live).setEnabled(playType == TYPE_HISTORY);
+        findViewById(R.id.tv_live).setEnabled(livePlayType == TYPE_HISTORY);
         layoutC.setState(PLAY_STATE_PLAYING, null);
+        layoutC.setVisibility(INVISIBLE);
         liveViewWithThumbnail.onLiveStart();
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(true);
-        layoutD.setVisibility(VISIBLE);
+        post(portShowRunnable);
+        findViewById(R.id.imgV_cam_live_land_play).setEnabled(livePlayType == TYPE_HISTORY);
     }
 
     @Override
     public void onLiveStop(CamLiveContract.Presenter presenter, Device device, int errCode) {
+        livePlayState = presenter.getPlayState();
         layoutB.setVisibility(GONE);
         ((ImageView) layoutE.findViewById(R.id.imgV_cam_live_land_play))
-                .setImageResource(R.drawable.icon_landscape_playing);
-        findViewById(R.id.imgV_land_cam_switch_speaker).setEnabled(true);
-        findViewById(R.id.imgV_land_cam_trigger_mic).setEnabled(true);
-        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
-        findViewById(R.id.imgV_cam_switch_speaker).setEnabled(true);
-        findViewById(R.id.imgV_cam_trigger_mic).setEnabled(true);
-        findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
+                .setImageResource(R.drawable.icon_landscape_stop);
+        setMicSpeakerState(0, 0);
         findViewById(R.id.v_live).setEnabled(true);
         liveViewWithThumbnail.onLiveStop();
         liveViewWithThumbnail.showFlowView(false, null);
@@ -373,6 +397,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         handlePlayErr(errCode);
     }
 
+    /**
+     * 错误码 需要放在一个Map里面管理
+     *
+     * @param errCode
+     */
     private void handlePlayErr(int errCode) {
         switch (errCode) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
@@ -388,19 +417,24 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 int net = NetUtils.getJfgNetType(getContext());
                 layoutC.setState(PLAY_STATE_LOADING_FAILED, getContext().getString(R.string.GLOBAL_NO_NETWORK), net == 0 ? getContext().getString(R.string.USER_HELP) : null);
                 break;
+            case STOP_MAUNALLY:
+                layoutC.setState(PLAY_STATE_STOP, null);
+                break;
+            case JFGRules.PlayErr.ERR_NOT_FLOW:
+                layoutC.setState(PLAY_STATE_LOADING_FAILED, getContext().getString(R.string.NETWORK_TIMEOUT));
+                break;
+            case JError.ErrorVideoPeerDisconnect:
+                layoutC.setState(PLAY_STATE_LOADING_FAILED, getContext().getString(R.string.Device_Disconnected));
+                break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
+                layoutC.setState(PLAY_STATE_LOADING_FAILED, getContext().getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
+                break;
             case JError.ErrorVideoPeerNotExist:
                 layoutC.setState(PLAY_STATE_LOADING_FAILED, getContext().getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
                 break;
             case JError.ErrorVideoPeerInConnect:
                 //正在直播...
                 layoutC.setState(PLAY_STATE_LOADING_FAILED, getContext().getString(R.string.CONNECTING));
-                break;
-            case STOP_MAUNALLY:
-                layoutC.setState(PLAY_STATE_STOP, null);
-                break;
-            case JFGRules.PlayErr.ERR_NOT_FLOW:
-                layoutC.setState(PLAY_STATE_LOADING_FAILED, getContext().getString(R.string.NETWORK_TIMEOUT));
                 break;
             default:
                 layoutC.setState(PLAY_STATE_LOADING_FAILED, getContext().getString(R.string.GLOBAL_NO_NETWORK));
@@ -410,13 +444,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void orientationChanged(CamLiveContract.Presenter presenter, Device device, int orientation) {
-        int playState = presenter.getPlayState();
         int playType = presenter.getPlayType();
         boolean isLand = isLand();
         layoutA.setVisibility(isLand ? VISIBLE : GONE);
         layoutF.setVisibility(isLand ? GONE : VISIBLE);
         //历史录像显示
-        findViewById(R.id.imgV_cam_live_land_play).setVisibility(playType == TYPE_HISTORY && isLand ? VISIBLE : GONE);
+
         findViewById(R.id.layout_land_flip).setVisibility(isLand ? VISIBLE : GONE);
         findViewById(R.id.v_divider).setVisibility(isLand ? VISIBLE : GONE);
         liveViewWithThumbnail.detectOrientationChanged(!isLand);
@@ -435,7 +468,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             String alias = TextUtils.isEmpty(device.alias) ? device.uuid : device.alias;
             ((TextView) findViewById(R.id.imgV_cam_live_land_nav_back))
                     .setText(alias);
+            findViewById(R.id.imgV_cam_live_land_play).setVisibility(VISIBLE);
         } else {
+            findViewById(R.id.imgV_cam_live_land_play).setVisibility(GONE);
             lp.removeRule(2);//remove above
             lp.addRule(3, R.id.v_guide); //set below v_guide
             findViewById(R.id.imgV_cam_zoom_to_full_screen).setVisibility(VISIBLE);
@@ -473,10 +508,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onRtcpCallback(int type, JFGMsgVideoRtcp rtcp) {
+        livePlayState = PLAY_STATE_PLAYING;
+        layoutC.setState(PLAY_STATE_PLAYING, null);
         String flow = MiscUtils.getByteFromBitRate(rtcp.bitRate);
         liveViewWithThumbnail.showFlowView(true, flow);
         //分享账号不显示啊.
-        if (JFGRules.isShareDevice(uuid)) return;
+        if (JFGRules.isShareDevice(uuid) || rtcp.timestamp == 0) return;
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
                 + "|%s", TimeUtils.getHistoryTime1(rtcp.timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
@@ -539,6 +576,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             historyWheelHandler = new HistoryWheelHandler((ViewGroup) layoutG, superWheelExt, presenter);
         }
         historyWheelHandler.dateUpdate();
+        historyWheelHandler.setDatePickerListener(time -> {
+            //选择时间,更新时间区域
+            post(() -> {
+                String content = String.format(getContext().getString(R.string.Tap1_Camera_Playback)
+                        + "|%s", TimeUtils.getHistoryTime1(time));
+                ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
+                        .setContent(content);
+                prepareLayoutDAnimation();
+            });
+        });
     }
 
     @Override
@@ -630,6 +677,67 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.getVideoView().detectOrientationChanged();
     }
 
+    private boolean[] enableArray = {false, false, true, true};
+    private int[] portMicRes = {R.drawable.icon_port_mic_off_selector,
+            R.drawable.icon_port_mic_on_selector,
+            R.drawable.icon_port_mic_off_selector, R.drawable.icon_port_mic_on_selector};
+    private int[] landMicRes = {R.drawable.icon_land_mic_off_selector,
+            R.drawable.icon_land_mic_on_selector,
+            R.drawable.icon_land_mic_off_selector, R.drawable.icon_land_mic_on_selector};
+    private int[] portSpeakerRes = {R.drawable.icon_port_speaker_off_selector,
+            R.drawable.icon_port_speaker_on_selector,
+            R.drawable.icon_port_speaker_off_selector, R.drawable.icon_port_speaker_on_selector};
+    private int[] landSpeakerRes = {R.drawable.icon_land_speaker_off_selector,
+            R.drawable.icon_land_speaker_on_selector,
+            R.drawable.icon_land_speaker_off_selector, R.drawable.icon_land_speaker_on_selector};
+
+    //0:off-disable,1.on-disable,2.off-enable,3.on-enable
+    @Override
+    public void setMicSpeakerState(int micState, int speakerState) {
+        Log.d("setMicSpeakerState", "setMicSpeakerState:" + micState + "," + speakerState);
+        if (micState < 0 || micState > 3) micState = 0;
+        if (speakerState < 0 || speakerState > 3) speakerState = 0;
+        ImageView pMic = (ImageView) findViewById(R.id.imgV_cam_trigger_mic);
+        pMic.setEnabled(enableArray[micState]);
+        pMic.setImageResource(portMicRes[micState]);
+        pMic.setTag(portMicRes[micState]);
+        ImageView lMic = (ImageView) findViewById(R.id.imgV_land_cam_trigger_mic);
+        lMic.setEnabled(enableArray[micState]);
+        lMic.setImageResource(landMicRes[micState]);
+        lMic.setTag(landMicRes[micState]);
+        //speaker
+        ImageView pSpeaker = (ImageView) findViewById(R.id.imgV_cam_switch_speaker);
+        pSpeaker.setEnabled(enableArray[speakerState]);
+        pSpeaker.setImageResource(portSpeakerRes[speakerState]);
+        pSpeaker.setTag(portSpeakerRes[speakerState]);
+        ImageView lSpeaker = (ImageView) findViewById(R.id.imgV_land_cam_switch_speaker);
+        lSpeaker.setEnabled(enableArray[speakerState]);
+        lSpeaker.setImageResource(landSpeakerRes[speakerState]);
+        lSpeaker.setTag(landSpeakerRes[speakerState]);
+    }
+
+    @Override
+    public void setMicSpeakerListener(OnClickListener micListener, OnClickListener speakerListener) {
+        findViewById(R.id.imgV_cam_switch_speaker).setOnClickListener(speakerListener);
+        findViewById(R.id.imgV_land_cam_switch_speaker).setOnClickListener(speakerListener);
+        findViewById(R.id.imgV_cam_trigger_mic).setOnClickListener(micListener);
+        findViewById(R.id.imgV_land_cam_trigger_mic).setOnClickListener(micListener);
+    }
+
+    @Override
+    public int getMicState() {
+        int tag = (int) findViewById(R.id.imgV_land_cam_trigger_mic).getTag();
+        return (tag == R.drawable.icon_port_mic_on_selector ||
+                tag == R.drawable.icon_land_mic_on_selector) ? 3 : 2;
+    }
+
+    @Override
+    public int getSpeakerState() {
+        int tag = (int) findViewById(R.id.imgV_cam_switch_speaker).getTag();
+        return (tag == R.drawable.icon_port_speaker_on_selector ||
+                tag == R.drawable.icon_land_speaker_on_selector) ? 3 : 2;
+    }
+
     @Override
     public void onClick(View v) {
         int id = v.getId();
@@ -646,8 +754,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 handleTimeRectClick();
                 break;
             case R.id.imgV_cam_live_land_play://横屏,左下角播放
+                if (playClickListener != null) playClickListener.onClick(v);
                 break;
             case R.id.tv_live://直播中,按钮disable.历史录像:enable
+                if (liveTextClick != null) liveTextClick.onClick(v);
                 break;
             case R.id.imgV_cam_switch_speaker:
             case R.id.imgV_land_cam_switch_speaker:
@@ -661,6 +771,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
     }
 
+    public void setLoadingState(int state, String content) {
+        layoutC.setState(state, content);
+    }
+
     private void handleTimeRectClick() {
 
         if (isLand()) {
@@ -671,4 +785,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
 
+    public void setPlayBtnListener(OnClickListener clickListener) {
+        this.playClickListener = clickListener;
+    }
+
+    public void setLiveTextClick(OnClickListener liveTextClick) {
+        this.liveTextClick = liveTextClick;
+    }
 }

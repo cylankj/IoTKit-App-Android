@@ -161,9 +161,9 @@ public interface CamLiveContract {
 
         /**
          */
-        void switchSpeaker();
+        Observable<Boolean> switchSpeaker();
 
-        void switchMic();
+        Observable<Boolean> switchMic();
 
         /**
          * 获取本地，远端mic Speaker标志 xxxx

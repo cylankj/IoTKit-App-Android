@@ -76,7 +76,9 @@ public class TimeUtils {
     private static final ThreadLocal<SimpleDateFormat> historyDateFormat0 = new ThreadLocal<SimpleDateFormat>() {
         @Override
         protected SimpleDateFormat initialValue() {
-            return new SimpleDateFormat("MM/dd HH:mm", Locale.UK);
+            SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd HH:mm");
+            dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+            return dateFormat;
         }
     };
 

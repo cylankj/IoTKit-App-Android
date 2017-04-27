@@ -20,6 +20,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGMsgVideoResolution;
@@ -28,7 +29,6 @@ import com.cylan.ex.JfgException;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.cache.db.module.Device;
-import com.cylan.jiafeigou.cache.db.module.HistoryFile;
 import com.cylan.jiafeigou.dp.DpMsgDefine;
 import com.cylan.jiafeigou.dp.DpMsgMap;
 import com.cylan.jiafeigou.dp.DpUtils;
@@ -45,12 +45,9 @@ import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
-import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
-import com.cylan.jiafeigou.utils.TimeUtils;
 import com.cylan.jiafeigou.utils.ToastUtil;
 import com.cylan.jiafeigou.widget.dialog.BaseDialog;
-import com.cylan.jiafeigou.widget.dialog.DatePickerDialogFragment;
 import com.cylan.jiafeigou.widget.flip.FlipImageView;
 import com.cylan.jiafeigou.widget.live.ILiveControl;
 import com.cylan.jiafeigou.widget.wheel.ex.IData;
@@ -58,7 +55,6 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.lang.ref.SoftReference;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import butterknife.BindView;
@@ -70,19 +66,17 @@ import permissions.dispatcher.OnShowRationale;
 import permissions.dispatcher.PermissionRequest;
 import permissions.dispatcher.RuntimePermissions;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_303_DEVICE_AUTO_VIDEO_RECORD;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 import static com.cylan.jiafeigou.support.photoselect.helpers.Constants.REQUEST_CODE;
-import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_ADSORB;
-import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_DRAGGING;
-import static com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt.STATE_FINISH;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -145,7 +139,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     case PLAY_STATE_LOADING_FAILED:
                     case PLAY_STATE_STOP:
                         //下一步playing
-                        basePresenter.startPlayLive();
+                        CamLiveContract.PrePlayType type = basePresenter.getPrePlayType();
+                        if (type.type == TYPE_LIVE) {
+                            //不会发生这一幕的.
+                            basePresenter.startPlayLive();
+                        } else {
+                            basePresenter.startPlayHistory(type.time * 1000L);
+                        }
                         break;
                     case PLAY_STATE_PLAYING:
                         //下一步stop
@@ -178,9 +178,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             @Override
             public void onClick(FlipImageView view) {
                 Device device = basePresenter.getDevice();
+                DpMsgDefine.DPSdStatus dpSdStatus = device.$(204, new DpMsgDefine.DPSdStatus());
                 int oldOption = device.$(ID_303_DEVICE_AUTO_VIDEO_RECORD, -1);
                 boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
-                if (oldOption == 0 && safeIsOpen) {
+                //无卡不需要显示
+                if (oldOption == 0 && safeIsOpen && dpSdStatus.hasSdcard && dpSdStatus.err == 0) {
                     new android.app.AlertDialog.Builder(getActivity())
                             .setMessage(getString(R.string.Tap1_Camera_MotionDetection_OffTips))
                             .setPositiveButton(getString(R.string.CARRY_ON), (DialogInterface dialog, int which) -> {
@@ -201,6 +203,19 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             }
         });
         initCaptureListener();
+        initTvTextClick();
+    }
+
+    /**
+     * |直播|  按钮
+     */
+    private void initTvTextClick() {
+        camLiveControlLayer.setLiveTextClick(v -> {
+            CamLiveContract.PrePlayType type = basePresenter.getPrePlayType();
+            if (type.type == TYPE_HISTORY) {
+                basePresenter.startPlayLive();
+            }
+        });
     }
 
     /**
@@ -224,7 +239,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
         if (!standby.standby) {
             //开始直播
-            basePresenter.startPlayLive();
+            CamLiveContract.PrePlayType type = basePresenter.getPrePlayType();
+            if (type.type == TYPE_LIVE)
+                basePresenter.startPlayLive();
+            else {
+                basePresenter.startPlayHistory(type.time * 1000L);
+            }
         } else {
             //show
         }
@@ -258,8 +278,12 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                 getArguments().remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
                 return;
             }
-            AppLogger.e("直播");
-            basePresenter.startPlayLive();
+            CamLiveContract.PrePlayType prePlayType = basePresenter.getPrePlayType();
+            if (prePlayType.type == TYPE_LIVE) {
+                basePresenter.startPlayLive();
+            } else {
+                basePresenter.startPlayHistory(prePlayType.time * 1000L);
+            }
         } else if (isResumed()) {
             basePresenter.stopPlayVideo(basePresenter.getPlayType());
             AppLogger.d("stop play");
@@ -364,6 +388,69 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (getView() != null) getView().setKeepScreenOn(true);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
         camLiveControlLayer.onLiveStart(basePresenter, device);
+        camLiveControlLayer.setMicSpeakerListener(mic -> {
+            int tag = camLiveControlLayer.getMicState();
+            handleSwitchMic(tag);
+        }, speaker -> {
+            int tag = camLiveControlLayer.getSpeakerState();
+            handleSwitchSpeaker(tag);
+        });
+        camLiveControlLayer.setPlayBtnListener(v -> {
+            CamLiveContract.PrePlayType prePlayType = basePresenter.getPrePlayType();
+            if (prePlayType.type == TYPE_LIVE) return;
+            if (basePresenter.getPlayState() == PLAY_STATE_PREPARE)
+                return;
+            if (basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
+                basePresenter.stopPlayVideo(TYPE_HISTORY);
+                ((ImageView) v).setImageResource(R.drawable.icon_landscape_stop);
+                camLiveControlLayer.setLoadingState(PLAY_STATE_STOP, null);
+            } else {
+                basePresenter.startPlayHistory(prePlayType.time * 1000L);
+                ((ImageView) v).setImageResource(R.drawable.icon_landscape_playing);
+            }
+        });
+    }
+
+    /**
+     * 没有0,1两种状态
+     * 0:off-disable,1.on-disable,2.off-enable,3.on-enable
+     *
+     * @param tag 2: 3:
+     */
+    private void handleSwitchMic(int tag) {
+        basePresenter.switchMic()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    Log.d("handleSwitchMic", "handleSwitchMic:" + tag);
+                    //表示设置结果,设置成功才需要改变view 图标
+                    if (ret) {
+                        //设置成功,更新下一状态
+                        camLiveControlLayer.setMicSpeakerState(tag == 2 ? 3 : 2,
+                                tag == 2 ? 3 : camLiveControlLayer.getSpeakerState());
+                    } else {
+                    }
+                }, AppLogger::e);
+    }
+
+    /**
+     * 没有0,1两种状态
+     * 0:off-disable,1.on-disable,2.off-enable,3.on-enable
+     *
+     * @param tag 2: 3:
+     */
+    private void handleSwitchSpeaker(int tag) {
+        basePresenter.switchSpeaker()
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(ret -> {
+                    Log.d("handleSwitchSpeaker", "handleSwitchSpeaker:" + tag);
+                    //表示设置结果,设置成功才需要改变view 图标
+                    if (ret) {
+                        //设置成功,更新下一状态
+                        camLiveControlLayer.setMicSpeakerState(camLiveControlLayer.getMicState(),
+                                tag == 2 ? 3 : 2);
+                    } else {
+                    }
+                }, AppLogger::e);
     }
 
     @Override
@@ -392,18 +479,20 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         AppLogger.d("跳转到使用帮助");
     }
 
+    /**
+     * 0:off-disable,1.on-disable,2.off-enable,3.on-enable
+     */
     @Override
     public boolean isLocalMicOn() {
-//        Object tag = imgVCamTriggerMic.getTag();
-//        return tag != null && (int) tag == R.drawable.icon_port_mic_on_selector;
-        return false;
+        return camLiveControlLayer.getMicState() == 3;
     }
 
+    /**
+     * 0:off-disable,1.on-disable,2.off-enable,3.on-enable
+     */
     @Override
     public boolean isLocalSpeakerOn() {
-//        Object tag = imgVCamSwitchSpeaker.getTag();
-///        return tag != null && (int) tag == R.drawable.icon_port_speaker_on_selector;
-        return false;
+        return camLiveControlLayer.getSpeakerState() == 3;
     }
 
     @Override
