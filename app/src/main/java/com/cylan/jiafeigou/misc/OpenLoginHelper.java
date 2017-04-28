@@ -30,8 +30,6 @@ import com.sina.weibo.sdk.exception.WeiboException;
 import com.sina.weibo.sdk.net.RequestListener;
 import com.tencent.connect.UserInfo;
 import com.tencent.connect.auth.QQToken;
-import com.tencent.connect.common.Constants;
-import com.tencent.open.utils.HttpUtils;
 import com.tencent.tauth.IUiListener;
 import com.tencent.tauth.UiError;
 import com.twitter.sdk.android.core.Callback;
@@ -47,8 +45,6 @@ import com.twitter.sdk.android.tweetcomposer.TweetComposer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
 
 import io.fabric.sdk.android.Fabric;
 import retrofit2.Call;
@@ -130,12 +126,13 @@ public class OpenLoginHelper {
                 //**下面这两步设置很重要,如果没有设置,返回为空**
                 TencentInstance.getInstance(activity).mTencent.setOpenId(openID);
                 TencentInstance.getInstance(activity).mTencent.setAccessToken(accessToken, expires);
+                AppLogger.d("OPEN_ID:" + openID + ":token" + accessToken);
                 //post获取到的token
                 postAuthorizeResult(accessToken, openID, 3);
                 getuserInfo();
             }
         } catch (JSONException e) {
-            AppLogger.d("qq_login"+e.getLocalizedMessage());
+            AppLogger.d("qq_login" + e.getLocalizedMessage());
             e.printStackTrace();
         }
     }
@@ -160,7 +157,7 @@ public class OpenLoginHelper {
 //                String figureurl = jsonObject.getString("figureurl_2");
                 String figureurl = jsonObject.getString("figureurl_qq_2");
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, figureurl);
-                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, nickname);
+                PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, nickname);//不需要,服务器会自己获取的
                 AppLogger.d("jsonObject:" + jsonObject.toString());
             } catch (Exception e) {
                 e.printStackTrace();
@@ -339,7 +336,7 @@ public class OpenLoginHelper {
                         AccessToken accessToken = loginResult.getAccessToken();
                         //post 结果
                         postAuthorizeResult(accessToken.getToken(), accessToken.getUserId(), 7);
-                        AppLogger.d("fb_ip_token:" + accessToken.getToken() +":"+ accessToken.getUserId());
+                        AppLogger.d("fb_ip_token:" + accessToken.getToken() + ":" + accessToken.getUserId());
 //                        getUserInfo();
 
                         GraphRequest request = GraphRequest.newMeRequest(accessToken, getUserinfo);
@@ -379,14 +376,14 @@ public class OpenLoginHelper {
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, photo);
                 PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, name);
                 AppLogger.d("facebook_getUserinfo:" + name + photo);
-            }else {
+            } else {
                 AppLogger.d("facebook_getUserinfo:obj null");
-                AppLogger.d("facebook_back:"+graphResponse.toString());
+                AppLogger.d("facebook_back:" + graphResponse.toString());
             }
         }
     };
 
-    private void getUserInfo(){
+    private void getUserInfo() {
         boolean enableButtons = AccessToken.getCurrentAccessToken() != null;
         Profile profile = Profile.getCurrentProfile();
         if (enableButtons && profile != null) {
@@ -398,11 +395,10 @@ public class OpenLoginHelper {
             PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ICON, simage);
             PreferencesUtils.putString(JConstant.OPEN_LOGIN_USER_ALIAS, sname);
             AppLogger.d("facebook_getUserinfo:" + sname + simage);
-        }else {
+        } else {
             AppLogger.d("fb_getUserinfo:obj null");
         }
     }
-
 
 
     /**

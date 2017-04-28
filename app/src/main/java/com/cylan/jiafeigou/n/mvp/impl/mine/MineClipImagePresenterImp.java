@@ -60,6 +60,7 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                 .subscribeOn(Schedulers.newThread())
                 .subscribe(path1 -> {
                     try {
+
                         req = BaseApplication.getAppComponent().getCmd().updateAccountPortrait(path1);
                         AppLogger.d("upLoadUserHeadImag:" + req);
                     } catch (JfgException e) {

@@ -257,6 +257,7 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1); //滚动到集合最后一条显示；
         presenter.saveIntoDb(autoReplyBean);
         RxBus.getCacheInstance().removeStickyEvent(RxEvent.GetFeedBackRsp.class);
+
     }
 
     public MineHelpSuggestionBean addSystemAutoReply() {
@@ -349,9 +350,10 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
         b.setPositiveButton(getString(R.string.Button_Yes), (DialogInterface dialog, int which) -> {
             itemPosition = position;
             resendFlag = true;
-            ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);
-            send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
-
+//            ImageView send_pro = (ImageView) holder.itemView.findViewById(R.id.iv_send_pro);
+//            send_pro.setImageDrawable(getContext().getResources().getDrawable(R.drawable.listview_loading));
+            item.setPro_falag(0);
+            suggestionAdapter.notifyDataSetHasChanged();
             presenter.sendFeedBack(item);
             presenter.deleteOnItemFromDb(item);
             dialog.dismiss();
@@ -364,34 +366,25 @@ public class HomeMineHelpSuggestionFragment extends Fragment implements HomeMine
     }
 
     private void initKeyBoard() {
-        KeyboardUtil.attach(getActivity(), panelRoot, new KeyboardUtil.OnKeyboardShowingListener() {
-            @Override
-            public void onKeyboardShowing(boolean isShowing) {
-                if (suggestionAdapter == null) return;
-                mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
-            }
+        KeyboardUtil.attach(getActivity(), panelRoot, isShowing -> {
+            if (suggestionAdapter == null) return;
+            mRvMineSuggestion.scrollToPosition(suggestionAdapter.getItemCount() - 1);
         });
         KPSwitchConflictUtil.attach(panelRoot, mEtSuggestion,
-                new KPSwitchConflictUtil.SwitchClickListener() {
-                    @Override
-                    public void onClickSwitch(boolean switchToPanel) {
-                        AppLogger.d("KPSwitchConflictUtil:" + switchToPanel);
-                        if (switchToPanel) {
-                            mEtSuggestion.clearFocus();
-                        } else {
-                            mEtSuggestion.requestFocus();
-                        }
+                switchToPanel -> {
+                    AppLogger.d("KPSwitchConflictUtil:" + switchToPanel);
+                    if (switchToPanel) {
+                        mEtSuggestion.clearFocus();
+                    } else {
+                        mEtSuggestion.requestFocus();
                     }
                 });
 
-        mRvMineSuggestion.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                if (event.getAction() == MotionEvent.ACTION_DOWN) {
-                    KPSwitchConflictUtil.hidePanelAndKeyboard(panelRoot);
-                }
-                return false;
+        mRvMineSuggestion.setOnTouchListener((v, event) -> {
+            if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                KPSwitchConflictUtil.hidePanelAndKeyboard(panelRoot);
             }
+            return false;
         });
     }
 

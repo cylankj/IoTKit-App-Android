@@ -298,7 +298,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
      */
     private void lookBigImageHead() {
         Bundle bundle = new Bundle();
-        bundle.putString("imageUrl", presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : argumentData.getPhotoUrl());
+        bundle.putString("imageUrl", isDefaultPhoto(argumentData.getPhotoUrl()) && presenter.checkOpenLogin() ? PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON) : argumentData.getPhotoUrl());
         MineUserInfoLookBigHeadFragment bigHeadFragment = MineUserInfoLookBigHeadFragment.newInstance(bundle);
         getFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_right
@@ -337,7 +337,7 @@ public class HomeMineInfoFragment extends Fragment implements MineInfoContract.V
                         .into(myViewTarget);
             }
 
-            if (presenter.checkOpenLogin()) {
+            if (presenter.checkOpenLogin() && TextUtils.isEmpty(argumentData.getAlias())) {
                 String alias = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS);
                 tvUserName.setText(TextUtils.isEmpty(alias) ? getString(R.string.NO_SET) : alias.trim());
             } else {

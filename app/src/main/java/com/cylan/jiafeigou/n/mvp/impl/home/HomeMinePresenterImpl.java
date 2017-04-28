@@ -246,8 +246,8 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                 arrived.jfgAccount = jfgAccount;
             }
             return arrived;
-        }).filter(accountArrived -> accountArrived != null)
-                .mergeWith(RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class))
+        }).mergeWith(RxBus.getCacheInstance().toObservableSticky(RxEvent.AccountArrived.class))
+                .filter(accountArrived -> accountArrived != null)
                 .first()
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(getUserInfo -> {
@@ -258,10 +258,17 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                         RxEvent.ThirdLoginTab event = RxBus.getCacheInstance().getStickyEvent(RxEvent.ThirdLoginTab.class);
                         isOpenLogin = event != null && event.isThird;
                         if (isOpenLogin && isDefaultPhoto(photoUrl)) {
+
                             photoUrl = PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON);
                         }
-                        if (isOpenLogin)
+                        if (isOpenLogin && TextUtils.isEmpty(userInfo.getAlias())) {
+                            try {
+                                BaseApplication.getAppComponent().getCmd().setAccount(userInfo);
+                            } catch (JfgException e) {
+                                e.printStackTrace();
+                            }
                             userInfo.setAlias(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
+                        }
                         if (userInfo.getAlias() == null || TextUtils.isEmpty(userInfo.getAlias())) {
                             boolean isEmail = JConstant.EMAIL_REG.matcher(userInfo.getAccount()).find();
                             if (isEmail) {
@@ -276,6 +283,7 @@ public class HomeMinePresenterImpl extends AbstractPresenter<HomeMineContract.Vi
                             getView().setUserImageHeadByUrl(photoUrl);
                         if (getView() != null && !TextUtils.isEmpty(alias))
                             getView().setAliasName(alias);
+
                     }
                 }, AppLogger::e);
     }

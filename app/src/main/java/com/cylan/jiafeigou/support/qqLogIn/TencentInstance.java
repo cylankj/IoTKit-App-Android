@@ -94,7 +94,7 @@ public class TencentInstance {
     public void logIn(IUiListener iUiListener) {
         listener = iUiListener;
 //        if (!mTencent.isSessionValid()) {
-            mTencent.login((Activity) context, SCOPE, iUiListener);
+        mTencent.login((Activity) context, SCOPE, iUiListener);
 //        }
     }
 
@@ -111,6 +111,7 @@ public class TencentInstance {
             try {
                 JSONObject jsonObject = (JSONObject) response;
                 String openID = jsonObject.getString("openid");
+                AppLogger.d("OPEN_ID" + openID);
                 String accessToken = jsonObject.getString("access_token");
                 String expires = jsonObject.getString("expires_in");
                 mTencent.setOpenId(openID);

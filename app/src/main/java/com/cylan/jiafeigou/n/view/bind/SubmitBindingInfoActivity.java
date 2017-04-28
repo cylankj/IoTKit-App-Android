@@ -102,7 +102,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
         if (state == BindUtils.BIND_FAILED) {//失败
             //绑定失败
             vsLayoutSwitch.showNext();
-            customToolbar.setVisibility(View.INVISIBLE);
+//            customToolbar.setVisibility(View.INVISIBLE);
         } else if (state == BindUtils.BIND_NEED_REBIND) {//强绑
             basePresenter.endCounting();
         } else if (state == BindUtils.BIND_SUC) {//成功
@@ -132,7 +132,7 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
             AppLogger.d("绑定失败了!!!!!!!!!!!!!");
             if (vsLayoutSwitch.getDisplayedChild() == 0) {
                 vsLayoutSwitch.showNext();
-                customToolbar.setVisibility(View.INVISIBLE);
+//                customToolbar.setVisibility(View.INVISIBLE);
             }
         }
     }

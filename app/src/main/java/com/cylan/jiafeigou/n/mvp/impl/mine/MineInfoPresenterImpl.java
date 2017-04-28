@@ -8,7 +8,6 @@ import android.os.Build;
 import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
-import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.misc.AutoSignIn;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JError;
@@ -29,7 +28,6 @@ import java.io.File;
 import rx.Observable;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Action1;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
@@ -56,19 +54,18 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
     public void logOut(String account) {
         BaseApplication.getAppComponent().getSourceManager().logout()
                 .subscribeOn(Schedulers.newThread())
-                .subscribe(o -> {
+                .subscribe(retAccount -> {
                     BaseApplication.getAppComponent().getCmd().logout();
                     NotifyManager.getNotifyManager().clearAll();
                     RxBus.getCacheInstance().removeAllStickyEvents();
-                    AutoSignIn.getInstance().autoSave(account, 1, "")
+                    AutoSignIn.getInstance().autoSave(retAccount.getAccount(), 1, "")
                             .doOnError(throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()))
                             .subscribe(ret -> {
                             }, throwable -> AppLogger.e("err:" + throwable));
                     //emit failed event.
                     //是三方登录获取绑定的手机或者邮箱用于登录页回显
                     if (isOpenLogin) {
-                        JFGAccount temAcc = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
-                        PreferencesUtils.putString(JConstant.THIRD_RE_SHOW, TextUtils.isEmpty(temAcc.getPhone()) ? (TextUtils.isEmpty(temAcc.getEmail()) ? "" : temAcc.getEmail()) : temAcc.getPhone());
+                        PreferencesUtils.putString(JConstant.THIRD_RE_SHOW, TextUtils.isEmpty(retAccount.getPhone()) ? (TextUtils.isEmpty(retAccount.getEmail()) ? "" : retAccount.getEmail()) : retAccount.getPhone());
                     }
                     PreferencesUtils.putInt(JConstant.IS_lOGINED, 0);
                     RxBus.getCacheInstance().postSticky(new RxEvent.ResultLogin(JError.StartLoginPage));
@@ -175,13 +172,10 @@ public class MineInfoPresenterImpl extends AbstractPresenter<MineInfoContract.Vi
     public Subscription getAccount() {
         return RxBus.getCacheInstance().toObservableSticky(RxEvent.GetUserInfo.class)
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Action1<RxEvent.GetUserInfo>() {
-                    @Override
-                    public void call(RxEvent.GetUserInfo getUserInfo) {
-                        if (getUserInfo != null) {
-                            if (getView() != null)
-                                getView().initPersonalInformation(getUserInfo.jfgAccount);
-                        }
+                .subscribe(getUserInfo -> {
+                    if (getUserInfo != null) {
+                        if (getView() != null)
+                            getView().initPersonalInformation(getUserInfo.jfgAccount);
                     }
                 }, throwable -> AppLogger.e("err:" + MiscUtils.getErr(throwable)));
     }

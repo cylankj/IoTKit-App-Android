@@ -17,7 +17,9 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.target.BitmapImageViewTarget;
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.cache.db.module.Account;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.support.zscan.Qrcode;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
@@ -79,13 +81,14 @@ public class MyQRCodeDialog extends BaseDialog {
     @Override
     public void onResume() {
         super.onResume();
-        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(JConstant.EFAMILY_URL_PREFIX+"id="+jfgaccount.getAccount(), ViewUtils.dp2px(137), ViewUtils.dp2px(137), null));
+        ivUserQrcode.setImageBitmap(Qrcode.createQRImage(JConstant.EFAMILY_URL_PREFIX + "id=" + jfgaccount.getAccount(), ViewUtils.dp2px(137), ViewUtils.dp2px(137), null));
     }
 
     private void initView() {
         MyViewTarget myViewTarget = new MyViewTarget(ivUserIcon, getResources());
         if (isopenlogin) {
-            tvUserAlias.setText(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ALIAS));
+            Account account = BaseApplication.getAppComponent().getSourceManager().getAccount();
+            tvUserAlias.setText(account == null ? "" : account.getAlias() == null ? account.getAccount() : account.getAlias());
             Glide.with(getContext()).load(PreferencesUtils.getString(JConstant.OPEN_LOGIN_USER_ICON))
                     .asBitmap()
                     .centerCrop()

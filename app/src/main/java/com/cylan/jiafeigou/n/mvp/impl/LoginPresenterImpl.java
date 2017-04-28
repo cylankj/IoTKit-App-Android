@@ -63,6 +63,7 @@ public class LoginPresenterImpl extends AbstractPresenter<LoginContract.View>
                     try {
                         if (o.loginType) {
                             BaseApplication.getAppComponent().getCmd().openLogin(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd, o.openLoginType);
+                            AppLogger.d("第三方登录:" + o.userName + ":" + o.pwd);
                         } else {
                             BaseApplication.getAppComponent().getCmd().login(JFGRules.getLanguageType(ContextUtils.getContext()), o.userName, o.pwd);
                             //账号和密码
