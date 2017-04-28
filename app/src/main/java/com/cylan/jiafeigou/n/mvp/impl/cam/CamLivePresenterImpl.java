@@ -280,6 +280,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public void startPlayLive() {
+        if (prePlayType.playState == PLAY_STATE_PREPARE) {
+            AppLogger.d("已经loading");
+            return;
+        }
         updatePrePlayType(TYPE_LIVE, -1, PLAY_STATE_PREPARE);
         getView().onLivePrepare(TYPE_LIVE);
         DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());

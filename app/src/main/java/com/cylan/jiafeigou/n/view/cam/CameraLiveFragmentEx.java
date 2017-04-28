@@ -129,7 +129,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //2w显示双排视图  3.1.0功能
-        camLiveControlLayer.initView(uuid);
+        camLiveControlLayer.initView(basePresenter, uuid);
         camLiveControlLayer.initLiveViewRect(isNormalView ? basePresenter.getVideoPortHeightRatio() : 1.0f, mLiveViewRectInWindow);
         camLiveControlLayer.setLoadingRectAction(new ILiveControl.Action() {
             @Override

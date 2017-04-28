@@ -44,7 +44,7 @@ public interface ICamLiveLayer {
      */
     void initLiveViewRect(float ratio, Rect rect);
 
-    void initView(String uuid);
+    void initView(CamLiveContract.Presenter presenter, String uuid);
 
     /**
      * speaker*2,mic*2,capture*2
