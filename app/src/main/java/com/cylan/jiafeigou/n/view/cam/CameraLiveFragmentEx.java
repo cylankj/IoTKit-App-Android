@@ -162,7 +162,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
             @Override
             public void clickHelp(View view) {
-                if (NetUtils.isNetworkAvailable(ContextUtils.getContext())) {
+                if (NetUtils.getJfgNetType() == 0) {
                     ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
@@ -445,7 +445,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     //表示设置结果,设置成功才需要改变view 图标
                     if (ret) {
                         //设置成功,更新下一状态
-                        camLiveControlLayer.setMicSpeakerState(camLiveControlLayer.getMicState(),
+                        int mic = basePresenter.getPlayType() == TYPE_HISTORY ? 0 : camLiveControlLayer.getMicState();
+                        camLiveControlLayer.setMicSpeakerState(mic,
                                 tag == 2 ? 3 : 2);
                     } else {
                     }

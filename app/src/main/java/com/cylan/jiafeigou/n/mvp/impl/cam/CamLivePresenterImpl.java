@@ -293,8 +293,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 if (ret != 0) {
                     BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
                     ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
-                    AppLogger.i("play video: " + uuid + " " + ret);
                 }
+                AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
                 e.printStackTrace();
             }
