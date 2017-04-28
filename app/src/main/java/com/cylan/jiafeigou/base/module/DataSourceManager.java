@@ -729,8 +729,6 @@ public class DataSourceManager implements JFGSourceManager {
     private void handleSystemNotification(ArrayList<JFGDPMsg> arrayList, String uuid) {
         if (getAccount() == null || !getJFGAccount().isEnablePush())
             return;
-
-
         Device device = getDevice(uuid);
         //需要考虑,app进入后台.
         if (device != null && !TextUtils.isEmpty(device.account)) {
@@ -742,7 +740,7 @@ public class DataSourceManager implements JFGSourceManager {
                     AppLogger.d("may fire a notification: " + msgId);
                     if (!BaseApplication.isBackground()) {
                         AppLogger.d("当前在前台不需要推送消息");//只有摄像头需要后台的时候弹,门铃什么时候都弹
-                        return;
+                        continue;
                     }
                     //cam 1001 1002  1003
                     try {
