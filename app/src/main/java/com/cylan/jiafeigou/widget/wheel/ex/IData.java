@@ -59,4 +59,5 @@ public interface IData {
     boolean isHotRect(long time);
 
     HistoryFile getMaxHistoryFile();
+    HistoryFile getMinHistoryFile();
 }

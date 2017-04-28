@@ -69,7 +69,6 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
         this.state = state;
         switch (state) {
             case PLAY_STATE_PREPARE:
-                setVisibility(VISIBLE);
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);
                 imageView.setVisibility(GONE);
@@ -85,7 +84,6 @@ public class LiveControlView extends RelativeLayout implements ILiveControl, Vie
                 simpleProgressBar.setVisibility(GONE);
                 break;
             case PLAY_STATE_STOP:
-                setVisibility(VISIBLE);
                 imageView.bringToFront();
                 imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.camera_icon_play);

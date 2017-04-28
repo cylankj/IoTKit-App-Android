@@ -18,6 +18,7 @@ import rx.schedulers.Schedulers;
 public class DPMultiDeleteTask extends BaseDPTask<BaseDPTaskResult> {
     @Override
     public Observable<BaseDPTaskResult> performLocal() {
+        AppLogger.d("执行删除:");
         return Observable.from(multiEntity)
                 .subscribeOn(Schedulers.io())
                 .observeOn(Schedulers.io())

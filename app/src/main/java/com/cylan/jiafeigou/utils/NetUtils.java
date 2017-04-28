@@ -84,7 +84,8 @@ public class NetUtils {
      */
     public static int getJfgNetType() {
         Context c = ContextUtils.getContext();
-        switch (getNetType(c)) {
+        int type =getJfgNetType(c);
+        switch (type) {
             case ConnectivityManager.TYPE_WIFI:
                 return 1;
             case ConnectivityManager.TYPE_MOBILE:

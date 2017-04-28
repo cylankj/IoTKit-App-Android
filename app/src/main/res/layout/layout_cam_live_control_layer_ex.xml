@@ -31,7 +31,8 @@
             android:layout_height="match_parent"
             android:drawableLeft="@drawable/nav_icon_back_white"
             android:drawablePadding="@dimen/x15"
-            android:padding="@dimen/x15"
+            android:gravity="center"
+            android:paddingStart="@dimen/x15"
             android:textColor="@color/color_white"
             android:textSize="@dimen/sp15" />
 

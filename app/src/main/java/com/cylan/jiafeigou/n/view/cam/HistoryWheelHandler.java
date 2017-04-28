@@ -3,6 +3,7 @@ package com.cylan.jiafeigou.n.view.cam;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
@@ -67,13 +68,14 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
 
     public void showDatePicker(boolean isLand) {
         if (isLand) {
-            if (AnimatorUtils.getSlideOutXDistance(landDateListContainer) == 0)
-                showLandDatePicker();
-            else {
-                if (landDateListContainer.getTranslationX() == landDateListContainer.getMeasuredWidth()) {
-                    //花出去了
-                }
-            }
+            if (landDateListContainer.getVisibility() == View.GONE
+                    || landDateListContainer.getTranslationX() == landDateListContainer.getWidth()) {
+                AnimatorUtils.slideInRight(landDateListContainer);
+                landDateListContainer.removeCallbacks(containerHide);
+                landDateListContainer.postDelayed(containerHide, 3000);//自动隐藏
+            } else if (AnimatorUtils.getSlideOutXDistance(landDateListContainer) == 0)
+                AnimatorUtils.slideOutRight(landDateListContainer);
+            showLandDatePicker();
         } else {
             showPortDatePicker();
         }
@@ -85,25 +87,24 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     }
 
     private void showLandDatePicker() {
-        AnimatorUtils.slideInRight(landDateListContainer);
         if (recyclerView.getAdapter() == null || recyclerView.getAdapter().getItemCount() == 0) {
             final ArrayList<Long> dateStartList = presenter.getFlattenDateList();
             Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
-            Log.d(TAG, "sort: " + dateStartList);
+            AppLogger.d("sort: " + dateStartList);
+            recyclerView.setLayoutManager(new LinearLayoutManager(recyclerView.getContext(), LinearLayoutManager.VERTICAL, false));
             recyclerView.setAdapter(new CamLandHistoryDateAdapter(context, null, R.layout.layout_cam_history_land_list));
             ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).addAll(dateStartList);
             ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setOnItemClickListener((View itemView, int viewType, int position) -> {
-                Log.d(TAG, ".........click:" + position);
                 long time = dateStartList.get(position);
                 AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate(time));
                 loadSelectedDay(TimeUtils.getSpecificDayStartTime(time));
+                landDateListContainer.removeCallbacks(containerHide);
+                landDateListContainer.post(containerHide);//选中立马隐藏
+                ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setCurrentFocusPos(position);
             });
             ((CamLandHistoryDateAdapter) recyclerView.getAdapter()).setCurrentFocusTime(getWheelCurrentFocusTime());
         }
     }
-
-    //
-
 
     private void showPortDatePicker() {
         if (datePickerRef == null || datePickerRef.get() == null) {
@@ -114,7 +115,8 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             datePickerRef.get().setAction((int id, Object value) -> {
                 if (value != null && value instanceof Long) {
                     AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate((Long) value));
-                    if (datePickerListener != null) datePickerListener.onPickDate((Long) value);
+                    if (datePickerListener != null)
+                        datePickerListener.onPickDate((Long) value, STATE_FINISH);
                     loadSelectedDay(TimeUtils.getSpecificDayStartTime((Long) value));
                 }
             });
@@ -140,7 +142,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 })
                 .subscribe(iData -> {
                     setupHistoryData(iData);
-                    HistoryFile historyFile = iData.getMaxHistoryFile();
+                    HistoryFile historyFile = iData.getMinHistoryFile();//最小时间.
                     if (historyFile != null) {
                         setNav2Time(historyFile.time * 1000L);
                         presenter.startPlayHistory(historyFile.time * 1000L);
@@ -165,7 +167,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         switch (state) {
             case STATE_DRAGGING:
                 Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time));
-                if (datePickerListener != null) datePickerListener.onPickDate(time);
+                if (datePickerListener != null) datePickerListener.onPickDate(time, STATE_DRAGGING);
                 break;
             case STATE_ADSORB:
                 Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
@@ -173,7 +175,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             case STATE_FINISH:
                 Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time));
                 presenter.startPlayHistory(time);
-                if (datePickerListener != null) datePickerListener.onPickDate(time);
+                if (datePickerListener != null) datePickerListener.onPickDate(time, STATE_FINISH);
                 break;
         }
     }
@@ -182,13 +184,20 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         this.datePickerListener = datePickerListener;
     }
 
+    private Runnable containerHide = new Runnable() {
+        @Override
+        public void run() {
+            AnimatorUtils.slideOutRight(landDateListContainer);
+        }
+    };
+
     private DatePickerListener datePickerListener;
 
     /**
      * 选择日期,滚动条变化.都要通知.
      */
     public interface DatePickerListener {
-        void onPickDate(long time);
+        void onPickDate(long time, int state);
     }
 
 }

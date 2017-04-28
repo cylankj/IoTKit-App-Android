@@ -129,7 +129,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //2w显示双排视图  3.1.0功能
-        camLiveControlLayer.initView(uuid);
+        camLiveControlLayer.initView(basePresenter, uuid);
         camLiveControlLayer.initLiveViewRect(isNormalView ? basePresenter.getVideoPortHeightRatio() : 1.0f, mLiveViewRectInWindow);
         camLiveControlLayer.setLoadingRectAction(new ILiveControl.Action() {
             @Override
@@ -148,8 +148,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                         break;
                     case PLAY_STATE_PLAYING:
                         //下一步stop
-                        basePresenter.setStopReason(STOP_MAUNALLY);
-                        basePresenter.stopPlayVideo(basePresenter.getPlayType());
+                        basePresenter.stopPlayVideo(STOP_MAUNALLY);
                         break;
                 }
                 AppLogger.i("clickImage:" + state);
@@ -162,7 +161,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
             @Override
             public void clickHelp(View view) {
-                if (NetUtils.isNetworkAvailable(ContextUtils.getContext())) {
+                if (NetUtils.getJfgNetType() == 0) {
                     ToastUtil.showNegativeToast(ContextUtils.getContext().getString(R.string.OFFLINE_ERR_1));
                     return;
                 }
@@ -400,7 +399,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (basePresenter.getPlayState() == PLAY_STATE_PREPARE)
                 return;
             if (basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                basePresenter.stopPlayVideo(TYPE_HISTORY);
+                basePresenter.stopPlayVideo(STOP_MAUNALLY);
                 ((ImageView) v).setImageResource(R.drawable.icon_landscape_stop);
                 camLiveControlLayer.setLoadingState(PLAY_STATE_STOP, null);
             } else {
@@ -445,7 +444,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     //表示设置结果,设置成功才需要改变view 图标
                     if (ret) {
                         //设置成功,更新下一状态
-                        camLiveControlLayer.setMicSpeakerState(camLiveControlLayer.getMicState(),
+                        int mic = basePresenter.getPlayType() == TYPE_HISTORY ? 0 : camLiveControlLayer.getMicState();
+                        camLiveControlLayer.setMicSpeakerState(mic,
                                 tag == 2 ? 3 : 2);
                     } else {
                     }
@@ -504,7 +504,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (getView() != null)
             getView().setKeepScreenOn(false);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        camLiveControlLayer.onLiveStop(basePresenter, device, errId);
+        if (getView() != null)
+            getView().postDelayed(() -> camLiveControlLayer.onLiveStop(basePresenter, device, errId), 500);
     }
 
     @Override
@@ -534,7 +535,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void shouldWaitFor(boolean start) {
-        camLiveControlLayer.onLivePrepared();
+        if (getView() != null) getView().post(() -> camLiveControlLayer.onLivePrepared());
     }
 
     @Override
@@ -593,6 +594,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onNetworkChanged(boolean connected) {
         camLiveControlLayer.onNetworkChanged(connected);
+    }
+
+    @Override
+    public boolean isUserVisible() {
+        return getUserVisibleHint();
     }
 
     @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO})

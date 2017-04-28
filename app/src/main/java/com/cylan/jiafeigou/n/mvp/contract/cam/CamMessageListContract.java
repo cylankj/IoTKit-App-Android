@@ -40,6 +40,8 @@ public interface CamMessageListContract {
         void onMessageDeleteSuc();
 
         void loadingDismiss();
+
+        boolean isUserVisible();
     }
 
     interface Presenter extends BasePresenter {

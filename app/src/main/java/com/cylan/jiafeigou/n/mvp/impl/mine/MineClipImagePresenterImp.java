@@ -62,11 +62,11 @@ public class MineClipImagePresenterImp extends AbstractPresenter<MineClipImageCo
                     try {
 
                         req = BaseApplication.getAppComponent().getCmd().updateAccountPortrait(path1);
-                        AppLogger.d("upLoadUserHeadImag:" + req);
+                        AppLogger.d("upLoadUserHeadImag:" + req + ",:" + path1);
                     } catch (JfgException e) {
                         e.printStackTrace();
                     }
-                }, throwable -> AppLogger.e("upLoadUserHeadImag: " + throwable.getLocalizedMessage()));
+                }, AppLogger::e);
     }
 
     /**
