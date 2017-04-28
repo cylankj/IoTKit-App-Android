@@ -102,7 +102,7 @@ public class CamMessageListAdapter extends SuperAdapter<CamMessageBean> {
         } else {
             selectedMap.clear();
         }
-        updateItemFrom(lastPosition);
+        notifyItemRangeChanged(0, getCount());
     }
 
     /**

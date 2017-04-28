@@ -169,6 +169,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         this.uuid = uuid;
         //disable 6个view
         setMicSpeakerState(0, 0);
+        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.tv_live).setEnabled(false);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
@@ -381,6 +382,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(true);
         post(portShowRunnable);
         findViewById(R.id.imgV_cam_live_land_play).setEnabled(livePlayType == TYPE_HISTORY);
+        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
+        findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
     }
 
     @Override
@@ -395,6 +398,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.showFlowView(false, null);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
         handlePlayErr(errCode);
+        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
+        findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
     }
 
     /**
