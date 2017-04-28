@@ -206,11 +206,13 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
         for (CamMessageBean bean : beanList) {
             DPEntity dpEntity = new DPEntity();
             dpEntity.setUuid(uuid);
+            dpEntity.set_id(bean.id);
             dpEntity.setAccount(BaseApplication.getAppComponent().getSourceManager().getJFGAccount().getAccount());
             dpEntity.setMsgId((int) bean.id);
             dpEntity.setVersion(bean.version);
             dpEntity.setAction(DBAction.DELETED);
             entities.add(dpEntity);
+            Log.d(TAG, "删除:" + bean.id + ",version:" + bean.version);
         }
         return entities;
     }
@@ -231,12 +233,18 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     if (idpTaskResult.getResultCode() == 0) {
                         //good
                         mView.onMessageDeleteSuc();
+                        AppLogger.d("需要加载下一页");
                     }
                 }, throwable -> {
                     AppLogger.e("err:" + throwable.getLocalizedMessage());
                     mView.onErr();
                 });
         addSubscription(subscription, "removeItems");
+    }
+
+    @Override
+    public void removeAllItems(ArrayList<CamMessageBean> beanList, boolean removeAll) {
+
     }
 
 

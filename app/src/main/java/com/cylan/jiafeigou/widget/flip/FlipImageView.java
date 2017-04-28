@@ -51,6 +51,23 @@ public class FlipImageView extends ImageView implements View.OnClickListener,
         public void onFlipEnd(FlipImageView view);
     }
 
+    public static class FlipListener implements OnFlipListener {
+        @Override
+        public void onClick(FlipImageView view) {
+
+        }
+
+        @Override
+        public void onFlipStart(FlipImageView view) {
+
+        }
+
+        @Override
+        public void onFlipEnd(FlipImageView view) {
+
+        }
+    }
+
     private OnFlipListener mListener;
 
     private boolean mIsFlipped;
@@ -226,7 +243,7 @@ public class FlipImageView extends ImageView implements View.OnClickListener,
 
     @Override
     public void onClick(View v) {
-        toggleFlip();
+//        toggleFlip();
         if (mListener != null) {
             mListener.onClick(this);
         }

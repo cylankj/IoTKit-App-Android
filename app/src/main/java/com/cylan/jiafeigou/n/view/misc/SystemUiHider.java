@@ -108,5 +108,8 @@ public class SystemUiHider {
         mHideHandler.postDelayed(mHideRunnable, delayMillis);
     }
 
+    public void removeDelayRunnable() {
+        mHideHandler.removeCallbacksAndMessages(null);
+    }
 
 }

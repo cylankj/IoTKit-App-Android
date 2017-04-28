@@ -9,21 +9,27 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.cylan.jiafeigou.R;
 import com.cylan.jiafeigou.widget.SimpleProgressBar;
 
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
+
 /**
  * Created by cylan-hunt on 16-12-8.
  */
 
-public class LivePlayControlView extends LinearLayout implements ILiveControl, View.OnClickListener {
+public class LivePlayControlView extends RelativeLayout implements ILiveControl, View.OnClickListener {
     /**
      * 开始默认是loading状态
      */
-    private int state = STATE_LOADING;
+    private int state = PLAY_STATE_PREPARE;
 
     private TextView textView;
     private TextView tvHelp;
@@ -42,7 +48,6 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
 
     public LivePlayControlView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        setOrientation(LinearLayout.VERTICAL);
         View view = LayoutInflater.from(getContext()).inflate(R.layout.live_play_control_layout_content, this, true);
         textView = (TextView) view.findViewById(R.id.tv_control_content);
         tvHelp = (TextView) view.findViewById(R.id.tv_control_help);
@@ -66,7 +71,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
     public void setState(int state, CharSequence content, String help) {
         this.state = state;
         switch (state) {
-            case STATE_LOADING:
+            case PLAY_STATE_PREPARE:
                 toDismiss(3);
                 toDismiss(1);
                 textView.setVisibility(GONE);
@@ -77,30 +82,28 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                 simpleProgressBar.setVisibility(VISIBLE);
                 simpleProgressBar.bringToFront();
                 break;
-            case STATE_PLAYING:
-                toDismiss(0);
-                if (!imageView.isShown())
-                    imageView.setVisibility(VISIBLE);
+            case PLAY_STATE_PLAYING:
+                handler.removeCallbacksAndMessages(null);
+                setVisibility(INVISIBLE);
                 imageView.bringToFront();
+                imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.camera_icon_pause);
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);
                 simpleProgressBar.setVisibility(GONE);
                 break;
-            case STATE_STOP:
+            case PLAY_STATE_STOP:
                 toDismiss(1);
-                if (!imageView.isShown())
-                    imageView.setVisibility(VISIBLE);
                 imageView.bringToFront();
+                imageView.setVisibility(VISIBLE);
                 imageView.setImageResource(R.drawable.camera_icon_play);
                 textView.setVisibility(GONE);
                 tvHelp.setVisibility(GONE);
                 simpleProgressBar.setVisibility(GONE);
                 break;
-            case STATE_LOADING_FAILED:
+            case PLAY_STATE_LOADING_FAILED:
                 toDismiss(1);
-                if (!imageView.isShown())
-                    imageView.setVisibility(VISIBLE);
+                imageView.setVisibility(VISIBLE);
                 imageView.bringToFront();
                 imageView.setImageResource(R.drawable.btn_video_retry);
                 simpleProgressBar.setVisibility(GONE);
@@ -113,7 +116,7 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
                     tvHelp.setText(help);
                 }
                 break;
-            case STATE_IDLE:
+            case PLAY_STATE_IDLE:
                 setVisibility(GONE);
                 break;
         }
@@ -172,13 +175,13 @@ public class LivePlayControlView extends LinearLayout implements ILiveControl, V
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.img_state:
-                if (action != null) action.clickImage(state);
+                if (action != null) action.clickImage(v, state);
                 break;
             case R.id.tv_control_content:
-                if (action != null) action.clickText();
+                if (action != null) action.clickText(v);
                 break;
             case R.id.tv_control_help:
-                if (action != null) action.clickHelp();
+                if (action != null) action.clickHelp(v);
                 break;
         }
     }

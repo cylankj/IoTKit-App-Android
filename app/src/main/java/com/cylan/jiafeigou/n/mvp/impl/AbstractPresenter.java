@@ -5,10 +5,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.support.annotation.CallSuper;
+import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
+import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
@@ -145,5 +148,11 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
             if (abstractPresenter != null && abstractPresenter.get() != null)
                 abstractPresenter.get().onTimeTick();
         }
+    }
+
+    @NonNull
+    @Override
+    public Device getDevice() {
+        return BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
     }
 }

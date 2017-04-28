@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.XmlResourceParser;
 import android.location.LocationManager;
 import android.text.TextUtils;
@@ -490,5 +491,9 @@ public class MiscUtils {
     public static String getErr(Throwable throwable) {
         if (throwable == null) return null;
         return "err:" + throwable.getLocalizedMessage();
+    }
+
+    public static boolean isLand() {
+        return ContextUtils.getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE;
     }
 }

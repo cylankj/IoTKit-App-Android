@@ -218,11 +218,9 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
      * @param position
      */
     private void setCurrentPosition(int position) {
-        if (currentPosition == position || position < 0 || position > camMessageListAdapter.getCount() - 1)
-            return;
-        currentPosition = position;
         if (getView() != null) getView().post(() -> {
-            long time = camMessageListAdapter.getList().get(currentPosition).version;
+            if (camMessageListAdapter.getCount() == 0) return;
+            long time = camMessageListAdapter.getList().get(0).version;
             boolean isToday = TimeUtils.isToday(time);
             String content = String.format(TimeUtils.getSuperString(time) + "%s", isToday ? "(" + getString(R.string.DOOR_TODAY) + ")" : "");
             tvCamMessageListDate.setText(content);
@@ -359,8 +357,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                 .findLastVisibleItemPosition();
         switch (view.getId()) {
             case R.id.tv_cam_message_list_date:
-                if (camMessageListAdapter.getCount() == 0)
-                    return;//呼入呼出
+//                if (camMessageListAdapter.getCount() == 0&&)
+//                    return;//呼入呼出
                 if (basePresenter != null && basePresenter.getDateList().size() == 0) {
                     LoadingDialog.showLoading(getFragmentManager(), getString(R.string.LOADING));
                     AppLogger.d("日起加载中...");
@@ -467,9 +465,8 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
                         Activity activity = getActivity();
                         if (activity != null && activity instanceof CameraLiveActivity) {
                             Bundle bundle = new Bundle();
-                            bundle.putInt(JConstant.KEY_CAM_LIVE_PAGE_PLAY_TYPE, TYPE_HISTORY);
                             bundle.putLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME, bean.alarmMsg.version);
-                            ((CameraLiveActivity) activity).setCurrentBundle(bundle);
+                            ((CameraLiveActivity) activity).addPutBundle(bundle);
                         }
                         AppLogger.d("alarm: " + bean);
                     } else {

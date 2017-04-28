@@ -1,9 +1,15 @@
 package com.cylan.jiafeigou.n.view.cam;
 
+import android.graphics.Bitmap;
+import android.graphics.Rect;
+import android.support.v4.app.FragmentActivity;
+import android.view.View;
+
+import com.cylan.entity.jniCall.JFGMsgVideoResolution;
 import com.cylan.entity.jniCall.JFGMsgVideoRtcp;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract;
-import com.cylan.jiafeigou.widget.wheel.ex.IData;
+import com.cylan.jiafeigou.widget.live.ILiveControl;
 
 /**
  * 内容非常多的一个layout
@@ -31,17 +37,19 @@ import com.cylan.jiafeigou.widget.wheel.ex.IData;
 
 public interface ICamLiveLayer {
 
-//    void showLayoutTopBar(int visibility);
-//
-//    void showLayoutFlow(int visibility);
-//
-//    void showLayoutLoading(int visibility);
-//
-//    void showLayoutTime(int visibility);
-//
-//    void showLayoutWheel(int visibility);
-//
-//    void showLayoutBottom(int visibility);
+    /**
+     * 屏幕比例
+     *
+     * @param ratio
+     */
+    void initLiveViewRect(float ratio, Rect rect);
+
+    void initView(String uuid);
+
+    /**
+     * speaker*2,mic*2,capture*2
+     */
+    void initHotRect();
 
     void onLivePrepared();
 
@@ -51,8 +59,39 @@ public interface ICamLiveLayer {
 
     void orientationChanged(CamLiveContract.Presenter presenter, Device device, int orientation);
 
-    void onRtcpCallback(JFGMsgVideoRtcp rtcp);
+    void onRtcpCallback(int type, JFGMsgVideoRtcp rtcp);
 
-    void onHistoryDataRsp(IData data);
+    void onResolutionRsp(JFGMsgVideoResolution resolution);
 
+    void onHistoryDataRsp(CamLiveContract.Presenter presenter);
+
+    void onLiveDestroy();
+
+    void onDeviceStandByChanged(Device device, View.OnClickListener clickListener);
+
+    void onLoadPreviewBitmap(Bitmap bitmap);
+
+    void onCaptureRsp(FragmentActivity activity, Bitmap bitmap);
+
+    void setLoadingRectAction(ILiveControl.Action action);
+
+    void onNetworkChanged(boolean connected);
+
+    void onActivityStart(Device device);
+
+    void setCaptureListener(View.OnClickListener captureListener);
+
+    void updateLiveViewMode(String mode);
+
+    /**
+     * @param micState     0:off-disable,1.on-disable,2.off-enable,3.on-enable
+     * @param speakerState
+     */
+    void setMicSpeakerState(int micState, int speakerState);
+
+    void setMicSpeakerListener(View.OnClickListener micListener, View.OnClickListener speakerListener);
+
+    int getMicState();
+
+    int getSpeakerState();
 }
