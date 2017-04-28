@@ -323,6 +323,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         if (getView() != null && getActivity() != null) {
             getView().postDelayed(() -> LoadingDialog.dismissLoading(getFragmentManager()), 100);
         }
+        tvCamMessageListEdit.setEnabled(camMessageListAdapter.getCount() > 0);
     }
 
     @Override
