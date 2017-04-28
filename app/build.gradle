@@ -339,15 +339,7 @@ dependencies {
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'
     compile 'com.cylan.ext:annotations:0.1.0'
 //    compile 'com.cylan.iot.sdk:sdkLib:213'
-    fileTree(dir: 'libs', include: '**/*.aar')
-            .each { File file ->
-        dependencies.add("compile", [
-                name: file.name.lastIndexOf('.').with {
-                    it != -1 ? file.name[0..<it] : file.name
-                },
-                ext : 'aar'
-        ])
-    }
+    compile(name: 'sdkLib-debug', ext: 'aar')
     compile 'tv.danmaku.ijk.media:ijkplayer-java:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-armv7a:0.7.5'
     compile 'tv.danmaku.ijk.media:ijkplayer-exo:0.7.5'

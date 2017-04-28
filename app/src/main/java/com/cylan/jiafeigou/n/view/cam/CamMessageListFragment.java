@@ -333,6 +333,11 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
     }
 
     @Override
+    public boolean isUserVisible() {
+        return getUserVisibleHint();
+    }
+
+    @Override
     public void setPresenter(CamMessageListContract.Presenter presenter) {
         this.basePresenter = presenter;
     }

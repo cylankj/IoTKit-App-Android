@@ -68,12 +68,11 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     public void showDatePicker(boolean isLand) {
         if (isLand) {
             if (AnimatorUtils.getSlideOutXDistance(landDateListContainer) == 0)
-                showLandDatePicker();
-            else {
-                if (landDateListContainer.getTranslationX() == landDateListContainer.getMeasuredWidth()) {
-                    //花出去了
-                }
+                AnimatorUtils.slideOutRight(landDateListContainer);
+            else if (AnimatorUtils.getSlideOutXDistance(landDateListContainer) == landDateListContainer.getWidth()) {
+                AnimatorUtils.slideInRight(landDateListContainer);
             }
+            showLandDatePicker();
         } else {
             showPortDatePicker();
         }
@@ -85,7 +84,6 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
     }
 
     private void showLandDatePicker() {
-        AnimatorUtils.slideInRight(landDateListContainer);
         if (recyclerView.getAdapter() == null || recyclerView.getAdapter().getItemCount() == 0) {
             final ArrayList<Long> dateStartList = presenter.getFlattenDateList();
             Collections.sort(dateStartList, Collections.reverseOrder());//来一个降序
@@ -114,7 +112,8 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             datePickerRef.get().setAction((int id, Object value) -> {
                 if (value != null && value instanceof Long) {
                     AppLogger.d("date pick: " + TimeUtils.getSpecifiedDate((Long) value));
-                    if (datePickerListener != null) datePickerListener.onPickDate((Long) value);
+                    if (datePickerListener != null)
+                        datePickerListener.onPickDate((Long) value, STATE_FINISH);
                     loadSelectedDay(TimeUtils.getSpecificDayStartTime((Long) value));
                 }
             });
@@ -140,7 +139,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
                 })
                 .subscribe(iData -> {
                     setupHistoryData(iData);
-                    HistoryFile historyFile = iData.getMaxHistoryFile();
+                    HistoryFile historyFile = iData.getMinHistoryFile();//最小时间.
                     if (historyFile != null) {
                         setNav2Time(historyFile.time * 1000L);
                         presenter.startPlayHistory(historyFile.time * 1000L);
@@ -165,7 +164,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
         switch (state) {
             case STATE_DRAGGING:
                 Log.d("onTimeUpdate", "STATE_DRAGGING :" + TimeUtils.getTestTime(time));
-                if (datePickerListener != null) datePickerListener.onPickDate(time);
+                if (datePickerListener != null) datePickerListener.onPickDate(time, STATE_DRAGGING);
                 break;
             case STATE_ADSORB:
                 Log.d("onTimeUpdate", "STATE_ADSORB :" + TimeUtils.getTestTime(time));
@@ -173,7 +172,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
             case STATE_FINISH:
                 Log.d("onTimeUpdate", "STATE_FINISH :" + TimeUtils.getTestTime(time));
                 presenter.startPlayHistory(time);
-                if (datePickerListener != null) datePickerListener.onPickDate(time);
+                if (datePickerListener != null) datePickerListener.onPickDate(time, STATE_FINISH);
                 break;
         }
     }
@@ -188,7 +187,7 @@ public class HistoryWheelHandler implements SuperWheelExt.WheelRollListener {
      * 选择日期,滚动条变化.都要通知.
      */
     public interface DatePickerListener {
-        void onPickDate(long time);
+        void onPickDate(long time, int state);
     }
 
 }

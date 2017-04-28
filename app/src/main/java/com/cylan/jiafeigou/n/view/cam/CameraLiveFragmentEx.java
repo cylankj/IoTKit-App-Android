@@ -535,7 +535,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void shouldWaitFor(boolean start) {
-        camLiveControlLayer.onLivePrepared();
+        if (getView() != null) getView().post(() -> camLiveControlLayer.onLivePrepared());
     }
 
     @Override
@@ -594,6 +594,11 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onNetworkChanged(boolean connected) {
         camLiveControlLayer.onNetworkChanged(connected);
+    }
+
+    @Override
+    public boolean isUserVisible() {
+        return getUserVisibleHint();
     }
 
     @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO})

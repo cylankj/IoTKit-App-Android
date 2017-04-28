@@ -570,6 +570,6 @@ public class AnimatorUtils {
     }
 
     public static int getSlideOutXDistance(View view) {
-        return -view.getBottom();
+        return (int) view.getTranslationX();
     }
 }

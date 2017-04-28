@@ -97,6 +97,8 @@ public interface CamLiveContract {
         void audioRecordPermissionDenied();
 
         void onNetworkChanged(boolean connected);
+
+        boolean isUserVisible();
     }
 
     interface Presenter extends BasePresenter {
@@ -235,6 +237,16 @@ public interface CamLiveContract {
     class PrePlayType {
         public int type;
         public long time;
+        public int playState;
+
+        @Override
+        public String toString() {
+            return "PrePlayType{" +
+                    "type=" + type +
+                    ", time=" + time +
+                    ", playState=" + playState +
+                    '}';
+        }
     }
 }
 

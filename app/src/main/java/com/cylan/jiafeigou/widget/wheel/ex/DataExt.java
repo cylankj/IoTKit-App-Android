@@ -230,6 +230,11 @@ public class DataExt implements IData {
         return ListUtils.getSize(rawList) > 0 ? rawList.get(0) : null;
     }
 
+    @Override
+    public HistoryFile getMinHistoryFile() {
+        return ListUtils.getSize(rawList) > 0 ? rawList.get(rawList.size() - 1) : null;
+    }
+
     private HistoryFile getVideo(long time) {
         HistoryFile video = new HistoryFile(0L, time, 0, "", "");
         video.time = time / 1000L;

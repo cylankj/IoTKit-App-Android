@@ -66,10 +66,12 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NERWORK;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.STOP_MAUNALLY;
+import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_HISTORY;
 import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
 
 /**
@@ -77,8 +79,8 @@ import static com.cylan.jiafeigou.n.mvp.contract.cam.CamLiveContract.TYPE_LIVE;
  */
 public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View>
         implements CamLiveContract.Presenter, IFeedRtcp.MonitorListener {
-    private int playType = TYPE_LIVE;
-    private int playState = PLAY_STATE_IDLE;
+    //    private int playType = TYPE_LIVE;
+//    private int playState = PLAY_STATE_IDLE;
     private IData historyDataProvider;
     private int stopReason = STOP_MAUNALLY;//手动断开
     private MapSubscription liveSubscription = new MapSubscription();
@@ -118,8 +120,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 })
                 .observeOn(AndroidSchedulers.mainThread())
                 .takeFirst(disconnect -> {
-                    playState = PLAY_STATE_IDLE;
-                    getView().onLiveStop(playType, disconnect.code);
+                    updatePrePlayType(-1, -1, PLAY_STATE_IDLE);
+                    getView().onLiveStop(prePlayType.type, disconnect.code);
                     reset();
                     AppLogger.d("reset subscription");
                     return true;
@@ -134,12 +136,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public int getPlayState() {
-        return playState;
+        return prePlayType.playState;
     }
 
     @Override
     public int getPlayType() {
-        return playType;
+        return prePlayType.type;
     }
 
 
@@ -281,9 +283,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public void startPlayLive() {
-        getView().onLivePrepare(TYPE_LIVE);
-        playState = PLAY_STATE_PREPARE;
-        playType = TYPE_LIVE;
+        DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
+        if (!JFGRules.isDeviceOnline(net)) {
+            updatePrePlayType(TYPE_HISTORY, -1, PLAY_STATE_LOADING_FAILED);
+            mView.onLiveStop(TYPE_HISTORY, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
+            return;
+        }
         reset();
         //加入管理,如果播放失败,收到disconnect
         liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
@@ -294,6 +299,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
                     ret = BaseApplication.getAppComponent().getCmd().playVideo(uuid);
                 }
+                updatePrePlayType(TYPE_LIVE, -1, PLAY_STATE_PREPARE);
+                getView().onLivePrepare(TYPE_LIVE);
                 AppLogger.i("play video: " + uuid + " " + ret);
             } catch (JfgException e) {
                 e.printStackTrace();
@@ -305,7 +312,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.e("play video :" + s);
                     //暂停播放
                     setStopReason(JFGRules.PlayErr.ERR_NOT_FLOW);
-                    stopPlayVideo(playType);
+                    stopPlayVideo(prePlayType.type);
                     return s;
                 }))
                 //filter getInterestingOne()
@@ -346,14 +353,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         .map(s -> {
                             //暂停播放
                             setStopReason(JFGRules.PlayErr.ERR_NOT_FLOW);
-                            stopPlayVideo(playType);
+                            stopPlayVideo(prePlayType.type);
                             AppLogger.e(s);
                             return null;
                         }))
                 .subscribeOn(Schedulers.newThread())
                 .map(rtcp -> {
                     feedRtcp.feed(rtcp);
-                    updatePrePlayType(playType, rtcp.timestamp);
+                    updatePrePlayType(prePlayType.type, rtcp.timestamp, PLAY_STATE_PLAYING);
                     return rtcp;
                 })
                 .observeOn(AndroidSchedulers.mainThread())
@@ -396,8 +403,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             } catch (JfgException e) {
                                 e.printStackTrace();
                             }
-                            playState = PLAY_STATE_PLAYING;
-                            getView().onLiveStarted(playType);
+                            updatePrePlayType(-1, -1, PLAY_STATE_PLAYING);
+                            getView().onLiveStarted(prePlayType.type);
                             return "JFGMsgVideoResolution";
                         }))
                 .first();
@@ -426,26 +433,31 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .map(func1);
     }
 
-    private void updatePrePlayType(int type, long time) {
+    private void updatePrePlayType(int type, long time, int state) {
         if (prePlayType == null) prePlayType = new CamLiveContract.PrePlayType();
-        prePlayType.type = type;
-        prePlayType.time = time;
+        if (type != -1)
+            prePlayType.type = type;
+        if (time != -1)
+            prePlayType.time = time;
+        prePlayType.playState = state;
         Log.d("updatePrePlayType", "updatePrePlayType:" + time);
     }
 
     @Override
     public void startPlayHistory(long time) {
-        getView().onLivePrepare(CamLiveContract.TYPE_HISTORY);
-        playType = CamLiveContract.TYPE_HISTORY;
-        playState = PLAY_STATE_PREPARE;
-        updatePrePlayType(playType, time);
+        DpMsgDefine.DPNet net = getDevice().$(201, new DpMsgDefine.DPNet());
+        if (!JFGRules.isDeviceOnline(net)) {
+            updatePrePlayType(TYPE_HISTORY, -1, PLAY_STATE_LOADING_FAILED);
+            mView.onLiveStop(TYPE_HISTORY, JFGRules.PlayErr.ERR_DEVICE_OFFLINE);
+            return;
+        }
         reset();
         //加入管理,如果播放失败,收到disconnect
         liveSubscription.add(videoDisconnectSub(), "videoDisconnectSub");
         liveSubscription.add(prePlay(s -> {
             try {
                 //先停止播放{历史录像,直播都需要停止播放}
-                if (playState != PLAY_STATE_IDLE) {
+                if (prePlayType.playState != PLAY_STATE_IDLE) {
                     BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
                     AppLogger.i("stop play history");
                 }
@@ -454,6 +466,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
                     ret = BaseApplication.getAppComponent().getCmd().playHistoryVideo(uuid, time / 1000L);
                 }
+                getView().onLivePrepare(TYPE_HISTORY);
+                updatePrePlayType(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
                 AppLogger.i(String.format("play history video:%s,%s ", uuid, time / 1000L) + " " + ret);
             } catch (JfgException e) {
                 AppLogger.e("err:" + e.getLocalizedMessage());
@@ -465,7 +479,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     AppLogger.e("play history video :" + s);
                     //暂停播放
                     setStopReason(JFGRules.PlayErr.ERR_NOT_FLOW);
-                    stopPlayVideo(playType);
+                    stopPlayVideo(prePlayType.type);
                     return s;
                 }))
                 //filter getInterestingOne()
@@ -486,8 +500,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public void stopPlayVideo(int type) {
-        AppLogger.d("pre play state: " + playState);
-        if (playState == PLAY_STATE_PLAYING) {
+        AppLogger.d("pre play state: " + prePlayType);
+        if (prePlayType.playState == PLAY_STATE_PLAYING) {
             //暂停播放了，还需要截图
             takeSnapShot(true);
         }
@@ -496,12 +510,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribeOn(Schedulers.newThread())
                 .map((String s) -> {
                     try {
-                        if (playState == PLAY_STATE_PLAYING) {
+                        if (prePlayType.playState == PLAY_STATE_PLAYING) {
                             setupAudio(false, false, false, false);
                         }
                         BaseApplication.getAppComponent().getCmd().stopPlay(s);
-                        playType = CamLiveContract.TYPE_NONE;
-                        playState = PLAY_STATE_IDLE;
+                        updatePrePlayType(-1, -1, PLAY_STATE_IDLE);
                         AppLogger.i("stopPlayVideo:" + s);
                     } catch (JfgException e) {
                         AppLogger.e("stop play err: " + e.getLocalizedMessage());
@@ -512,7 +525,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .doOnCompleted(() -> {
                     AppLogger.d("live stop: " + stopReason);
                     if (getView() != null)
-                        getView().onLiveStop(playType, stopReason);
+                        getView().onLiveStop(prePlayType.type, stopReason);
                 })
                 .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()))
                 .subscribe(ret -> {
@@ -732,7 +745,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         if (msg.id == 222) {
                             DpMsgDefine.DPSdcardSummary sdStatus = DpUtils.unpackData(msg.packValue, DpMsgDefine.DPSdcardSummary.class);
                             if (sdStatus == null) sdStatus = new DpMsgDefine.DPSdcardSummary();
-                            if (!sdStatus.hasSdcard) updatePrePlayType(TYPE_LIVE, 0);
+                            if (!sdStatus.hasSdcard || sdStatus.errCode != 0)
+                                updatePrePlayType(TYPE_LIVE, 0, -1);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -750,7 +764,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         AppLogger.e("is bad net work");
         //暂停播放
         setStopReason(JFGRules.PlayErr.ERR_LOW_FRAME_RATE);
-        stopPlayVideo(playType);
+        stopPlayVideo(prePlayType.type);
     }
 
     @Override
@@ -775,19 +789,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         if (mView == null) return;
         if (networkAction == null) networkAction = new NetworkAction(this);
         if (TextUtils.equals(action, ConnectivityManager.CONNECTIVITY_ACTION)) {
-            int type = NetUtils.getJfgNetType();
-            if (type == 0) {
-                networkAction.run();
-            } else {
-                networkAction.run();
-                AppLogger.e("还需要恢复播放");
-            }
+            networkAction.run();
         }
     }
 
     private NetworkAction networkAction;
 
     private static class NetworkAction {
+        private int preState = 0;
         private WeakReference<CamLivePresenterImpl> presenterWeakReference;
 
         public NetworkAction(CamLivePresenterImpl camLivePresenter) {
@@ -801,13 +810,18 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         .filter(ret -> presenterWeakReference.get().mView != null)
                         .subscribe(ret -> {
                             int net = NetUtils.getJfgNetType();
+                            if (preState == net) return;
+                            preState = net;
                             if (net == 0) {
                                 int playType = presenterWeakReference.get().getPlayType();
-                                AppLogger.i("there is no network ");
+                                AppLogger.i("网络中断");
                                 presenterWeakReference.get().setStopReason(ERR_NERWORK);
                                 presenterWeakReference.get().stopPlayVideo(playType);
                                 presenterWeakReference.get().mView.onNetworkChanged(false);
-                            } else presenterWeakReference.get().mView.onNetworkChanged(true);
+                            } else {
+                                presenterWeakReference.get().mView.onNetworkChanged(true);
+                                AppLogger.d("网络恢复");
+                            }
                         }, AppLogger::e);
             }
         }
