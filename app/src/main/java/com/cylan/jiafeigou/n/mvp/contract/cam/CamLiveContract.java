@@ -131,7 +131,7 @@ public interface CamLiveContract {
 
         boolean isShareDevice();
 
-        void setStopReason(int stopReason);
+//        void setStopReason(int stopReason);
 
         /**
          * 开始播放历史录像或者开始直播
@@ -148,9 +148,9 @@ public interface CamLiveContract {
         /**
          * 停止播放历史录像或者直播
          *
-         * @param type
+         * @param reason
          */
-        void stopPlayVideo(int type);
+        void stopPlayVideo(int reason);
 
         /**
          * 退出页面

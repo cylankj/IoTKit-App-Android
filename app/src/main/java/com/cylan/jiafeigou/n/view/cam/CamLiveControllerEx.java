@@ -53,7 +53,6 @@ import com.cylan.jiafeigou.widget.wheel.ex.SuperWheelExt;
 import com.cylan.panorama.CameraParam;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -282,7 +281,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void onLivePrepared() {
         livePlayState = PLAY_STATE_PREPARE;
-        layoutC.setState(PLAY_STATE_PREPARE, null);
+        setLoadingState(null, null, true);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
     }
 
@@ -308,6 +307,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             layoutD.setVisibility(INVISIBLE);
             showHistoryWheel(false);
             setLoadingState(null, null);
+            if (livePlayState == PLAY_STATE_PLAYING) {
+                layoutC.setVisibility(INVISIBLE);
+            }
         }
     };
     private Runnable portShowRunnable = new Runnable() {
@@ -318,6 +320,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             removeCallbacks(portHideRunnable);
             postDelayed(portHideRunnable, 3000);
             setLoadingState(null, null);
+            if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
+                layoutC.setVisibility(VISIBLE);
+            }
         }
     };
 
@@ -328,6 +333,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             AnimatorUtils.slideOut(layoutD, false);
             AnimatorUtils.slideOut(layoutE, false);
             setLoadingState(null, null);
+            if (livePlayState == PLAY_STATE_PLAYING) {
+                layoutC.setVisibility(INVISIBLE);
+            }
         }
     };
 
@@ -339,6 +347,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             AnimatorUtils.slideIn(layoutE, false);
             postDelayed(landHideRunnable, 3000);
             setLoadingState(null, null);
+            if (livePlayType == TYPE_HISTORY && livePlayState == PLAY_STATE_PLAYING) {
+                layoutC.setVisibility(VISIBLE);
+            }
         }
     };
 
@@ -375,15 +386,19 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutE.findViewById(R.id.tv_live).setEnabled(isPlayHistory);
         setMicSpeakerState(isPlayHistory ? 0 : 2, 2);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
+        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
         //直播
         findViewById(R.id.tv_live).setEnabled(livePlayType == TYPE_HISTORY);
-        setLoadingState(null, null);
+        setLoadingState(null, null, false);
         liveViewWithThumbnail.onLiveStart();
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(true);
         post(portShowRunnable);
         findViewById(R.id.imgV_cam_live_land_play).setEnabled(livePlayType == TYPE_HISTORY);
-        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
-        findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
+    }
+
+    private void setLoadingState(String content, String subContent, boolean forceShowOrHide) {
+        layoutC.setState(livePlayState, content, subContent);
+        layoutC.setVisibility(forceShowOrHide ? VISIBLE : INVISIBLE);
     }
 
     private void setLoadingState(String content, String subContent) {
@@ -393,9 +408,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             case PLAY_STATE_STOP:
             case PLAY_STATE_PREPARE:
                 layoutC.setVisibility(VISIBLE);
-                break;
-            case PLAY_STATE_PLAYING:
-                layoutC.setVisibility(INVISIBLE);
                 break;
         }
     }
@@ -450,11 +462,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 break;
             case JError.ErrorVideoPeerDisconnect:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
-                layoutC.setState(PLAY_STATE_LOADING_FAILED, getContext().getString(R.string.Device_Disconnected));
+                setLoadingState(getContext().getString(R.string.Device_Disconnected), null);
                 break;
             case JFGRules.PlayErr.ERR_DEVICE_OFFLINE:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
-                layoutC.setState(PLAY_STATE_LOADING_FAILED, getContext().getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
+                setLoadingState(getContext().getString(R.string.OFFLINE_ERR), getContext().getString(R.string.USER_HELP));
                 break;
             case JError.ErrorVideoPeerNotExist:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
@@ -525,6 +537,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         layoutD.setTranslationY(0);
         layoutE.setTranslationY(0);
         if (land) {
+            layoutE.setVisibility(VISIBLE);
             removeCallbacks(portHideRunnable);
             removeCallbacks(landHideRunnable);
             removeCallbacks(landShowRunnable);
@@ -540,7 +553,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     @Override
     public void onRtcpCallback(int type, JFGMsgVideoRtcp rtcp) {
         livePlayState = PLAY_STATE_PLAYING;
-        layoutC.setState(PLAY_STATE_PLAYING, null);
         String flow = MiscUtils.getByteFromBitRate(rtcp.bitRate);
         liveViewWithThumbnail.showFlowView(true, flow);
         //分享账号不显示啊.
@@ -646,7 +658,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         liveViewWithThumbnail.enableStandbyMode(standby.standby, clickListener, !TextUtils.isEmpty(device.shareAccount));
         if (standby.standby && !isLand()) {
             post(portHideRunnable);
-            layoutC.setState(PLAY_STATE_IDLE, null);
+            setLoadingState(null, null, false);
         }
     }
 
@@ -811,15 +823,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     public void setLoadingState(int state, String content) {
         setLoadingState(content, null);
-    }
-
-    private void handleTimeRectClick() {
-
-        if (isLand()) {
-            //弹窗
-        } else {
-            //右边侧滑进来
-        }
     }
 
 

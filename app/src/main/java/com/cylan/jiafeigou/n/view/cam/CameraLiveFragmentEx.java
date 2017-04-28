@@ -148,8 +148,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                         break;
                     case PLAY_STATE_PLAYING:
                         //下一步stop
-                        basePresenter.setStopReason(STOP_MAUNALLY);
-                        basePresenter.stopPlayVideo(basePresenter.getPlayType());
+                        basePresenter.stopPlayVideo(STOP_MAUNALLY);
                         break;
                 }
                 AppLogger.i("clickImage:" + state);
@@ -400,7 +399,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             if (basePresenter.getPlayState() == PLAY_STATE_PREPARE)
                 return;
             if (basePresenter.getPlayState() == PLAY_STATE_PLAYING) {
-                basePresenter.stopPlayVideo(TYPE_HISTORY);
+                basePresenter.stopPlayVideo(STOP_MAUNALLY);
                 ((ImageView) v).setImageResource(R.drawable.icon_landscape_stop);
                 camLiveControlLayer.setLoadingState(PLAY_STATE_STOP, null);
             } else {
@@ -505,7 +504,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         if (getView() != null)
             getView().setKeepScreenOn(false);
         Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-        camLiveControlLayer.onLiveStop(basePresenter, device, errId);
+        if (getView() != null)
+            getView().postDelayed(() -> camLiveControlLayer.onLiveStop(basePresenter, device, errId), 500);
     }
 
     @Override
