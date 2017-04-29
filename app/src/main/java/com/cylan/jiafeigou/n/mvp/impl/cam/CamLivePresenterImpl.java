@@ -40,6 +40,7 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
+import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -165,7 +166,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     public CamLiveContract.PrePlayType getPrePlayType() {
         if (prePlayType == null) {
             this.prePlayType = new CamLiveContract.PrePlayType();
-            this.            prePlayType.type = TYPE_LIVE;
+            this.prePlayType.type = TYPE_LIVE;
         }
         Log.d("updatePrePlayType", "getPrePlayType:" + prePlayType.time);
         return this.prePlayType;
@@ -444,6 +445,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public void startPlayHistory(long t) {
         //保证得到s System.currentTimeMillis() / t == 0 的条件范围可能有点小
+        if (t == 0) t = 1;
         final long time = System.currentTimeMillis() / t > 100 ? t : t / 1000;
         getView().onLivePrepare(TYPE_HISTORY);
         updatePrePlayType(TYPE_HISTORY, time, PLAY_STATE_PREPARE);
@@ -543,6 +545,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         return uuid;
     }
 
+    /**
+     * 查看 doc/mic_speaker设置.md
+     * localSpeaker 0->1{ }
+     *
+     * @return
+     */
     @Override
     public Observable<Boolean> switchSpeaker() {
         return Observable.just(true)
@@ -556,11 +564,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     if (localSpeaker) {
                         //下一步,
                         localSpeaker = false;
-                    } else {
                         remoteMic = false;
-                        remoteSpeaker = false;
+                    } else {
+                        remoteMic = true;
+                        remoteSpeaker = localMic;
                         localSpeaker = true;
-                        localMic = false;
                     }
                     boolean result = setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
                     return Observable.just(result);
@@ -570,6 +578,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private boolean setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
         AppLogger.d(String.format(Locale.getDefault(), "localMic:%s,localSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic,
                 localSpeaker, remoteMic, remoteSpeaker));
+        //local:false远程  true本地
         BaseApplication.getAppComponent().getCmd().setAudio(false, remoteMic, remoteSpeaker);
         if (localSpeaker) {
             MediaRecorder mRecorder = null;
@@ -595,6 +604,13 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         return true;
     }
 
+    /**
+     * localMic 0-->1{全部打开}
+     * localMic 1-->0{}
+     * 查看 doc/mic_speaker设置.md
+     *
+     * @return
+     */
     @Override
     public Observable<Boolean> switchMic() {
         return Observable.just(true)
@@ -603,15 +619,15 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     //当前状态
                     boolean localMic = getView().isLocalMicOn();
                     boolean localSpeaker = getView().isLocalSpeakerOn();
-                    boolean remoteMic = localSpeaker;
-                    boolean remoteSpeaker = localMic;//imageview 图标状态已经更新了。
+                    boolean remoteSpeaker = false;//imageview 图标状态已经更新了。
+                    boolean remoteMic = false;
                     if (!localMic) {//打开mic,全部打开
                         localMic = true;
                         localSpeaker = true;
                         remoteMic = true;
                         remoteSpeaker = true;
                     } else {//关闭mic,只需关闭远程speaker,和本地mic
-                        remoteSpeaker = false;
+                        remoteMic = localSpeaker;
                         localMic = false;
                     }
                     boolean result = setupAudio(localMic, localSpeaker, remoteMic, remoteSpeaker);
@@ -654,7 +670,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     PerformanceUtils.stopTrace("takeCapture");
                     String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
                     BitmapUtils.saveBitmap2file(bitmap, filePath);
-                    MediaScannerConnection.scanFile(mView.getContext(), new String[]{filePath}, null, null);
+                    MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
                     if (!forPreview) getView().onTakeSnapShot(bitmap);//弹窗
                     return bitmap;
                 })

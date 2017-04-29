@@ -266,6 +266,9 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void setUserVisibleHint(boolean isVisibleToUser) {
         super.setUserVisibleHint(isVisibleToUser);
         if (basePresenter != null && isVisibleToUser && isResumed() && getActivity() != null) {
+            Device device = basePresenter.getDevice();
+            DpMsgDefine.DPStandby standby = device.$(508, new DpMsgDefine.DPStandby());
+            if (standby.standby) return;
             Bundle bundle = getArguments();
             if (getArguments().containsKey(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME)) {
                 long time = bundle.getLong(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
@@ -535,7 +538,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void shouldWaitFor(boolean start) {
-        if (getView() != null) getView().post(() -> camLiveControlLayer.onLivePrepared());
+        if (getView() != null) getView().post(() -> {
+            if (start) {
+                camLiveControlLayer.onLivePrepared();
+            } else {
+                camLiveControlLayer.resumeGoodFrame();
+            }
+        });
+        Log.d("shouldWaitFor", "shouldWaitFor: " + start);
     }
 
     @Override

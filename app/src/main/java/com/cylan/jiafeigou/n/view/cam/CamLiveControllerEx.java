@@ -413,6 +413,12 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private void setLoadingState(String content, String subContent) {
         layoutC.setState(livePlayState, content, subContent);
+        Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
+        DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
+        if (isStandBY.standby) {
+            layoutC.setVisibility(INVISIBLE);
+            return;
+        }
         switch (livePlayState) {
             case PLAY_STATE_LOADING_FAILED:
             case PLAY_STATE_STOP:
@@ -447,9 +453,6 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private void handlePlayErr(int errCode) {
         switch (errCode) {//这些errCode 应当写在一个map中.Map<Integer,String>
             case JFGRules.PlayErr.ERR_NERWORK:
-                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
-                DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
-                if (isStandBY == null || isStandBY.standby) break;//
                 livePlayState = PLAY_STATE_LOADING_FAILED;
                 setLoadingState(getContext().getString(R.string.OFFLINE_ERR_1), getContext().getString(R.string.USER_HELP));
                 break;
@@ -799,6 +802,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         int tag = (int) findViewById(R.id.imgV_cam_switch_speaker).getTag();
         return (tag == R.drawable.icon_port_speaker_on_selector ||
                 tag == R.drawable.icon_land_speaker_on_selector) ? 3 : 2;
+    }
+
+    @Override
+    public void resumeGoodFrame() {
+        setLoadingState(null, null, false);
     }
 
     @Override

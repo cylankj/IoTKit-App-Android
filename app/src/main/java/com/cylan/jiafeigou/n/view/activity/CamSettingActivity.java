@@ -346,28 +346,28 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
         } else {
             svSettingDeviceStandbyMode.setChecked(dpStandby.standby);
             if (!JFGRules.isDeviceOnline(net)) {
-                enableStandby(false);
+                enableStandby(false);//离线
             } else {
                 enableStandby(true);
-                svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
-                    switchBtn(lLayoutSettingItemContainer, !isChecked);
-                    DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
-                    standby.standby = isChecked;
-                    standby.version = System.currentTimeMillis();
-                    triggerStandby(standby);
-                    standby.led = isChecked ? ledPreState() : standby.led;//开启待机,保存之前状态到standby.关闭待机,从standby中恢复.
-                    standby.autoRecord = isChecked ? autoRecordPreState() : standby.autoRecord;
-                    standby.alarmEnable = isChecked ? alarmPreState() : standby.alarmEnable;
-                    List<DataPoint> list = new ArrayList<>();
-                    dpStandby.msgId = 508;
-                    list.add(dpStandby);
-                    list.add(new DpMsgDefine.DPPrimary<>(!isChecked && standby.led, ID_209_LED_INDICATOR));
-                    list.add(new DpMsgDefine.DPPrimary<>(isChecked ? 0 : standby.autoRecord, ID_303_DEVICE_AUTO_VIDEO_RECORD));
-                    list.add(new DpMsgDefine.DPPrimary<>(!isChecked && standby.alarmEnable, ID_501_CAMERA_ALARM_FLAG));
-                    basePresenter.updateInfoReq(list);
-                    ToastUtil.showToast(getString(R.string.SCENE_SAVED));
-                });
             }
+            svSettingDeviceStandbyMode.setOnCheckedChangeListener((CompoundButton buttonView, boolean isChecked) -> {
+                switchBtn(lLayoutSettingItemContainer, !isChecked);
+                DpMsgDefine.DPStandby standby = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid).$(508, new DpMsgDefine.DPStandby());
+                standby.standby = isChecked;
+                standby.version = System.currentTimeMillis();
+                triggerStandby(standby);
+                standby.led = isChecked ? ledPreState() : standby.led;//开启待机,保存之前状态到standby.关闭待机,从standby中恢复.
+                standby.autoRecord = isChecked ? autoRecordPreState() : standby.autoRecord;
+                standby.alarmEnable = isChecked ? alarmPreState() : standby.alarmEnable;
+                List<DataPoint> list = new ArrayList<>();
+                dpStandby.msgId = 508;
+                list.add(dpStandby);
+                list.add(new DpMsgDefine.DPPrimary<>(!isChecked && standby.led, ID_209_LED_INDICATOR));
+                list.add(new DpMsgDefine.DPPrimary<>(isChecked ? 0 : standby.autoRecord, ID_303_DEVICE_AUTO_VIDEO_RECORD));
+                list.add(new DpMsgDefine.DPPrimary<>(!isChecked && standby.alarmEnable, ID_501_CAMERA_ALARM_FLAG));
+                basePresenter.updateInfoReq(list);
+                ToastUtil.showToast(getString(R.string.SCENE_SAVED));
+            });
             switchBtn(lLayoutSettingItemContainer, !dpStandby.standby);
         }
         /////////////////////////////led/////////////////////////////////////
@@ -557,7 +557,8 @@ public class CamSettingActivity extends BaseFullScreenFragmentActivity<CamSettin
             svSettingDeviceMobileNetwork.setAlpha(1.0f);
             svSettingDeviceDelayCapture.setAlpha(1.0f);
         }
-        enableStandby(connected);
+        DpMsgDefine.DPNet net = basePresenter.getDevice().$(201, new DpMsgDefine.DPNet());
+        enableStandby(connected && JFGRules.isDeviceOnline(net));
     }
 
     private void enableStandby(boolean enable) {
