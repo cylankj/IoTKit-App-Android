@@ -181,7 +181,7 @@ android {
             manifestPlaceholders = ["HW_PUSH_AUTHORITIES": "com.cylan.jiafeigou.zhongxing.hms.update.provider",
                                     "HW_APP_ID"          : "xxx",
                                     "VID"                : "\\ 0002",
-                                    "VKEY"               : "ekPVDWnSKiTkwCT3QQkXd0U0SolaYqr1",
+                                    "VKEY"               : "F6rHsK2c3af7SAV0CKsRQpwa14QijAdB",
                                     "qqAppKey"           : "",
                                     "mtaAppKey"          : "ATQ1JV694AKT",
                                     "weChatAppKey"       : "",
