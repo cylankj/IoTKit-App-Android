@@ -94,7 +94,7 @@ public class CloudLiveCallPresenterImp extends AbstractPresenter<CloudLiveCallCo
         final int net = NetUtils.getJfgNetType(ContextUtils.getContext());
         AppLogger.i("play initSubscription live " + net + " " + uuid);
         if (net == 0) {
-            getView().onLiveStop(JFGRules.PlayErr.ERR_NERWORK);
+            getView().onLiveStop(JFGRules.PlayErr.ERR_NETWORK);
             return;
         }
         try {

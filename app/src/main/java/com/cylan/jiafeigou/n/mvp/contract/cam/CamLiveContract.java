@@ -136,7 +136,7 @@ public interface CamLiveContract {
         /**
          * 开始播放历史录像或者开始直播
          */
-        void startPlayLive();
+        void startPlay();
 
         /**
          * 开始播放历史录像
@@ -150,14 +150,14 @@ public interface CamLiveContract {
          *
          * @param reason
          */
-        void stopPlayVideo(int reason);
+        Observable<Boolean> stopPlayVideo(int reason);
 
         /**
          * 退出页面
          *
          * @param detach
          */
-        void stopPlayVideo(boolean detach);
+        Observable<Boolean> stopPlayVideo(boolean detach);
 
         String getUuid();
 

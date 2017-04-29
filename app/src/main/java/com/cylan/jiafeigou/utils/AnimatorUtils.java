@@ -483,18 +483,8 @@ public class AnimatorUtils {
         }
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
         objectAnimator.setDuration(250);
-        objectAnimator.addListener(new SimpleAnimationListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-                if (!view.isShown()) view.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                if (view.isShown()) view.setVisibility(View.INVISIBLE);
-            }
-        });
         view.setTag(objectAnimator);
+        if (!view.isShown()) view.setVisibility(View.VISIBLE);
         objectAnimator.start();
     }
 
@@ -522,13 +512,8 @@ public class AnimatorUtils {
         view.clearAnimation();
         ObjectAnimator objectAnimator = ObjectAnimator.ofFloat(view, "translationY", start, end);
         objectAnimator.setDuration(250);
-        objectAnimator.addListener(new SimpleAnimationListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-                if (!view.isShown()) view.setVisibility(View.VISIBLE);
-            }
-        });
         view.setTag(objectAnimator);
+        if (!view.isShown()) view.setVisibility(View.VISIBLE);
         objectAnimator.start();
     }
 

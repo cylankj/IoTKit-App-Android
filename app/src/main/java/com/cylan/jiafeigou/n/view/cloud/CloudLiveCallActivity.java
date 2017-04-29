@@ -354,7 +354,7 @@ public class CloudLiveCallActivity extends AppCompatActivity implements CloudLiv
     @Override
     public void onLiveStop(int code) {
         switch (code) {
-            case JFGRules.PlayErr.ERR_NERWORK:
+            case JFGRules.PlayErr.ERR_NETWORK:
                 ToastUtil.showNegativeToast(getString(R.string.OFFLINE_ERR_1));
                 break;
             case JFGRules.PlayErr.ERR_UNKOWN:

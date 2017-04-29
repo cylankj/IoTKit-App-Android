@@ -353,7 +353,7 @@
 //        if (basePresenter.getPlayState() != PLAY_STATE_PLAYING) {
 //            CamLiveContract.PrePlayType type = basePresenter.getPrePlayType();
 //            if (type.type == TYPE_LIVE) {
-//                basePresenter.startPlayLive(TYPE_LIVE);
+//                basePresenter.startPlay(TYPE_LIVE);
 //            } else {
 //                startLiveHistory(type.time * 1000L);
 //            }
@@ -428,7 +428,7 @@
 //                    .setMessage(getString(R.string.MSG_SD_OFF))
 //                    .setPositiveButton(getString(R.string.OK), (DialogInterface d, int which) -> {
 //                        if (basePresenter.getPlayState() != PLAY_STATE_PLAYING)
-//                            basePresenter.startPlayLive(TYPE_LIVE);
+//                            basePresenter.startPlay(TYPE_LIVE);
 //                    })
 //                    .create();
 //            sdcardPulloutDlg = new SoftReference<>(dialog);
@@ -750,7 +750,7 @@
 //        camLiveController.setLiveTime(0);
 //        camLiveController.onLiveStop();
 //        switch (errId) {//这些errCode 应当写在一个map中.Map<Integer,String>
-//            case JFGRules.PlayErr.ERR_NERWORK:
+//            case JFGRules.PlayErr.ERR_NETWORK:
 //                Device device = BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
 //                DpMsgDefine.DPStandby isStandBY = device.$(508, new DpMsgDefine.DPStandby());
 //                if (isStandBY == null || isStandBY.standby) break;//

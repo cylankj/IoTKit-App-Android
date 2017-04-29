@@ -115,8 +115,7 @@ public class AfterLoginService extends IntentService {
                     AppLogger.d("频繁检查?");
 //                    return;
                 }
-                //更新 检查版本的时间
-                PreferencesUtils.putLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, System.currentTimeMillis());
+
                 Process.setThreadPriority(Process.THREAD_PRIORITY_LOWEST);
                 AppLogger.d("尝试检查版本");
                 Observable.just("check_version")
@@ -131,6 +130,8 @@ public class AfterLoginService extends IntentService {
                             try {
                                 String vid = PackageUtils.getMetaString(ContextUtils.getContext(), "vId");
                                 req = BaseApplication.getAppComponent().getCmd().checkClientVersion(vid);
+                                //更新 检查版本的时间
+                                PreferencesUtils.putLong(JConstant.KEY_LAST_TIME_CHECK_VERSION, System.currentTimeMillis());
                             } catch (JfgException e) {
                                 AppLogger.e("check_version failed:" + MiscUtils.getErr(e));
                             }

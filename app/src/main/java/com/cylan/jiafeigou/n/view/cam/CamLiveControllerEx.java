@@ -456,7 +456,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
      */
     private void handlePlayErr(int errCode) {
         switch (errCode) {//这些errCode 应当写在一个map中.Map<Integer,String>
-            case JFGRules.PlayErr.ERR_NERWORK:
+            case JFGRules.PlayErr.ERR_NETWORK:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
                 setLoadingState(getContext().getString(R.string.OFFLINE_ERR_1), getContext().getString(R.string.USER_HELP));
                 break;
@@ -496,6 +496,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 break;
             case PLAY_STATE_IDLE:
                 livePlayState = PLAY_STATE_IDLE;
+                setLoadingState(null, null);
+                break;
+            case PLAY_STATE_PREPARE:
+                livePlayState = PLAY_STATE_PREPARE;
                 setLoadingState(null, null);
                 break;
             default:

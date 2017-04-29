@@ -301,7 +301,7 @@ public class JFGRules {
         /**
          * 网络
          */
-        public static final int ERR_NERWORK = 0;
+        public static final int ERR_NETWORK = 0;
         /**
          * 没有流量
          */

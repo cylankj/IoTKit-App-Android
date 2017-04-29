@@ -153,7 +153,7 @@
 //                    case STATE_STOP:
 //                        //下一步playing
 //                        if (presenterRef != null && presenterRef.get() != null)
-//                            presenterRef.get().startPlayLive(presenterRef.get().getPlayType());
+//                            presenterRef.get().startPlay(presenterRef.get().getPlayType());
 //                        break;
 //                    case STATE_PLAYING:
 //                        //下一步stop
@@ -488,7 +488,7 @@
 //                if (presenterRef != null && presenterRef.get() != null) {
 //                    AppLogger.d("click live btn: " + presenterRef.get().getPlayType());
 //                    presenterRef.get().stopPlayVideo(TYPE_HISTORY);
-//                    presenterRef.get().startPlayLive(TYPE_LIVE);
+//                    presenterRef.get().startPlay(TYPE_LIVE);
 //                }
 //                break;
 //            case R.id.imgV_cam_live_land_play:
@@ -497,7 +497,7 @@
 //                        if (presenterRef.get().getPlayState() == PLAY_STATE_PLAYING) {
 //                            presenterRef.get().stopPlayVideo(presenterRef.get().getPlayType());
 //                        } else
-//                            presenterRef.get().startPlayLive(presenterRef.get().getPlayType());
+//                            presenterRef.get().startPlay(presenterRef.get().getPlayType());
 //                        AppLogger.i(String.format("land play history: %s", presenterRef.get().getPlayType()));
 //                    } else {
 //                        long time = camLiveControlLayer.getSwCamLiveWheel()
