@@ -58,6 +58,7 @@ import com.cylan.panorama.CameraParam;
 import java.io.File;
 
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
@@ -425,6 +426,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
             case PLAY_STATE_PREPARE:
                 layoutC.setVisibility(VISIBLE);
                 break;
+            case PLAY_STATE_IDLE:
+                layoutC.setVisibility(INVISIBLE);
+                break;
         }
     }
 
@@ -489,6 +493,10 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 //正在直播...
                 livePlayState = PLAY_STATE_LOADING_FAILED;
                 setLoadingState(getContext().getString(R.string.CONNECTING), null);
+                break;
+            case PLAY_STATE_IDLE:
+                livePlayState = PLAY_STATE_IDLE;
+                setLoadingState(null, null);
                 break;
             default:
                 livePlayState = PLAY_STATE_LOADING_FAILED;

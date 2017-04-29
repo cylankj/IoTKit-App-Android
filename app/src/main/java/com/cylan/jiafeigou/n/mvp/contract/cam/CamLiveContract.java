@@ -235,7 +235,7 @@ public interface CamLiveContract {
     }
 
     class PrePlayType {
-        public int type;
+        public int type = TYPE_LIVE;
         public long time;
         public int playState;
 

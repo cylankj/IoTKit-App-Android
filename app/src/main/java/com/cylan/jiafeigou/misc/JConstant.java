@@ -288,11 +288,11 @@ public class JConstant {
 
     public final static String KEY_NTP_INTERVAL = "ntp_key";
 
-    public static final int PLAY_STATE_LOADING_FAILED = -1;
-    public static final int PLAY_STATE_IDLE = 1;
-    public static final int PLAY_STATE_PREPARE = 2;//loading
-    public static final int PLAY_STATE_PLAYING = 3;
-    public static final int PLAY_STATE_STOP = 4;
+    public static final int PLAY_STATE_LOADING_FAILED = -111;
+    public static final int PLAY_STATE_IDLE = 111;
+    public static final int PLAY_STATE_PREPARE = 222;//loading
+    public static final int PLAY_STATE_PLAYING = 333;
+    public static final int PLAY_STATE_STOP = 444;
 
     public static final int CLOUD_OUT_CONNECT_TIME_OUT = 0;
     public static final int CLOUD_IN_CONNECT_TIME_OUT = 2531;
