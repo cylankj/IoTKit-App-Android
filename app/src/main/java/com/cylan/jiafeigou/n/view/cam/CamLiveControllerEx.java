@@ -60,6 +60,7 @@ import java.io.File;
 import static com.cylan.jiafeigou.dp.DpMsgMap.ID_501_CAMERA_ALARM_FLAG;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_LOADING_FAILED;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_NET_CHANGED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_STOP;
@@ -498,7 +499,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 livePlayState = PLAY_STATE_IDLE;
                 setLoadingState(null, null);
                 break;
-            case PLAY_STATE_PREPARE:
+            case PLAY_STATE_NET_CHANGED:
                 livePlayState = PLAY_STATE_PREPARE;
                 setLoadingState(null, null);
                 break;

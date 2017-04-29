@@ -999,6 +999,9 @@ public class RxEvent {
         public int forceUpgrade;//强制升级
 
         public ClientCheckVersion(int ret, String result, int forceUpgrade) {
+            this.ret = ret;
+            this.result = result;
+            this.forceUpgrade = forceUpgrade;
         }
 
         @Override

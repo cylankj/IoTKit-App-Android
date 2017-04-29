@@ -293,6 +293,7 @@ public class JConstant {
     public static final int PLAY_STATE_PREPARE = 222;//loading
     public static final int PLAY_STATE_PLAYING = 333;
     public static final int PLAY_STATE_STOP = 444;
+    public static final int PLAY_STATE_NET_CHANGED = 555;//网络变化过度
 
     public static final int CLOUD_OUT_CONNECT_TIME_OUT = 0;
     public static final int CLOUD_IN_CONNECT_TIME_OUT = 2531;

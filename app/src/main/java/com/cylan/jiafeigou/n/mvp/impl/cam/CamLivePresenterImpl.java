@@ -70,6 +70,7 @@ import rx.schedulers.Schedulers;
 
 import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
+import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_NET_CHANGED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NETWORK;
@@ -839,7 +840,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                                 presenterWeakReference.get().mView.onNetworkChanged(true);
                                 AppLogger.d("网络恢复");
                                 //此处的reason 不需要填 ERR_NETWORK,因为下一步需要恢复播放loading
-                                presenterWeakReference.get().stopPlayVideo(PLAY_STATE_PREPARE)
+                                presenterWeakReference.get().stopPlayVideo(PLAY_STATE_NET_CHANGED)
                                         .subscribeOn(Schedulers.newThread())
                                         .subscribe(result -> {
                                             presenterWeakReference.get().startPlay();

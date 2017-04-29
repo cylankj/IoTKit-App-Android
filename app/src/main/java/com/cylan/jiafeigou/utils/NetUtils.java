@@ -55,7 +55,7 @@ public class NetUtils {
     public static int getNetType(Context c) {
         ConnectivityManager cm = getConnectivityManager(c);
         NetworkInfo info = cm.getActiveNetworkInfo();
-        if (info != null) {
+        if (info != null && info.isAvailable() && info.isConnected()) {
             return info.getType();
         }
         return -1;
@@ -84,7 +84,7 @@ public class NetUtils {
      */
     public static int getJfgNetType() {
         Context c = ContextUtils.getContext();
-        int type =getJfgNetType(c);
+        int type = getJfgNetType(c);
         switch (type) {
             case ConnectivityManager.TYPE_WIFI:
                 return 1;
