@@ -133,12 +133,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public int getPlayState() {
-        return prePlayType.playState;
+        return getPrePlayType().playState;
     }
 
     @Override
     public int getPlayType() {
-        return prePlayType.type;
+        return getPrePlayType().type;
     }
 
 
@@ -164,8 +164,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     @Override
     public CamLiveContract.PrePlayType getPrePlayType() {
         if (prePlayType == null) {
-            prePlayType = new CamLiveContract.PrePlayType();
-            prePlayType.type = TYPE_LIVE;
+            this.prePlayType = new CamLiveContract.PrePlayType();
+            this.            prePlayType.type = TYPE_LIVE;
         }
         Log.d("updatePrePlayType", "getPrePlayType:" + prePlayType.time);
         return this.prePlayType;
@@ -570,14 +570,14 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     private boolean setupAudio(boolean localMic, boolean localSpeaker, boolean remoteMic, boolean remoteSpeaker) {
         AppLogger.d(String.format(Locale.getDefault(), "localMic:%s,localSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic,
                 localSpeaker, remoteMic, remoteSpeaker));
-        BaseApplication.getAppComponent().getCmd().setAudio(false, remoteSpeaker, remoteMic);
+        BaseApplication.getAppComponent().getCmd().setAudio(false, remoteMic, remoteSpeaker);
         if (localSpeaker) {
             MediaRecorder mRecorder = null;
             try {
                 mRecorder = new MediaRecorder();
                 mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
                 mRecorder.release();
-                BaseApplication.getAppComponent().getCmd().setAudio(true, true, localMic);
+                BaseApplication.getAppComponent().getCmd().setAudio(true, remoteMic, true);
                 return true;
             } catch (Exception e) {
                 AppLogger.d(e.getMessage());
