@@ -1,5 +1,7 @@
 package com.cylan.jiafeigou.base.module;
 
+import android.util.Log;
+
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.JFGDPMsgCount;
@@ -101,7 +103,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public void OnVideoNotifyRTCP(JFGMsgVideoRtcp jfgMsgVideoRtcp) {
-        AppLogger.d("OnVideoNotifyRTCP" + gson.toJson(jfgMsgVideoRtcp));
+        Log.d("", "OnVideoNotifyRTCP" + gson.toJson(jfgMsgVideoRtcp));
         RxBus.getCacheInstance().post(jfgMsgVideoRtcp);
     }
 

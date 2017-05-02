@@ -2,6 +2,7 @@ package com.cylan.jiafeigou.utils;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -429,7 +430,8 @@ public class AnimatorUtils {
                 ObjectAnimator.ofFloat(target, "scaleY", 0.9f, 1.1f, 1.0f),
                 ObjectAnimator.ofFloat(target, "alpha", 0f, 1f));
         set.setDuration(300);
-        set.addListener(animatorListener);
+        if (animatorListener != null)
+            set.addListener(animatorListener);
         return set;
     }
 
@@ -443,21 +445,24 @@ public class AnimatorUtils {
         setLeft.playTogether(translateX0, translateY0, alpha);
         setLeft.setInterpolator(new DecelerateInterpolator());
         setLeft.setDuration(1000);
-        setLeft.addListener(animatorListener);
+        if (animatorListener != null)
+            setLeft.addListener(animatorListener);
         return setLeft;
     }
 
     public static AnimatorSet onHand2Right(final View hand, Animator.AnimatorListener animatorListener) {
         final AnimatorSet setRight = new AnimatorSet();
+        final int startX = -(((ViewGroup) hand.getParent()).getWidth() / 2 - hand.getWidth() / 2) + 10;
         final int endX1 = ((ViewGroup) hand.getParent()).getWidth() / 2 - hand.getWidth() + 10;
         final int endY = -(((ViewGroup) hand.getParent()).getHeight() / 4 - hand.getHeight() / 2) - 10;
         Animator alpha = ObjectAnimator.ofFloat(hand, "alpha", 0.0f, 1.0f);
-        Animator translateX1 = ObjectAnimator.ofFloat(hand, "translationX", 0, endX1);
-        Animator translateY1 = ObjectAnimator.ofFloat(hand, "translationY", 0, endY);
+        Animator translateX1 = ObjectAnimator.ofFloat(hand, "translationX", startX, endX1);
+        Animator translateY1 = ObjectAnimator.ofFloat(hand, "translationY", endY, endY);
         setRight.playTogether(translateX1, translateY1, alpha);
         setRight.setInterpolator(new DecelerateInterpolator());
         setRight.setDuration(1000);
-        setRight.addListener(animatorListener);
+        if (animatorListener != null)
+            setRight.addListener(animatorListener);
         return setRight;
     }
 
@@ -505,7 +510,7 @@ public class AnimatorUtils {
         if (!fromTop) {
             ViewGroup parent = (ViewGroup) view.getParent();
             start = parent.getHeight() - view.getTop();
-            view.setTranslationY(-view.getTop());
+//            view.setTranslationY(-view.getTop());
         } else {
             start = -(view.getTop() + view.getHeight());
         }

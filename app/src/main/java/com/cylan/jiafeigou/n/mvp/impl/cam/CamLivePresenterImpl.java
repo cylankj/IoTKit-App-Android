@@ -506,7 +506,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
     }
 
     @Override
-    public Observable<Boolean> stopPlayVideo(int reason) {
+    public Observable<Boolean> stopPlayVideo(int reasonOrState) {
         AppLogger.d("pre play state: " + prePlayType);
         if (getPrePlayType().playState == PLAY_STATE_PLAYING) {
             //暂停播放了，还需要截图
@@ -517,18 +517,18 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 .subscribeOn(Schedulers.newThread())
                 .flatMap((String s) -> {
                     try {
-                        if (getPrePlayType().playState == PLAY_STATE_PLAYING) {
-                            setupAudio(false, false, false, false);
-                        }
+//                        if (getPrePlayType().playState == PLAY_STATE_PLAYING) {
+                        setupAudio(false, false, false, false);
+//                        }
                         BaseApplication.getAppComponent().getCmd().stopPlay(s);
-                        updatePrePlayType(-1, -1, reason);
+                        updatePrePlayType(-1, -1, reasonOrState);
                         AppLogger.i("stopPlayVideo:" + s);
                     } catch (JfgException e) {
                         AppLogger.e("stop play err: " + e.getLocalizedMessage());
                     }
-                    AppLogger.d("live stop: " + reason);
+                    AppLogger.d("live stop: " + reasonOrState);
                     if (getView() != null)
-                        getView().onLiveStop(getPrePlayType().type, reason);
+                        getView().onLiveStop(getPrePlayType().type, reasonOrState);
                     return Observable.just(true);
                 })
                 .doOnError(throwable -> AppLogger.e("" + throwable.getLocalizedMessage()));
@@ -536,9 +536,22 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public Observable<Boolean> stopPlayVideo(boolean detach) {
-        if (detach) {
-            return Observable.just(true);
-        } else return stopPlayVideo(PLAY_STATE_IDLE);
+//        if (detach) {
+//            return Observable.just(true)
+//                    .flatMap(ret -> {
+//                        try {
+////                            if (getPrePlayType().playState == PLAY_STATE_PLAYING) {
+//                            setupAudio(false, false, false, false);
+////                            }
+//                            BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+//                            AppLogger.i("stopPlayVideo:" + uuid);
+//                        } catch (JfgException e) {
+//                            AppLogger.e("stop play err: " + e.getLocalizedMessage());
+//                        }
+//                        return Observable.just(true);
+//                    });
+//        } else
+        return stopPlayVideo(PLAY_STATE_IDLE);
     }
 
     @Override
@@ -669,9 +682,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
                     data = null;
                     PerformanceUtils.stopTrace("takeCapture");
-                    String filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
+                    String filePath = JConstant.MEDIA_PATH + File.separator + (forPreview ? "." : "") + System.currentTimeMillis() + ".png";
                     BitmapUtils.saveBitmap2file(bitmap, filePath);
-                    MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
+                    if (!forPreview)
+                        MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
                     if (!forPreview) getView().onTakeSnapShot(bitmap);//弹窗
                     return bitmap;
                 })
@@ -781,10 +795,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         //暂停播放
         stopPlayVideo(JFGRules.PlayErr.ERR_LOW_FRAME_RATE).subscribe(ret -> {
         }, AppLogger::e);
+
     }
 
     @Override
     public void onFrameRate(boolean slow) {
+        AppLogger.e("is bad net work show loading?" + slow);
         Observable.just(slow)
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .subscribe(slowFrameRate -> {

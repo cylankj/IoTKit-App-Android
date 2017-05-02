@@ -433,8 +433,13 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
                     //表示设置结果,设置成功才需要改变view 图标
                     if (ret) {
                         //设置成功,更新下一状态
+                        //mic: off->on {speaker,enable->disable}
+                        //mic: on->off {speaker,disable->enable}
+                        int speaker = camLiveControlLayer.getSpeakerState();
+                        int speakerNextOffState = speaker == 2 ? 0 : (speaker == 3 ? 1 : 0);
+                        int speakerNextOnState = speaker == 0 ? 2 : (speaker == 1 ? 3 : 0);
                         camLiveControlLayer.setMicSpeakerState(tag == 2 ? 3 : 2,
-                                tag == 2 ? 3 : camLiveControlLayer.getSpeakerState());
+                                tag == 2 ? speakerNextOffState : speakerNextOnState);
                     } else {
                     }
                 }, AppLogger::e);
@@ -549,7 +554,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     public void shouldWaitFor(boolean start) {
         if (getView() != null) getView().post(() -> {
             if (start) {
-                camLiveControlLayer.onLivePrepared();
+                camLiveControlLayer.startBadFrame();
             } else {
                 camLiveControlLayer.resumeGoodFrame();
             }

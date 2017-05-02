@@ -354,6 +354,9 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     private Runnable landShowRunnable = new Runnable() {
         @Override
         public void run() {
+            layoutA.clearAnimation();
+            layoutD.clearAnimation();
+            layoutE.clearAnimation();
             AnimatorUtils.slideIn(layoutA, true);
             AnimatorUtils.slideIn(layoutD, false);
             AnimatorUtils.slideIn(layoutE, false);
@@ -376,12 +379,14 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                     removeCallbacks(landShowRunnable);
                     removeCallbacks(landHideRunnable);
                     post(landShowRunnable);
+                    Log.e(TAG, "点击 显示");
                 }
             } else {
                 //横屏,隐藏
                 removeCallbacks(landShowRunnable);
                 removeCallbacks(landHideRunnable);
                 post(landHideRunnable);
+                Log.e(TAG, "点击 隐藏");
             }
         }
     };
@@ -441,13 +446,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 .setImageResource(R.drawable.icon_landscape_stop);
         setMicSpeakerState(0, 0);
         findViewById(R.id.v_live).setEnabled(true);
-        liveViewWithThumbnail.onLiveStop();
         liveViewWithThumbnail.showFlowView(false, null);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
         handlePlayErr(errCode);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
         post(portHideRunnable);
+        post(() -> liveViewWithThumbnail.onLiveStop());
     }
 
     /**
@@ -590,9 +595,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         }
         String content = String.format(getContext().getString(type == 1 ? R.string.Tap1_Camera_VideoLive : R.string.Tap1_Camera_Playback)
                         + "|%s",
-                type == 1 ? useLocalTimeZone ? TimeUtils.getLiveTime(rtcp.timestamp) :
-                        TimeUtils.getHistoryTime1(rtcp.timestamp * 1000L) :
-                        TimeUtils.getLiveTime(rtcp.timestamp * 1000L));
+                type == 1 ? (useLocalTimeZone ? TimeUtils.getLiveTime(rtcp.timestamp * 1000L) : TimeUtils.getHistoryTime1(rtcp.timestamp * 1000L))
+                        : TimeUtils.getLiveTime(rtcp.timestamp * 1000L));
         ((LiveTimeLayout) layoutD.findViewById(R.id.live_time_layout))
                 .setContent(content);
         //点击事件
@@ -805,21 +809,55 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public int getMicState() {
-        int tag = (int) findViewById(R.id.imgV_land_cam_trigger_mic).getTag();
-        return (tag == R.drawable.icon_port_mic_on_selector ||
-                tag == R.drawable.icon_land_mic_on_selector) ? 3 : 2;
+        Object o = findViewById(R.id.imgV_land_cam_trigger_mic).getTag();
+        if (o != null && o instanceof Integer) {
+            int tag = (int) o;
+            switch (tag) {
+                case R.drawable.icon_land_mic_on_selector:
+                    if (findViewById(R.id.imgV_land_cam_trigger_mic).isEnabled()) {
+                        return 3;
+                    } else return 1;
+                case R.drawable.icon_land_mic_off_selector:
+                    if (findViewById(R.id.imgV_land_cam_trigger_mic).isEnabled()) {
+                        return 2;
+                    } else return 0;
+            }
+        }
+        return 0;
     }
 
     @Override
     public int getSpeakerState() {
-        int tag = (int) findViewById(R.id.imgV_cam_switch_speaker).getTag();
-        return (tag == R.drawable.icon_port_speaker_on_selector ||
-                tag == R.drawable.icon_land_speaker_on_selector) ? 3 : 2;
+        Object o = findViewById(R.id.imgV_land_cam_switch_speaker).getTag();
+        if (o != null && o instanceof Integer) {
+            int tag = (int) o;
+            switch (tag) {
+                case R.drawable.icon_land_speaker_on_selector:
+                    if (findViewById(R.id.imgV_cam_switch_speaker).isEnabled()) {
+                        return 3;
+                    } else return 1;
+                case R.drawable.icon_land_speaker_off_selector:
+                    if (findViewById(R.id.imgV_cam_switch_speaker).isEnabled()) {
+                        return 2;
+                    } else return 0;
+            }
+        }
+        return 0;
     }
 
     @Override
     public void resumeGoodFrame() {
+        livePlayState = PLAY_STATE_PLAYING;
         setLoadingState(null, null, false);
+        AppLogger.e("结束loading");
+    }
+
+    @Override
+    public void startBadFrame() {
+        livePlayState = PLAY_STATE_PREPARE;
+        setLoadingState(null, null, true);
+        findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
+        AppLogger.e("开始loading,需要关闭声音");
     }
 
     @Override

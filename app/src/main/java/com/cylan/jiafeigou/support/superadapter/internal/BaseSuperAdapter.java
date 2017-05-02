@@ -293,24 +293,26 @@ public abstract class BaseSuperAdapter<T> extends RecyclerView.Adapter<SuperView
             holder = onCreate(null, parent, viewType);
         }
         if (!(holder.itemView instanceof AdapterView)) {
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (mOnItemClickListener != null) {
-                        mOnItemClickListener.onItemClick(v, viewType, holder.getAdapterPosition());
+            if (mOnItemClickListener != null)
+                holder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (mOnItemClickListener != null) {
+                            mOnItemClickListener.onItemClick(v, viewType, holder.getAdapterPosition());
+                        }
                     }
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (mOnItemLongClickListener != null) {
-                        mOnItemLongClickListener.onItemLongClick(v, viewType, holder.getAdapterPosition());
-                        return true;
+                });
+            if (mOnItemLongClickListener != null)
+                holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                    @Override
+                    public boolean onLongClick(View v) {
+                        if (mOnItemLongClickListener != null) {
+                            mOnItemLongClickListener.onItemLongClick(v, viewType, holder.getAdapterPosition());
+                            return true;
+                        }
+                        return false;
                     }
-                    return false;
-                }
-            });
+                });
         }
         return holder;
     }

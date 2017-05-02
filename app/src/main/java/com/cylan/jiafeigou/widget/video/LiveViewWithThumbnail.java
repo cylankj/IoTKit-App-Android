@@ -74,8 +74,10 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
      */
     public void enableStandbyMode(boolean enable, OnClickListener onClickListener, boolean isShareDevice) {
         //进入待机模式
-        if (enable) standByLayout.setVisibility(VISIBLE);
-        else {
+        if (enable) {
+            standByLayout.setVisibility(VISIBLE);
+            standByLayout.bringToFront();
+        } else {
             standByLayout.setVisibility(GONE);
             return;
         }
@@ -170,11 +172,12 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     @Override
     public void onLiveStop() {
         if (isNormalView())
-            imgThumbnail.setVisibility(GONE);
+            imgThumbnail.setVisibility(VISIBLE);
         else {
             imgThumbnail.setVisibility(VISIBLE);
-            imgThumbnail.setBackgroundResource(android.R.color.black);
         }
+        imgThumbnail.bringToFront();
+        imgThumbnail.setBackgroundResource(android.R.color.black);
         Log.d(TAG, "onLiveStop");
     }
 

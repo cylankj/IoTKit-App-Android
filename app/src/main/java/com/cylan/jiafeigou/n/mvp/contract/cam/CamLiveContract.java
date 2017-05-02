@@ -148,9 +148,9 @@ public interface CamLiveContract {
         /**
          * 停止播放历史录像或者直播
          *
-         * @param reason
+         * @param reasonOrState
          */
-        Observable<Boolean> stopPlayVideo(int reason);
+        Observable<Boolean> stopPlayVideo(int reasonOrState);
 
         /**
          * 退出页面

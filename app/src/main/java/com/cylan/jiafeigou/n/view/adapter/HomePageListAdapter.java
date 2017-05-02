@@ -149,13 +149,23 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
         //被分享用户,不显示 消息数
         DPEntity entity = handleUnreadCount(device);
         Log.d("HomePageListAdapter", "HomePageListAdapter: 未读消息:" + entity);
-        boolean isPrimaryAccount = isPrimaryAccount(device.shareAccount);
-        //消息数
+        boolean isPrimaryDevice = isPrimaryAccount(device.shareAccount);
+        boolean show = needShowUnread(device, isPrimaryDevice);
+        //消息数,狗日的门铃的分享设备需要显示.
         String warnContent = getLastWarnContent(entity, device.pid, uuid);
-        holder.setText(R.id.tv_device_msg_count, !isPrimaryAccount ? "" : warnContent);
+        holder.setText(R.id.tv_device_msg_count, !show ? "" : warnContent);
         //时间
-        holder.setText(R.id.tv_device_msg_time, !isPrimaryAccount ? "" : TimeUtils.getHomeItemTime(getContext(), entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
-        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(isPrimaryAccount && entity != null && entity.getValue(0) > 0);
+        holder.setText(R.id.tv_device_msg_time, !show ? "" : TimeUtils.getHomeItemTime(getContext(), entity != null && entity.getValue(0) > 0 ? entity.getVersion() : 0));
+        ((ImageViewTip) holder.getView(R.id.img_device_icon)).setShowDot(show && entity != null && entity.getValue(0) > 0);
+    }
+
+    private boolean needShowUnread(Device device, boolean isPrimaryDevice) {
+        if (JFGRules.isCamera(device.pid)) {
+            return isPrimaryDevice;//摄像头,分享设备不显示.
+        }
+        if (JFGRules.isBell(device.pid))
+            return true;//门铃要显示
+        return false;
     }
 
     private boolean isPrimaryAccount(String share) {

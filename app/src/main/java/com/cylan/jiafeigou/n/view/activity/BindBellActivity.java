@@ -24,11 +24,17 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-import static com.cylan.jiafeigou.misc.JConstant.JUST_SEND_INFO;
-
 
 public class BindBellActivity extends BaseBindActivity {
+    @BindView(R.id.custom_toolbar)
+    CustomToolbar customToolbar;
 
+    @BindView(R.id.imgV_power_light)
+    ImageView imgVPowerLight;
+    @BindView(R.id.imgV_wifi_light)
+    ImageView imgVWifiLight;
+    @BindView(R.id.imgV_hand)
+    ImageView imgVHand;
     @BindView(R.id.fLayout_flip_before)
     FrameLayout fLayoutFlipBefore;
     @BindView(R.id.imgV_wifi_light_flash)
@@ -37,100 +43,52 @@ public class BindBellActivity extends BaseBindActivity {
     FrameLayout fLayoutFlipAfter;
     @BindView(R.id.fLayout_flip_layout)
     FrameLayout fLayoutFlipLayout;
-    @BindView(R.id.imgV_hand_left)
-    ImageView imgVHandLeft;
-    @BindView(R.id.imgV_hand_right)
-    ImageView imgVHandRight;
     @BindView(R.id.tv_bind_doorbell_tip)
     TextView tvBindDoorbellTip;
-    @BindView(R.id.imgV_wifi_light_red_dot_left)
-    ImageView imgVWifiLightRedDotLeft;
-    @BindView(R.id.imgV_wifi_light_red_dot_right)
-    ImageView imgVWifiLightRedDotRight;
-    @BindView(R.id.custom_toolbar)
-    CustomToolbar mCustomToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bind_bell);
         ButterKnife.bind(this);
-        ViewUtils.setViewMarginStatusBar(mCustomToolbar);
-        initBeforeFlipAnimation();
-        mCustomToolbar.setBackAction(v -> finishExt());
+        ViewUtils.setViewMarginStatusBar(customToolbar);
+        customToolbar.post(this::initBeforeFlipAnimation);
+        customToolbar.setBackAction(v -> finishExt());
     }
 
     private AnimatorSet setHandLeft;
-    private AnimatorSet setHandRight;
     private AnimatorSet setRedDotLeft;
     private AnimatorSet setRedDotRight;
-    private FlipAnimation flipAnimation;
 
     private void initBeforeFlipAnimation() {
-        setHandLeft = AnimatorUtils.onHand2Left(imgVHandLeft, new AnimatorUtils.SimpleAnimationListener() {
+        setHandLeft = AnimatorUtils.onHand2Left(imgVHand, null);
+        AnimatorSet setHandRight = AnimatorUtils.onHand2Right(imgVHand, null);
+        setRedDotLeft = AnimatorUtils.scale(imgVPowerLight, new AnimatorUtils.SimpleAnimationListener() {
             @Override
             public void onAnimationStart(Animator animator) {
-                imgVHandLeft.setVisibility(View.VISIBLE);
+                imgVPowerLight.setVisibility(View.VISIBLE);
+            }
+        });
+        setRedDotRight = AnimatorUtils.scale(imgVWifiLight, new AnimatorUtils.SimpleAnimationListener() {
+            @Override
+            public void onAnimationStart(Animator animator) {
+                imgVWifiLight.setVisibility(View.VISIBLE);
             }
 
             @Override
             public void onAnimationEnd(Animator animator) {
-                setRedDotLeft.start();
-                imgVHandLeft.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        imgVHandLeft.setVisibility(View.INVISIBLE);
-                    }
-                }, 500);
+                prepareFlipAnimation();
             }
         });
-        setHandRight = AnimatorUtils.onHand2Right(imgVHandRight, new AnimatorUtils.SimpleAnimationListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-                imgVHandRight.setVisibility(View.VISIBLE);
-                imgVWifiLightRedDotLeft.setVisibility(View.INVISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                setRedDotRight.start();
-                imgVHandRight.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        imgVHandRight.setVisibility(View.INVISIBLE);
-                    }
-                }, 1000);
-            }
-        });
-        setRedDotLeft = AnimatorUtils.scale(imgVWifiLightRedDotLeft, new AnimatorUtils.SimpleAnimationListener() {
-            @Override
-            public void onAnimationStart(Animator animator) {
-                imgVWifiLightRedDotLeft.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                setHandRight.start();
-            }
-        });
-        setRedDotRight = AnimatorUtils.scale(imgVWifiLightRedDotRight, new AnimatorUtils.SimpleAnimationListener() {
-
-            @Override
-            public void onAnimationStart(Animator animator) {
-                imgVWifiLightRedDotRight.setVisibility(View.VISIBLE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animator animator) {
-                initAnimation();
-            }
-        });
-        setHandLeft.start();
+        AnimatorSet set = new AnimatorSet();
+        set.playSequentially(setHandLeft, setRedDotLeft, setHandRight, setRedDotRight);
+        imgVHand.setVisibility(View.VISIBLE);
+        set.start();
     }
 
 
-    private void initAnimation() {
-        flipAnimation = new FlipAnimation(fLayoutFlipBefore, fLayoutFlipAfter);
+    private void prepareFlipAnimation() {
+        FlipAnimation flipAnimation = new FlipAnimation(fLayoutFlipBefore, fLayoutFlipAfter);
         fLayoutFlipLayout.startAnimation(flipAnimation);
         flipAnimation.setStartOffset(1000);
         flipAnimation.setAnimationListener(new FlipAnimation.SimpleAnimationListener() {
@@ -142,13 +100,12 @@ public class BindBellActivity extends BaseBindActivity {
                 }
             }
         });
+        flipAnimation.start();
     }
 
-    private void cancelAnimation() {
+    private void stopPreFlipAnimation() {
         if (setHandLeft != null && setHandLeft.isRunning())
             setHandLeft.cancel();
-        if (setHandRight != null && setHandRight.isRunning())
-            setHandRight.cancel();
         if (setRedDotLeft != null && setRedDotLeft.isRunning())
             setRedDotLeft.cancel();
         if (setRedDotRight != null && setRedDotRight.isRunning())
@@ -161,7 +118,7 @@ public class BindBellActivity extends BaseBindActivity {
         intent.setClass(this, BindGuideActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.CALL_CAMERA_NAME));
         startActivity(intent);
-        cancelAnimation();
+        stopPreFlipAnimation();
     }
 
 }

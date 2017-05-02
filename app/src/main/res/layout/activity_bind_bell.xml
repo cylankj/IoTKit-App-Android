@@ -53,7 +53,7 @@
             android:background="@drawable/add_image_ring">
 
             <ImageView
-                android:id="@+id/imgV_wifi_light_red_dot_left"
+                android:id="@+id/imgV_power_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -63,7 +63,7 @@
                 android:visibility="invisible" />
 
             <ImageView
-                android:id="@+id/imgV_wifi_light_red_dot_right"
+                android:id="@+id/imgV_wifi_light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
@@ -73,16 +73,7 @@
                 android:visibility="invisible" />
 
             <ImageView
-                android:id="@+id/imgV_hand_left"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal|bottom"
-                android:layout_marginBottom="@dimen/y40"
-                android:src="@drawable/image_hand"
-                android:visibility="invisible" />
-
-            <ImageView
-                android:id="@+id/imgV_hand_right"
+                android:id="@+id/imgV_hand"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal|bottom"
@@ -125,10 +116,10 @@
         android:textColor="@color/color_4b9fd5"
         android:textSize="@dimen/sp16" />
 
-    <FrameLayout
-        android:id="@+id/fLayout_bind_device_list_fragment_container"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentStart="true"
-        android:layout_below="@+id/custom_toolbar" />
+    <!--<FrameLayout-->
+        <!--android:id="@+id/fLayout_bind_device_list_fragment_container"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:layout_alignParentStart="true"-->
+        <!--android:layout_below="@+id/custom_toolbar" />-->
 </RelativeLayout>

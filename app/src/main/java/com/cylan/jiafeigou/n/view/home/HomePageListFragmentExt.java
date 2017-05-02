@@ -30,6 +30,7 @@ import android.widget.TextView;
 
 import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.Base;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.misc.JConstant;
@@ -283,14 +284,25 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
     @UiThread
     @Override
     public void onItemsInsert(List<Device> resultList) {
-        homePageListAdapter.clear();//暴力刷新,设备没几个,没关系.
-        if (resultList != null && resultList.size() > 0)
-            homePageListAdapter.addAll(resultList);
-        emptyViewState.setVisibility(homePageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
-        onRefreshFinish();
-        Log.d("onItemsInsert", "onItemsInsert:" + resultList);
-        enableNestedScroll();
+        if (getView() != null) {
+            getView().removeCallbacks(runnable);
+            getView().postDelayed(runnable, (homePageListAdapter.getCount() == 0) ? 1 : 150);
+        }
     }
+
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            homePageListAdapter.clear();//暴力刷新,设备没几个,没关系.
+            List<Device> resultList = BaseApplication.getAppComponent().getSourceManager().getAllDevice();
+            if (resultList != null && resultList.size() > 0)
+                homePageListAdapter.addAll(resultList);
+            emptyViewState.setVisibility(homePageListAdapter.getCount() > 0 ? View.GONE : View.VISIBLE);
+            onRefreshFinish();
+            enableNestedScroll();
+            Log.d("onItemsInsert", "onItemsInsert:" + resultList);
+        }
+    };
 
     private void enableNestedScroll() {
         boolean enable = homePageListAdapter.getCount() > 4;
@@ -336,17 +348,24 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         }
     }
 
-    @Override
-    public void onAccountUpdate(JFGAccount greetBean) {
-        if (isAdded()) {
-            tvHeaderNickName.postDelayed(() -> {
-                tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
-                tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
-                        : getString(R.string.Tap1_Index_NightGreetings));
-                tvHeaderNickName.requestLayout();
-            }, 100);
+    private Runnable updateAccount = new Runnable() {
+        @Override
+        public void run() {
+            JFGAccount greetBean = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+            tvHeaderNickName.setText(String.format("Hi %s", getBeautifulAlias(greetBean)));
+            tvHeaderPoet.setText(JFGRules.getTimeRule() == JFGRules.RULE_DAY_TIME ? getString(R.string.Tap1_Index_DayGreetings)
+                    : getString(R.string.Tap1_Index_NightGreetings));
+            tvHeaderNickName.requestLayout();
             onNetworkChanged(NetUtils.getJfgNetType(ContextUtils.getContext()) != 0);
             AppLogger.d("JFGAccount: " + new Gson().toJson(greetBean));
+        }
+    };
+
+    @Override
+    public void onAccountUpdate(JFGAccount greetBean) {
+        if (isResumed() && getView() != null) {
+            getView().removeCallbacks(updateAccount);
+            getView().postDelayed(updateAccount, 150);
         }
     }
 
@@ -482,6 +501,20 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
 
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
+        if (position != -1) {
+            prepareNext(position);
+        } else {
+            Object tag = itemView.getTag();
+            int l = 0;
+            if (tag != null && tag instanceof Integer) {
+                l = (int) tag;
+                prepareNext(l);
+            }
+            AppLogger.e("dis match position : " + position + ",L:" + l);
+        }
+    }
+
+    private void prepareNext(int position) {
         Device device = homePageListAdapter.getItem(position);
         if (device != null && !TextUtils.isEmpty(device.uuid)) {
             Bundle bundle = new Bundle();
@@ -495,9 +528,6 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             } else if (JFGRules.isVRCam(device.pid)) {
                 startActivity(new Intent(getActivity(), PanoramaCameraActivity.class).putExtra(JConstant.KEY_DEVICE_ITEM_UUID, device.uuid));
             }
-        } else {
-            homePageListAdapter.notifyDataSetChanged();
-            AppLogger.e("dis match position : " + position);
         }
     }
 
