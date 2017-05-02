@@ -562,4 +562,12 @@ public class AnimatorUtils {
     public static int getSlideOutXDistance(View view) {
         return (int) view.getTranslationX();
     }
+
+    public static ObjectAnimator toCenterX(View view) {
+        int endX = ((ViewGroup) view.getParent()).getLeft() + ((ViewGroup) view.getParent()).getWidth() / 2;
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", 0, view.getLeft() - endX);
+        animator.setInterpolator(new DecelerateInterpolator());
+        if (!view.isShown()) view.setVisibility(View.VISIBLE);
+        return animator;
+    }
 }

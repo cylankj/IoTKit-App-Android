@@ -52,7 +52,7 @@ public class BindRsCamActivity extends BaseBindActivity {
         ButterKnife.bind(this);
         ViewUtils.setViewMarginStatusBar(customToolbar);
         customToolbar.setBackAction(v -> finishExt());
-        fLayoutFlipLayout.post(this::prepareAnimation);
+        customToolbar.postDelayed(this::prepareAnimation, 500);
     }
 
     @OnClick(R.id.tv_bind_camera_tip)
@@ -66,23 +66,21 @@ public class BindRsCamActivity extends BaseBindActivity {
     }
 
     private void prepareAnimation() {
-        getWindow().getDecorView().post(() -> {
-            ObjectAnimator offsetX = ObjectAnimator.ofFloat(imgNeedle, "translationX", 0, 200);
-            ObjectAnimator alpha = ObjectAnimator.ofFloat(imgNeedle, "alpha", 0.0f, 1.0f);
-            AnimatorSet set = new AnimatorSet();
-            set.playTogether(offsetX, alpha);
-            set.setDuration(250);
-            set.setInterpolator(new DecelerateInterpolator());
-            set.addListener(new AnimatorUtils.SimpleAnimationListener() {
-                @Override
-                public void onAnimationEnd(Animator animator) {
-                    prepareFlipAnimation();
-                    imgNeedle.setVisibility(View.GONE);
-                }
-            });
-            imgNeedle.setVisibility(View.VISIBLE);
-            set.start();
+//        ObjectAnimator offsetX = ;
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(ObjectAnimator.ofFloat(imgNeedle, "alpha", 0f, 1f),
+                ObjectAnimator.ofFloat(imgNeedle, "translationX", 0.0f, 200.0f));
+        set.setDuration(250);
+        set.setInterpolator(new DecelerateInterpolator());
+
+        set.addListener(new AnimatorUtils.SimpleAnimationListener() {
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                prepareFlipAnimation();
+                imgNeedle.setVisibility(View.GONE);
+            }
         });
+        set.start();
     }
 
     @Override

@@ -19,7 +19,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
+import com.cylan.entity.jniCall.JFGAccount;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.base.module.DataSourceManager;
 import com.cylan.jiafeigou.cache.LogState;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.base.IBaseFragment;
@@ -258,7 +260,10 @@ public class HomeMineFragment extends IBaseFragment<HomeMineContract.Presenter>
                 setAliasName(getString(R.string.Tap3_LogIn));
             }
             lazyLoad();
-
+        }
+        JFGAccount account = BaseApplication.getAppComponent().getSourceManager().getJFGAccount();
+        if (TextUtils.isEmpty(account.getPhotoUrl())) {
+            BaseApplication.getAppComponent().getCmd().getAccount();
         }
     }
 

@@ -3,6 +3,8 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.cylan.jiafeigou.R;
@@ -12,6 +14,8 @@ import com.cylan.jiafeigou.utils.AnimatorUtils;
 import com.cylan.jiafeigou.utils.ViewUtils;
 import com.cylan.jiafeigou.widget.CustomToolbar;
 import com.nineoldandroids.animation.Animator;
+import com.nineoldandroids.animation.AnimatorSet;
+import com.nineoldandroids.animation.ObjectAnimator;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +31,8 @@ public class BindCamActivity extends BaseBindActivity {
     ImageView imgVCameraHand;
     @BindView(R.id.imgV_camera_red_dot)
     ImageView imgVCameraRedDot;
+    @BindView(R.id.fLayout_hand)
+    FrameLayout handLayout;
     private Animator animator;
 
 
@@ -37,7 +43,7 @@ public class BindCamActivity extends BaseBindActivity {
         ButterKnife.bind(this);
         ViewUtils.setViewMarginStatusBar(customToolbar);
         customToolbar.setBackAction(v -> finishExt());
-        initAnimation();
+        customToolbar.post(this::initAnimation);
     }
 
     protected int[] getOverridePendingTransition() {
@@ -50,8 +56,14 @@ public class BindCamActivity extends BaseBindActivity {
     }
 
     private void initAnimation() {
-        animator = AnimatorUtils.onHandMoveAndFlash(imgVCameraHand, imgVCameraRedDot, imgVCameraWifiLightFlash);
-        animator.start();
+        ObjectAnimator handOffset =
+                AnimatorUtils.toCenterX(imgVCameraHand);
+        handOffset.setInterpolator(new DecelerateInterpolator());
+        ObjectAnimator alpha = ObjectAnimator.ofFloat(imgVCameraHand, "alpha", 0, 1.f);
+        AnimatorSet set = new AnimatorSet();
+        set.playTogether(handOffset, alpha);
+        set.setDuration(250);
+        set.start();
     }
 
     @Override

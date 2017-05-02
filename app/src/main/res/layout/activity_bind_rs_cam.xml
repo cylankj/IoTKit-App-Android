@@ -92,9 +92,9 @@
             android:id="@+id/img_needle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/y50"
-            android:src="@drawable/add_image_needle"
-            android:visibility="gone" />
+            android:layout_marginTop="@dimen/y70"
+            android:alpha="0"
+            android:src="@drawable/add_image_needle" />
     </FrameLayout>
 
     <View
