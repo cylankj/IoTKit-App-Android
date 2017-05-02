@@ -132,6 +132,7 @@ public class JFGRules {
     }
 
     public static boolean showBatteryItem(int pid) {
+        if (isRS(pid)) return false;//睿思,不显示电量.
         return is3GCam(pid) || isFreeCam(pid)
                 || pid == 1089
                 || pid == 21

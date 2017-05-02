@@ -140,7 +140,16 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         srLayoutCamListRefresh.setColorSchemeColors(getResources().getColor(R.color.COLOR_CACACA));
         srLayoutCamListRefresh.setOnRefreshListener(this);
         camMessageListAdapter = new CamMessageListAdapter(this.uuid, getContext(), null, null);
-        rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false));
+        rvCamMessageList.setLayoutManager(new LinearLayoutManager(getContext(), RecyclerView.VERTICAL, false) {
+            @Override
+            public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+                try {
+                    super.onLayoutChildren(recycler, state);
+                } catch (Exception e) {
+                    AppLogger.e("homepageList" + e.getMessage());
+                }
+            }
+        });
 //        camMessageListAdapter.setOnItemClickListener(this);
         rvCamMessageList.setAdapter(camMessageListAdapter);
         rvCamMessageList.addOnScrollListener(new RecyclerView.OnScrollListener() {
@@ -253,7 +262,7 @@ public class CamMessageListFragment extends IBaseFragment<CamMessageListContract
         final int count = beanArrayList == null ? 0 : beanArrayList.size();
         if (count == 0) {
             AppLogger.i("没有数据");
-            ToastUtil.showToast(getString(R.string.NO_MORE));
+            ToastUtil.showToast(getString(R.string.Loaded));
             return;
         }
         lLayoutNoMessage.post(() -> {

@@ -64,8 +64,8 @@ public class BaseDBHelper implements IDBHelper {
     private JFGSourceManager sourceManager;
 
     public BaseDBHelper() {
-//        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(ContextUtils.getContext(), "dp_cache.db");
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(new GreenDaoContext(), "dp_cache.db");
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(ContextUtils.getContext(), "dp_cache.db");
+//        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(new GreenDaoContext(), "dp_cache.db");
         DaoMaster master = new DaoMaster(helper.getWritableDb());
         daoSession = master.newSession();
         mEntityDao = daoSession.getDPEntityDao();

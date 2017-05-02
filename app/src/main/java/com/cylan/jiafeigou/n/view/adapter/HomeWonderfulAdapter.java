@@ -52,7 +52,7 @@ public class HomeWonderfulAdapter extends SuperAdapter<DpMsgDefine.DPWonderItem>
             holder.setText(R.id.tv_simple_footer_text, getContext().getString(R.string.PULL_TO_LOAD));
             holder.setVisibility(R.id.v_simple_38line, View.VISIBLE);
         } else if (item.msgType == DpMsgDefine.DPWonderItem.TYPE_NO_MORE) {
-            holder.setText(R.id.tv_simple_footer_text, getContext().getString(R.string.NO_MORE));
+            holder.setText(R.id.tv_simple_footer_text, getContext().getString(R.string.Loaded));
             holder.setVisibility(R.id.v_simple_38line, View.GONE);
         }
 

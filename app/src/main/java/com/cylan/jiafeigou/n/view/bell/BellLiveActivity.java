@@ -524,7 +524,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         Bundle args = new Bundle();
         args.putString(BaseDialog.KEY_TITLE, "");
         args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
-        args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.permission_auth, "", getString(R.string.PERMISSION_AUDIO)));
+        args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.permission_auth, "", getString(R.string.Microphone)));
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(args);
         dialogFragment.setAction((id, value) -> {
 
@@ -543,7 +543,7 @@ public class BellLiveActivity extends BaseFullScreenActivity<BellLiveContract.Pr
         Bundle args = new Bundle();
         args.putString(BaseDialog.KEY_TITLE, "");
         args.putString(SimpleDialogFragment.KEY_LEFT_CONTENT, getString(R.string.OK));
-        args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.permission_auth, "", getString(R.string.PERMISSION_STORAGE)));
+        args.putString(SimpleDialogFragment.KEY_CONTENT_CONTENT, getString(R.string.permission_auth, "", getString(R.string.VALID_STORAGE)));
         SimpleDialogFragment dialogFragment = SimpleDialogFragment.newInstance(args);
         dialogFragment.show(getSupportFragmentManager(), "storage_permission");
     }

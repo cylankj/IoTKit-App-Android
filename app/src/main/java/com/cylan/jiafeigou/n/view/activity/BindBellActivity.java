@@ -52,8 +52,8 @@ public class BindBellActivity extends BaseBindActivity {
         setContentView(R.layout.activity_bind_bell);
         ButterKnife.bind(this);
         ViewUtils.setViewMarginStatusBar(customToolbar);
-        customToolbar.post(this::initBeforeFlipAnimation);
         customToolbar.setBackAction(v -> finishExt());
+        customToolbar.post(this::initBeforeFlipAnimation);
     }
 
     private AnimatorSet setHandLeft;

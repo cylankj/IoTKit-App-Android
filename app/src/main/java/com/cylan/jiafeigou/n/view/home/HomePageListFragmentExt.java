@@ -202,7 +202,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
             public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
                 try {
                     super.onLayoutChildren(recycler, state);
-                } catch (IndexOutOfBoundsException e) {
+                } catch (Exception e) {
                     AppLogger.e("homepageList" + e.getMessage());
                 }
             }

@@ -256,6 +256,7 @@ public class JConstant {
             return R.drawable.icon_home_camera_online;
         if (JFGRules.isVRCam(pid))
             return R.drawable.home_icon_720camera_online;
+        if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_online;
         return R.mipmap.ic_launcher;
     }
 
@@ -266,6 +267,7 @@ public class JConstant {
             return R.drawable.icon_home_camera_offline;
         if (JFGRules.isVRCam(pid))
             return R.drawable.home_icon_720camera_offline;
+        if (JFGRules.isRS(pid)) return R.drawable.home_icon_rs_offline;
         return R.mipmap.ic_launcher;
     }
 

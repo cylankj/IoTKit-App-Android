@@ -153,6 +153,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
 
     @Override
     public ArrayList<JFGDPMsg> OnQuerySavedDatapoint(String s, ArrayList<JFGDPMsg> arrayList) {
+        AppLogger.e("这是一个bug");
         return null;
     }
 

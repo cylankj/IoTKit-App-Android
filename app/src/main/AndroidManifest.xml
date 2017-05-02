@@ -430,7 +430,6 @@
         <activity
             android:name=".n.view.activity.BindCamActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:label="@string/title_activity_bind_cam"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
@@ -438,7 +437,6 @@
         <activity
             android:name=".n.view.activity.ConfigWifiActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:label="@string/title_activity_bind_cam"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
@@ -446,7 +444,6 @@
         <activity
             android:name=".n.view.activity.BindBellActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:label="@string/title_activity_bind_cam"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
@@ -454,7 +451,6 @@
         <activity
             android:name=".n.view.activity.BindPanoramaCamActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:label="@string/title_activity_bind_cam"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
@@ -462,7 +458,6 @@
         <activity
             android:name=".n.view.bind.BindGuideActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:label="@string/title_activity_bind_cam"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
@@ -470,7 +465,6 @@
         <activity
             android:name=".n.view.bind.SubmitBindingInfoActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:label="@string/title_activity_bind_cam"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
@@ -478,7 +472,6 @@
         <activity
             android:name=".n.view.activity.ConfigWifiActivity_2"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:label="@string/title_activity_bind_cam"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
@@ -614,7 +607,6 @@
         <activity
             android:name=".n.view.cam.SdcardDetailActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:label="@string/title_activity_bind_cam"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"
@@ -622,7 +614,13 @@
         <activity
             android:name=".n.view.cam.FirmwareUpdateActivity"
             android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
-            android:label="@string/title_activity_bind_cam"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/CamActivityTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".n.view.activity.BindRsCamActivity"
+            android:configChanges="locale|orientation|keyboardHidden|navigation|screenSize"
             android:launchMode="singleTask"
             android:screenOrientation="portrait"
             android:theme="@style/CamActivityTheme"

@@ -38,26 +38,6 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
 
 
     @Override
-    protected void onStart() {
-        super.onStart();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-    }
-
-    @Override
     public void onBackPressed() {
         if (popAllFragmentStack())
             return;
@@ -71,7 +51,8 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
         popAllFragmentStack();
     }
 
-    @OnClick({R.id.v_to_scan_qrcode, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell, R.id.v_to_bind_panorama_camera})
+    @OnClick({R.id.v_to_scan_qrcode,
+            R.id.v_to_bind_rs_cam, R.id.v_to_bind_camera, R.id.v_to_bind_doorbell, R.id.v_to_bind_panorama_camera})
     public void onClick(View view) {
         ViewUtils.deBounceClick(view);
         switch (view.getId()) {
@@ -84,6 +65,12 @@ public class BindDeviceActivity extends BaseFullScreenFragmentActivity implement
             case R.id.v_to_bind_camera: {
                 ViewUtils.deBounceClick(view);
                 Intent intent = new Intent(this, BindCamActivity.class);
+                startActivity(intent);
+                break;
+            }
+            case R.id.v_to_bind_rs_cam: {
+                ViewUtils.deBounceClick(view);
+                Intent intent = new Intent(this, BindRsCamActivity.class);
                 startActivity(intent);
                 break;
             }
