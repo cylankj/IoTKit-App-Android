@@ -137,7 +137,7 @@ public class BaseAppCallBackHolder implements AppCallBack {
         robotoGetDataRsp.seq = l;
         robotoGetDataRsp.put(-1, arrayList);//key在这种情况下无用
         RxBus.getCacheInstance().post(new RxEvent.SerializeCacheGetDataEvent(robotoGetDataRsp));
-        AppLogger.d("OnRobotGetDataExRsp :" + gson.toJson(arrayList));
+        AppLogger.d("OnRobotGetDataExRsp :" + s + "," + gson.toJson(arrayList));
     }
 
     @Override

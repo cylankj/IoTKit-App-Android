@@ -223,7 +223,12 @@ public class JFGRules {
         }
     }
 
+    public static boolean isRS(int pid) {
+        return pid == 38;
+    }
+
     public static boolean isCamera(int pid) {
+        if (isRS(pid)) return true;
         switch (pid) {
             case 4:
             case 5:
@@ -257,7 +262,8 @@ public class JFGRules {
             case 1158:
             case 15:
             case 1159:
-            case 24:
+            case 22://金鑫智慧科技智能猫眼
+            case 24://普顺达门铃
             case 1160:
             case 27:
                 return true;

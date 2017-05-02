@@ -127,7 +127,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
      * 初次进入页面，先要确定第一天的时间。
      */
     private void loadDataListFirst() {
-        refreshDateList();
+        refreshDateList(true);
     }
 
     @Override
@@ -234,6 +234,10 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                         //good
                         mView.onMessageDeleteSuc();
                         AppLogger.d("需要加载下一页");
+                        if (ListUtils.getSize(mView.getList()) == 0) {
+                            //需要刷新日期.
+                            refreshDateList(false);
+                        }
                     }
                 }, throwable -> {
                     AppLogger.e("err:" + throwable.getLocalizedMessage());
@@ -271,7 +275,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
     }
 
     @Override
-    public void refreshDateList() {
+    public void refreshDateList(boolean needToLoadList) {
         Subscription subscription = getDateListQuery()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -284,6 +288,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     }
                     return dateItemList;
                 })
+                .filter(ret -> needToLoadList)
                 .subscribeOn(Schedulers.computation())
                 .map(wheelItems -> {
                     long timeHit = 0;
@@ -321,7 +326,7 @@ public class CamMessageListPresenterImpl extends AbstractPresenter<CamMessageLis
                     } else {
                         mView.onDateMapRsp(dateItemList);
                     }
-                });
+                }, AppLogger::e);
         addSubscription(subscription, "DPCamDateQueryTask");
     }
 

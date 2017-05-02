@@ -1,7 +1,6 @@
 package com.cylan.jiafeigou.cache.db.module.tasks;
 
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.cylan.entity.jniCall.JFGDPMsg;
 import com.cylan.entity.jniCall.RobotoGetDataRsp;
@@ -16,6 +15,7 @@ import com.cylan.jiafeigou.cache.db.view.IDPMultiTask;
 import com.cylan.jiafeigou.dp.DataPoint;
 import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
+import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.TimeUtils;
 
@@ -32,10 +32,17 @@ import static com.cylan.jiafeigou.n.base.BaseApplication.getAppComponent;
 
 /**
  * Created by hds on 2017/3/2.
+ * 现在服务器一次回复有N条,定义为集合A{},db中可能有>N条数据,定义为集合B.由于加上了拦截器,处理掉了
+ * 集合B中的[A[0],A[N-1]],之后再插入db中,生成集合C.此时集合C包含集合A,C与A的差集,
+ * 可能包含一些废弃消息(其他端删除,没有通知同步.),执行完成performServer后,
+ * 执行performLocal.performLocal中的timeEnd需要与A[N-1]的时间戳比较.Math.min(A[N-1],timeEnd),
+ * 因为A[N-1]可以是隔天的数据.
  */
 
 public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
     private DBOption.MultiQueryOption option;
+    private long timeMax = -1;//服务返回的数据中的最大值.
+    private long timeMin = -1;//服务返回的数据中的最大值.
 
     public DPCamMultiQueryTask() {
     }
@@ -59,6 +66,13 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
         long todayEnd = TimeUtils.getSpecificDayEndTime(option.timeStart);
         long versionMin = option.asc ? option.timeStart : todayStart;
         long versionMax = option.asc ? todayEnd : option.timeStart;
+        if (timeMax != -1) {
+            //向后查timeMax可能是隔天的数据.
+            versionMax = Math.min(timeMax, versionMax);
+        }
+        if (timeMin != -1) {//向前查询,timeMin可能是隔天的数据了.
+            versionMin = Math.max(timeMin, versionMin);
+        }
         AppLogger.d("let's go for local cache:" + option);
         AppLogger.d("let's go for local versionMin:" + versionMin);
         AppLogger.d("let's go for local versionMax:" + versionMax);
@@ -126,22 +140,28 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                                             list.addAll(data.map.get(integer));
                                         }
                                     }
+                                    if (ListUtils.isEmpty(list)) return;
                                     Collections.sort(list, (JFGDPMsg lhs, JFGDPMsg rhs) ->
                                             (int) (lhs.version - rhs.version));
-                                    long max = Math.max(list.get(0).version, list.get(list.size() - 1).version);
-                                    long min = Math.min(list.get(0).version, list.get(list.size() - 1).version);
+                                    timeMax = Math.max(list.get(0).version, list.get(list.size() - 1).version);
+                                    timeMin = Math.min(list.get(0).version, list.get(list.size() - 1).version);
                                     PerformanceUtils.startTrace("deleteDpSync");
                                     try {
-                                        if (max == min) {
-                                            //只有一条数据?
-                                            dpHelper.deleteDpSync(account, uuid, 505);
-                                            dpHelper.deleteDpSync(account, uuid, 512);
-                                            dpHelper.deleteDpSync(account, uuid, 222);
-                                            return;
+                                        if (timeMax == timeMin) {
+                                            //只有一条数据,需要考虑之前的查询方向.
+                                            if (option.asc) {
+                                                //向前查,但是只有一条.所以清空这个时间戳以后的数据.
+                                                timeMax = Long.MAX_VALUE;
+                                            } else {
+                                                //向前查,但是只有一条.所以清空这个时间戳以前的数据.
+                                                timeMin = 0;
+                                            }
+                                            AppLogger.d("只有一条数据");
                                         }
-                                        dpHelper.deleteDpSync(account, uuid, 505, max, min);
-                                        dpHelper.deleteDpSync(account, uuid, 512, max, min);
-                                        dpHelper.deleteDpSync(account, uuid, 222, max, min);
+                                        //有多条数据,先清空本地这个时间段内的数据.再插入.
+                                        dpHelper.deleteDpSync(account, uuid, 505, timeMax, timeMin);
+                                        dpHelper.deleteDpSync(account, uuid, 512, timeMax, timeMin);
+                                        dpHelper.deleteDpSync(account, uuid, 222, timeMax, timeMin);
                                         PerformanceUtils.stopTrace("deleteDpSync");
                                     } catch (Exception e) {
                                         AppLogger.e("err:" + MiscUtils.getErr(e));
@@ -160,7 +180,10 @@ public class DPCamMultiQueryTask extends BaseDPTask<BaseDPTaskResult> {
                         performLocal();
                     }
                 })
-                .filter(ret -> TextUtils.equals(ret.identity, multiEntity.get(0).getUuid()))
+                .filter(ret -> {
+                    AppLogger.d("uuid?" + multiEntity.get(0).getUuid() + " ");
+                    return TextUtils.equals(ret.identity, multiEntity.get(0).getUuid());
+                })
                 .flatMap(robotoGetDataRsp -> performLocal());//数据回来了，并且已经存到db中。
     }
 }

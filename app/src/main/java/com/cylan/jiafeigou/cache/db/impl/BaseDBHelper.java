@@ -64,7 +64,8 @@ public class BaseDBHelper implements IDBHelper {
     private JFGSourceManager sourceManager;
 
     public BaseDBHelper() {
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(ContextUtils.getContext(), "dp_cache.db");
+//        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(ContextUtils.getContext(), "dp_cache.db");
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(new GreenDaoContext(), "dp_cache.db");
         DaoMaster master = new DaoMaster(helper.getWritableDb());
         daoSession = master.newSession();
         mEntityDao = daoSession.getDPEntityDao();
@@ -771,12 +772,12 @@ public class BaseDBHelper implements IDBHelper {
         //取哪一个？
         if (version != null && versionMax != null) {
             builder.where(DPEntityDao.Properties.Version.ge(version));
-            builder.where(DPEntityDao.Properties.Version.lt(versionMax));
+            builder.where(DPEntityDao.Properties.Version.le(versionMax));
         }
 
         if (msgIdList != null && msgIdList.size() > 0) {
             if (msgIdList.size() == 1) {
-                builder.where(DPEntityDao.Properties.MsgId.eq(0));
+                builder.where(DPEntityDao.Properties.MsgId.eq(msgIdList.remove(0)));
             } else {//size >=2
                 WhereCondition condition1 = DPEntityDao.Properties.MsgId.eq(msgIdList.remove(0));
                 WhereCondition condition2 = DPEntityDao.Properties.MsgId.eq(msgIdList.remove(0));

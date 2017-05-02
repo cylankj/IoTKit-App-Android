@@ -57,7 +57,7 @@ public interface CamMessageListContract {
 
         List<WonderIndicatorWheelView.WheelItem> getDateList();
 
-        void refreshDateList();
+        void refreshDateList(boolean needToLoadList);
     }
 }
 

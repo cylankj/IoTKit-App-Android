@@ -281,6 +281,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public void startPlay() {
+        if (mView == null || !mView.isUserVisible()) return;
         if (getPrePlayType().playState == PLAY_STATE_PREPARE) {
             AppLogger.d("已经loading");
             mView.onLivePrepare(getPrePlayType().type);
