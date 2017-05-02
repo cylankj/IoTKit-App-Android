@@ -455,10 +455,10 @@ public class AnimatorUtils {
         final int startX = -(((ViewGroup) hand.getParent()).getWidth() / 2 - hand.getWidth() / 2) + 10;
         final int endX1 = ((ViewGroup) hand.getParent()).getWidth() / 2 - hand.getWidth() + 10;
         final int endY = -(((ViewGroup) hand.getParent()).getHeight() / 4 - hand.getHeight() / 2) - 10;
-        Animator alpha = ObjectAnimator.ofFloat(hand, "alpha", 0.0f, 1.0f);
+//        Animator alpha = ObjectAnimator.ofFloat(hand, "alpha", 0.0f, 1.0f);
         Animator translateX1 = ObjectAnimator.ofFloat(hand, "translationX", startX, endX1);
         Animator translateY1 = ObjectAnimator.ofFloat(hand, "translationY", endY, endY);
-        setRight.playTogether(translateX1, translateY1, alpha);
+        setRight.playTogether(translateX1, translateY1);
         setRight.setInterpolator(new DecelerateInterpolator());
         setRight.setDuration(1000);
         if (animatorListener != null)
