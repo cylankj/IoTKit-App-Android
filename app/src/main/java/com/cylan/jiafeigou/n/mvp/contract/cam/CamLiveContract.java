@@ -231,6 +231,8 @@ public interface CamLiveContract {
 
         PrePlayType getPrePlayType();
 
+        void updatePrePlayType(PrePlayType prePlayType);
+
         float getVideoPortHeightRatio();
     }
 

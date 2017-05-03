@@ -19,6 +19,7 @@ import com.cylan.jiafeigou.rx.RxHelper;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ListUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
+import com.cylan.jiafeigou.utils.NetUtils;
 
 import java.util.concurrent.TimeUnit;
 
@@ -252,7 +253,7 @@ public class HomePageListPresenterImpl extends AbstractPresenter<HomePageListCon
         Observable.just(networkInfo)
                 .observeOn(AndroidSchedulers.mainThread())
                 .filter(v -> getView() != null)
-                .subscribe((NetworkInfo info) -> getView().onNetworkChanged(info != null && info.isConnected()), AppLogger::e);
+                .subscribe((NetworkInfo info) -> getView().onNetworkChanged(NetUtils.getJfgNetType() != 0), AppLogger::e);
     }
 
     private static final class InternalHelp {

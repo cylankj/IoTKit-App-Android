@@ -879,13 +879,13 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         //0:off-disable,1.on-disable,2.off-enable,3.on-enable
         int tempMic = 0, tempSpeaker;
         if (iconPreState.mic == 0) tempMic = 0;
-        else if (iconPreState.mic == 1) tempMic = 0;
-        else if (iconPreState.mic == 2) tempMic = 2;
-        else tempMic = 2;
+        else if (iconPreState.mic == 1) tempMic = 1;
+        else if (iconPreState.mic == 2) tempMic = 0;
+        else tempMic = 1;
         if (iconPreState.speaker == 0) tempSpeaker = 0;
-        else if (iconPreState.speaker == 1) tempSpeaker = 0;
-        else if (iconPreState.speaker == 2) tempSpeaker = 2;
-        else tempSpeaker = 2;
+        else if (iconPreState.speaker == 1) tempSpeaker = 1;
+        else if (iconPreState.speaker == 2) tempSpeaker = 0;
+        else tempSpeaker = 1;
         setMicSpeakerState(tempMic, tempSpeaker);
         findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
         findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);

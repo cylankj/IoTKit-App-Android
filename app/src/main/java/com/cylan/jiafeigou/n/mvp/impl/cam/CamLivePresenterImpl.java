@@ -117,6 +117,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         AppLogger.e("err: " + uuid + " remote:" + jfgMsgVideoDisconn.remote);
                     } else {
                         AppLogger.i("stop for reason: " + jfgMsgVideoDisconn.code);
+                        try {
+                            BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
+                            AppLogger.d("停止播放");
+                        } catch (JfgException e) {
+
+                        }
                     }
                     return notNull;
                 })
@@ -172,6 +178,11 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             this.prePlayType = new CamLiveContract.PrePlayType();
         }
         return this.prePlayType;
+    }
+
+    @Override
+    public void updatePrePlayType(CamLiveContract.PrePlayType prePlayType) {
+        this.prePlayType = prePlayType;
     }
 
     @Override
@@ -704,10 +715,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
         if (TextUtils.isEmpty(pre)) return;
         try {
-            List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
-            for (String key : list) {
-                if (!TextUtils.isEmpty(key) && key.contains(uuid)) {
-                    SimpleCache.getInstance().removeCache(key);
+            if (SimpleCache.getInstance().getPreviewKeyList() != null) {
+                List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
+                for (String key : list) {
+                    if (!TextUtils.isEmpty(key) && key.contains(uuid)) {
+                        SimpleCache.getInstance().removeCache(key);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -864,18 +877,19 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                             preState = net;
                             if (net == 0) {
                                 AppLogger.i("网络中断");
-                                presenterWeakReference.get().stopPlayVideo(ERR_NETWORK).subscribe(r -> {
-                                }, AppLogger::e);
+//                                presenterWeakReference.get().stopPlayVideo(ERR_NETWORK).subscribe(r -> {
+//                                }, AppLogger::e);
                                 presenterWeakReference.get().mView.onNetworkChanged(false);
                             } else {
                                 presenterWeakReference.get().mView.onNetworkChanged(true);
                                 AppLogger.d("网络恢复");
                                 //此处的reason 不需要填 ERR_NETWORK,因为下一步需要恢复播放loading
-                                presenterWeakReference.get().stopPlayVideo(PLAY_STATE_NET_CHANGED)
-                                        .subscribeOn(Schedulers.newThread())
-                                        .subscribe(result -> {
-                                            presenterWeakReference.get().startPlay();
-                                        }, AppLogger::e);
+//                                presenterWeakReference.get().startPlay();
+//                                presenterWeakReference.get().stopPlayVideo(PLAY_STATE_NET_CHANGED)
+//                                        .subscribeOn(Schedulers.newThread())
+//                                        .subscribe(result -> {
+//                                            presenterWeakReference.get().startPlay();
+//                                        }, AppLogger::e);
                             }
                         }, AppLogger::e);
             }

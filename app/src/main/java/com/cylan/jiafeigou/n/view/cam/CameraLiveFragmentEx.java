@@ -213,6 +213,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
         camLiveControlLayer.setLiveTextClick(v -> {
             CamLiveContract.PrePlayType type = basePresenter.getPrePlayType();
             if (type.type == TYPE_HISTORY) {
+                type.type = TYPE_LIVE;
+                basePresenter.updatePrePlayType(type);
                 basePresenter.startPlay();
             }
         });
@@ -280,6 +282,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 //                startLiveHistory(time);
                 AppLogger.e("历史录像");
                 getArguments().remove(JConstant.KEY_CAM_LIVE_PAGE_PLAY_HISTORY_TIME);
+                basePresenter.startPlayHistory(time);
                 return;
             }
 //            CamLiveContract.PrePlayType prePlayType = basePresenter.getPrePlayType();
