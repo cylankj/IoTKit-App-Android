@@ -226,7 +226,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             int vId = v.getId();
             switch (vId) {
                 case R.id.imgV_cam_trigger_capture:
-                    basePresenter.takeSnapShot(false);
+                    basePresenter.takeSnapShot(true);
                     break;
             }
         });
@@ -528,8 +528,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
     @Override
     public void onTakeSnapShot(Bitmap bitmap) {
         if (bitmap == null) {
-            if (getView() != null)
-                getView().post(() -> ToastUtil.showNegativeToast(getString(R.string.set_failed)));
+//            if (getView() != null)
+//                getView().post(() -> ToastUtil.showNegativeToast(getString(R.string.set_failed)));
             return;
         }
         PerformanceUtils.startTrace("takeSnapShot_pre");

@@ -70,9 +70,8 @@ public class BindRsCamActivity extends BaseBindActivity {
         AnimatorSet set = new AnimatorSet();
         set.playTogether(ObjectAnimator.ofFloat(imgNeedle, "alpha", 0f, 1f),
                 ObjectAnimator.ofFloat(imgNeedle, "translationX", 0.0f, 200.0f));
-        set.setDuration(250);
+        set.setDuration(800);
         set.setInterpolator(new DecelerateInterpolator());
-
         set.addListener(new AnimatorUtils.SimpleAnimationListener() {
             @Override
             public void onAnimationEnd(Animator animator) {

@@ -179,9 +179,9 @@ public interface CamLiveContract {
         /**
          * 预览专用？
          *
-         * @param forPreview
+         * @param forPopWindow
          */
-        void takeSnapShot(boolean forPreview);
+        void takeSnapShot(boolean forPopWindow);
 
         /**
          * 保存标志

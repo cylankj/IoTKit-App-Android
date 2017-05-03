@@ -511,7 +511,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         AppLogger.d("pre play state: " + prePlayType);
         if (getPrePlayType().playState == PLAY_STATE_PLAYING) {
             //暂停播放了，还需要截图
-            takeSnapShot(true);
+            takeSnapShot(false);
         }
         reset();
         return Observable.just(uuid)
@@ -664,9 +664,10 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         unSubscribe(liveSubscription);
     }
 
-    //截图:预览,弹窗,保存每日精彩
+    //forPopWindow true:手动截图:弹窗,保存每日精彩
+    //forPopWindow false:直播断开,退出界面.
     @Override
-    public void takeSnapShot(boolean forPreview) {
+    public void takeSnapShot(boolean forPopWindow) {
         AppLogger.d("take shot initSubscription");
         int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
         int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
@@ -677,29 +678,29 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     PerformanceUtils.startTrace("takeCapture");
                     byte[] data = BaseApplication.getAppComponent().getCmd().screenshot(false);
                     if (data == null) {
-                        if (!forPreview) getView().onTakeSnapShot(null);//弹窗
+                        if (forPopWindow) getView().onTakeSnapShot(null);//弹窗
                         return null;
                     }
                     Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
+                    if (forPopWindow) getView().onTakeSnapShot(bitmap);//弹窗
                     data = null;
                     PerformanceUtils.stopTrace("takeCapture");
-                    String filePath = JConstant.MEDIA_PATH + File.separator + (forPreview ? "." : "") + System.currentTimeMillis() + ".png";
+                    String filePath = JConstant.MEDIA_PATH + File.separator + (forPopWindow ? "" : ".") + System.currentTimeMillis() + ".png";
                     BitmapUtils.saveBitmap2file(bitmap, filePath);
-                    if (!forPreview)
+                    if (forPopWindow)//添加到相册
                         MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
-                    if (!forPreview) getView().onTakeSnapShot(bitmap);//弹窗
                     return bitmap;
                 })
                 .observeOn(Schedulers.io())
                 .filter(bitmap -> bitmap != null)
                 .subscribe(bitmap -> {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
-                    if (forPreview) {//预览图,和弹窗是互斥的.
+                    if (!forPopWindow) {//预览图,和弹窗是互斥的.
                         //因为同一个url,在glide上，不会更新bitmap，等待解决，用一个token来维持
                         PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
                         getView().onPreviewResourceReady(bitmap);
                     }
-                    new SaveAndShare(uuid, bitmap, !forPreview).start();
+                    new SaveAndShare(uuid, bitmap, !forPopWindow).start();
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));
     }
 

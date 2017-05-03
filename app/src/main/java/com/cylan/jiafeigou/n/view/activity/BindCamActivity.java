@@ -3,7 +3,6 @@ package com.cylan.jiafeigou.n.view.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
@@ -56,13 +55,9 @@ public class BindCamActivity extends BaseBindActivity {
     }
 
     private void initAnimation() {
-        ObjectAnimator handOffset =
-                AnimatorUtils.toCenterX(imgVCameraHand);
-        handOffset.setInterpolator(new DecelerateInterpolator());
-        ObjectAnimator alpha = ObjectAnimator.ofFloat(imgVCameraHand, "alpha", 0, 1.f);
         AnimatorSet set = new AnimatorSet();
-        set.playTogether(handOffset, alpha);
-        set.setDuration(250);
+        set.playTogether(AnimatorUtils.toCenterX(imgVCameraHand), ObjectAnimator.ofFloat(imgVCameraHand, "alpha", 0, 1.f));
+        set.setDuration(800);
         set.start();
     }
 
