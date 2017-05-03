@@ -32,8 +32,6 @@ public class BindCamActivity extends BaseBindActivity {
     ImageView imgVCameraHand;
     @BindView(R.id.imgV_camera_red_dot)
     ImageView imgVCameraRedDot;
-    @BindView(R.id.fLayout_hand)
-    FrameLayout handLayout;
     private AnimationDrawable animationDrawable;
     private AnimatorSet handFlash;
 
@@ -69,7 +67,7 @@ public class BindCamActivity extends BaseBindActivity {
 
             @Override
             public void onAnimationStart(Animator animator) {
-                imgVCameraRedDot.post(() -> imgVCameraRedDot.setVisibility(View.INVISIBLE));
+//                imgVCameraRedDot.post(() -> imgVCameraRedDot.setVisibility(View.GONE));
             }
 
             @Override

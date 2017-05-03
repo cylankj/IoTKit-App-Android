@@ -122,7 +122,7 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        boolean showBattery = JFGRules.showBatteryItem(device != null ? device.pid : 0);
+        boolean showBattery = JFGRules.showSettingBatteryItem(device != null ? device.pid : 0);
         //仅3G摄像头、FreeCam显示此栏
         tvDeviceBatteryLevel.setVisibility(showBattery ? View.VISIBLE : View.GONE);
 

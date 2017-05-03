@@ -63,7 +63,7 @@ public class HomePageListAdapter extends SuperAdapter<Device> {
             }
         }
         //2 电量
-        if (device != null && net != null && net.net > 0 && JFGRules.showHomeBatterIcon(device.pid)) {//设备在线才显示电量
+        if (device != null && net != null && net.net > 0 && JFGRules.showHomeBatteryIcon(device.pid)) {//设备在线才显示电量
             int battery = device.$(206, 0);
             if (battery < 20 && (JFGRules.isBell(device.pid) || JFGRules.isFreeCam(device.pid))) {//门铃和freeCam 电量低于20%在线显示
                 holder.setVisibility(R.id.img_device_state_2, VISIBLE);

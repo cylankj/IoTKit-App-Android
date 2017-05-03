@@ -118,14 +118,15 @@ public class JFGRules {
 
     public static boolean show110VLayout(int pid) {
         return isPanoramicCam(pid) || isWifiCam(pid) ||
+                isRS(pid) ||
                 pid == 21 || pid == 1089;
     }
 
-    public static boolean showHomeBatterIcon(int pid) {
+    public static boolean showHomeBatteryIcon(int pid) {
         return isFreeCam(pid) || is3GCam(pid) || isBell(pid);
     }
 
-    public static boolean showBatteryItem(int pid) {
+    public static boolean showSettingBatteryItem(int pid) {
         if (isRS(pid)) return false;//睿思,不显示电量.
         return is3GCam(pid) || isFreeCam(pid)
                 || pid == 1089
@@ -158,6 +159,7 @@ public class JFGRules {
     }
 
     public static boolean showStandbyItem(int pid) {
+        if (isRS(pid)) return true;
         return pid == 4
                 || pid == 5
                 || pid == 7
@@ -177,6 +179,7 @@ public class JFGRules {
     }
 
     public static boolean showLedIndicator(int pid) {
+        if (isRS(pid)) return true;
         return pid == 4
                 || pid == 5
                 || pid == 7
@@ -202,6 +205,7 @@ public class JFGRules {
 
     //freeCam 海思 wifi
     public static boolean showMobileLayout(int pid) {
+        if (isRS(pid)) return false;
         switch (pid) {
             case JConstant.OS_CAMERA_UCOS:
             case JConstant.OS_CAMERA_UCOS_V2:
