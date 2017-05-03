@@ -54,7 +54,7 @@ public class HeadsetObserver {
         AppLogger.d("isBluetoothA2dpOn: " + am.isBluetoothA2dpOn());
         AppLogger.d("isSpeakerphoneOn: " + am.isSpeakerphoneOn());
         AppLogger.d("isWiredHeadsetOn: " + am.isWiredHeadsetOn());
-        if (Build.VERSION_CODES.KITKAT >= Build.VERSION.SDK_INT)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
             AppLogger.d("isVolumeFixed: " + am.isVolumeFixed());
         return am.isWiredHeadsetOn();
     }

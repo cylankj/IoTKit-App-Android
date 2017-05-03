@@ -133,7 +133,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         if (basePresenter != null) {
             basePresenter.fetchDeviceList(false);
         } else AppLogger.e("presenter is null");
-        need2ShowUseCase();
+
     }
 
     private void need2ShowUseCase() {
@@ -184,6 +184,7 @@ public class HomePageListFragmentExt extends IBaseFragment<HomePageListContract.
         initProgressBarColor();
         initListAdapter();
         initSomeViewMargin();
+        need2ShowUseCase();
     }
 
     @Override
