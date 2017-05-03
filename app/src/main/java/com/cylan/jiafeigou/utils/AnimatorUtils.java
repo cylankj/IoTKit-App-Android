@@ -2,7 +2,6 @@ package com.cylan.jiafeigou.utils;
 
 import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AccelerateInterpolator;
@@ -563,9 +562,17 @@ public class AnimatorUtils {
         return (int) view.getTranslationX();
     }
 
-    public static ObjectAnimator toCenterX(View view) {
-        int endX = ((ViewGroup) view.getParent()).getLeft() + ((ViewGroup) view.getParent()).getWidth() / 2;
-        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", 0, view.getLeft() - endX);
+    public static ObjectAnimator toCenterX(View view, int offset) {
+        int endX = ((ViewGroup) view.getParent()).getWidth() / 2 - view.getLeft() - view.getWidth() / 2 + offset;
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationX", 0, endX);
+        animator.setInterpolator(new DecelerateInterpolator());
+        if (!view.isShown()) view.setVisibility(View.VISIBLE);
+        return animator;
+    }
+
+    public static ObjectAnimator toCenterY(View view, int offset) {
+        int endY = ((ViewGroup) view.getParent()).getHeight() / 2 - view.getTop() - view.getHeight() / 2 + offset;
+        ObjectAnimator animator = ObjectAnimator.ofFloat(view, "translationY", 0, endY);
         animator.setInterpolator(new DecelerateInterpolator());
         if (!view.isShown()) view.setVisibility(View.VISIBLE);
         return animator;

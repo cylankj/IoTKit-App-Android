@@ -17,6 +17,7 @@ import com.cylan.ex.JfgException;
 import com.cylan.jfgapp.jni.JfgAppCmd;
 import com.cylan.jiafeigou.BuildConfig;
 import com.cylan.jiafeigou.base.module.Base;
+import com.cylan.jiafeigou.cache.SimpleCache;
 import com.cylan.jiafeigou.cache.db.module.DPEntity;
 import com.cylan.jiafeigou.cache.db.module.Device;
 import com.cylan.jiafeigou.cache.db.module.HistoryFile;
@@ -42,8 +43,8 @@ import com.cylan.jiafeigou.support.block.log.PerformanceUtils;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.BitmapUtils;
 import com.cylan.jiafeigou.utils.ContextUtils;
+import com.cylan.jiafeigou.utils.FileUtils;
 import com.cylan.jiafeigou.utils.ListUtils;
-import com.cylan.jiafeigou.utils.MD5Util;
 import com.cylan.jiafeigou.utils.MiscUtils;
 import com.cylan.jiafeigou.utils.NetUtils;
 import com.cylan.jiafeigou.utils.PreferencesUtils;
@@ -57,6 +58,7 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
@@ -131,7 +133,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public String getThumbnailKey() {
-        return JConstant.MEDIA_PATH + File.separator + "." + MD5Util.lowerCaseMD5(uuid);
+        return PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
     }
 
     @Override
@@ -537,21 +539,6 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
 
     @Override
     public Observable<Boolean> stopPlayVideo(boolean detach) {
-//        if (detach) {
-//            return Observable.just(true)
-//                    .flatMap(ret -> {
-//                        try {
-////                            if (getPrePlayType().playState == PLAY_STATE_PLAYING) {
-//                            setupAudio(false, false, false, false);
-////                            }
-//                            BaseApplication.getAppComponent().getCmd().stopPlay(uuid);
-//                            AppLogger.i("stopPlayVideo:" + uuid);
-//                        } catch (JfgException e) {
-//                            AppLogger.e("stop play err: " + e.getLocalizedMessage());
-//                        }
-//                        return Observable.just(true);
-//                    });
-//        } else
         return stopPlayVideo(PLAY_STATE_IDLE);
     }
 
@@ -672,20 +659,30 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         int w = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoWidth;
         int h = ((JfgAppCmd) BaseApplication.getAppComponent().getCmd()).videoHeight;
         Observable.just(null)
-                .subscribeOn(Schedulers.newThread())
+                .subscribeOn(Schedulers.io())
                 .map(o -> {
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                     PerformanceUtils.startTrace("takeCapture");
                     byte[] data = BaseApplication.getAppComponent().getCmd().screenshot(false);
                     if (data == null) {
                         if (forPopWindow) getView().onTakeSnapShot(null);//弹窗
+                        AppLogger.e("截图失败,data为空");
                         return null;
                     }
                     Bitmap bitmap = JfgUtils.byte2bitmap(w, h, data);
                     if (forPopWindow) getView().onTakeSnapShot(bitmap);//弹窗
                     data = null;
                     PerformanceUtils.stopTrace("takeCapture");
-                    String filePath = JConstant.MEDIA_PATH + File.separator + (forPopWindow ? "" : ".") + System.currentTimeMillis() + ".png";
+                    String filePath;
+                    if (forPopWindow) {
+                        filePath = JConstant.MEDIA_PATH + File.separator + System.currentTimeMillis() + ".png";
+                    } else {
+                        filePath = JConstant.MEDIA_PATH + File.separator + "." + uuid + System.currentTimeMillis();
+                        removeLastPreview();
+                        SimpleCache.getInstance().addCache(filePath, bitmap);
+                        PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, filePath);
+                        //需要删除之前的一条记录.
+                    }
                     BitmapUtils.saveBitmap2file(bitmap, filePath);
                     if (forPopWindow)//添加到相册
                         MediaScannerConnection.scanFile(ContextUtils.getContext(), new String[]{filePath}, null, null);
@@ -697,13 +694,29 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                     Thread.currentThread().setPriority(Thread.MAX_PRIORITY);
                     if (!forPopWindow) {//预览图,和弹窗是互斥的.
                         //因为同一个url,在glide上，不会更新bitmap，等待解决，用一个token来维持
-                        PreferencesUtils.putString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, System.currentTimeMillis() + "");
                         getView().onPreviewResourceReady(bitmap);
                     }
-                    new SaveAndShare(uuid, bitmap, !forPopWindow).start();
+                    new SaveAndShare(uuid, bitmap, forPopWindow).start();
                 }, throwable -> AppLogger.e("err: " + throwable.getLocalizedMessage()), () -> AppLogger.d("take screen finish"));
     }
 
+    private void removeLastPreview() {
+        final String pre = PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
+        if (TextUtils.isEmpty(pre)) return;
+        try {
+            List<String> list = new ArrayList<>(SimpleCache.getInstance().getPreviewKeyList());
+            for (String key : list) {
+                if (!TextUtils.isEmpty(key) && key.contains(uuid)) {
+                    SimpleCache.getInstance().removeCache(key);
+                }
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "" + e);
+        }
+        Observable.just("go")
+                .subscribeOn(Schedulers.io())
+                .subscribe(ret -> FileUtils.deleteFile(pre), AppLogger::e);
+    }
 
     @Override
     public void saveAlarmFlag(boolean flag) {
@@ -919,7 +932,7 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
         }
 
         private String getThumbnailKey() {
-            return JConstant.MEDIA_PATH + File.separator + "." + MD5Util.lowerCaseMD5(uuid);
+            return PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid);
         }
 
         /**

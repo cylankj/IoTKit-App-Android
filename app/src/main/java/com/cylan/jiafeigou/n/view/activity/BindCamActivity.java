@@ -1,7 +1,9 @@
 package com.cylan.jiafeigou.n.view.activity;
 
 import android.content.Intent;
+import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -32,8 +34,8 @@ public class BindCamActivity extends BaseBindActivity {
     ImageView imgVCameraRedDot;
     @BindView(R.id.fLayout_hand)
     FrameLayout handLayout;
-    private Animator animator;
-
+    private AnimationDrawable animationDrawable;
+    private AnimatorSet handFlash;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,20 +54,41 @@ public class BindCamActivity extends BaseBindActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if (handFlash != null) {
+            handFlash.removeAllListeners();
+            handFlash.cancel();
+        }
     }
 
     private void initAnimation() {
-        AnimatorSet set = new AnimatorSet();
-        set.playTogether(AnimatorUtils.toCenterX(imgVCameraHand), ObjectAnimator.ofFloat(imgVCameraHand, "alpha", 0, 1.f));
-        set.setDuration(800);
-        set.start();
+        handFlash = new AnimatorSet();
+        handFlash.playTogether(AnimatorUtils.toCenterX(imgVCameraHand, 0),
+                ObjectAnimator.ofFloat(imgVCameraHand, "alpha", 0, 1.f));
+        handFlash.setDuration(800);
+        handFlash.addListener(new AnimatorUtils.SimpleAnimationListener() {
+
+            @Override
+            public void onAnimationStart(Animator animator) {
+                imgVCameraRedDot.post(() -> imgVCameraRedDot.setVisibility(View.INVISIBLE));
+            }
+
+            @Override
+            public void onAnimationEnd(Animator animator) {
+                if (animationDrawable == null)
+                    animationDrawable = AnimatorUtils.onWiFiLightFlash(imgVCameraWifiLightFlash);
+                if (animationDrawable != null && !animationDrawable.isRunning())
+                    animationDrawable.start();
+                imgVCameraRedDot.post(() -> imgVCameraRedDot.setVisibility(View.VISIBLE));
+                handFlash.setStartDelay(3000);
+                handFlash.start();
+            }
+        });
+        handFlash.start();
     }
 
     @Override
     public void onPause() {
         super.onPause();
-        if (animator != null && animator.isRunning())
-            animator.cancel();
     }
 
     @OnClick(R.id.tv_bind_camera_tip)
@@ -75,12 +98,6 @@ public class BindCamActivity extends BaseBindActivity {
         intent.setClass(this, BindGuideActivity.class);
         intent.putExtra(JConstant.KEY_BIND_DEVICE, getString(R.string.DOG_CAMERA_NAME));
         startActivity(intent);
-        cancelAnimation();
-    }
-
-    private void cancelAnimation() {
-        if (animator != null && animator.isRunning())
-            animator.cancel();
     }
 
 }

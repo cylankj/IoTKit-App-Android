@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/color_white"
-    android:clickable="true">
+    android:clickable="true"
+    android:keepScreenOn="true">
 
 
     <com.cylan.jiafeigou.widget.CustomToolbar
@@ -39,13 +40,17 @@
         android:textSize="@dimen/sp16" />
 
     <FrameLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_sub_title"
         android:layout_centerInParent="true"
-        android:layout_marginTop="@dimen/y57"
-        android:background="@drawable/image_camera">
+        android:layout_marginTop="@dimen/y57">
 
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/image_camera" />
 
         <ImageView
             android:id="@+id/imgV_camera_wifi_light_flash"
@@ -60,6 +65,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|center_horizontal"
             android:layout_marginBottom="@dimen/y20"
+            android:layout_marginEnd="@dimen/x30"
+            android:layout_marginStart="@dimen/x30"
             android:layout_marginTop="@dimen/y20"
             android:orientation="vertical">
 
@@ -68,8 +75,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_marginBottom="-20dp"
-                android:src="@drawable/add_image_red_dot" />
+                android:src="@drawable/add_image_red_dot"
+                android:visibility="visible" />
 
             <ImageView
                 android:id="@+id/imgV_camera_hand"

@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.GlideDrawableImageViewTarget;
 import com.cylan.jiafeigou.R;
+import com.cylan.jiafeigou.misc.ApFilter;
 import com.cylan.jiafeigou.misc.JConstant;
 import com.cylan.jiafeigou.misc.JFGRules;
 import com.cylan.jiafeigou.misc.bind.AFullBind;
@@ -89,7 +90,7 @@ public class BindGuideActivity extends BaseFullScreenFragmentActivity {
 
     private void tryLoadConfigApFragment() {
         final WifiInfo info = NetUtils.getWifiManager(ContextUtils.getContext()).getConnectionInfo();
-        if (info == null || !JFGRules.isCylanDevice(info.getSSID())) {
+        if (info == null || !ApFilter.accept(info.getSSID())) {
             AppLogger.i("bind: " + info);
             return;
         }

@@ -46,10 +46,7 @@ public class JConstant {
 
 
     //看JConstantTest单元测试
-    public static final Pattern JFG_DOG_DEVICE_REG = Pattern.compile("DOG-[a-zA-Z0-9]{6}");
-    public static final Pattern JFG_BELL_DEVICE_REG = Pattern.compile("DOG-ML-[a-zA-Z0-9]{6}");
-    public static final Pattern JFG_PAN_DEVICE_REG = Pattern.compile("DOG-5W-[a-zA-Z0-9]{6}");
-    public static final Pattern JFG_GENERAL_DEVICE = Pattern.compile("DOG-[a-zA-Z0-9]{2}-[a-zA-Z0-9]{6}");
+
     public static final int VALID_VERIFICATION_CODE_LEN = 6;
     public static final int PWD_LEN_MIN = 6;
     public static final int PWD_LEN_MAX = 12;

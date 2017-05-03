@@ -21,6 +21,7 @@ import com.cylan.jiafeigou.n.mvp.impl.bind.SubmitBindingInfoContractImpl;
 import com.cylan.jiafeigou.n.view.activity.BindBellActivity;
 import com.cylan.jiafeigou.n.view.activity.BindCamActivity;
 import com.cylan.jiafeigou.n.view.activity.BindPanoramaCamActivity;
+import com.cylan.jiafeigou.n.view.activity.BindRsCamActivity;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ActivityUtils;
 import com.cylan.jiafeigou.utils.BindUtils;
@@ -151,6 +152,8 @@ public class SubmitBindingInfoActivity extends BaseFullScreenFragmentActivity<Su
             nextActivity = BindCamActivity.class;
         } else if (TextUtils.equals(device, getString(R.string.CALL_CAMERA_NAME))) {
             nextActivity = BindBellActivity.class;
+        } else if (TextUtils.equals(device, getString(R.string.RuiShi_Name))) {
+            nextActivity = BindRsCamActivity.class;
         } else {
             nextActivity = BindPanoramaCamActivity.class;
         }

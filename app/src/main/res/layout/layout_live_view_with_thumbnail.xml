@@ -7,7 +7,8 @@
         android:id="@+id/imgv_live_thumbnail"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/default_diagram_mask" />
+        android:src="@drawable/default_diagram_mask"
+        android:visibility="gone" />
 
     <TextView
         android:id="@+id/tv_live_flow"

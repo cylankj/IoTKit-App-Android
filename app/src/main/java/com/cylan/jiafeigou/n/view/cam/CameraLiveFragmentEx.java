@@ -249,7 +249,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
             //show
         }
         camLiveControlLayer.onDeviceStandByChanged(device, v -> jump2Setting());
-        camLiveControlLayer.onActivityStart(device);
+        camLiveControlLayer.onActivityStart(basePresenter, device);
     }
 
     @Override
@@ -541,6 +541,7 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @Override
     public void onPreviewResourceReady(Bitmap bitmap) {
+        //手动暂停时,需要加载
         camLiveControlLayer.onLoadPreviewBitmap(bitmap);
     }
 

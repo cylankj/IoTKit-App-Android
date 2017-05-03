@@ -83,6 +83,8 @@ public class VideoViewFactory {
 
         void updateLayoutParameters(int height);
 
+        void onCreate(boolean isNormalView);
+
         void onLiveStart();
 
         void onLiveStop();

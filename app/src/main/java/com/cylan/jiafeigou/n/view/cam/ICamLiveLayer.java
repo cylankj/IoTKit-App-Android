@@ -77,7 +77,7 @@ public interface ICamLiveLayer {
 
     void onNetworkChanged(boolean connected);
 
-    void onActivityStart(Device device);
+    void onActivityStart(CamLiveContract.Presenter presenter, Device device);
 
     void setCaptureListener(View.OnClickListener captureListener);
 
@@ -96,5 +96,6 @@ public interface ICamLiveLayer {
     int getSpeakerState();
 
     void resumeGoodFrame();
+
     void startBadFrame();
 }

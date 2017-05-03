@@ -42,6 +42,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     private ImageView imgThumbnail;//缩略图
     private TextView tvLiveFlow;//流量
     private Subscription subscription;
+    private boolean isNormalView;
 
     public LiveViewWithThumbnail(Context context) {
         this(context, null);
@@ -97,11 +98,12 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     }
 
     private boolean isNormalView() {
-        return videoView != null && !(videoView instanceof PanoramicView360_Ext);
+        return isNormalView;
     }
 
     @Override
     public void setThumbnail(Context context, String token, Uri glideUrl) {
+        imgThumbnail.setVisibility(isNormalView() ? VISIBLE : GONE);
         Glide.with(context)
                 .load(glideUrl)
                 .asBitmap()
@@ -139,6 +141,7 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void setLiveView(VideoViewFactory.IVideoView iVideoView) {
+        isNormalView = !(iVideoView instanceof PanoramicView360_Ext);
         this.videoView = iVideoView;
         ((View) videoView).setId("videoView".hashCode());
         ViewGroup.LayoutParams lp = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
@@ -147,9 +150,8 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
 
     @Override
     public void updateLayoutParameters(int height) {
-        AppLogger.e("这是bug?: " + height);
         if (videoView == null) {
-            AppLogger.e("这是bug");
+            AppLogger.e("这是bug: " + height);
             return;
         }
         RelativeLayout.LayoutParams parentLp = (RelativeLayout.LayoutParams) getLayoutParams();
@@ -158,9 +160,12 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
         ViewGroup.LayoutParams lp = ((View) videoView).getLayoutParams();
         lp.height = height;
         ((View) videoView).setLayoutParams(lp);
-        post(() -> {
-            Log.d("1280", "1280?w:" + ((View) videoView).getWidth() + ",h:" + ((View) videoView).getHeight());
-        });
+    }
+
+    @Override
+    public void onCreate(boolean isNormalView) {
+        this.isNormalView = isNormalView;
+        imgThumbnail.setVisibility(isNormalView ? VISIBLE : GONE);
     }
 
     @Override
@@ -173,11 +178,11 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
     public void onLiveStop() {
         if (isNormalView())
             imgThumbnail.setVisibility(VISIBLE);
-        else {
+        else {//全景view,也要显示黑色背景
             imgThumbnail.setVisibility(VISIBLE);
         }
         imgThumbnail.bringToFront();
-        imgThumbnail.setBackgroundResource(android.R.color.black);
+        imgThumbnail.setImageResource(android.R.color.black);
         Log.d(TAG, "onLiveStop");
     }
 
@@ -236,27 +241,29 @@ public class LiveViewWithThumbnail extends FrameLayout implements VideoViewFacto
                     imageViewRef.get().setVisibility(VISIBLE);
                     imageViewRef.get().setImageBitmap(resource);
                 } else {
+                    imageViewRef.get().setVisibility(GONE);
                     videoViewWeakReference.get().loadBitmap(resource);
+                    AppLogger.d("开始加载全景预览图");
                 }
             } else {
-                Log.d(TAG, "bitmap is null? " + (resource == null));
+                AppLogger.d("开始加载预览图 is null? " + (resource == null));
             }
         }
 
         @Override
         public void onLoadFailed(Exception e, Drawable errorDrawable) {
-            AppLogger.d("bitmap is onLoadFailed: " + MiscUtils.getErr(e));
+            AppLogger.d("加载预览图失败 is onLoadFailed: " + MiscUtils.getErr(e));
         }
 
         @Override
         public void onDestroy() {
-            AppLogger.d("bitmap is onDestroy");
+            AppLogger.d("加载预览图 is onDestroy");
         }
 
         @Override
         public void onStop() {
             super.onStop();
-            AppLogger.d("bitmap is onStop");
+            AppLogger.d("加载预览图 is onStop");
         }
 
         @Override

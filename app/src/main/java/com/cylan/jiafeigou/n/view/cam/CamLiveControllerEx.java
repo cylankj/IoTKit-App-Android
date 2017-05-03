@@ -202,13 +202,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         String _509 = device.$(509, "1");
         videoView.config360(TextUtils.equals(_509, "0") ? CameraParam.getTopPreset() : CameraParam.getWallPreset());
         videoView.setMode(TextUtils.equals("0", _509) ? 0 : 1);
-        videoView.detectOrientationChanged();
         liveViewWithThumbnail.setLiveView(videoView);
-        if (SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()) == null) {
-            File file = new File(presenter.getThumbnailKey());
-            liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
-        } else
-            liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
     }
 
     /**
@@ -700,9 +694,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onLoadPreviewBitmap(Bitmap bitmap) {
-//        if (isVisible()) {
-//            vLive.post(() -> vLive.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), bitmap));
-//        }
+        post(() -> liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), bitmap));
     }
 
     @Override
@@ -741,10 +733,16 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
-    public void onActivityStart(Device device) {
+    public void onActivityStart(CamLiveContract.Presenter presenter, Device device) {
         boolean safeIsOpen = device.$(ID_501_CAMERA_ALARM_FLAG, false);
         setFlipped(!safeIsOpen);
         updateLiveViewMode(device.$(509, "0"));
+        Bitmap bitmap = SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey());
+        if (bitmap == null || bitmap.isRecycled()) {
+            File file = new File(presenter.getThumbnailKey());
+            liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), Uri.fromFile(file));
+        } else
+            liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), SimpleCache.getInstance().getSimpleBitmapCache(presenter.getThumbnailKey()));
     }
 
     @Override

@@ -39,13 +39,7 @@ public class JFGRules {
     }
 
     public static boolean isCylanDevice(String ssid) {
-        if (!TextUtils.isEmpty(ssid)) {
-            return JConstant.JFG_DOG_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
-                    || JConstant.JFG_BELL_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
-                    || JConstant.JFG_PAN_DEVICE_REG.matcher(ssid.replace("\"", "")).find()
-                    || JConstant.JFG_GENERAL_DEVICE.matcher(ssid.replace("\"", "")).find();
-        }
-        return false;
+        return ApFilter.accept(ssid);
     }
 
     public static String getDigitsFromString(String string) {

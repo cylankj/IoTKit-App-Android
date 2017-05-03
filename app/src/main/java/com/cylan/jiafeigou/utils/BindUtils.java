@@ -30,20 +30,6 @@ public class BindUtils {
     private static final String INVALID_SSID_0 = "<unknown ssid>";
     private static final String INVALID_SSID_1 = "0x";
 
-    public static final Pattern DOG_REG = Pattern.compile("DOG-\\d{6}");
-    public static final Pattern DOG_ML_REG = Pattern.compile("DOG-ML-\\d{6}");
-
-    public static List<ScanResult> transformDogList(List<ScanResult> resultList) {
-        if (resultList == null || resultList.size() == 0)
-            return new ArrayList<>();//return an empty list is better than null
-        List<ScanResult> results = new ArrayList<>();
-        for (ScanResult result : resultList) {
-            if (DOG_REG.matcher(removeDoubleQuotes(result.SSID)).find()) {
-                results.add(result);
-            }
-        }
-        return results;
-    }
 
     public static List<ScanResult> transformDogList(List<ScanResult> resultList, Pattern pattern) {
         if (resultList == null || resultList.size() == 0)
@@ -57,18 +43,6 @@ public class BindUtils {
             }
             if (pattern != null
                     && pattern.matcher(removeDoubleQuotes(result.SSID)).find()) {
-                results.add(result);
-            }
-        }
-        return results;
-    }
-
-    public static List<ScanResult> transformBellList(List<ScanResult> resultList) {
-        if (resultList == null || resultList.size() == 0)
-            return new ArrayList<>();//return an empty list is better than null
-        List<ScanResult> results = new ArrayList<>();
-        for (ScanResult result : resultList) {
-            if (DOG_ML_REG.matcher(removeDoubleQuotes(result.SSID)).find()) {
                 results.add(result);
             }
         }

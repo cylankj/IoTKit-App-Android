@@ -7,6 +7,7 @@ import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.MD5Util;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -40,6 +41,12 @@ public class SimpleCache {
     private WeakReference<List<ScanResult>> weakScanResult;
     private WeakReference<HashMap<String, Bitmap>> previewThumbnailCache;
 
+    public List<String> getPreviewKeyList() {
+        if (previewThumbnailCache == null || previewThumbnailCache.get() == null)
+            return null;
+        return new ArrayList<>(previewThumbnailCache.get().keySet());
+    }
+
     public void addCache(String key, Bitmap bitmap) {
         if (bitmap == null) {
             AppLogger.e("you add a null bitmap to cache ");
@@ -50,6 +57,11 @@ public class SimpleCache {
         }
         key = MD5Util.lowerCaseMD5(key);
         previewThumbnailCache.get().put(key, bitmap);
+    }
+
+    public Bitmap removeCache(String key) {
+        if (previewThumbnailCache == null || previewThumbnailCache.get() == null) return null;
+        return previewThumbnailCache.get().remove(key);
     }
 
     public Bitmap getSimpleBitmapCache(String key) {
