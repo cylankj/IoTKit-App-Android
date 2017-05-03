@@ -72,7 +72,6 @@ import rx.schedulers.Schedulers;
 
 import static android.net.wifi.WifiManager.NETWORK_STATE_CHANGED_ACTION;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_IDLE;
-import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_NET_CHANGED;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PLAYING;
 import static com.cylan.jiafeigou.misc.JConstant.PLAY_STATE_PREPARE;
 import static com.cylan.jiafeigou.misc.JFGRules.PlayErr.ERR_NETWORK;
@@ -411,6 +410,8 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                         .map(resolution -> {
                             setupAudio(false, false, false, false);
                             PreferencesUtils.putFloat(JConstant.KEY_UUID_RESOLUTION + uuid, (float) resolution.height / resolution.width);
+                            //注册监听耳机
+                            registerHeadSetObservable();
                             return resolution;
                         })
                         .observeOn(AndroidSchedulers.mainThread())
@@ -593,28 +594,31 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
                 localSpeaker, remoteMic, remoteSpeaker));
         //local:false远程  true本地
         BaseApplication.getAppComponent().getCmd().setAudio(false, remoteMic, remoteSpeaker);
-        if (localSpeaker) {
-            MediaRecorder mRecorder = null;
-            try {
-                mRecorder = new MediaRecorder();
-                mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-                mRecorder.release();
-                BaseApplication.getAppComponent().getCmd().setAudio(true, remoteMic, true);
-                return true;
-            } catch (Exception e) {
-                AppLogger.d(e.getMessage());
-                if (mRecorder != null) {
-                    mRecorder.release();
-                }
-                AndroidSchedulers.mainThread().createWorker().schedule(() -> {
-                            if (mView != null) mView.audioRecordPermissionDenied();
-                        }
-                );
-                return false;
+//        if (localSpeaker) {
+        MediaRecorder mRecorder = null;
+        try {
+            mRecorder = new MediaRecorder();
+            mRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
+            mRecorder.release();
+            BaseApplication.getAppComponent().getCmd().setAudio(true, remoteMic, localSpeaker);
+            if (isEarpiecePlug()) {
+                Observable.just("webRtcJava层的设置影响了耳机")
+                        .subscribeOn(Schedulers.newThread())
+                        .subscribe(ret -> switchEarpiece(true), AppLogger::e);
             }
+            return true;
+        } catch (Exception e) {
+            AppLogger.d(e.getMessage());
+            if (mRecorder != null) {
+                mRecorder.release();
+            }
+            AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+                        if (mView != null) mView.audioRecordPermissionDenied();
+                    }
+            );
+            return false;
+//            }
         }
-        AppLogger.i(String.format(Locale.getDefault(), "localMic:%s,LocalSpeaker:%s,remoteMic:%s,remoteSpeaker:%s", localMic, localSpeaker, remoteMic, remoteSpeaker));
-        return true;
     }
 
     /**

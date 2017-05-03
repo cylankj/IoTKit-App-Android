@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.media.AudioManager;
 import android.support.annotation.CallSuper;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
@@ -15,13 +16,17 @@ import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.mvp.BasePresenter;
 import com.cylan.jiafeigou.n.mvp.BaseView;
 import com.cylan.jiafeigou.n.view.misc.MapSubscription;
+import com.cylan.jiafeigou.support.headset.HeadsetObserver;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.support.network.NetMonitor;
 import com.cylan.jiafeigou.utils.ContextUtils;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.TimeUnit;
 
+import rx.Observable;
 import rx.Subscription;
+import rx.schedulers.Schedulers;
 import rx.subscriptions.CompositeSubscription;
 
 /**
@@ -29,7 +34,7 @@ import rx.subscriptions.CompositeSubscription;
  * Created by cylan-hunt on 16-6-30.
  */
 public abstract class AbstractPresenter<T extends BaseView> implements BasePresenter,
-        NetMonitor.NetworkCallback {
+        NetMonitor.NetworkCallback, HeadsetObserver.HeadsetListener {
 
     protected final String TAG = this.getClass().getSimpleName();
     protected T mView;//弱引用会被强制释放,我们的view需要我们手动释放,不适合弱引用
@@ -37,6 +42,8 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     private CompositeSubscription compositeSubscription;
     private MapSubscription refCacheMap = new MapSubscription();
     private TimeTick timeTick;
+    private HeadsetObserver headsetObserver;
+    private AudioManager audioManager;
 
     public AbstractPresenter(T view) {
         mView = view;
@@ -60,6 +67,17 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         }
     }
 
+    public AudioManager getAudioManager() {
+        if (audioManager == null)
+            audioManager = (AudioManager) ContextUtils.getContext().getSystemService(Context.AUDIO_SERVICE);
+        return audioManager;
+    }
+
+    /**
+     * 注册监听,系统时间广播
+     *
+     * @return
+     */
     protected boolean registerTimeTick() {
         return false;
     }
@@ -90,6 +108,11 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
         }
     }
 
+    /**
+     * 注册网络广播
+     *
+     * @return
+     */
     protected String[] registerNetworkAction() {
         return null;
     }
@@ -122,6 +145,8 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
             if (timeTick != null)
                 LocalBroadcastManager.getInstance(ContextUtils.getContext()).unregisterReceiver(timeTick);
         }
+        unRegisterHeadSetObservable();
+        abandonAudioFocus();
     }
 
     protected Subscription[] register() {
@@ -155,4 +180,54 @@ public abstract class AbstractPresenter<T extends BaseView> implements BasePrese
     public Device getDevice() {
         return BaseApplication.getAppComponent().getSourceManager().getDevice(uuid);
     }
+
+    @Override
+    public void onHeadSetPlugIn(boolean plugIn) {
+        AppLogger.d("耳机接入?:" + plugIn);
+        switchEarpiece(plugIn);
+    }
+
+    protected void registerHeadSetObservable() {
+        if (headsetObserver == null) headsetObserver = HeadsetObserver.getHeadsetObserver();
+        headsetObserver.addObserver(this);
+        AppLogger.d("wetRtcJava层干扰了耳机的设置 注册监听耳机:" + TAG);
+        AppLogger.d("wetRtcJava层干扰了耳机的设置 需要在打开speaker后,延时重新设置:" + TAG);
+    }
+
+    protected boolean isEarpiecePlug() {
+        if (headsetObserver == null) headsetObserver = HeadsetObserver.getHeadsetObserver();
+        return headsetObserver.isHeadsetOn();
+    }
+
+    protected void switchEarpiece(boolean enable) {
+        getAudioManager().setMode(enable ? AudioManager.MODE_CURRENT : AudioManager.MODE_IN_CALL);
+        getAudioManager().setSpeakerphoneOn(!enable);
+    }
+
+    protected void unRegisterHeadSetObservable() {
+        if (headsetObserver == null) return;
+        headsetObserver.removeObserver(this);
+        AppLogger.d("反注册注册监听耳机:" + TAG);
+    }
+
+    protected void gainAudioFocus() {
+        getAudioManager().requestAudioFocus(afChangeListener,
+                AudioManager.STREAM_VOICE_CALL,
+                AudioManager.AUDIOFOCUS_GAIN);
+    }
+
+    /**
+     * 反注册
+     */
+    protected void abandonAudioFocus() {
+        getAudioManager().abandonAudioFocus(afChangeListener);
+    }
+
+    private AudioManager.OnAudioFocusChangeListener afChangeListener = new AudioManager.OnAudioFocusChangeListener() {
+        public void onAudioFocusChange(int focusChange) {
+            if (focusChange == AudioManager.AUDIOFOCUS_LOSS) {
+                audioManager.abandonAudioFocus(afChangeListener);
+            }
+        }
+    };
 }
