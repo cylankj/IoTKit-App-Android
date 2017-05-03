@@ -95,6 +95,8 @@ public interface ICamLiveLayer {
 
     int getSpeakerState();
 
+    int getCaptureState();
+
     void resumeGoodFrame();
 
     void startBadFrame();

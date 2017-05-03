@@ -104,6 +104,8 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     private HistoryWheelHandler historyWheelHandler;
 
+    private IconPreState iconPreState;
+
     public CamLiveControllerEx(Context context) {
         this(context, null);
     }
@@ -844,10 +846,24 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
     }
 
     @Override
+    public int getCaptureState() {
+        //只有on-disable on-enable
+        View v = findViewById(R.id.imgV_land_cam_trigger_capture);
+        if (v.isEnabled() || findViewById(R.id.imgV_cam_trigger_capture).isEnabled()) return 1;
+        return 0;
+    }
+
+    @Override
     public void resumeGoodFrame() {
         livePlayState = PLAY_STATE_PLAYING;
         setLoadingState(null, null, false);
-        AppLogger.e("结束loading");
+        AppLogger.e("结束loading,恢复按钮状态");
+        //0:off-disable,1.on-disable,2.off-enable,3.on-enable
+        if (iconPreState == null) return;
+        setMicSpeakerState(iconPreState.mic, iconPreState.speaker);
+        if (iconPreState.capture == 0) return;
+        findViewById(R.id.imgV_cam_trigger_capture).setEnabled(true);
+        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(true);
     }
 
     @Override
@@ -856,6 +872,23 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
         setLoadingState(null, null, true);
         findViewById(R.id.imgV_cam_zoom_to_full_screen).setEnabled(false);
         AppLogger.e("开始loading,需要关闭声音");
+        if (iconPreState == null) iconPreState = new IconPreState();
+        iconPreState.mic = getMicState();
+        iconPreState.speaker = getSpeakerState();
+        iconPreState.capture = getCaptureState();
+        //0:off-disable,1.on-disable,2.off-enable,3.on-enable
+        int tempMic = 0, tempSpeaker;
+        if (iconPreState.mic == 0) tempMic = 0;
+        else if (iconPreState.mic == 1) tempMic = 0;
+        else if (iconPreState.mic == 2) tempMic = 2;
+        else tempMic = 2;
+        if (iconPreState.speaker == 0) tempSpeaker = 0;
+        else if (iconPreState.speaker == 1) tempSpeaker = 0;
+        else if (iconPreState.speaker == 2) tempSpeaker = 2;
+        else tempSpeaker = 2;
+        setMicSpeakerState(tempMic, tempSpeaker);
+        findViewById(R.id.imgV_cam_trigger_capture).setEnabled(false);
+        findViewById(R.id.imgV_land_cam_trigger_capture).setEnabled(false);
     }
 
     @Override
@@ -899,5 +932,11 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     public void setLiveTextClick(OnClickListener liveTextClick) {
         this.liveTextClick = liveTextClick;
+    }
+
+    private static class IconPreState {
+        public int mic;
+        public int speaker;
+        public int capture;
     }
 }
