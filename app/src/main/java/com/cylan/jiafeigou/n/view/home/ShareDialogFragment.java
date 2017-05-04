@@ -102,6 +102,10 @@ public class ShareDialogFragment extends BaseDialog {
                 }
                 break;
             case R.id.tv_share_to_twitter_friends:
+                if (!ShareUtils.isTwitterInstalled()) {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap0_Login_NoInstalled, "Twitter"));
+                    return;
+                }
                 if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.shareVideoToTwitter(getActivity(), mVideoURL, glideUrl);
                 } else if (glideUrl != null) {
@@ -111,6 +115,10 @@ public class ShareDialogFragment extends BaseDialog {
                 }
                 break;
             case R.id.tv_share_to_facebook_friends:
+                if (!ShareUtils.isFacebookInstalled()) {
+                    ToastUtil.showNegativeToast(getString(R.string.Tap0_Login_NoInstalled, "facebook"));
+                    return;
+                }
                 if (glideUrl != null && !TextUtils.isEmpty(mVideoURL)) {
                     ShareUtils.shareVideoToFacebook(getActivity(), mVideoURL, glideUrl);
                 } else if (glideUrl != null) {

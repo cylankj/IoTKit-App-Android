@@ -79,8 +79,8 @@ public class SdCardInfoPresenterImpl extends AbstractPresenter<SdCardInfoContrac
 
     @Override
     public void updateInfoReq() {
-        addSubscription(clearCountTime(), "clearCountTime");
         clearTimeFlag = System.currentTimeMillis();
+        addSubscription(clearCountTime(), "clearCountTime");
         Observable.just(null)
                 .subscribeOn(Schedulers.io())
                 .subscribe((Object o) -> {

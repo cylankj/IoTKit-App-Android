@@ -477,7 +477,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
                 break;
             case JFGRules.PlayErr.ERR_NOT_FLOW:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
-                setLoadingState(getContext().getString(R.string.NETWORK_TIMEOUT), null);
+                setLoadingState(getContext().getString(R.string.NETWORK_TIMEOUT), getContext().getString(R.string.USER_HELP));
                 break;
             case JError.ErrorVideoPeerDisconnect:
                 livePlayState = PLAY_STATE_LOADING_FAILED;
@@ -696,7 +696,7 @@ public class CamLiveControllerEx extends RelativeLayout implements ICamLiveLayer
 
     @Override
     public void onLoadPreviewBitmap(Bitmap bitmap) {
-        post(() -> liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), bitmap));
+//        post(() -> liveViewWithThumbnail.setThumbnail(getContext(), PreferencesUtils.getString(JConstant.KEY_UUID_PREVIEW_THUMBNAIL_TOKEN + uuid, ""), bitmap));
     }
 
     @Override

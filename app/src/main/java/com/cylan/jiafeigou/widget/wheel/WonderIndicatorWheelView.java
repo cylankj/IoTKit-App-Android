@@ -92,6 +92,7 @@ public class WonderIndicatorWheelView extends LinearLayout implements OnItemClic
     @Override
     public void onItemClick(View itemView, int viewType, int position) {
         WheelItem c = mAdapter.getItem(position);
+        if (!c.wonderful) return;
         if (mLastPosition != position || mLastPosition == -1) {
             c.selected = true;
             itemView.findViewById(R.id.wonder_indicator_item).setSelected(true);

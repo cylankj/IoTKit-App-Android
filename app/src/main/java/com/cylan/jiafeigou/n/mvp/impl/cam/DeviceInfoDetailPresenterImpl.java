@@ -53,8 +53,13 @@ public class DeviceInfoDetailPresenterImpl extends AbstractPresenter<CamInfoCont
                 onClearSdReqBack(),
         };
     }
+
     private void loadParameters() {
-        AppLogger.e("未实现");
+        try {
+            if (BaseApplication.getAppComponent().getSourceManager().isOnline())
+                BaseApplication.getAppComponent().getSourceManager().syncDeviceProperty(uuid);
+        } catch (Exception e) {
+        }
     }
 
     @Override

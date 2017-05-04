@@ -450,7 +450,10 @@ public class DeviceInfoDetailFragment extends IBaseFragment<CamInfoContract.Pres
                 DpMsgDefine.DPNet net = device.$(201, new DpMsgDefine.DPNet());
                 tvDeviceWifiState.setTvSubTitle(net != null && !TextUtils.isEmpty(net.ssid) ? net.ssid : getString(R.string.OFF_LINE));
                 break;
+            case 206:
+//                updateDetails();
+                break;
         }
-
+        updateDetails();
     }
 }

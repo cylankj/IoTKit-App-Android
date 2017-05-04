@@ -501,7 +501,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
      */
     @Override
     public boolean isLocalMicOn() {
-        return camLiveControlLayer.getMicState() == 3;
+        return camLiveControlLayer.getMicState() == 3 ||
+                camLiveControlLayer.getMicState() == 1;
     }
 
     /**
@@ -509,7 +510,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
      */
     @Override
     public boolean isLocalSpeakerOn() {
-        return camLiveControlLayer.getSpeakerState() == 3;
+        return camLiveControlLayer.getSpeakerState() == 3
+                || camLiveControlLayer.getSpeakerState() == 1;
     }
 
     @Override
@@ -616,7 +618,8 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @OnPermissionDenied({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionDenied() {
-        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth), ""));
+        if (!isResumed()) return;
+        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth)));
     }
 
     @Override
@@ -631,12 +634,14 @@ public class CameraLiveFragmentEx extends IBaseFragment<CamLiveContract.Presente
 
     @OnNeverAskAgain({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionNeverAsk() {
-        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth), ""));
+        if (!isResumed()) return;
+        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth)));
     }
 
     @OnShowRationale({Manifest.permission.RECORD_AUDIO})
     public void audioRecordPermissionRational(PermissionRequest request) {
-        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth), ""));
+        if (!isResumed()) return;
+        ToastUtil.showNegativeToast(getString(R.string.permission_auth, getString(R.string.sound_auth)));
     }
 
     private AlertDialog firmwareDialog;

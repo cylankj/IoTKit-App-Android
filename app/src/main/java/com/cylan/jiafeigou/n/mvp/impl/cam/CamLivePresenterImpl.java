@@ -612,10 +612,12 @@ public class CamLivePresenterImpl extends AbstractPresenter<CamLiveContract.View
             if (mRecorder != null) {
                 mRecorder.release();
             }
-            AndroidSchedulers.mainThread().createWorker().schedule(() -> {
-                        if (mView != null) mView.audioRecordPermissionDenied();
-                    }
-            );
+            if (!localMic && !localSpeaker && !remoteMic && !remoteSpeaker) {
+            } else {
+                AndroidSchedulers.mainThread().createWorker().schedule(() -> {
+                    if (mView != null && mView.isUserVisible()) mView.audioRecordPermissionDenied();
+                });
+            }
             return false;
 //            }
         }

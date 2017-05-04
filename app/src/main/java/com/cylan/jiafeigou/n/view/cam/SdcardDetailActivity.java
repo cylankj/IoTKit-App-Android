@@ -61,6 +61,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
         this.uuid = getIntent().getStringExtra(KEY_DEVICE_ITEM_UUID);
         basePresenter = new SdCardInfoPresenterImpl(this, uuid);
         customToolbar.setBackAction(o -> onBackPressed());
+        initDetailData();
     }
 
     @Override
@@ -71,13 +72,12 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
     @Override
     protected void onStart() {
         super.onStart();
-        initDetailData();
     }
 
-    private void dismissDilaog(AlertDialog... dialog) {
-        if (dialog != null) {
-            for (AlertDialog dialog1 : dialog) {
-                if (dialog1.isShowing()) dialog1.dismiss();
+    private void dismissDialog(AlertDialog... dialogs) {
+        if (dialogs != null) {
+            for (AlertDialog dialog : dialogs) {
+                if (dialog != null && dialog.isShowing()) dialog.dismiss();
             }
         }
     }
@@ -110,9 +110,9 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
                         })
                         .setNegativeButton(getString(R.string.CANCEL), null)
                         .create();
-                formatSdcardDialog.show();
-                dismissDilaog(noSdcardDialog, alertDialog);
             }
+            dismissDialog(noSdcardDialog, alertDialog);
+            formatSdcardDialog.show();
         }
 
     }
@@ -189,7 +189,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
                     .setPositiveButton(getString(R.string.OK), null)
                     .create();
         alertDialog.show();
-        dismissDilaog(noSdcardDialog, alertDialog);
+        dismissDialog(noSdcardDialog, alertDialog);
     }
 
     private void initDetailData() {
@@ -223,7 +223,7 @@ public class SdcardDetailActivity extends BaseFullScreenFragmentActivity<SdCardI
                     .create();
         }
         noSdcardDialog.show();
-        dismissDilaog(formatSdcardDialog, alertDialog);
+        dismissDialog(formatSdcardDialog, alertDialog);
     }
 
     @Override

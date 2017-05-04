@@ -23,6 +23,7 @@ import com.cylan.jiafeigou.n.BaseFullScreenFragmentActivity;
 import com.cylan.jiafeigou.n.base.BaseApplication;
 import com.cylan.jiafeigou.n.view.cam.CamMessageListFragment;
 import com.cylan.jiafeigou.n.view.cam.CameraLiveFragmentEx;
+import com.cylan.jiafeigou.push.BuildProperties;
 import com.cylan.jiafeigou.support.log.AppLogger;
 import com.cylan.jiafeigou.utils.ContextUtils;
 import com.cylan.jiafeigou.utils.MiscUtils;
@@ -77,6 +78,14 @@ public class CameraLiveActivity extends BaseFullScreenFragmentActivity {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         AppLogger.d("onRestoreInstanceState");
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (MiscUtils.isLand()) {
+            handleSystemBar(false, 1);
+        }
     }
 
     @Override
